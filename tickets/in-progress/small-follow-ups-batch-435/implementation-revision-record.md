@@ -8,6 +8,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 (Pass), round 1 of implementation | N/A | `Initial Baseline` | SR-002, ARCH-REV-002; CRR/API-REV/DR: N/A | All 12 items implemented on `codex/small-follow-ups-batch-435` (commits `e5ca0e1da7`, `6ca743fee0`); ready for code review |
 | IR-002 | Code reviewer CRR-001 (CR-001) → Solution Designer SR-003 → architecture reviewer ARCH-REV-003 (Pass, AR-005), round 2 | CR-001; AR-005; C-05 | `Design Impact` (resolved upstream; implemented here) | SR-003, ARCH-REV-003, CRR-001; API-REV/DR: N/A | DS-006 entry form 2 and DS-006b implemented (commits `d0943a71ac`, `f9cb6f7153`); ready for the Targeted Delta Review |
+| IR-003 | Architecture reviewer ARCH-REV-004 (Pass) on SR-004 (items 13, 14 added by the Task), round 3 | N/A (new items) | `Initial Baseline` for items 13, 14 | SR-004, ARCH-REV-004; CRR/API-REV/DR: N/A | Items 13 and 14 implemented (commit `432d1c3af2`); ready for source review |
+| IR-004 | API/E2E API-REV-001 (Fail: F1, F2) → code reviewer CRR-003 (CR-002, CR-003) → SR-005 → ARCH-REV-005 (Pass), round 4 | CR-002, CR-003 (F1, F2); ARCH-REV-005 residual (API 26–29 keyboard) | `Design Impact` (resolved upstream; implemented here) | SR-005, ARCH-REV-005, CRR-003, API-REV-001 | DS-002 and DS-005 implemented (`9ee362778e`, `7e53b46d80`) plus a labelled baseline test fix (`06a072014f`); ready for source review |
 
 ## Revision Entries
 
@@ -51,3 +53,35 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-13 (web typecheck and full suite `Pass`), IMP-14 (rendered Create run across the send and reloads `Pass`), IMP-15 (full phone probe `Pass`, MSP-07 included). IMP-01…IMP-12 remain valid for code outside DS-006 (unchanged since `e5ca0e1da7`/`6ca743fee0`); the server and Android code did not change.
 - Next recipient or routing: code reviewer (Targeted Delta Review), per `get_handoff_rules`.
 - Remaining limitations or risks: entries other than the current one cannot be rewritten (History API); an entry pushed before the send and first visited after a reload still names the draft and gives the list (accepted in SR-003).
+
+### IR-003 — Items 13 and 14: self-delegation words; System instructions shown whole
+
+- Triggering role, report path, and round: architecture reviewer, `design-review-report.md` ARCH-REV-004 (Pass) on SR-004; round 3.
+- Triggering finding IDs: N/A (new items from the Task's comments).
+- Classification: `Initial Baseline` for items 13 and 14.
+- Prior authoritative result: IR-002 (items 1–12).
+- Current authoritative result: items 13 and 14 at `432d1c3af2`.
+- Related solution revision IDs: `SR-004`. Architecture review: `ARCH-REV-004`. Code review, API/E2E, delivery: `N/A`.
+- Why recorded: new items.
+- Approved behavior or requirement IDs affected: BEH-013, BEH-014; REQ-013, REQ-014; AC-013-1, AC-014-1, AC-014-2; DEC-017, DEC-018.
+- Implementation delta: see the handoff's "IR-003 delta".
+- Changed files or areas: server `collaborator-errors.ts`, `catalog-delegation.ts`, four test files, four server docs; web `SystemInstructionActivityItem.vue` (+ spec), `docs/agent_execution_architecture.md`.
+- Local validation and result: IMP-16 (server and web tests `Pass`), IMP-17 (rendered on the phone and the desktop panel `Pass`).
+- Next recipient or routing: the IR-003 handoff was not sent separately (the session ended before it); it goes to the code reviewer with IR-004.
+- Remaining limitations or risks: item 13 was not run through a real agent's tool call (API/E2E).
+
+### IR-004 — DS-002 reads a readable Host-gate refusal; DS-005 turns decor fitting off in full screen below API 35
+
+- Triggering role, report path, and round: API/E2E `API-REV-001` (Fail: F1 on Android 14, `evidence/api-e2e/API-18-android14-full-screen.txt`; F2 in the Electron window, `API-13-electron-nodes-page.txt`) → code reviewer CRR-003 (CR-002, CR-003) → Solution Designer SR-005 (DEC-019, DEC-020) → architecture reviewer ARCH-REV-005 (Pass, with a residual on the API 26–29 keyboard); round 4.
+- Triggering finding IDs: CR-002 (F1), CR-003 (F2); the ARCH-REV-005 residual.
+- Classification: `Design Impact` (resolved upstream in SR-005; implemented here).
+- Prior authoritative result: IR-003 at `432d1c3af2` (F1, F2 open).
+- Current authoritative result: `9ee362778e` (item 2), `7e53b46d80` (item 5), `06a072014f` (baseline test fix).
+- Related solution revision IDs: `SR-005`. Architecture review: `ARCH-REV-005`. Code review: `CRR-003`. API/E2E: `API-REV-001`. Delivery: `N/A`.
+- Why recorded: rework for F1, F2.
+- Approved behavior or requirement IDs affected: BEH-002, BEH-004; REQ-003, REQ-004; AC-003-1…3, AC-004-1; DEC-019, DEC-020.
+- Implementation delta: see the handoff's "IR-004 delta".
+- Changed files or areas: web `utils/nodeIdentityProbe.ts`, `utils/nodeConnectionErrorText.ts`, `localization/messages/{en,zh-CN}/nodesPage.ts`, two specs, `docs/settings.md`; Android `ui/DesktopFullScreenController.kt`, two unit tests, three instrumented tests.
+- Local validation and result: IMP-18 (web), IMP-19 (Android unit), IMP-20 (instrumented suite on API 34 and API 29: the page spans the cutout in full screen and only the keyboard pads it; soft-input mode observed; `adjustResize` not declared, with reasons).
+- Next recipient or routing: code reviewer (source review of IR-003 and IR-004), per `get_handoff_rules`.
+- Remaining limitations or risks: API 28 and API 26–27 not run on a device; the Electron and Docker-node re-checks of F1/F2 are API/E2E's.

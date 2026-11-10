@@ -281,3 +281,13 @@ Principle 1.
 - **The fix:** the route follows the promotion, as the desktop chat route already did (`useChatRouteRunSync.ts`, D-13): a phone route sync detects the same context re-keyed and replaces the current entry's `row`; a reload before the first send shows the list.
 - **Why it mattered:** restoring after a reload was the requirement; the main way to make a run on the phone missed it.
 - **Notice it by:** an identity a design stores or sends outward (a route, a URL, a record) taken from a callback or a creation call without tracing where that value is minted and whether it is re-keyed later (draft, temporary, pending IDs). Look for an existing "promote" or "re-key" step and for code that already follows it.
+
+### Case 21: A Premise Checked On A Stand-In Or One Platform Version (autobyteus-435, CRR-003 CR-002, CR-003)
+
+Principle 1 (trace through the real dependency).
+
+- **The design said:** (item 2) the desktop window cannot read a node's Host-gate 403 because it has no CORS headers, so a second opaque request tells "refused" from "no answer". The probe that proved it ran in plain Chromium at a `file://` page. (Item 5) full screen lays the page into the cutout with `layoutInDisplayCutoutMode = SHORT_EDGES` plus no cutout padding on the root; the reference emulator was API 35.
+- **What the real dependency does:** the packaged Electron window does not apply CORS to its `file://` requests: it reads the 403 and its code (`type: basic`), so the opaque branch never ran and the page said "isn't an AutoByteus node". On Android 9–14 the decor still fits system windows, so the content frame started after the cutout although the window spanned the screen; Android 15 hid this by forcing edge-to-edge, and the insets owner's own comment said so.
+- **The fix:** the probe reads a readable Host-gate refusal and gives the exact cause (the opaque request stays for browser windows); full screen also turns the decor's fitting off on API < 35 and back on when it ends.
+- **Why it mattered:** both items failed in the product on the one runtime and the platform versions the design had not run.
+- **Notice it by:** a premise measured in a stand-in for the real runtime (Chromium for Electron, a fake for a platform API, one OS version for a range), or a platform behaviour that changed at a version inside the supported range (here targetSdk 35 edge-to-edge). Run the premise in the real runtime, or mark it unproven and make the design hold either way.

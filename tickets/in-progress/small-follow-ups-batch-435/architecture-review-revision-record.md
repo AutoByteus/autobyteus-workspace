@@ -7,6 +7,8 @@
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (2026-11-10) | SR-001 | N/A | Fail (Design Impact) | AR-001, AR-002 (blocking); AR-003, AR-004 (non-blocking) |
 | ARCH-REV-002 | Round 2 / Architecture Design Complete after revision (2026-11-10) | SR-002 | Fail (Design Impact) | Pass | AR-001…AR-004 resolved |
 | ARCH-REV-003 | Round 3 / revision after code review CRR-001 CR-001 (2026-11-10) | SR-003 | Pass | Pass | AR-001 premise corrected (DS-006b); AR-005 new (non-blocking) |
+| ARCH-REV-004 | Round 4 / items 13 and 14 added (2026-11-10) | SR-004 | Pass | Pass | None new |
+| ARCH-REV-005 | Round 5 / revision after API-REV-001 → CRR-003 CR-002, CR-003 (2026-11-10) | SR-005 | Pass | Pass | None new (residual: item 5/7 keyboard on API 26–29) |
 
 ## Revision Entries
 
@@ -74,3 +76,46 @@ None.
 - Material classification changes: None (Medium/High)
 - Recommended recipient: `/software_engineering_team/implementation_engineer`; informational notice to `/software_engineering_team/solution_designer`
 - Remaining risks or uncertainty: an entry not revisited before a reload keeps the draft key (→ list); item 5 on API 28–34 is covered by unit test only; item 11 has not been run; UNK-001.
+
+### ARCH-REV-004 — Items 13 and 14 added (DS-010, DS-011)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-review-report.md`
+- Review round and trigger: round 4; `handoff-round-4-architecture-design-complete.md` (SR-004, Medium/High; the additions are Small/Low on their own)
+- Triggering role, report path, and finding IDs: Solution Designer; N/A
+- Relevant solution revision IDs: `SR-004`
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Pass`
+- What changed: REQ-013/014 (DEC-017, DEC-018) were checked against the code. DS-010's self check fits all three roots' indexes. DS-011 is one class change in the shared Activity item, and neither feed is virtualized. Items 1–12 are unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-004 | Resolved | Resolved (unchanged) | — | — |
+| AR-005 | Open (non-blocking, implementation guidance) | Unchanged; for the code reviewer to confirm in IR-002 or later | ARCH-REV-003 | — |
+
+- New or remaining finding IDs: None new
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (IR-003); informational notice to `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: item 14's rendered check on phone and desktop (AC-014-1); the earlier residual risks are unchanged.
+
+### ARCH-REV-005 — Items 2 and 5 corrected after real-runtime evidence (DS-002, DS-005)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-review-report.md`
+- Review round and trigger: round 5; `handoff-round-5-architecture-design-complete.md` (SR-005, Medium/High), after API/E2E API-REV-001 Fail (F1, F2) and the failure-origin review CRR-003 (CR-002, CR-003 Design Impact)
+- Relevant solution revision IDs: `SR-005`
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed: the two premises this review accepted in round 1 were measured on stand-in runtimes: plain Chromium for the Electron window, and API 35 for API 28–34. Real-runtime evidence (API-13, API-18) contradicted both. SR-005 corrects them. DS-002 maps the readable Host-gate 403 to `host_refused` and drops the unreachable desktop `window_refused` words. DS-005 turns decor fitting off in full screen on API < 35 only. Both were checked against the evidence and the code. Everything else is unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-004 | Resolved | Resolved (unchanged) | — | — |
+| AR-005 | Open (non-blocking guidance) | Unchanged (for the code reviewer) | ARCH-REV-003 | — |
+
+- New or remaining finding IDs: None new
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (IR-004); informational notice to `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: item 5/7 keyboard in full screen on API 26–29 is unverified (no `windowSoftInputMode` declared); UNK-001; the earlier residual risks are unchanged.

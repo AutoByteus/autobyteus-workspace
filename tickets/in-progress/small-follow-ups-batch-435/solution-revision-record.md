@@ -7,6 +7,8 @@
 | SR-001 | Mixed (Requirements + Design) | Initial coherent baseline from Task autobyteus-435 (items 1–12) | N/A | N/A | Requirements `Approved` (within the direction); Design `Ready` | BEH-001…012; REQ-001…012 | Architecture Design Complete; `task_size=Medium`, `architectural_risk=High` |
 | SR-002 | Mixed (Design Impact + requirement clarification) | ARCH-REV-001 (Fail, Design Impact) | AR-001, AR-002 (blocking); AR-003, AR-004 | Requirements `Approved` (SR-001); Design `Needs Revision` | Requirements `Approved` (SR-002); Design `Ready` | BEH-005, BEH-009, BEH-010; REQ-005; AC-005-1, -3, -5…7; DEC-014, DEC-015 | Architecture Design Complete (revised); classification unchanged |
 | SR-003 | Mixed (Design Impact + requirement clarification) | CRR-001 (code review Fail, Design Impact) | CR-001 | Requirements `Approved` (SR-002); Design `Ready` (ARCH-REV-002 Pass) | Requirements `Approved` (SR-003); Design `Ready` | BEH-005; REQ-005; AC-005-6, AC-005-8; DEC-016 | Architecture Design Complete (revised, DS-006 only); classification unchanged |
+| SR-004 | Mixed (Requirements + Design) | Task comments 2026-11-10 (items 13, 14) via `/project_task_manager` | N/A | Requirements `Approved` (SR-003); Design `Ready` (ARCH-REV-003 Pass) | Requirements `Approved` (SR-004); Design `Ready` | BEH-013, BEH-014; REQ-013, REQ-014; AC-013-1, AC-014-1, AC-014-2; SCN-011, SCN-012; DEC-017, DEC-018 | Architecture Design Complete (revised: two items added); classification unchanged |
+| SR-005 | Mixed (Design Impact + requirement revision) | API-REV-001 Fail (F1, F2) → CRR-003 failure-origin review | CR-002, CR-003 | Requirements `Approved` (SR-004); Design `Ready` (ARCH-REV-004 Pass) | Requirements `Approved` (SR-005); Design `Ready` | BEH-002, BEH-004; REQ-003, REQ-004; AC-003-1, AC-004-1; DEC-019, DEC-020 | Architecture Design Complete (revised DS-002, DS-005); classification unchanged |
 
 ## Revision Entries
 
@@ -72,3 +74,35 @@
 - Handoff: `handoff-round-3-architecture-design-complete.md`.
 - Next action: architecture re-review of the DS-006 delta; then implementation rework limited to entry form 2 / DS-006b; then the code reviewer's Targeted Delta Review.
 - Review outcome (recorded 2026-11-10): ARCH-REV-003 `Pass` on SR-003 (DS-006b confirmed; AR-005 non-blocking, sent to implementation as guidance: reuse the D-13 promotion detection of `useChatRouteRunSync` rather than copy it). The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`; informational, no forwarding by the Solution Designer.
+
+### SR-004 — Items 13 and 14 added
+
+- Phase and classification: `Refinement` (scope added by the Task; requirements and design).
+- Triggering input: the Project Task Manager's message (2026-11-10) and the Task's comments: item 13 (autobyteus-455 FU-001, self-delegation refusal words) and item 14 (the user's request, two phone screenshots: System instructions text in full in Activity, phone and desktop). The PM asks for item 14 in round 1.
+- Triggering finding IDs: N/A.
+- Prior status: requirements `Approved` (SR-003); design `Ready` (ARCH-REV-003 Pass); IR-002 passed the code review's Targeted Delta Review; API/E2E in progress on items 1–12.
+- Current status: requirements `Approved` (SR-004); design `Ready`.
+- IDs affected: BEH-013, BEH-014; UC-009, UC-010; REQ-013, REQ-014; AC-013-1, AC-014-1, AC-014-2; SCN-011, SCN-012; DEC-017, DEC-018; design DS-010, DS-011, behavior map, file mapping, change scope, tradeoffs, risks; investigation Source Log (three rows).
+- Intended behavior changed: added (two new items within the Task's direction; item 14 in the user's own words). No earlier requirement changed.
+- Approval: Solution Designer within the direction (the Task now includes both items; item 14 is the user's request); user informed in the conversation on 2026-11-10; no `Needs user` decision.
+- Affected design/review basis: ARCH-REV-003 covered SR-003; items 1–12 unchanged. New: DS-010 (server, wording only), DS-011 (one class change in one shared web component).
+- Classification: unchanged, `Medium` / `High` (the additions are Small / Low on their own).
+- Handoff: `handoff-round-4-architecture-design-complete.md`.
+- Next action: architecture review of the SR-004 additions; then implementation IR-003 (items 13, 14) on top of IR-002; code review; API/E2E covers items 13 and 14 as well.
+- Review outcome (recorded 2026-11-10): ARCH-REV-004 `Pass` on SR-004 (DS-010, DS-011 confirmed; no findings). The reviewer's wording note (design-spec § Solution And Approval Basis did not name SR-003 in its baseline line) was corrected as a factual fix. The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`; informational, no forwarding by the Solution Designer.
+
+### SR-005 — Item 2 reads the desktop window's refusal; item 5 lays out edge to edge in full screen on Android 9–14
+
+- Phase and classification: `Design Impact` (CRR-003 CR-002, CR-003 from API-REV-001 F1, F2), with a requirement revision of REQ-003's mechanism and AC-003-1's words, and AC-004-1's platform range, within the direction.
+- Triggering input: API/E2E round 1 (`api-e2e-execution-coverage-report.md`, API-REV-001, Fail; evidence `a380fc419f`), failure-origin review `CRR-003` (`code-review-report.md`), 2026-11-10.
+- Findings: CR-003 (F2, API-13): the packaged Electron window reads the Host gate's 403 and its code; my premise (measured in plain Chromium) was wrong; the window showed "isn't an AutoByteus node". CR-002 (F1, API-18): on API 34 the content frame starts at the cutout because the decor fits system windows; the design's cutout mode plus root padding was enough only on API 35.
+- Prior status: requirements `Approved` (SR-004); design `Ready` (ARCH-REV-004 Pass); IR-003 (`432d1c3af2`, items 13–14) awaiting source review.
+- Current status: requirements `Approved` (SR-005); design `Ready`.
+- IDs affected: REQ-003 (a/b/c), AC-003-1 (words: the existing `cause.hostRefused`), DEC-002 (desktop part superseded), DEC-019; REQ-004 unchanged, AC-004-1 (API 34 and 35), DEC-020; design DS-002, DS-005, file mapping rows (probe, words, localization, controller), risks; investigation Runtime findings (two rows); `docs/design-cases.md` Case 21.
+- Intended behavior changed: AC-003-1's desktop words change to the exact cause (the user's direction "say a refused name is refused" is met more precisely); REQ-004's outcome is unchanged, its proof now covers API 28–34.
+- Approval: Solution Designer within the direction; user informed in the conversation on 2026-11-10; no `Needs user` decision.
+- Affected design/review basis: ARCH-REV-004 covered SR-004; DS-002 and DS-005 changed; everything else unchanged. IR-003 (items 13–14) is unaffected and still needs source review.
+- Classification: unchanged, `Medium` / `High`.
+- Handoff: `handoff-round-5-architecture-design-complete.md`.
+- Next action: architecture review of the DS-002/DS-005 delta; implementation IR-004 (both deltas); code review (IR-003 and IR-004); API/E2E reruns API-13, API-18, API-07, API-06.
+- Review outcome (recorded 2026-11-10): ARCH-REV-005 `Pass` on SR-005 (DS-002, DS-005 confirmed; no finding). Residual noted by the reviewer and sent to implementation: in full screen on API 26–29 the keyboard inset depends on the resolved soft-input mode (the manifest declares none); implementation confirms or declares it and states what is verified. The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`; informational, no forwarding by the Solution Designer.

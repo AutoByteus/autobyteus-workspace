@@ -1,0 +1,22 @@
+# IMP-19 IR-004 Android unit tests and builds: cd autobyteus-android && ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin
+# Commit 06a072014f (controller code as 7e53b46d80); JDK 21.0.10; 2026-11-10
+
+unit tests 106 failures 0
+DesktopFullScreenControllerTest:
+  belowApi35FullScreenTurnsDecorFittingOffWhileOnAndBackOnOff_inOrder
+  onApi28To34TheWindowLaysOutIntoTheShortEdgeCutoutWhileOnAndBackToDefaultOff
+  aResetWhileOffChangesNothingAndAppliesNoInsets
+  aPageShownWhileOnIsDarkenedAndGetsItsOwnBackgroundBack
+  onApi35TheModeIsAskedForTooAndTheInsetsFollow
+  beforeApi28ThereIsNoCutoutModeToAskForAndTheRestIsAsBefore
+  isIdempotent
+  resetIsOffAndDoesNothingWhenAlreadyOff
+  theRootKeepsOnlyTheKeyboardsInsetInFullScreen
+  offHandsTheOrientationBackToThePhonesSettingAndShowsTheBars
+  aNewControllerOnAWindowLeftInLandscapeHandsItBackOnReset
+  aPageShownWhileOffKeepsItsBackground
+  aRootWithoutAPlainColourOfItsOwnIsLeftAsItIs
+  onTurnsToSensorLandscapeAndHidesTheBars
+  onApi35TheDecorFittingIsNeverAsked
+  aResetWhileOffAsksNothingOfTheDecor
+BUILD SUCCESSFUL in 2s

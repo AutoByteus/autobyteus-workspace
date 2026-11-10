@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/requirements-doc.md` (SR-003, `Approved`; REQ-005 clarified, AC-005-5…8, DEC-014…016)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/requirements-doc.md` (SR-005, `Approved`; REQ-003, AC-003-1, AC-004-1 revised (DEC-019, DEC-020); REQ-005 clarified, AC-005-5…8, DEC-014…016; REQ-013, REQ-014, AC-013-1, AC-014-1/2, DEC-017, DEC-018 added)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-spec.md` (SR-003, `Ready`; delta limited to DS-006 entry form 2 and new DS-006b)
-- Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001…003); `handoff-architecture-design-complete.md`; `handoff-round-2-architecture-design-complete.md`; `handoff-round-3-architecture-design-complete.md`; `code-review-report.md` (CRR-001, CR-001). No behavior-defining supplement.
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-spec.md` (SR-005, `Ready`; SR-005 delta: DS-002, DS-005; SR-003 delta: DS-006 entry form 2 and DS-006b; SR-004 delta: DS-010, DS-011)
+- Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001…003); `handoff-architecture-design-complete.md`; `handoff-round-2-architecture-design-complete.md`; `handoff-round-3-architecture-design-complete.md`; `code-review-report.md` (CRR-001, CR-001); `handoff-round-4-architecture-design-complete.md`; `handoff-round-5-architecture-design-complete.md`; `code-review-report.md` CRR-003 (CR-002, CR-003); evidence `API-13-electron-nodes-page.txt`, `API-18-android14-full-screen.txt`; the user's two Task-context screenshots (`ctx_6d3292be811b__52.jpg`, `ctx_69ad90d5419d__53.jpg`). No behavior-defining supplement.
+- Relevant Solution Revision IDs: `SR-001` … `SR-005`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: `3`
-- Trigger: Solution Designer handoff `Architecture Design Complete`, round 3 (SR-003, after code review CRR-001 Design Impact CR-001), 2026-11-10
-- Prior Review Round Reviewed: `2` (ARCH-REV-002, Pass)
-- Latest Authoritative Round: `3`
-- Current-State Evidence Basis: worktree `codex/small-follow-ups-batch-435` at `310fc27452` (no source changes). Opened during review: `WebSocketClient.ts`, `agentRunStreamReconnection.ts:25-100`, `TeamStreamingService.ts:268-275`, `agentRunCollaborationStreamingService.ts:84-106`, `agentOrgStreamingService.ts:100-140`, `FileExplorerStreamingService.ts:25-50,190-225`, `liveStreamReconnectScheduler.ts`, `pageResumeSignal.ts`, `nodeChangeFeed.ts`, `useTaskWorkerTasks.ts`, `taskWorkerTaskStore.ts:90-115`, `useAgentPackageDefinitionChangeFeed.ts`, `app.vue`, `MobileRemoteAccessShell.vue`, `MobilePairedShell.vue`, `mobileNodeSessionStore.ts:220-250`, `useMobileNavigation.ts`, `useMobileRunOpening.ts`, `useMobileRunTree.ts`, `MobileNewRun.vue`, `MobileRunSetup.vue`, `useMobileRunSetupController.ts:107-120`, `agentRunCollaborationStore.ts:195-245,430-458`, server `node-access-refusal.ts`, `open-socket-registry.ts`, `gated-websocket-route.ts`, `node-route-permissions.ts:27-40`, `standalone-agent-run-root-manager.ts:100-175,305-335,425-440`, `task-execution-closure.ts`, `task-execution-resource-service.ts:190-210`, Android `DesktopFullScreenController.kt`, `DesktopFullScreenRequest.kt`, probe `mobile-shell-probe.mjs` MSP-13 and verdict block. Round 2 also opened: `useRunHistorySectionLoad.ts:25-93` (`initialLoad` resolves after `load()`, which catches every read), `runHistoryLoadActions.ts:105-152` (a non-quiet `fetchTree` sets `store.error`), `agentRunCollaborationStore.ts:159-185` (`read` dedupes through `inspections` and settles with the published context or `errors[host]`), `mobileRunOpeningStore.ts` (`begin`/`commit`/`fail` are keyed by the row key; a new `begin` supersedes), `runListProjection.ts:79,98` (the two `agent:` keys), `useMobileRunSetupController.ts:1-25` (New run starts agent runs only). Round 3 opened (branch now at IR-001 `49c64e47ee`): `useChatRouteRunSync.ts` (D-13 rule), `agentContextsStore.ts:85-111` (`createRunFromTemplate` returns `temp-<ts>-<n>` and selects it, `selectRunWithoutShellNavigation` in mobile mode), `agentContextsStore.ts:160-173` (`promoteTemporaryId` re-keys the same `AgentContext` and moves the selection from the temp ID to P only when the temp ID is selected), `agentRunStore.ts:205-225` (promotion at `prepareAgentRun` success), and IR-001's `useMobileNavigation.ts:64-112` (`subjectKeys()` read from the route, so pushes after a replace carry P) and `MobilePairedShell.vue:173,183`.
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: `5`
+- Trigger: Solution Designer handoff `Architecture Design Complete`, round 5 (SR-005, after API-REV-001 Fail → CRR-003 CR-002/CR-003 Design Impact), 2026-11-10
+- Prior Review Round Reviewed: `4` (ARCH-REV-004, Pass)
+- Latest Authoritative Round: `5`
+- Current-State Evidence Basis: worktree `codex/small-follow-ups-batch-435` at `310fc27452` (no source changes). Opened during review: `WebSocketClient.ts`, `agentRunStreamReconnection.ts:25-100`, `TeamStreamingService.ts:268-275`, `agentRunCollaborationStreamingService.ts:84-106`, `agentOrgStreamingService.ts:100-140`, `FileExplorerStreamingService.ts:25-50,190-225`, `liveStreamReconnectScheduler.ts`, `pageResumeSignal.ts`, `nodeChangeFeed.ts`, `useTaskWorkerTasks.ts`, `taskWorkerTaskStore.ts:90-115`, `useAgentPackageDefinitionChangeFeed.ts`, `app.vue`, `MobileRemoteAccessShell.vue`, `MobilePairedShell.vue`, `mobileNodeSessionStore.ts:220-250`, `useMobileNavigation.ts`, `useMobileRunOpening.ts`, `useMobileRunTree.ts`, `MobileNewRun.vue`, `MobileRunSetup.vue`, `useMobileRunSetupController.ts:107-120`, `agentRunCollaborationStore.ts:195-245,430-458`, server `node-access-refusal.ts`, `open-socket-registry.ts`, `gated-websocket-route.ts`, `node-route-permissions.ts:27-40`, `standalone-agent-run-root-manager.ts:100-175,305-335,425-440`, `task-execution-closure.ts`, `task-execution-resource-service.ts:190-210`, Android `DesktopFullScreenController.kt`, `DesktopFullScreenRequest.kt`, probe `mobile-shell-probe.mjs` MSP-13 and verdict block. Round 2 also opened: `useRunHistorySectionLoad.ts:25-93` (`initialLoad` resolves after `load()`, which catches every read), `runHistoryLoadActions.ts:105-152` (a non-quiet `fetchTree` sets `store.error`), `agentRunCollaborationStore.ts:159-185` (`read` dedupes through `inspections` and settles with the published context or `errors[host]`), `mobileRunOpeningStore.ts` (`begin`/`commit`/`fail` are keyed by the row key; a new `begin` supersedes), `runListProjection.ts:79,98` (the two `agent:` keys), `useMobileRunSetupController.ts:1-25` (New run starts agent runs only). Round 3 opened (branch now at IR-001 `49c64e47ee`): `useChatRouteRunSync.ts` (D-13 rule), `agentContextsStore.ts:85-111` (`createRunFromTemplate` returns `temp-<ts>-<n>` and selects it, `selectRunWithoutShellNavigation` in mobile mode), `agentContextsStore.ts:160-173` (`promoteTemporaryId` re-keys the same `AgentContext` and moves the selection from the temp ID to P only when the temp ID is selected), `agentRunStore.ts:205-225` (promotion at `prepareAgentRun` success), and IR-001's `useMobileNavigation.ts:64-112` (`subjectKeys()` read from the route, so pushes after a replace carry P) and `MobilePairedShell.vue:173,183`. Round 4 opened (branch at `d37397b40d`): `catalog-delegation.ts:15-16,80-98` (`resolveDelegationPlacement`; the CM-1 refusal is `isOwnTeamAddress` → `ownTeamDelegationRefusedMessage`); `message-recipient-resolution.ts:49-53` (`isInsideSenderTeamInstances` treats `address === senderAddress` as own team, so the self case gets the teammate words today); `collaborator-errors.ts:68-69`; the three callers, which pass each root's index as the port (`standalone-root-recipient-resolver.ts:39-48`, `team-run-message-delivery.ts:146-155`, `agent-org-recipient-resolver.ts:37-47`); `agentAddressOf` on all three indexes (`standalone-root-execution-index.ts:130`, `team-execution-index.ts:152`, `agent-org-execution-index.ts:125`); `SystemInstructionActivityItem.vue` (the only capped box is `:53`; used by `RunActivityItem.vue` and `MobileRunActivityItem.vue`); `ActivityFeed.vue` and `MobileActivity.vue` use no virtualized list, so an item of any height lays out normally. Round 5 opened (branch at `a380fc419f`): `nodeIdentityProbe.ts:60-100` (a readable non-OK answer → `identity_pending`/`not_autobyteus`; a thrown fetch → opaque request → `window_refused`); API-13 (the packaged `file://` window reads the 403 as `type: basic` with body code `REMOTE_ACCESS_HOST_REFUSED`, and the opaque request never runs there); API-18 (API 34: `android:id/content` starts at x=136 under `shortEdges`); `SystemBarInsets.kt` (full screen → `ime()` only); `AndroidManifest.xml` (declares no `windowSoftInputMode`); `app/build.gradle.kts:90` (androidx core 1.13.1).
 
 ## Routing Classification Review
 
@@ -38,9 +38,9 @@
 | Behavior ID | Kind | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | System | Pass | Pass | Pass | Confirmed | — |
-| BEH-002 | User | Pass | Pass | Pass | Confirmed | — |
+| BEH-002 | User | Pass | Pass | Pass | Confirmed | SR-005: readable Host-gate refusal → `host_refused` (desktop); opaque → `window_refused` (browser) |
 | BEH-003 | Contract | Pass | Pass | Pass | Confirmed | — |
-| BEH-004 | User | Pass | Pass | Pass | Confirmed | Implementation note in Residual Risks |
+| BEH-004 | User | Pass | Pass | Pass | Confirmed | SR-005: decor fitting off in full screen on API < 35; see Residual Risks (keyboard on API 26–29) |
 | BEH-005 | User/System | Pass | Pass | Pass | Confirmed | AR-001, AR-002 resolved (SR-002) |
 | BEH-006 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-007 | User | Pass | Pass | Pass | Confirmed | — |
@@ -49,6 +49,8 @@
 | BEH-010 | System | Pass | Pass | Pass | Confirmed | AR-004 resolved |
 | BEH-011 | Contract | Pass | Pass | Pass | Confirmed | — |
 | BEH-012 | Operational | Pass | Pass | Pass | Confirmed | — |
+| BEH-013 | Contract | Pass | Pass | Pass | Confirmed | — (DS-010) |
+| BEH-014 | User | Pass | Pass | Pass | Confirmed | — (DS-011) |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -74,6 +76,8 @@ None (no behavior-defining supplement; the probe text is inlined in design-spec 
 | DS-005 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-006 write | Primary | Pass | Pass | N/A | Pass | Pass (row tap and Create run both traced) | Pass | Pass |
 | DS-006b | Return/Event | Pass | Pass | N/A | Pass | Pass (`useMobileRouteRunSync` decides when, `useMobileNavigation.replaceRowKey` writes; stores stay unaware of the route) | Pass | Pass |
+| DS-010 | Primary | Pass | Pass | N/A | Pass | Pass (`resolveDelegationPlacement` decides self, then own team, then placement) | Pass | Pass |
+| DS-011 | Primary | Pass | Pass | N/A | Pass | Pass (one shared item owns the expanded text) | Pass | Pass |
 | DS-006 restore | Primary | Pass | Pass (steps 1–7, readiness per row kind, no timer) | N/A | Pass | Pass (`useMobileSubjectRestore` drives the order) | Pass | Pass |
 | DS-007 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-008 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
@@ -108,6 +112,8 @@ None (no behavior-defining supplement; the probe text is inlined in design-spec 
 | `useMobileRunTree.revealRow(key)` | Pass | Pass | Pass | Low | Pass |
 | `useMobileNavigation.replaceRowKey(rowKey)` | Pass | Pass | Pass | Low | Pass |
 | `useMobileRouteRunSync()` | Pass | Pass | Pass | Low | Pass (AR-005: reuse the D-13 detection, do not copy it) |
+| `DelegationSourceIndexPort.agentAddressOf(senderAgentRunId)` | Pass | Pass | Pass | Low | Pass (already implemented by all three indexes; only the port type grows) |
+| `selfDelegationRefusedMessage(address)` | Pass | Pass | Pass | Low | Pass (same code `COLLABORATION_SELF_TARGET_REJECTED`) |
 | `useMobileSubjectRestore({ tree, opening, navigation, initialLoad })` | Pass | Pass | Pass (readiness named per row kind) | Low | Pass |
 | `refreshListedStatuses(listedAgentRunIds)` | Pass | Pass | Pass | Low | Pass |
 | GraphQL `closedTaskExecutionsDigest` | Pass | Pass | Pass | Low | Pass (meaning written per state, AR-004) |
@@ -251,6 +257,19 @@ Vocabulary (Principle 15): `Pass` (`window_refused` is distinct from `refused`, 
 - Reachability: `Reachable`
 - Review consequence: DS-006b. Entries pushed before the send are replaced when visited. An entry never visited again keeps the draft key, and if reached after a reload it goes to the list. That is consistent with REQ-005's "gone" outcome and is the only option the History API allows.
 
+### Round 4 additions (SR-004): items 13 and 14
+
+- DS-010 (item 13): the refusal path is traced for all three roots (standalone, Team, Org). Each passes its own index, and each index already implements `agentAddressOf`. Checking self before own team leaves the teammate and own-Team words as they are. `isInsideSenderTeamInstances`'s own `address === senderAddress` branch stays, because `send_message_to` resolution also uses it. The equality check is the same rule, now told apart only for the words. No routing, code or guard changes. Small / Low on its own.
+- DS-011 (item 14): one class change in the one shared item fixes both desktop and phone Activity. The other items have no capped vertical box (DEC-018). Neither feed is virtualized, so a tall expanded item causes no layout problem. Keeping `whitespace-pre-wrap [overflow-wrap:anywhere]` satisfies AC-014-2. Dropping `tabindex="0"` is correct, because it only served keyboard scrolling of the box. Small / Low on its own.
+- Overall classification stays Medium / High (items 1–12).
+- Minor wording note (no action needed): design-spec § Solution And Approval Basis still names the requirements baseline as "SR-002 … SR-004 adds". It does not list SR-003's AC-005-6/8 and DEC-016 clarification there, though the requirements doc's own status line is complete.
+
+### Round 5 corrections (SR-005): items 2 and 5
+
+- DS-002 (item 2, CR-003, DEC-019): the corrected premise is measured in the real runtime (API-13). The probe checks a readable 403 with body code `REMOTE_ACCESS_HOST_REFUSED` before the existing `!response.ok` branch, so an exact cause gets exact words (`cause.hostRefused`, the same meaning as the server-checked `host_refused`). A 403 without that code keeps "isn't an AutoByteus node". A thrown fetch keeps the opaque request, which only browser windows reach. Removing the desktop `window_refused` words and `causeText`'s `isElectronEnvironment()` branch is correct: in the packaged window a refused name is readable, so that branch is unreachable (Principle 7). In a dev Electron window served over http, CORS applies and the page words show. That wording is still true. No server, CORS or gate change (AC-003-3, QR-001).
+- DS-005 (item 5, CR-002, DEC-020): the corrected premise is measured on API 34 (API-18). Turning decor fitting off and back on only inside `setOn`, only on API < 35, keeps 277 REQ-011 outside full screen. On API < 30, `WindowCompat.setDecorFitsSystemWindows(true)` clears only the layout flags it set, and the controller never set them before. The stated order (orientation, bars, cutout, decor fitting, then `reapplyInsets()`) and the recreated-in-landscape path (`clear()` → `reset()` → `setOn(true)`) both still hold. Option 2 (edge-to-edge on every API) was rejected for a sound reason: blast radius.
+- Overall classification stays Medium / High. No new blocking finding.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
@@ -301,6 +320,11 @@ N/A (Pass)
 - Item 6, implementation notes:
   - When the restore ends because the session was rejected at the first check (the paired shell unmounts), it should stop acting once its scope is disposed, so it does not rewrite the route under the pairing screen.
   - The spec asked for in Guidance (mount with `?row=…&screen=desktop` and no target → no `toList` before the restore decides) is the key ordering test.
+- Item 5 / item 7 on API 26–29 (SR-005, residual, non-blocking):
+  - With decor fitting off, the keyboard inset reaches the page only through the root's `ime()` padding.
+  - The manifest declares no `windowSoftInputMode` (the system chooses), and androidx `ime()` insets before API 30 depend on resize mode.
+  - API 34 (and 35) are checked on emulators (API-18, API-06 equivalent). API 28–29 are not.
+  - Recommendation: the implementation confirms the resolved soft-input mode, or states it explicitly in the manifest if that changes no other screen. API/E2E records API 28–29 keyboard-in-full-screen as unverified unless an emulator is run.
 - Item 5, implementation note: keep `setLayoutInCutout` inside `setOn`'s on/off branches. A recreated-in-landscape activity goes through `clear()` → `reset()` before the page asks for full screen again (`DesktopFullScreenRequest.kt:21-24,30-37`). The emulator is API 35 (cutout forced to `ALWAYS`), so a unit test of the controller must cover API 28–34.
 - Item 11 has not been run (same as 446). API/E2E runs it.
 - UNK-001 (other cutout devices) stays open.
@@ -309,4 +333,4 @@ N/A (Pass)
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass` (MP-001…003 reachable; each is addressed by the SR-002 design)
-- Notes: SR-003's DS-006 delta (entry form 2 corrected, DS-006b) is ready. The rework is limited to DS-006 entry form 2 and DS-006b on top of IR-001, then the code reviewer's Targeted Delta Review. AR-005 is guidance for the rework.
+- Notes: SR-005's corrections (DS-002, DS-005) are ready for IR-004 on top of IR-003 (`432d1c3af2`). IR-003 (items 13–14) still awaits its source review. SR-004's additions (DS-010, DS-011) passed in round 4. Items 1–12 are unchanged since ARCH-REV-003. SR-003's DS-006 delta (entry form 2 corrected, DS-006b) was ready in round 3. The rework is limited to DS-006 entry form 2 and DS-006b on top of IR-001, then the code reviewer's Targeted Delta Review. AR-005 is guidance for the rework.

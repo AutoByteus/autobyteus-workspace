@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003` (SR-002: ARCH-REV-001 AR-001…004. SR-003: CRR-001 CR-001 — DS-006 entry form 2's premise was wrong: `onLaunched` receives the draft ID; the route now follows the draft's promotion, DS-006b)
-- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at SR-002 (SR-001 plus REQ-005 clarifications DEC-014, DEC-015, AC-005-5…7), approved by the Solution Designer within the direction (user informed in the conversation, 2026-11-10); no `Needs user` decision.
+- Current solution revision ID: `SR-005` (SR-005: CRR-003 CR-002/CR-003 from API-REV-001 F1/F2 — DS-002 reads a readable Host-gate refusal; DS-005 turns decor fitting off in full screen on API < 35. SR-004: items 13 and 14 added, DS-010, DS-011. SR-002: ARCH-REV-001 AR-001…004. SR-003: CRR-001 CR-001 — DS-006 entry form 2's premise was wrong: `onLaunched` receives the draft ID; the route now follows the draft's promotion, DS-006b)
+- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at SR-004 (SR-001; SR-002 REQ-005 clarifications DEC-014, DEC-015, AC-005-5…7; SR-003 DEC-016, AC-005-6 precondition, AC-005-8), approved by the Solution Designer within the direction (user informed in the conversation, 2026-11-10); SR-005 revises REQ-003, AC-003-1, AC-004-1 (DEC-019, DEC-020); SR-004 adds REQ-013, REQ-014 (Task comments 2026-11-10, item 14 in the user's words) on the same basis; no `Needs user` decision.
 - Behavior-defining supplements and their approval references: None
 - User approval of the design, when the direction requires it: `Not required` (the Task does not ask for it)
 - Design status: `Ready`
@@ -57,7 +57,8 @@ Fix each item inside its existing owner; add one shared close classification for
 - In scope: UC-001 … UC-008. Areas: web app shell overlays (item 1); Nodes page probe + words (2); dead code (3, 4); Android insets/full screen (5), diagnostics (8), pairing Retry (9); phone navigation/restore (6) and Clipboard sheet (7); web stream owners and stream registries (10); run-list status refresh client + server (11); collaboration contracts key (12); probe `mobile-shell-probe.mjs`; docs (`docs/design-cases.md` Case 20 added by the Solution Designer at SR-003, `node_access_model.md` NA-11 sentence, `docs/android_mobile_access.md` hint note, `autobyteus-web/docs/remote_access.md` if it describes the Nodes causes or the phone route).
 - Derived consumers: `closedTaskExecutionsDigest` (GraphQL `agentRunCollaborationStatuses`) → its only reader is `agentRunCollaborationHydration.ts:21,34` → `agentRunCollaborationStore.refreshListedStatuses` (decision: reads the inactive digest per D-11). Phone route query → readers: `useMobileNavigation` (only writer/reader of screen keys), `activeWorkspaceTarget` (Org keys, unchanged), Android `OpenPageRestore` (saves/restores verbatim; unchanged). `NodeProbeCause` → `nodeConnectionErrorText.causeText` and its callers `NodeRow.vue:261`, `NodeConnectionDetails.vue:124` (decision: new case handled in `causeText` only). `taskExecutionReferenceKey` → 14 server + 2 web production importers (decision: import from contracts).
 - Deliberately left alone: Host/Origin/credential rules and CORS (403, 416, 437); node-side address resolution and its switch rule; phone session ending on a stream close (426 E-27); `ServerMonitor`'s browser health URL (FU-001); Team/Org hosts' list refresh; 401/403 Android overlay texts; other phone screens' landscape layouts; `TaskExecutionReference` type duplicates (types, not the key policy).
-- Follow-ups: FU-001, FU-002, FU-003 (`follow-ups.md`).
+- Follow-ups: FU-001, FU-002, FU-003 (`follow-ups.md`); FU-004 added by implementation.
+- SR-004 additions: UC-009 (DS-010, server delegation refusal words only; the code, the guard and the `send_message_to` self refusal are unchanged; the handoff compiler's self-target check at `collaboration-handoff-compiler.ts:81` is a different, compile-time rule and is left alone) and UC-010 (DS-011, one class change in the shared Activity item; the desktop feed's pre-existing jump to the bottom on a new activity, `ActivityFeed.vue:108-115`, is left alone).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -75,6 +76,8 @@ Fix each item inside its existing owner; add one shared close classification for
 | BEH-010 | System | REQ-011 / AC-011-* | List refresh | INV-20 | Inactive digest from memory; one re-read per digest | DS-007 |
 | BEH-011 | Contract | REQ-012 / AC-012-1 | — | INV-21 | One export | — |
 | BEH-012 | Operational | REQ-009 / AC-009-1 | — | 432 comment | Guide note | — |
+| BEH-013 | Contract | REQ-013 / AC-013-1 | `delegate_task` own address | `catalog-delegation.ts:96-98` | Own words for self | DS-010 |
+| BEH-014 | User | REQ-014 / AC-014-* | Expand System instructions | `SystemInstructionActivityItem.vue:53` | Full text in flow | DS-011 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -129,13 +132,17 @@ None (the probe script is reproduced below).
 | DS-007 | Primary | BEH-010 | History poll tick | Rows re-read or states applied | `agentRunCollaborationStore.refreshListedStatuses` ↔ `StandaloneAgentRunRootManager.getAgentStatuses` | Item 11 |
 | DS-008 | Primary | BEH-007 | WebView main-frame HTTP error | Overlay words | `AutoByteusWebView` → `ConnectionDiagnosticMapper` | Item 8 |
 | DS-009 | Primary | BEH-008 | Retry tap | Page load | `MainActivity` → `NodeConnectionFlow.retryUrlFor` | Item 9 |
+| DS-010 | Primary | BEH-013 | `delegate_task(address)` | Refusal returned to the agent | `resolveDelegationPlacement` | Item 13 |
+| DS-011 | Primary | BEH-014 | Header click/tap | Text shown in the feed's flow | `SystemInstructionActivityItem` | Item 14 |
 
 ## Primary Execution Spine(s)
 
 - DS-001: `Nuxt app mount -> app.vue (shows server overlays only when this is the Electron desktop window) -> ServerLoading/ServerShutdown (Electron only) -> serverStore.checkServerHealth -> electronAPI`
 - DS-002: `NodeList open / Add -> nodeListStore.ask/addNode -> probeNodeIdentity (readable GET; on non-timeout failure an opaque GET) -> NodeIdentityProbeResult {cause: 'window_refused'} -> NodeRow/NodeConnectionDetails -> causeText (desktop or page words)`
+- DS-002 (SR-005, CR-003 / API-13): the probe reads a readable refusal first. `probeNodeIdentity`: readable GET → if it resolves with 403 and body code `REMOTE_ACCESS_HOST_REFUSED` (read like `isNetworkRefused`, from a clone) → `{ ok: false, cause: 'host_refused' }` (the desktop window, whose `file://` requests are not subject to CORS in Electron: API-13 `type: basic`); `NODE_NETWORK_REFUSED` and the identity-pending/other answers as before; if the GET throws (a browser window, where CORS hides the 403) → the opaque second GET → `window_refused`. `NodeProbeCause` gains `'host_refused'` (the server-side reason of the same meaning, autobyteus-426 REQ-020), and `causeText` uses its existing `cause.hostRefused` words. `window_refused` keeps only the page words: the desktop variant (`cause.windowRefused` desktop text and the `isElectronEnvironment()` branch in `causeText`, `nodeConnectionErrorText.ts:3,34`) is removed as unreachable.
 - DS-004: `mobileNodeSessionStore (session -> null) -> MobileRemoteAccessShell watch(isPaired true→false) -> closeAllLiveStreams() -> agentRunStore.disconnectAllAgentStreams / agentTeamRunStore.disconnectAllTeamStreams / agentRunCollaborationStore.releaseAll / agentOrgContextsStore.releaseAll / workspaceStore.disconnectAllFileExplorerLiveStreams -> sockets closed, reconnect schedulers disposed`
 - DS-005: `MobileNodeDesktop display.apply(on) -> shell bridge onDesktopFullScreen -> MainActivity fullScreenRequest -> DesktopFullScreenController.setOn(on) -> Display (orientation, bars, cutout mode, root colour) + SystemBarInsets re-apply (IME only while on)`
+- DS-005 (SR-005, CR-002 / API-18): on API < 35 the decor fits system windows, so `android:id/content` starts after the cutout although the window is `shortEdges` and spans the screen. Full screen therefore also lays the content out edge to edge there: `DesktopFullScreenController.setOn(true)` on API < 35 calls `Display.setDecorFitsSystemWindows(false)` (with `WindowCompat.setDecorFitsSystemWindows`), `setOn(false)` restores `true`; on API 35 it is never called (a targetSdk 35 window is edge-to-edge already, and nothing outside full screen may change). Order inside `setOn`: orientation, bars, cutout mode (API ≥ 28), decor fitting (API < 35), then `reapplyInsets()`. While on, `SystemBarInsets` pads only the IME (already so), which now also keeps the keyboard inset on API < 35 (item 7: adjustResize no longer resizes a non-fitting decor, so the root's IME padding does it, as on API 35). Off: the decor takes bars, cutout and keyboard again and the root's padding returns to 0 (autobyteus-277 REQ-011 on API 26–34 unchanged).
 - DS-006 write, entry form 1 (row tap): `MobileRunList row tap -> useMobileRunOpening.open(row) -> useMobileNavigation.openRun({ orgQuery } | { rowKey: row.key }) -> route ?row=<key>&screen=run -> later views carry the subject keys (Org keys + row)`
 - DS-006 write, entry form 2 (Create run, AR-001): `MobileRunSetup createRun -> onLaunched(runId) (useMobileRunSetupController.ts:113-115) -> MobileNewRun emits launched(runId) -> MobilePairedShell.onLaunched(runId) -> useMobileNavigation.openRun({ replace: true, rowKey: agentRunRowKey(runId) }) -> route ?row=agent:<runId>&screen=run`. The phone's New run creates agent runs only (`useMobileRunSetupController.ts:17-19`: "the agent's launch configuration"); no Org or Team is launched there. `agentRunRowKey` is the one writer of the `agent:<id>` format, used by `runListProjection.ts:79,98` and by `onLaunched`. **Correction (SR-003, CRR-001 CR-001):** `runId` here is the draft's `temp-<ts>-<n>` ID (`useMobileRunLaunchCoordinator.ts:50-53` → `agentContextsStore.createRunFromTemplate`, `agentContextsStore.ts:90-111`); the node run exists only after the first send, which re-keys the same context (`agentRunStore.ts:214-223` → `promoteTemporaryId`, `agentContextsStore.ts:160-173`). So entry form 2 writes the draft key and DS-006b makes the route follow the promotion.
 - DS-006b (SR-003), the route follows a draft's promotion: `agentRunStore send (first message) -> agentContextsStore.promoteTemporaryId(temp, P) (same AgentContext re-keyed; selection moves temp → P) -> useMobileRouteRunSync (watch, mounted by MobilePairedShell for the page's life) records temp → P -> useMobileNavigation.replaceRowKey(agentRunRowKey(P)) (router.replace of the current entry, every other key kept)`. Detection is the desktop chat's rule (`useChatRouteRunSync.ts:33-44`, D-13): the agent selection moves from R to P **and** `agentContextsStore.getRun(P)` is the same context object the route's `row = agent:R` displayed — only a promotion does that. The composable also keeps the page's promotions (R → P) and, on every route change whose `row` is `agent:R` for a recorded R (Back to an entry pushed before the send: the run screen under a view, the list entry), replaces that entry's `row` with `agent:P` too. So the entry that is current at a reload or at Android's save is always the node's ID, whichever entries were visited. History entries are never rewritten except the current one (the History API allows only that); an entry not visited before a reload keeps the draft key and, if visited after the reload, behaves as any entry whose subject is gone (subject-less view → list), as today. Before the first send there is no promotion: a reload restores nothing (drafts are never listed, `runListProjection.ts:89-91`) and the list shows (DEC-016, AC-005-8) by the existing "not listed after readiness" step.
@@ -152,6 +159,8 @@ None (the probe script is reproduced below).
 - DS-007: `useRunHistorySectionLoad poll tick -> collaborationStore.refreshListedStatuses(listedAgentRunIds) -> GraphQL agentRunCollaborationStatuses -> StandaloneAgentRunRootManager.getAgentStatuses (active: root's closed set; inactive: index closedTaskExecutionsIn(root)) -> answer -> store: active rule (446) | inactive: digest ≠ view's and ≠ last re-read digest -> inspect(host) once`
 - DS-008: `WebView onReceivedHttpError (main frame) -> ConnectionDiagnosticMapper.fromHttpStatus(code, entry.shownName) -> MainActivity.showWebDiagnostic -> WebShellScreen overlay`
 - DS-009: `Overlay Retry -> MainActivity.webCallbacks.onRetry -> NodeConnectionFlow.retryUrlFor(entry) (pending pairing's URL, else entry.mobileUrl) -> webHost.loadTrusted(url)`
+- DS-010: `delegate_task tool -> root gate -> resolveDelegationPlacement -> address === port.agentAddressOf(sender) ? COLLABORATION_SELF_TARGET_REJECTED(selfDelegationRefusedMessage) : port.isOwnTeamAddress(sender, address) ? COLLABORATION_SELF_TARGET_REJECTED(ownTeamDelegationRefusedMessage) : placement…`
+- DS-011: `ActivityFeed / MobileActivity (scroll container) -> RunActivityItem / MobileRunActivityItem -> SystemInstructionActivityItem header toggles expanded -> <pre> with the full content, no height cap, no own scroll`
 
 ## Spine Narratives (Mandatory)
 
@@ -332,9 +341,9 @@ See Final mapping (no extraction changed the draft except the collaboration `rel
 | --- | --- | --- | --- | --- |
 | `autobyteus-web/app.vue` | app shell | app | overlays only in the Electron window (`isEmbeddedWindow && isElectronEnvironment()`) | Modify |
 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | probe | — | remove FU-003 exemption; add "no refused request from the revoked phone after MSP-13" check (zero `phoneNet` status 401/403 and zero refused sockets labelled with the revoked phone after MSP-13 ends) | Modify |
-| `autobyteus-web/utils/nodeIdentityProbe.ts` | nodes | probe | opaque second GET after a non-timeout failure; `window_refused` | Modify |
-| `autobyteus-web/utils/nodeConnectionErrorText.ts` | nodes | words | `window_refused` → desktop/page words | Modify |
-| `autobyteus-web/localization/messages/{en,zh-CN}/nodesPage.ts` | localization | — | `cause.windowRefused`, `cause.windowRefusedPage` | Modify |
+| `autobyteus-web/utils/nodeIdentityProbe.ts` | nodes | probe | readable 403 `REMOTE_ACCESS_HOST_REFUSED` → `host_refused` (SR-005); opaque second GET after a non-timeout failure → `window_refused`; `NodeProbeCause` + `'host_refused'` | Modify |
+| `autobyteus-web/utils/nodeConnectionErrorText.ts` | nodes | words | `host_refused` → existing `cause.hostRefused`; `window_refused` → page words only (SR-005: desktop branch and `isElectronEnvironment` import removed) | Modify |
+| `autobyteus-web/localization/messages/{en,zh-CN}/nodesPage.ts` | localization | — | one `window_refused` text (the page words; SR-005 removes the desktop text and keeps a single key) | Modify |
 | `autobyteus-web/utils/remoteAccess/mobileConnectionDiagnostics.ts` (+ spec) | phone | — | remove dead function | Modify |
 | `autobyteus-web/utils/dateUtils.ts` | — | — | dead | Remove |
 | `autobyteus-web/services/liveStreamLifecycle/credentialRefusalClose.ts` | stream lifecycle | — | classification | Add |
@@ -363,10 +372,16 @@ See Final mapping (no extraction changed the draft except the collaboration `rel
 | `autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts` | server | GraphQL | field description | Modify |
 | `autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-reference.ts` + its 14 production and 4 test importers | server | — | remove key; import from contracts | Modify |
 | `autobyteus-android/.../ui/SystemBarInsets.kt` | Android | insets | mode provider: full screen → IME only | Modify |
-| `autobyteus-android/.../ui/DesktopFullScreenController.kt` | Android | full screen | `Display.setLayoutInCutout(on)` (API ≥ 28: `SHORT_EDGES` on, `DEFAULT` off) and insets re-apply on toggle | Modify |
+| `autobyteus-android/.../ui/DesktopFullScreenController.kt` | Android | full screen | cutout mode on API ≥ 28; decor fitting off while on, back on when off, on API < 35 only (SR-005); insets re-apply last | Modify |
 | `autobyteus-android/.../MainActivity.kt` | Android | activity | pass mode provider to `SystemBarInsets.pad`; Retry via `flow.retryUrlFor` | Modify |
 | `autobyteus-android/.../connection/ConnectionDiagnosticMapper.kt`, `ConnectionValidator.kt`, `web/AutoByteusWebView.kt` | Android | words | `fromHttpStatus(code, nodeName)` + words (DEC-006) | Modify |
 | `autobyteus-android/.../shell/NodeConnectionFlow.kt` | Android | flow | keep the pending pairing's URL; `retryUrlFor` | Modify |
+| `autobyteus-server-ts/src/agent-collaboration/collaborators/catalog-delegation.ts` | server | delegation | port gains `agentAddressOf(senderAgentRunId)`; self check before own-team check (DS-010) | Modify (SR-004) |
+| `autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-errors.ts` | server | refusal texts | `selfDelegationRefusedMessage(address)`; `ownTeamDelegationRefusedMessage` doc comment no longer says "the sender itself" | Modify (SR-004) |
+| root indexes passed as `DelegationSourceIndexPort` (standalone, team, Org) | server | indexes | already implement `agentAddressOf`; no change beyond the port type | — |
+| `autobyteus-server-ts/tests/unit/agent-collaboration/refusal-texts-vocabulary.test.ts` + the delegation placement test | server | tests | new text; self vs teammate vs own Team | Modify (SR-004) |
+| `autobyteus-web/components/progress/SystemInstructionActivityItem.vue` | web | Activity item (desktop + phone) | `<pre>`: drop `max-h-80`, `overflow-auto`, `tabindex="0"`; keep `whitespace-pre-wrap [overflow-wrap:anywhere]`, monospace, `select-text`, the border/background | Modify (SR-004) |
+| `autobyteus-web/components/progress/__tests__/SystemInstructionActivityItem.spec.ts` | web | test | assert no cap/inner scroll and full content; collapse via header | Modify (SR-004) |
 | `autobyteus-server-ts/docs/design/node_access_model.md` | docs | — | NA-11: "a client does not reconnect a socket closed for a refused credential (4401, or 4403 with a revocation code)" | Modify |
 | `docs/android_mobile_access.md` | docs | — | full-screen hint note (REQ-009); restore note | Modify |
 | `autobyteus-web/docs/remote_access.md` | docs | — | session end closes streams; route `row` (if it documents the route) | Modify if applicable |
@@ -425,12 +440,20 @@ N/A.
 
 ## Key Tradeoffs
 
+- Item 14 (SR-004): with the full text in flow, collapsing after reading to the end means scrolling back to the header; the user asked for exactly the header arrow, so no second control or sticky header is added (DEC-018).
+- Item 13 (SR-004): the code stays `COLLABORATION_SELF_TARGET_REJECTED` for both self and own-team; only the words differ (no new code for callers to learn).
+
 - Item 2: window-only check is truthful but not exact; exactness would need a node-side request, forbidden while the switch is off.
 - Item 10: Phone Access off keeps retrying (back-off ≤ 30 s) so it resumes by itself; accepted cost.
 - Item 6: restore waits only on reads that settle by themselves (the first history read; a delegated row's host view read) — no timer; a failed read gives the list with its connection state (DEC-014) rather than a wait that the list's Retry could not end.
 - Item 11: a stale index entry costs one extra stored read per digest change, never a loop.
 
 ## Risks
+
+- Item 5 (SR-005): toggling decor fitting relayouts the page once on enter/leave on API < 35 (as the orientation change already does); verified on API 34 (API-18, H3 portrait restored) and API 35 unchanged (API-07); keyboard in full screen on API 34 re-checked (API-06 equivalent).
+- Item 2 (SR-005): the desktop path now rests on Electron reading the 403 (measured, API-13); if a future Electron applied CORS to `file://`, the throw path still gives `window_refused` (page words), not a wrong cause.
+
+- Item 14 (SR-004): a running run's desktop feed jumps to the bottom when a new activity arrives (pre-existing); a reader of the expanded text is moved as before. Not changed here.
 
 - Item 10 blast radius on desktop windows: a desktop window whose owner credential is revoked stops reconnecting (desired); network/node restarts still reconnect (preserved; unit tests per owner).
 - Item 6: the subject-less-view redirect is `immediate` (`MobilePairedShell.vue:165-167`); `restoring` is set synchronously in setup before that watch is registered, so the redirect cannot run first (spec: mount with `?row=…&screen=desktop` and no target → no `toList` until the restore decides).
