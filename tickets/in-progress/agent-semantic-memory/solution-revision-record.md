@@ -87,3 +87,7 @@
 - Approval impact: supplement in the approval basis, Solution Designer within the direction at the user's request, user informed
 - Design/review impact: architecture reviewer informed of the added supplement; design structure unchanged; classification unchanged (Large / High)
 - Next action: architecture review continues on the SR-004 package
+
+#### Review note on SR-004 (no new revision)
+
+- 2026-11-10: architecture review `ARCH-REV-001` (`design-review-report.md`, `architecture-review-revision-record.md`) — Pass on SR-004, no findings, classification Large / High confirmed. Residual: Codex app-server `writable_roots` to confirm in AC-002 E2E; implementation note N-1 (`agent-definition-service.ts:64` `PERSONAL_FIELDS` must include `semanticMemoryEnabled`, as DS-002 intends). Reviewer routed to implementation; informational for the Solution Designer.
