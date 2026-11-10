@@ -43,7 +43,7 @@ const agent = {
   toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [], skillScope: 'CONFIGURED',
   ownershipScope: 'SHARED', ownerTeamId: null, ownerTeamName: null, ownerApplicationId: null,
   ownerApplicationName: null, ownerPackageId: null, ownerLocalApplicationId: null, internal: false, defaultLaunchConfig: null, loadIssue: null,
-  personalSettings: [], personalSettingsBase: null,
+  semanticMemoryEnabled: false, semanticMemoryPath: null, personalSettings: [], personalSettingsBase: null,
 }
 const org = {
   __typename: 'AgentOrgDefinition', id: 'existing-org', name: 'Existing Org', description: 'Healthy definition',
