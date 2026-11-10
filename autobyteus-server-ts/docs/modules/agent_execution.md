@@ -80,8 +80,13 @@ so every composition includes the exact selected Team instruction
 and the collaboration sections for the member's role. No
 flat communication or delegation roster is injected.
 
-The shared semantic order is Agent Identity, optional Team Instruction, and
-optional Team Collaboration. Native AutoByteus appends Working Environment,
+The shared semantic order is Agent Identity, optional Team Instruction, the
+collaboration sections for the agent's role, the optional Project section and
+the optional Semantic Memory section (only for an agent with
+`semanticMemoryEnabled`; see [Agent Memory](./agent_memory.md#semantic-memory)).
+Codex also adds that folder to its `workspace-write` sandbox's
+`writable_roots`, and Claude gets it as an additional directory, so the run can
+write there. Native AutoByteus appends Working Environment,
 Bash Operating Practice, and File And Directory Practice, then the native core
 appends its one terminal Skills catalog. Native AutoByteus places the Carpenter
 text in `AgentConfig.systemPrompt`; Codex passes shared text as thread

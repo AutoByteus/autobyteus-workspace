@@ -1,6 +1,8 @@
 import type { JsonObject } from "../codex-app-server-json.js";
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import { buildCodexIntegrationThreadConfig } from "./codex-integration-thread-config.js";
+import { buildCodexSandboxWorkspaceWriteConfig } from "./codex-sandbox-workspace-write-config.js";
+import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -205,6 +207,7 @@ export class CodexThreadBootstrapper {
     skillService: SkillService = SkillService.getInstance(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
     private readonly integrationRunAccess: IntegrationRunAccess | null = null,
+    private readonly semanticMemory: AgentSemanticMemory = getAgentSemanticMemory(),
   ) {
     if (!agentToolMcpRunSessions) {
       throw new Error("Codex Agent Tools MCP run-session activator is required.");
@@ -251,10 +254,12 @@ export class CodexThreadBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
+    const semanticMemoryPath = await this.semanticMemory.prepareForRun(agentDefinition);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
       project: runContext.config.project,
+      semanticMemoryPath,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
     const integrationVariables = (await this.integrationRunAccess?.environmentForRun(
@@ -267,10 +272,12 @@ export class CodexThreadBootstrapper {
       developerInstructions: null,
       appServerConfig: {
         ...this.createAgentToolsMcpAppServerConfig({ runContext, runtimeToolExposure, workingDirectory }),
-        ...buildCodexIntegrationThreadConfig(
-          integrationVariables,
-          resolveEffectiveCodexSandboxModeForRunConfig(runContext.config),
-        ),
+        ...buildCodexIntegrationThreadConfig(integrationVariables),
+        ...buildCodexSandboxWorkspaceWriteConfig({
+          sandbox: resolveEffectiveCodexSandboxModeForRunConfig(runContext.config),
+          networkAccess: Object.keys(integrationVariables).length > 0,
+          writableRoots: semanticMemoryPath ? [semanticMemoryPath] : [],
+        }),
       },
       dynamicToolRegistrations,
     });

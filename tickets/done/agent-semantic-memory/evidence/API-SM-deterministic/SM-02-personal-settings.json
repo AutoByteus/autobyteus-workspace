@@ -1,0 +1,32 @@
+{
+  "afterOn": {
+    "agent:sm-packaged-2ca82e": {
+      "semanticMemoryEnabled": true
+    }
+  },
+  "afterReset": {},
+  "packageFilesBefore": {
+    "agent-teams/sm-pkg-team-2ca82e/agents/sm-scout-2ca82e/agent-config.json": "aedf05fea27214a4738cb7146432b2d01c6873fa16027de4fc6a9fa505f290ed",
+    "agent-teams/sm-pkg-team-2ca82e/agents/sm-scout-2ca82e/agent.md": "85055351b056db5880b37bba9754327acaafeb4173bee8f9e304d53237b12189",
+    "agent-teams/sm-pkg-team-2ca82e/team-config.json": "23574ceabff034b5d328fd93dfa7b1731e885d719354a31b65838555c0754be3",
+    "agent-teams/sm-pkg-team-2ca82e/team.md": "1f3cbc467e246a9f6d9a2901c70d5d11f8ec9ef66eb27a40d210d5839e2896da",
+    "agents/sm-declared-2ca82e/agent-config.json": "aedf05fea27214a4738cb7146432b2d01c6873fa16027de4fc6a9fa505f290ed",
+    "agents/sm-declared-2ca82e/agent.md": "dc6aa376a66df8d5720fb13fdbf1c0a553dce60ae06c68e76029630c95b2f41a",
+    "agents/sm-packaged-2ca82e/agent-config.json": "13c5f7a8a1c2975f8a65a52cd0528f747e879a48043e5f9e209f70a89dfdc724",
+    "agents/sm-packaged-2ca82e/agent.md": "c3992cf540791b4c8358d412d4fa16eeec917301b6430fbe4452f64771899d62",
+    "agents/sm-pkg-plain-2ca82e/agent-config.json": "ffa677acebad1e6c35eac5a86babb51802a0a49dd415449e796bba6978834b78",
+    "agents/sm-pkg-plain-2ca82e/agent.md": "cc9e18dca7d5915ba3bcbdb35561010918d9c895c4488b195921667b2ab7b9a0"
+  },
+  "packageFilesAfter": {
+    "agent-teams/sm-pkg-team-2ca82e/agents/sm-scout-2ca82e/agent-config.json": "aedf05fea27214a4738cb7146432b2d01c6873fa16027de4fc6a9fa505f290ed",
+    "agent-teams/sm-pkg-team-2ca82e/agents/sm-scout-2ca82e/agent.md": "85055351b056db5880b37bba9754327acaafeb4173bee8f9e304d53237b12189",
+    "agent-teams/sm-pkg-team-2ca82e/team-config.json": "23574ceabff034b5d328fd93dfa7b1731e885d719354a31b65838555c0754be3",
+    "agent-teams/sm-pkg-team-2ca82e/team.md": "1f3cbc467e246a9f6d9a2901c70d5d11f8ec9ef66eb27a40d210d5839e2896da",
+    "agents/sm-declared-2ca82e/agent-config.json": "aedf05fea27214a4738cb7146432b2d01c6873fa16027de4fc6a9fa505f290ed",
+    "agents/sm-declared-2ca82e/agent.md": "dc6aa376a66df8d5720fb13fdbf1c0a553dce60ae06c68e76029630c95b2f41a",
+    "agents/sm-packaged-2ca82e/agent-config.json": "13c5f7a8a1c2975f8a65a52cd0528f747e879a48043e5f9e209f70a89dfdc724",
+    "agents/sm-packaged-2ca82e/agent.md": "c3992cf540791b4c8358d412d4fa16eeec917301b6430fbe4452f64771899d62",
+    "agents/sm-pkg-plain-2ca82e/agent-config.json": "ffa677acebad1e6c35eac5a86babb51802a0a49dd415449e796bba6978834b78",
+    "agents/sm-pkg-plain-2ca82e/agent.md": "cc9e18dca7d5915ba3bcbdb35561010918d9c895c4488b195921667b2ab7b9a0"
+  }
+}

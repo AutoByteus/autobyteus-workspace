@@ -59,6 +59,8 @@ export type ClaudeSdkStreamingSessionOptions = {
   sessionBinding: ClaudeSdkSessionBinding;
   model: string;
   workingDirectory: string | null;
+  /** Folders outside the working directory the session may work in, under the same permission checks. */
+  additionalDirectories?: readonly string[];
   mcpServers?: Record<string, unknown> | null;
   allowedTools?: Iterable<string> | null;
   permissionMode?: ClaudeSdkPermissionMode;
@@ -333,6 +335,7 @@ export class ClaudeSdkClient {
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
+      ...(options.additionalDirectories?.length ? { additionalDirectories: [...options.additionalDirectories] } : {}),
       env: spawnEnvironment,
       tools: [...CLAUDE_BUILT_IN_TOOLS_ENABLED_BY_AUTOBYTEUS],
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],

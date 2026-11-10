@@ -113,6 +113,17 @@ Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `a
 
 `normalizeAgentSkillScope` in `src/agent-definition/domain/models.ts` is the single normalization point. Effective skill resolution for either scope is owned by `SkillService` (see `skills.md`); runtime factories never branch on the scope themselves.
 
+## Semantic Memory
+
+An agent definition may carry `"semanticMemoryEnabled": true` in its `agent-config.json` (absent or anything but
+`true` is off). `AgentDefinition.semanticMemoryEnabled` holds it; `buildAgentConfigRecord` writes the key only when it
+is on and `mergeAgentConfigRecord` drops a stale `true` when it is turned off, so an agent without it keeps its file as
+it was. For package and built-in agents the app's switch is a personal setting (`SEMANTIC_MEMORY`, see
+[Personal Settings](./personal_settings.md)); for the user's own agents it is saved in their `agent-config.json`.
+GraphQL exposes `semanticMemoryEnabled` (read, create and update inputs; `null`/absent on update leaves it as it is) and
+the computed, read-only `semanticMemoryPath` (the folder, `null` when off). What the setting does at run time:
+[Agent Memory § Semantic Memory](./agent_memory.md#semantic-memory).
+
 ## Internal Agents
 
 An agent definition may carry `"internal": true` in its `agent-config.json`

@@ -1,0 +1,63 @@
+# API-FS fresh-start build (release job build-linux-arm64) of 595990347
+# Commands: git clone --no-local <worktree> /root/.autobyteus-e2e/fs-clone; git checkout 595990347; pnpm install --frozen-lockfile; cd autobyteus-web && GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:linux:arm64; then the job's three verify steps from the clone root
+# Environment: Linux 6.12 aarch64 container, Node v22.23.3, pnpm 10.28.2
+# Date: 2026-11-10T13:00:19Z
+# Attempt 1 (without GITHUB_REPOSITORY, which the runner sets; TESTING.md Fresh-start build) stopped at packaging: 'Unable to resolve GitHub updater repository'; attempt 2 below is from a new clean clone.
+
+## Excerpt
++ export PATH=/tmp/sm-shim:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ PATH=/tmp/sm-shim:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ git clone --no-local /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory /root/.autobyteus-e2e/fs-clone
++ cd /root/.autobyteus-e2e/fs-clone
++ git checkout --quiet 595990347
++ git submodule status
++ head
++ git -C /root/.autobyteus-e2e/fs-clone log --oneline -1
++ pnpm install --frozen-lockfile
+Done in 3.2s using pnpm v10.28.2
++ cd autobyteus-web
++ GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace
++ AUTOBYTEUS_BUILD_FLAVOR=personal
++ pnpm build:electron:linux:arm64
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 61.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 38.4s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+Done in 1.7s using pnpm v10.28.1
+ℹ vite v7.3.7 building client environment for production...
+ℹ vite v7.3.7 building ssr environment for production...
+Rebuilding native modules for Electron...
+ℹ vite v7.3.7 building client environment for production...
+ℹ vite v7.3.7 building ssr environment for production...
+vite v7.3.7 building client environment for production...
+vite v7.3.7 building client environment for production...
+  • packaging       platform=linux arch=arm64 electron=42.11.16 appOutDir=electron-dist/linux-arm64-unpacked
+  • building        target=AppImage arch=arm64 file=electron-dist/AutoByteus_personal_linux-arm64-1.5.13-beta.2.AppImage
+  '/root/.autobyteus-e2e/fs-clone/autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.13-beta.2.AppImage'
++ cd ..
++ head -20
++ ls -la autobyteus-web/electron-dist
+-rwxr-xr-x  1 root root 538410711 Nov 10 12:59 AutoByteus_personal_linux-arm64-1.5.13-beta.2.AppImage
+-rw-r--r--  1 root root       438 Nov 10 12:59 latest-linux-arm64.yml
++ echo FRESH_START_BUILD_DONE
+FRESH_START_BUILD_DONE
+exit=0
+
+## Verify steps
+== Verify Linux ARM64 AppImage and updater metadata
+autobyteus-web/electron-dist/AutoByteus_personal_linux-arm64-1.5.13-beta.2.AppImage: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=4b12022a0a60af0d4b7920deac219fcbd1d92080, stripped
+Validated autobyteus-web/electron-dist/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+== Verify Linux ARM64 Prisma engines
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+== Verify Linux ARM64 packaged server startup
+=== Starting logging configuration ===
+============================================================
+============================================================
+Packaged server startup validation passed for /root/.autobyteus-e2e/fs-clone/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+verify exit=0

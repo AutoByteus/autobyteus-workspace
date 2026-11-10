@@ -36,6 +36,8 @@ Memory files live under the configured memory root:
 - Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
   `memory/imports/<memorySyncSourceId>/agent_teams/...`, with source metadata in
   `memory-sync-source.json` and sync state in `sync-manifest.json`.
+- Agents' semantic memories: `memory/semantic/<encodeURIComponent(agentDefinitionId)>/` (see
+  [Semantic Memory](#semantic-memory)); not a run folder.
 
 One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
 a part of a run (`run_part`, by its physical scope), a task agent (`task_agent`) or a task agent team's
@@ -126,6 +128,32 @@ validation; ordinary bootstrap owns repair. No new migration or successful-ledge
 reset is required for the direct-summary cutover.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
+
+## Semantic Memory
+
+An agent definition with `semanticMemoryEnabled` (in `agent-config.json`, or a personal setting for package and
+built-in agents) has a semantic memory: one folder of documents with the reusable knowledge the agent learns, shared
+by every run of that definition on this node, standalone, as a team member (`refScope: shared` resolves to the same
+definition ID) or as a delegated copy, in any Project. Team-local, Org-owned and application-owned agents are their
+own definitions with their own folders.
+
+- **Folder:** `AgentMemoryLayout.getAgentSemanticMemoryDirPath(agentDefinitionId)` =
+  `<memory>/semantic/<encodeURIComponent(agentDefinitionId)>` (absolute; a team-local ID's `:` becomes `%3A`, so the
+  name is valid on every desktop OS and distinct per definition). The `semantic/` folder sits next to the run roots;
+  the memory explorer, memory search and Memory Sync walk only the run roots, so they never list it.
+- **Owner:** `AgentSemanticMemory` (`src/agent-memory/services/agent-semantic-memory.ts`) holds the rule and is the only
+  caller of the layout's semantic path. `folderOf(definition)` returns the folder or `null` (no file access; GraphQL
+  `semanticMemoryPath` reads it); `prepareForRun(definition)` also creates the folder (`mkdir -p`). An agent without the
+  setting causes no file access.
+- **Runs:** each runtime backend calls `prepareForRun` when it composes a run's instructions (create, and restore where
+  the runtime composes again; Antigravity at create only) and passes the path to the carpenter composer, which adds the
+  `## Semantic Memory` section (exact text in
+  [prompt_engineering.md](prompt_engineering.md)). Codex adds the folder to the `workspace-write` sandbox's
+  `writable_roots`; Claude gets it as an additional directory. Native AutoByteus, Grok and Antigravity already write
+  outside the workspace; the DeepSeek harness asks a sandbox escalation for it while auto-execute is off.
+- **Lifecycle:** the system never deletes or rewrites what is in the folder: turning the setting off, deleting or
+  renaming the agent, or updating its package leaves it; turning it on again gives the same folder. Concurrent runs
+  writing the same document are not coordinated; the agent's skills decide how documents are organized.
 
 ## Conversation Activity Classification For Restore
 
@@ -593,6 +621,7 @@ above.
 - Task-team source: `src/agent-memory/services/task-team-root-memory-source.ts`
 - Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
+- Semantic memory owner: `src/agent-memory/services/agent-semantic-memory.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`
 - Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`, `src/api/graphql/types/work-journal-view.ts`

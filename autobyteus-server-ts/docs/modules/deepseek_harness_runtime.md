@@ -88,7 +88,8 @@ folder is removed when the launch is released, after its process stopped.
 - **Restore:** dsh offers `session/resume`, not `session/load`; the shared layer restores by resume. dsh replays no
   history.
 - **Approvals:** dsh asks only for sandbox escalations (it runs in its `workspace-write` sandbox). Auto-execute answers
-  them allow.
+  them allow. A write to the agent's semantic memory folder ([Agent Memory](./agent_memory.md#semantic-memory)) is
+  outside that sandbox, so with auto-execute off it asks an escalation; dsh has no option to add a writable folder.
 - **Stop:** `session/cancel` ends the turn and its command.
 
 ## Models

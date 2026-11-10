@@ -134,7 +134,7 @@ folder**. A same-named skill from anywhere else grants nothing.
 | --- | --- |
 | AutoByteus (native) | `initialCustomData.terminalChildEnvironment`, the core seam its terminal tools use for child processes |
 | Claude | merged into the run session's Claude Code spawn only (`extraEnvironment`); model listing and control queries are unchanged |
-| Codex | the thread `config` sent on `thread/start` and `thread/resume`: `shell_environment_policy.set`, plus `sandbox_workspace_write.network_access = true` for `workspace-write` runs (DEC-011); kept when the run's tool list reopens the thread |
+| Codex | the thread `config` sent on `thread/start` and `thread/resume`: `shell_environment_policy.set`, plus `sandbox_workspace_write.network_access = true` for `workspace-write` runs (DEC-011; built with the run's writable roots by `buildCodexSandboxWorkspaceWriteConfig`); kept when the run's tool list reopens the thread |
 | Antigravity | the `env` of the AGY process (`process.start`), on create and restore |
 | Grok Build, DeepSeek Harness (ACP) | the agent process `env` from the launcher, after the launch profile's own |
 

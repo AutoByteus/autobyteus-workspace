@@ -77,6 +77,7 @@ const buildRunContext = (
         autoExecuteTools: true,
       }),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
+        semanticMemoryPath: null,
         agentDefinition: {
           name: "Claude Live E2E Agent",
           description: "Runs shell commands for the user",

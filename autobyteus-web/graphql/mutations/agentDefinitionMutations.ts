@@ -26,6 +26,8 @@ const AgentDefinitionMutationFields = gql`
     ownerPackageId
     ownerLocalApplicationId
     internal
+    semanticMemoryEnabled
+    semanticMemoryPath
     personalSettings
     personalSettingsBase
     defaultLaunchConfig {

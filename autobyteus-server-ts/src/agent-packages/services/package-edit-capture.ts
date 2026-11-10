@@ -42,20 +42,23 @@ const packageRootAt = (rootPath: string): RegisteredPackageRoot => ({
   },
 });
 
-/** The four settings of a definition that was read; null when its files could not be read. */
+/** The personal settings of a definition that was read; null when its files could not be read. */
 const valuesOf = (read: KindDefinitionReadResult): PersonalSettingValues | null => {
   if (read.result.status !== "valid") return null;
   if (read.kind === "agent") {
     const agent = read.result.definition;
-    return { toolNames: agent.toolNames, skillNames: agent.skillNames, avatarUrl: agent.avatarUrl ?? null, defaultLaunchConfig: agent.defaultLaunchConfig ?? null };
+    return {
+      toolNames: agent.toolNames, skillNames: agent.skillNames, avatarUrl: agent.avatarUrl ?? null,
+      defaultLaunchConfig: agent.defaultLaunchConfig ?? null, semanticMemoryEnabled: agent.semanticMemoryEnabled === true,
+    };
   }
   const definition = read.result.definition;
   return { avatarUrl: definition.avatarUrl ?? null, defaultLaunchConfig: definition.defaultLaunchConfig ?? null };
 };
 
 const sameValues = (left: PersonalSettingValues, right: PersonalSettingValues): boolean =>
-  JSON.stringify([left.toolNames, left.skillNames, left.avatarUrl ?? null, left.defaultLaunchConfig])
-  === JSON.stringify([right.toolNames, right.skillNames, right.avatarUrl ?? null, right.defaultLaunchConfig]);
+  JSON.stringify([left.toolNames, left.skillNames, left.avatarUrl ?? null, left.defaultLaunchConfig, left.semanticMemoryEnabled ?? false])
+  === JSON.stringify([right.toolNames, right.skillNames, right.avatarUrl ?? null, right.defaultLaunchConfig, right.semanticMemoryEnabled ?? false]);
 
 /** Relative paths of every file under `dir`. */
 const listFiles = async (dir: string): Promise<string[]> => {

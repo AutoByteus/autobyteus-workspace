@@ -30,6 +30,7 @@ const teamContext = (teamInstruction: string | null = "## Coordination\n\nShare 
 describe("composeNativeAutoByteusPrompt", () => {
   it("renders the exact ordered standalone foundation without role or fallbacks", () => {
     const prompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ role: "Ignored role" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: null,
@@ -71,6 +72,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("renders the authored Team instruction before the exact sibling AgentTeam sections", () => {
     const prompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: teamContext(),
@@ -103,6 +105,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("omits blank optional identity and team bodies", () => {
     const prompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ description: " ", instructions: "\n" }),
       workspaceRootPath: "/tmp/carpenter-workspace",
       memberExecutionContext: teamContext("  "),
@@ -117,14 +120,17 @@ describe("composeNativeAutoByteusPrompt", () => {
 
   it("fails required scalars and unresolved placeholders before provider projection", () => {
     expect(() => composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ name: " " }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/name must be non-blank/);
     expect(() => composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
       workspaceRootPath: "relative/path",
     })).toThrow(/absolute path/);
     expect(() => composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
       workspaceRootPath: "/tmp/workspace",
     })).toThrow(/unresolved documentation placeholder/);
@@ -134,6 +140,7 @@ describe("composeNativeAutoByteusPrompt", () => {
 describe("composeSharedCarpenterPrompt", () => {
   it("renders shared identity and collaboration without native workspace or file-operation guidance", () => {
     const prompt = composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
       memberExecutionContext: teamContext(),
     });
@@ -152,6 +159,7 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("does not require a workspace path for standalone external composition", () => {
     const prompt = composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition(),
     });
 
@@ -161,6 +169,7 @@ describe("composeSharedCarpenterPrompt", () => {
 
   it("preserves placeholder validation without a native workspace", () => {
     expect(() => composeSharedCarpenterPrompt({
+      semanticMemoryPath: null,
       agentDefinition: definition({ instructions: "Use {{missing}}." }),
     })).toThrow(/unresolved documentation placeholder/);
   });
