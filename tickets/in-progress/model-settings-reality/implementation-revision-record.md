@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-002 (`Pass`), handoff message 2026-11-10 | N/A (non-blocking IG-1, IG-2, IG-3 applied) | `Initial Baseline` | SR-003, ARCH-REV-002; CRR/API-REV/DR: N/A | Implementation complete for UC-001..UC-006; routed to source review (Large / High) |
+| IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (`Fail`, Local Fix), 2026-11-10 | CR-001, CR-002, CR-003 | `Local Fix` | SR-003, ARCH-REV-002, CRR-001; API-REV/DR: N/A | CR-001..CR-003 fixed; returned for targeted delta review |
 
 ## Revision Entries
 
@@ -33,3 +34,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: see the handoff Checks Run table (IMP-01..IMP-06).
 - Next recipient or routing: Code Reviewer (Large / High), then API/E2E.
 - Remaining limitations or risks: RSK-001, RSK-004; one Claude CLI read per sequential picker open (accepted); the AC-010/AC-012 realistic journey (isolated Electron + CLI symlink swap) is left to API/E2E.
+
+### IR-002 — Local fixes for CRR-001 (dead saved-run mode, error wording, glossary)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md`, CRR-001 (round 1, `Fail`, Local Fix).
+- Triggering finding IDs: CR-001, CR-002, CR-003.
+- Classification: `Local Fix`.
+- Prior authoritative result: CRR-001 `Fail`.
+- Current authoritative result: fixes complete at `817bd9950`, returned for targeted delta review.
+- Related solution revision IDs: SR-003. Related architecture-review revision IDs: ARCH-REV-002. Related code-review revision IDs: CRR-001. Related API/E2E and delivery revision IDs: N/A.
+- Why this revision is recorded: the reviewer ruled FU-004 (dead saved-run mode in a touched file) part of this ticket and asked for two minor naming/doc corrections.
+- Approved behavior or requirement IDs affected: none changed. CR-001 touches only the definition launch-preferences picker (BEH-010 path, REQ-010/011) and removes unreachable code; CR-002 touches the REQ-013 text of an unreadable list (AC-013); CR-003 is documentation.
+- Implementation delta:
+  - **CR-001** `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue` (388 → 242 lines) keeps only the new-launch mode its one caller (`DefinitionLaunchPreferencesSection.vue`) uses. Removed: the saved-run mode (`originalModelIdentifier`, `modelOptions`, `runChoice`, the replacement-options branches, `modelOptionsMessage`, the `track-automatic-changes` switch) and the new `originalModelIdentifier === undefined` guards of IR-001; the props `readOnly`, `runtimeSelectionLocked`, `modelSelectionLocked`, `modelConfigDisabled`, `modelConfigReadOnly`, `historicalModelConfig`, `missingHistoricalConfig`, `validationErrors`, the `historical*` texts, and also the other props no caller passes (`disabled`, `runtimeHelpText`, `modelHelpText`, `thinkingLabel`, `thinkingDescription`, `advancedInitiallyExpanded`, `controlVariant`); the `selection-change` and `schema-state` emits (no parent listens: `rg`); the `loadCatalog` option of `useRuntimeScopedModelSelection` (no caller passed `false`; Mobile's `loadCatalog: true` dropped); six locale keys (`workspace.runModelConfig.loadingOptions`, `replacementInvalid`, `noNativeReplacements`, `noCatalogReplacements`, `schemaUnavailable`, `modelRequired`, en and zh-CN) and `types/agent/RuntimeModelConfigSchemaState.ts`, which only the removed emit used. Specs: `RuntimeModelConfigFields.spec.ts` deleted the cases that exist only for the removed mode (historical/locked controls, saved-run picker, replacement labelling, display-catalog lag, saved-run default cases) and adapted the rest to DOM assertions; one case added (model/runtime choice emits); `RuntimeCapabilityReadiness.spec.ts` now asserts what the fields show (loading, unavailable reason, ready) instead of `schema-state`.
+  - **CR-002** `autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts`: `ModelListUnavailableError` words its message with `agentRuntimeName` ("Claude Agent SDK returned no models.") and no longer stores the unread `runtimeKind`. Tests: `llm-provider.test.ts` (real error class through the resolver), `model-catalog-service.test.ts` (wording for two runtimes), `application-launch-host-capability-validator.test.ts` (new case: the application launch issue reads "The model list of Claude Agent SDK could not be read: Claude Agent SDK returned no models. Try again." and never the enum value).
+  - **CR-003** `GLOSSARY.md`: "Offered models" now says how "model list" appears in names (`model_list_unavailable`, `MODEL_LIST_UNAVAILABLE`, `ModelListUnavailableError`, UI texts and `ModelListRefreshControl`), and that `model_unavailable` means the read worked and the model is not in it. No identifier renamed.
+  - **Follow-ups:** FU-004 removed (done in this ticket). FU-006 added for what the removal leaves unreachable in files this ticket does not touch: `ModelConfigSection.vue`'s `historical*` / `trackAutomaticChanges` props (their only passer was the removed mode) and the pre-existing unused `utils/existingRunModelHelp.ts` with its three locale keys.
+- Changed files or areas: the files named above; `git diff f31fa1821..817bd9950`.
+- Local validation and result: web full unit suite (one failure, the base-identical `projectRunsStore.spec`, FU-005), web typecheck gate PASS (96 = baseline) and three guards, server typecheck gate PASS, 48 server unit files (310 tests) of the touched areas pass, rendered probe R1..R6 pass on the reworked component. See the handoff's Checks Run (IMP-07).
+- Next recipient or routing: Code Reviewer (targeted delta review of CR-001..CR-003).
+- Remaining limitations or risks: as in IR-001; `ModelConfigSection` historical props are now unreachable (FU-006), outside the touched files.
+

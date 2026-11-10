@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-11-10T12:35:54.408Z",
-  "commit": "f31fa1821",
+  "startedAt": "2026-11-10T13:22:29.168Z",
+  "commit": "817bd9950",
   "scenarios": {
     "R1": {
       "description": "Chat model menu: opening the runtime list re-reads it in the background; the list stays usable while it reads; a new model appears (AC-010)",
@@ -84,10 +84,6 @@
       "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
     },
     {
-      "type": "console:log",
-      "text": "serverStore: Checking server health at /rest/health"
-    },
-    {
       "type": "console:debug",
       "text": "[vite] connecting..."
     },
@@ -151,6 +147,6 @@
     "devServer": "terminated",
     "temporaryPage": "removed"
   },
-  "finishedAt": "2026-11-10T12:36:50.503Z",
+  "finishedAt": "2026-11-10T13:23:39.260Z",
   "result": "Pass"
 }

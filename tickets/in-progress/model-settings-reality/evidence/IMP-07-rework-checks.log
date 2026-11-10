@@ -1,0 +1,23 @@
+# IMP-07 rework checks (IR-002: CR-001..CR-003)
+commit tested: 817bd9950 working tree (committed as 817bd9950)
+env: Linux arm64 container, uid 0, node v22.23.3, 2026-11-10 12:50-13:20 UTC
+
+## Web unit suite (cd autobyteus-web && NUXT_TEST=true corepack pnpm exec vitest run)
+ Test Files  1 failed | 740 passed (741)
+      Tests  1 failed | 5564 passed | 2 skipped (5567)
+ FAIL  stores/__tests__/projectRunsStore.spec.ts > projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one
+(the failure is stores/__tests__/projectRunsStore.spec.ts, identical on the base sources, FU-005; the count fell from 5572 to 5564 passed because the saved-run-only cases of RuntimeModelConfigFields.spec.ts were deleted and one case was added)
+
+## Web typecheck gate (after nuxt prepare) and guards
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+## Server
+node ./scripts/typecheck.mjs: [typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files) PASS
+corepack pnpm exec vitest run tests/unit/llm-management tests/unit/application-platform tests/unit/api/graphql/types tests/unit/available-agent-runtimes tests/unit/runtime-management/acp --no-watch: Test Files 48 passed (48); Tests 310 passed (310)
+
+## Rendered probe
+node tickets/.../probes/rendered/model-list-refresh-probe.mjs on the reworked component: Pass: R1..R6 (evidence/IMP-05-rendered-model-pickers, rerun at 817bd9950)
