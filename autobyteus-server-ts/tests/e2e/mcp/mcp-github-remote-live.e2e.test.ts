@@ -22,7 +22,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import type { Client } from "@modelcontextprotocol/client";
 import {
   removeOwnedTestRuntime,
   resolveTestDatabaseLocation,
@@ -30,6 +30,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { readLiveTestSecret } from "../../../../test-support/test-vault/live-test-secret.js";
+import { connectMcpGatewayClient } from "../helpers/mcp-gateway-client.js";
 
 const GATE = process.env["RUN_GITHUB_MCP_E2E"] === "1";
 const GITHUB_MCP_URL = "https://api.githubcopilot.com/mcp/";
@@ -91,15 +92,15 @@ describe.skipIf(!GATE)("GitHub remote MCP with its token in the vault (live)", (
       ? { name: `${PREFIX}_issue_read`, arguments: { method: "get", ...REPOSITORY, issue_number: ISSUE_NUMBER } }
       : { name: `${PREFIX}_get_issue`, arguments: { ...REPOSITORY, issue_number: ISSUE_NUMBER } };
     expect(toolNames, `issue tool among ${toolNames.length} tools`).toContain(issueCall.name);
-    const client = new Client({ name: "mcp-github-live-e2e", version: "1.0.0" });
+    let client: Client | undefined;
     let issueText = "";
     try {
-      await client.connect(new StreamableHTTPClientTransport(new URL(`${server.serverUrl}/mcp/gateway`)));
+      client = await connectMcpGatewayClient(server.serverUrl, "mcp-github-live-e2e");
       const result = await client.callTool(issueCall) as { content?: Array<{ text?: string }>; isError?: boolean };
       issueText = (result.content ?? []).map((part) => part.text ?? "").join("");
       expect(result.isError ?? false, issueText.slice(0, 500)).toBe(false);
     } finally {
-      await client.close().catch(() => undefined);
+      await client?.close().catch(() => undefined);
     }
     expect(issueText).toMatch(/"number":\s*1\b|#1\b/);
 

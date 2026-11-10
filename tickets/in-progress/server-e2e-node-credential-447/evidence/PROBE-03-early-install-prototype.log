@@ -1,0 +1,15 @@
+# PROBE-03 early-install prototype (reverted), base 310fc27452, 2026-11-10
+# Temporary edit: owner-credential-attachment.mjs exported install() as installOwnerCredentialAttachment(); tests/setup/test-launch-credential.ts called it after setting the credential. No test file edited.
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run --no-watch <7 files>
+
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8332ms
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11627ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 6012ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2287ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 455ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 6524ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 1231ms
+ Test Files  7 passed (7)
+      Tests  25 passed (25)
+
+# Reverted afterwards: git status shows no source change.
