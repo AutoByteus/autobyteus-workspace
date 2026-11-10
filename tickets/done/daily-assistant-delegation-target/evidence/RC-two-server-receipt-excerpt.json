@@ -1,0 +1,530 @@
+{
+  "_header": {
+    "cases": "RC-04u, RC-26u, RC-38u, RC-42 (API/E2E round 1)",
+    "command": "see RC-two-server-suite.log",
+    "commit": "fbc9b3c2e9 source (dist built from it) + updated suite",
+    "date": "2026-11-10",
+    "note": "excerpt of REMOTE_E2E_EVIDENCE_DIR/remote-two-server-receipt.json"
+  },
+  "RC-04": {
+    "/model_router": {
+      "text": "Node \"beta-node\" has no Agent or Agent Team at /model_router that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+      "answer": {
+        "accepted": false,
+        "code": "AGENT_NOT_FOUND",
+        "message": "/model_router",
+        "nodeId": "srv_5jX-H87QrVn-o8b64h_kSFgbnvYjo8Uf"
+      }
+    }
+  },
+  "RC-26": {
+    "offer": [
+      {
+        "name": "Daily Assistant",
+        "kind": "agent",
+        "address": "/daily_assistant",
+        "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+      },
+      {
+        "name": "Blank Slate",
+        "kind": "agent",
+        "address": "/blank_slate",
+        "description": "Blank Slate (remote collaboration E2E)"
+      },
+      {
+        "name": "Bystander",
+        "kind": "agent",
+        "address": "/bystander",
+        "description": "Bystander (remote collaboration E2E)"
+      },
+      {
+        "name": "Checker",
+        "kind": "agent",
+        "address": "/checker",
+        "description": "Checker (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Writer",
+        "kind": "agent",
+        "address": "/codex_writer",
+        "description": "Codex Writer (remote collaboration E2E)"
+      },
+      {
+        "name": "Fragile",
+        "kind": "agent",
+        "address": "/fragile",
+        "description": "Fragile (remote collaboration E2E)"
+      },
+      {
+        "name": "Half Set",
+        "kind": "agent",
+        "address": "/half_set",
+        "description": "Half Set (remote collaboration E2E)"
+      },
+      {
+        "name": "Plain Helper",
+        "kind": "agent",
+        "address": "/plain_helper"
+      },
+      {
+        "name": "Publisher",
+        "kind": "agent",
+        "address": "/publisher",
+        "description": "Publisher (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Team",
+        "kind": "agent_team",
+        "address": "/codex_team",
+        "description": "Codex Team (remote Teams E2E)"
+      },
+      {
+        "name": "Field Team",
+        "kind": "agent_team",
+        "address": "/field_team",
+        "description": "Team with a team-local agent"
+      },
+      {
+        "name": "Hollow Team",
+        "kind": "agent_team",
+        "address": "/hollow_team",
+        "description": "Hollow Team (remote Teams E2E)"
+      },
+      {
+        "name": "Studio Team",
+        "kind": "agent_team",
+        "address": "/studio_team",
+        "description": "Studio Team (remote Teams E2E)"
+      }
+    ],
+    "delegations": {
+      "/daily_assistant": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent Daily Assistant on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/blank_slate": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent Blank Slate on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/bystander": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent Bystander on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/checker": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent Checker on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/codex_writer": {
+        "delegated": false,
+        "text": "The Agent Codex Writer on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-qtq3Tw/beta/missing/codex' is not available, and Model Routing is off on node \"beta-node\"."
+      },
+      "/fragile": {
+        "delegated": false,
+        "text": "The Agent Fragile on node \"beta-node\" cannot run there: The model 'no-such-model' is not available on Antigravity CLI, and Model Routing is off on node \"beta-node\"."
+      },
+      "/half_set": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent Half Set on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/plain_helper": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent Plain Helper on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/publisher": {
+        "delegated": true,
+        "kind": "agent"
+      },
+      "/codex_team": {
+        "delegated": false,
+        "text": "The Agent Team Codex Team on node \"beta-node\" cannot run there: Codex App Server command '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-qtq3Tw/beta/missing/codex' is not available, and Model Routing is off on node \"beta-node\"."
+      },
+      "/field_team": {
+        "delegated": true,
+        "kind": "team"
+      },
+      "/hollow_team": {
+        "delegated": false,
+        "text": "There is no default runtime configured for the target agent team Hollow Team on node \"beta-node\", and Model Routing is off on node \"beta-node\"."
+      },
+      "/studio_team": {
+        "delegated": true,
+        "kind": "team"
+      }
+    },
+    "wireAnswerAgents": [
+      {
+        "name": "Daily Assistant",
+        "kind": "agent",
+        "address": "/daily_assistant",
+        "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+      },
+      {
+        "name": "Blank Slate",
+        "kind": "agent",
+        "address": "/blank_slate",
+        "description": "Blank Slate (remote collaboration E2E)"
+      },
+      {
+        "name": "Bystander",
+        "kind": "agent",
+        "address": "/bystander",
+        "description": "Bystander (remote collaboration E2E)"
+      },
+      {
+        "name": "Checker",
+        "kind": "agent",
+        "address": "/checker",
+        "description": "Checker (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Writer",
+        "kind": "agent",
+        "address": "/codex_writer",
+        "description": "Codex Writer (remote collaboration E2E)"
+      },
+      {
+        "name": "Fragile",
+        "kind": "agent",
+        "address": "/fragile",
+        "description": "Fragile (remote collaboration E2E)"
+      },
+      {
+        "name": "Half Set",
+        "kind": "agent",
+        "address": "/half_set",
+        "description": "Half Set (remote collaboration E2E)"
+      },
+      {
+        "name": "Plain Helper",
+        "kind": "agent",
+        "address": "/plain_helper"
+      },
+      {
+        "name": "Publisher",
+        "kind": "agent",
+        "address": "/publisher",
+        "description": "Publisher (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Team",
+        "kind": "agent_team",
+        "address": "/codex_team",
+        "description": "Codex Team (remote Teams E2E)"
+      },
+      {
+        "name": "Field Team",
+        "kind": "agent_team",
+        "address": "/field_team",
+        "description": "Team with a team-local agent"
+      },
+      {
+        "name": "Hollow Team",
+        "kind": "agent_team",
+        "address": "/hollow_team",
+        "description": "Hollow Team (remote Teams E2E)"
+      },
+      {
+        "name": "Studio Team",
+        "kind": "agent_team",
+        "address": "/studio_team",
+        "description": "Studio Team (remote Teams E2E)"
+      }
+    ]
+  },
+  "RC-38": {
+    "hiddenOffer": [
+      {
+        "name": "Daily Assistant",
+        "kind": "agent",
+        "address": "/daily_assistant",
+        "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+      },
+      {
+        "name": "Blank Slate",
+        "kind": "agent",
+        "address": "/blank_slate",
+        "description": "Blank Slate (remote collaboration E2E)"
+      },
+      {
+        "name": "Bystander",
+        "kind": "agent",
+        "address": "/bystander",
+        "description": "Bystander (remote collaboration E2E)"
+      },
+      {
+        "name": "Checker",
+        "kind": "agent",
+        "address": "/checker",
+        "description": "Checker (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Writer",
+        "kind": "agent",
+        "address": "/codex_writer",
+        "description": "Codex Writer (remote collaboration E2E)"
+      },
+      {
+        "name": "Fragile",
+        "kind": "agent",
+        "address": "/fragile",
+        "description": "Fragile (remote collaboration E2E)"
+      },
+      {
+        "name": "Half Set",
+        "kind": "agent",
+        "address": "/half_set",
+        "description": "Half Set (remote collaboration E2E)"
+      },
+      {
+        "name": "Plain Helper",
+        "kind": "agent",
+        "address": "/plain_helper"
+      },
+      {
+        "name": "Publisher",
+        "kind": "agent",
+        "address": "/publisher",
+        "description": "Publisher (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Team",
+        "kind": "agent_team",
+        "address": "/codex_team",
+        "description": "Codex Team (remote Teams E2E)"
+      },
+      {
+        "name": "Field Team",
+        "kind": "agent_team",
+        "address": "/field_team",
+        "description": "Team with a team-local agent"
+      },
+      {
+        "name": "Hollow Team",
+        "kind": "agent_team",
+        "address": "/hollow_team",
+        "description": "Hollow Team (remote Teams E2E)"
+      },
+      {
+        "name": "Studio Team",
+        "kind": "agent_team",
+        "address": "/studio_team",
+        "description": "Studio Team (remote Teams E2E)"
+      }
+    ],
+    "shownOffer": [
+      {
+        "name": "Daily Assistant",
+        "kind": "agent",
+        "address": "/daily_assistant",
+        "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+      },
+      {
+        "name": "Blank Slate",
+        "kind": "agent",
+        "address": "/blank_slate",
+        "description": "Blank Slate (remote collaboration E2E)"
+      },
+      {
+        "name": "Bystander",
+        "kind": "agent",
+        "address": "/bystander",
+        "description": "Bystander (remote collaboration E2E)"
+      },
+      {
+        "name": "Checker",
+        "kind": "agent",
+        "address": "/checker",
+        "description": "Checker (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Writer",
+        "kind": "agent",
+        "address": "/codex_writer",
+        "description": "Codex Writer (remote collaboration E2E)"
+      },
+      {
+        "name": "Fragile",
+        "kind": "agent",
+        "address": "/fragile",
+        "description": "Fragile (remote collaboration E2E)"
+      },
+      {
+        "name": "Half Set",
+        "kind": "agent",
+        "address": "/half_set",
+        "description": "Half Set (remote collaboration E2E)"
+      },
+      {
+        "name": "Hidden Helper",
+        "kind": "agent",
+        "address": "/hidden_helper",
+        "description": "Beta's own helper (internal agents E2E)"
+      },
+      {
+        "name": "Plain Helper",
+        "kind": "agent",
+        "address": "/plain_helper"
+      },
+      {
+        "name": "Publisher",
+        "kind": "agent",
+        "address": "/publisher",
+        "description": "Publisher (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Team",
+        "kind": "agent_team",
+        "address": "/codex_team",
+        "description": "Codex Team (remote Teams E2E)"
+      },
+      {
+        "name": "Field Team",
+        "kind": "agent_team",
+        "address": "/field_team",
+        "description": "Team with a team-local agent"
+      },
+      {
+        "name": "Hollow Team",
+        "kind": "agent_team",
+        "address": "/hollow_team",
+        "description": "Hollow Team (remote Teams E2E)"
+      },
+      {
+        "name": "Studio Team",
+        "kind": "agent_team",
+        "address": "/studio_team",
+        "description": "Studio Team (remote Teams E2E)"
+      }
+    ],
+    "refused": "Node \"beta-node\" has no Agent or Agent Team at /hidden_helper that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.",
+    "accepted": {
+      "delegated": true,
+      "target_kind": "agent"
+    },
+    "routerWhileShown": "Node \"beta-node\" has no Agent or Agent Team at /model_router that can be delegated to. If you have list_available_agents, call it with this node to see what it offers."
+  },
+  "RC-42": {
+    "saved": {
+      "id": "autobyteus-daily-assistant",
+      "defaultLaunchConfig": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low"
+      },
+      "personalSettings": [
+        "DEFAULT_LAUNCH_CONFIG"
+      ]
+    },
+    "listing": [
+      {
+        "name": "Daily Assistant",
+        "kind": "agent",
+        "address": "/daily_assistant",
+        "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams."
+      },
+      {
+        "name": "Blank Slate",
+        "kind": "agent",
+        "address": "/blank_slate",
+        "description": "Blank Slate (remote collaboration E2E)"
+      },
+      {
+        "name": "Bystander",
+        "kind": "agent",
+        "address": "/bystander",
+        "description": "Bystander (remote collaboration E2E)"
+      },
+      {
+        "name": "Checker",
+        "kind": "agent",
+        "address": "/checker",
+        "description": "Checker (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Writer",
+        "kind": "agent",
+        "address": "/codex_writer",
+        "description": "Codex Writer (remote collaboration E2E)"
+      },
+      {
+        "name": "Fragile",
+        "kind": "agent",
+        "address": "/fragile",
+        "description": "Fragile (remote collaboration E2E)"
+      },
+      {
+        "name": "Half Set",
+        "kind": "agent",
+        "address": "/half_set",
+        "description": "Half Set (remote collaboration E2E)"
+      },
+      {
+        "name": "Plain Helper",
+        "kind": "agent",
+        "address": "/plain_helper"
+      },
+      {
+        "name": "Publisher",
+        "kind": "agent",
+        "address": "/publisher",
+        "description": "Publisher (remote collaboration E2E)"
+      },
+      {
+        "name": "Codex Team",
+        "kind": "agent_team",
+        "address": "/codex_team",
+        "description": "Codex Team (remote Teams E2E)"
+      },
+      {
+        "name": "Field Team",
+        "kind": "agent_team",
+        "address": "/field_team",
+        "description": "Team with a team-local agent"
+      },
+      {
+        "name": "Hollow Team",
+        "kind": "agent_team",
+        "address": "/hollow_team",
+        "description": "Hollow Team (remote Teams E2E)"
+      },
+      {
+        "name": "Studio Team",
+        "kind": "agent_team",
+        "address": "/studio_team",
+        "description": "Studio Team (remote Teams E2E)"
+      }
+    ],
+    "delegated": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "daily_assistant_25dc99e778854865967660773c6b2cb7",
+      "node": "beta-node",
+      "task_id": "ad_hoc_task_1f492d17-c809-40e6-b807-18bc1ec2a6a8",
+      "isError": false,
+      "elapsedMs": 522
+    },
+    "metadata": {
+      "runId": "daily_assistant_25dc99e778854865967660773c6b2cb7",
+      "agentDefinitionId": "autobyteus-daily-assistant",
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-qtq3Tw/beta/data/temp_workspace",
+      "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-qtq3Tw/beta/data/memory/agents/daily_assistant_25dc99e778854865967660773c6b2cb7",
+      "llmModelIdentifier": "gemini-3.8-flash-low",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "runtimeKind": "antigravity_cli",
+      "platformAgentRunId": "2f2a1bfc-d6fa-47d7-b102-0930237e132e",
+      "preparedAt": "2026-11-10T05:55:29.387Z",
+      "preparedExpiresAt": "2026-11-11T05:55:29.387Z",
+      "startedAt": "2026-11-10T05:55:29.582Z",
+      "applicationExecutionContext": null,
+      "delegatedFrom": {
+        "nodeId": "srv_hkQ7Z_B7OqB5VoNm3wuujk8xmO-OnqL0",
+        "coordinatingRun": {
+          "kind": "agent",
+          "runId": "scout_f61979b6d5e54c74b88d4fe2dfda3326"
+        },
+        "delegatorAgentRunId": "scout_f61979b6d5e54c74b88d4fe2dfda3326"
+      }
+    },
+    "received": "You received a message from the agent with sender run id \"daily_assistant_25dc99e778854865967660773c6b2cb7\" on node \"beta-node\".\nmessage:\nDone. Marker DA-REMOTE-REPORT."
+  }
+}

@@ -1,5 +1,5 @@
 import type { CollaboratorMentionCandidate } from '~/services/collaborators/collaboratorCandidatesService'
-import { isBuiltInAgentDefinitionId } from '~/utils/agents/builtInAgentDefinitionIds'
+import { isCollaborationIneligibleAgentDefinitionId } from '~/utils/collaborators/collaborationIneligibleAgentDefinitionIds'
 import { normalizeDefinitionOwnershipScope } from '~/utils/definitionOwnership'
 
 /**
@@ -8,7 +8,8 @@ import { normalizeDefinitionOwnershipScope } from '~/utils/definitionOwnership'
  * `autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-candidate-policy.ts`),
  * so a first message never mentions a definition the server will refuse once the run is created:
  *
- * - eligible: shared Agent definitions that are not built-in, then shared Agent Team definitions,
+ * - eligible: shared Agent definitions that are not collaboration-ineligible (the Model Router), then
+ *   shared Agent Team definitions,
  *   in catalog order (Agent Orgs never), including the members a Team target will place;
  * - excluded: only the target's own definition (it is the run itself).
  */
@@ -46,7 +47,7 @@ export const draftMentionCandidates = (
   const own = draftOwnDefinitionIds(target)
   const candidates: CollaboratorMentionCandidate[] = []
   for (const agent of catalogs.agents) {
-    if (!agent.id || !isShared(agent) || isBuiltInAgentDefinitionId(agent.id) || own.agentDefinitionIds.has(agent.id)) continue
+    if (!agent.id || !isShared(agent) || isCollaborationIneligibleAgentDefinitionId(agent.id) || own.agentDefinitionIds.has(agent.id)) continue
     candidates.push(Object.freeze({ kind: 'agent', definitionId: agent.id, name: agent.name, description: agent.description ?? '' }))
   }
   for (const team of catalogs.teams) {

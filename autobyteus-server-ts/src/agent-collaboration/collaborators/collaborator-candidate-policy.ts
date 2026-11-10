@@ -65,16 +65,17 @@ export const preferredInRunPlacement = (placements: readonly InRunPlacement[]): 
   return best ?? null;
 };
 
-/** Daily Assistant (the default chat agent) and the internal helpers are never `@` or delegation candidates. */
-const EXCLUDED_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set(BUILT_IN_AGENT_DEFINITIONS.map((entry) => entry.id));
+/** Built-ins marked `collaborationEligible: false` (the Model Router) are never `@` or delegation candidates. */
+const COLLABORATION_INELIGIBLE_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set(
+  BUILT_IN_AGENT_DEFINITIONS.filter((entry) => !entry.collaborationEligible).map((entry) => entry.id));
 
 const hasId = <T extends { id?: string | null }>(definition: T): definition is T & { id: string } =>
   typeof definition.id === "string" && definition.id.trim().length > 0;
 
 /**
  * The single owner of `@` and catalog eligibility. Candidates are shared standalone Agent
- * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the internal
- * built-ins and the viewer's own definition (`port.ownDefinition()`) are never candidates; internal
+ * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the Model Router
+ * and the viewer's own definition (`port.ownDefinition()`) are never candidates; internal
  * agents are not while "Show internal agents" is off (autobyteus-308). Two checks: `requireEligible`
  * may be mentioned with `@` (including definitions already in the run, which `@` addresses);
  * `requireAdmissible` may be delegated to as a fresh catalog copy (not already in the run).
@@ -166,7 +167,7 @@ export class CollaboratorCandidatePolicy {
   }
 
   /**
-   * `@` re-check of one mention: a shared, non-built-in definition that is not the viewer's own.
+   * `@` re-check of one mention: a shared, collaboration-eligible definition that is not the viewer's own.
    * It may already be in the run (the mention then addresses that instance).
    */
   async requireEligible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
@@ -206,7 +207,7 @@ export class CollaboratorCandidatePolicy {
   }
 
   private isEligibleAgent(definition: AgentDefinition): definition is AgentDefinition & { id: string } {
-    return hasId(definition) && definition.ownershipScope === "shared" && !EXCLUDED_AGENT_DEFINITION_IDS.has(definition.id)
+    return hasId(definition) && definition.ownershipScope === "shared" && !COLLABORATION_INELIGIBLE_AGENT_DEFINITION_IDS.has(definition.id)
       && !this.catalog.isAgentHidden(definition);
   }
 

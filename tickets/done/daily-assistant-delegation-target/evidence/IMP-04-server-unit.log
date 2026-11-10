@@ -1,0 +1,5 @@
+# IMP-04 server unit suite (excerpt; full log IMP-04-server-unit.full.log)
+# cmd: pnpm -C autobyteus-server-ts test:unit; base 3a6330c3ad + implementation working tree (same content as the implementation commit); macOS, Node v22.23.1; date: 2026-11-10; exit=0
+ Test Files  969 passed | 5 skipped (974)
+      Tests  8267 passed | 9 skipped (8276)
+   Duration  738.21s (transform 20.24s, setup 22.56s, import 323.01s, tests 303.87s, environment 857ms)

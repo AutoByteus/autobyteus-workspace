@@ -29,21 +29,21 @@ const ids = (target: Parameters<typeof draftMentionCandidates>[0]) =>
   draftMentionCandidates(target, { agents, teams }).map((candidate) => `${candidate.kind}:${candidate.definitionId}`)
 
 describe('draftMentionCandidates (New chat `@`)', () => {
-  it('offers shared, non-built-in agents and shared teams, except the target agent', () => {
+  it('offers shared agents (the Daily Assistant too) and shared teams, except the target agent and the Model Router (autobyteus-455 AC-005)', () => {
     expect(ids({ kind: 'agent', agentDefinitionId: 'researcher' })).toEqual([
-      'agent:designer', 'agent:reviewer', 'agent_team:engineering', 'agent_team:product',
+      'agent:autobyteus-daily-assistant', 'agent:designer', 'agent:reviewer', 'agent_team:engineering', 'agent_team:product',
     ])
   })
 
-  it('never offers the built-in agents (they mirror the server registry)', () => {
+  it('a Daily Assistant draft never offers itself; the Model Router is never offered (they mirror the server registry)', () => {
     const offered = ids({ kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' })
-    expect(offered).not.toContain('agent:autobyteus-daily-assistant')
-    expect(offered).not.toContain('agent:autobyteus-model-router')
+    expect(offered).toEqual(['agent:designer', 'agent:reviewer', 'agent:researcher', 'agent_team:engineering', 'agent_team:product'])
+    expect(ids({ kind: 'team', teamDefinitionId: 'product' })).not.toContain('agent:autobyteus-model-router')
   })
 
   it('excludes only a Team target itself: its shared members are offered, team-local ones never are (REQ-005, AC-007)', () => {
     expect(ids({ kind: 'team', teamDefinitionId: 'engineering' })).toEqual([
-      'agent:designer', 'agent:reviewer', 'agent:researcher', 'agent_team:product',
+      'agent:autobyteus-daily-assistant', 'agent:designer', 'agent:reviewer', 'agent:researcher', 'agent_team:product',
     ])
     expect(draftOwnDefinitionIds({ kind: 'team', teamDefinitionId: 'engineering' }))
       .toEqual({ agentDefinitionIds: new Set(), teamDefinitionIds: new Set(['engineering']) })

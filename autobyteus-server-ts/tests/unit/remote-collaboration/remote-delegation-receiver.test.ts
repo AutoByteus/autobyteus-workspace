@@ -6,7 +6,7 @@ import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definit
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { NodeCatalogPort } from "../../../src/agent-collaboration/collaborators/node-catalog-port.js";
-import { BUILT_IN_AGENT_DEFINITIONS } from "../../../src/built-in-agents/built-in-agent-registry.js";
+import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { RemoteDelegationReceiver } from "../../../src/remote-collaboration/inbound/remote-delegation-receiver.js";
 import { peerRefusalText } from "../../../src/remote-collaboration/domain/remote-refusals.js";
@@ -24,7 +24,6 @@ const opus = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "o
 const sol = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1", llmConfig: null };
 const agent = (id: string, name: string, defaultLaunchConfig: AgentDefinition["defaultLaunchConfig"] = null, ownershipScope: AgentDefinition["ownershipScope"] = "shared") =>
   new AgentDefinition({ id, name, description: name, instructions: "x", ownershipScope, defaultLaunchConfig });
-const builtIn = BUILT_IN_AGENT_DEFINITIONS[0]!;
 
 /** B's Model Routing, on: its runtimes (Claude with opus) and a router that is not asked here (every default is usable). */
 const routingOn: ModelRouterPort = {
@@ -46,7 +45,8 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string; modelRo
     agent("drafter", "Drafter", { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: null, llmConfig: null }),
     agent("member-only", "Member Only", opus, "team_local"),
     agent("app-agent", "App Agent", opus, "application_owned"),
-    agent(builtIn.id, "Built In", opus),
+    agent(DAILY_ASSISTANT_AGENT_DEFINITION_ID, "Daily Assistant", opus),
+    agent(MODEL_ROUTER_AGENT_DEFINITION_ID, "Model Router", opus),
   ];
   const teams = [new AgentTeamDefinition({
     id: "studio", name: "Studio Team", description: "Studio", instructions: "x", coordinatorMemberName: "publisher",
@@ -121,9 +121,16 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
     expect(node.decisions.hold).not.toHaveBeenCalled();
   });
 
-  it("AC-204: refuses an address with no delegable Agent (unknown, built-in, team-local, application-owned) and prepares nothing", async () => {
+  it("autobyteus-455 AC-004: prepares a run of the Daily Assistant like any shared Agent", async () => {
     const node = setup();
-    for (const address of ["/unknown", "/built_in", "/member_only", "/app_agent"]) {
+    await expect(node.start("/daily_assistant")).resolves.toMatchObject({ accepted: true, kind: "agent", agentRunId: "publisher_7f3a" });
+    expect(node.prepareAgentRun).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+      agentDefinitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID, workspaceRootPath: TEMP }));
+  });
+
+  it("AC-204: refuses an address with no delegable Agent (unknown, the Model Router, team-local, application-owned) and prepares nothing", async () => {
+    const node = setup();
+    for (const address of ["/unknown", "/model_router", "/member_only", "/app_agent"]) {
       await expect(node.start(address), address).resolves.toEqual({ accepted: false, code: "AGENT_NOT_FOUND", message: address });
     }
     expect(node.prepareAgentRun).not.toHaveBeenCalled();
