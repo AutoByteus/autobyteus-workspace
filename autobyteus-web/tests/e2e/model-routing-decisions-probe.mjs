@@ -17,7 +17,8 @@
 //          for the routed member (with "View decision") and for the remote copy, read-only with its node chip (AC-012; autobyteus-366);
 //   MRD-05 beta's window: its own Decisions list the copy alpha delegated, with no "Open run" (UXJ-008, VIS-011);
 //   MRD-06 Simplified Chinese: Decisions and Overview are translated (AC-009);
-//   MRD-08 New chat `@`: with internal agents shown, the Model Router is never offered as a mention (DEL-F1);
+//   MRD-08 New chat `@`: with internal agents shown, the Model Router is never offered as a mention (DEL-F1); for the Manager
+//          target the Daily Assistant is offered (autobyteus-455 AC-005);
 //   MRD-07 no browser errors.
 // Every case records Pass/Fail in <output-dir>/result.json with screenshots; owned processes and the temp root are removed.
 // Prerequisite: a current server build (`pnpm -C autobyteus-server-ts build`).
@@ -314,7 +315,7 @@ try {
     await bindWindow('mr-probe-alpha-again', alpha.url); await sleep(1500);
   });
 
-  await kase('MRD-08', 'New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1)', async () => {
+  await kase('MRD-08', 'New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1); the Daily Assistant is offered (autobyteus-455 AC-005)', async () => {
     await gql(alpha, 'mutation{ updateServerSetting(key: "AUTOBYTEUS_SHOW_INTERNAL_AGENTS", value: "true") }');
     try {
       const listed = (await gql(alpha, '{ agentDefinitions { id internal } }')).agentDefinitions;
@@ -336,6 +337,8 @@ try {
       evidence.observations.newChatMentions = { options, filteredModel: filtered, menu: await textOf(dt('run-mention-menu')).catch(() => null) };
       await shot('MRD-08-new-chat-mentions');
       assert(options.includes(ids.writer), `a shared agent is offered (positive control): ${JSON.stringify(options)}`);
+      // autobyteus-455 AC-005: for a target that is not the Daily Assistant, New chat offers the Daily Assistant like any shared agent.
+      assert(options.includes('autobyteus-daily-assistant'), `the Daily Assistant is offered: ${JSON.stringify(options)}`);
       assert(!options.some((o) => o.includes('autobyteus-model-router')) && !filtered.some((o) => o.includes('autobyteus-model-router')), `the Model Router is never offered: ${JSON.stringify({ options, filtered })}`);
       await page.keyboard.press('Escape');
     } finally {
