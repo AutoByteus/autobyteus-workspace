@@ -7,6 +7,8 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail — Design Impact | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2, Targeted Delta Review (IR-002) | Fail — Design Impact | Pass | CR-001 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-REV-001 F1, F2) | Pass | Fail — Design Impact | CR-002, CR-003 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4, Full Re-Audit of the delta (IR-003, IR-004) | Fail — Design Impact | Pass | CR-002, CR-003 (resolved) |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review after API-REV-002 Pass | Pass (CRR-004) | Pass | TR-N1, TR-N2 (non-blocking notes) |
 
 ## Revision Entries
 
@@ -90,3 +92,66 @@ None.
 - Material score or classification changes: classification `Design Impact`. Score-rationale note: Runtime Correctness and API/E2E Readiness did not account for F1; the next implementation review rescores.
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: the CR-002 remedy must keep autobyteus-277 REQ-011 (insets outside full screen) on API 26–34. IR-003 (`432d1c3af2`) is not source-reviewed yet.
+
+### CRR-004 — Items 13–14 and the CR-002/CR-003 rework: Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/code-review-report.md`
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit` of the delta since CRR-002. The changes spread beyond the prior findings' files: new items 13–14 (server delegation placement, web Activity item), the item-2 probe and words, the Android controller and the instrumented tests.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` / `implementation-revision-record.md` (IR-003, IR-004); CR-002, CR-003
+- Relevant solution revision IDs: `SR-004`, `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-003`, `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: CRR-003 `Fail` — `Design Impact`
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - CR-003: the probe reads a readable Host-gate 403 as `host_refused`, with the existing words and a single request; the opaque branch stays for browser windows.
+  - CR-002: full screen turns the decor's fitting off and back on, below API 35 only, so screens outside full screen and API 35 are unchanged. Real-window instrumented tests on API 34 and 29 prove it.
+  - Item 13: the self check runs before the own-team check, keeps the same code and uses each index's existing `agentAddressOf`.
+  - Item 14: the System instructions text loses its height cap, inner scroll and `tabindex`, per DEC-018.
+- Supported product scenario / material-premise basis changes:
+  - SCN-011 and SCN-012 added, both Supported Normal Scenarios.
+  - DS-005 and DEC-002 premises corrected by SR-005.
+  - C-10 (keyboard on API 26–28) and C-11 (documented skips) rejected as findings.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Resolved | IR-002 | API-10, API-14 |
+| CR-002 | Open (Design Impact) | Resolved | SR-005 DEC-020, ARCH-REV-005, IR-004 `7e53b46d80`, `06a072014f` | Code read of `DesktopFullScreenController`; unit tests per API range and order; IMP-20 (`WebShellWindowInsetsTest` API 34/29, suites 14/14 and 14 with 3 documented skips) |
+| CR-003 | Open (Design Impact) | Resolved | SR-005 DEC-019, ARCH-REV-005, IR-004 `9ee362778e` | Code read of `nodeIdentityProbe`/`causeText`; probe spec (readable 403 codes, one request); words spec |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: every category ≥ 9.3; classification none (Pass)
+- Recommended recipient: API/E2E engineer; informational notice to the implementation engineer
+- Remaining risks or uncertainty: API-13 and API-18 reruns; API 26–28 keyboard in full screen not measured; C-09 docs path for delivery
+
+### CRR-005 — Proportional test-code review after API-REV-002: Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review). Durable test diff `git diff d37397b40d 188ac5c318 -- autobyteus-web/tests/e2e/`
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` (API-REV-002 Pass, 95%); MSP-33…36, MSP-05
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: CRR-004 `Pass` (implementation review)
+- Current authoritative result: `Pass` (test review)
+- What changed in the review result and why: the new probe cases enter through real triggers and assert DOM, route, GraphQL and read-count facts per AC. Two non-blocking notes:
+  - TR-N1: MSP-34/35's TODO step is labelled "reopened". Setting a Task back to TODO does not reopen its executions, and the reopen half of AC-011-1 cannot happen for a stopped host.
+  - TR-N2: a repeated helper in MSP-33.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (first test review; CR-001…CR-003 stay resolved).
+
+- New or remaining finding IDs: TR-N1, TR-N2 (non-blocking)
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: device journeys are run by hand with scripts in the evidence folder (no emulator CI); API 26–28 not run on a device; C-09 docs path for delivery
