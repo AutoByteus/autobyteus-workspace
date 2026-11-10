@@ -1,0 +1,6 @@
+# IMP-21 server typecheck after SR-002; commit 6ffb8f3bcb (code = 5abf8591db); macOS, Node v22.23.1; 2026-11-10T10:12:33Z
+# Command: pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 12.3s
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 37.1s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS

@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `handoff-SR-001.md`, initial | N/A | `Initial Baseline` | SR-001 | D1…D9 implemented; the 15 files and the full server E2E suite green; Medium/Low confirmed |
+| IR-003 | Solution Designer, `handoff-SR-002.md` (SR-002, after delivery DR-001 was blocked) | SR-002 D10–D13; FU-002…FU-004 | `Design Impact` (solution revision) | SR-002, DR-001 | D10–D13 done; full default E2E 0 failed; gated set 2 failures outside D10–D13 returned to the Solution Designer |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-001 (failure origin of API/E2E API-11, API-REV-001) | CR-001, CR-002 | `Local Fix` | SR-001, API-REV-001, CRR-001 | Gated Codex native policy fixture child attaches its own launch credential; TESTING.md sentence; Medium/Low unchanged |
 
 ## Revision Entries
@@ -50,3 +51,23 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: IMP-11 (API-11 command, stand-in Codex: past "owned built Studio ready" and Team creation, stops at "Timeout: production Codex thread after user command"; 0 `NODE_CREDENTIAL_REQUIRED`; 0 `own_`), IMP-11b (missing credential → clear message, exit 1), IMP-12 (guard 4/4, server typecheck at baseline).
 - Next recipient or routing: per `get_handoff_rules` (Medium/Low direct-route Local Fix → API/E2E).
 - Remaining limitations or risks: the real Codex run of this suite is not run (user direction: Codex limit; paid live suite, Non-Goal). The guard does not read `tests/fixtures/` (CRR-001 C-03, rejected). The design's file mapping omits these two files (non-blocking note for the Solution Designer).
+
+### IR-003 — SR-002: E-002, RPE, DCF and DCM tests follow the current product (D10–D13)
+
+- Triggering role, report path, and round: Solution Designer, `handoff-SR-002.md` (SR-002), after delivery DR-001 was blocked on E-002 (DEL-01, DEL-02).
+- Triggering finding IDs: SR-002 D10–D13; FU-002, FU-003, FU-004 folded in.
+- Classification: solution revision (SR-002), implemented as designed.
+- Prior authoritative result: IR-002 (API/E2E API-REV-002 Pass).
+- Current authoritative result: D10–D13 implemented. Full default `pnpm test:e2e` 0 failed (IMP-17). The deterministic gated set has 2 failed files outside D10–D13 (IMP-18); returned to the Solution Designer.
+- Related solution revision IDs: SR-002
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: N/A
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: DR-001
+- Why this implementation revision is recorded: SR-002.
+- Approved behavior or requirement IDs affected: REQ-009, REQ-010 (b, c, d); AC-009, AC-010.
+- Implementation delta: see `implementation-handoff.md` "SR-002 Implementation (IR-003)".
+- Changed files or areas: `tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts`, `tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts`, `tests/e2e/helpers/agy-run-capsule.ts` (new), `tests/e2e/helpers/collaboration-root-harness.ts`, `tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts`, `tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts`, `tests/e2e/projects/delegated-copy-model-change.e2e.test.ts` (commit `5abf8591db`).
+- Local validation and result: IMP-13…IMP-21.
+- Next recipient or routing: Solution Designer (the two gated failures outside the design need a decision before validation continues).
+- Remaining limitations or risks: DCM-009's cause is unknown; it did not reproduce in 3 load runs, and the improved assertion will name it next time. EXC-E2E-004 points to a product race. The idle-lifetime cause is not established.
