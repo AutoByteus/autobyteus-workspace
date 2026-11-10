@@ -1,0 +1,1470 @@
+# API-05b existing collaboration prompt wording suite (AC-005)
+# Command: env -i PATH HOME TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<wt>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts --no-watch --reporter=verbose
+# Commit: 578ac778b (+ uncommitted API/E2E test files)
+# Environment: Linux 6.12 container (root), Node v22.23.3, codex-cli 0.167.0, claude 2.1.322, grok 1.0.77, agy 1.5.4
+# Date: 2026-11-10T12:31:52Z
+
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:80277) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+Custom app data directory set to: /tmp/cpw-e2e-jMk3LU
+Updated config file path to /tmp/cpw-e2e-jMk3LU/.env
+Loading environment from: /tmp/cpw-e2e-jMk3LU/.env
+◇ injected env (2) from ../../../../../../../tmp/cpw-e2e-jMk3LU/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/cpw-e2e-jMk3LU
+DB DIRECTORY: /tmp/cpw-e2e-jMk3LU/db
+LOGS DIRECTORY: /tmp/cpw-e2e-jMk3LU/logs
+DOWNLOAD DIRECTORY: /tmp/cpw-e2e-jMk3LU/download
+MEMORY DIRECTORY: /tmp/cpw-e2e-jMk3LU/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Creating temp workspace at: /tmp/cpw-e2e-jMk3LU/temp_workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/temp_workspace.
+Initialized TempWorkspace at /tmp/cpw-e2e-jMk3LU/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: cpw-manager-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: cpw-mate-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: cpw-sibling-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: cpw-outsider-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: cpw-stranger-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: cpw-team-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: cpw-squad-25db56
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Created and registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+AGY compaction detection off for run cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Agent websocket attached for run cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1
+Created agent session f7e4fdb1-cd6b-4de1-9e4e-6ead5c76c150 for run cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1
+Agent WebSocket connected: session=f7e4fdb1-cd6b-4de1-9e4e-6ead5c76c150, run=cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+AGY compaction detection off for run cpw_outsider_25db56_a1b4944cc8ca499e8945298c4b8bd53e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+AGY compaction detection off for run cpw_manager_25db56_c3b4f15cb201499eaf119eeaa006c085: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_353c600f43364a51a38ef0e8f5465aa1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs
+Closed agent session f7e4fdb1-cd6b-4de1-9e4e-6ead5c76c150
+Agent WebSocket disconnected: f7e4fdb1-cd6b-4de1-9e4e-6ead5c76c150
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs 1173ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Agent team websocket attached for team run cpw_team_25db56_15d995e4f948465ba23cbae7619e408b
+Created agent session e73565fe-bf67-47da-a859-9c82dffb596e for run cpw_team_25db56_15d995e4f948465ba23cbae7619e408b
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Agent Team WebSocket connected: session=e73565fe-bf67-47da-a859-9c82dffb596e, run=cpw_team_25db56_15d995e4f948465ba23cbae7619e408b
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+AGY compaction detection off for run cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+AGY compaction detection off for run cpw_mate_25db56_a2d234e8dda54b14a9c2619f95b7ca6c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+AGY compaction detection off for run cpw_outsider_25db56_123604c286be4343ad6ca3795ece567c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_15d995e4f948465ba23cbae7619e408b/cpw_manager_25db56_61a73592010040fb8a0a0726c5c3413d/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team
+Closed agent session e73565fe-bf67-47da-a859-9c82dffb596e
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team 907ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+AGY compaction detection off for run cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+AGY compaction detection off for run cpw_mate_25db56_8e7dbb3f881a4e76b9bcf39d48d9c083: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+AGY compaction detection off for run cpw_outsider_25db56_70669979a45e42a396a0230905f014d2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+AGY compaction detection off for run cpw_sibling_25db56_fe14329bb2be424c92f3bf0cbd1e9c4e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+AGY compaction detection off for run cpw_manager_25db56_3ae1c78150e2463fa8d3dc57dce12ade: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_b7c669b44f2b4d13ab45cc967d2891a7/cpw_manager_25db56_c6e0f3f763994d2cae90a27f50f6432c/raw_traces_manifest.json
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team 1514ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+AGY compaction detection off for run cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Agent websocket attached for run cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c
+Created agent session f3f1f13b-d371-480f-947b-53fd318b4d6c for run cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c
+Agent WebSocket connected: session=f3f1f13b-d371-480f-947b-53fd318b4d6c, run=cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+AGY compaction detection off for run cpw_outsider_25db56_2d5f5d2000a149b79b027cb4b8073a07: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+AGY compaction detection off for run cpw_stranger_25db56_b8e0ba79f29a44c88761f77a21b5f368: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+AGY compaction detection off for run cpw_manager_25db56_24e032572de14523b4f6ba3712346ba9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_15ebe5d2cbff4936870b19803c96d61c/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)
+Closed agent session f3f1f13b-d371-480f-947b-53fd318b4d6c
+Agent WebSocket disconnected: f3f1f13b-d371-480f-947b-53fd318b4d6c
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID) 2008ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+AGY compaction detection off for run cpw_manager_25db56_0d9956de705b48718abaf383f7714f35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Agent websocket attached for run cpw_manager_25db56_0d9956de705b48718abaf383f7714f35
+Created agent session 057d7441-a2bb-4b24-a395-0b0ea5f49d2c for run cpw_manager_25db56_0d9956de705b48718abaf383f7714f35
+Agent WebSocket connected: session=057d7441-a2bb-4b24-a395-0b0ea5f49d2c, run=cpw_manager_25db56_0d9956de705b48718abaf383f7714f35
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+AGY compaction detection off for run cpw_outsider_25db56_8fb89c5e30e2401cbf41ace85fc1ef58: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+AGY compaction detection off for run cpw_stranger_25db56_58806ad644234c46ba909aed8d33d990: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_0d9956de705b48718abaf383f7714f35/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text
+Closed agent session 057d7441-a2bb-4b24-a395-0b0ea5f49d2c
+Agent WebSocket disconnected: 057d7441-a2bb-4b24-a395-0b0ea5f49d2c
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text 1032ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+AGY compaction detection off for run cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Agent websocket attached for run cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008
+Created agent session 4b64ea56-d6ff-4786-bf85-a5b9ccb8ffe5 for run cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008
+Agent WebSocket connected: session=4b64ea56-d6ff-4786-bf85-a5b9ccb8ffe5, run=cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+AGY compaction detection off for run cpw_manager_25db56_288ee5075e1e4f56b30c8632e0d80304: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_480fbc0b019c48428fcd2e5482260008/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_ad70415ab02d4dfe8f5f0427cad51376/cpw_manager_25db56_288ee5075e1e4f56b30c8632e0d80304/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)
+Closed agent session 4b64ea56-d6ff-4786-bf85-a5b9ccb8ffe5
+Agent WebSocket disconnected: 4b64ea56-d6ff-4786-bf85-a5b9ccb8ffe5
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011) 955ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+AGY compaction detection off for run cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Agent websocket attached for run cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1
+Created agent session 05537c84-d33e-465f-bafa-6074c1ef35b9 for run cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1
+Agent WebSocket connected: session=05537c84-d33e-465f-bafa-6074c1ef35b9, run=cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+AGY compaction detection off for run cpw_outsider_25db56_ff12de8471aa4ba49e0c42b634659c34: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+AGY compaction detection off for run cpw_manager_25db56_caf4e95380d944feb4b458a716b8c47c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_223f99e0262f4ad6b333562b4c1290a1/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate
+Closed agent session 05537c84-d33e-465f-bafa-6074c1ef35b9
+Agent WebSocket disconnected: 05537c84-d33e-465f-bafa-6074c1ef35b9
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate 1281ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Agent websocket attached for run cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb
+Created agent session 97d81968-a410-4cbb-8620-544e395fe8f9 for run cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb
+Agent WebSocket connected: session=97d81968-a410-4cbb-8620-544e395fe8f9, run=cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_stranger_25db56_88d672a847c64b99ad918651862c2d3c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_a91e9b77e08743efaaa617aab03216c5/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_stranger_25db56_88d672a847c64b99ad918651862c2d3c/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_d9b256f089d94a0281c7d01c3686e88b/cpw_manager_25db56_b6bd63bb3b254f8aba0da59bbc18f4fc/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_039ac35a2ff645469f810a905bfbecfb/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Closed agent session 97d81968-a410-4cbb-8620-544e395fe8f9
+Agent WebSocket disconnected: 97d81968-a410-4cbb-8620-544e395fe8f9
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Agent team websocket attached for team run cpw_team_25db56_3f5ac969045647c397fac81202789a98
+Created agent session 794ff6ac-47f7-4f1a-bffa-ec6c4bd22900 for run cpw_team_25db56_3f5ac969045647c397fac81202789a98
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Agent Team WebSocket connected: session=794ff6ac-47f7-4f1a-bffa-ec6c4bd22900, run=cpw_team_25db56_3f5ac969045647c397fac81202789a98
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_mate_25db56_2acbff9c1da8400ca6197c8311e7c909: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_manager_25db56_2771a63bea5b4007999d85186f1e622f/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_3f5ac969045647c397fac81202789a98/cpw_mate_25db56_2acbff9c1da8400ca6197c8311e7c909/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Closed agent session 794ff6ac-47f7-4f1a-bffa-ec6c4bd22900
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+AGY compaction detection off for run cpw_mate_25db56_db057b4b92a740a7a93552508be055b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_fd5026996b134fef8b084bd773f96f16/cpw_manager_25db56_68f71ff36bfe4c1e96157150ebd83327/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_squad_25db56_151cc0038c9f40c7b55715d68b37d5c3/cpw_mate_25db56_db057b4b92a740a7a93552508be055b7/raw_traces_manifest.json
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots 3201ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Agent team websocket attached for team run cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3
+Created agent session d5e1fbdb-d0b9-4da8-be61-10033b11d629 for run cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Agent Team WebSocket connected: session=d5e1fbdb-d0b9-4da8-be61-10033b11d629, run=cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3/cpw_manager_25db56_85eb7e0dbe984a59aeb3a35785408b68/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3/cpw_manager_25db56_85eb7e0dbe984a59aeb3a35785408b68/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+AGY compaction detection off for run cpw_manager_25db56_85eb7e0dbe984a59aeb3a35785408b68: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3/cpw_manager_25db56_85eb7e0dbe984a59aeb3a35785408b68/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3/cpw_manager_25db56_85eb7e0dbe984a59aeb3a35785408b68/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_teams/cpw_team_25db56_9f7319ab690d43f697c95db8b16594c3/cpw_manager_25db56_85eb7e0dbe984a59aeb3a35785408b68/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated
+Closed agent session d5e1fbdb-d0b9-4da8-be61-10033b11d629
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+AGY compaction detection off for run cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M1 Team root: a teammate and the agent itself are 'in your team' and 'that is you'; an agent only the catalog has is delegated 179ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Agent websocket attached for run cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3
+Created agent session 49a1d75b-dee5-4233-a906-8e41c74b6272 for run cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3
+Agent WebSocket connected: session=49a1d75b-dee5-4233-a906-8e41c74b6272, run=cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+AGY compaction detection off for run cpw_outsider_25db56_757f583caf2f4019ae4a1d616788d13b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_manager_25db56_be5c91f89f1c4fb0b05811d9480b76f3/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agents/cpw_outsider_25db56_757f583caf2f4019ae4a1d616788d13b/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it
+Closed agent session 49a1d75b-dee5-4233-a906-8e41c74b6272
+Agent WebSocket disconnected: 49a1d75b-dee5-4233-a906-8e41c74b6272
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it 576ms
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Creating new workspace for rootPath: /tmp/cpw-e2e-jMk3LU/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cpw-e2e-jMk3LU/workspace.
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Reusing registered workspace ID: agent_ws_fe48f5b459986df51b73dfa549eb608433dc63a9cbab72861be9d0d6cbbbccd4
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_3353c2240baf4a309e665c23d62de0ca/cpw_manager_25db56_0f387f5298774eb9a564c7a8d3914cb9/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_3353c2240baf4a309e665c23d62de0ca/cpw_manager_25db56_0f387f5298774eb9a564c7a8d3914cb9/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+AGY compaction detection off for run cpw_manager_25db56_0f387f5298774eb9a564c7a8d3914cb9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_3353c2240baf4a309e665c23d62de0ca/cpw_manager_25db56_0f387f5298774eb9a564c7a8d3914cb9/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable
+Memory file missing: /tmp/cpw-e2e-jMk3LU/memory/agent_orgs/cpw_org_25db56_3353c2240baf4a309e665c23d62de0ca/cpw_manager_25db56_0f387f5298774eb9a564c7a8d3914cb9/raw_traces_manifest.json
+
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts > Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CPW-M3 Org root: a sibling of the organization is reachable and delegable 285ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  12:31:07
+   Duration  32.48s (transform 12.36s, setup 131ms, import 17.60s, tests 13.85s, environment 0ms)
+

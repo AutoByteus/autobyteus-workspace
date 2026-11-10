@@ -1,0 +1,75 @@
+{
+  "teamRunId": "sm_live_team_eb866eb2_0efee90a8fee4621bc73be7cf3f656d1",
+  "keeperRunId": "sm_live_keeper_codex_eb866eb2_ffda6208fdaf4e638ad84195e3942f5b",
+  "reply": "SMCODE-CODEX-eb866eb2",
+  "tools": [
+    "run_bash {\"command\":\"/bin/bash -lc \\\"ls -la /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2 && grep -Rin 'codeword\\\\\\\\|deploy' /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2\\\"\",\"cwd\":\"/root/.aut"
+  ],
+  "approvals": [],
+  "wire": [
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."
+    },
+    {
+      "method": "thread/resume",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-a",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-b",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."
+    },
+    {
+      "method": "thread/start",
+      "sandbox": "workspace-write",
+      "approvalPolicy": "on-request",
+      "cwd": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-team",
+      "configKeys": [
+        "mcp_servers",
+        "sandbox_workspace_write"
+      ],
+      "sandbox_workspace_write": {
+        "writable_roots": [
+          "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2"
+        ]
+      },
+      "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-keeper-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."
+    }
+  ]
+}
