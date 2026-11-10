@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved`
-- Current solution revision ID: `SR-007`
+- Status: `Approved` at SR-007, with one open delta at SR-010: DEC-011 (which message routes exist between runs), raised by the architecture review, `Ready for Approval` and waiting for the user. Nothing else changed.
+- Current solution revision ID: `SR-010`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), with the user's decisions of 2026-11-10 in the Solution Designer's conversation
@@ -199,7 +199,7 @@ None.
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
 | ASM-001 | An application-owned run's termination by its application is not the user's Stop | REQ-010 | Solution Designer | Accepted |
-| ASM-003 | A delegated run can run under its own root with the features of REQ-009, as a run started by a peer already runs under its own root | REQ-002, REQ-009 | Architecture investigation | Open |
+| ASM-003 | A delegated run can run under its own root with the features of REQ-009, as a run started by a peer already runs under its own root | REQ-002, REQ-009 | Investigation notes F-2 (the link machinery and peer-started runs) and F-3 (what a linked run lacks, each designed in `design-spec.md`); the review's AR-001 … AR-004 added the Task membership, the location consumers and restart resume (design RC-1, RC-3, RC-4) | Confirmed by reading; one part became DEC-011 |
 
 ## Decisions
 
@@ -210,6 +210,7 @@ None.
 | DEC-006 | Application-owned runs | Other callers of Stop | Same / unchanged | Unchanged | Solution Designer | Decided |
 | DEC-007 | Server shutdown and restart | The Task leaves it to the team | Keep / change | Keep, with the update-restart addition | Solution Designer | Decided |
 | DEC-008 | A one-click "stop this run and all it delegated" | Today's Stop did that | Add / no | No; closing the Task does it | Solution Designer | Decided |
+| DEC-011 | Which messages by run ID exist between two runs on one node? | Today every run below a top run is in one root: any two of them could message each other by run ID unless their Tasks differ. With independent runs each route must exist on purpose (architecture review AR-002) | **A. Links only:** a run and the run it delegated to, both ways; by address, the agents of the run that delegated it (contract P3, CM-5). **B. Also a Task route:** two runs recorded in one open Task, and a Task's assigner with every run of that Task. Measured on the user's logs, read-only (`evidence/data-model-validation/cross-run-messages-2026-11-10.txt`, `non-pair-messages-2026-11-10.txt`): 1,600 messages between two runs; 1,556 (97.25%) between a delegator and the run it delegated to; 32 between two runs delegated by the same run, all in 2026-10 and without a shared Task (the retired collaborator era); 8 between a nested run and the top run that did not delegate it (2026-10, 2026-11); 4 on old records without a delegator | A is the contract's own one-hop rule and needs no extra mechanism; a refused agent is told to go through the agent that delegated to it, which relays. Its cost: the 8-in-1,600 case (a team's sub-team and the manager messaging each other directly) is refused. B keeps that case at the price of a second, Task-based route with its own lookup and inbound rule. **Recommendation: A.** If A: REQ-005's sentence "runs of different Tasks cannot message each other by run ID" becomes "by run ID a run messages only the run that delegated it and the runs it delegated to", and the contract's message-scope row follows | The user | **Needs user** |
 | DEC-010 | Change what Stop covers, or correct the structure | The cause | SR-003 design / the contract | The structure, in this ticket | The user | Decided, 2026-11-10 |
 | TC-1 … TC-6 | See the contract §9 | — | — | — | The user (TC-1, TC-3, TC-4, TC-6); Solution Designer (TC-2, TC-5) | Decided |
 | DEC-002, DEC-003, DEC-005, DEC-009 | Earlier scope and cascade decisions | — | — | Superseded by DEC-010, TC-1, TC-3, TC-4 (history in `solution-revision-record.md`) | — | Superseded |
@@ -252,7 +253,7 @@ None.
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
 - Content ready for approval: `Yes`
-- Remaining content blocker: none
+- Remaining content blocker: DEC-011 (SR-010)
 
 ### Approved Basis Ready For Design
 

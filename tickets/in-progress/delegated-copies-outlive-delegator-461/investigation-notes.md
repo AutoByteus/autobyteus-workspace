@@ -11,9 +11,9 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-009`
+- Current solution revision ID: `SR-010`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
-- Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
+- Investigation status: requirements and architecture investigation done for the contract's first step; revised after architecture review ARCH-REV-001 (see "Investigation for the architecture review's findings"). Sections above the contract work (SR-001 … SR-003) are history: U-001, U-002 and R-001 belong to the superseded small design
 
 ## Initial Request And Clarifications
 
@@ -166,8 +166,11 @@ N/A — no Product Design was requested.
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `target-collaboration-contract.md` | Solution Designer | The target contract for delegated runs (words, rules, stored shapes, user-visible outcome, decisions TC-1 … TC-4) | All run kinds | All | Proposed (SR-005) | Behavior-defining; the user's approval pending |
-| `follow-ups.md` | Solution Designer | Follow-ups (FU-001 withdrawn, FU-002) | — | REQ-010 | Current | Not behavior-defining |
+| `target-collaboration-contract.md` | Solution Designer | The delegation contract (words, rules, records with example JSON, cases, attribute check, existing data, simulations, decisions TC-1 … TC-6) | All run kinds | All | Revision 2 | Behavior-defining; approved by the user, 2026-11-10 (its message-scope row follows requirements DEC-011 once decided) |
+| `follow-ups.md` | Solution Designer | Follow-ups: FU-002, FU-003, FU-004, FU-005 (FU-001 withdrawn) | — | REQ-010 | Current | Not behavior-defining |
+| `handoff-architecture-design-complete.md` | Solution Designer | The handoff of SR-009 | — | All | Superseded by the next handoff after SR-010 | — |
+| `design-review-report.md`, `architecture-review-revision-record.md` | Architecture reviewer | Review round 1 (ARCH-REV-001, Fail, AR-001 … AR-010) | `design-spec.md` at SR-009 | All | Current | Reviewer-owned |
+| `evidence/data-model-validation/validate_nested_chains.py`, `nested-counts-2026-11-10.txt`, `measure_cross_run_messages.py`, `cross-run-messages-2026-11-10.txt`, `measure_non_pair_messages.py`, `non-pair-messages-2026-11-10.txt` | Solution Designer | Read-only counts for AR-005 and AR-002 | The user's stored data, counts only | REQ-005, REQ-011 | Current | Evidence |
 | `evidence/data-model-validation/validate_delegation_shapes.py` and `counts-2026-11-10.txt` | Solution Designer | The read-only data check of the contract and its result | The user's stored data, counts only | All | Current | Evidence |
 
 ## Assumptions, Unknowns, And Risks
@@ -291,3 +294,14 @@ Reading gate for this phase: `references/architecture-design.md`, `references/de
 - The user, 2026-11-10, after the design direction and its visible effects were presented: a delegated run's model is changed in its own Settings ("it's independent agent run now … it's setting … I think that makes sense what you have proposed"). Recorded as the user's approval of the design direction.
 - Searches that closed the design's file-level parts (at `aae0a53a81`): `grep -rlE "taskAgent\b|coordinatingRun|hostRoot" --include=*.ts autobyteus-server-ts/src` outside `app-data-migrations` (file lists in `design-spec.md` C-1); imports of current modules from `app-data-migrations/` (only paths inside `frozen/server/`; `tests/architecture/app-data-migration-boundaries.test.ts` enforces the sealed area); `ls app-data-migrations/frozen` (holds `task-agent-own-run-v1`, `released-run-package-shapes`, `server/`); web files that use the standalone collaboration store and services (`grep -rlE "useAgentRunCollaborationStore|agentCollaboration/|agentRunCollaboration"` in `autobyteus-web`, outside tests and generated code; list in C-4).
 - Read but not run: everything in the design. Read in part only: `task-execution-resource-service.ts`, the history catalog services, the web files below `agentRunCollaborationStore.ts`.
+
+### Investigation for the architecture review's findings (ARCH-REV-001), 2026-11-10
+
+Review read first: `design-review-report.md` (Fail; AR-001 … AR-010, all `Design Impact`; AR-002 and AR-007 conditionally `Requirement Gap`).
+
+- **AR-005, nested runs** (`Measured`): `python3 -I evidence/data-model-validation/validate_nested_chains.py ~/.autobyteus/server-data` → `nested-counts-2026-11-10.txt`: 32 nested runs, all at depth 1; the delegator is in a delegated team run for 31 and in a delegated agent run for 1 (contract D6 exists); 29 under a standalone top run, 3 under a team top run; every intermediate holder is stored. No delegated agent run has a `collaboration_tree.json` (43 of 43), no delegated run has a history row (0 and 0), no `busy-runs.json` is present. The 4 records without a delegator are held by team runs (2) and org runs (2) (inline check of `taskAgent` sections).
+- **AR-002, who messages whom** (`Measured`): `measure_cross_run_messages.py` over 838 log files: 13,142 messages inside one run; 1,600 between two runs: 737 delegator → delegated run, 819 delegated run → its delegator, 44 others. `measure_non_pair_messages.py` on the 44: 32 between two runs delegated by the same run (all 2026-10; no shared Task record), 4 from a delegated team run to the host of its standalone top run that is not its delegator and 2 the other way (2026-10: 4, 2026-11: 2), 1 + 1 the same with a team top run (2026-10), 3 + 1 on records without a delegator (2026-08, 2026-09).
+- **AR-001** (`Read`): `root-task-execution-resource-scope.ts` (whole file): ownership is `adapter.ownershipChainFor(agent)` asked of the Task side; `assertInputAllowed`, `assertMessageScope`; `closedTaskExecutions` = `listClosedTaskExecutions` over `closedTaskExecutionsIn(root)` filtered by the tree; `releaseTaskExecutions` fences a remote endpoint and releases hosted runs, where "no authority" counts as stopped; `discardReleasedExecution`. `root-task-execution-lifecycle.ts:228-321`: `deliverToExactTarget` → `reactivateClosedTarget` (needs `ownerOf(target)`, `taskExecutionWithIngress(target)`, `assertReopenable`, the queue's `prepareClosedCopyForResume`, `reopenAssignment`, the reopened event). `compositions/project-task-execution-resource-composition.ts:59-66`: the release request and the worker status both resolve `hostRoot` in the active root directory.
+- **AR-003** (`Read`): `standalone-root-location-service.ts` (`findAgent`, `listAgents`, `listHostRunIds`; "the third location family: children of Agent roots"); its consumers by search: `run-last-activity-reader.ts`, `collaboration-execution-location-service.ts`, `api/graphql/types/token-usage-stats.ts`, `api/rest/context-files.ts`, `general-process-run-supervisor.ts`, `standalone-root-member-view-projection-service.ts`.
+- **AR-004** (`Read`): `restart-resume/busy-run-record.ts` (entry: `root`, `agentRunId`, `place`, `status`, `recordedAt`, `version`), `restart-notice.ts:26-27` (the "These runs you delegated…" line for an entry that is not `delegated`), `restart-resumer.ts:92-130`.
+- Nothing was run on the target shape.

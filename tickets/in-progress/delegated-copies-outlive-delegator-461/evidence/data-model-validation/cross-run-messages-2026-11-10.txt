@@ -1,0 +1,12 @@
+    838  log_files
+   1600  messages.between_two_runs
+    819    delegated run -> its delegator
+  13142  messages.inside_one_run
+    737    delegator -> the run it delegated
+     44    NOT a delegator/delegated pair
+     12      both delegated=False, share a Task=False
+      8      sender's coordinating run is the receiver's run (to the top, more than one hop or to another agent of it)
+      4      receiver's coordinating run is the sender's run (from the top or another agent of it)
+      3  messages.endpoint_not_in_a_stored_run
+     32      both delegated=True, share a Task=False
+     32      two delegated runs of the same coordinating run

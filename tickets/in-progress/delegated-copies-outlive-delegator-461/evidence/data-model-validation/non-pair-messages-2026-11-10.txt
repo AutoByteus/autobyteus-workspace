@@ -1,0 +1,14 @@
+   32  two runs delegated by the same run (siblings)
+        months: 2026-10:32
+    4  delegated agent_team run -> another agent of its coordinating agent run (receiver is its host; not its delegator)
+        months: 2026-10:3, 2026-11:1
+    3  from a run whose record has no delegator, to its coordinating run
+        months: 2026-08:2, 2026-09:1
+    2  an agent of the coordinating agent run (its host; not the delegator) -> delegated agent_team run
+        months: 2026-10:1, 2026-11:1
+    1  delegated agent run -> another agent of its coordinating agent_team run (receiver is its coordinator; not its delegator)
+        months: 2026-10:1
+    1  an agent of the coordinating agent_team run (its coordinator; not the delegator) -> delegated agent run
+        months: 2026-10:1
+    1  to a run whose record has no delegator, from its coordinating run
+        months: 2026-08:1

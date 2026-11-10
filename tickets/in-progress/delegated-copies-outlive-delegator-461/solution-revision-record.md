@@ -13,6 +13,7 @@
 | SR-007 | Requirements | The user's last contract decision (TC-3) | N/A | Requirements Draft; contract revision 2 proposed | Requirements Approved; contract revision 2 approved; design Needs Revision (to be replaced) | All REQ and AC (rewritten on the contract); REQ-011, REQ-012, AC-014, AC-015, BEH-010, BEH-011, SCN-009, SCN-010 new | Approved basis for the design of this ticket's step |
 | SR-008 | Design | Architecture investigation of the contract's first step | N/A | Requirements Approved; design Needs Revision | Requirements Approved; design Draft (mechanism decided; file-level parts open) | D-1 … D-11 of `design-spec.md`; contract V-9 resolved, V-8, V-11, V-12 open | Design direction ready for the user; not ready for handoff |
 | SR-009 | Design | The user's approval of the design direction; the open file-level parts closed | N/A | Design Draft | Design Ready; `Large` / `High` | D-8, D-10, D-11 refined; File-Level Completion C-1 … C-5; migration checklist | Architecture Design Complete |
+| SR-010 | Mixed | Architecture review ARCH-REV-001 (Fail): AR-001 … AR-010 | AR-001 … AR-010 | Requirements Approved; design Ready | Requirements Approved with DEC-011 Ready for Approval; design Needs Revision (revised, waiting for DEC-011) | DEC-011 (new); REQ-005 (wording, if A); design RC-1 … RC-10, D-6, DS-004, DS-004b, DS-007, DS-008, the migration plan | Findings answered; one requirement decision for the user |
 
 ## Revision Entries
 
@@ -222,3 +223,26 @@
 - Downstream and architecture-review impact: independent architecture review before implementation
 - Remaining gaps, assumptions or blocked decisions: the design is from reading, not running; the file lists come from searches and are re-run by the implementation; internals read in part are named in the investigation notes
 - Next action: the handoff by the handoff rules
+
+### SR-010 — Revision after architecture review round 1 (ARCH-REV-001)
+
+- Phase and classification: Mixed. `Design Impact` for AR-001, AR-003 … AR-010; `Requirement Gap` for AR-002 (the reviewer's own condition: a route that cannot be served through links is escalated)
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: `design-review-report.md`, architecture review round 1, ARCH-REV-001, Fail, against SR-009
+- Triggering finding IDs: AR-001, AR-002, AR-003, AR-004, AR-005, AR-006, AR-007, AR-008, AR-009, AR-010
+- Prior authoritative requirements/design status: requirements `Approved` (SR-007); design `Ready` (SR-009)
+- Current authoritative requirements/design status: requirements `Approved` at SR-007 with DEC-011 `Ready for Approval`; design `Needs Revision`: revised (RC-1 … RC-10), becomes `Ready` when DEC-011 is decided
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: DEC-011 (new, needs the user); REQ-005 and the contract's message-scope row (reworded only if DEC-011 = A); ASM-003 closed; design D-6, DS-004, DS-004b (new), DS-007, DS-008, BEH-005 and BEH-006 map rows, the migration plan (E3a, E3b, E3c, the busy-run record)
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: a failed review
+- Canonical requirements, investigation and design sections changed: `design-spec.md` (status; the rows and spines named above; "Review Corrections (ARCH-REV-001)"); `requirements-doc.md` (status, DEC-011, ASM-003); `investigation-notes.md` (status, supplement inventory, the review investigation)
+- Supplemental artifacts added, changed or removed: three read-only measurement scripts and their results in `evidence/data-model-validation/`
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No` for nine findings; DEC-011 proposes one change (option A) and is not applied until the user decides
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: SR-007 stays the approved baseline; DEC-011 needs the user's answer
+- Behavior-defining supplement versions and approval references: contract revision 2 (approved); its message-scope row follows DEC-011
+- Affected design/review basis invalidated or rebuilt: the review of SR-009 stands as round 1; the revised spec needs a new round
+- Post-design task-size/risk classification and rationale changes: unchanged, `Large` / `High`
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none yet (waiting for DEC-011)
+- Downstream and architecture-review impact: architecture review round 2 after DEC-011
+- Remaining gaps, assumptions or blocked decisions: DEC-011
+- Next action: the user decides DEC-011; the spec's D-6 and RC-2 are finalized; the package returns to architecture review
