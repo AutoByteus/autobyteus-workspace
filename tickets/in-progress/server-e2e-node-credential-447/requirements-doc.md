@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `server-e2e-node-credential-447`
 - Request / ticket: Project Task `autobyteus-447` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); urgent follow-up FU-004 of autobyteus-436 (`tickets/done/phone-registered-folders-436/follow-ups.md`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: SR-001 approval note in `solution-revision-record.md` and the Solution Designer's message to the user in its conversation (2026-11-10)
-- Exact approved requirements baseline / solution revision: this document at SR-001
+- Approved by and reference: SR-001: `Solution Designer within the direction (user informed)`; reference: SR-001 approval note in `solution-revision-record.md` and the Solution Designer's message to the user (2026-11-10). SR-002 (UC-004, REQ-009, REQ-010, AC-009, AC-010): the user's direction "for other errors fix them" (2026-11-10, section User Direction), applied by the Solution Designer, user informed
+- Exact approved requirements baseline / solution revision: this document at SR-002
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -28,6 +28,7 @@
 | BEH-002 | Operational | SCN-002 | Gated suites (run only with their `RUN_*` gate) reach their node by the same paths (a `fetch` captured before the credential attachment exists, the MCP gateway without its token): 10 files read, not yet reproduced | They present the credential and token the same way and pass under their gates | Gates stay as they are; a skip without the gate is still not a pass | Investigation notes, gated-suite inventory |
 | BEH-003 | Contract | SCN-003 | The node refuses every request without a valid credential (NA-1) and the gateway without its token (NA-12); no test-only bypass exists in product code | Unchanged | The whole node access model (NA-1…NA-15, NAS-01…NAS-40) | `autobyteus-server-ts/docs/design/node_access_model.md`; `src/mcp-gateway/mcp-gateway-access.ts` |
 | BEH-004 | Operational | SCN-004 | A test file that starts or calls its node without the credential fails late and obscurely ("Cannot read properties of undefined (reading 'agentRuntimes')", "expected 401 to be 200") | Such a test fails early, with a message that names the missing credential and the helper to use | Tests that deliberately send no credential to prove a refusal (node access model suite, remote access suites) keep doing so | REPRO-01 failure texts |
+| BEH-006 | Operational | SCN-006 | Other failures the team hit while doing this ticket, not caused by it: (a) default-run `app-data-migrations/remove-built-in-project-task-manager-startup` E-002 asserts the Daily Assistant is never an `@` candidate (`:332`), but autobyteus-455 (`fbc9b3c2e9`, on `personal`) made it an ordinary collaborator; only the Model Router stays out (DEL-01, DEL-02); (b) gated `registered-package-definition-edit` RPE-001/003/006 expect a package Team/Org default to be written into its config file (`:243`, `:277`, `:362`), but since autobyteus-95 that default is a personal setting in `<app-data>/agent-packages/personal-settings.json` (API-10, API-10b); (c) gated `delegated-copy-project-folder` DCF-02's `capsuleOf` (`:58-66`) reads `manifest.json` in an `agy-project` folder the capsule writer has created but not finished (`agy-run-capsule.ts:58-70`), and throws under load; (d) gated `delegated-copy-model-change` DCM-009 (team root) once got `success: false` from `stopDelegatedExecution` right after a runtime switch, under load (`:658`), cause not found | Each passes, fixed at its cause | The product rules those tests check, as they now are (455's collaborator rule, autobyteus-95's personal settings) | `follow-ups.md` FU-002…FU-004 (before SR-002); delivery DEL-01, DEL-02; API/E2E API-10, API-10b |
 | BEH-005 | Operational | SCN-005 | Web browser probes that start a node and the release smoke check already carry the credential (autobyteus-437) | Unchanged; confirmed by this ticket's census | Their current helpers (`probe-node-access.mjs`) | Investigation notes, probe and release smoke census |
 
 ## Stakeholders, Actors, And Outcomes
@@ -47,10 +48,11 @@
 | UC-001 | Run the default server E2E suite (`pnpm test:e2e`) on a clean environment and get a green result | SCN-001 |
 | UC-002 | Run a gated server E2E suite that talks to its node or the MCP gateway, with its gate set | SCN-002 |
 | UC-003 | Write a new server E2E file that starts or calls a test-owned node | SCN-004 |
+| UC-004 | The default and deterministic gated server E2E suites run green after this ticket, including the failures the team found along the way that this ticket did not cause (BEH-006) | SCN-006 |
 
 ### Out Of Scope
 
-- Any change to the node's gate, route permissions, MCP gateway token rules or other product code (BEH-003). No test-only bypass.
+- Any change to the node's gate, route permissions, MCP gateway token rules (BEH-003). No test-only bypass. Other product code changes only if a BEH-006 failure's cause is in product code, and then only after the Solution Designer decides it (REQ-010).
 - Product behavior the failing tests assert: if a test, once it carries the credential, fails for a product reason, that failure is reported by its cause (TESTING.md Rule 9), not absorbed here unless it is a cause in the test itself.
 - Web browser probes and the release smoke script: confirmed not affected (BEH-005); no change.
 - FU-001…FU-003 of autobyteus-436 (phone authorization, stale web spec, phone polling after revocation).
@@ -70,11 +72,11 @@
 
 ### Prerequisites
 
-None. The Brief Studio importable package that three of the files need is an existing, documented preparation step (`pnpm -C autobyteus-server-ts test:integration:prepare`, named by the suite when missing), not a defect.
+None open. Delivery DR-001 raised E-002 (BEH-006 a) as a prerequisite; on the user's direction ("for other errors fix them") it is fixed in this ticket instead (REQ-009, SR-002). The Brief Studio importable package that three of the files need is an existing, documented preparation step (`pnpm -C autobyteus-server-ts test:integration:prepare`, named by the suite when missing), not a defect.
 
 | Prerequisite ID | Finding And Evidence | Blocks (REQ / AC IDs) | Sent To (agent) / Task Key | Status (written down / sent / delivered) |
 | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A |
+| PRQ-001 | E-002 fails on `personal` since autobyteus-455 (DEL-01, DEL-02) | REQ-006, AC-001 | Not sent: folded into this ticket on the user's direction (SR-002) | Resolved in scope (REQ-009) |
 
 ### Review Authority
 
@@ -90,10 +92,12 @@ None. The Brief Studio importable package that three of the files need is an exi
 | REQ-001 | Each of the 15 failing server E2E files presents its test-owned node's owner credential on every request to that node (HTTP, GraphQL, REST, WebSocket upgrade, `fastify.inject`), as the desktop app does for its own node | BEH-001 | Must | The node refuses everything else (NA-1) | N/A (mechanism exists: `test-support/node-access`, used by passing suites) | Task direction; FU-004 |
 | REQ-002 | Each server E2E client of the MCP gateway (`/mcp/gateway`) presents the node's gateway token, obtained as the owner obtains it on that node | BEH-001, BEH-002 | Must | The gateway refuses every client without its token, this computer included (NA-12, NAS-25) | N/A | Task direction; DEC-002 |
 | REQ-003 | Gated server E2E suites that reach their node or the gateway by the same paths (BEH-002 inventory) present the credential and token the same way | BEH-002 | Should | Same cause, same remedy; a gated run should not fail for a missing credential the next time someone sets its gate | N/A | DEC-001 |
-| REQ-004 | No product code changes; the node's gate, the gateway token rules and all refusal behavior stay as they are; the credential support stays test code only | BEH-003 | Must | Task constraint; NA-1, NA-12 | N/A | Task constraints |
+| REQ-004 | No product code changes (SR-002: unless a REQ-010 cause lies in product code and the Solution Designer decides the change first); the node's gate, the gateway token rules and all refusal behavior stay as they are; the credential support stays test code only | BEH-003 | Must | Task constraint; NA-1, NA-12 | N/A | Task constraints |
 | REQ-005 | The way a test file most naturally reaches its node cannot bypass the credential: the credential attachment of a test process is in place before any test code runs, and a test that composes an in-process node outside the shared start path, or bypasses it in a detectable way, fails early with a message that names the missing credential and the helper to use | BEH-004 | Should | The 15 failures went unnoticed across releases and failed with obscure messages; the Task asks to consider a guard | Static detection is limited to known patterns (Non-Goals) | DEC-003 |
 | REQ-006 | The default server E2E suite (`pnpm test:e2e`, clean environment, prepared build outputs) runs with no failed file on the branch and, after finalization, on `personal` | BEH-001 | Must | Done-when of the Task | Measured baseline: only these 15 files failed in 436's full run at `97ed263074`; current full run at `310fc27452` recorded in investigation notes | Task "Done when" |
 | REQ-007 | The project's testing guide states how a server E2E test presents the gateway token and the credential for `fastify.inject`, next to the existing Node credentials rule | BEH-004 | Should | TESTING.md "Node credentials" names the owner credential helpers only; the gateway token and inject header are the two paths the 15 files missed | N/A | DESIGN.md/TESTING.md project documents rule |
+| REQ-009 | The default-run file `remove-built-in-project-task-manager-startup` E-002 checks the current collaborator rule: on a user agent run, the Daily Assistant is an `@` candidate, while the Model Router and the retired Project Task Manager are not; its catalog checks stay as they are | BEH-006 (a) | Must | REQ-006 needs every default-run file green on `personal`; autobyteus-455's rule (`collaborationEligible`) is the product's current behavior (DESIGN.md rule 11) | N/A | User direction "for other errors fix them"; delivery DR-001 |
+| REQ-010 | The gated failures the team found (BEH-006 b–d) are fixed at their cause: (b) RPE-001/003/006 assert the saved default where autobyteus-95 keeps it (personal settings) and that a default-only save leaves the package files unchanged; (c) DCF-02's capsule lookup treats a capsule without its manifest as not ready yet; (d) DCM-009's cause is found (the assertion first shows the stop result's outcome and message) and fixed: in the test when the cause is there; a cause in product code returns to the Solution Designer before any product change | BEH-006 (b–d) | Should | The user's direction to fix every error that is not a Codex usage limit | (d) Unclear until reproduced | User direction "for other errors fix them" |
 | REQ-008 | The testing guide states the check that would have caught this at its own stage: a change to what every request to a node crosses (the node's request gate, node credentials, the MCP gateway's token) or to the shared server test harness runs the whole server E2E suite before it is handed off | BEH-004 | Should | The failure passed 437's validation and was caught two tickets later (436 API/E2E); the team's project-documents rule puts the check for a problem a later stage caught into the earliest stage's document, usually the testing guide | N/A | Team `project-documents.md` "When a later stage catches a problem"; DEC-004 |
 
 ## Acceptance Criteria
@@ -103,10 +107,12 @@ None. The Brief Studio importable package that three of the files need is an exi
 | AC-001 | REQ-001, REQ-002, REQ-006 | BEH-001 / SCN-001 | Worktree installed and built (`prebuild`, `build`, `test:integration:prepare`); clean environment (`env -i PATH HOME=<temp> TMPDIR`) | `pnpm test:e2e` reports 0 failed files; the 15 files of FU-004 report every case passed or skipped by its own existing gate | A remaining failure is reported with its cause (TESTING.md Rule 9), never closed as pre-existing | Full suite run on the branch, and delivery's run on the integrated state |
 | AC-002 | REQ-002, REQ-003 | BEH-002 / SCN-002 | Each deterministic gated suite of the inventory with its gate (scripted AGY CLI, no provider) | Each passes; none shows 401 `NODE_CREDENTIAL_REQUIRED` or `MCP_GATEWAY_TOKEN_REQUIRED` | Live-provider suites of the inventory are not run (Non-Goals); they use the same shared mechanism, proven by AC-001/AC-002 suites and the server typecheck | Gated runs of the deterministic suites |
 | AC-003 | REQ-002 | BEH-001 / SCN-001 | An MCP gateway client in a test, on an in-process and on a built server, including across a server restart | The client connects and calls tools with the gateway token; a client without it is still refused 401 `MCP_GATEWAY_TOKEN_REQUIRED` | — | The three `tool-management/mcp-*` files; existing refusal assertions |
-| AC-004 | REQ-004 | BEH-003 / SCN-003 | Branch diff against base | No file under `autobyteus-server-ts/src/`, `autobyteus-web/` app code or other product code changes; the node access model suite and the remote access suites pass unchanged | — | Diff review; `node-access-model`, `remote-access/*`, `node-files`, `node-desktop` e2e runs |
+| AC-004 | REQ-004 | BEH-003 / SCN-003 | Branch diff against base | No file under `autobyteus-server-ts/src/`, `autobyteus-web/` app code or other product code changes (except one the Solution Designer decided under REQ-010); the node access model suite and the remote access suites pass unchanged | — | Diff review; `node-access-model`, `remote-access/*`, `node-files`, `node-desktop` e2e runs |
 | AC-005 | REQ-005 | BEH-004 / SCN-004 | A test file that (a) captures `globalThis.fetch` before starting its node, or (b) composes an in-process node without the shared start path | (a) its requests still carry the credential; (b) the server test run fails with a message naming the file, the missing credential and the helper to use | A deliberate no-credential refusal test is not flagged | A guard check in the server test run, with a case proving it flags a known-bad shape and passes the current tree |
 | AC-006 | REQ-004 | BEH-003 | Evidence produced by the branch's runs | No owner credential, gateway token or setup code appears in committed evidence or test output | — | Grep of evidence for `own_…`, `mcpg_…` |
 | AC-007 | REQ-007 | BEH-004 | — | TESTING.md "Node credentials" names how to present the gateway token and the inject credential, in its existing global style | — | Docs review |
+| AC-009 | REQ-009 | BEH-006 (a) / SCN-006 | The file alone, then the full suite, on the integrated state | E-001…E-004 pass; E-002 sees the Daily Assistant among the candidates and neither the Model Router nor the retired manager | — | DEL-02's command; full `pnpm test:e2e` |
+| AC-010 | REQ-010 | BEH-006 (b–d) / SCN-006 | `RUN_AGY_FAILURE_E2E=1` with the scripted AGY CLI | `registered-package-definition-edit` passes; `delegated-copy-project-folder` and `delegated-copy-model-change` pass alone and in the gated set (API-10's command); DCM-009's cause is recorded | A failure that is the user's Codex usage limit is recorded, not fixed (User Direction) | Gated runs |
 | AC-008 | REQ-008 | BEH-004 | — | TESTING.md names the whole-suite run for a change to the node gate, node credentials, the gateway token or the shared server test harness, as a rule (not this incident's story) | — | Docs review |
 
 ## Relevant Scenarios And Journeys
@@ -117,6 +123,7 @@ None. The Brief Studio importable package that three of the files need is an exi
 | SCN-002 | Operational | Same; a `RUN_*` gate | Prove behavior on scripted or live runtimes | The gate variable and command in the test file header | As SCN-001 plus the gate | As SCN-001 | Passes | Without its gate: skipped (not a pass) | Supported Normal Scenario | TESTING.md Gates | REQ-003; AC-002 |
 | SCN-003 | Contract | Node access model NA-1, NA-12 | Every node request and gateway call needs a credential | Any request to a node | — | Gate checks Host, Origin, admission, credential, route | Refusal without a credential | — | Supported Normal Scenario | `node_access_model.md` | REQ-004; AC-004 |
 | SCN-004 | Operational | A test author | Add a new server E2E file | Writing a test that starts or calls a node | — | Author starts the node and sends requests | Requests carry the credential, or the run fails early naming the fix | Deliberate refusal tests unaffected | Supported Normal Scenario | DESIGN.md rule 11; Task direction | REQ-005, REQ-007; AC-005, AC-007 |
+| SCN-006 | Operational | An engineer or delivery role | Run the default and deterministic gated suites after this ticket | `pnpm test:e2e`; `RUN_AGY_FAILURE_E2E=1` gated runs | Integrated state | As SCN-001 | All pass | Codex usage-limit refusals recorded, not fixed | Supported Normal Scenario | User direction; DEL-01; API-10 | REQ-009, REQ-010; AC-009, AC-010 |
 | SCN-005 | Operational | Browser probes, release smoke | Their own node calls | `pnpm -C autobyteus-web test:e2e:<name>`, `python3 scripts/release_smoke.py` | — | Already use the 437 helpers | Unchanged | — | Supported Normal Scenario | Census in investigation notes | Out of scope (no change) |
 
 ## UI, Interaction, And Experience Requirements
@@ -166,7 +173,7 @@ None. The Brief Studio importable package that three of the files need is an exi
 
 - The user, in the Solution Designer's conversation: "for any errors due to token limit, we do not fix them. because i will only be able to get back my token limit tomorrow for codex"; "for other errors fix them".
 - Meaning for this ticket: a failure caused by the user's Codex usage limit (a live Codex run refused for quota or rate limit) is recorded with its evidence as not run or blocked by the limit. It is not treated as a defect, worked around or retried today. Every other failure found while doing this ticket is fixed by its cause, in the usual way (TESTING.md Rule 9, Scope Guardrail).
-- Impact: none on scope. This ticket's suites use scripted runtime CLIs and make no live Codex call, and paid live suites are not run (Non-Goals).
+- Impact: no live Codex call is planned (scripted runtime CLIs; paid live suites are not run). "Fix other errors" brings the non-credential failures found during the ticket into scope (SR-002: UC-004, REQ-009, REQ-010).
 
 ## Assumptions
 
@@ -196,6 +203,8 @@ None. The Brief Studio importable package that three of the files need is an exi
 | REQ-006 | UC-001 | BEH-001 | AC-001 | SCN-001 | Full-suite runs |
 | REQ-007 | UC-003 | BEH-004 | AC-007 | SCN-004 | — |
 | REQ-008 | UC-003 | BEH-004 | AC-008 | SCN-004 | — |
+| REQ-009 | UC-004 | BEH-006 | AC-009 | SCN-006 | DEL-01, DEL-02 |
+| REQ-010 | UC-004 | BEH-006 | AC-010 | SCN-006 | API-10, API-10b |
 
 ## Architecture Phase Input
 

@@ -196,3 +196,15 @@ Measured 2026-11-10, after `test:integration:prepare`, clean environment: `Test 
 ### PROBE-03 result (early-install prototype)
 
 Reproduced 2026-11-10: with only the attachment installed from the setup file (temporary two-file edit, reverted, `git status` clean of source changes), the seven form-1a files pass with no edit of their own: `Test Files 7 passed (7)`, `Tests 25 passed (25)` (`autobyteus-anthropic-stored-config-{resume,edit-launch}`, `project-task-search-model-unavailable`, `agent-runtime-update-notifications`, `application-import-codex-launch`, `application-reload-repair`, `agent-runtimes-running-agents`). This proves the root cause of that class and design D1. ASM-001 holds for these seven. `evidence/PROBE-03-early-install-prototype.log`.
+
+## SR-002 Evidence (2026-11-10)
+
+| Source | Observation | Established |
+| --- | --- | --- |
+| Delivery DEL-01 (`evidence/delivery/DEL-01-full-e2e-integrated-summary.log`), integrated `5c29d6fca2` | `Test Files 1 failed | 122 passed | 124 skipped (247)`: all 15 FU-004 files pass; one failure, E-002 | Measured (delivery) |
+| Delivery DEL-02 (`evidence/delivery/DEL-02-e002-alone.log`) | E-002 fails alone, deterministically: `expected [ 'autobyteus-daily-assistant', …(1) ] to not include 'autobyteus-daily-assistant'` | Reproduced (delivery) |
+| `tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts:24, 26, 326-332` | `BUILT_IN_IDS = ["autobyteus-daily-assistant"]`, asserted never an `@` candidate | Read (Solution Designer) |
+| `git show fbc9b3c2e9` (autobyteus-455) | Daily Assistant `collaborationEligible: true`; only the Model Router excluded; unit tests, probes and docs updated, this E2E file not | Read |
+| API/E2E API-10/API-10b; `registered-package-definition-edit.e2e.test.ts:236-246`; `src/personal-settings/services/personal-settings-service.ts:270` | RPE tests expect `defaultLaunchConfig` in the package file; autobyteus-95 keeps it in `personal-settings.json` | Read + reproduced (API/E2E) |
+| `delegated-copy-project-folder.e2e.test.ts:58-66`; `agy-run-capsule.ts:58-70` | Walk reads `manifest.json` in a folder that may not have it yet | Read |
+| `delegated-copy-model-change.e2e.test.ts:658` | Asserts `success: true` without showing `outcome`/`message`; once false under load | Read; cause unknown |

@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
-- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at SR-001, approved by the Solution Designer within the Task's direction (no `Needs user` decision); the user was informed in the Solution Designer's conversation on 2026-11-10 (`solution-revision-record.md` SR-001)
+- Current solution revision ID: `SR-002` (SR-001 design D1–D9 implemented and validated; SR-002 adds D10–D13)
+- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at SR-002 (UC-004, REQ-009, REQ-010 on the user's direction "for other errors fix them", 2026-11-10); SR-001 part: approved by the Solution Designer within the Task's direction (no `Needs user` decision); the user was informed in the Solution Designer's conversation on 2026-11-10 (`solution-revision-record.md` SR-001)
 - Behavior-defining supplements and their approval references: None
 - User approval of the design, when the direction requires it: `Not required`
 - Design status: `Ready`
@@ -32,10 +32,10 @@ Web probes and the release smoke check already carry the credential (investigati
 ## Task Size And Architectural Risk (Mandatory)
 
 - Task size: `Medium`
-- Size rationale and supporting evidence: test code only, about 17 files: one test-support module (+ its `.d.mts`), the setup file, one e2e helper extended and one added, ten e2e files edited (2 runtime, 2 inject, 5 gateway, 1 fixture child), one new architecture test, TESTING.md and `docs/design-cases.md`. Within the existing harness owners; no product module, route or contract.
+- Size rationale and supporting evidence: SR-002 adds four test files' fixes (D10–D13), still test code unless D13's cause is in product code (escalation below). SR-001: test code only, about 17 files: one test-support module (+ its `.d.mts`), the setup file, one e2e helper extended and one added, ten e2e files edited (2 runtime, 2 inject, 5 gateway, 1 fixture child), one new architecture test, TESTING.md and `docs/design-cases.md`. Within the existing harness owners; no product module, route or contract.
 - Architectural risk: `Low`
 - Risk rationale and supporting evidence: no product code, contract, persistence, security boundary, concurrency or deployment change (AC-004). The one shared-foundation change (installing the attachment from the setup file in every server test process) has no effect without a registered loopback port (`owner-credential-attachment.mjs:32-37, 65-67`), and TESTING.md's rerun rule makes implementation rerun unit, integration and E2E for it. The gate is untouched.
-- Escalation trigger if implementation or validation discovers new impact: any change needed under `autobyteus-server-ts/src/` or other product code; a credentialed test that fails for a product reason (report by cause, Rule 9, and return to the Solution Designer if it is outside these files); early installation changing a unit or integration result.
+- Escalation trigger if implementation or validation discovers new impact: any change needed under `autobyteus-server-ts/src/` or other product code (including D13's cause: return it to the Solution Designer with the evidence before changing product code); a credentialed test that fails for a product reason (report by cause, Rule 9, and return to the Solution Designer if it is outside these files); early installation changing a unit or integration result.
 
 ## Architecture Investigation Evidence
 
@@ -64,7 +64,8 @@ Make every way a server test reaches a test-owned node carry the right secret, i
 - In scope: UC-001, UC-002, UC-003. Areas: `test-support/node-access/` (attachment installation), `autobyteus-server-ts/tests/setup/test-launch-credential.ts`, `autobyteus-server-ts/tests/e2e/helpers/` (in-process start option, new gateway client), the ten e2e files of the form table that need an edit, one new architecture test, `TESTING.md`, `docs/design-cases.md`.
 - Derived consumers, when a stored or shared structure changes: `startStudioE2eRuntimeServer`'s signature gains an optional second parameter; its seven positional-host callers (`studio-agent-tools-listener.integration`, `studio-server-http-contract.integration`, `memory-sync-held-back-graphql`, `node-files`, `search-files-through-gate`, `request-origin-and-phone-routes`, `node-access-model`) are unchanged. The attachment's exported surface gains `installOwnerCredentialAttachment`; its other importers (`studio-runtime-test-server.ts`, `built-server-launch-credential.ts`, `test-runtime-bootstrap.mjs`, `autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs`) keep working unchanged (the attach functions still install idempotently).
 - Deliberately left alone: all product code (`autobyteus-server-ts/src/`, `autobyteus-web/` app); the node access model document (contract unchanged); web probes and `scripts/release_smoke.py` (already correct); the seven form-1a default-run files and the eight form-1a gated files (fixed by D1 with no edit); deliberate refusal tests (`node-access-model`, `remote-access/*`, `node-files`, `node-desktop`); `tests/integration/` (not E2E; its composed servers use `inject` with chosen headers); FU-001…FU-003 of autobyteus-436.
-- Follow-ups: `follow-ups.md` FU-001 (whether every ticket must run the full server E2E suite; the user's decision, DEC-004).
+- SR-002 additions (UC-004): `tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts` (E-002), `tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts` (RPE-001/003/006), `tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts` (`capsuleOf`), `tests/e2e/projects/delegated-copy-model-change.e2e.test.ts` (DCM-009) and whatever D13's cause shows.
+- Follow-ups: `follow-ups.md` FU-001 (whether every ticket must run the full server E2E suite; the user's decision, DEC-004). FU-002…FU-004 are folded into this ticket (SR-002).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -335,6 +336,15 @@ N/A.
 - **D8 — TESTING.md, Choosing the path** (REQ-008): a row "The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses". Commit TESTING.md on its own as `docs(testing): <reason>` (TESTING.md "When this file may be updated").
 - **D9 — Design case.** `docs/design-cases.md` Case 2: add autobyteus-437 to the title's ticket list and an "Again in autobyteus-437 (found by autobyteus-436 API-05, fixed by autobyteus-447)" bullet: the gate's test support was traced through the start helpers it touched; test files also reach nodes through a kept `fetch`, a directly composed node, `inject`, a fixture child and the MCP gateway (its own secret); fix: attachment from the setup, one path per form, a guard.
 
+## SR-002 Design Decisions (D10–D13)
+
+Current state: branch `codex/server-e2e-node-credential-447` @ `8b7c60e343` (D1–D9 implemented; `origin/personal` `f78b60dddd` merged as `5c29d6fca2`). Delivery's full run on it (DEL-01): one failed file, E-002 below. All 15 FU-004 files pass.
+
+- **D10: E-002 follows autobyteus-455's collaborator rule (REQ-009).** In `remove-built-in-project-task-manager-startup.e2e.test.ts:326-332`, the `@` check on the user agent run `otherRunId` expects these results. `autobyteus-daily-assistant` is a candidate: `collaborationEligible: true` in `src/built-in-agents/built-in-agent-registry.ts` (455). `autobyteus-model-router` and `RETIRED_ID` are not. Update the comment ("AC-009: the Model Router stays out of `@`; the Daily Assistant and the repository manager are ordinary candidates"). `BUILT_IN_IDS` stays for the catalog checks (`:251`, `:302`). Take the Model Router's ID from the same place the test takes the others (a constant beside `BUILT_IN_IDS`; `INSTALLED_BUILT_IN_FOLDERS` already names it). Do not import the product registry to compute what the test asserts.
+- **D11: RPE-001/003/006 follow autobyteus-95's personal settings (REQ-010 b).** In `registered-package-definition-edit.e2e.test.ts` (`:243`, `:277`, `:362`), stop expecting `defaultLaunchConfig` in `team-config.json`/`org-config.json`. Instead, assert three things. (1) The save's GraphQL answer and a fresh definition read return the saved default. (2) The default is recorded in `<app-data>/agent-packages/personal-settings.json` for that definition: read its shape from `src/personal-settings/domain/personal-setting-record.ts` and the contract it cites. (3) A default-only save leaves the package's config file byte-identical, while the other edits of the same save (description in `team.md`, members) are still written as today. Keep the RPE scenario IDs.
+- **D12: DCF-02's capsule lookup waits for a complete capsule (REQ-010 c).** In `delegated-copy-project-folder.e2e.test.ts` `capsuleOf` (`:58-66`), an `agy-project` folder without `manifest.json` is skipped (not ready), so the `until` loop keeps waiting. The writer creates the folder first and the manifest last (`src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts:58-70`). Check for other copies of this walk in `tests/e2e` (`grep -rn "agy-project" tests/e2e`) and give each the same rule. If two or more, move it into one helper beside `agy-runtime-error-fixture.ts`.
+- **D13: DCM-009 found by its cause (REQ-010 d).** First, make the failing assertion (`delegated-copy-model-change.e2e.test.ts:658`) show the stop result's `outcome` and `message` (assert the whole result object, or add them to the assertion message). Then reproduce under load: API-10's gated set, or the file alongside the other delegated-copy files. Fix by cause. A missing wait in the test (the copy's switched runtime not yet ready to stop) is fixed in the test by waiting for the state the product reports. A cause in product code (for example a stop refused during a runtime switch) is returned to the Solution Designer with the evidence, as a `Design Impact` or `Requirement Gap`, before any product change. If 3 load runs do not reproduce it, record the attempts and the improved assertion, and say so; do not change timing blindly.
+
 ## Change / Refactor Sequence
 
 1. D1 (attachment + setup). Run PROBE-01's 15 files: the 7 form-1a files should pass.
@@ -345,6 +355,14 @@ N/A.
 6. Server typecheck (test files are type-checked; baseline must not grow), `test:unit`, `test:integration` (shared harness changed, TESTING.md rerun rule 4).
 7. The 15 files, then the full `pnpm test:e2e` (clean env, prepared outputs); the deterministic gated suites: `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs` for `mcp-run-session-cleanup`, `agent-package-definitions-live-refresh`, `agy-skill-update-notice-roots`; `mcp-github-remote-live` with `RUN_GITHUB_MCP_E2E=1` and the test vault if `test.github.token` is present (no paid provider; token valid until 2026-11-25), else recorded as not run.
 8. D7, D8 (own commit), D9.
+
+SR-002 sequence (on the current branch, after D1–D9):
+
+9. D10; run the E-002 file alone (DEL-02's command).
+10. D11, D12; run `registered-package-definition-edit` and `delegated-copy-project-folder` with `RUN_AGY_FAILURE_E2E=1` and the scripted AGY CLI.
+11. D13 as described; record each run.
+12. Full `pnpm test:e2e` on the branch (clean env, prepared outputs): 0 failed files. Then the deterministic gated set (API-10's command).
+13. Server typecheck (test files; baseline must not grow).
 
 ## Key Tradeoffs
 
