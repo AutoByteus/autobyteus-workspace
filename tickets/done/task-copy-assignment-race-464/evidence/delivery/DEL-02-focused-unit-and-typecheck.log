@@ -1,0 +1,9 @@
+# DEL-02 focused unit folders + server typecheck on the merged state; commit a966ed4754 (merge of origin/personal 16947ba681); macOS, Node v22.23.1; 2026-11-10T14:15:16Z
+# Commands: NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration tests/unit/remote-collaboration tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/standalone-agent-run-root --no-watch; pnpm -C autobyteus-server-ts typecheck
+ Test Files  143 passed (143)
+      Tests  1237 passed (1237)
+unit-exit=0
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.7s
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 27.1s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS

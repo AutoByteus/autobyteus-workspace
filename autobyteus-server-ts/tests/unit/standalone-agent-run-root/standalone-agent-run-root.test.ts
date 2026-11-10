@@ -613,13 +613,18 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(before.snapshot.closedTaskExecutions).toEqual([]);
     before.close();
 
-    const stopped = root.releaseTaskExecutions(resources.close("A"));
-    // Published synchronously, before any stop settles (visibility follows closure, not stop success).
-    const closedEvent = events.find((entry) => entry.event.kind === "task_executions_closed")!;
+    let eventsWhenStopped = -1;
+    const stopped = root.releaseTaskExecutions(resources.close("A")).then((result) => { eventsWhenStopped = events.length; return result; });
+    // Published when the release runs (the root's next queue step, autobyteus-464), before its stop settles
+    // (visibility follows closure, not stop success).
+    await vi.waitFor(() => expect(events.some((entry) => entry.event.kind === "task_executions_closed")).toBe(true));
+    const closedIndex = events.findIndex((entry) => entry.event.kind === "task_executions_closed");
+    const closedEvent = events[closedIndex]!;
     expect(closedEvent.event).toEqual({ kind: "task_executions_closed", taskExecutions: [closedA] });
     expect(projectAgentCollaborationEvent(HOST, root.getExecutionTreeSnapshot(), closedEvent as never)?.event)
       .toEqual({ kind: "task_executions_closed", task_executions: [closedA] });
     await stopped;
+    expect(closedIndex).toBeLessThan(eventsWhenStopped);
 
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);

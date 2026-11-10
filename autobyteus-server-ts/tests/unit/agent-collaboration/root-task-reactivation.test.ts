@@ -150,6 +150,46 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     expect(f.adapter.publishTaskExecutionsReopened).not.toHaveBeenCalled();
   });
 
+  it("a reactivation that finds the copy open at its queue step, with a DONE's release in flight across its commit and the wake: the copy is not stopped and gets the message (autobyteus-464 AC-003)", async () => {
+    const f = fixture();
+    await f.assign(worker);
+    await f.done();
+    f.resources.setTaskOpen("task-A");
+    // Two messages from the assigner: the second passes its eligibility check while the copy is closed, then waits.
+    const eligibility = f.resources.assertReopenable.bind(f.resources);
+    const secondChecked = latch(), resumeSecond = latch();
+    let calls = 0;
+    vi.spyOn(f.resources, "assertReopenable").mockImplementation(async input => {
+      await eligibility(input);
+      if (++calls === 2) { secondChecked.resolve(); await resumeSecond.promise; }
+    });
+    const first = f.message("manager", "worker");
+    const second = f.message("manager", "worker");
+    await secondChecked.promise;
+    expect(await first).toMatchObject({ accepted: true });
+    f.log.length = 0;
+    // The second's reopen step finds the copy open (the first reopened it); hold its commit.
+    const reopen = f.resources.reopenAssignment.bind(f.resources);
+    const atCommit = latch(), commit = latch();
+    vi.spyOn(f.resources, "reopenAssignment").mockImplementation(async input => { atCommit.resolve(); await commit.promise; return reopen(input); });
+    resumeSecond.resolve();
+    await atCommit.promise;
+    // Task A is DONE again (its release is requested and held in flight), and the agent sets it open again.
+    const release = latch();
+    f.control.releaseGate = release.promise;
+    const releasing = f.lifecycle.releaseTaskExecutions(f.resources.close("task-A"));
+    f.resources.setTaskOpen("task-A");
+    commit.resolve();
+    const delivered = await second;
+    release.resolve();
+    expect(delivered).toEqual({ accepted: true, message: "Delivered message to worker. worker continues with its conversation." });
+    // The release waited for the reopen step and found the copy open: nothing stopped, no `closed` (AR-001).
+    expect(await releasing).toEqual([{ execution: worker, stopped: false, error: expect.objectContaining({ code: "TASK_AGENT_RESOURCE_NOT_CLOSED" }) }]);
+    expect(f.resources.isOpen(worker)).toBe(true);
+    expect(f.authority.get("agent:worker")).toBe("live");
+    expect(f.log.filter(entry => entry.startsWith("closed:") || entry.startsWith("reopened:"))).toEqual(["reopened:agent:worker"]);
+  });
+
   it("a restore failure after the commit says the copy was reactivated but not reached; the entry stays open", async () => {
     const f = fixture();
     await f.assign(worker);

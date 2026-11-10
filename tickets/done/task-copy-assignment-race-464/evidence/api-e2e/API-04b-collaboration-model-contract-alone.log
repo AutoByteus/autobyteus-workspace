@@ -1,0 +1,12 @@
+# API-04b Rule 9 diagnosis: collaboration-model-contract.e2e.test.ts alone (same env as API-04); commit e5d5a7aac5; macOS, Node v22.23.1; 2026-11-10T14:10:22Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-model-contract.e2e.test.ts --no-watch
+# Cause found by reading: src/agent-collaboration/collaborators/collaborator-errors.ts:69 self-delegation text changed by autobyteus-435 (432d1c3af2, in base c8f303af70); this branch does not change that file (git diff c8f303af70 HEAD -- that file: empty)
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests | 1 failed) 3643ms
+ FAIL  tests/e2e/projects/collaboration-model-contract.e2e.test.ts > Collaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts n
+AssertionError: expected '{"error":{"code":"COLLABORATION_SELF_…' to contain 'send_message_to'
+Received: "{"error":{"code":"COLLABORATION_SELF_TARGET_REJECTED","message":"/manager is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team."},"isError":true}"
+ ❯ expectRefused tests/e2e/projects/collaboration-model-contract.e2e.test.ts:199:36
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts:278:5
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+exit=1

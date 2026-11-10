@@ -121,7 +121,7 @@ it('invokes every retained exact authority regardless of liveness; one failed ta
   await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'owned-A' } });
   await resources.linkNewTaskExecution({ role: 'delegated', creator: { agentRunId: 'owned-A' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'helper-A' } });
   let finished = false;
-  const result = scope.releaseTaskExecutions(resources.close('A')).then(r => { finished = true; return r; });
+  const result = scope.releaseHostedExecutions(resources.close('A')).then(r => { finished = true; return r; });
   expect([...registrations.values()].every(r => r.operation.cancel.mock.calls.length === 1)).toBe(true);
   expect(adapter.cancelOwnedExecution).toHaveBeenCalledTimes(2);
   for (let n = 0; n < 12; n++) await Promise.resolve();
@@ -138,10 +138,10 @@ it('reports stopped when the root holds no authority at all, and refuses runs th
   const { resources, scope } = scopeOver(adapter);
   resources.addTask('A');
   await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'gone' } });
-  expect(await scope.releaseTaskExecutions([{ agentRunId: 'gone' }])).toEqual([
+  expect(await scope.releaseHostedExecutions([{ agentRunId: 'gone' }])).toEqual([
     { execution: { agentRunId: 'gone' }, stopped: false, error: expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' }) }]);
   expect(adapter.releaseOwnedExecution).not.toHaveBeenCalled();
-  expect(await scope.releaseTaskExecutions(resources.close('A'))).toEqual([{ execution: { agentRunId: 'gone' }, stopped: true }]);
+  expect(await scope.releaseHostedExecutions(resources.close('A'))).toEqual([{ execution: { agentRunId: 'gone' }, stopped: true }]);
 });
 
 it('retains verified quiet Team cleanup authority across directory eviction, then replaces it only on a new publication', async () => {
@@ -223,7 +223,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: Task clos
     expect(scope.closedTaskExecutions()).toEqual([]);
 
     const closedA = [{ teamRunId: 'A-team' }, { agentRunId: 'A-child' }, { agentRunId: 'A-helper' }];
-    const results = await scope.releaseTaskExecutions([...resources.close('A'), { agentRunId: 'B-worker' }]);
+    const results = await scope.releaseHostedExecutions([...resources.close('A'), { agentRunId: 'B-worker' }]);
     expect(published()).toEqual([closedA]);
     expect(order[0]).toBe('publish');
     expect(results.find(r => 'agentRunId' in r.execution && r.execution.agentRunId === 'A-child')).toMatchObject({ stopped: false, error: { code: 'TASK_RELEASE_FAILED' } });
@@ -231,10 +231,10 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: Task clos
     // Snapshots read the root's cumulative closure; other Tasks' runs stay open.
     expect(scope.closedTaskExecutions()).toEqual(closedA);
 
-    await scope.releaseTaskExecutions(resources.close('A'));
+    await scope.releaseHostedExecutions(resources.close('A'));
     expect(published()).toEqual([closedA, closedA]);
     // Only open work released: nothing is published.
-    await scope.releaseTaskExecutions([{ agentRunId: 'B-worker' }]);
+    await scope.releaseHostedExecutions([{ agentRunId: 'B-worker' }]);
     expect(published()).toHaveLength(2);
   });
 });

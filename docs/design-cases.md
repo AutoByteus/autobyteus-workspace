@@ -4,7 +4,7 @@ Real design mistakes from this project's reviews: what the design said, the fix 
 
 When the Solution Designer fixes a design mistake that the design principles describe, it adds a case here in the same shape: ticket and finding, what the design said, the fix, why it mattered, and how to notice it. When a new mistake repeats an existing case, add its ticket to that case instead of a new entry.
 
-### Case 1: One Sequence, Two Owners (autobyteus-191, AR-005)
+### Case 1: One Sequence, Two Owners (autobyteus-191, AR-005; autobyteus-464)
 
 Principles 2 and 13.
 
@@ -23,6 +23,7 @@ Principles 2 and 13.
   ```
 
 - **Why it mattered:** with the callback, refusal, timeout and partial failure had no single owner, and the next retry or queueing rule would have landed on whichever side someone touched first.
+- **Again in autobyteus-464 (FU-005 of autobyteus-447):** a root's lifecycle queue was the stated sole owner of a copy's runtime transitions (activate, wake, shutdown, Stop, the reopen step). The DONE-triggered release of the copy, and the commits of an existing-copy assignment and of a reactivation, ran beside it. Under load the copy was seen open by the assignment's step; then DONE's release began stopping it; then the assignment committed, and its wake met a copy still stopping, so it refused ("Task TeamRun … is already active or reserved"). Fix: the hosted closure release runs as a queue step and re-checks the copy is still closed; each reopening commit runs inside its reopen step. Lesson: when a queue owns a lifecycle, every step that changes that lifecycle goes through it, including fire-and-forget side effects of another subsystem.
 - **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake (Common Bad-Practice Pattern 2).
 
 ### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003; autobyteus-427; autobyteus-437)

@@ -1,0 +1,27 @@
+# REPRO-01 EXC-E2E-004 on base c8f303af70 with temporary DIAG464 logging and dense offsets (reverted); team root; load average ~60-78; 2026-11-10
+# Command: env -i PATH HOME=<temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts -t EXC-E2E-004
+
+Error: assignment refused (offset 5): {"delegated":false,"message":"Task existing-copy-race-2764558a-6 was given to the task agent, but the message with its work was not delivered (The task agent exc_worker_53b14b_dbd654493992401bbdb6e48614f36b06 could not continue with its conversation: Task TeamRun 'exc_squad_53b14b_beddeb956b274a249b22ff37e87f44ca' is already active or reserved.). Message the task agent's run id exc_worker_53b14b_dbd654493992401bbdb6e48614f36b06, or set Task existing-copy-race-2764558a-6 to CANCELLED, or delegate it to a new task agent."}
+    770|           throw new Error(`assignment refused (offset ${offset}): ${JS…
+      Tests  1 failed | 8 skipped (9)
+
+## DIAG464 sequence (ms from first line; ids shortened)
+DIAG464 0 reopen-head {"teamRunId":"SQUAD"} open=true
+DIAG464 13 assignment-committed {"teamRunId":"SQUAD"}
+DIAG464 14 wake-head WORKER live=[true]
+DIAG464 4576 reopen-head {"teamRunId":"SQUAD"} open=true
+DIAG464 4608 assignment-committed {"teamRunId":"SQUAD"}
+DIAG464 4609 wake-head WORKER live=[true]
+DIAG464 9374 reopen-head {"teamRunId":"SQUAD"} open=true
+DIAG464 9394 assignment-committed {"teamRunId":"SQUAD"}
+DIAG464 9395 wake-head WORKER live=[true]
+DIAG464 14019 reopen-head {"teamRunId":"SQUAD"} open=true
+DIAG464 14032 assignment-committed {"teamRunId":"SQUAD"}
+DIAG464 14032 wake-head WORKER live=[true]
+DIAG464 18675 reopen-head {"teamRunId":"SQUAD"} open=true
+DIAG464 18702 done-release [[{"teamRunId":"SQUAD"},true]]
+DIAG464 18702 release-start SQUAD runActive=true runTerminated=false
+DIAG464 18755 assignment-committed {"teamRunId":"SQUAD"}
+DIAG464 18756 wake-head WORKER live=[false]
+DIAG464 18758 restore-refused SQUAD active=true runActive=false runTerminated=false reserved=false restoring=false
+DIAG464 18778 release-done SQUAD runTerminated=true

@@ -68,9 +68,10 @@ export type StoppedTaskExecutionsStep<T> =
 
 /**
  * Root-neutral resource lifecycle for delegated children (task executions) of
- * one root. It owns delegation admission, the serialized activation / wake /
- * shutdown FIFO, idle-shutdown scheduling and live leases. It owns no subject
- * tree, index or store; the subject adapter owns those.
+ * one root. It owns delegation admission, the serialized FIFO of a copy's runtime
+ * transitions (activation, wake, idle shutdown, Stop, closure release, reopening),
+ * idle-shutdown scheduling and live leases. It owns no subject tree, index or
+ * store; the subject adapter owns those.
  */
 export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaunchNotes> {
   private readonly queue = new RootTaskExecutionCommandQueue();
@@ -165,9 +166,10 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   /**
    * DS-002, `delegate_task` with a copy's own ID: resolves the named Task first (its refusals come before the
-   * copy's), finds the copy in this root, asks the Task side whether this sender may give it the Task, settles its previous stop and checks it can be restored, commits
-   * the new assignment, publishes it as reopened, then delivers the Task's work through the root's exact
-   * delivery (which wakes or restores it with its conversation). Every refusal before the commit changes nothing.
+   * copy's), finds the copy in this root, asks the Task side whether this sender may give it the Task, then in one
+   * queue step settles its previous stop, checks it can be restored and commits the new assignment; publishes it as
+   * reopened, then delivers the Task's work through the root's exact delivery (which wakes or restores it with its
+   * conversation). Every refusal before the commit changes nothing.
    */
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
@@ -193,9 +195,12 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
       // The copy may hold other open Tasks; the message names them (read before any change, so a failure changes nothing).
       otherOpenTaskReferences = await port.openTaskReferencesOf(target.execution, taskId);
-      await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
-      await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
-        ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
+      // The resume step and the commit are one queue step: a closure release of the copy is entirely before or after.
+      await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+        await this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId);
+        await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
+          ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
+      } });
     } catch (error) {
       if (refusalCode(error)) return { delegated: false, message: errorMessage(error) };
       throw error;
@@ -247,8 +252,20 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   /** A live lease is held on a task execution of this root (DS-004's quiet shutdown waits for it). */
   hasLiveLeases(): boolean { return this.holds.hasLeases(); }
   assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
-  releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
-    return this.resourceScope.releaseTaskExecutions(executions);
+  /**
+   * The closure release of a DONE/CANCELLED Task's copies (DS-001). Runs on a peer node are fenced outside the queue
+   * (a peer call never holds the root's wakes). Hosted copies are released as one queue step, so a release and a
+   * reopening commit of the same copy never interleave: at the head the step re-checks each copy is still closed,
+   * and one reopened meanwhile is not stopped (and not published closed). Once the root no longer admits commands
+   * (termination or fail-stop) the hosted release runs directly. Results are in input order.
+   */
+  async releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
+    const { fenced, hosted } = this.resourceScope.fenceRemoteClosedExecutions(executions);
+    const releaseHosted = () => this.resourceScope.releaseHostedExecutions(hosted);
+    const released = !hosted.length ? []
+      : this.accepting ? await this.queue.submit({ kind: "release", executeAtQueueHead: releaseHosted }) : await releaseHosted();
+    const hostedResults = new Map(released.map((result) => [result.execution, result]));
+    return Promise.all(executions.map((execution) => fenced.get(execution) ?? Promise.resolve(hostedResults.get(execution)!)));
   }
   /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
@@ -300,16 +317,20 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     const port = this.resourceScope.port();
     const request = { execution, requestedBy: senderAgentRunId };
     await port.assertReopenable(request);
-    await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(execution, targetAgentRunId) });
-    const { reopened } = await port.reopenAssignment(request);
+    // The resume step and the commit are one queue step, as in `assignToExistingCopy`.
+    const { reopened } = await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+      await this.prepareClosedCopyForResume(execution, targetAgentRunId);
+      return port.reopenAssignment(request);
+    } });
     if (reopened) this.adapter.publishTaskExecutionsReopened(Object.freeze([execution]));
     return reopened;
   }
 
   /**
-   * Queue-head step shared by reactivation and existing-copy assignment: settles the copy's previous
-   * stop, drops its released authority so restore builds a fresh one, and checks its conversation can be
-   * restored. A copy already open (a concurrent reopen or assignment) is never released.
+   * Queue-head step shared by reactivation and existing-copy assignment, before their commit in the same step:
+   * settles the copy's previous stop, drops its released authority so restore builds a fresh one, and checks its
+   * conversation can be restored. A copy already open (a concurrent reopen or assignment) is never released; a
+   * closure release requested meanwhile runs after the commit and finds it open.
    */
   private async prepareClosedCopyForResume(execution: TaskExecutionReference, ingressAgentRunId: string): Promise<void> {
     if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
