@@ -1,0 +1,10 @@
+# IMP-05 web specs of the changed surfaces
+# Command: pnpm -C autobyteus-web exec vitest run services/collaborationMessages services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts
+# Code: commit 832f0a4572 content; macOS, 2026-11-10
+
+ ✓ services/collaborationMessages/__tests__/collaborationParticipantMessages.spec.ts (12 tests) 52ms
+ ✓ stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts (6 tests) 16ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts (8 tests) 13ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (7 tests) 18ms
+ Test Files  4 passed (4)
+      Tests  33 passed (33)

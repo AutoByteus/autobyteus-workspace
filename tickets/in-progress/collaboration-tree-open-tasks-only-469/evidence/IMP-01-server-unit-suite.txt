@@ -1,0 +1,24 @@
+# IMP-01 server unit suite
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts" --reporter=json
+#   (the test:unit script's file set)
+# Code: the content of commit 832f0a4572 (run on the working tree just before that commit; the commit added no change to code)
+# Environment: macOS (darwin 25.5), Node via pnpm workspace, vitest 4.1.12; 2026-11-10
+
+files: 988  tests: 8414  passed: 8405  failed: 0  skipped: 9
+
+Files added or changed by this ticket, with their results:
+  passed   12/ 12  tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts
+  passed   12/ 12  tests/unit/agent-collaboration/root-communication-baseline-contract.test.ts
+  passed   12/ 12  tests/unit/agent-collaboration/root-communication-task-closure.test.ts
+  passed   41/ 41  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts
+  passed    4/  4  tests/unit/agent-collaboration/task-execution-tree-membership.test.ts
+  passed   12/ 12  tests/unit/agent-collaboration/task-reactivation-backends.test.ts
+  passed    3/  3  tests/unit/agent-memory/agent-memory-explorer-task-agents.test.ts
+  passed    6/  6  tests/unit/memory-search/memory-run-discovery.test.ts
+  passed    6/  6  tests/unit/projects/task-execution-open-delegated-runs.test.ts
+  passed   24/ 24  tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts
+  passed   25/ 25  tests/unit/run-history/store/open-delegated-run-trees.test.ts
+  passed   18/ 18  tests/unit/run-history/store/remote-task-execution-links.test.ts
+  passed    9/  9  tests/unit/run-history/store/task-agent-own-run-stores.test.ts
+  passed    3/  3  tests/unit/run-history/services/closed-delegated-run-reader.test.ts
+  passed    1/  1  tests/unit/run-history/services/root-run-package-admission-own-parts.test.ts
