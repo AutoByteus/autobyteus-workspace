@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
@@ -173,7 +173,7 @@ N/A — no Product Design was requested.
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | U-001 | Unknown | How a Team or Org root expresses "stopped by the user" while it stays loaded for its copies (restore, stopped-run edit, archive/delete read manager ownership today) | Decides the size of the Team/Org part | Sized in Architecture Investigation Findings; the design waits for DEC-009 | Sized |
-| U-002 | Unknown | Whether every web flow (Team and Org stores, Task page) assumes that Stop ends every copy | Client scope | Architecture investigation | Open |
+| U-002 | Unknown | Whether every web flow (Team and Org stores, Task page) assumes that Stop ends every copy | Client scope | Standalone flows read (design-spec D-7, D-8); Team and Org flows are FU-001; the Task page's status comes from the server's `taskExecutionStatus`, live while the root is loaded | Resolved for this scope |
 | R-001 | Risk | With wake on message, a stopped run resumes when one of its copies reports | Visible behavior; the user decides (DEC-001) | The user | Open |
 | R-002 | Risk | A remote copy's behavior was read, not run on two nodes | REQ-006 relies on it | API/E2E where a second node is available; otherwise stated as read | Open |
 | A-001 | Assumption | An application-owned run's termination by its application is not the user's Stop | Keeps that path unchanged | Solution Designer (DEC-006) | Decided |
@@ -187,6 +187,15 @@ Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture read
 - **Team:** `AgentTeamRunManager.getLifecycleSnapshot` reports `isActive: hasManagedTeamRun` (`agent-team-run-manager.ts:326-329`); `restoreTeamRun` throws "already managed" (line 177); `updateStoppedRunLaunchChanges` refuses with `RUN_ACTIVE` when managed (line 284); `withInactiveHistoryMutation` answers `managed` (line 254); `FlatTeamExecutionManager` has one lifecycle for members and copies (`freezeForRootTermination`, `releaseOwnedRuntime`, lines 210-294). Keeping the root for its copies needs a new "the Team is stopped while its root is loaded" fact that every one of these reads.
 - **Org:** the same shape (`AgentOrgRun.terminate`, `agent-org-run.ts:359-398`; `AgentOrgRunManager`, 501 lines).
 - **File sizes (500-line limit):** `standalone-agent-run-root.ts` 521, `root-team-run.ts` 538, `agent-org-run-manager.ts` 501, `agent-team-run-manager.ts` 491, `agent-org-run.ts` 460. New code goes into properly owned files, not into these.
+- **Standalone design investigation (after DEC-009 = A), all `Read`:**
+  - Stop result: `StandaloneRootStopResult.rootEnded` decides "host already down, root ended → record terminated" in `agent-run-service.ts:137-142`; `terminateHost` records `terminatedAt` itself (`standalone-agent-run-lifecycle-service.ts:113-123`).
+  - A run a peer started is marked by `options.delegatedFrom` (`standalone-agent-run-root.ts:134`); its owner's `terminate` and its node's own Stop both reach `stopRoot` (`standalone-paired-agent-access.ts:76`, `agent-run-service.ts:132`).
+  - `onRunEnded` has one subscriber, the peer observation stream (`standalone-paired-agent-access.ts:69`).
+  - `isHostLive` has one production caller, the stream snapshot (`grep -rn "isHostLive\|host\.readiness" src tests`).
+  - `RootOperationGate.run` counts admitted operations and refuses once closed; it does not serialize (`root-operation-gate.ts`).
+  - `hasOpenExecutionWork()` of a standalone root covers copies only (the host is a separate handle): task agents `initializing` or `running`, and Team copies (`root-agent-execution-registry.ts:66-70`).
+  - Web: the copy Stop icon and status read the collaboration context's child states (`delegatedCopyLiveness.ts`); `refreshListedStatuses` polls listed runs whose context is active; the client's stream service disconnects on an inactive snapshot (`agentRunCollaborationStreamingService.ts:227-228`); `setActive(false)` cleans every child (`agentRunCollaborationContext.ts:228-234`); the archive/delete actions drop the server's message (`runHistoryMutationActions.ts:134-137,168-171`; `useWorkspaceHistoryMutations.ts:129-134,190-194`).
+  - The phone apps load the web client (`autobyteus-ios/AutoByteusMobile/AutoByteusWebViewController.swift`); the mobile run tree reads the same collaboration store (`composables/mobile/useMobileRunTree.ts:47-48`).
 - **Conclusion:** the standalone part is contained; the Team/Org part is a lifecycle change in the two most guarded Stop paths plus two more client flows. Recorded as DEC-009 for the user.
 
 ## Requirement Implications
