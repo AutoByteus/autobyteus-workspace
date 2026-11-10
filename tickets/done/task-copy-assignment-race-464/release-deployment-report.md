@@ -54,7 +54,7 @@ Finalize Project Task `autobyteus-464` (the root lifecycle queue orders a copy's
 
 - More evidence requested: `None`
 - User check needed: `No` (server runtime ordering; proven through real HTTP/WS runs)
-- Re-verification after later re-integration: see Repository Finalization
+- Re-verification after later re-integration: `origin/personal` advanced to `1ca4be9bfb` after verification. It brought only release-beta-18: the `autobyteus-web/package.json` version bump to `1.5.13-beta.4` and ticket documents, no code. Delivery edits were committed first (`b4d6a1bf53`), then it was merged. No rerun was needed, because no code that DEL-02/DEL-03 exercised changed.
 
 ## Release Decision
 
