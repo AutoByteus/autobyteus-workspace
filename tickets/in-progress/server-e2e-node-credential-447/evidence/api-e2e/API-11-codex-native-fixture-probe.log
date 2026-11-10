@@ -1,6 +1,7 @@
-# API-11 temporary probe: the gated Codex native policy suite reaches its fixture-composed node's first GraphQL request (REQ-003); commit bc5f8bfa35 (code = 9721caf187); macOS, Node v22.23.1; 2026-11-10T06:59:34Z
-# No model, no real Codex: CODEX_NATIVE_POLICY_BINARY is a stand-in that answers --version only; CODEX_NATIVE_POLICY_AUTH_FILE is a placeholder file in a temp folder (never ~/.codex).
-# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" NO_COLOR=1 RUN_CODEX_E2E=1 RUN_CODEX_NATIVE_POLICY_LIVE=1 CODEX_NATIVE_POLICY_AUTH_FILE=<temp>/auth.json CODEX_NATIVE_POLICY_BINARY=<temp>/codex CODEX_NATIVE_POLICY_EVIDENCE_DIR=/tmp/api11-evidence pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts --no-watch
+# API-11 (round 2, rerun after IR-002 CR-001) temporary probe: the gated Codex native policy suite's fixture child reaches its node with its launch credential (REQ-003); commit 0a324654a5; macOS, Node v22.23.1; 2026-11-10T07:51:44Z
+# Round 1 (commit bc5f8bfa35) result was Fail: 'Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 127.0.0.1' at the first createAgentDefinition; that log is in git history at 8c0d99eb83.
+# No model, no real Codex: CODEX_NATIVE_POLICY_BINARY is a stand-in that answers --version only; CODEX_NATIVE_POLICY_AUTH_FILE is a placeholder in a temp folder (never ~/.codex). Expected end: a failure at the first Codex use, after the GraphQL setup.
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" NO_COLOR=1 RUN_CODEX_E2E=1 RUN_CODEX_NATIVE_POLICY_LIVE=1 CODEX_NATIVE_POLICY_AUTH_FILE=<temp>/auth.json CODEX_NATIVE_POLICY_BINARY=<temp>/codex CODEX_NATIVE_POLICY_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts --no-watch
 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
 
  RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
@@ -102,29 +103,15 @@ A08 checkpoint owned built Studio ready
 stdout | tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts > A08: actual inventories and scoped MCP survive public Team create/Stop/restore with exact identity
 A08 cleanup {"binaryVersion":"codex-cli 0.0.0-api11-probe","childExited":true,"exitCode":1,"signal":null,"privateRootAndAuthRemoved":true,"sourceAuthUnchanged":true,"sourceConfigUnchanged":true}
 
- ❯ tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts (1 test | 1 failed) 3148ms
-   × A08: actual inventories and scoped MCP survive public Team create/Stop/restore with exact identity 3148ms
+ ❯ tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts (1 test | 1 failed) 64111ms
+   × A08: actual inventories and scoped MCP survive public Team create/Stop/restore with exact identity 64111ms
 
 ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
 
  FAIL  tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts > A08: actual inventories and scoped MCP survive public Team create/Stop/restore with exact identity
-Error: Owned system failed: {"model":"gpt-6.1-terra","inventories":[],"phases":["owned built Studio ready"],"cleanup":{"studioClosed":true,"clientsClosed":true,"publicListenerReleased":true,"errors":[]},"result":"Fail","error":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n401 !== 200\n","stack":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n401 !== 200\n\n    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs:65:48)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async definition (file:///Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs:145:37)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs:148:19"}
-0000gn/T/codex-native-policy-system-ZKr7Uo/logs
-DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-ZKr7Uo/download
-MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-ZKr7Uo/memory
-============================================================
-prisma:info Starting a sqlite pool with 21 connections.
-[2026-11-10T06:59:37.176Z] [INFO] [secret-management.vault] Secret vault: application database
-AgentFactory (Singleton) initialized.
-Initialized server settings service with 32 predefined settings
-AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 113 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-ZKr7Uo/node-access/local-control.sock. Use a shorter data folder path.
-AgentRunManager initialized.
-Loading workspace packages to trigger registration...
-Successfully loaded workspace packages.
-Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-ZKr7Uo/temp_workspace
-Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-ZKr7Uo/temp_workspace.
-Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-ZKr7Uo/temp_workspace with fixed ID 'temp_ws_default'
+Error: Owned system failed: {"model":"gpt-6.1-terra","inventories":[],"phases":["owned built Studio ready"],"cleanup":{"studioClosed":true,"clientsClosed":true,"publicListenerReleased":true,"errors":[]},"teamId":"native_policy_team_1b59ca59b50e476e981144a2c59c9504","result":"Fail","error":"Error: Timeout: production Codex thread after user command","stack":"Error: Timeout: production Codex thread after user command\n    at until (file:///Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs:72:9)\n    at async inventory (file:///Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs:99:18)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs:172:17"}
+36bpjf0r0000gn/T/codex-native-policy-system-0tOZpN/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-0tOZpN/temp_workspace with fixed ID 'temp_ws_default'
 Temp workspace created and cached with ID: temp_ws_default
 Registering agent customization processors...
 Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
@@ -179,22 +166,35 @@ Registered required tool unit: Agent Communication Tools
 Overwriting existing tool definition for name: 'search_web'
 Successfully registered tool definition: 'search_web'
 Registered required tool unit: Search Tools
-Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 127.0.0.1
+Agent Definition created successfully with ID: native-policy-manager
+Agent Definition created successfully with ID: native-policy-worker
+Agent Team Definition created successfully with ID: native-policy-team
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-0tOZpN/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-0tOZpN/workspace.
+Created and registered workspace ID: agent_ws_0b578377001a50ed6d8a495ca8ba8e9741c6286925bc00f994342b77dc84a923
+Agent team websocket attached for team run native_policy_team_1b59ca59b50e476e981144a2c59c9504
+Created agent session c4cc95cc-fbc1-4d5f-8493-60fde4c1aea0 for run native_policy_team_1b59ca59b50e476e981144a2c59c9504
+Agent Team WebSocket connected: session=c4cc95cc-fbc1-4d5f-8493-60fde4c1aea0, run=native_policy_team_1b59ca59b50e476e981144a2c59c9504
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-0tOZpN/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-0tOZpN/workspace.
+Reusing registered workspace ID: agent_ws_0b578377001a50ed6d8a495ca8ba8e9741c6286925bc00f994342b77dc84a923
+[CodexAppServerClient] stderr: api11 fake codex: not a real runtime (app-server -c agents.enabled=false)
+Closed agent session c4cc95cc-fbc1-4d5f-8493-60fde4c1aea0
 
- ❯ ChildProcess.<anonymous> tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts:82:32
-     80|       child!.once("error", error => { clearTimeout(timer); reject(erro…
-     81|       child!.once("exit", (code, signal) => { clearTimeout(timer); cle…
-     82|         if (code !== 0) reject(new Error(`Owned system failed: ${JSON.…
+ ❯ ChildProcess.<anonymous> tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts:85:32
+     83|       child!.once("error", error => { clearTimeout(timer); reject(erro…
+     84|       child!.once("exit", (code, signal) => { clearTimeout(timer); cle…
+     85|         if (code !== 0) reject(new Error(`Owned system failed: ${JSON.…
        |                                ^
-     83|     });
-     84|     expect(result.result).toBe("Pass"); expect(result.inventories).toH…
+     86|     });
+     87|     expect(result.result).toBe("Pass"); expect(result.inventories).toH…
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
 
 
  Test Files  1 failed (1)
       Tests  1 failed (1)
-   Start at  07:59:35
-   Duration  3.71s (transform 38ms, setup 54ms, import 9ms, tests 3.15s, environment 0ms)
+   Start at  08:51:45
+   Duration  64.70s (transform 46ms, setup 61ms, import 13ms, tests 64.11s, environment 0ms)
 
 exit=1

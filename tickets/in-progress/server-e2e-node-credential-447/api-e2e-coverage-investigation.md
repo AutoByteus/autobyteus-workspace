@@ -16,10 +16,11 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `.../server-e2e-node-credential-447/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: Implementation Complete, IR-001 on SR-001, branch `codex/server-e2e-node-credential-447`, HEAD `bc5f8bfa35`
-- Prior Investigation Reviewed: None (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1: Implementation Complete IR-001, HEAD `bc5f8bfa35`; round 2: Local Fix IR-002 (CRR-001 CR-001, CR-002), HEAD `0a324654a5`
+- Code Review Report (failure-origin, round 1): `.../server-e2e-node-credential-447/code-review-report.md` (CRR-001)
+- Prior Investigation Reviewed: round 1 (this file)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -116,6 +117,8 @@ Test code only. Every server E2E suite must reach its test-owned node with the l
 | API-11 | REQ-003 | Fixture-composed node in the Codex native policy suite | Temporary Probe | Real suite with its gates, a fake Codex binary (`--version` only) and placeholder auth; observe the child's first `/graphql` result | The suite is live Codex (user direction: no Codex calls today); its first node request happens before any Codex use, so the credential gap can be proven without a model |
 | API-10b | Rule 9 diagnosis of API-10 | The 3 files that failed in API-10 | Existing Test | Same command, the 3 files alone | Added during execution: narrows load-dependent from deterministic failures before finding causes |
 | API-14 | AC-004 (test files typecheck) | Server typecheck with the API-07 file | Existing Test | `pnpm -C autobyteus-server-ts typecheck` | Added during execution: a new test file must not grow the test-file baseline |
+| API-11c | REQ-003, QR-002 | Fixture child without its launch credential | Existing Test | `node tests/fixtures/codex-native-multi-agent-system.mjs <root> <model>` without the variable | Round 2: the new missing-credential branch must name the cause and the fix |
+| API-08b | AC-005 | Guard on the round-2 tree | Existing Test | Guard file alone | Round 2: a `tests/e2e` file changed |
 | API-12 | AC-004, AC-006 | Diff and evidence | Existing Test | `git diff --name-only 310fc27452...HEAD`; grep `own_…`/`mcpg_…` over the ticket folder | Direct check |
 | API-13 | AC-007, AC-008 | TESTING.md | Existing Test (docs review) | Read TESTING.md "Node credentials" and "Choosing the path" on the branch | Docs criteria |
 
@@ -146,7 +149,7 @@ None.
 
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
-| Codex native policy suite's fixture child composes and calls its node with no credential (missed by the census; the guard reads only `tests/e2e/**/*.ts`) | Reproduced by API-11 (401 `NODE_CREDENTIAL_REQUIRED` on the child's first `/graphql`); preliminary `Local Fix`, routed through failure-origin review | Read: `tests/fixtures/codex-native-multi-agent-system.mjs:37-41, 63-66, 141-147`; the test's child env has no `AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL` (`codex-native-multi-agent-disabled.e2e.test.ts:61-63`) | Implementation engineer (via failure-origin review) |
+| Codex native policy suite's fixture child composes and calls its node with no credential (missed by the census; the guard reads only `tests/e2e/**/*.ts`) | Reproduced by API-11 (401 `NODE_CREDENTIAL_REQUIRED` on the child's first `/graphql`); `Local Fix` confirmed by CRR-001, fixed in IR-002, rerun Pass in round 2 | Read: `tests/fixtures/codex-native-multi-agent-system.mjs:37-41, 63-66, 141-147`; the test's child env has no `AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL` (`codex-native-multi-agent-disabled.e2e.test.ts:61-63`) | Implementation engineer (via failure-origin review) |
 
 ## Investigation Decision
 

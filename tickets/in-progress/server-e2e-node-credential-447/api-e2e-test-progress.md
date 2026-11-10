@@ -20,3 +20,14 @@
 | 2026-11-10T07:40:24Z | API-14 | Started | | server typecheck with the new e2e test file |
 | 2026-11-10T07:41:17Z | API-14 | Completed | Pass | test-file errors 1182 in 365 files = baseline; PASS |
 | 2026-11-10T07:43:17Z | — | Completed | Fail | round result Fail (API-11, REQ-003); reports written; next: commit, hand off to code reviewer for failure-origin review |
+| 2026-11-10T07:51:44Z | — | Checkpoint | | Round 2 (IR-002, HEAD 0a324654a5): rerun by impact = API-11, API-11c, API-08b guard, API-14 typecheck, API-13 docs; others still valid |
+| 2026-11-10T07:51:44Z | API-11 | Started | | round 2 rerun with stand-in codex |
+| 2026-11-10T07:53:15Z | API-11 | Completed | Pass | round 2: no refusal; receipt has teamId (GraphQL setup admitted), WS reached TEAM_EXECUTION_VIEW_SNAPSHOT; stopped at 'Timeout: production Codex thread after user command' (stand-in) |
+| 2026-11-10T07:53:15Z | API-11c | Started | | fixture run directly without the launch credential |
+| 2026-11-10T07:53:24Z | API-11c | Completed | Pass | exit 1 with 'AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL is missing … builtServerLaunchEnvironment()' |
+| 2026-11-10T07:53:24Z | API-08b | Started | | guard on the round-2 tree |
+| 2026-11-10T07:53:25Z | API-08b | Completed | Pass | 4 passed |
+| 2026-11-10T07:53:25Z | API-14 | Started | | round 2 server typecheck |
+| 2026-11-10T07:54:51Z | API-14 | Completed | Pass | 1182 in 365 = baseline |
+| 2026-11-10T07:54:51Z | API-13 | Completed | Pass | round 2 TESTING.md sentence on fixture children reviewed |
+| 2026-11-10T07:55:55Z | — | Completed | Pass | round 2 result Pass 95%; next: commit, hand off to delivery |
