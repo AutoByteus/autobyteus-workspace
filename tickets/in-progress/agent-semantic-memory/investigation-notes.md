@@ -40,7 +40,7 @@
 | 2026-11-10 | Data | `/home/autobyteus/workspace/autobyteus-agents/agent-teams/marketing-team/team-config.json` | How the operator joins a team | Member `computer_use_operator` is `{"ref": "computer-use-operator", "refScope": "shared"}`: the same shared definition as the standalone agent. Event Scouting Team references it too. | Keying by definition ID resolves team membership |
 | 2026-11-10 | Data | `/home/autobyteus/workspace/autobyteus-agents/agents/computer-use-operator/agent-config.json` | First consumer | Tools include `read_file`, `write_file`, `edit_file`, `run_bash`; skills `web-ui-automation`, `computer-use-operation`. | Package change is autobyteus-agents-23 |
 | 2026-11-10 | Code | `config/app-config.ts:287-345` | Data dir layout | `getAppDataDir()`, `getMemoryDir()` = `<data-dir>/memory` (run memory), `getSkillsDir()`, temp workspace dir; subdirectories created by `ensureDataSubdirectory`. | |
-| 2026-11-10 | Data | `ls ~/.autobyteus/server-data/memory` | Existing memory layout | `memory/agents/<run-id>`, `memory/agent_teams/<team-run-id>`, `memory/agent_orgs/…`, run history indexes. | Keep semantic memory out of the run-memory tree |
+| 2026-11-10 | Data | `ls ~/.autobyteus/server-data/memory` | Existing memory layout | `memory/agents/<run-id>`, `memory/agent_teams/<team-run-id>`, `memory/agent_orgs/…`, run history indexes. | Semantic memory as sibling `memory/semantic/` (user, DEC-001) |
 | 2026-11-10 | Code | `memory-sync/shared/memory-sync-path-policy.ts` | What memory sync covers | Sync kinds are only `agents` and `agent_teams` (run memory). | Semantic memory not synced (out of scope) |
 | 2026-11-10 | Code | `model-routing/services/model-router-agent.ts` | Precedent for agent-owned knowledge | Model Router keeps `knowledge.md` in its system-owned internal workspace and writes it with file tools. | Precedent for a system-owned location; not changed here |
 | 2026-11-10 | Code | `autobyteus-ts/src/tools/file/workspace-path-utils.ts`, `server-runtime.ts:126` | Can native file tools write outside the workspace? | Absolute paths are accepted; only the database, its key and the test vault are denied (`FILE_TOOL_PATH_DENIED`). | Native runtime can write the location |
@@ -100,6 +100,9 @@
 
 ## Stakeholder And User Evidence
 
+- 2026-11-10 (Read, code): `memory-sync/source/local-memory-export-scanner.ts` walks only `memory/agents` and `memory/agent_teams`; `memory-search/runs/memory-run-discovery.ts` walks only the standalone/team/org roots; `agent-memory/store/memory-file-store.ts` reads `agents`. So `memory/semantic/` is not seen as a run. The memory-search index is at `<data-dir>/memory-search/`, outside `memory/`.
+- 2026-11-10 user conversation: the system only provides the folder; the agent manages its semantic memory (a future distiller agent may write into it from work journals); location inside the memory folder as `memory/semantic/`; no renaming of run folders; approved the summary.
+
 | Source / Actor | Need, Problem, Or Constraint | Evidence Strength | Requirement Implication | Open Question |
 | --- | --- | --- | --- | --- |
 | User (Task, 2026-11-09/10) | Operator relearns the same sites per Project; package repos are public | Strong (user's words) | Private, system-owned, per-agent location | Location, history, UI, search |
@@ -140,8 +143,8 @@
 | --- | --- | --- | --- | --- | --- |
 | UNK-001 | Unknown | Whether each non-native runtime can write outside its working directory under default settings | REQ-006 | Architecture probes per runtime | Open (design) |
 | UNK-002 | Unknown | Whether Codex/Claude restore recompose instructions | REQ-010 | Architecture investigation | Open (design) |
-| RSK-001 | Risk | Concurrent runs overwrite each other's edits to the same document | Knowledge loss | DEC-006: instruction guidance; follow-up if observed | Accepted |
-| RSK-002 | Risk | Agent stores secrets (passwords, tokens) in plain documents | Privacy | Instruction says not to (REQ-005) | Mitigated |
+| RSK-001 | Risk | Concurrent runs overwrite each other's edits to the same document | Knowledge loss | DEC-006: no locking; skills may add rules; revisit if observed | Accepted |
+| RSK-002 | Risk | Agent stores secrets (passwords, tokens) in plain documents | Privacy | Left to the agent's skills (user: the agent manages its semantic memory; DEC-010) | Accepted |
 
 ## Architecture Investigation Findings
 

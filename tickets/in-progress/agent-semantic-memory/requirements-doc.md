@@ -2,15 +2,15 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current solution revision ID: `SR-001`
+- Status: `Approved`
+- Current solution revision ID: `SR-002`
 - Package identifier: `agent-semantic-memory`
 - Request / ticket: Project Task `autobyteus-12` (Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's direction of 2026-11-09/10
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
-- Approved by and reference: pending (DEC-001, DEC-002, DEC-003 need the user)
-- Exact approved requirements baseline / solution revision: pending
+- Approved by and reference: `User`, in the Solution Designer conversation on 2026-11-10: "Thanks for the explanation I agree with you let's put the semantic inside the memory folder and don't rename no need to rename the episodic" (answer to the design summary: location `memory/semantic/<agent>/`, no history, switch + path in the app, minimal instruction section). Earlier in the same conversation the user stated that the system only gives the folder and the agent manages its semantic memory itself.
+- Exact approved requirements baseline / solution revision: this document at SR-002 (REQ-001..009, AC-001..008, DEC-001..011)
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -52,6 +52,7 @@
 
 ### Out Of Scope
 
+- Renaming or reorganizing the existing run-memory folders (`memory/agents`, `agent_teams`, `agent_orgs`), e.g. into an `episodic` folder (the user's decision, 2026-11-10).
 - Browsing or editing semantic memory on the Memory page or elsewhere in the app (beyond showing the path) — DEC-003.
 - Searching semantic memory with `search_memory` or any new search tool — DEC-003.
 - Version history, backup or sync of semantic memory, including to/from other nodes — DEC-002, DEC-007.
@@ -87,9 +88,9 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | Semantic memory is an optional per-agent-definition setting, off by default; an absent setting means off. | BEH-002 | Must | Not every agent needs it | N/A | Task direction; DEC-004 |
 | REQ-002 | The setting is part of the agent's definition config (`agent-config.json`), so a package can declare it, and the app's agent form can turn it on and off for an editable agent; the agent detail shows whether it is on and, when on, the folder path. | BEH-002 | Must | One source of truth for package and app; consistency with the existing skill-scope switch | N/A | DEC-003, DEC-004 |
-| REQ-003 | For an enabled agent, the system owns one folder per agent definition on the node where the run executes, under the server data directory, outside every Project workspace, outside every agent package and outside the run-memory tree. The system creates it when a run of that agent needs it; the path is stable and distinct per definition and valid on every supported desktop OS. | BEH-003 | Must | Private, system-owned, shared location | N/A | Task direction; DEC-001 |
+| REQ-003 | For an enabled agent, the system owns one folder per agent definition on the node where the run executes, in a `semantic` folder inside the server's memory folder (`<data-dir>/memory/semantic/<agent>/`), apart from the run folders (`agents`, `agent_teams`, `agent_orgs`), outside every Project workspace and outside every agent package. The system creates it when a run of that agent needs it; the path is stable and distinct per definition and valid on every supported desktop OS. | BEH-003 | Must | Private, system-owned, shared location | N/A | Task direction; DEC-001 |
 | REQ-004 | Every run of an enabled agent, whatever its runtime, Project, team, Org or delegation, is told the same absolute folder path for that agent definition. Agents are identified by definition: a shared agent used as a team member (`refScope: shared`) or as a delegated copy is the same agent; a team-local, Org-owned or application-owned agent is its own agent with its own folder. | BEH-001, BEH-004 | Must | "Every run shares the same semantic memory" | N/A | DEC-005 |
-| REQ-005 | The instructions of an enabled agent contain a Semantic Memory section that states: the absolute path; that it belongs to this agent and is shared by all its runs across Projects and teams; that reusable knowledge it learns (not Project-specific work or deliverables) is written there as documents whose structure its skills decide; that it reads what is relevant there before work the knowledge may cover; that other runs of it may write at the same time, so it re-reads a document right before changing it and changes only the part it means to; that it never writes secrets (passwords, tokens, keys) there. | BEH-001 | Must | Direction: path in instructions; DEC-006 and RSK-002 guidance | N/A | Task direction; DEC-006, DEC-010 |
+| REQ-005 | The instructions of an enabled agent contain a short Semantic Memory section that states only: the absolute path; that it belongs to this agent and is shared by all its runs, in every Project and team; that reusable knowledge it learns is written there as documents, and how it organizes them is up to the agent and its skills. The system adds no further rules (no structure, concurrency or content rules). | BEH-001 | Must | Direction: path in instructions; the user: the agent manages its semantic memory itself | N/A | Task direction; DEC-010 (user, 2026-11-10) |
 | REQ-006 | In every supported runtime, the agent can read and write files in its semantic memory folder with its normal file and shell tools, under the same approval policy that applies to its workspace files; a runtime sandbox that restricts writes to the workspace also allows this folder. A sandbox mode the user set to read-only stays read-only. | BEH-005 | Must | Otherwise the agent is told a path it cannot write | Architecture probes per runtime (UNK-001) | Done-when; DEC-009 |
 | REQ-007 | The system never deletes or rewrites semantic memory contents: turning the setting off, deleting or renaming the agent, or updating its package leaves the folder as it is; turning it on again gives the same folder back. | BEH-003 | Must | Data continuity | N/A | DEC-008 |
 | REQ-008 | Agents without semantic memory are unchanged: no section in their instructions, no folder created, no change in runtime write access. | BEH-001, BEH-005 | Must | Direction; preserved behavior | N/A | Task direction |
@@ -99,7 +100,7 @@ None.
 
 | Acceptance-Criteria ID | Related Requirement IDs | Related Behavior / Scenario IDs | Preconditions / Trigger | Observable Expected Outcome | Important Alternate Or Failure Outcome | Verification Intent |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-001 | REQ-003, REQ-004, REQ-005 | BEH-001, SCN-001 | Enabled agent; standalone run started under Project A | Its instructions contain the Semantic Memory section with an absolute path; the folder exists; the path is not inside Project A's workspace, any package root or `<data-dir>/memory/` | — | Integration test of composed instructions + real run |
+| AC-001 | REQ-003, REQ-004, REQ-005 | BEH-001, SCN-001 | Enabled agent; standalone run started under Project A | Its instructions contain the Semantic Memory section with an absolute path; the folder exists; the path is `<data-dir>/memory/semantic/<agent>/`, not inside Project A's workspace, any package root or a run folder; the Memory page, memory search and memory sync do not list it | — | Integration test of composed instructions + real run |
 | AC-002 | REQ-006 | BEH-005, SCN-002 | AC-001 run, in AutoByteus, Codex (default `workspace-write`) and Claude runtimes; ACP runtimes and Antigravity as far as installed | The run creates/edits a document in the folder with its normal tools and the file is on disk afterward; no sandbox denial | A runtime that cannot be made to write it is reported with evidence, not silently skipped | Real-runtime E2E per runtime |
 | AC-003 | REQ-004 | BEH-001, SCN-003 | After AC-002; a new standalone run of the same agent under Project B | Same path in its instructions; the run reads and reports the document written in Project A | — | Real-run E2E |
 | AC-004 | REQ-004 | BEH-004, SCN-003 | The same shared agent as a member of a team run (and as a delegated copy) | Same path in the member's instructions; it reads the document | — | Real team-run E2E; instruction test for delegation |
@@ -117,7 +118,7 @@ None.
 | SCN-003 | System | Later run of the same agent: other Project, as shared team member (Marketing/Event Scouting teams), or as delegated copy | Reuse knowledge | Run start | Documents exist | Run is told the same path; reads what is relevant | Knowledge reused, not relearned | — | Supported Normal Scenario | Task "done when"; team configs | REQ-004, AC-003, AC-004 |
 | SCN-004 | User | Agent author | Turn semantic memory on/off | `agent-config.json` in a package, or the app's agent form | — | Set/clear setting; detail shows state and path | Later runs follow the setting; contents kept | Read-only package agent: form cannot save (existing behavior) | Supported Normal Scenario | DEC-003/004 | REQ-001, REQ-002, REQ-007, REQ-009, AC-007, AC-008 |
 | SCN-005 | System | Run of an agent without the setting | Unchanged behavior | Run start | Setting absent/off | As today | No section, no folder | — | Supported Normal Scenario | Task direction | REQ-008, AC-005 |
-| SCN-006 | System | Two runs of the same agent at once writing the same document | — | Concurrent runs | — | Last write wins; instructions reduce the risk | Possible lost edit | — | Supported Explicit Edge Scenario (accepted risk, DEC-006) | Task open point | REQ-005 |
+| SCN-006 | System | Two runs of the same agent at once writing the same document | — | Concurrent runs | — | Last write wins; the agent's skills may guard against it | Possible lost edit | — | Supported Explicit Edge Scenario (accepted risk, DEC-006) | Task open point; user | REQ-005 |
 
 ## UI, Interaction, And Experience Requirements
 
@@ -169,16 +170,16 @@ None.
 
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Where does semantic memory live? | Users find, back up and trust it there; hard to move later | (a) `<data-dir>/semantic-memory/<agent>/`; (b) under `<data-dir>/memory/`; (c) a user-chosen folder per agent | Run memory under `memory/` is per run and scanned by the explorer, index and sync, and the glossary says it "is not a global knowledge base"; a sibling keeps the two apart. A user-chosen folder adds a setting nobody asked for yet. **Recommend (a):** `<server data dir>/semantic-memory/<agent definition>/`, on the node where the run executes, keyed by agent definition. | User | Needs user |
-| DEC-002 | Version history or backup? | An agent can overwrite good knowledge | (a) none: plain files; (b) the system keeps a git history; (c) periodic copies | Phase-1 rule in DESIGN.md: no speculative machinery; documents are small Markdown edited in place; the data dir is backed up as a whole by whatever the user uses. Git history needs git on every desktop/node and commit timing across concurrent runs. **Recommend (a)** now, record version history as a follow-up (FU-001) to revisit when real loss is seen. | User | Needs user |
-| DEC-003 | What does the user see in the app, and does search cover it? | Visible product behavior | (a) form switch + path on agent detail; Memory page and search untouched; (b) also browse/edit on the Memory page; (c) also `search_memory` | The documents are plain Markdown the user can open at the shown path; the agent reads its own index document directly, so search adds little now; Memory page browsing is a separate UI design. **Recommend (a)**; Memory page view/edit and search as follow-up (FU-003). | User | Needs user |
+| DEC-001 | Where does semantic memory live? | Users find, back up and trust it there; hard to move later | (a) `<data-dir>/semantic-memory/<agent>/`; (b) `<data-dir>/memory/semantic/<agent>/`; (c) a user-chosen folder | Designer first recommended (a) to keep it away from run-memory scanners. The user prefers it inside the memory folder for consistency (memory holds the agent's memories). Verified (Read): the explorer, memory search and memory sync walk only `memory/agents`, `memory/agent_teams`, `memory/agent_orgs`, so a `memory/semantic/` sibling is not treated as a run. **User's choice: (b)** `<data-dir>/memory/semantic/<agent>/`. Renaming/reorganizing the existing run folders (e.g. into an `episodic` folder) was considered; the user decided against it (too much change and refactoring). | User (2026-11-10 conversation) | Decided |
+| DEC-002 | Version history or backup? | An agent can overwrite good knowledge | (a) none: plain files; (b) the system keeps a git history; (c) periodic copies | Phase-1 rule in DESIGN.md: no speculative machinery; small Markdown documents; the data folder's own backup covers them. **User approved (a)**; version history is follow-up FU-001. | User (2026-11-10) | Decided |
+| DEC-003 | What does the user see in the app, and does search cover it? | Visible product behavior | (a) form switch + path on agent detail; (b) also Memory page browse/edit; (c) also `search_memory` | Plain documents the user can open at the shown path; Memory page view and search are separate designs. **User approved (a)**; FU-003. | User (2026-11-10) | Decided |
 | DEC-004 | Where is "enabled" stored? | Package and app must agree | (a) field in `agent-config.json`; (b) a separate user setting in server data | (a) lets the operator package declare its need (autobyteus-agents-23) and the app form edit the same value, like `skillScope`; the flag is not secret, only the contents are private. (b) would split the source of truth. **Decided (a).** | Solution Designer | Decided |
 | DEC-005 | How does a team member resolve to the same memory? | Core promise | Definition ID vs. member name vs. team | Shared members (`refScope: shared`) and delegated copies use the same definition ID as the standalone agent; team-local, Org-owned and application-owned agents are separate definitions. **Decided:** key by agent definition ID; no team configuration needed. | Solution Designer | Decided |
-| DEC-006 | Several runs writing at once? | Lost edits | (a) no locking, guidance in instructions; (b) file locks/merge tool | DESIGN.md rule 1: no speculative concurrency machinery; file tools already re-read before edit; one document per topic keeps collisions rare. **Decided (a)**; revisit if loss is observed. | Solution Designer | Decided |
+| DEC-006 | Several runs writing at once? | Lost edits | (a) no locking; (b) file locks/merge tool | DESIGN.md rule 1: no speculative concurrency machinery; how the agent manages its documents is its own (the user). **Decided (a)**: no locking and no system guidance; skills may add their own rules; revisit if loss is observed. | Solution Designer (user informed and agreed 2026-11-10) | Decided |
 | DEC-007 | Runs on other nodes? | Same agent on a Docker/remote node | Per node vs. sync | Semantic memory is on the node where the run executes, like run memory and workspaces; syncing is a separate feature. **Decided:** per node; out of scope (FU-004). | Solution Designer | Decided |
 | DEC-008 | Lifecycle when disabled/deleted | Data continuity | Delete vs. keep | Never delete agent knowledge implicitly; created lazily at run start. **Decided:** keep always; re-enable gives the same folder. | Solution Designer | Decided |
 | DEC-009 | Runtime write access | Agent must be able to write | Leave sandboxes vs. add the folder | Telling a path the agent cannot write breaks the feature (Codex `workspace-write`). **Decided:** add only that folder to the runtime's writable area; same approval policy; read-only mode stays read-only. | Solution Designer | Decided |
-| DEC-010 | Instruction content | Agent behavior | Path only vs. path + rules | The direction asks for the path and "reusable knowledge is written there"; concurrent-write and no-secrets guidance cost two lines and address DEC-006 and RSK-002. **Decided:** REQ-005 content; skills decide structure. | Solution Designer | Decided |
+| DEC-010 | Instruction content | Agent behavior | Path + ownership only vs. path + rules (re-read before edit, no secrets) | The user: the system only specifies where the folder is; managing semantic memory is up to the agent. Rules belong in skills. **Decided by the user: minimal section (REQ-005).** | User (2026-11-10) | Decided |
 | DEC-011 | When does a setting change apply? | Predictability | Immediately to running runs vs. at next composition | Instructions are composed at start/restore for every other definition field. **Decided:** same rule. | Solution Designer | Decided |
 
 ## Traceability
@@ -216,11 +217,11 @@ None.
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
 - Content ready for approval: `Yes`
-- Remaining content blocker: user decisions DEC-001, DEC-002, DEC-003
+- Remaining content blocker: None
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: `No`
-- Exact requirements and supplement approval basis recorded: `No`
-- Approved requirements package ready for architecture design: `No`
-- Remaining blocker: the user's approval
+- Approval recorded: `Yes` (User, 2026-11-10)
+- Exact requirements and supplement approval basis recorded: `Yes`
+- Approved requirements package ready for architecture design: `Yes`
+- Remaining blocker: None
