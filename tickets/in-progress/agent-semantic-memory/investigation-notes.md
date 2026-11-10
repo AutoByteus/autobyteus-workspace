@@ -96,7 +96,7 @@
 | `codex --version` | Real dependency available for design probes | `codex-cli 0.167.0`; `claude`, `grok`, `agy` installed | Measured | Design can probe outside-workspace writes per runtime | N/A |
 
 - Temporary diagnostics: None
-- Reproduction for implementation to start from: None yet (design phase will add runtime write probes).
+- Reproduction for implementation to start from: AF-01/AF-02 commands (Codex sandbox write outside the workspace fails without the writable root, succeeds with it). Probe folder `$HOME/.sm-probe` removed after use.
 
 ## Stakeholder And User Evidence
 
@@ -141,14 +141,43 @@
 
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| UNK-001 | Unknown | Whether each non-native runtime can write outside its working directory under default settings | REQ-006 | Architecture probes per runtime | Open (design) |
-| UNK-002 | Unknown | Whether Codex/Claude restore recompose instructions | REQ-010 | Architecture investigation | Open (design) |
+| UNK-001 | Unknown | Whether each non-native runtime can write outside its working directory under default settings | REQ-006 | AF-01..AF-13: Codex no (fixed by writable root), Claude via approval (fixed by additionalDirectories), Grok/AGY yes, dsh via escalation approval | Resolved (dsh from docs only) |
+| UNK-002 | Unknown | Whether restore recomposes instructions | REQ-009 | AF-04, AF-07, AF-09: Codex, Claude, ACP recompose; AF-13: AGY does not | Resolved |
 | RSK-001 | Risk | Concurrent runs overwrite each other's edits to the same document | Knowledge loss | DEC-006: no locking; skills may add rules; revisit if observed | Accepted |
 | RSK-002 | Risk | Agent stores secrets (passwords, tokens) in plain documents | Privacy | Left to the agent's skills (user: the agent manages its semantic memory; DEC-010) | Accepted |
 
 ## Architecture Investigation Findings
 
-(Pending requirements approval.)
+Authorities read for this phase (2026-11-10): `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` §2–3, `autobyteus-server-ts/docs/design/collaboration_model.md` §3, `autobyteus-server-ts/docs/modules/personal_settings.md`, `agent_memory.md`, `agent_definition.md`, `deepseek_harness_runtime.md`, `antigravity_cli_runtime.md`, `grok_build_runtime.md`.
+
+| ID | Method | Source / Command | Observation | Established | Design implication |
+| --- | --- | --- | --- | --- | --- |
+| AF-01 | Probe | `codex sandbox -c sandbox_mode="workspace-write" -- sh -c "echo b > $HOME/.sm-probe/semantic/out.txt"` (cwd `$HOME/.sm-probe/ws`) | `cannot create …/semantic/out.txt: Read-only file system`; the write inside the cwd succeeded | Reproduced (codex-cli 0.167.0) | Codex needs the folder as a writable root |
+| AF-02 | Probe | same with `-c 'sandbox_workspace_write.writable_roots=["$HOME/.sm-probe/semantic"]'` | Write and nested `mkdir -p` succeeded | Reproduced | `sandbox_workspace_write.writable_roots` in the thread `config` |
+| AF-03 | Probe note | first probe used `/tmp` | `/tmp` is writable in `workspace-write` regardless, so it proves nothing; repeated under `$HOME` | Measured | Tests must use a non-temp location |
+| AF-04 | Read | `codex-thread-manager.ts:218-265` | `thread/start` and `thread/resume` both send `config: appServerConfig`, `baseInstructions` | Read | Writable root + section apply on start and restore |
+| AF-05 | Read | `codex-thread-bootstrapper.ts:234-298` | Create and restore share `bootstrapInternal`: reads definition, composes prompt, builds `appServerConfig` = Agent Tools MCP config spread with `buildCodexIntegrationThreadConfig(...)` | Read | One place to add path; spread means a second `sandbox_workspace_write` key would overwrite the integration one |
+| AF-06 | Read | `codex-integration-thread-config.ts:12-22` | Emits `sandbox_workspace_write: { network_access: true }` only for `workspace-write` runs with integration variables | Read | One owner must build the whole `sandbox_workspace_write` object |
+| AF-07 | Read | `claude-session-bootstrapper.ts:44-58,93-97`; `claude-session-query-options.ts:45-60`; `claude-sdk-client.ts:55-70,330-345` | Create/restore share `bootstrapInternal` and recompose; permission checks go to `canUseTool` → tool-use coordinator (auto-approve or user); client maps options to SDK (`cwd`, `permissionMode`, …), no `additionalDirectories` | Read | Add `additionalDirectories` through session config → query options → client |
+| AF-08 | Read | Claude Agent SDK 0.3.231 `sdk.d.ts:1356` | `additionalDirectories?: string[]` option exists | Read | Supported by the installed SDK |
+| AF-09 | Read | `acp-agent-run-backend-factory.ts:106-140` | Create and restore both call `composeInstructions(prepared.definition, config)`; `prepare()` reads the definition | Read | Path resolved in `prepare()` |
+| AF-10 | Read | `runtime-management/acp/acp-client-connection.ts:139` | Client offers no fs capability; the agent writes with its own tools; permission requests bridged (`routePermission`) | Read | No client-side path filter to change |
+| AF-11 | Read/Command | `grok --help`, `grok agent --help`; `grok-build-launch-profile.ts:82-92` | Grok sandbox is an opt-in profile (`--sandbox`, not passed); `grok agent` has no `--add-dir` | Read | Grok writes with its permission policy; no change |
+| AF-12 | Read | `docs/modules/deepseek_harness_runtime.md:90` | dsh runs in its `workspace-write` sandbox and asks only for sandbox escalations; auto-execute allows | Read (dsh not installed here) | Outside writes need approval when auto-execute is off; no known extra-folder option (FU-007) |
+| AF-13 | Read | `agy-stream-process.ts:40-52`; `agy-agent-run-backend-factory.ts:52-66` | AGY always runs `--dangerously-skip-permissions`; identity composed at create only and stored in the capsule; restore reuses it | Read | No write-access change; a setting change reaches AGY runs at their next create (REQ-009) |
+| AF-14 | Read | `autobyteus-agent-run-backend-factory.ts:329-334` (file 515 lines) | Native prompt composed with workspace path | Read | One wiring call; file already over 500 lines (FU-005) |
+| AF-15 | Read | `agent-memory/store/agent-memory-layout.ts:35-60` | `AgentMemoryLayout(memoryDir)` owns the folder names `agents`, `agent_teams`, `agent_orgs` and safe path joins | Read | Same owner gains the `semantic` folder |
+| AF-16 | Read | `memory-sync/source/local-memory-export-scanner.ts:28-31`, `memory-search/runs/memory-run-discovery.ts:168-185`, `agent-memory/store/memory-file-store.ts:56` | Scanners walk only the run roots | Read | `memory/semantic/` unseen by run tooling |
+| AF-17 | Read | `agent-team-definition/utils/scoped-team-member-resolution.ts:71-86` | `refScope: shared` resolves to `ref` itself (the shared definition ID); team-local becomes `team-local-agent:…` | Read | Keying by definition ID meets DEC-005 |
+| AF-18 | Read | `configured-agent-execution-handle.ts:460-472` | Member run config carries `execution.agentDefinitionId` | Read | Same ID reaches the backends |
+| AF-19 | Read | `docs/modules/personal_settings.md`; `personal-settings/domain/personal-setting-record.ts` | Tools, skills, avatar and default launch of package/built-in definitions are personal settings kept in `<app-data>/agent-packages/personal-settings.json`, applied on every definition read, captured at package updates, reset per setting | Read | The semantic-memory switch is a per-node user choice of the same kind → fifth personal setting for agents |
+| AF-20 | Read | `agent-definition-service.ts` (499 lines) `:95-133,258,379-470` | Create input type, create, `cloneAgent`, `personalEditsOf`, `patched` | Read | Adding the field crosses 500 lines → extract `cloneAgent`/`personalEditsOf` |
+| AF-21 | Read | `agent-definition-config.ts:57-85` | `buildAgentConfigRecord` writes `internal` only when true; `mergeAgentConfigRecord` keeps unknown existing keys | Read | Write `semanticMemoryEnabled` only when true; merge must drop it when off |
+| AF-22 | Read | `agent-definition-node-reader.ts:29-62`, `application-owned-agent-source.ts:80-97` | Two config→domain mappings | Read | Field added in both; duplication is old (FU-008) |
+| AF-23 | Read | `api/graphql/converters/agent-definition-converter.ts:40-70`, `types/agent-definition.ts:87,121,178,229,316` | GraphQL type, create/update inputs | Read | `semanticMemoryEnabled`, computed `semanticMemoryPath` |
+| AF-24 | Read | `autobyteus-web/components/agents/AgentDefinitionForm.vue` (526 lines) `:4,69,139,159,174-183,418-430`, `DefinitionLaunchPreferencesSection` | Personal-setting marks and reset; extracted section component precedent | Read | New field component; form gets wiring only (FU-006) |
+| AF-25 | Read | `autobyteus-ts/src/memory/models/semantic-item.ts`, `retrieval/retriever.ts`; `tickets/done/work-journal-search/follow-ups.md` FU-003 | Dead per-run "semantic" items from an early compaction design remain in the library (not read by the server) | Read | Vocabulary clash with the new meaning; FU-009 asks to finish FU-003 |
+| AF-26 | Read | `docs/design/data_migration_guideline.md` §3 | Adding an optional field whose absence has a truthful meaning needs no migration | Read | Persisted data: Directly Usable — No Migration |
 
 ## Requirement Implications
 

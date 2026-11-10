@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `agent-semantic-memory`
 - Request / ticket: Project Task `autobyteus-12` (Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`)
 - Requested by: `/project_task_manager` (run `project_task_manager_2f41a1df4e464bf2aa8970327d9d7ad0`), on the user's direction of 2026-11-09/10
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
 - Approved by and reference: `User`, in the Solution Designer conversation on 2026-11-10: "Thanks for the explanation I agree with you let's put the semantic inside the memory folder and don't rename no need to rename the episodic" (answer to the design summary: location `memory/semantic/<agent>/`, no history, switch + path in the app, minimal instruction section). Earlier in the same conversation the user stated that the system only gives the folder and the agent manages its semantic memory itself.
-- Exact approved requirements baseline / solution revision: this document at SR-002 (REQ-001..009, AC-001..008, DEC-001..011)
+- Exact approved requirements baseline / solution revision: this document at SR-002 (REQ-001..009, AC-001..008, DEC-001..011) by the User; SR-003 refines REQ-002 and adds DEC-012 within that direction (Solution Designer, user informed 2026-11-10)
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -87,7 +87,7 @@ None.
 | Requirement ID | Requirement | Related Behavior IDs | Priority | Rationale | Feasibility Evidence | Source / Decision Reference |
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | Semantic memory is an optional per-agent-definition setting, off by default; an absent setting means off. | BEH-002 | Must | Not every agent needs it | N/A | Task direction; DEC-004 |
-| REQ-002 | The setting is part of the agent's definition config (`agent-config.json`), so a package can declare it, and the app's agent form can turn it on and off for an editable agent; the agent detail shows whether it is on and, when on, the folder path. | BEH-002 | Must | One source of truth for package and app; consistency with the existing skill-scope switch | N/A | DEC-003, DEC-004 |
+| REQ-002 | The setting is part of the agent's definition config (`agent-config.json`), so a package can declare it, and the app's agent form can turn it on and off; for agents from a package and built-in agents the app's choice is a personal setting (kept on the node across package updates, with "Reset to the package's/built-in setting"), for the user's own agents it is saved in their `agent-config.json`. The agent detail shows whether it is on and, when on, the folder path. | BEH-002 | Must | One source of truth for package and app; consistency with the existing skill-scope switch and the existing personal settings (tools, skills, avatar, default launch) | N/A | DEC-003, DEC-004, DEC-012 |
 | REQ-003 | For an enabled agent, the system owns one folder per agent definition on the node where the run executes, in a `semantic` folder inside the server's memory folder (`<data-dir>/memory/semantic/<agent>/`), apart from the run folders (`agents`, `agent_teams`, `agent_orgs`), outside every Project workspace and outside every agent package. The system creates it when a run of that agent needs it; the path is stable and distinct per definition and valid on every supported desktop OS. | BEH-003 | Must | Private, system-owned, shared location | N/A | Task direction; DEC-001 |
 | REQ-004 | Every run of an enabled agent, whatever its runtime, Project, team, Org or delegation, is told the same absolute folder path for that agent definition. Agents are identified by definition: a shared agent used as a team member (`refScope: shared`) or as a delegated copy is the same agent; a team-local, Org-owned or application-owned agent is its own agent with its own folder. | BEH-001, BEH-004 | Must | "Every run shares the same semantic memory" | N/A | DEC-005 |
 | REQ-005 | The instructions of an enabled agent contain a short Semantic Memory section that states only: the absolute path; that it belongs to this agent and is shared by all its runs, in every Project and team; that reusable knowledge it learns is written there as documents, and how it organizes them is up to the agent and its skills. The system adds no further rules (no structure, concurrency or content rules). | BEH-001 | Must | Direction: path in instructions; the user: the agent manages its semantic memory itself | N/A | Task direction; DEC-010 (user, 2026-11-10) |
@@ -95,6 +95,7 @@ None.
 | REQ-007 | The system never deletes or rewrites semantic memory contents: turning the setting off, deleting or renaming the agent, or updating its package leaves the folder as it is; turning it on again gives the same folder back. | BEH-003 | Must | Data continuity | N/A | DEC-008 |
 | REQ-008 | Agents without semantic memory are unchanged: no section in their instructions, no folder created, no change in runtime write access. | BEH-001, BEH-005 | Must | Direction; preserved behavior | N/A | Task direction |
 | REQ-009 | A change of the setting applies to runs whose instructions are composed afterwards (new runs, and restored runs where the runtime composes instructions again); a running run keeps what it was told. | BEH-001 | Should | Matches how other definition changes apply | N/A | DEC-011 |
+| DEC-012 | Where does the app's switch save for a package or built-in agent? | A save into package files is replaced at the next package update | (a) personal setting, like tools/skills/avatar/default launch; (b) write the package's `agent-config.json` | Personal settings exist for exactly this (per-node user choices on package and built-in definitions, kept across updates, resettable); (b) would silently lose the user's choice. **Decided (a).** Found in architecture investigation (AF-19); within REQ-002's direction. | Solution Designer (user informed 2026-11-10) | Decided |
 
 ## Acceptance Criteria
 
@@ -106,7 +107,7 @@ None.
 | AC-004 | REQ-004 | BEH-004, SCN-003 | The same shared agent as a member of a team run (and as a delegated copy) | Same path in the member's instructions; it reads the document | — | Real team-run E2E; instruction test for delegation |
 | AC-005 | REQ-008 | BEH-001, SCN-005 | Agent without the setting (absent or off) | Composed instructions identical to the base branch's; no folder created; Codex thread config unchanged | — | Snapshot/unit test against base output |
 | AC-006 | REQ-004 | BEH-004 | Enabled team-local agent and enabled shared agent with the same local name | Two different folders | — | Unit/integration test |
-| AC-007 | REQ-002, REQ-001 | BEH-002, SCN-004 | Agent form for an editable agent | Switch shows current state; saving writes the setting to `agent-config.json`, keeping other fields; detail page shows on/off and, when on, the path | Package file with the setting set reads as on | Web component test + API test |
+| AC-007 | REQ-002, REQ-001 | BEH-002, SCN-004 | Agent form for a user's own agent and for a package agent | Switch shows current state; saving a user's own agent writes the setting to `agent-config.json`, keeping other fields; saving a package agent stores a personal setting (package files unchanged) with a reset link back to the package's value; detail page shows on/off and, when on, the path | Package file with the setting set reads as on | Web component test + API test |
 | AC-008 | REQ-007, REQ-009 | BEH-003, SCN-004 | Enabled agent with a document; setting turned off; new run; setting turned on; new run | Off: no section, folder and document still present; on again: same path, document readable | — | Integration test |
 
 ## Relevant Scenarios And Journeys

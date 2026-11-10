@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-12) | N/A | N/A | Ready for Approval | BEH-001..005, REQ-001..009, AC-001..008, DEC-001..011 | Awaiting the user's decisions DEC-001..003 and approval |
 | SR-002 | Requirements | User conversation 2026-11-10 (design summary, location, approval) | N/A | Ready for Approval | Approved | REQ-003, REQ-005, AC-001, DEC-001, DEC-002, DEC-003, DEC-006, DEC-010, SCN-006 | Location `memory/semantic/<agent>/`; minimal instruction section; approved by the user |
+| SR-003 | Mixed | Architecture design | AF-01..AF-26 | Approved (requirements); design N/A | Approved; design Ready | REQ-002, AC-007, DEC-012; UNK-001, UNK-002 | Design spec written; Large / High |
 
 ## Revision Entries
 
@@ -54,3 +55,20 @@
 - Downstream impact: N/A
 - Remaining gaps: UNK-001, UNK-002 (architecture)
 - Next action: architecture design
+
+### SR-003 — Architecture design
+
+- Phase and classification: Mixed (`Refinement` of REQ-002 within the direction + design)
+- Triggering input: architecture investigation AF-01..AF-26 (Codex sandbox probe AF-01/AF-02; personal settings AF-19); the user's remark of 2026-11-10 that making the folder writable differs per runtime (answered with the per-runtime table)
+- Triggering finding IDs: AF-19 (switch for package agents must survive package updates), AF-20/AF-14/AF-24 (file sizes)
+- Prior status: requirements Approved (SR-002); design not created
+- Current status: requirements Approved (REQ-002 refined, DEC-012 added, Solution Designer within the direction, user informed in the conversation); `design-spec.md` Ready
+- IDs affected: REQ-002, AC-007, DEC-012; UNK-001, UNK-002 resolved
+- Scenario-basis changes: none
+- Canonical sections changed: requirements REQ-002, AC-007, Decisions; investigation notes Architecture Investigation Findings, UNK rows, reproduction; `design-spec.md` created; `follow-ups.md` FU-005..FU-009
+- Intended behavior changed: refinement within the approved direction (where the app's switch saves for package agents)
+- Approval impact: no renewed user approval needed (within direction; user informed)
+- Post-design classification: task_size Large, architectural_risk High (shared contracts: agent-config.json, personal-settings.json, GraphQL; Codex/Claude write-access boundary; all runtimes)
+- Handoff: per handoff rules (recorded in `handoff-architecture-design.md`)
+- Remaining gaps: Codex app-server `writable_roots` to be shown in E2E; DeepSeek harness untestable here (FU-007)
+- Next action: independent architecture review per the handoff rules
