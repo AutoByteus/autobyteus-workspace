@@ -8,7 +8,7 @@ it('drains real commands before the remaining Fastify cleanup, retaining command
   owner.install(app);
   let pid = 0;
   app.addHook('onClose', async () => owner.close(async () => {
-    expect(await new ProcessGroupObserver().isProcessRunning(pid)).toBe(false);
+    expect((await new ProcessGroupObserver().snapshot()).some(p => p.pid === pid)).toBe(false);
   }));
   const manager = new BackgroundProcessManager({ scope: owner.scope });
   try {

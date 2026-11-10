@@ -73,7 +73,4 @@ export class ProcessGroupObserver {
       ['-d', group.target.distro, '--exec', '/bin/kill', `-${signal}`, '--', `-${group.anchor.pid}`],
       { encoding: 'utf8', timeout: Math.max(1, Math.min(500, deadline - Date.now())), maxBuffer: 32768 });
   }
-  async isProcessRunning(pid: number, target = HOST_PROCESS_TARGET): Promise<boolean> {
-    return (await this.snapshot(target)).some(p => p.pid === pid);
-  }
 }

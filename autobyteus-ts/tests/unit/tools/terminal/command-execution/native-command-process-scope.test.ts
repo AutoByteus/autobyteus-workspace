@@ -33,7 +33,7 @@ suite('NativeCommandProcessScope', () => {
     expect(scope.size).toBe(1);
     const report = await scope.close();
     expect(report.outcomes).toEqual([{ outcome: 'stopped' }]);
-    expect(await new ProcessGroupObserver().isProcessRunning(pid)).toBe(false);
+    expect((await new ProcessGroupObserver().snapshot()).some(p => p.pid === pid)).toBe(false);
   }));
   it('forces a TERM-resistant HTTP job, confirms listener release and preserves the call result', async () => fixture(async (scope, manager, cwd) => {
     const code = 'process.on("SIGTERM",()=>{});const s=require("http").createServer((q,r)=>r.end("owned"));s.listen(0,"127.0.0.1",()=>console.log(JSON.stringify({pid:process.pid,port:s.address().port})))';
@@ -46,7 +46,7 @@ suite('NativeCommandProcessScope', () => {
     }
     expect(receipt).toBeDefined(); expect((await fetch(`http://127.0.0.1:${receipt!.port}`)).status).toBe(200);
     const report = await scope.close(); expect(report.outcomes).toEqual([{ outcome: 'stopped' }]);
-    expect(await new ProcessGroupObserver().isProcessRunning(receipt!.pid)).toBe(false);
+    expect((await new ProcessGroupObserver().snapshot()).some(p => p.pid === receipt!.pid)).toBe(false);
     await expect(fetch(`http://127.0.0.1:${receipt!.port}`)).rejects.toThrow();
     expect(result.exitCode).toBe(0);
     console.log(JSON.stringify({ check: 'owned-survivor', ...receipt, cleanup: report, listenerReleased: true }));
