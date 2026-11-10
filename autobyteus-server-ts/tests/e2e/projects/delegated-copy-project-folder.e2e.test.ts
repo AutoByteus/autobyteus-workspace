@@ -8,6 +8,7 @@ import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { findAgyRunCapsule } from "../helpers/agy-run-capsule.js";
 import { calledResults, callTool, objectsIn, segment, startCollaborationHarness, taskAgentsIn, toolResult,
   type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -54,21 +55,6 @@ const recordedFolders = (node: unknown): string[] => unique(objectsIn(node)
   .filter((value): value is string => typeof value === "string").map(real));
 const nodeOf = (tree: unknown, id: string): Rec | undefined => objectsIn(tree).find((record) =>
   typeof (record.startedAt ?? record.started_at) === "string" && [record.agentRunId, record.agent_run_id, record.teamRunId, record.team_run_id].includes(id));
-/** A run's AGY capsule: its manifest and path (a scripted process's cwd). */
-const capsuleOf = (memoryDir: string, runId: string): { path: string; workspacePath: string } | null => {
-  const walk = (dir: string): { path: string; workspacePath: string } | null => {
-    for (const entry of fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }) : []) {
-      if (!entry.isDirectory()) continue;
-      const full = path.join(dir, entry.name);
-      if (entry.name === "agy-project") {
-        const manifest = JSON.parse(fs.readFileSync(path.join(full, "manifest.json"), "utf8")) as Rec;
-        if (manifest.runId === runId) return { path: full, workspacePath: real(manifest.workspacePath) };
-      } else { const found = walk(full); if (found) return found; }
-    }
-    return null;
-  };
-  return walk(memoryDir);
-};
 /** The `--add-dir` values of every launch of a capsule, from the scripted CLI's argv log. */
 const addDirsOf = (argvLog: string, capsule: string): string[] => unique(fs.readFileSync(argvLog, "utf8").trim().split("\n")
   .map((line) => JSON.parse(line) as { argv: string[]; cwd: string })
@@ -93,8 +79,8 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
   const memory = () => path.join(h.dataDir, "memory");
   /** The copy's launch inputs: the recorded folder, the capsule's, and the CLI's `--add-dir`. */
   const launchOf = async (root: Root, runId: string) => {
-    let capsule: ReturnType<typeof capsuleOf> = null;
-    await until(() => Boolean(capsule = capsuleOf(memory(), runId)), `capsule of ${runId}`, 60_000);
+    let capsule: ReturnType<typeof findAgyRunCapsule> = null;
+    await until(() => Boolean(capsule = findAgyRunCapsule(memory(), runId)), `capsule of ${runId}`, 60_000);
     let addDirs: string[] = [];
     await until(() => (addDirs = addDirsOf(argvLog, capsule!.path)).length > 0, `launch of ${runId}`, 60_000);
     return { recorded: recordedFolders(nodeOf(await root.liveTree(), runId)), capsule: capsule!.workspacePath, addDirs };
@@ -147,8 +133,8 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     const delegated = delegatedOk(await agentRoot.calls(agentRoot.rootId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.writer)}`, task_id: taskId })));
     const copy = await launchOf(agentRoot, delegated.target_agent_run_id);
     expectIn(copy, folders.F);
-    expect(capsuleOf(memory(), agentRoot.rootId)!.workspacePath).toBe(fs.realpathSync(h.workspace));
-    evidence.dcf01 = { copy, manager: capsuleOf(memory(), agentRoot.rootId)!.workspacePath };
+    expect(findAgyRunCapsule(memory(), agentRoot.rootId)!.workspacePath).toBe(fs.realpathSync(h.workspace));
+    evidence.dcf01 = { copy, manager: findAgyRunCapsule(memory(), agentRoot.rootId)!.workspacePath };
   }, 180_000);
 
   it("DCF-02: a Team copy's default and every member run in F", async () => {
@@ -224,13 +210,13 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     const teamLaunch = await launchOf(team, teamCopy.target_agent_run_id);
     expect(teamLaunch.capsule).toBe(folders.F);
     expect(teamLaunch.addDirs).toEqual([folders.F]);
-    expect(capsuleOf(memory(), team.managerRunId)!.workspacePath).toBe(G);
+    expect(findAgyRunCapsule(memory(), team.managerRunId)!.workspacePath).toBe(G);
     const org = await h.startRoot("org", ids);
     const orgCatalog = delegatedOk(await org.calls(org.managerRunId, "/manager", callTool("delegate_task", { recipient_address: `/${segment(names.helper)}`, task_id: await createTask(projects.P, "Reply OK.") })));
     const orgPlacement = delegatedOk(await org.calls(org.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/worker", task_id: await createTask(projects.P, "Reply OK.") })));
     const launches = { catalog: await launchOf(org, orgCatalog.target_agent_run_id), placement: await launchOf(org, orgPlacement.target_agent_run_id) };
     for (const launch of Object.values(launches)) { expect(launch.capsule).toBe(folders.F); expect(launch.addDirs).toEqual([folders.F]); }
-    expect(capsuleOf(memory(), org.managerRunId)!.workspacePath).toBe(G);
+    expect(findAgyRunCapsule(memory(), org.managerRunId)!.workspacePath).toBe(G);
     evidence.dcf07 = { teamLaunch, org: launches };
     team.close(); org.close();
     await h.terminate("team", team.rootId);
