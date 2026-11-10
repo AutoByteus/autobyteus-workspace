@@ -114,6 +114,9 @@
 //                  reload before the first message gives the list (AC-005-8); with an Activity entry pushed before the
 //                  first message, the route follows the draft to the node's run, and a reload of that entry reopens the
 //                  run's Activity (AC-005-6); Back gives its run screen.
+//   MSP-36 autobyteus-435 REQ-013  `delegate_task` to the sender's own address, by the agent's real tool call: a standalone
+//                  run and a Team member are refused with the self words and nothing is placed; a teammate's address keeps
+//                  the own-team words.
 //   MSP-34, MSP-35 autobyteus-435 REQ-011  A Task closed while its listed host run is stopped: its delegated row leaves
 //                  the phones' lists (MSP-34, delta) and a desktop window's (MSP-35, alpha) within one refresh, with at
 //                  most one view re-read per digest value; set back to TODO, the lists agree with the node:
@@ -1369,12 +1372,16 @@ const runCases = async () => {
       restored.push(await reloadUntil('agent Activity', () => shown('mobile-activity')));
       // (b) A Team run's view: the Delivery Team's Messages.
       await toList(p);
+      // A reload folds the older runs again (only the restored run's fold opens): show them before a tap.
+      await showOlder(p);
       await openRow(p, `team:${stack.delivery}`);
       await menuOpen(p, 'messages');
       await p.locator(sel('mobile-messages')).waitFor({ timeout: 20_000 });
       restored.push(await reloadUntil('Team Messages', () => shown('mobile-messages')));
       // (c) A Team member (AC-005-3): the Delivery Team's mate.
       await toList(p);
+      // A reload folds the older runs again (only the restored run's fold opens): show them before a tap.
+      await showOlder(p);
       await ensureUnfolded(p, `team:${stack.delivery}`);
       const mate = childRow(await rowsOf(p), `team:${stack.delivery}`, 'mate', 1);
       assert(mate, 'the Delivery Team\'s mate row', await rowsOf(p));
@@ -1382,6 +1389,8 @@ const runCases = async () => {
       restored.push(await reloadUntil('Team member', () => screenIs('open', 'mate')));
       // (d) A delegated task agent: its host's rows are read before it is found (DS-006 restore step 3).
       await toList(p);
+      // A reload folds the older runs again (only the restored run's fold opens): show them before a tap.
+      await showOlder(p);
       const writerKey = `agent:${stack.ptm}/agent:${stack.writerRun}`;
       const writerName = (await openRow(p, writerKey)).name;
       restored.push(await reloadUntil('delegated task agent', () => screenIs('open', writerName)));
@@ -1393,6 +1402,8 @@ const runCases = async () => {
       // (f) New run → Create run, reloaded before the first message (AC-005-8): a draft is not kept; the list.
       const createRun = async () => {
         await toList(p);
+      // A reload folds the older runs again (only the restored run's fold opens): show them before a tap.
+      await showOlder(p);
         await p.locator(sel('mobile-new-run-button')).click();
         await p.locator(sel('mobile-new-run')).waitFor();
         await p.locator(sel('mobile-run-target-select-toggle')).click();
@@ -1450,6 +1461,40 @@ const runCases = async () => {
     } finally {
       await restore.context.close().catch(() => undefined);
     }
+  });
+
+  await runCase('MSP-36', async () => {
+    // autobyteus-435 REQ-013 (AC-013-1): `delegate_task` to the sender's own address, through the agent's real tool call
+    // (scripted AGY): a standalone run and a Team member are refused with the self words and nothing is placed; a
+    // teammate's address keeps the own-team words.
+    const SELF = 'is your own address; you can\'t delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.';
+    const TEAM = 'is in your own team; you can\'t delegate to it. Talk with it using send_message_to.';
+    const ptmNodes = async () => treeNodes((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration)
+      .filter(node => node.agentRunId || node.teamRunId).length;
+    const leadCall = async (name, args) => {
+      const before = calledResults(await stack.leadProjection()).length;
+      await sendOver(stack.wsUrl(`agent-team/${stack.delivery}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
+        context_file_paths: [], image_urls: [], agent_run_id: stack.deliveryLead, content: callTool(name, args) });
+      let results = [];
+      await waitFor(`the lead's ${name}`, async () => (results = calledResults(await stack.leadProjection())).length > before);
+      return results[results.length - 1];
+    };
+    const ptmBefore = await ptmNodes();
+    const standalone = await stack.agentCall(stack.ptm, 'delegate_task', { recipient_address: '/project_task_manager', description: 'Self. Marker SELF-435.' });
+    await sleep(1_500);
+    const ptmAfter = await ptmNodes();
+    const leadSelf = await leadCall('delegate_task', { recipient_address: '/lead', description: 'Self. Marker SELF-LEAD-435.' });
+    const teammate = await leadCall('delegate_task', { recipient_address: '/mate', description: 'Teammate. Marker MATE-435.' });
+    const short = text => String(text ?? '').replace(/\\"/g, '"').slice(0, 400);
+    const facts = { standalone: short(standalone), leadSelf: short(leadSelf), teammate: short(teammate), ptmNodes: { before: ptmBefore, after: ptmAfter } };
+    const failures = [
+      [facts.standalone.includes(`/project_task_manager ${SELF}`), 'a standalone run delegating to its own address: the self words'],
+      [ptmAfter === ptmBefore, 'nothing is placed under the run'],
+      [facts.leadSelf.includes(`/lead ${SELF}`), 'a Team member delegating to its own address: the self words'],
+      [facts.teammate.includes(`/mate ${TEAM}`) && !facts.teammate.includes(SELF), 'a teammate\'s address keeps the own-team words'],
+    ].filter(([ok]) => !ok).map(([, label]) => label);
+    assert(failures.length === 0, failures.join('; '), facts);
+    return facts;
   });
 
   await runCase('MSP-16', async () => {

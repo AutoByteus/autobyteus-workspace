@@ -18,10 +18,10 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass CRR-002 (message from `/software_engineering_team/code_reviewer`), head `d37397b40d`
-- Prior Investigation Reviewed: none (first round)
+- Current API/E2E Revision ID: `API-REV-002` (round 2; `API-REV-001` round 1)
+- Current Investigation Round: 2
+- Trigger: round 1 (`d37397b40d`), code review pass CRR-002; round 2 (`b5da2d15a0`), code review pass CRR-004 after F1/F2 rework (IR-004; SR-005 DEC-019, DEC-020) and items 13–14 (SR-004, IR-003)
+- Prior Investigation Reviewed: round 1 of this file
 - Latest Authoritative Investigation: this file
 
 All paths are in the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/`.
@@ -213,10 +213,32 @@ None.
 | F1: on Android 9–14 the window decor still insets the content by the cutout; `SHORT_EDGES` alone does not let the page use the strip (REQ-004) | `Design Impact` | API-18 (`android:id/content` at `136,0-2400,1080`, page 863 of 915 CSS px) | Solution Designer, through failure-origin review |
 | F2: the Electron window reads the node's 403 (no CORS applied), so the new opaque request never runs and the row says "isn't an AutoByteus node" (AC-003-1, DEC-002) | `Design Impact` | API-13 (`{"status":403,"type":"basic"}` in the window; Chrome pages opaque) | Solution Designer, through failure-origin review |
 
+
+## Round 2 Plan (CRR-004, HEAD `b5da2d15a0`)
+
+Changes since round 1 (`git diff --name-only d37397b40d b5da2d15a0`, outside tickets): Android `DesktopFullScreenController` and instrumented/unit tests (F1, DEC-020); web `nodeIdentityProbe.ts`, `nodeConnectionErrorText.ts`, localization (F2, DEC-019); server delegation refusal (item 13, REQ-013); web `SystemInstructionActivityItem.vue` (item 14, REQ-014); docs. No build input (TESTING.md § Fresh-start build) changed, so API-02 still holds and the device and desktop builds are worktree builds.
+
+New and changed criteria: AC-003-1 (expected words are now `host_refused`'s), AC-004-1 (API 34 added), AC-013-1, AC-014-1, AC-014-2.
+
+| Case ID | Decision | Why |
+| --- | --- | --- |
+| API-01 | Reused, extended by IMP-16, IMP-18, IMP-19, IMP-20 | unit, typecheck, server suite, Android units, instrumented API 34/29 on `06a072014f` (code as HEAD) |
+| API-02, API-03, API-04, API-05 | Still valid | no build input changed; API-04/05 rebuilt from the worktree for the device cases (environment) |
+| API-06 | Rerun on API 35 | the controller changed; IMP-20 covers API 34 and 29 |
+| API-07 | Rerun (API 35) | controller changed (API 35 must stay as is) |
+| API-18 | Rerun (API 34) | F1 |
+| API-08b | New: Clipboard Send with the keyboard on API 34 | turning decor fitting off below API 35 changes how the keyboard inset reaches the page |
+| API-08, API-09, API-10, API-11, API-12 | Still valid | on API 35 the controller does not ask the decor (unit `onApi35TheDecorFittingIsNeverAsked`; API-07 r2 shows the same window); the pairing/overlay code is unchanged |
+| API-13 | Rerun (packaged worktree build) | F2 |
+| API-14, API-15, API-16 | Covered again by API-17 | probe cases at the new commit |
+| API-17 | Run (full probe at the final commit) | deferred from round 1 |
+| API-19 | New durable MSP-36 (`mobile-shell-probe.mjs`) | AC-013-1 through a real agent's tool call on a live node (server tests prove the rule in-process) |
+| AC-014-1/2 | Reused IMP-17 (rendered, phone and desktop, `432d1c3af2`) + IMP-16 | `SystemInstructionActivityItem.vue` unchanged since `432d1c3af2` |
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (MSP-33, MSP-34, MSP-35 added; MSP-05 label updated)
 - Reroute Required Before Validation Execution: `No` (found during execution: F1, F2 → failure-origin review)
 - Recommended Owner If Reroute Required: Solution Designer (preliminary), confirmed by failure-origin review
-- Notes: test-code review is requested on Pass (reviewed High route). HEAD moved to `432d1c3af2` (IR-003, items 13–14) during the round; those items are not in this round.
+- Notes: test-code review is requested on Pass (reviewed High route). Round 1: HEAD moved to `432d1c3af2` during the round, so items 13–14 were not in it. Round 2 covers them; durable MSP-36 added (Round 2 Plan).

@@ -3,11 +3,16 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002` (round 2; round 1 `API-REV-001`)
 - Test progress log (when used): `api-e2e-test-progress.md`
-- Round and trigger: round 1, after code review pass CRR-002 (head `d37397b40d`, code `f9cb6f7153`), items 1–12 (SR-003)
-- Prior round reviewed: none
-- Deviations from the investigation's plan, and why:
+- Round and trigger: **round 2**, after code review pass CRR-004 (head `b5da2d15a0`): F1/F2 rework (IR-004; SR-005 DEC-019, DEC-020) and items 13–14 (SR-004, IR-003). Round 1: after CRR-002 (head `d37397b40d`, code `f9cb6f7153`), items 1–12.
+- Prior round reviewed: round 1 (API-REV-001, Fail: F1, F2). Both resolved this round (API-18 r2, API-13 r2).
+- Round 2 deviations, and why:
+  - **API-07 r2 attempt 1** is invalid as harness. The new setup script didn't wait for the fresh node to list its local models, so no viewer opened. The setup now waits, and the rerun is valid. Both are kept.
+  - **API-19 (MSP-36)**: the first try ran from the wrong directory (nothing ran). The second hit a missing phone bundle, which the desktop build for API-13 had replaced; it was rebuilt. Both were harness; the third run passed.
+  - **API-17 attempt 1**: 35/36 Pass. MSP-33 timed out tapping the delegated row. In the full run the Project Task Manager run is older than the newest five, and each reload closes the older-runs fold again (only the restored run's fold opens). My test now opens the fold after each return to the list. Attempt 2: 36/36 Pass.
+  - The API-13 r2 desktop app is this worktree's packaged build (`isolated-app start --build`, default flavor). No build input changed, so the fresh-start proof (API-02) still holds.
+- Round 1 deviations, and why:
   - **HEAD moved during the round.** `432d1c3af2` (IR-003: items 13–14 of SR-004, self-delegation words and the System instructions view) landed on the branch after the handoff and has not been through code review yet. Items 13–14 are not in this round. Device and desktop-app cases ran on the fresh-clone build of `d37397b40d`. The probe cases and the refusing node ran on worktree builds at `432d1c3af2`, whose extra commit touches none of the code those cases exercise (delegation refusal words, an Activity item).
   - **API-18 added.** The design's cutout branch for API 28–34 (`SHORT_EDGES`) was never run on such a platform, so I added an Android 14 emulator check. It found F1.
   - **API-12.** The first attempt answered every request with 502, so the app's start check (status URL) failed first and showed the existing "Can’t reach" screen. REQ-007's overlay belongs to the page load (DS-008), so the rerun answers 502 only for `GET /mobile`. Attempt 1 is kept and marked.
@@ -15,7 +20,7 @@
   - **API-14.** MSP-33's first run failed on its own timing: it read the node's stored conversation the moment the route changed. The test now waits; rerun alone, Pass. Every route assertion had passed in the first run too.
   - **API-17 (full phone probe) deferred.** F1 and F2 need product changes, so a full run now would be repeated after the rework. The new and neighbouring cases ran (API-14…16), and IMP-15's full run on `f9cb6f7153` still holds for the product code of items 1–12.
   - **API-18 attempt 1** was stopped by the user's interruption (app restart) mid-run, with no result. It was rerun from the start.
-- Evidence folder (absolute path; the handoff message gives the commit that holds it): `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/evidence/api-e2e/` (scripts in `probes/`)
+- Evidence folder (absolute path; the handoff message gives the commit that holds it): `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/evidence/api-e2e/` (round 1 at the top level, scripts in `probes/`; round 2 in `round2/`, scripts in `round2/probes/`)
 
 ## Routing Classification
 
@@ -23,7 +28,7 @@
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` once validation passes. This round ends `Fail`, so it asks for failure-origin review. The durable test changes below are in the same commit for that review to see.
+- Proportional test-code review decision: `Required` (round 2 passes; reviewed High route). Requested in the handoff for MSP-33, MSP-34, MSP-35, MSP-36 and MSP-05's label.
 
 ## Tested Builds And Environments
 
@@ -35,12 +40,23 @@
 | ENV-4 | `d37397b40d` | ENV-3 + test proxy `127.0.0.1:63826` → ENV-2 (`pass`, `stopped`, `502`, `502page`) | ENV-1 APK | app data cleared before API-11; node saved as "abx435 Proxy Node" |
 | ENV-5 | `d37397b40d` app; node at `432d1c3af2` | macOS; isolated desktop instance `iso-52527-2f42` (`pnpm --silent isolated-app start --app <fresh-clone AutoByteus.app>`), window origin `file://` | ENV-1 packaged app; test node = worktree `autobyteus-server-ts/dist` on `127.0.0.1:52498` with its own data root/HOME (Host gate unchanged by this ticket) | own data root and ports; driven over CDP |
 | ENV-6 | worktree `432d1c3af2` + this round's probe edits | macOS, headless Google Chrome (playwright-core) | `pnpm -C autobyteus-server-ts build`, `pnpm -C autobyteus-web build:mobile-web`, the probe's own nodes and `nuxt dev` | probe-owned data roots; phones 390×844; desktop window 1440×1400 |
+| ENV-8 | `b5da2d15a0` (worktree) | macOS; test Docker node `abx435r2-api-node` (`autobyteus/autobyteus-server:beta` with the worktree's buildx `server-package`, read-only), `127.0.0.1:56137`; emulators emulator-5600 `abx435r2_api35` (Android 15, WebView 124) and emulator-5602 `abx435r2_api34` (Android 14, WebView 113), Pixel 7 cutout, headless | worktree `:app:assembleDebug :app:assembleDebugAndroidTest` (`app-debug.apk` sha256 `cb893e3b0369f974`) | paired by the share intent; draft runs only (no model call); `immersive_mode_confirmations=confirmed`; auto-rotate off |
+| ENV-9 | `b5da2d15a0` (worktree) | macOS; isolated desktop instance `iso-61038-68f7` (`pnpm --silent isolated-app start --build`), window `file://` | worktree packaged app | test node = worktree server dist on `127.0.0.1:61177`, own data root/HOME; closed port 61178; a plain HTTP server answering 403 on 61442 |
+| ENV-10 | `b5da2d15a0` + this round's probe edits | macOS, headless Google Chrome | worktree `pnpm -C autobyteus-server-ts build`, `pnpm -C autobyteus-web build:mobile-web` | the probe's own nodes, data roots, phones (390×844), desktop window |
 | ENV-7 | `d37397b40d` | emulator-5602, ticket-owned AVD `abx435_api34`: Android 14, `google_apis` arm64, Pixel 7, same cutout (`DisplayCutout{insets=Rect(0, 136 - 0, 0)`), WebView 113.0.5672.136, headless | ENV-1 APK | paired with ENV-2; a draft run's viewer (no message, no model call) |
 
 ## Cases
 
 | Case ID | Criteria (AC / Requirement IDs) | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-01 (r2) | AC-003-1/2/3 (unit), AC-004-1 (unit, instrumented API 34/29), AC-013-1, AC-014-1, AC-014-2 | web, server, Android units; instrumented API 34 and 29; rendered item 14 | Reused IMP-16, IMP-17, IMP-18, IMP-19, IMP-20 | — | Pass | (implementation rows) | IMP-18 `Tests  5587 passed`, server `Tests  8266 passed`; IMP-19 `unit tests 106 failures 0`; IMP-20 API 34 `14/0 failures`, API 29 `14, 0 failures, 3 skipped`; IMP-16 `Tests  1056 passed`; IMP-17 `preHasOwnScroll false`, `textLength 15818` | ran on `06a072014f` (code as HEAD; `b5da2d15a0` adds documents). `SystemInstructionActivityItem.vue` unchanged since `432d1c3af2` (IMP-17) |
+| API-06 (r2) | AC-004-2, AC-004-1 (window) | instrumented tests, API 35 | `adb -s emulator-5600 shell am instrument -w -r org.autobyteus.mobile.test/androidx.test.runner.AndroidJUnitRunner` | ENV-8 | Pass | `round2/API-06-instrumented-api35-r2.txt` | `OK (14 tests)` | API 34 and 29 by IMP-20 |
+| API-07 (r2) | AC-004-1 (API 35) | viewer full screen, both directions | `round2/probes/setup-viewer.sh probes/env.sh`; `api07.sh`; `api07b.sh probes/env.sh API-07-r2` | ENV-8 | Pass | `round2/API-07-r2.txt`, `round2/API-07-1-full-screen-dir1.png`, `round2/API-07-2-fill-dir1.png`, `round2/API-07-r2-fill-rot270.png`; attempt 1 (harness) `round2/API-07-r2-attempt1-setup-incomplete.txt` | `F1 … ROTATION_90 … "viewport":[915,412] … "screen":[915,412]`; `G1 … ROTATION_270 … "viewport":[915,412]`; Fill both `"canvas":[0,-51,915,515]`; `G3 … ROTATION_0 … "viewport":[412,839]` | API 35 unchanged by DEC-020, as required |
+| API-18 (r2) | AC-004-1 (API 34), DEC-020 | viewer full screen on Android 14 | `round2/probes/setup-viewer.sh probes/env34.sh`; `api18m.sh` | ENV-8 | Pass | `round2/API-18-r2.txt`, `round2/API-18-fill-a.png` (ROTATION_90), `round2/API-18-fill-b.png` (ROTATION_270) | `H1 … ROTATION_90 … "viewport":[915,412]`, `content frame: … 0,0-2400,1080 #1020002 android:id/content`; same at ROTATION_270; Fill `"canvas":[0,-51,915,515]` both; `H3 full screen off … "viewport":[412,839]`, `content frame: … 0,136-1080,2337` (as H0) | **F1 resolved** (round 1: page 863, content frame at x=136) |
+| API-08b | AC-006-1 on Android 14 (keyboard with decor fitting off) | Clipboard sheet, keyboard open, real taps | `round2/probes/api08b.sh` | ENV-8 | Pass | `round2/API-08b-r2.txt`, `round2/API-08b-1-keyboard-open-send-visible.png`, `round2/API-08b-2-after-send.png` | `"visual":[915,151,0]`, `"send":[766,107,134,44]`, `"topAtSendCentre":"mobile-node-desktop-clipboard-send"`, `mInputShown=true`; `node clipboard after Send: 'abx435-sent-in-full-screen'` | new this round: the decor change below API 35 could have moved the keyboard inset |
+| API-13 (r2) | AC-003-1 (DEC-019), AC-003-3 | Electron window Nodes page ↔ real node Host gate | `round2/probes/refnode.sh`, `electron-nodes.mjs`, `electron-rows-shot.mjs`, `electron-eval.mjs`, `plain403.mjs` | ENV-9 | Pass | `round2/API-13-r2-electron-nodes-page.txt`, `round2/API-13-r2-row-abx435-row.png`, `round2/API-13-r2-row-abx435-add.png`, `round2/API-13-r2-row-abx435-closed.png`, `round2/API-13-r2-row-abx435-other403.png` | row (node restarted without the name) and Add: `Not reachable. The node at this address doesn’t accept the name 127.0.0.1.nip.io. Add 127.0.0.1.nip.io to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.` (status requests 2: no opaque request); closed port `No answer from that address.` (4); plain 403 `Something answers there, but it isn't an AutoByteus node.`; window read `{"status":403,"type":"basic","code":"REMOTE_ACCESS_HOST_REFUSED"}` | **F2 resolved** |
+| API-19 | AC-013-1 | `delegate_task` through a real agent tool call on a live node (durable MSP-36) | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<new> --cases=MSP-36`, and in API-17 | ENV-10 | Pass | `round2/API-19-msp36-alone.json`, `round2/API-17-full-probe-excerpt.txt` | `/project_task_manager is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.`; `/lead is your own address; …`; `/mate is in your own team; you can't delegate to it. Talk with it using send_message_to.`; code `COLLABORATION_SELF_TARGET_REJECTED`; `ptmNodes: {'before': 18, 'after': 18}` | standalone and Team member senders; Org senders by IMP-16 |
+| API-17 (r2) | AC-001-1, AC-010-3, AC-005-1/3/4/6/7/8, AC-011-1/2, AC-013-1, all MSP | full phone probe at the final commit | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/private/tmp/abx435-api2/probe-full2` (worktree root) | ENV-10 | Pass | `round2/API-17-full-probe-excerpt.txt`, `round2/API-17-full-probe/mobile-shell-probe.json`, `round2/API-17-full-probe/MSP-3*.png`; attempt 1 `round2/API-17-attempt1/` | `result Pass`; 36/36 `Pass`; `unknownBrowserErrors: 0`; `failed requests to localhost:8000/health: 0`; MSP-32 `"refused": [], "refusedSockets": [], "socketsOpened": 0`; cleanup `"serversLeft": 0, "rootRemoved": true` | attempt 1: 35/36, MSP-33 test fold issue (fixed), see Deviations |
 | API-01 | AC-001-2, AC-002-1, AC-003-2, AC-003-3, AC-004-2 (unit), AC-005-1…8 (unit), AC-006-2, AC-007-1 (unit), AC-008-1 (unit), AC-010-1, AC-010-2, AC-011-2, AC-012-1 | web, server, contracts, Android units | Reused IMP-13, IMP-06, IMP-07, IMP-08, IMP-09 | — | Pass | (implementation rows) | IMP-13 `Tests  5586 passed`, typecheck `PASS`; IMP-06 `# fail 0`; IMP-07 `Tests  29 passed`; IMP-08 rerun `Tests  1 passed`; IMP-09 `unit tests 103 failures 0` | `git diff --name-only f9cb6f7153 d37397b40d`: only `docs/design-cases.md` and ticket files. Server, contracts and Android are unchanged since `e5ca0e1da7`/`6ca743fee0` |
 | API-02 | build inputs (contracts `dist`, `generated/graphql.ts`, `typecheck-baseline.json`) | release desktop job, fresh clone | `evidence/api-e2e/API-02-fresh-start-build.sh d37397b40d`: fresh `git clone --no-local`, `pnpm install --frozen-lockfile`, `build:electron:mac -- --arm64` with the job's environment, then the job's two verify steps (Prisma, terminal runtime incl. `--spawn-probe`) | ENV-1 | Pass | `API-02-fresh-start-build.txt`, `API-02-build-log-excerpt.txt`, `API-02-fresh-start-build.sh` | `install exit=0`; `[typecheck] PASS`; `build exit=0`; `PRISMA exit=0`; `[terminal-runtime] ok: node-pty spawn probe`; `TERMINAL exit=0` | Signing, notarization, x64 and the other OS jobs need the runner (not tested) |
 | API-03 | words, web boundaries | web guards at the commit under test | ran inside API-02's build | ENV-1 | Pass | `API-02-fresh-start-build.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.`; `[audit:localization-literals] Passed with zero unresolved findings.` | covers the rework's new files |
@@ -62,71 +78,78 @@
 
 ## Acceptance-Criteria Proof
 
+Round 2 is authoritative. A case without "(r2)" is from round 1 and still valid: nothing it exercises changed (see the investigation's Round 2 Plan).
+
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001-1 | Yes | IMP-15 (reused, `f9cb6f7153`); API-17 deferred | Proven (on `f9cb6f7153`) | — |
+| AC-001-1 | Yes | API-17 (r2) | Proven | — |
 | AC-001-2 | No | API-01 | Proven | — |
-| AC-002-1 | No | API-01, API-02 (typecheck) | Proven | — |
-| AC-003-1 | Yes | API-13 | **Not Proven (Fail, F2)** | — |
-| AC-003-2 | No | API-01 (unit); API-13 Chrome comparison (the opaque request answers in a browser page) | Proven | — |
-| AC-003-3 | No | API-01; API-13 request counts (no second request after a readable answer) | Proven | — |
-| AC-004-1 | Yes | API-07 (API 35, both directions), API-06 | Proven as written (API 35). REQ-004's API 28–34 branch fails: API-18 (F1) | — |
-| AC-004-2 | No | API-06, API-07 (after exit) | Proven | — |
-| AC-005-1 | Yes | API-14 (MSP-33), API-09 | Proven | — |
+| AC-002-1 | No | API-01, API-02 | Proven | — |
+| AC-003-1 | Yes | API-13 (r2) | Proven | — |
+| AC-003-2 | No | API-01 (r2, unit); API-13 round-1 Chrome comparison (the opaque request answers in a browser page) | Proven | — |
+| AC-003-3 | No | API-01 (r2); API-13 (r2) request counts (one readable request for a refusal, the opaque one only after a failed fetch) | Proven | — |
+| AC-004-1 | Yes | API-07 (r2) API 35, API-18 (r2) API 34, both directions; API-01 (r2) IMP-20 API 34/29 instrumented | Proven | other vendors' cutouts (UNK-001): only the user's phone |
+| AC-004-2 | No | API-06 (r2), API-07 (r2), API-18 (r2) (off: content frame and viewport as before) | Proven | — |
+| AC-005-1 | Yes | API-17 (r2) MSP-33, API-09 | Proven | — |
 | AC-005-2 | Yes | API-09 | Proven | — |
-| AC-005-3 | No | API-14 (Team member, Team Messages) | Proven | — |
-| AC-005-4 | No | API-14 r1 (MSP-05) | Proven | — |
+| AC-005-3 | No | API-17 (r2) MSP-33 | Proven | — |
+| AC-005-4 | No | API-17 (r2) MSP-05 | Proven | — |
 | AC-005-5 | No | API-01 (unit) | Proven (unit) | — |
-| AC-005-6 | Yes | API-14 (MSP-33), API-10 | Proven | — |
-| AC-005-7 | No | API-14 (`opening True listShown False`), API-10 samples | Proven | — |
-| AC-005-8 | No | API-14 | Proven | — |
-| AC-006-1 | Yes | API-08 | Proven | — |
+| AC-005-6 | Yes | API-17 (r2) MSP-33, API-10 | Proven | — |
+| AC-005-7 | No | API-17 (r2) MSP-33 (`opening True listShown False`), API-10 | Proven | — |
+| AC-005-8 | No | API-17 (r2) MSP-33 | Proven | — |
+| AC-006-1 | Yes | API-08 (API 35), API-08b (API 34) | Proven | — |
 | AC-006-2 | No | API-01 | Proven | — |
 | AC-007-1 | No | API-12, API-01 | Proven | — |
 | AC-008-1 | Yes | API-11 | Proven | — |
-| AC-009-1 | No | docs (delivery) | Not Proven here (docs review belongs to delivery) | — |
+| AC-009-1 | No | docs (delivery's docs review) | Not proven here: delivery's check | — |
 | AC-010-1 | Yes | API-01 | Proven (unit per owner) | — |
-| AC-010-2 | Yes | API-01, IMP-15 (MSP-13, MSP-32) | Proven | — |
-| AC-010-3 | Yes | IMP-15 (reused) | Proven (on `f9cb6f7153`) | — |
-| AC-011-1 | Yes | API-15, API-16, API-01 (server) | Proven | — |
-| AC-011-2 | No | API-15, API-16 (`viewReads` 1 per close, 0 when nothing changes) | Proven | — |
+| AC-010-2 | Yes | API-01, API-17 (r2) MSP-13, MSP-32 | Proven | — |
+| AC-010-3 | Yes | API-17 (r2) | Proven | — |
+| AC-011-1 | Yes | API-17 (r2) MSP-34 (phones), MSP-35 (desktop) | Proven | — |
+| AC-011-2 | No | API-17 (r2) MSP-34/35 (`viewReads` 1 per close, 0 while nothing changes) | Proven | — |
 | AC-012-1 | No | API-01, API-04 | Proven | — |
+| AC-013-1 | Yes | API-19 / API-17 (r2) MSP-36; API-01 (r2) IMP-16 | Proven | — |
+| AC-014-1 | Yes | API-01 (r2): IMP-17 (rendered phone and desktop), IMP-16 | Proven | — |
+| AC-014-2 | No | API-01 (r2): IMP-17, IMP-16 | Proven | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
+Round 2 scores. Round 1's are in `api-e2e-revision-record.md` (API-REV-001: 79%, Fail).
+
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 50% | Most ACs directly proven (API-06…API-16) | AC-003-1 fails in the real desktop app (F2); REQ-004 fails on Android 9–14 (F1) | the rework, then rerun API-13, API-18, API-07 and the full probe |
-| Changed-boundary execution directness | 80% | 95% | real Electron window and node gate, real WebView on two Android versions, real node desktop and clipboard, live node with stopped hosts | — | — |
-| Cross-boundary integration realism and mock gap | 70% | 90% | no mocks on the failing paths; LM Studio and scripted AGY runtimes; the test proxy stands in for the network path in API-11/12 | the proxy is a stand-in for a real down node or a 5xx from a real front | — |
-| Environment, configuration, identity, and fixture fidelity | 75% | 90% | fresh-clone builds, test-owned node image, two Android versions, packaged desktop app | vendor phones (UNK-001), signed builds | the user's phone after release |
-| Failure, edge-case, lifecycle, and recovery evidence | 70% | 90% | process death ×2, Retry, 502, closed port, stopped host, reload before/after the send | API-17 not rerun at the latest commit | full probe in the rework round |
-| User-surface, browser, and desktop-shell confidence | 60% | 50% | desktop shell exercised (API-13) and found failing; phone surfaces pass | F1, F2 | rework |
-| Durable regression coverage quality and relevance | 80% | 90% | MSP-33, MSP-34, MSP-35 added and passing; MSP-05 label corrected | no durable test catches F1 (instrumented tests run on API 35 only) or F2 (unit tests use a fake fetch) | the rework should add one for each (e.g. an instrumented insets test that runs on API ≤ 34; a desktop-window probe case) |
+| Requirement and acceptance-criteria proof | 85% | 96% | every critical AC directly proven: devices API 35 and 34 (API-07, API-18, API-08, API-08b, API-09…12), packaged desktop app (API-13), live nodes (API-17) | AC-009-1 is delivery's docs review | — |
+| Changed-boundary execution directness | 85% | 96% | the real Electron window and node gate; real WebView windows on two Android versions with a real node desktop and clipboard; live nodes with stopped hosts; real tool calls for item 13 | API 26–28 (no image for 28; 26–27 have no cutout) | a device on API 28 |
+| Cross-boundary integration realism and mock gap | 80% | 95% | no mocks on the proven paths; scripted AGY and LM Studio only where no inference matters | the test proxy stands in for a down node or a 5xx front (API-11/12) | — |
+| Environment, configuration, identity, and fixture fidelity | 85% | 95% | fresh-clone release build (API-02, no build input changed since), test-owned node image, two Android versions, packaged desktop app | vendor phones, signed builds | the user's phone after release |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | process death ×2, Retry, 502, closed port, plain 403, stopped host close/TODO, reload before/after the send, revocation (MSP-32) | — | — |
+| User-surface, browser, and desktop-shell confidence | 80% | 95% | phone bundle 36/36, desktop window MSP-35/MSP-27, Electron window API-13 (r2) | — | — |
+| Durable regression coverage quality and relevance | 85% | 92% | MSP-33…36 added and passing in the full probe; the rework added real-window instrumented tests that run below API 35 (IMP-20) | the device journeys (API-07…13, 18) are run by hand with the scripts in `evidence/api-e2e/round2/probes/`; no CI runs emulators | an emulator lane in CI (out of scope) |
 
-- Overall post-repository confidence: 73%
-- Overall final confidence: 79% (simple average), with critical failures.
-- Calculation method: simple average of the seven categories.
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-003-1; REQ-004 on Android 9–14)
-- Any final applicable category below `90%`: `Yes`. Requirement proof 50%, user-surface/desktop-shell 50%.
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F1, F2. Also API-17 not rerun at the latest commit.
+- Overall post-repository confidence: 84%
+- Overall final confidence: 95% (simple average 95.4%)
+- Calculation method: simple average of the seven categories
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: API 26–28 not on a device (unit + API 29 instrumented by IMP-20); vendor cutouts (user-only); device journeys are not automated in CI.
 
 ## Broader Validation Decision (Mandatory)
 
-- Decision: `Required` (executed)
-- Execution mode: `Other` (Android emulators API 35 and API 34 with a test Docker node), `Project Desktop Validation` (isolated instance of the fresh-clone packaged app), `Browser` (phone probe), `Lifecycle` (process death, reload)
-- Confidence gap or residual risk it addresses, and the expected gain: every device, desktop-shell and live-node behavior that unit tests could only mock. It found F1 and F2.
-- Browser validation needed, and why or why not: yes. Restore and stopped-host refresh are renderer journeys on the phone bundle (TESTING.md: renderer behavior the phone offers is proven on the phone bundle).
+- Decision: `Required` (executed in both rounds)
+- Execution mode: `Other` (Android emulators API 35 and 34 with a test Docker node), `Project Desktop Validation` (isolated instance of a packaged build), `Browser` (full phone probe), `Lifecycle` (process death, reload)
+- Confidence gap or residual risk it addresses, and the expected gain: the device, desktop-shell and live-node behavior that unit tests could only mock. Round 1 found F1 and F2; round 2 proves their fixes on the same surfaces.
+- Browser validation needed, and why or why not: yes. Restore, stopped-host refresh, revocation and item 13 run on the phone bundle and a live node (TESTING.md: renderer behavior the phone offers is proven on the phone bundle).
 - If `Not Required`: —
 - If `Blocked`: —
 
 ## Desktop Application Validation
 
-- Approach executed, and any deviation from the investigation's plan: as planned. The fresh-clone packaged app ran as an isolated instance; the nodes were test-owned.
-- Cases proving web-equivalent behavior, and cases proving shell-specific or lifecycle behavior: web-equivalent: API-16 (desktop Runs view in a browser window), the API-13 Chrome comparison. Shell-specific: API-13 (the `file://` window's requests).
-- Effect on any already-running desktop application: `None`. Own data root and ports; the instance was stopped (`isolated-app list`: no running instance of this run).
-- Behavior not directly proven and its confidence consequence: AC-003-1 fails (F2).
+- Approach executed: round 1, the fresh-clone packaged app (`d37397b40d`); round 2, the worktree's packaged build (`b5da2d15a0`), each as an isolated instance with test-owned nodes.
+- Cases proving web-equivalent behavior, and cases proving shell-specific or lifecycle behavior: web-equivalent: API-17 MSP-27/35 (desktop Runs view in a browser window), API-13 round-1 Chrome comparison. Shell-specific: API-13 (r2), the `file://` window reading the node's refusal.
+- Effect on any already-running desktop application: `None`. Own data roots and ports; both instances stopped (`isolated-app list`: none running).
+- Behavior not directly proven and its confidence consequence: none.
 
 ## Persisted-Data Transition Checks
 
@@ -134,8 +157,8 @@
 - Representative existing data used: the Android saved page URL across process death (API-09, API-10).
 - Approved transition followed without an unnecessary migration: `Yes`
 - Cases proving the outcome: API-09, API-10.
-- Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
-- Residual untested persisted-data risk: a URL saved by an older page (no `row`). Its behavior is the normal no-subject path (unit).
+- Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`. DEC-020's API-level branch is platform behavior, not data compatibility.
+- Residual untested persisted-data risk: none material.
 
 ## Compatibility / Legacy Scope Check
 
@@ -147,15 +170,16 @@
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes`
+- Repository-resident durable coverage added, updated, or removed: `Yes` (rounds 1 and 2)
 
 | Path / Test | Change | Case IDs | For A Removal |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-33 (+ header) | Added | API-14 | — |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-05 comment and assertion message ("an Org entry … (AC-005-4)") | Updated | API-14 r1 | — |
-| `autobyteus-web/tests/e2e/mobile-closed-task-rows-cases.mjs` MSP-34, MSP-35 (+ header) | Added | API-15, API-16 | — |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-33 (+ header) | Added (r1); r2: waits for the stored message; opens the older-runs fold after each return to the list | API-14, API-17 | — |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-36 (+ header) | Added (r2) | API-19, API-17 | — |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-05 comment and assertion message ("an Org entry … (AC-005-4)") | Updated (r1) | API-17 | — |
+| `autobyteus-web/tests/e2e/mobile-closed-task-rows-cases.mjs` MSP-34, MSP-35 (+ header) | Added (r1) | API-15, API-16, API-17 | — |
 
-- Added or updated paths attached for proportional test-code review: `Yes` (attached to the failure-origin request so the reviewer sees them; test-code review proper follows a passing round)
+- Added or updated paths attached for proportional test-code review: `Yes`
 - Diff or repository evidence supplied for removed paths: none removed
 
 ## Dependencies Mocked Or Emulated
@@ -163,39 +187,33 @@
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
 | A phone | Android emulators (API 35, API 34) | team rule: no physical phone | vendor skins, other cutout shapes (UNK-001) |
-| A node that is down / answers 5xx | test TCP proxy in front of the test node | a real container restart would lose the pairing session | network-path stand-in |
-| Model provider | local LM Studio (Docker node), scripted AGY CLI (probe) | no paid inference needed | none for these behaviors |
-| A host name the node refuses | public `*.nip.io` names resolving to 127.0.0.1 | no `/etc/hosts` change on the user's machine | none: the node and the window see a real name |
+| A node that is down / answers 5xx | test TCP proxy in front of the test node (round 1) | a container restart would lose the pairing session | network-path stand-in |
+| Something that answers 403 without a refusal code | a plain HTTP server (round 2) | AC-003-1's alternate outcome needs one | none |
+| Model provider | local LM Studio (round 1, Docker node), scripted AGY CLI (probe) | no paid inference needed | none for these behaviors |
+| A host name the node refuses | public `*.nip.io` names resolving to 127.0.0.1 | no `/etc/hosts` change on the user's machine | none |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Fresh clone, server package, scratch (`/private/tmp/abx435-api`) incl. owner credential and pairing-link files | Yes | `rm -rf` | removed |
-| Test node `abx435-api-node` + 5 `abx435-api-*` volumes | Yes | `docker rm -f -v`, `docker volume rm` | removed; `docker volume ls`: 0 `abx435`; `autobyteus-server-0/1/2` untouched |
-| Emulators emulator-5600 / emulator-5602, AVDs `abx435_api35`, `abx435_api34` (app data, adb forwards, sensor and immersive settings) | Yes | `emu kill`, `avdmanager delete avd` | deleted; other agents' AVDs never addressed |
-| Test proxy, refusing node and its data root | Yes | process ended, `rm -rf` | none running |
-| Isolated instance `iso-52527-2f42` | Yes | `isolated-app stop` | stopped; no running instance |
-| LM Studio model `google/gemma-4-26b-a4b` (loaded just-in-time by this run) | Yes | `lms unload` | no model loaded |
-| Probe stacks (r1, r2) | Yes (probe) | the probe's own cleanup | `"cleanup": {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}` both runs |
-| Device helper scripts | Yes | kept as evidence in `evidence/api-e2e/probes/` | — |
+| Round 1: fresh clone, test node `abx435-api-node` + volumes, AVDs `abx435_api35/34`, proxy, refusing node, isolated instance `iso-52527-2f42`, LM Studio model | Yes | removed / stopped / unloaded (round 1) | none left |
+| Round 2: test node `abx435r2-api-node` + 5 `abx435r2-*` volumes | Yes | `docker rm -f -v`, `docker volume rm` | `docker volume ls`: 0 `abx435`; `autobyteus-server-0/1/2` untouched |
+| Round 2: emulators emulator-5600/5602, AVDs `abx435r2_api35`, `abx435r2_api34` | Yes | `emu kill`, `avdmanager delete avd` | deleted; other agents' AVDs never addressed |
+| Round 2: isolated instance `iso-61038-68f7`, refusing node (port 61177) and data root, plain 403 server | Yes | `isolated-app stop`, process ended, `rm -rf` | none running |
+| Round 2 scratch `/private/tmp/abx435-api2` (incl. owner credential and pairing-link files) | Yes | `rm -rf` after the evidence copy | removed |
+| Probe stacks (all runs) | Yes (probe) | the probe's own cleanup | `"serversLeft": 0, "rootRemoved": true` |
+| Worktree build outputs (`autobyteus-web/electron-dist`, `dist`, server `dist`) | Yes (rebuilt) | left in place: untracked build outputs of this worktree (TESTING.md § Build outputs) | — |
+| Device helper scripts | Yes | kept as evidence (`evidence/api-e2e/probes/`, `round2/probes/`) | — |
 
-## Preliminary Classification (On `Fail`)
+## Round 1 Failures (Resolved)
 
-**F1: REQ-004 (DS-005, the design's API 28–34 branch) on Android 9–14. Preliminary `Design Impact`; recommended owner: Solution Designer.**
-- Expected: in viewer full screen the page also lays out in the cutout area (REQ-004; design-spec File Mapping: "`Display.setLayoutInCutout(on)` (API ≥ 28: `SHORT_EDGES` on, `DEFAULT` off)"; implementation decision 8: "the unit test covers API 26–35").
-- Observed on Android 14 (API-18): the window gets `layoutInDisplayCutoutMode=shortEdges` and spans `[0,0][2400,1080]`, but the framework's `android:id/content` frame starts at x=136 (`136,0-2400,1080`). The page is 863 CSS px wide on a 915 px screen in both landscape directions, as before the change. On Android 15 (API-07) the page is 915.
-- Cause found: the app never turns off the window decor's inset fitting (`decorFitsSystemWindows`), so on API ≤ 34 the decor still insets the content by the cutout whatever the cutout mode. Android 15 enforces edge-to-edge for `targetSdk 35`, which is why the mechanism works there. The unit test drives a fake `Display` port, and the instrumented tests ran on API 35 only, so neither could catch this. The code matches the design. The design's mechanism for API 28–34 is insufficient, so I classify it as design rather than implementation.
-
-**F2: AC-003-1 (REQ-003, DEC-002) in the Electron desktop window. Preliminary `Design Impact`; recommended owner: Solution Designer.**
-- Expected: a node row or Add whose name the node's Host gate refuses shows "Something answers at <host>, but it refuses this window. If it is an AutoByteus node, add <host> to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."
-- Observed (API-13, real packaged app, real node): "Not reachable. Something answers there, but it isn't an AutoByteus node." for both the row and Add. The closed port keeps "No answer from that address." as expected.
-- Cause found: the Electron window (`file://`) does not apply CORS to the node request. Its readable `fetch` resolves with the node's 403 (`{"status":403,"type":"basic"}`), although the 403 carries no `Access-Control-*` header. So `probeNodeIdentity` never reaches the new opaque request (`nodeIdentityProbe.ts:83`); it takes `!response.ok → not_autobyteus` (`:86`). In Chrome, `file://` and `http` pages behave as DEC-002 measured (readable fails, opaque answers). The requirements listed this as an open risk ("Electron same engine; API/E2E re-checks"). DEC-002's premise that the desktop window cannot read the refusal does not hold. The window can read the 403's `code: REMOTE_ACCESS_HOST_REFUSED`, which names the exact cause; the existing `cause.hostRefused` words describe it. Deciding the corrected mechanism and words belongs to the design.
+- **F1** (REQ-004 on Android 9–14). Round 1, API-18: page 863 of 915 CSS px; `android:id/content` at `136,0-2400,1080`. Preliminary `Design Impact`, confirmed by failure-origin review as CR-002 and resolved by DEC-020 (IR-004). Round 2, API-18 (r2): content frame `0,0-2400,1080`, page 915, Fill 915 in both directions; off as before.
+- **F2** (AC-003-1 in the Electron window). Round 1, API-13: "isn't an AutoByteus node" for a refused name. Preliminary `Design Impact`, confirmed as CR-003 and resolved by DEC-019 (IR-004). Round 2, API-13 (r2): the `host_refused` words on the row and on Add.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven, or parts only the user can check (IDs): AC-003-1 (F2); REQ-004 on Android 9–14 (F1; AC-004-1 as written for API 35 is proven); AC-009-1 is delivery's docs review; API-17 (full probe at the latest commit) deferred to the rework round. Only the user can check: vendor phones' cutouts (UNK-001).
-- Preliminary classification and recommended owner (on `Fail`): F1 `Design Impact`, F2 `Design Impact`; Solution Designer, through failure-origin review.
-- Next recipient from `get_handoff_rules`: see the handoff message (failure-origin review).
-- Notes: items 13–14 (`432d1c3af2`, IR-003) are outside this round and not yet code-reviewed. Rerun on rework: API-07 and API-18 (and API-06) for F1; API-13 for F2; API-02 if a build input changes; API-17 full probe at the final commit. Every other case holds unless the rework touches its code.
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check (IDs): AC-009-1 is delivery's docs review. Only the user can check: vendor phones' cutouts (UNK-001); I tried the two Android versions available as emulators with the Pixel 7 cutout. Not run on a device: API 26–28 (unit tests and IMP-20's API 29 cover the same pre-30 path).
+- Preliminary classification and recommended owner (on `Fail`): —
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review; Medium / High).
+- Notes for delivery (carried): `autobyteus-web/docs/chat.md` lines 359 and 555 still name `composables/chat/useChatRouteRunSync.ts` and its spec path (C-09).
