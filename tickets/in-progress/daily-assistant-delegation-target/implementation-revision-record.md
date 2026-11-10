@@ -6,7 +6,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Solution Designer / `design-spec.md` SR-001 / initial | N/A | `Initial Baseline` | SR-001; ARCH-REV N/A; CRR N/A; API-REV N/A; DR N/A | Implemented; local checks pass |
+| IR-001 | Solution Designer / `design-spec.md` SR-001 / initial | N/A | `Initial Baseline` | SR-001, SR-002; ARCH-REV N/A; CRR N/A; API-REV N/A; DR N/A | Implemented; local checks pass |
 
 ## Revision Entries
 
@@ -17,7 +17,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Classification: `Initial Baseline`
 - Prior authoritative result: N/A
 - Current authoritative result: `collaborationEligible` on each built-in registry entry (Daily Assistant `true`, Model Router `false`); `CollaboratorCandidatePolicy` excludes only ineligible built-ins; the web New-chat mirror is renamed to `utils/collaborators/collaborationIneligibleAgentDefinitionIds.ts` and pinned to the registry flag by its contract spec.
-- Related solution revision IDs: SR-001
+- Related solution revision IDs: SR-001; SR-002 (approval confirmation only, no change)
 - Related architecture-review revision IDs: N/A
 - Related code-review revision IDs: N/A
 - Related API/E2E revision IDs: N/A
