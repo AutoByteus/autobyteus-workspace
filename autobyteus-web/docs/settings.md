@@ -400,12 +400,14 @@ the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-s
   node, and a node that refuses the name in the address (`PEER_HOST_REFUSED` or the attempt
   result `host_refused`: "The node at this address doesn’t accept the name {{host}}. Add {{host}}
   to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."); "fetch failed" is never shown.
-  The window's own probe (`utils/nodeIdentityProbe.ts`) cannot read a refusal without CORS
-  headers (a node's Host gate answers before CORS): when its readable request fails for a reason
-  other than time, it asks the same address once more without reading the answer (`no-cors`), and
-  an answer gives `window_refused` (autobyteus-435): "Something answers at {{host}}, but it refuses
-  this window. …AUTOBYTEUS_ALLOWED_HOSTS…" in the desktop window, or "…doesn’t accept requests
-  from this page…AUTOBYTEUS_ALLOWED_ORIGINS…AUTOBYTEUS_ALLOWED_HOSTS…" in a browser window. When a node in a container cannot find an address and
+  The window's own probe (`utils/nodeIdentityProbe.ts`, autobyteus-435) reads a node's 403
+  `REMOTE_ACCESS_HOST_REFUSED` where it can (the desktop window: Electron does not subject its
+  `file://` requests to CORS) and gives `host_refused`, with the words above. A browser window
+  cannot read that refusal (it carries no CORS headers, so the request fails): when its readable
+  request fails for a reason other than time, it asks the same address once more without reading
+  the answer (`no-cors`), and an answer gives `window_refused`: "Something answers at {{host}}, but
+  it doesn’t accept requests from this page. If it is an AutoByteus node, allow this page’s address
+  (AUTOBYTEUS_ALLOWED_ORIGINS) or the name {{host}} (AUTOBYTEUS_ALLOWED_HOSTS) on it." When a node in a container cannot find an address and
   the first one it tried was loopback, the hint suggests `host.docker.internal:<port>` with
   Use this and a link to the Docker Guide tab. The add form never shows it.
 - **The offer.** `RemoteCollaborationOfferToggle.vue` is the row's offer summary ("7 Agents ·

@@ -6,11 +6,13 @@ import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
  * `unreachable` mirror the server's transport reasons; `not_autobyteus` is something that answered without an identity;
  * `identity_pending` is a node whose identity is waiting for its data migration (autobyteus-290 N-910);
  * `network_refused` is a node that does not accept connections from this computer's network (autobyteus-437 M-8b);
- * `window_refused` is something that answers at the address but refuses this window's request, which the window
- * cannot read, so it cannot say why (autobyteus-435 REQ-003; not the node-side, exact `host_refused`).
+ * `host_refused` is a node whose Host gate refuses the name in the address, read from its answer (the desktop window
+ * reads it; the same reason a node gives for an address it checked, autobyteus-426 REQ-020); `window_refused` is
+ * something that answers but refuses this window's request, which the window cannot read, so it cannot say why (a
+ * browser window, autobyteus-435 REQ-003, DEC-019).
  */
 export type NodeTransportReason = 'refused' | 'timeout' | 'not_found' | 'unreachable'
-export type NodeProbeCause = NodeTransportReason | 'not_autobyteus' | 'identity_pending' | 'network_refused' | 'window_refused'
+export type NodeProbeCause = NodeTransportReason | 'not_autobyteus' | 'identity_pending' | 'network_refused' | 'host_refused' | 'window_refused'
 
 export type NodeIdentityProbeResult =
   | { ok: true; nodeId: string }
@@ -46,11 +48,11 @@ const isIdentityPending = async (response: Response): Promise<boolean> => {
   return answer?.code === 'NODE_IDENTITY_NOT_MIGRATED'
 }
 
-/** A node answers HTTP 403 with `NODE_NETWORK_REFUSED` when it does not accept this network (node access model NA-3). */
-const isNetworkRefused = async (response: Response): Promise<boolean> => {
-  if (response.status !== 403) return false
+/** The code of a node's 403 answer, read from a clone (the body stays readable). */
+const refusalCodeOf = async (response: Response): Promise<unknown> => {
+  if (response.status !== 403) return null
   const answer = await response.clone().json().catch(() => null) as { code?: unknown } | null
-  return answer?.code === 'NODE_NETWORK_REFUSED'
+  return answer?.code ?? null
 }
 
 /**
@@ -63,8 +65,9 @@ const answersOpaquely = (url: string, fetchImpl: typeof globalThis.fetch, timeou
 /**
  * Which node answers at `baseUrl` as this window reaches it: one GET of its public `/rest/remote-access/status`, which
  * also tells whether it is reachable now (one-nodes-tab DS-001, DS-002). When that GET fails for a reason other than
- * time, the window asks once more without reading the answer: an answer means something there refuses this window (a
- * node's Host gate refuses the name before CORS, so its 403 cannot be read), autobyteus-435 REQ-003.
+ * time, the window asks once more without reading the answer: an answer means something there refuses this window (in
+ * a browser window a node's Host gate refusal carries no CORS headers, so its 403 cannot be read), autobyteus-435
+ * REQ-003.
  */
 export async function probeNodeIdentity(
   baseUrl: string,
@@ -82,7 +85,12 @@ export async function probeNodeIdentity(
     if (reason === 'timeout') return { ok: false, cause: 'timeout' }
     return { ok: false, cause: await answersOpaquely(url, fetchImpl, timeoutMs) ? 'window_refused' : reason }
   }
-  if (await isNetworkRefused(response)) return { ok: false, cause: 'network_refused' }
+  // A node answers 403 `NODE_NETWORK_REFUSED` when it does not accept this network (node access model NA-3), and
+  // `REMOTE_ACCESS_HOST_REFUSED` when its Host gate refuses the name: a window that can read it (the desktop window,
+  // whose `file://` requests Electron does not subject to CORS) says exactly that (autobyteus-435 DEC-019).
+  const refusalCode = await refusalCodeOf(response)
+  if (refusalCode === 'NODE_NETWORK_REFUSED') return { ok: false, cause: 'network_refused' }
+  if (refusalCode === 'REMOTE_ACCESS_HOST_REFUSED') return { ok: false, cause: 'host_refused' }
   if (!response.ok) return { ok: false, cause: await isIdentityPending(response) ? 'identity_pending' : 'not_autobyteus' }
   try {
     const answer = await response.json() as { nodeId?: unknown } | null

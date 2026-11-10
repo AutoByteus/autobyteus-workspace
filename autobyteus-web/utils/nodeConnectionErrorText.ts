@@ -1,6 +1,5 @@
 import type { NodeProbeCause } from '~/utils/nodeIdentityProbe'
 import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
-import { isElectronEnvironment } from '~/utils/browserServerConfig'
 
 type Translate = (key: string, params?: Record<string, string | number>) => string
 
@@ -17,9 +16,10 @@ const hostOf = (address: string | undefined): string => {
  * The plain-words cause of a node that did not answer (one-nodes-tab REQ-707): "fetch failed" is never shown. A name
  * that cannot be found says from where when another node looked for it.
  */
-export const causeText = (t: Translate, cause: NodeProbeCause | 'host_refused' | undefined, host: string, fromNode?: string): string => {
+export const causeText = (t: Translate, cause: NodeProbeCause | undefined, host: string, fromNode?: string): string => {
   switch (cause) {
-    // autobyteus-426 REQ-020: the node at the address refuses the name it was addressed by (its Host gate).
+    // autobyteus-426 REQ-020: the node at the address refuses the name it was addressed by (its Host gate), as the node
+    // or the desktop window read it (autobyteus-435 DEC-019).
     case 'host_refused': return t(k('cause.hostRefused'), { host: hostName(host) })
     case 'refused': return t(k('cause.refused'))
     case 'timeout': return t(k('cause.timeout'))
@@ -28,10 +28,8 @@ export const causeText = (t: Translate, cause: NodeProbeCause | 'host_refused' |
     case 'identity_pending': return t(k('cause.identityPending'))
     // autobyteus-437 M-8b: the node refuses this network (it is not this computer, its Tailscale or an allowed network).
     case 'network_refused': return t(k('cause.networkRefused'))
-    // autobyteus-435 REQ-003: something answers but refuses this window. The desktop window (`file://`) is admitted by
-    // every node's Origin rule, so there it is the name; a browser page may also be refused for its own address.
-    case 'window_refused':
-      return t(k(isElectronEnvironment() ? 'cause.windowRefused' : 'cause.windowRefusedPage'), { host: hostName(host) })
+    // autobyteus-435 REQ-003: something answers but refuses this page, which cannot read why (a browser window).
+    case 'window_refused': return t(k('cause.windowRefused'), { host: hostName(host) })
     default: return t(k('cause.unreachable'))
   }
 }

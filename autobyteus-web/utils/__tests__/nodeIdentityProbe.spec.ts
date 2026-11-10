@@ -62,6 +62,18 @@ describe('probeNodeIdentity', () => {
     expect(failing).toHaveBeenCalledTimes(4)
   })
 
+  // autobyteus-435 DEC-019, AC-003-1: the desktop window reads the Host gate's 403 (Electron does not subject its
+  // `file://` requests to CORS; API-13), so it gives the exact cause, with no second request.
+  it('a readable 403 REMOTE_ACCESS_HOST_REFUSED is host_refused; another 403 is not an AutoByteus node', async () => {
+    const refusing = (code: string) => vi.fn(async (_url: RequestInfo | URL, _init?: RequestInit) => ({ ok: false, status: 403,
+      clone() { return this }, json: async () => ({ code, message: 'refused' }) }) as unknown as Response);
+    const hostRefused = refusing('REMOTE_ACCESS_HOST_REFUSED');
+    await expect(probeNodeIdentity('http://office-mac.local:29695', { fetchImpl: hostRefused })).resolves.toEqual({ ok: false, cause: 'host_refused' });
+    expect(hostRefused).toHaveBeenCalledTimes(1);
+    await expect(probeNodeIdentity('http://office-mac.local:29695', { fetchImpl: refusing('NODE_NETWORK_REFUSED') })).resolves.toEqual({ ok: false, cause: 'network_refused' });
+    await expect(probeNodeIdentity('http://office-mac.local:29695', { fetchImpl: refusing('SOMETHING_ELSE') })).resolves.toEqual({ ok: false, cause: 'not_autobyteus' });
+  });
+
   it('makes no second request after a success, a readable refusal or a timeout', async () => {
     const ok = answer({ nodeId: SRV })
     await probeNodeIdentity('http://office-mac.local:29695', { fetchImpl: ok })
