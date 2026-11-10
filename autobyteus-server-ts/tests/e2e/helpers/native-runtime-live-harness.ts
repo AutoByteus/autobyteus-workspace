@@ -322,6 +322,9 @@ export class NativeRuntimeLiveHarness {
     }) as typeof fetch;
   }
 
+  /** The server's main URL (GraphQL, agent and team WebSockets). */
+  get url(): URL { return this.mainUrl; }
+
   async settleCalls(): Promise<void> { await Promise.all(this.calls.map((call) => call.settled)); }
   callsOf(callPhase: string): CapturedCall[] { return this.calls.filter((call) => call.phase === callPhase); }
 

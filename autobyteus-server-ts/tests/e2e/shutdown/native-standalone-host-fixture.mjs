@@ -86,7 +86,8 @@ try {
     children.push(...current);
     await wait(async () => (await call('queries', 'events')).some(e => e.address.bindingId === binding.bindingId && e.event.type === 'TURN_COMPLETED'), 'turn completed');
     for (const child of current) { assert.equal(await status(child.port), 426); child.anchor = Number(execFileSync('ps', ['-p', String(child.pid), '-o', 'pgid='], { encoding: 'utf8' }).trim()); }
-    if (turn === 1) { await call('commands', 'end', { bindingId: binding.bindingId }); for (const child of current) assert.equal(await status(child.port), 426, 'ordinary agent end retains previews'); }
+    // Run end stops the run's commands, its run_in_background command and its `&` job alike (autobyteus-338 REQ-009).
+    if (turn === 1) { const ending = Date.now(); await call('commands', 'end', { bindingId: binding.bindingId }); for (const child of current) await wait(async () => !alive(child.pid) && await status(child.port) === null, 'run end stops its commands', 10_000); note('run end stopped its commands', { elapsedMs: Date.now() - ending }); }
     note('live work', { turn, binding, current });
   }
   const started = Date.now(); host.send('close'); await wait(() => host.exitCode !== null, 'host close', 30_000);
