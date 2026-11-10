@@ -198,7 +198,9 @@ or because Gradle's cache already holds a dependency the runner must download.
   its path (helpers in `autobyteus-server-ts/tests/e2e/helpers/` unless named):
   - an in-process node: `startStudioE2eRuntimeServer`; a built one: `startBuiltTestServer`
     (`test-support/live-e2e/`); both attach the credential. A suite that spawns `dist/app.js` or a fixture node itself adds
-    `builtServerLaunchEnvironment()` to the child's environment;
+    `builtServerLaunchEnvironment()` to the child's environment. A fixture child that also sends requests to its node
+    attaches the credential in its own process (`attachOwnerCredentialToLoopback`), reading it before it imports the
+    server composition, which consumes it;
   - `fastify.inject` passes no attachment: give it `authorization: Bearer <ownerCredential>`
     (the start helper returns it);
   - the MCP gateway needs its own token, not the owner credential: `connectMcpGatewayClient`.
