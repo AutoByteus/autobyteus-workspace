@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-469` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("A run's collaboration tree lists only the runs whose Task is open: stop the tree from growing with every delegation"). Prerequisite PRE-001 of `autobyteus-461`.
 - Package identifier: `collaboration-tree-open-tasks-only-469`
-- Current solution revision: `SR-006` (corrects D-1's candidate rule after the Implementation Engineer's Design Impact; `SR-005` passed review ARCH-REV-002)
+- Current solution revision: `SR-007` (corrects D-3 after the Implementation Engineer's second Design Impact; `SR-006` passed review ARCH-REV-003)
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-10
 
@@ -22,6 +22,10 @@ AR-001: the startup package admission scan reads every Team and Org tree before 
 ## What changed since SR-005 (review round 2: Pass)
 
 The Implementation Engineer's early check U-008 went against D-1's rule: an entry is `starting` from the moment a delegation is recorded until its work is delivered, also for a follow-up Task given to a run already in the tree, and after a crash between the commit and `markStarted`. Leaving out `starting` would drop runs that REQ-001 keeps in the tree. Corrected rule: the run's current entry names this top run and is open, whatever its `start`; a missing own file is silent for `starting` and `failed`, a warning for `started`. Also from the engineer's checks: the view rule takes the form `isMessageOfView(message, ownAgentRunIds, treeAgentRunIds)`; the three attachment readers need no change (notes B-6). No requirement changed.
+
+## What changed since SR-006 (review round 3: Pass)
+
+D-3 dropped every stored local entry at the first save. An existing migration test failed: when the released migration `20261017_task_agent_own_run_v1` was interrupted and the app loads and saves a tree before the next start, a full record whose own file is not written yet exists only in the tree file. Corrected rule: a save leaves out a stored local entry once its run's own file exists (an existence check; the entry is not interpreted) and keeps an entry whose run has no own file unchanged and in place. The reader ignores both. REQ-007 and AC-009 are made precise. Three U-005 findings are recorded (notes B-7): the run-ID admission is each root's `hasAgentExecution`, not the delivery files; the Team adapter uses `commitExecutionTreeMutation` with `requiresWrite: false`; `resolveExistingCopy` covers closed copies so agent texts stay the same.
 
 ## Goals and status
 
@@ -70,7 +74,7 @@ Design spec "Risks"; notes U-005.
 
 ## Next expected action
 
-Architecture review of the corrected rule in `SR-006` (design spec D-1, the `openDelegatedRunsOf` interface row, Guidance; notes B-6).
+Architecture review of D-3 as corrected in `SR-007` (design spec D-3, "Persisted Data / State Transition Decision", Removal Plan, file mapping rows for `hasAgentExecution` and `existing-copy-target.ts`; notes B-7).
 
 ## Route
 

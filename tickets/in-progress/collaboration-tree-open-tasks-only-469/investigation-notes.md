@@ -344,3 +344,15 @@ Verified by the Solution Designer at the base revision for the first row; the ot
 | U-005 | In progress, file by file | — |
 
 Decision (SR-006): the candidate rule is "the run's current entry names this top run and is open, whatever its `start`". A missing own file is silent for `starting` and `failed`, a warning for `started`.
+
+### B-7 The Implementation Engineer's second Design Impact and U-005 findings (message of 2026-11-10)
+
+| Item | Finding | Source |
+| --- | --- | --- |
+| D-3, "drop every stored local entry at a save" | **Loses data in a supported state.** When startup migration `20261017_task_agent_own_run_v1` was interrupted, the app keeps running; a tree entry can then still be a full record whose own file the migration has not written. Its facts exist only in the tree file. A load and save in between would drop it, and the next start would find nothing to migrate. The existing test "continues a stopped start: the app loads and saves in between, and the next start completes both migrations" failed that way | The engineer's run of `tests/app-data-migrations/delegated-copy-own-file-complete-v1/…`; Data Migration Guideline section 2 item 5 ("preserve released originals and supported partial states"), section 4 ("every released source shape stays supported") |
+| The second released migration, `20261019_delegated_copy_own_file_complete_v1` | Does not depend on tree entries: it finds own files by listing the run folders and completes each from the own file itself. Leaving out an entry whose run has an own file takes nothing from it | `Read` by the Solution Designer: `app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.ts:49`, `own-file-completion.ts` |
+| Run-ID guard (U-005) | In all three roots the admission question is `hasAgentExecution`, asked by `GlobalAgentRunMessageRouter` and `ActiveCollaborationRootDirectory.placeOf`. The `TARGET_AGENT_RUN_NOT_FOUND` check in `deliverToRunId` already runs after the reactivation step. The three delivery files need no change | The engineer's reading |
+| Team persistence (U-005) | The Team adapter has no `commitTreeMutation`; the Team coordinator's `commitExecutionTreeMutation` with `requiresWrite: false` changes memory only and is ordered with saves | The engineer's reading |
+| Agent texts (U-005) | The wrong-kind guidance of `delegate_task` by run ID would have changed for a copy that left the tree; `resolveExistingCopy` applies the same checks to closed copies through `closedTaskExecutionOf` | The engineer's reading |
+
+Decision (SR-007): a save leaves out a stored local entry once its run's own file exists; an entry whose run has no own file is kept unchanged and in place. The reader ignores both.

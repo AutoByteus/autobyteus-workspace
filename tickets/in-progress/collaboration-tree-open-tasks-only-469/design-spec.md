@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006` (answers the Implementation Engineer's Design Impact on D-1's candidate rule; `SR-005` answered architecture review ARCH-REV-001, finding AR-001, on `SR-004`; `SR-004` replaced `SR-003`, which was withdrawn before a review decision)
+- Current solution revision ID: `SR-007` (answers the Implementation Engineer's second Design Impact, on D-3; `SR-006` answered its first, on D-1's candidate rule; `SR-005` answered architecture review ARCH-REV-001, finding AR-001, on `SR-004`; `SR-004` replaced `SR-003`, which was withdrawn before a review decision)
 - Approved requirements baseline / revision, who approved, and approval reference: `SR-004`, with wording corrections at `SR-005` that change no intended behavior. The user decided DEC-001, DEC-008 and DEC-009 on 2026-11-10 (quoted in `requirements-doc.md`); the Solution Designer decided the rest within that direction, the user informed.
 - Behavior-defining supplements and their approval references: none
 - User approval of the design, when the direction requires it: `Not required`. The model itself is the user's (DEC-009).
@@ -29,7 +29,7 @@ Constraints: links to a run on another node hold facts that exist nowhere else o
 | --- | --- |
 | D-1 | **One source for a top run's local delegated runs: the Task side.** A new read-only question, `openDelegatedRunsOf(top run)`, answers from the loaded Task records: the runs whose current entry names this top run in `hostRoot` and is open (`closedAt` null), whatever its `start`. It is synchronous and reads no file. An entry is `starting` from the moment a delegation is recorded until its work is delivered, also for a follow-up Task given to a run that is already in the tree, and stays so after a crash in between (notes B-6); such a run must be in the tree as it is today. |
 | D-2 | **Compose from that source.** `composeTreeFile` builds each local record from the run reference and the run's own file. Raw tree lists contribute only entries with `nodeId`. Every local record goes into the root list. A run whose own file is missing, unreadable, or names another coordinating run is left out with the existing warning. |
-| D-3 | **Save without local links.** `splitTaskExecutions` writes each loaded run's own file when it changed, as today, and a tree file whose lists hold only the links to runs on another node. Local links that an existing file still holds are not carried over. |
+| D-3 | **Save without local links.** `splitTaskExecutions` writes each loaded run's own file when it changed, as today, and a tree file whose lists hold the links to runs on another node. A local entry that an existing file still holds is left out at a save **once its run's own file exists** (an existence check by run ID; the entry is not interpreted). A local entry whose run has no own file is kept unchanged and in place: its facts may exist nowhere else, as for a full record that an interrupted run of migration `20261017_task_agent_own_run_v1` has not yet moved (notes B-7). The reader ignores every local entry in either case. |
 | D-4 | **The loaded tree follows the Tasks.** The closure's release step drops a run from the loaded tree once it is stopped. The "reopen" step adds a run back from its own file when its assigner continues it or gives it another Task. Both change memory only. |
 | D-5 | **The Team tab keeps its rows.** A root's message view keeps the messages of its own log that involve one of its own agents. The participant reader returns, for a counterpart that is not in the tree, the agent's address read from the closed run's own file. |
 | D-6 | **Memory listing** asks whether the coordinating run named in the delegated run's own file still exists, not whether a tree lists the run. |
@@ -145,7 +145,7 @@ Changed in `collaboration_model.md` §1 in this change.
 
 - Stored subject, location, representative shape, and approximate volume: the link lists of `collaboration_tree.json`, `team_run_execution_tree.json` and `agent_org_run_execution_tree.json`: 26 trees, 195 local links, 2 links to runs on another node (A-7).
 - Relevant code-model, serialization, semantic, or physical-store change: local links are no longer written or read. The list keeps its name and holds what it also held before: links with `nodeId`.
-- Normal reader/writer behavior and representative evidence: the reader takes entries with `nodeId` and ignores the rest; the writer writes only entries with `nodeId`. Every fact of an ignored link is in the run's own file and the Task record (A-1, B-1).
+- Normal reader/writer behavior and representative evidence: the reader takes entries with `nodeId` and ignores the rest; the writer writes entries with `nodeId` and carries over, unchanged, a local entry whose run has no own file. Every fact of an entry whose run has an own file is in that file and the Task record (A-1, B-1); the user's 195 local entries are all of that kind (A-7).
 - Required semantics and invariants under direct use: none depends on an ignored link.
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: nothing is deleted from any run's folder. An older build would not see runs delegated after the upgrade (no link is written for them).
 - Decision: `Directly Usable — No Migration`
@@ -157,7 +157,7 @@ Changed in `collaboration_model.md` §1 in this change.
 1. **Need:** none. Removing obsolete content is absorbed by the reader.
 2. **Availability:** the startup admission scan reads each Team and Org tree's own parts and nothing of a delegated run or a Task record (D-11); it reads less than today. One unreadable tree file marks that package only, as today. Nothing at startup waits for the Task records, and the Task records wait for no tree.
 3. **Source and target:** one stored shape. Inventory: `evidence/unlink-cases-2026-11-10.txt` and `evidence/links-without-task-2026-11-10.txt`; a fixture per case in AC-005 and AC-009 (closed, open, no Task record, link to another node, older Org list, unreadable Task record).
-4. **Disposition:** local link: ignored, dropped at the file's next save. Link with `nodeId`: kept. Run without a Task record: not in a tree, folder untouched (DEC-008). Unreadable Task record: its runs are not in the tree until it is readable (DEC-010).
+4. **Disposition:** local entry whose run has an own file: ignored on read, left out at the file's next save. Local entry whose run has no own file: ignored on read, kept unchanged in the file (a released migration that has not finished may still need it; a missing folder leaves an inert entry). Link with `nodeId`: kept. Run without a Task record: not in a tree, folder untouched (DEC-008). Unreadable Task record: its runs are not in the tree until it is readable (DEC-010).
 5. **Commit and retry:** no conversion step exists. A save is the store's existing atomic replacement.
 6. **Current-only boundary:** current code holds no reader of local links; nothing is frozen because nothing is converted.
 7. **Cost:** a read does one in-memory lookup and reads the own files of the runs of open Tasks only. No pass over history anywhere.
@@ -187,7 +187,7 @@ DS-001 … DS-004 apply to the three kinds of top run; DS-007 is standalone only
 - **DS-008:** `server start -> app-data migrations -> RootRunPackageReadinessIndex.rebuild -> RootRunPackageCurrentValidator.scan -> Team / Org tree store.readOwnParts (the tree file only) -> structure validated -> package admitted`; later in the same start: `composeProjectTaskExecutionResources -> Task records loaded -> source bound -> composed reads possible`
 - **DS-002:** `delegate_task(address) -> root delivery -> RootTaskExecutionLifecycle -> port.linkNewTaskExecution (Task record entry) -> adapter activation commit -> persistence coordinator -> store.writeTree (own file; no link) -> loaded tree replaced -> port.markStarted`
 - **DS-003:** `update_task (DONE) -> ProjectTaskService -> TaskExecutionResourceRelease -> active root.releaseTaskExecutions -> lifecycle queue step "release" -> RootTaskExecutionResourceScope.releaseHostedExecutions -> TaskExecutionTreeMembership.dropStopped -> adapter.dropTaskExecutions -> loaded tree replaced`
-- **DS-004:** `send_message_to(run ID) -> root delivery guard (lifecycle.knowsRunId) -> lifecycle.deliverToExactTarget -> TaskExecutionTreeMembership.closedExecutionFor -> port.assertReopenable -> queue step "reopen": adapter.addTaskExecution (own file -> record -> loaded tree) -> settle previous stop -> port.reopenAssignment -> "reopened" published -> delivery wakes or restores the run`. With `delegate_task(run ID, task)`: the same with `assertAssignable` and `assignExistingTaskExecution`.
+- **DS-004:** `send_message_to(run ID) -> GlobalAgentRunMessageRouter -> root.hasAgentExecution (lifecycle.knowsRunId) -> root delivery -> lifecycle.deliverToExactTarget -> TaskExecutionTreeMembership.closedExecutionFor -> port.assertReopenable -> queue step "reopen": adapter.addTaskExecution (own file -> record -> loaded tree) -> settle previous stop -> port.reopenAssignment -> "reopened" published -> delivery wakes or restores the run`. With `delegate_task(run ID, task)`: the same with `assertAssignable` and `assignExistingTaskExecution`.
 - **DS-005:** `Team tab -> GraphQL collaborationParticipantMessages -> root records snapshot -> ClosedDelegatedRunReader -> DTO {messages, pastParticipants} -> web rows`
 - **DS-006:** `Memory page / search -> memory source reads the run's own file -> CoordinatingRunPresence.exists -> listed`
 - **DS-007:** `usage panel -> getStandaloneRunTokenUsageSummary -> tree agents + ClosedDelegatedRunReader.agentRunIds(top run) -> TokenUsageRunStore`
@@ -231,7 +231,7 @@ The tree stores, `OpenDelegatedRunSource` (new interface; the Task side implemen
 
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Notes |
 | --- | --- | --- | --- |
-| Writing local links (`taskExecutionLinkOf` in `splitTaskExecutions`, "keep every on-disk entry it did not load") | No local list is stored | D-3 | `task-execution-tree-split.ts:202-215` |
+| Writing local links (`taskExecutionLinkOf` in `splitTaskExecutions`); the rule "keep every on-disk entry the tree did not load" | No local list is stored | D-3: only an entry whose run has no own file is kept, unchanged | `task-execution-tree-split.ts:202-215` |
 | Reading local links and full records from raw lists (`isTaskExecutionLinkEntry`, `parseTaskExecutionLink` in `composeTaskExecutions`, `listTaskAgentRunIds` over raw lists) | The source supplies the runs | D-1, D-2 | `task-execution-tree-split.ts:70-85, 117-146`. Dead after the change: nothing else reads a local raw entry (confirm with a search and the unused-export check) |
 | `run-history/store/task-agent-link-check.ts` and its tests | No link to check | `coordinating-run-presence.ts` (D-6) | Two callers (A-4) |
 | The endpoint-set loop in the two package validators (`team-run-state-package-validator.ts:36-41`, `agent-org-state-package-validator.ts:28-33`) | The view keeps own-log messages with closed runs | The remaining "one agent of this run" check | D-5 |
@@ -247,7 +247,7 @@ The tree stores, `OpenDelegatedRunSource` (new interface; the Task side implemen
 ## Bounded Local / Internal Spines
 
 - Parent owner: `RootTaskExecutionLifecycle`. Step "release": `re-check closed -> publish closed -> cancel -> release -> [new] drop the stopped ones`. Step "reopen": `[new] add when not in the tree -> settle previous stop and check the conversation -> commit -> [new] on a failed commit after an add: drop`. Both run at the queue head; a wake, an idle shutdown, a Stop or the other step never interleaves.
-- Parent owner: a root's persistence coordinator. Drop and add go through the existing `commitTreeMutation` so they are ordered with saves. The save finds every own file and the tree file unchanged and writes nothing.
+- Parent owner: a root's persistence coordinator. Drop and add are ordered with saves and change memory only: the standalone and Org adapters go through `commitTreeMutation`, whose save finds every own file and the tree file unchanged and writes nothing; the Team adapter has no such method and uses its coordinator's existing `commitExecutionTreeMutation` with `requiresWrite: false` (notes B-7).
 
 ## Off-Spine Concerns Around The Spine
 
@@ -290,7 +290,7 @@ The tree stores, `OpenDelegatedRunSource` (new interface; the Task side implemen
 | `RootTaskExecutionAdapter.addTaskExecution(reference)` (new) | The loaded tree | Composes the record from the run's own file and adds it to the root list | `TaskExecutionReference` | Rejects `TASK_EXECUTION_CONTEXT_UNAVAILABLE` when the own file is missing, unreadable or names another coordinating run |
 | Team and Org store `readOwnParts(dir, rootRunId)` (new, two) | A root run's own parts | The validated-shape tree of the run's own parts, with empty lists of delegated runs; reads the tree file only | Directory, root run ID | Never calls the source; logs nothing about delegated runs |
 | Store `readTaskExecution(dir, rootRunId, reference)` (new, three) | A run's own file | The composed record for an add | Directory, root run ID, reference | Uses the same compose function as a read |
-| `RootTaskExecutionLifecycle.knowsRunId(agentRunId)` (new) | Run-ID admission | True for an agent in the tree or the ingress of a closed run of this top run | Agent run ID | The three delivery guards |
+| `RootTaskExecutionLifecycle.knowsRunId(agentRunId)` (new) | Run-ID admission | True for an agent in the tree or the ingress of a closed run of this top run | Agent run ID | Used by each root's `hasAgentExecution` (the question `GlobalAgentRunMessageRouter` and `ActiveCollaborationRootDirectory.placeOf` ask) and by the lifecycle's `isDelegatedRun` (notes B-7) |
 | GraphQL `collaborationParticipantMessages` | A participant's messages | Adds `pastParticipants: [{ agentRunId, address }]` | Unchanged arguments | DTO in `autobyteus-collaboration-stream-contracts` |
 | `ClosedDelegatedRunReader.forAgentRunIds(root, ids)`, `.agentRunIds(root)` (new) | Agents of a top run's closed delegated runs | Addresses for given agent run IDs; all agent run IDs | Root identity; agent run IDs | A run whose own file cannot be read is left out with one warning naming it |
 
@@ -375,7 +375,8 @@ Server paths are under `autobyteus-server-ts/src/`.
 | `agent-collaboration/execution/task/root-task-execution-adapter.ts` (Modify) | Task lifecycle | Adapter interface | `dropTaskExecutions`, `addTaskExecution` | Interface | — |
 | `standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts`, `agent-team-execution/task-delegation/team-task-execution-adapter.ts`, `agent-org-execution/services/agent-org-task-execution-adapter.ts` (Modify) | Roots | Adapter | The two methods, through the existing `commitTreeMutation`; trim the loaded message list with `isMessageOfView`; drop what the root keeps per agent of the run | Root mechanics | — |
 | `standalone-agent-run-root/services/standalone-root-tree-mutator.ts`, `agent-team-execution/services/team-run-execution-tree-mutator.ts`, `agent-org-execution/services/agent-org-run-execution-tree-mutator.ts` (Modify) | Roots | Tree | `remove…TaskExecutions(tree, runIds)`; add uses the existing `add…TaskExecution` | Tree edits | — |
-| `standalone-agent-run-root/services/standalone-root-message-delivery.ts`, `agent-team-execution/services/team-run-message-delivery.ts`, `agent-org-execution/services/agent-org-run-message-delivery.ts` (Modify) | Roots | Delivery | The `TARGET_AGENT_RUN_NOT_FOUND` guard asks `knowsRunId`; the receiver is resolved after the reactivation | Guard | — |
+| Each root's `hasAgentExecution` (in `standalone-agent-run-root/domain/standalone-agent-run-root.ts`, `agent-team-execution/domain/root-team-run.ts`, `agent-org-execution/domain/agent-org-run.ts`; edited in place, no line added to a file over 500 lines) (Modify) | Roots | Run-ID admission | Answers through `knowsRunId`, so a run-ID message for a closed run's ingress reaches the root that hosts it. The three message-delivery files are unchanged: their `TARGET_AGENT_RUN_NOT_FOUND` check already runs after the reactivation step (notes B-7) | Guard | — |
+| `agent-collaboration/execution/task/existing-copy-target.ts` (Modify) | Task lifecycle | Existing-copy resolution | `resolveExistingCopy` applies its kind checks to a closed copy through `closedTaskExecutionOf`, so the guidance an agent reads for a wrong kind of run ID is unchanged | One resolution | Port |
 | `run-history/store/task-agent-message-logs.ts` (Modify) | Run storage | View rule | `isMessageOfView(message, ownAgentRunIds, treeAgentRunIds)`: both agents are in the tree, or one is one of the top run's own agents. `composeMessageLogs` applies it. A loaded root cannot tell which log a message came from; over the logs that are read (the own log and the open runs' logs) this keeps the same messages as a rule that names the own log | One rule | — |
 | `services/team-communication/team-communication-store.ts`, `agent-org-execution/persistence/agent-org-communication-messages-store.ts`, the standalone store's `readMessages` (Modify) | Message stores | Stored view | Pass the own agents to `composeMessageLogs` | — | View rule |
 | `run-history/services/team-run-state-package-validator.ts`, `agent-org-execution/services/agent-org-state-package-validator.ts` (Modify) | Validators | Package validation | Drop the endpoint-set loop | — | — |
@@ -430,7 +431,8 @@ Paths are in the table above; no folder is added.
 | --- | --- | --- | --- |
 | Keep reading local links for runs that have no Task record | The 14 old runs | Rejected (DEC-008, the user) | They are in no tree; the Memory page keeps them |
 | Keep the stored list as a fallback when a Task record cannot be read | Availability | Rejected (DEC-010) | The run is absent and reported until the record is readable |
-| A startup migration that strips local links | The Task's text; tidy files | Rejected (DEC-005) | Ignored on read, dropped on the next save |
+| A startup migration that strips local links | The Task's text; tidy files | Rejected (DEC-005) | Ignored on read; left out at the next save once the run's own file exists |
+| Dropping every stored local entry at the first save (SR-004 … SR-006) | Simplest writer | Rejected (SR-007) | An entry whose run has no own file is kept: an unfinished released migration may still need it |
 | Trim the stored list at closure and at load (SR-003) | Smaller change of source | Rejected (DEC-009, the user) | No stored list |
 | Write local links as well, for an older build | Rollback | Rejected (`DESIGN.md` rule 9; Guideline "Rolling back") | Release notes state it |
 
@@ -447,7 +449,7 @@ This ticket keeps the Task record's shape and looks runs up by `hostRoot`. The 4
 1. Task side: the open index, `openDelegatedRunsOf`, `closedTaskExecutionOf`; the source interface and its binding. The candidate rule is one function with a test per entry state (`starting`, `started`, `failed`, closed; a new copy before and after its commit; a follow-up Task on a run in the tree).
 2. Store side: compose from the source; split without local links; `taskExecutionLinkOfOwnFile`; `readTaskExecution`; `readOwnParts`, with the validator and the maintenance repair switched to it in the same step (a start on data with Team and Org runs must admit them at every commit of this sequence). Tests on hand-built data for every shape of the two inventories. Remove the dead link code.
 3. Roots: mutators and adapters (`dropTaskExecutions`, `addTaskExecution`) for the three kinds.
-4. Lifecycle: `TaskExecutionTreeMembership`; the "release" and "reopen" steps; `knowsRunId`; the three delivery guards. Remove `refuseCopyOutsideTree`.
+4. Lifecycle: `TaskExecutionTreeMembership`; the "release" and "reopen" steps; `knowsRunId` in each root's `hasAgentExecution` and in `isDelegatedRun`; `resolveExistingCopy` for closed copies. Remove `refuseCopyOutsideTree`.
 5. View rule: `isMessageOfView`, the three message stores, the two validators, the loaded roots' trim.
 6. Readers: `ClosedDelegatedRunReader`; the participant messages reader and DTO; the standalone token total; `CoordinatingRunPresence`, removal of `TaskAgentLinkChecker`.
 7. Web: identity fallback, the participant store, unknown "reopened" → reload.
@@ -485,6 +487,7 @@ After step 2 a tree no longer holds closed runs, so steps 3 to 7 must ship in th
 - Drop and add write no file; assert it in tests, and assert byte-identity of own files.
 - Skip the drop in a release that runs while the root no longer admits commands; a later load composes without the run.
 - Fixtures are small and hand-built per shape of the two inventories; never copy user data and never run a load on it (`TESTING.md`).
+- At a save, the check for a stored local entry is whether its run's own file exists (by the run ID in the entry). Do not parse the own file for it, and do not read the entry beyond its run ID.
 - The release notes of the release that carries this change say that an older build cannot be used on the same data afterwards.
 - U-003, U-006, U-008 and U-009 are answered (notes B-6). Finish U-005 file by file; report a difference as a Design Impact.
 - A store resolves the source binding at its first composed read, never in its constructor: the validator and the maintenance script construct stores without a binding.

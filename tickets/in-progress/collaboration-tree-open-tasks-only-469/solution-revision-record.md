@@ -10,6 +10,7 @@
 | SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; architecture review ARCH-REV-001: Fail with one finding (AR-001) |
 | SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; architecture review ARCH-REV-002 (round 2): Pass, no new findings; the reviewer handed off to the Implementation Engineer |
 | SR-006 | Design | Implementation Engineer, Design Impact from early check U-008 (message of 2026-11-10) | N/A (no report ID; the engineer's message) | Requirements Approved; design Ready (SR-005), review Pass (ARCH-REV-002) | Requirements Approved; design Ready (SR-006) | BEH-002 (the rule that realizes REQ-001) | D-1's candidate rule corrected; architecture review ARCH-REV-003 (round 3): Pass, no findings |
+| SR-007 | Design (and wording of REQ-007, AC-009) | Implementation Engineer, second Design Impact (message of 2026-11-10) | N/A | Requirements Approved; design Ready (SR-006), review Pass (ARCH-REV-003) | Requirements Approved; design Ready (SR-007) | REQ-007, AC-009; BEH-002 | D-3 corrected; to architecture review |
 
 ## Revision Entries
 
@@ -152,3 +153,26 @@
 - Remaining gaps, assumptions or blocked decisions: U-005 (in progress); follow-ups FU-001 … FU-003
 - Next action: architecture review of the corrected rule; implementation continues on the parts the rule does not touch
 - Review result (recorded 2026-11-10, informational): `Pass`, ARCH-REV-003, round 3, on SR-006 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). The corrected rule is verified in the code; the reviewer withdrew its round-2 note that called the old rule sound; the view-rule form and the removal of the attachment readers from the mapping are confirmed. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
+
+### SR-007 — A save keeps a stored local entry whose run has no own file
+
+- Phase and classification: Design, `Design Impact` resolved; requirement wording made precise
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the Implementation Engineer's second message of 2026-11-10 (an existing migration test failed under D-3); the Solution Designer read the second released migration (notes B-7)
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved`; design `Ready` at SR-006, architecture review `Pass` (ARCH-REV-003)
+- Current authoritative requirements/design status: requirements `Approved` (SR-004 baseline; REQ-007 and AC-009 made precise at SR-007); design `Ready` at SR-007
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-007, AC-009; BEH-002
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: D-3 dropped every stored local entry at the first save, on the premise that each entry's facts are in the run's own file. That holds for links and not for a full record that an interrupted run of the released migration `20261017_task_agent_own_run_v1` has not yet moved; the app keeps running in that state, and a save would have destroyed the only copy. The Solution Designer's shape inventory covered the user's data, where the migration had finished, and not the supported partial state of that migration. Corrected rule, as the engineer implemented it: a stored local entry is left out at a save once its run's own file exists; otherwise it is kept unchanged and in place. The entry is not interpreted, so current code still holds no reader of old shapes.
+- Canonical requirements, investigation and design sections changed: `design-spec.md` D-3, Persisted Data (reader/writer behavior, checklist item 4), Removal Plan, Backward-Compatibility Rejection Log, the bounded spine of the persistence coordinator, `knowsRunId`'s callers, the file mapping (each root's `hasAgentExecution` and `existing-copy-target.ts` instead of the three delivery files), Change Sequence step 4, Guidance; `requirements-doc.md` REQ-007, AC-009; `investigation-notes.md` B-7
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No` for the user. For stored data: an entry whose run has no own file now stays in the file (REQ-007 said every local entry is left out at the next save)
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: approved by the Solution Designer within the direction (it preserves data the earlier wording would have destroyed; nothing visible changes); the user is informed
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: D-3 and its consequences listed above; ARCH-REV-002 and ARCH-REV-003 passed D-3 in its earlier form
+- Post-design task-size/risk classification and rationale changes: `Large`, `High`, unchanged
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: the rule for a revised package with Large or High applies: sent to `/software_engineering_team/architecture_reviewer`; the Implementation Engineer was answered directly and continues
+- Downstream and architecture-review impact: a narrow re-review of D-3
+- Remaining gaps, assumptions or blocked decisions: U-005 (three findings recorded in B-7, none a Design Impact; the engineer continues); follow-ups FU-001 … FU-003
+- Next action: architecture review of D-3 as corrected
