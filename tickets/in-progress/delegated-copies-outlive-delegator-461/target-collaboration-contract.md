@@ -359,9 +359,9 @@ Message logs, memory, folders: not touched (each run already has its own, CM-8, 
 
 | ID | Question | Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- |
-| TC-1 | Does Stop of a delegated run still stop the runs it delegated to? | No: Stop stops the run you clicked; closing the Task stops every run working on it | The user | Needs user |
+| TC-1 | Does Stop of a delegated run still stop the runs it delegated to? | No: Stop stops the run you clicked; closing the Task stops every run working on it | The user | Decided by the user, 2026-11-10: no cascade |
 | TC-2 | Archive or delete of a run whose delegated runs are working | Refused with the reason; its delegated runs are never deleted with it (the user, 2026-10-17, for the hub) | Solution Designer | Decided |
 | TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own. Today it is hidden ("detached", the earlier contract §10, with a Memory page view as a follow-up); as an ordinary run it no longer needs a special state | The user | Needs user |
-| TC-4 | Delivery | The contract is approved once. This ticket: delegations made from a standalone agent run. Next Tasks: from a team run; from an org run; removal of the remaining hosting code. The design confirms the cut lines | The user | Needs user |
+| TC-4 | Delivery | The contract is approved once. This ticket: delegations made from a standalone agent run. Next Tasks: from a team run; from an org run; removal of the remaining hosting code. The design confirms the cut lines | The user | Decided by the user, 2026-11-10: in steps, as recommended |
 | TC-6 | The Task record's role name for sub-work | `subWork` instead of `delegated`, renamed by the same migration that removes `hostRoot` | The user | Decided by the user, 2026-11-10 |
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's (§2.4), subject to V-9 | Solution Designer | Decided, to verify |

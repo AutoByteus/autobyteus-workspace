@@ -248,3 +248,5 @@ Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture read
 - Not run: any code on the target shape.
 
 - The user, 2026-11-10, on the Task record's roles: asked the difference between `assigned` and `delegated`, and decided that the sub-work role is named `subWork` (contract TC-6). Source of the role meanings: `agent-collaboration/execution/task/task-execution-resource-port.ts:12-27` (`TaskExecutionRole`, `NewTaskExecutionLinkInput`), `docs/modules/agent_communication.md` "Task-linked message scope", `docs/modules/agent_team_execution.md` "Delegated Child Lifecycle" ("Helpers stay closed").
+
+- The user, 2026-11-10: "I agree with your decision one and three" (contract TC-1: no cascade on Stop; TC-4: delivery in steps, this ticket = delegations from a standalone agent run), and asked what the second (TC-3, a delegated run whose delegating run was deleted) means. TC-3 stays open.
