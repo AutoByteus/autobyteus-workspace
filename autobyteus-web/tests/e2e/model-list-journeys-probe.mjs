@@ -22,10 +22,12 @@
 //         first runtime (A -> B -> A)
 // API-14  stopped Team run on the Claude Agent SDK: the Team-level (runtime-locked) model menu re-reads on open and on Refresh models, shows
 //         the busy state, keeps its options and shows the error with Retry when the CLI fails (REQ-011, QR-001)
+// API-19  AutoByteus runtime, discovered provider: a model the local server (the LM Studio stand-in) starts offering while the app runs
+//         appears after "Refresh models" (re-discovery), without a reload or restart (AC-011)
 // API-14b the same saved-run menu opened for the first time while the CLI is already failing: the card never says "No longer offered", the
 //         menu shows the error with Retry, the run's own model stays editable, Refresh models recovers (AC-012 failure alternate, SR-004)
 //
-// Run: node autobyteus-web/tests/e2e/model-list-journeys-probe.mjs --output-dir <fresh absolute dir> [--cli scripted|real] [--cases API-11,API-12,API-14,API-14b]
+// Run: node autobyteus-web/tests/e2e/model-list-journeys-probe.mjs --output-dir <fresh absolute dir> [--cli scripted|real] [--cases API-11,API-12,API-14,API-14b,API-19]
 //        [--browser-executable <chromium>] [--keep] [--hold]
 //   needs: a current `pnpm -C autobyteus-server-ts build`, Chromium; `--cli real` also needs `claude` on PATH and the test vault
 //   (`AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault`, provider.anthropic.api-key).
@@ -102,10 +104,11 @@ const sel = (t) => `[data-test="${t}"]`
 /** A stand-in for LM Studio: the model list on GET, a streamed chat completion on POST. */
 const startFakeLmStudio = async () => {
   let calls = 0
+  let models = ['rsw-native', 'rsw-native-b']
   const server = http.createServer(async (req, res) => {
     if (req.method === 'GET') {
       res.setHeader('content-type', 'application/json')
-      res.end(JSON.stringify({ models: ['rsw-native', 'rsw-native-b'].map((key) => ({ key, max_context_length: 32768, loaded_instances: [{ config: { context_length: 32768 } }] })) }))
+      res.end(JSON.stringify({ models: models.map((key) => ({ key, max_context_length: 32768, loaded_instances: [{ config: { context_length: 32768 } }] })) }))
       return
     }
     let raw = ''
@@ -116,10 +119,19 @@ const startFakeLmStudio = async () => {
     res.end(`data: ${JSON.stringify(chunk({ role: 'assistant', content: `NATIVE-REPLY-${calls}` }, null))}\n\ndata: ${JSON.stringify(chunk({}, 'stop'))}\n\ndata: [DONE]\n\n`)
   })
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
-  return { origin: `http://127.0.0.1:${server.address().port}`, close: () => { server.closeAllConnections(); return new Promise((r) => server.close(r)) } }
+  return { origin: `http://127.0.0.1:${server.address().port}`, setModels: (keys) => { models = [...keys] }, close: () => { server.closeAllConnections(); return new Promise((r) => server.close(r)) } }
 }
 
 let ownedRoot, dataRoot, backend, frontend, browser, backendUrl, frontUrl, fake
+let startBackend = null
+/** Stops the owned backend and starts it again on the same port, data root and environment (a server restart). */
+const restartBackend = async () => {
+  assert(startBackend, 'the probe did not start this backend (attached stack)')
+  await stopOwned(backend)
+  backend = startBackend()
+  await waitFor('backend health after the restart', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 1000)
+  step('the backend was restarted')
+}
 const gql = async (query, variables = {}) => {
   const res = await fetch(`${backendUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }), signal: AbortSignal.timeout(30000) })
   const json = await res.json()
@@ -550,6 +562,22 @@ defineCase('API-12', 'Stopped Team member switched to the Claude Agent SDK runti
   assert(back.runtimeKind === NATIVE && back.llmModelIdentifier === ctx.nativeModel, 'the member is not back on its first runtime', back)
   assert(!JSON.stringify(await memberNode('team', teamRunId, '/worker')).includes(picked), 'the Claude choice left a trace after the return')
   await shot(page, 'API-12-7-back-on-first-runtime')
+  // TESTING.md Rule 10: a restart between the save and the message of the return. The worker answers on its first runtime again.
+  await restartBackend()
+  await openTeamRun(page, teamRunId)
+  const workerRow = page.locator(sel(`workspace-team-member-${teamRunId}-/worker`))
+  await workerRow.waitFor({ timeout: 60000 }); await workerRow.click(); await settle(page, 2000)
+  await sendFromComposer(page, 'NATIVE-TEAM-TWO please answer')
+  r.returnChat = await waitFor('the native reply after the return', async () => {
+    const text = await pageText(page)
+    const replies = (text.match(/NATIVE-REPLY-(\d+)/g) ?? []).map((x) => Number(x.replace('NATIVE-REPLY-', '')))
+    return /NATIVE-TEAM-TWO/.test(text) && replies.length >= 2 ? text.replace(/\s+/g, ' ').slice(0, 1200) : null
+  }, 180000, 1000)
+  const afterMessage = await memberNode('team', teamRunId, '/worker')
+  r.afterMessage = { runtimeKind: afterMessage.launchConfiguration.runtimeKind, model: afterMessage.launchConfiguration.llmModelIdentifier, pending: 'pendingRuntimeSwitch' in afterMessage }
+  assert(r.afterMessage.runtimeKind === NATIVE && r.afterMessage.model === ctx.nativeModel && !r.afterMessage.pending, 'after the restart and a message the worker is not on its first runtime without a pending switch', r.afterMessage)
+  assert(!JSON.stringify(afterMessage).includes(picked), 'the Claude choice came back after the restart', afterMessage)
+  await shot(page, 'API-12-8-after-restart-and-message')
   reads.stop()
   return r
 })
@@ -614,6 +642,32 @@ defineCase('API-14', 'Stopped Team run on the Claude Agent SDK runtime: the Team
   if (!r.afterFailure.rows.length) findings.push('the options were emptied by a failed refresh (menu reads "No models available")')
   r.findings = findings
   if (findings.length) { const error = new Error(`QR-001/REQ-011 in the saved-run (locked) menu: ${findings.join('; ')}`); error.details = r; throw error }
+  return r
+})
+
+defineCase('API-19', 'AutoByteus runtime: a model a local server (LM Studio) starts offering while the app runs appears after "Refresh models", which re-discovers discovered providers (AC-011, REQ-011, REQ-014)', async (page) => {
+  const r = {}
+  fake.setModels(['rsw-native', 'rsw-native-b'])
+  await page.goto(`${frontUrl}/chat`, { waitUntil: 'domcontentloaded' })
+  await page.locator(sel('chat-new')).waitFor({ timeout: 120000 }); await delay(800)
+  await page.evaluate(() => { window.__apiE2eMarker = 'm19' })
+  const backendPid = backend.pid
+  const stand = (rows) => rows.filter((id) => id.startsWith('rsw-native'))
+  await openChatMenu(page)
+  let list = await openList(page, 'autobyteus')
+  await waitFor('the local models', async () => stand(await rowIds(list)).length >= 2, 120000, 500)
+  r.before = stand(await rowIds(list))
+  assert(r.before.every((id) => !id.startsWith('rsw-native-c:')), 'the new model is listed before it exists', r.before)
+  // The local server starts offering a third model while the app runs; nothing is restarted.
+  fake.setModels(['rsw-native', 'rsw-native-b', 'rsw-native-c'])
+  await visible(page, 'model-list-refresh-button').click()
+  await waitFor('the new local model after Refresh models', async () => stand(await rowIds(list)).some((id) => id.startsWith('rsw-native-c:')), 90000, 500)
+  r.after = stand(await rowIds(list))
+  await shot(page, 'API-19-local-model-after-refresh')
+  assert(await page.evaluate(() => window.__apiE2eMarker) === 'm19', 'the page was reloaded')
+  assert(backend.exitCode === null && backend.pid === backendPid, 'the backend was restarted')
+  fake.setModels(['rsw-native', 'rsw-native-b'])
+  await closeMenu(page)
   return r
 })
 
@@ -703,7 +757,8 @@ try {
       CLAUDE_CODE_EXECUTABLE_PATH: cli.link, CLAUDE_CONFIG_DIR: path.join(ownedRoot, 'claude-config'),
       ...(cli.mode === 'scripted' ? { FAKE_RUNTIME_STATE_DIR: cli.stateDir }
         : { CLAUDE_AGENT_SDK_AUTH_MODE: 'api-key', ...(process.env.AUTOBYTEUS_TEST_VAULT ? { AUTOBYTEUS_TEST_VAULT: process.env.AUTOBYTEUS_TEST_VAULT } : {}) }) }
-    backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(env))
+    startBackend = () => spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(env))
+    backend = startBackend()
     await waitFor('backend health', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 1000)
     frontend = spawnOwned('frontend', 'pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...baseEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl })
     await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 240000, 1000)
