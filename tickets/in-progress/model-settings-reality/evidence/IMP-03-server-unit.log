@@ -1,0 +1,39 @@
+# IMP-03 server unit suite (excerpt)
+command: cd autobyteus-server-ts && corepack pnpm exec vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts" --no-watch
+commit tested: 40b9d79e1 (server slice; ts dist rebuilt at d741d4340); later fixes 0129c7314 rerun below
+env: Linux arm64 container, uid 0, node v22.23.3, 2026-11-10 11:14-11:42 UTC
+full log: not committed (≈ 67255 bytes, in the implementation engineer's /tmp); this file keeps the result lines
+
+ Test Files  7 failed | 964 passed | 5 skipped (976)
+      Tests  10 failed | 8270 passed | 12 skipped (8292)
+
+## Failed tests (10 tests in 7 files) and their causes
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the new ready
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then recovers
+ FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+ FAIL  tests/unit/remote-collaboration/standalone-remote-delegation.test.ts > remote delegation between two standalone runs, in process (slice 1 step 5) > refuses before anything is sent: files, a saved Task, an unknown node; and B's refusals leave nothing on A (AC-104, AC-108)
+ FAIL  tests/unit/runtime-management/acp/acp-layer-neutrality.test.ts > shared ACP layer neutrality (AC-016) > contains no xAI/Grok names, `_x.ai` handling or Grok imports
+
+## Causes
+- acp-layer-neutrality.test.ts: caused by this change (a comment in the shared ACP launcher named Grok); fixed in 0129c7314 (comment reworded). Rerun: pass.
+- standalone-remote-delegation.test.ts: caused by this change (the usability fallback text now comes from the refusal wording owner); expectation updated in 0129c7314. Rerun: pass.
+- agent-package-folder-watcher.test.ts (5 tests), unreadable-package-root.test.ts (2), config/app-config.test.ts (1): environmental. They `chmod 000/444` a folder or file and expect it unreadable/unwritable; this container runs as uid 0, which ignores file modes (`id -u` = 0; e.g. unreadable-package-root: "expected ['alpha','ext'] to deeply equal ['alpha']" after `chmod(0o000)`). None touches code of this change.
+- socratic-live-tutor-renderer.test.ts, socratic-runtime-lifecycle.test.ts: environmental. Both declare `// @vitest-environment jsdom`; vitest fails while creating the jsdom environment (`ERR_UNKNOWN_BUILTIN_MODULE: No such built-in module: node:`) before any test runs. They import only `applications/socratic-math-teacher/frontend-src` (untouched).
+
+## Rerun of the two caused-by-this-change files at 0129c7314
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+
+## Typecheck gate (node ./scripts/typecheck.mjs, 2026-11-10, commit f31fa1821)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0
+[typecheck] server tests (tsconfig.tests.json): 1181 errors (baseline 1181 in 365 files)
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS
+(autobyteus-ts `dist` rebuilt first with `pnpm prepare:shared`, so the server resolves the new `LLMFactory.canonicalRunLlmConfig`.)

@@ -1,0 +1,23 @@
+# IMP-04 autobyteus-web unit suite, typecheck gate and guards
+commands: cd autobyteus-web && NUXT_TEST=true corepack pnpm exec vitest run ; node ./scripts/typecheck.mjs (after nuxt prepare) ; node scripts/guard-web-boundary.mjs ; guard-localization-boundary.mjs ; audit-localization-literals.mjs
+commit tested: unit suite d67f77f62; typecheck/guards at f31fa1821 (only a data-row attribute and a spec type fix since)
+env: Linux arm64 container, node v22.23.3, 2026-11-10 12:04-12:20 UTC
+
+## Unit suite
+ Test Files  1 failed | 740 passed (741)
+      Tests  1 failed | 5572 passed | 2 skipped (5575)
+ FAIL  stores/__tests__/projectRunsStore.spec.ts > projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one
+
+Cause of the one failure: stores/__tests__/projectRunsStore.spec.ts 'keeps one read per Project in flight and one queued' fails identically on the base web sources (git checkout fd0eb664c -- autobyteus-web, that spec alone) and is unrelated to this change: the test counts every Apollo query call and the run-history tree read adds one (agentDefinitionStore.fetchAllAgentDefinitions). Recorded as FU-005.
+
+## Typecheck gate
+[typecheck] Nuxt app (tsconfig.json): 69 errors
+[typecheck] cross-package tests: 0 errors
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+(A first run after the browser probe failed with 103 errors: a stale .nuxt left by the probe's dev server plus one .exists() type error in my new spec; fixed, then nuxt prepare and rerun as above.)
+
+## Guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

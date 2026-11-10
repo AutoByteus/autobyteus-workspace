@@ -1,6 +1,6 @@
 # IMP-02 live Anthropic (autobyteus-ts/tests/integration/llm/api/anthropic-llm.test.ts)
 command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_LIVE_STRICT=1 corepack pnpm exec vitest run tests/integration/llm/api/anthropic-llm.test.ts --no-watch --reporter=verbose
-commit: d78581eb2 + test file edits (committed next)
+commit: d78581eb2 + the test-file edits committed in d741d4340
 env: Linux arm64, node v22.23.3, 2026-11-10
 
  RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-ts
