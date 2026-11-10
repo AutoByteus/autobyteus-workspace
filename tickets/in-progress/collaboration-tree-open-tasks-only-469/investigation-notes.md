@@ -276,7 +276,7 @@ The user asked why a top run stores a list at all when the Task record holds the
 
 ### B-3 Who reads a stored tree
 
-The three stores are constructed with their defaults in 17 places (grep of `new StandaloneRootPackageStore(`, `new TeamRunExecutionTreeStore(`, `new AgentOrgRunExecutionTreeStore(`): the three managers, the three location services, the history and catalog services, the Team communication projection, the collaborator port resolver, `run-history/services/root-run-package-current-validator.ts`, `run-history/maintenance/collaboration-run-history-index-repair.ts`, `application-platform/execution/application-execution-scope-kernel-builder.ts`. All of them compose through `composeTreeFile` / `composeTreeFileSync` (A-1), some synchronously.
+The three stores are constructed with their defaults in 19 places in 15 files (corrected by the review; listed in B-5) (grep of `new StandaloneRootPackageStore(`, `new TeamRunExecutionTreeStore(`, `new AgentOrgRunExecutionTreeStore(`): the three managers, the three location services, the history and catalog services, the Team communication projection, the collaborator port resolver, `run-history/services/root-run-package-current-validator.ts`, `run-history/maintenance/collaboration-run-history-index-repair.ts`, `application-platform/execution/application-execution-scope-kernel-builder.ts`. All of them compose through `composeTreeFile` / `composeTreeFileSync` (A-1), some synchronously.
 
 ### B-4 The Architecture Reviewer's observations (message of 2026-11-10; no report was written)
 
@@ -299,8 +299,34 @@ R-001: corrected (A-5). U-001, U-002: answered (A-4, A-6). ASM-001: confirmed. "
 | ID | Unknown | Why it matters | Owner |
 | --- | --- | --- | --- |
 | U-003 | A live root's in-memory message list after a run is dropped: whether any step re-checks it against the tree | D-5 | Implementation Engineer |
-| U-004 | The 2 older Org links in a configured Team's list: whether either belongs to an open Task. Composing every local run into the root list changes its host for a restore | D-2 | Implementation Engineer (a test on that shape; report a Design Impact if such a run cannot be restored) |
+| U-004 | Settled 2026-11-10 (`Measured`, read-only): both older Org links in a configured Team's list belong to runs with no Task record, so they leave the tree (DEC-008) and no open run was hosted by a configured Team | — | Closed |
 | U-005 | The Team and Org counterparts of each standalone step were mapped by name and through their shared functions, not read line by line | Design rows for those kinds | Implementation Engineer; Architecture Reviewer |
 | U-006 | Whether the three readers that serve a message's attached file admit a message by "both agents are in the tree" | D-5 | Implementation Engineer |
-| U-007 | Startup order: whether any stored tree is read before the Task records are loaded (`root-run-package-current-validator.ts`, `collaboration-run-history-index-repair.ts`, restart resume) | D-1: a tree cannot be composed before the source is loaded | Implementation Engineer; Architecture Reviewer |
+| U-007 | Settled by B-5 (review finding AR-001): the startup admission scan and the maintenance repair read trees without the Task records; they read the run's own parts only (D-11) | — | Closed |
 | U-008 | Whether an entry with `start: "starting"` can exist after a restart, and whether a run with an open `failed` entry and an own file is in the tree today | D-1's candidate rule | Implementation Engineer |
+| U-009 | Whether a history index row projected from a tree's own parts equals the row projected from the composed tree (`projectTeamRunHistoryIndexRow`, the Org equivalent) | D-11: the maintenance repair reads own parts | Implementation Engineer (a test; a Design Impact if a row needs delegated runs) |
+
+### B-5 Startup order and every construction site of the three tree stores (after review finding AR-001)
+
+`Read`: `server-runtime.ts:172-197`, `standalone-application-host/start-standalone-application-host.ts:155-242`, `compositions/build-studio-server.ts:118-329`, `run-history/services/root-run-package-current-validator.ts` (whole), `run-history/services/root-run-package-readiness-index.ts:24-82`, `run-history/maintenance/collaboration-run-history-index-repair.ts:26-62`, `scripts/repair-collaboration-run-history-index.mjs`.
+
+Order in both entry points: app-data migrations → `RootRunPackageReadinessIndex.rebuild()` (`server-runtime.ts:184`; `start-standalone-application-host.ts:166`) → definition and package services, definition admission scan, workspace manager, MCP host, credential proxy, provider factory, model catalog → `composeProjectTaskExecutionResources` loads the Task records (`build-studio-server.ts:329`; `start-standalone-application-host.ts:242`) → run supervisor, run managers, API, application runtime, restart resume.
+
+The rebuild calls `RootRunPackageCurrentValidator.scan()`, which reads every Team tree (`:190`) and every Org tree (`:216`) through the stores and validates their structure; a thrown read marks the package `ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED` (`:194-196`, `:221-223`) and the run is then refused (`agent-team-run-manager.ts:178-181`). Its own comment says "Structure only". A standalone run is admitted from its metadata alone (`:140-156`). Today this scan also reads the own file of every delegated run each Team and Org tree lists.
+
+Nothing between the rebuild and the Task record load constructs a tree store (the two ranges were read: definitions, packages, MCP, credentials, models only).
+
+| Construction site (19 in 15 files) | When it reads a tree | Relative to the binding |
+| --- | --- | --- |
+| `run-history/services/root-run-package-current-validator.ts:71, 73` (Team, Org) | Startup rebuild; later `scanOne` when a run is created | **Before** (rebuild); after (`scanOne`) |
+| `run-history/maintenance/collaboration-run-history-index-repair.ts:50, 51` (Team, Org) | A maintenance script in its own process | **Never bound** |
+| `agent-team-execution/services/agent-team-run-manager.ts:121` | Run creation, restore, inspection | After |
+| `agent-org-execution/services/agent-org-run-manager.ts:103` | Same for Org runs | After |
+| `standalone-agent-run-root/services/standalone-agent-run-root-manager.ts:137` | Same for standalone runs | After |
+| `run-history/services/team-run-execution-tree-location-service.ts:55`, `agent-org-execution/services/agent-org-execution-tree-location-service.ts:46`, `standalone-agent-run-root/services/standalone-root-location-service.ts:59` | Request-time lookups (context files, token usage, memory, last activity, process supervisor) | After |
+| `run-history/services/team-run-history-service.ts:59`, `team-run-history-catalog-service.ts:61`, `agent-org-run-history-catalog-service.ts:40`, `collaboration-root-history-service.ts:34` | History and catalog requests | After |
+| `services/team-communication/team-communication-projection-service.ts:43` | Team tab and attachment requests | After |
+| `api/graphql/services/collaborator-root-port-resolver.ts:39, 45, 62` | GraphQL requests | After |
+| `application-platform/execution/application-execution-scope-kernel-builder.ts:180` | The application runtime, which `buildStudioServer` creates after line 329 | After (`Inferred` from the read range; a start on data with Team and Org runs is in AC-008) |
+
+Also `Measured` 2026-11-10: both links to a run on another node were delegated by the top run's own agent; none was delegated by an agent of a local delegated run.

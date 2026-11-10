@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-469` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("A run's collaboration tree lists only the runs whose Task is open: stop the tree from growing with every delegation"). Prerequisite PRE-001 of `autobyteus-461`.
 - Package identifier: `collaboration-tree-open-tasks-only-469`
-- Current solution revision: `SR-004` (replaces `SR-003`, whose review was stopped without a report)
+- Current solution revision: `SR-005` (answers ARCH-REV-001 finding AR-001 on `SR-004`)
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-10
 
@@ -14,6 +14,10 @@ The user's decision of 2026-11-10: fix the constantly growing collaboration tree
 ## What changed since SR-003
 
 After the SR-003 handoff the user asked why a top run stores a list at all, since the Task record holds the same relationship, and decided that it does not (DEC-009): "this collaboration tree itself can be built actually in memory from ... the tasks which are still in progress ... then we don't need to keep this on disk". He also decided that the 14 runs without a Task record leave the tree (DEC-008).
+
+## What changed since SR-004 (review round 1: Fail, one finding)
+
+AR-001: the startup package admission scan reads every Team and Org tree before the Task records are loaded. Answer: the reviewer's first route. Admission and the maintenance repair read a run's own parts only (D-11, `readOwnParts`); no startup step is reordered. Notes B-5 trace the startup order of both entry points and place all 19 construction sites before or after the binding. U-004 and U-007 are closed; AC-005 is aligned to DEC-010; Guideline checklist item 2 and Key Tradeoffs are corrected.
 
 ## Goals and status
 
@@ -30,9 +34,9 @@ After the SR-003 handoff the user asked why a top run stores a list at all, sinc
 
 ## Points for the reviewer
 
-1. Run storage now depends on the Task records being loaded (`OpenDelegatedRunSource`, bound at composition). Startup order is open premise U-007.
-2. The candidate rule for "in the tree" (design spec D-1 and Guidance; U-008).
-3. Every local record is composed into the root list, also for an Org tree (U-004, FU-003).
+1. D-11 and DS-008: admission on own parts, and notes B-5 (one construction site is `Inferred`: the application runtime's; AC-008 covers it with a server start).
+2. D-12: a link to a run on another node whose delegator is an agent of a closed local run.
+3. U-009: whether a history index row needs delegated runs (the maintenance repair).
 4. Only the standalone path was read line by line (U-005).
 5. The note for `autobyteus-461` on the shared lookup key (`hostRoot`), from your observation (design spec "Relationship to autobyteus-461").
 6. Your observations of 2026-11-10 are recorded in the notes (B-4) with what each led to.
@@ -58,11 +62,11 @@ Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-ope
 
 ## Open risks
 
-Design spec "Risks"; notes U-003 … U-008.
+Design spec "Risks"; notes U-003, U-005, U-006, U-008, U-009.
 
 ## Next expected action
 
-Independent architecture review of `SR-004` (Large, High), as round ARCH-REV-001.
+Independent architecture review of `SR-005`, round 2.
 
 ## Route
 

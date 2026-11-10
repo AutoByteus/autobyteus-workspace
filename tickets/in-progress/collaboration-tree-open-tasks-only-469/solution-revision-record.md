@@ -7,7 +7,8 @@
 | SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-469`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-007, REQ-001 … REQ-008 | Presented to the user; DEC-001 needs him |
 | SR-002 | Requirements | The user's answer to DEC-001 | N/A | Ready for Approval | Approved | BEH-005, REQ-004, AC-011, DEC-001 | Approved; architecture investigation starts |
 | SR-003 | Requirements and design | Architecture investigation | N/A | Requirements Approved; no design | Requirements Approved; design Ready | REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, DEC-003, DEC-005 … DEC-007 | Sent to architecture review; withdrawn before a decision (see SR-004) |
-| SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; to architecture review |
+| SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; architecture review ARCH-REV-001: Fail with one finding (AR-001) |
+| SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; back to architecture review |
 
 ## Revision Entries
 
@@ -102,3 +103,26 @@
 - Downstream and architecture-review impact: the first review round will be on SR-004
 - Remaining gaps, assumptions or blocked decisions: notes U-003 … U-008; follow-ups FU-001 … FU-003; a note for `autobyteus-461` (design spec, "Relationship to autobyteus-461")
 - Next action: architecture review
+
+### SR-005 — Startup admission reads a run's own parts only (answer to AR-001)
+
+- Phase and classification: Design, `Design Impact` resolved; requirement wording corrections that change no intended behavior
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: Architecture Reviewer, `design-review-report.md` and `architecture-review-revision-record.md`, ARCH-REV-001, round 1, decision `Fail`
+- Triggering finding IDs: AR-001 (High, Design Impact)
+- Prior authoritative requirements/design status: requirements `Approved` at SR-004; design `Ready` at SR-004, reviewed `Fail`
+- Current authoritative requirements/design status: requirements `Approved` (SR-004 baseline, wording corrected at SR-005); design `Ready` at SR-005
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: BEH-003, BEH-007 (design paths); wording of REQ-001, REQ-003, AC-001, AC-005, AC-008
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: AR-001 is correct. The startup package admission scan reads every Team and Org tree before the Task records are loaded, in both entry points, and a maintenance script reads them in a process that never loads the Task records. SR-004 would have refused every Team and Org run after an ordinary start. Of the reviewer's two routes the design takes the first: admission and the maintenance repair read the run's own parts only (new D-11, `readOwnParts`). Reasons: admission judges a root run's own package, and the validator already declares "Structure only"; it removes a dependency instead of ordering one, so neither entry point's startup sequence changes; startup then reads less than today; and the second route could not serve the maintenance script. D-12 states the listing rule for a link to a run on another node whose delegator is an agent of a closed local run (no such link exists today).
+- Canonical requirements, investigation and design sections changed: `design-spec.md`: Current-State Read, Design Decisions (D-11, D-12), classification text, evidence table, Change Scope consumers, Guideline checklist items 2 and 9, spine inventory and narratives (DS-001 scoped to after startup; new DS-008), interface and file mappings (the two stores' `readOwnParts`, the validator, the maintenance repair), Change Sequence, Key Tradeoffs, Risks, Guidance. `investigation-notes.md`: B-5 (the startup order of both entry points and all 19 construction sites, each placed before or after the binding), U-004 and U-007 closed, U-009 added. `requirements-doc.md`: REQ-001 (the first save after the upgrade), REQ-003 (the listing rule of a link to another node), AC-001, AC-005 (the warning names the Task, as DEC-010 says), AC-008 (also after a server restart).
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: none; the SR-004 approval stands
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: the parts named above; everything else in SR-004 passed review and is unchanged
+- Post-design task-size/risk classification and rationale changes: `Large`, `High`, unchanged
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: see `handoff-architecture-design-complete.md`
+- Downstream and architecture-review impact: review round 2
+- Remaining gaps, assumptions or blocked decisions: notes U-003, U-005, U-006, U-008, U-009; follow-ups FU-001 … FU-003
+- Next action: architecture review, round 2
