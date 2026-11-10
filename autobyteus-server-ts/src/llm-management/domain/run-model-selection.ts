@@ -21,8 +21,14 @@ export type RunModelChoice = Readonly<{
   configSchema: Record<string, unknown> | null;
   recommended: boolean;
 }>;
+/**
+ * One scope's options answer. `modelListReadable` is false only when the runtime's model list could not be read: the options
+ * are then empty and not authoritative, and `unavailableReason` holds the owner's text. `unavailableReason` is also set for a
+ * readable answer whose context capacity is unverified, so callers decide read-vs-unread from `modelListReadable` alone.
+ */
 export type RunModelOptions = Readonly<{
   currentModelIdentifier: string;
+  modelListReadable: boolean;
   currentModel: RunModelChoice | null;
   replacements: readonly RunModelChoice[];
   unavailableReason: string | null;

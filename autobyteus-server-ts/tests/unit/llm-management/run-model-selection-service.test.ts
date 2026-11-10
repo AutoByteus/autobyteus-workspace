@@ -47,9 +47,38 @@ describe('RunModelSelectionService', () => {
     await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });
     await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_list_unavailable' });
-    expect((await service.listOptions(context)).unavailableReason).toContain('catalog is unavailable');
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable' });
+  });
+
+  it('answers modelListReadable=false with the wording owner\'s text (and the runtime diagnostic) when the list cannot be read, with the same classification as validation', async () => {
+    const { service, catalog } = harness();
+    const agy = { ...context, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI };
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
+    await expect(service.listOptions(agy)).resolves.toEqual({ currentModelIdentifier: 'current', modelListReadable: false, currentModel: null,
+      replacements: [], unavailableReason: 'The model list of Antigravity CLI could not be read: Antigravity model discovery timed out; check the CLI and retry. Try again.' });
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
+    const generic = await service.listOptions(context);
+    expect(generic).toMatchObject({ modelListReadable: false, currentModel: null, replacements: [],
+      unavailableReason: 'The model list of Codex App Server could not be read. Try again.' });
+    expect(generic.unavailableReason).not.toContain('secret');
+    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_list_unavailable' });
+    const [first, second] = await service.listOptionsMany([context, agy]);
+    expect([first.modelListReadable, second.modelListReadable]).toEqual([false, false]);
+  });
+
+  it('answers modelListReadable=true for a list that was read, including a model the list does not offer and an unverified capacity', async () => {
+    const { service, catalog, nativeCapacity } = harness();
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
+    await expect(service.listOptions(context)).resolves.toEqual({ currentModelIdentifier: 'current', modelListReadable: true, currentModel: null,
+      replacements: [], unavailableReason: null });
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current', config_schema: null }]));
+    nativeCapacity.resolveMany.mockReturnValue({});
+    const unverified = await service.listOptions(native);
+    expect(unverified).toMatchObject({ modelListReadable: true, replacements: [] });
+    expect(unverified.currentModel?.llmModelIdentifier).toBe('current');
+    expect(unverified.unavailableReason).toContain('context capacity could not be verified');
   });
 
   it('reports an unreadable Grok Build list with only a safe discovery diagnostic', async () => {

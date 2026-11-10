@@ -6,6 +6,7 @@ import type { ModelInfoWithSelectionPresentation } from "../domain/model-selecti
 import { validateModelConfigSchema } from "./model-config-schema-validation.js";
 import { NativeModelCapacityService } from "./native-model-capacity.js";
 import { RuntimeKind, isExternalProviderRuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { modelListUnreadableText } from "./run-model-selection-refusal.js";
 import { toAgyDiscoveryDiagnostic, type AgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
 import { toGrokBuildDiagnostic, type GrokBuildDiagnostic } from "../../runtime-management/grok/grok-build-capability.js";
 import {
@@ -32,12 +33,20 @@ type SelectionEvidence = {
 };
 export type RunModelSelectionValidator = Pick<RunModelSelectionService, "validate" | "validateMany">;
 
-const supportedRuntime = (kind: RuntimeKind): boolean => kind === RuntimeKind.AUTOBYTEUS || isExternalProviderRuntimeKind(kind);
 const catalogDiagnosticOf = (runtimeKind: RuntimeKind, error: unknown): { catalogDiagnostic?: CatalogDiagnostic } =>
   runtimeKind === RuntimeKind.ANTIGRAVITY_CLI ? { catalogDiagnostic: toAgyDiscoveryDiagnostic(error) }
     : runtimeKind === RuntimeKind.GROK_BUILD ? { catalogDiagnostic: toGrokBuildDiagnostic(error) }
       : runtimeKind === RuntimeKind.DEEPSEEK_HARNESS ? { catalogDiagnostic: toDeepSeekHarnessDiagnostic(error) }
         : {};
+type CatalogRead = Readonly<{ catalog: RuntimeModelSelectionCatalog }> | Readonly<{ catalogDiagnostic?: CatalogDiagnostic }>;
+/** The one read-failure classification: validation and options both treat any thrown catalog read as "list unreadable". */
+const readCatalog = async (
+  evidence: SelectionEvidence,
+  context: Pick<RunModelValidationContext, "runtimeKind" | "workspaceRootPath">,
+): Promise<CatalogRead> => {
+  try { return { catalog: await evidence.catalog.runtimeModelSelectionCatalog(context.runtimeKind, context.workspaceRootPath) }; }
+  catch (error) { return catalogDiagnosticOf(context.runtimeKind, error); }
+};
 const invalid = (message: string): RunModelSelectionValidationResult =>
   ({ kind: "invalid", errors: [{ path: "llmModelIdentifier", message }] });
 const toChoice = (model: ModelInfo): RunModelChoice => ({
@@ -64,11 +73,10 @@ export class RunModelSelectionService {
 
   private async validateWithEvidence(input: SelectionInput, evidence: SelectionEvidence): Promise<RunModelSelectionValidationResult> {
     const { context, selection } = input;
-    if (!supportedRuntime(context.runtimeKind)) return invalid("This runtime does not support stopped-run model replacement.");
     if (typeof selection.llmModelIdentifier !== "string" || !selection.llmModelIdentifier.trim()) return invalid("Select a model.");
-    let catalog: RuntimeModelSelectionCatalog;
-    try { catalog = await evidence.catalog.runtimeModelSelectionCatalog(context.runtimeKind, context.workspaceRootPath); }
-    catch (error) { return { kind: "model_list_unavailable", ...catalogDiagnosticOf(context.runtimeKind, error) }; }
+    const read = await readCatalog(evidence, context);
+    if (!("catalog" in read)) return { kind: "model_list_unavailable", ...read };
+    const { catalog } = read;
     const unchanged = context.currentModelIdentifier !== null && selection.llmModelIdentifier === context.currentModelIdentifier;
     const model = unchanged ? catalog.findExactCurrent(selection.llmModelIdentifier)
       : catalog.offeredModels.find((row) => row.model_identifier === selection.llmModelIdentifier);
@@ -115,29 +123,24 @@ export class RunModelSelectionService {
   }
 
   private async optionsWithEvidence(context: RunModelSelectionContext, evidence: SelectionEvidence): Promise<RunModelOptions> {
-    const unavailable = (reason: string): RunModelOptions => ({ currentModelIdentifier: context.currentModelIdentifier,
-      currentModel: null, replacements: [], unavailableReason: reason });
-    if (!supportedRuntime(context.runtimeKind)) return unavailable("This runtime does not support stopped-run model replacement.");
-    let catalog: RuntimeModelSelectionCatalog;
-    try { catalog = await evidence.catalog.runtimeModelSelectionCatalog(context.runtimeKind, context.workspaceRootPath); }
-    catch { return unavailable("Runtime model catalog is unavailable. Refresh this run to retry; saved model identity remains visible."); }
+    const read = await readCatalog(evidence, context);
+    if (!("catalog" in read)) return { currentModelIdentifier: context.currentModelIdentifier, modelListReadable: false, currentModel: null,
+      replacements: [], unavailableReason: modelListUnreadableText(context.runtimeKind, read.catalogDiagnostic?.message) };
+    const { catalog } = read;
     const currentModel = catalog.findExactCurrent(context.currentModelIdentifier);
     const models = catalog.offeredModels;
-    if (isExternalProviderRuntimeKind(context.runtimeKind)) return {
-      currentModelIdentifier: context.currentModelIdentifier,
-      currentModel: currentModel ? toChoice(currentModel) : null,
-      replacements: models.filter((model) => model.model_identifier !== context.currentModelIdentifier)
-        .map(toChoice),
-      unavailableReason: null,
-    };
+    const answer = { currentModelIdentifier: context.currentModelIdentifier, modelListReadable: true,
+      currentModel: currentModel ? toChoice(currentModel) : null };
+    if (isExternalProviderRuntimeKind(context.runtimeKind)) return { ...answer,
+      replacements: models.filter((model) => model.model_identifier !== context.currentModelIdentifier).map(toChoice),
+      unavailableReason: null };
     const capacities = evidence.nativeCapacity.resolveMany(models);
     const current = capacities[context.currentModelIdentifier];
-    if (current == null) return { ...unavailable("The current model's context capacity could not be verified. Its settings can still be edited."), currentModel: currentModel ? toChoice(currentModel) : null };
-    return { currentModelIdentifier: context.currentModelIdentifier,
-      currentModel: currentModel ? toChoice(currentModel) : null,
+    if (current == null) return { ...answer, replacements: [],
+      unavailableReason: "The current model's context capacity could not be verified. Its settings can still be edited." };
+    return { ...answer,
       replacements: models.filter((model) => model.model_identifier !== context.currentModelIdentifier &&
-        capacities[model.model_identifier] != null && capacities[model.model_identifier]! >= current)
-        .map(toChoice),
+        capacities[model.model_identifier] != null && capacities[model.model_identifier]! >= current).map(toChoice),
       unavailableReason: null };
   }
 }

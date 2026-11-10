@@ -660,6 +660,22 @@ it('does not let missing replacement metadata block current-model settings', () 
   expect(store.canSave).toBe(false)
 })
 
+it('words an unreadable model list for another model with the server\'s message, while the run\'s own model stays editable (SR-004)', () => {
+  setActivePinia(createPinia())
+  const store = useExistingRunConfigStore()
+  store.syncAgentCanonical(agentPayload())
+  const message = 'The model list of Codex App Server could not be read. Try again.'
+  store.modelOptionsByAddress['/'] = { status: 'unavailable', options: null, message }
+  store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: { effort: 'high' } })
+  expect(store.schemaStateByAddress['/']).toEqual({ status: 'ready', message: null })
+  store.updateAgentModelConfig({ llmModelIdentifier: 'unknown', llmConfig: null })
+  expect(store.schemaStateByAddress['/']).toEqual({ status: 'unavailable', message })
+  store.modelOptionsByAddress['/'] = { status: 'unavailable', options: null }
+  store.deriveSchemaStates()
+  expect(store.schemaStateByAddress['/']!.status).toBe('unavailable')
+  expect(store.schemaStateByAddress['/']!.message).not.toBe(message)
+})
+
 describe('Cancel and reload after a lifecycle change (REQ-014/015)', () => {
   it('Cancel restores the saved model, thinking and member cascade without a request', () => {
     setActivePinia(createPinia())

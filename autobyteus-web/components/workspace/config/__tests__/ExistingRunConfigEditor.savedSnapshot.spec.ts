@@ -13,13 +13,17 @@ const mocks = await vi.hoisted(async () => {
   const { ref } = await import('vue')
   return { read: vi.fn(), mutate: vi.fn(), live: null as any, stored: null as any, active: false, schema: null as any,
     /** The copy focused in the left tree (autobyteus-366: Settings show it). */
-    focused: ref<string | null>('copy') }
+    focused: ref<string | null>('copy'),
+    /** The server answers that the runtime's model list could not be read (SR-004: it answers, it does not throw). */
+    unreadable: false }
 })
 const launch = () => ({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'old', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null })
 const snapshot = () => ({ execution_tree: { taskExecutions: [{ address: '/writer', agentRunId: 'copy', platformAgentRunId: null, delegatorAgentRunId: 'host',
   startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] }, closed_task_executions: [] })
 const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canonicalName: id, providerName: 'test', configSchema: null })
-const options = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
+const readableOptions = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
+const options = () => mocks.unreadable
+  ? { status: 'unavailable', options: null, message: 'The model list of Codex App Server could not be read. Try again.' } : readableOptions()
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async original => ({ ...await original<object>(),
   loadDelegatedLaunchModelOptions: async () => ({ 'agent:copy': options(), 'team:team-copy': options(), 'agent:follower': options(), 'agent:own': options() }), updateDelegatedLaunchSelections: mocks.mutate,
 }))
@@ -54,7 +58,7 @@ const mountEditor = () => mount(ExistingRunConfigEditor, { global: { stubs: { Ru
 beforeEach(() => {
   setActivePinia(createPinia())
   mocks.read.mockReset(); mocks.mutate.mockReset()
-  mocks.active = false; mocks.schema = null; mocks.focused.value = 'copy'
+  mocks.active = false; mocks.schema = null; mocks.focused.value = 'copy'; mocks.unreadable = false
   mocks.live = snapshot(); mocks.stored = snapshot()
   mocks.read.mockImplementation(async () => structuredClone(mocks.stored))
   mocks.mutate.mockImplementation(async ({ changes }) => {
@@ -274,6 +278,27 @@ it('leaves active Agent rows live-view-backed and does not request a stopped sna
   wrapper.unmount()
 })
 
+describe('the saved model\'s "no longer offered" label (REQ-016, SR-004)', () => {
+  it('shows only for a readable answer that lacks the model, never for a list the server could not read (first read included)', async () => {
+    mocks.unreadable = true
+    const wrapper = mountEditor(); await flushPromises()
+    const run = useExistingRunConfigStore()
+    const label = () => wrapper.getComponent({ name: 'ExistingRunSettings' }).props('rootModelUnavailable')
+    expect(run.modelOptionsByAddress['/']!.status).toBe('unavailable')
+    expect(label()).toBe(false)
+
+    mocks.unreadable = false
+    run.modelOptionsByAddress = { '/': { status: 'ready', options: { currentModelIdentifier: 'old', currentModel: null, replacements: [choice('new')], unavailableReason: null } } as never }
+    await flushPromises()
+    expect(label()).toBe(true)
+
+    run.modelOptionsByAddress = { '/': readableOptions() as never }
+    await flushPromises()
+    expect(label()).toBe(false)
+    wrapper.unmount()
+  })
+})
+
 describe('saved-run model menus re-read the options through the editor (REQ-010, AC-012)', () => {
   it('provides one refresh that re-reads the run\'s options and its copies\' options, and reports success', async () => {
     let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
@@ -288,6 +313,29 @@ describe('saved-run model menus re-read the options through the editor (REQ-010,
 
     expect(reloadRun).toHaveBeenCalledOnce()
     expect(reloadCopies).toHaveBeenCalledOnce()
+    expect(refresh!.failed.value).toBe(false)
+    wrapper.unmount()
+  })
+
+  // API-14 (CR-004): the server answers (it does not throw) that the CLI cannot list its models.
+  it('reports a failure when the server answers that the model list could not be read, and keeps the options already shown', async () => {
+    let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
+    const menu = defineComponent({ props: ['node'], setup: () => { refresh = injectLockedModelOptionsRefresh(); return () => h('span') } })
+    const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: true, RunSubjectCard: menu, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+    await flushPromises()
+    const run = useExistingRunConfigStore(), copies = useDelegatedLaunchDraftStore()
+    expect(run.modelOptionsByAddress['/']).toEqual(readableOptions())
+    expect(copies.optionsByKey['agent:copy']).toEqual(readableOptions())
+
+    mocks.unreadable = true
+    await refresh!.refresh()
+
+    expect(refresh!.failed.value).toBe(true)
+    expect(run.modelOptionsByAddress['/']).toEqual(readableOptions())
+    expect(copies.optionsByKey['agent:copy']).toEqual(readableOptions())
+
+    mocks.unreadable = false
+    await refresh!.refresh()
     expect(refresh!.failed.value).toBe(false)
     wrapper.unmount()
   })

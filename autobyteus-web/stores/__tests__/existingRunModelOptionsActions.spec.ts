@@ -11,6 +11,10 @@ import { existingRunModelOptionsActions } from '../existingRunModelOptionsAction
 const ready = (replacements: string[]) => ({ status: 'ready', options: { currentModelIdentifier: 'opus', currentModel: null, unavailableReason: null,
   replacements: replacements.map((llmModelIdentifier) => ({ llmModelIdentifier })) } })
 
+const UNREADABLE = 'The model list of Claude Agent SDK could not be read. Try again.'
+// What the options client maps a row to when the server answers modelListReadable=false (SR-004).
+const unreadable = { status: 'unavailable', options: null, message: UNREADABLE }
+
 /** The store's state, as the mixin sees it (`this`). */
 const host = (draft: unknown = { kind: 'agent', runId: 'run' }) => {
   const state: any = { draft, optionsRequestId: 0, modelOptionsByAddress: { '/': ready(['sonnet']) }, deriveSchemaStates: vi.fn() }
@@ -49,6 +53,34 @@ describe('existingRunModelOptionsActions.reloadModelOptions (REQ-010, QR-001)', 
     expect(store.deriveSchemaStates).not.toHaveBeenCalled()
   })
 
+  // API-14 (CR-004): the server answers, it does not throw, when the runtime's list cannot be read.
+  it('keeps the options that were shown and answers false when the server answers that the list could not be read', async () => {
+    const store = host({ kind: 'team', teamRunId: 'team' })
+    client.loadExistingRunModelOptions.mockResolvedValueOnce({ '/': unreadable })
+
+    await expect(store.reloadModelOptions()).resolves.toBe(false)
+    expect(store.modelOptionsByAddress['/']).toEqual(ready(['sonnet']))
+    expect(store.deriveSchemaStates).toHaveBeenCalledOnce()
+  })
+
+  it('shows unavailable with the owner\'s message when nothing was loaded before (the first read of an edit)', async () => {
+    const store = host({ kind: 'team', teamRunId: 'team' })
+    store.modelOptionsByAddress = { '/': { status: 'loading', options: null } }
+    client.loadExistingRunModelOptions.mockResolvedValueOnce({ '/': unreadable })
+
+    await expect(store.reloadModelOptions()).resolves.toBe(false)
+    expect(store.modelOptionsByAddress['/']).toEqual(unreadable)
+  })
+
+  it('merges per scope: a readable scope is replaced, an unreadable one keeps its options, and the read is a failure', async () => {
+    const store = host({ kind: 'team', teamRunId: 'team' })
+    store.modelOptionsByAddress = { '/': ready(['sonnet']), '/member': ready(['opus']) }
+    client.loadExistingRunModelOptions.mockResolvedValueOnce({ '/': ready(['sonnet', 'fable']), '/member': unreadable })
+
+    await expect(store.reloadModelOptions()).resolves.toBe(false)
+    expect(store.modelOptionsByAddress).toEqual({ '/': ready(['sonnet', 'fable']), '/member': ready(['opus']) })
+  })
+
   it('does not apply an answer that a newer read made stale, and does not call that a failure', async () => {
     const store = host()
     let answer!: (value: unknown) => void
@@ -71,6 +103,13 @@ describe('existingRunModelOptionsActions.reloadModelOptions (REQ-010, QR-001)', 
 })
 
 describe('existingRunModelOptionsActions.refreshModelOptions (the first read of an edit)', () => {
+  it('shows a scope the server could not read as unavailable with its message', async () => {
+    const store = host({ kind: 'team', teamRunId: 'team', planner: { scopesByAddress: { '/': {} } } })
+    client.loadExistingRunModelOptions.mockResolvedValueOnce({ '/': unreadable })
+    await store.refreshModelOptions()
+    expect(store.modelOptionsByAddress['/']).toEqual(unreadable)
+  })
+
   it('shows every scope as loading until the answer arrives', async () => {
     const store = host({ kind: 'agent', runId: 'run' })
     let answer!: (value: unknown) => void

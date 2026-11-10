@@ -285,7 +285,16 @@ read runs and is kept when it fails (the picker shows the error with Retry).
 Built-in AutoByteus provider rows are curated catalog entries: a newly released
 provider model there arrives with an AutoByteus update. A saved run's model menus
 re-read that run's options (`runModelOptions` and the delegated-copy options) the
-same way.
+same way. Every options answer (agent, Team scope, Org scope, delegated copy) carries
+`modelListReadable`: it is `false` only when the runtime's model list could not be read
+(`ModelListUnavailableError` or any catalog read error, classified once by
+`RunModelSelectionService` for validation and options alike). The answer then has no
+current model and no replacements, and `unavailableReason` holds the wording owner's
+text (`modelListUnreadableText`, with the runtime's own diagnostic where it has one).
+The flag is the only signal: `unavailableReason` is also set for a readable answer whose
+context capacity is unverified, so callers never infer readability from the text or
+from an empty list. The client keeps options it already shows when a re-read answers
+`false` for a scope.
 
 ### Claude Agent SDK Model Descriptions
 

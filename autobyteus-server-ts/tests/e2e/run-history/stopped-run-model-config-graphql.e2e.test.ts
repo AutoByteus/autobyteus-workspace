@@ -476,6 +476,7 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     expect(schema.optionResult.fields.map(({ name }) => name).sort()).toEqual([
       "currentModel",
       "currentModelIdentifier",
+      "modelListReadable",
       "replacements",
       "unavailableReason",
     ]);

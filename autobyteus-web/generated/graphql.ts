@@ -287,6 +287,7 @@ export type AgentOrgRunModelOptionObject = {
   __typename?: 'AgentOrgRunModelOptionObject';
   currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
+  modelListReadable: Scalars['Boolean']['output'];
   replacements: Array<RunModelOptionObject>;
   scopeAddress: Scalars['String']['output'];
   scopeKind: Scalars['String']['output'];
@@ -1146,6 +1147,7 @@ export type DelegatedLaunchModelOptionsObject = {
   agentRunId?: Maybe<Scalars['String']['output']>;
   currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
+  modelListReadable: Scalars['Boolean']['output'];
   replacements: Array<RunModelOptionObject>;
   scope: Scalars['String']['output'];
   teamRunId?: Maybe<Scalars['String']['output']>;
@@ -3724,6 +3726,7 @@ export type RunModelOptionsObject = {
   __typename?: 'RunModelOptionsObject';
   currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
+  modelListReadable: Scalars['Boolean']['output'];
   replacements: Array<RunModelOptionObject>;
   unavailableReason?: Maybe<Scalars['String']['output']>;
 };
@@ -4025,6 +4028,7 @@ export type TeamScopeModelOptionsObject = {
   __typename?: 'TeamScopeModelOptionsObject';
   currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
+  modelListReadable: Scalars['Boolean']['output'];
   replacements: Array<RunModelOptionObject>;
   scopeAddress: Scalars['String']['output'];
   scopeKind: Scalars['String']['output'];
@@ -6139,21 +6143,21 @@ export type GetAgentOrgRunInspectionQueryVariables = Exact<{
 
 export type GetAgentOrgRunInspectionQuery = { __typename?: 'Query', getAgentOrgRunInspection: any };
 
-export type RunModelOptionsFieldsFragment = { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> };
+export type RunModelOptionsFieldsFragment = { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> };
 
 export type AgentRunModelOptionsQueryVariables = Exact<{
   agentRunId: Scalars['String']['input'];
 }>;
 
 
-export type AgentRunModelOptionsQuery = { __typename?: 'Query', agentRunModelOptions: { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> } };
+export type AgentRunModelOptionsQuery = { __typename?: 'Query', agentRunModelOptions: { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> } };
 
 export type TeamRunModelOptionsQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
 
 export type AgentOrgRunConfigQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
@@ -6168,7 +6172,7 @@ export type AgentOrgRunModelOptionsQueryVariables = Exact<{
 }>;
 
 
-export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
 
 export type DelegatedLaunchModelOptionsQueryVariables = Exact<{
   rootKind: Scalars['String']['input'];
@@ -6176,7 +6180,7 @@ export type DelegatedLaunchModelOptionsQueryVariables = Exact<{
 }>;
 
 
-export type DelegatedLaunchModelOptionsQuery = { __typename?: 'Query', delegatedLaunchModelOptions: Array<{ __typename?: 'DelegatedLaunchModelOptionsObject', scope: string, agentRunId?: string | null, teamRunId?: string | null, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+export type DelegatedLaunchModelOptionsQuery = { __typename?: 'Query', delegatedLaunchModelOptions: Array<{ __typename?: 'DelegatedLaunchModelOptionsObject', scope: string, agentRunId?: string | null, teamRunId?: string | null, currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
 
 export type RuntimeCurrentModelDescriptorsQueryVariables = Exact<{
   runtimeKind: Scalars['String']['input'];
@@ -7105,6 +7109,7 @@ export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
 export const RunModelOptionsFieldsFragmentDoc = gql`
     fragment RunModelOptionsFields on RunModelOptionsObject {
   currentModelIdentifier
+  modelListReadable
   unavailableReason
   currentModel {
     llmModelIdentifier
@@ -14496,6 +14501,7 @@ export const TeamRunModelOptionsDocument = gql`
     scopeKind
     scopeAddress
     currentModelIdentifier
+    modelListReadable
     unavailableReason
     currentModel {
       llmModelIdentifier
@@ -14586,6 +14592,7 @@ export const AgentOrgRunModelOptionsDocument = gql`
     scopeKind
     scopeAddress
     currentModelIdentifier
+    modelListReadable
     unavailableReason
     currentModel {
       llmModelIdentifier
@@ -14639,6 +14646,7 @@ export const DelegatedLaunchModelOptionsDocument = gql`
     agentRunId
     teamRunId
     currentModelIdentifier
+    modelListReadable
     unavailableReason
     currentModel {
       llmModelIdentifier

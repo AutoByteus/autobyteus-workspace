@@ -330,7 +330,14 @@ one server read, and every picker showing that runtime updates from the one stor
 snapshot. A saved run's model menus re-read that run's options through
 `existingRunConfigStore.reloadModelOptions` and
 `delegatedLaunchDraftStore.reloadOptions`, provided to the menus by the editor
-(`useLockedModelOptionsRefresh`).
+(`useLockedModelOptionsRefresh`). Both read the server's options per scope and
+merge the answer row by row (`mergeReloadedOptions`): a readable row replaces its
+row; a row the server could not read (`modelListReadable: false`, mapped to an
+`unavailable` state with the server's message by `optionsStateOfAnswer`) never
+replaces options already shown and otherwise shows as `unavailable`; the reload
+then resolves `false`, so the menu shows "Couldn't refresh models" with Retry. The
+saved model is marked "No longer offered" only for a readable answer without it,
+never for an unreadable list.
 
 Chat names models the same way on every surface that uses the chat model menu (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:
 

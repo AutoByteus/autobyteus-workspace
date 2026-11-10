@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 const options = gql`fragment RunModelOptionsFields on RunModelOptionsObject {
-  currentModelIdentifier unavailableReason
+  currentModelIdentifier modelListReadable unavailableReason
   currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
 }`
@@ -9,7 +9,7 @@ export const AgentRunModelOptions = gql`query AgentRunModelOptions($agentRunId: 
 } ${options}`
 export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: String!) {
   teamRunModelOptions(teamRunId: $teamRunId) {
-    scopeKind scopeAddress currentModelIdentifier unavailableReason
+    scopeKind scopeAddress currentModelIdentifier modelListReadable unavailableReason
     currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
     replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   }
@@ -22,7 +22,7 @@ export const AgentOrgRunConfig = gql`query AgentOrgRunConfig($orgRunId: String!)
 }`
 export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRunId: String!, $teamWorkspacePatches: [AgentOrgTeamWorkspacePatchInput!]!) {
   agentOrgRunModelOptions(orgRunId: $orgRunId, teamWorkspacePatches: $teamWorkspacePatches) {
-    scopeKind scopeAddress currentModelIdentifier unavailableReason
+    scopeKind scopeAddress currentModelIdentifier modelListReadable unavailableReason
     currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
     replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   }
@@ -31,7 +31,7 @@ export const AgentOrgRunModelOptions = gql`query AgentOrgRunModelOptions($orgRun
 /** Model options of every editable delegated copy of a run (agent and Team level). */
 export const DelegatedLaunchModelOptions = gql`query DelegatedLaunchModelOptions($rootKind: String!, $rootRunId: String!) {
   delegatedLaunchModelOptions(rootKind: $rootKind, rootRunId: $rootRunId) {
-    scope agentRunId teamRunId currentModelIdentifier unavailableReason
+    scope agentRunId teamRunId currentModelIdentifier modelListReadable unavailableReason
     currentModel { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
     replacements { llmModelIdentifier providerName displayName canonicalName description configSchema recommended }
   }

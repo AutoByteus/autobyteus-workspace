@@ -346,7 +346,9 @@ delegated run, …) are defined in the
   failed, so nothing is known about the model; `model_unavailable` means the read
   worked and the model is not in it), `ModelListUnavailableError`, and in UI texts
   and component names ("Refresh models", `ModelListRefreshControl`). An external
-  agent runtime that answers with no models has failed to read its list.
+  agent runtime that answers with no models has failed to read its list. A saved
+  run's options answer says so with `modelListReadable: false` (the options are
+  then empty and not authoritative); readers decide only from that flag.
 - **Declared settings:** the model settings keys a model's settings schema declares
   (`config_schema`; for an external agent runtime at run creation, the keys the
   runtime's backend reads). Only declared settings are stored in a new run and
