@@ -1,25 +1,34 @@
 #!/usr/bin/env node
-// Ticket-owned journeys of autobyteus-9 (model-settings-reality), API/E2E cases API-11, API-12, API-14: a Claude Code CLI that
-// is updated while the app runs (PRB-D3: CLAUDE_CODE_EXECUTABLE_PATH names a symlink that is switched from the SDK-bundled CLI
-// 2.1.280 to the system CLI 2.1.322; "failing" is a CLI that exits 1) against the real web renderer, the real built backend and
-// the real Claude CLI. Real browser (Chromium via playwright-core) -> real Nuxt dev -> real built backend (`dist/app.js`) on an owned
-// temp data root, free ports and a sanitized environment (the user's running app on port 8000 and `~/.autobyteus` are never touched).
-// Models of the native runtime are a test-owned LM Studio stand-in, Antigravity is the scripted CLI
-// `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`; the Anthropic key comes from the test vault (AUTOBYTEUS_TEST_VAULT) and is
-// used by the one real Claude run of API-11. It is a web-equivalent journey: it proves the renderer + server boundary, not the Electron shell.
-// Derived from autobyteus-web/tests/e2e/runtime-switch-members-probe.mjs (its stack, helpers and Team-run fixtures).
+// Model-list journeys of autobyteus-9 (model-settings-reality), cases API-11, API-12, API-14, API-14b: the Claude Code CLI changes
+// while the app runs and the model pickers follow it. Real browser (Chromium via playwright-core) -> real Nuxt dev -> real built backend
+// (`dist/app.js`) on an owned temp data root, free ports and a sanitized environment (a running desktop app and `~/.autobyteus` are never
+// touched). Native-runtime models are a test-owned LM Studio stand-in, Antigravity is the scripted CLI
+// `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`. It is a web-equivalent journey: it proves the renderer + server boundary, not
+// the Electron shell. Derived from runtime-switch-members-probe.mjs (its stack, helpers and Team-run fixtures).
 //
-// API-11  new-run picker: open (bundled CLI list) -> CLI updated -> open again (list usable at once, one read, new models listed, no reload/restart)
-//         -> failing CLI: Refresh models keeps the list and shows the error + Retry -> CLI back: Retry -> a new model launches a run
-// API-12  stopped Team member: runtime menu -> Claude Agent SDK (bundled list) -> CLI updated -> open again (new model listed) -> pick it;
-//         Save refused when the CLI no longer offers it (names the model and scope, "Refresh the model list and choose again.", nothing saved),
-//         refused when the CLI fails ("could not be read", nothing saved), Save succeeds when it works (stored selection names the model),
-//         then saved back onto the first runtime (A -> B -> A)
-// API-14  stopped Team run on the Claude Agent SDK: the Team-level (runtime-locked) model menu re-reads on open and on Refresh models,
-//         shows the busy state, keeps its options and shows the error with Retry when the CLI fails
+// The Claude CLI the backend uses is `CLAUDE_CODE_EXECUTABLE_PATH`, a symlink the probe points at "the CLI before the update", "the CLI
+// after the update" and "a CLI that fails" (PRB-D3):
+//   --cli scripted (default)  the scripted `claude` of `autobyteus-server-ts/tests/fixtures/agent-runtimes-fake-cli.mjs`; its `claude-models`
+//                             state file is the model list (before: claude-fake-sonnet; after: + claude-new-model; failing: none). No
+//                             credentials, no provider calls: this is the durable, portable mode.
+//   --cli real                the SDK-bundled Claude Code CLI (before), the `claude` on PATH (after) and a script that exits 1 (failing); the
+//                             Anthropic key comes from the test vault (AUTOBYTEUS_TEST_VAULT) and the one real run of API-11 replies.
 //
-// Run (from anywhere): AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node <this file> --output-dir <fresh folder> [--cases API-11,API-12,API-14] [--keep] [--hold]
-//   needs: a current `pnpm -C autobyteus-server-ts build`, Chromium (--browser-executable), `claude` on PATH, the test vault with provider.anthropic.api-key.
+// API-11  new-run picker: open (list before the update) -> CLI updated -> open again (list usable at once, one read, new model listed, no
+//         reload/restart) -> failing CLI: Refresh models keeps the list and shows the error + Retry -> CLI back: Retry -> a new model launches a run
+// API-12  stopped Team member: runtime menu -> Claude Agent SDK -> CLI updated -> open again (new model listed) -> pick it; Save refused when the
+//         CLI no longer offers it (names the model and scope, "Refresh the model list and choose again.", nothing saved), refused when the CLI
+//         fails ("could not be read", nothing saved), Save succeeds when it works (stored selection names the model), then saved back onto the
+//         first runtime (A -> B -> A)
+// API-14  stopped Team run on the Claude Agent SDK: the Team-level (runtime-locked) model menu re-reads on open and on Refresh models, shows
+//         the busy state, keeps its options and shows the error with Retry when the CLI fails (REQ-011, QR-001)
+// API-14b the same saved-run menu opened for the first time while the CLI is already failing: the card never says "No longer offered", the
+//         menu shows the error with Retry, the run's own model stays editable, Refresh models recovers (AC-012 failure alternate, SR-004)
+//
+// Run: node autobyteus-web/tests/e2e/model-list-journeys-probe.mjs --output-dir <fresh absolute dir> [--cli scripted|real] [--cases API-11,API-12,API-14,API-14b]
+//        [--browser-executable <chromium>] [--keep] [--hold]
+//   needs: a current `pnpm -C autobyteus-server-ts build`, Chromium; `--cli real` also needs `claude` on PATH and the test vault
+//   (`AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault`, provider.anthropic.api-key).
 import { execFileSync, spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
@@ -30,15 +39,14 @@ import path from 'node:path'
 import process from 'node:process'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { attachToBrowserContext, attachToProbeProcess, ownerSocketUrl, withNodeCredential } from '../../../../../autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs'
+import { attachToBrowserContext, attachToProbeProcess, ownerSocketUrl, withNodeCredential } from './fixtures/probe-node-access.mjs'
 // Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
 // own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
 attachToProbeProcess()
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
-const worktreeRoot = path.resolve(scriptDir, '../../../../..')
-const webDir = path.join(worktreeRoot, 'autobyteus-web')
-const require = createRequire(path.join(webDir, 'package.json'))
+const webDir = path.resolve(scriptDir, '../..')
+const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
 const serverDir = path.join(path.resolve(webDir, '..'), 'autobyteus-server-ts')
 const arg = (name, fallback) => {
@@ -46,6 +54,8 @@ const arg = (name, fallback) => {
   return i !== -1 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : fallback
 }
 const outDir = path.resolve(arg('output-dir', path.join(os.tmpdir(), 'model-list-journeys-out')))
+const cliMode = arg('cli', 'scripted')
+if (!['scripted', 'real'].includes(cliMode)) throw new Error(`--cli is scripted or real, got ${cliMode}`)
 const keep = process.argv.includes('--keep')
 const chrome = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH
   ?? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(existsSync))
@@ -305,8 +315,10 @@ const saveAndWait = async (page, view) => {
 }
 
 // ======================================================================================================================
-// Ticket cases (autobyteus-9): the Claude CLI changes while the app runs.
+// The Claude CLI changes while the app runs.
 const CLAUDE = 'claude_agent_sdk'
+const FAKE_RUNTIME_CLI = path.join(serverDir, 'tests/fixtures/agent-runtimes-fake-cli.mjs')
+const SCRIPTED_MODELS = { bundled: 'claude-fake-sonnet', system: 'claude-fake-sonnet,claude-new-model', failing: 'none' }
 let cli = null
 const resolveBundledClaude = () => {
   const requireFromServer = createRequire(path.join(serverDir, 'package.json'))
@@ -314,21 +326,33 @@ const resolveBundledClaude = () => {
   const platformPackage = createRequire(sdkEntry).resolve(`@anthropic-ai/claude-agent-sdk-${process.platform}-${process.arch}/package.json`)
   return path.join(path.dirname(platformPackage), 'claude')
 }
-/** `link` is what the backend's CLAUDE_CODE_EXECUTABLE_PATH names; switching what it points at is "the CLI was updated". */
+/** `link` is what the backend's CLAUDE_CODE_EXECUTABLE_PATH names; changing what it offers or points at is "the CLI was updated". */
 const setupCli = async () => {
   const dir = path.join(ownedRoot, 'cli'); await fs.mkdir(dir, { recursive: true })
+  if (cliMode === 'scripted') {
+    const stateDir = path.join(dir, 'state'); await fs.mkdir(stateDir, { recursive: true })
+    await fs.writeFile(path.join(stateDir, 'claude-account'), 'signedIn')
+    cli = { mode: 'scripted', dir, stateDir, link: path.join(dir, 'claude') }
+    if (!existsSync(cli.link)) await fs.symlink(FAKE_RUNTIME_CLI, cli.link)
+    await fs.writeFile(path.join(stateDir, 'claude-models'), SCRIPTED_MODELS.bundled)
+    return cli
+  }
   const system = execFileSync('which', ['claude'], { encoding: 'utf8' }).trim()
   const failing = path.join(dir, 'claude-failing')
   await fs.writeFile(failing, '#!/bin/sh\necho "claude: simulated failure" >&2\nexit 1\n', { mode: 0o755 })
-  cli = { dir, link: path.join(dir, 'claude'), bundled: resolveBundledClaude(), system, failing }
+  cli = { mode: 'real', dir, link: path.join(dir, 'claude'), bundled: resolveBundledClaude(), system, failing }
   assert(existsSync(cli.bundled) && existsSync(cli.system), 'both a bundled and a system Claude CLI are needed', cli)
   if (!existsSync(cli.link)) await setCli('bundled')
   return cli
 }
+const cliVersion = (which) => {
+  if (which === 'failing') return 'failing'
+  return execFileSync(cli.link, ['--version'], { encoding: 'utf8', env: cli.mode === 'scripted' ? { ...process.env, FAKE_RUNTIME_STATE_DIR: cli.stateDir } : process.env }).trim()
+}
 const setCli = async (which) => {
-  const tmp = `${cli.link}.tmp`
-  await fs.rm(tmp, { force: true }); await fs.symlink(cli[which], tmp); await fs.rename(tmp, cli.link)
-  const version = which === 'failing' ? 'failing' : execFileSync(cli.link, ['--version'], { encoding: 'utf8' }).trim()
+  if (cli.mode === 'scripted') await fs.writeFile(path.join(cli.stateDir, 'claude-models'), SCRIPTED_MODELS[which])
+  else { const tmp = `${cli.link}.tmp`; await fs.rm(tmp, { force: true }); await fs.symlink(cli[which], tmp); await fs.rename(tmp, cli.link) }
+  const version = cliVersion(which)
   step(`Claude CLI is now '${which}'`, { version })
   return version
 }
@@ -352,7 +376,7 @@ const stableServerModels = async () => {
   return previous
 }
 /** Claude Code keeps its own option cache in its config folder (PRB-D4, outside AutoByteus); read through both CLIs a few times so what each offers is settled. */
-const warmCli = async () => { for (const which of ['bundled', 'system', 'bundled', 'system', 'bundled']) { await setCli(which); await serverModels() } }
+const warmCli = async () => { if (cli.mode !== 'real') return; for (const which of ['bundled', 'system', 'bundled', 'system', 'bundled']) { await setCli(which); await serverModels() } }
 /** The one visible element of that kind (the open picker's refresh control lives beside its list, inside the open menu). */
 const visible = (page, test) => page.locator(`${sel(test)}:visible`).first()
 const MODEL_ROW = 'button[role="menuitemradio"][data-test^="chat-model-option-"]'
@@ -445,7 +469,7 @@ defineCase('API-11', 'New-run picker: the Claude CLI is updated while the app ru
   const cfg = (await gql('query($runId:String!){getAgentRunResumeConfig(runId:$runId){isActive metadataConfig{llmModelIdentifier llmConfig runtimeKind}}}', { runId })).getAgentRunResumeConfig
   r.launched = cfg.metadataConfig
   assert(cfg.metadataConfig.runtimeKind === CLAUDE && cfg.metadataConfig.llmModelIdentifier === picked, 'the run did not launch on the new model', cfg)
-  r.replied = await page.waitForFunction(() => /\bOK\b/.test(document.querySelector('[data-testid="agent-workspace-surface"]')?.innerText ?? ''), null, { timeout: 150000 }).then(() => true).catch(() => false)
+  r.replied = cli.mode !== 'real' ? null : await page.waitForFunction(() => /\bOK\b/.test(document.querySelector('[data-testid="agent-workspace-surface"]')?.innerText ?? ''), null, { timeout: 150000 }).then(() => true).catch(() => false)
   await shot(page, 'API-11-4-launched-on-new-model')
   await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: runId }).catch(() => {})
   reads.stop()
@@ -593,6 +617,60 @@ defineCase('API-14', 'Stopped Team run on the Claude Agent SDK runtime: the Team
   return r
 })
 
+defineCase('API-14b', 'Saved-run (locked) menu opened for the first time while the CLI is already failing: the card never says "No longer offered", the menu shows the error with Retry, the run\'s own model stays editable, Refresh models recovers (AC-012 failure alternate, SR-004)', async (page, ctx) => {
+  const r = {}
+  await warmCli()
+  await setCli('bundled')
+  const l0 = await stableServerModels(); assert(l0 && l0.length, 'the CLI before the update lists no model')
+  const first = l0.find((id) => /haiku/.test(id)) ?? l0[0]; r.firstModel = first
+  const launch = { runtimeKind: CLAUDE, llmModelIdentifier: first, llmConfig: null, autoExecuteTools: true, workspaceRootPath: ctx.workspace }
+  const created = (await gql('mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}', { input: {
+    teamDefinitionId: definitions.team.id, teamConfigs: [{ teamAddress: '/', ...launch }],
+    memberConfigs: ['lead', 'worker'].map((name) => ({ memberAddress: `/${name}`, agentDefinitionId: definitions.agent.id, ...launch })) } })).createAgentTeamRun
+  assert(created.success, created.message)
+  const teamRunId = created.teamRunId; r.teamRunId = teamRunId
+  await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success}}', { id: teamRunId })
+  // The CLI is already failing when the run's settings are opened: this is the first read of the edit, not a refresh.
+  await setCli('failing')
+  await openTeamRun(page, teamRunId)
+  const view = await openSettings(page)
+  const card = view.locator(sel('existing-run-root-card'))
+  const trigger = card.locator(sel('chat-model-trigger')).first()
+  await trigger.waitFor({ timeout: 60000 })
+  await delay(4000)
+  const text = async (locator) => (await locator.innerText().catch(() => '')).replace(/\s+/g, ' ')
+  r.cardText = await text(card)
+  r.notes = (await view.locator(sel('existing-run-note')).allInnerTexts().catch(() => [])).map((t) => t.replace(/\s+/g, ' '))
+  r.viewText = await text(view)
+  r.triggerEnabled = await trigger.isEnabled()
+  await shot(page, 'API-14b-1-first-open-cli-failing')
+  const menu = page.locator(sel('chat-model-menu')).first()
+  await trigger.click(); await menu.waitFor(); await delay(1500)
+  r.menuText = await text(menu)
+  r.menuRows = await page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')).sort())
+  await shot(page, 'API-14b-2-menu-cli-failing')
+  const findings = []
+  if (/No longer offered/i.test(`${r.cardText} ${r.notes.join(' ')} ${r.viewText}`)) findings.push('the card says "No longer offered" although the list could not be read')
+  r.menuError = await menu.locator(sel('model-list-refresh-error')).innerText().catch(() => null)
+  r.menuButton = await menu.locator(sel('model-list-refresh-button')).innerText().catch(() => null)
+  if (!r.menuError || !/Retry/.test(r.menuButton ?? '')) findings.push(`a first read with the CLI failing does not show the error with Retry (error ${JSON.stringify(r.menuError)}, button ${JSON.stringify(r.menuButton)})`)
+  if (!r.triggerEnabled) findings.push('the run\'s own model control is disabled')
+  // The CLI works again: Refresh models in the open menu lists the models and the card is clean.
+  await setCli('system')
+  await menu.locator(sel('model-list-refresh-button')).click()
+  r.recovered = await waitFor('the menu lists models again', async () => { const rows = await page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).count(); return rows > 0 }, 90000, 500).catch(() => false)
+  r.rowsAfterRecovery = await page.locator(`${sel('chat-model-menu')} ${MODEL_ROW}`).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')).sort())
+  await shot(page, 'API-14b-3-recovered')
+  await page.keyboard.press('Escape'); await delay(400)
+  r.cardAfterRecovery = await text(card)
+  if (!r.recovered) findings.push('Refresh models did not recover the options once the CLI worked')
+  if (/No longer offered/i.test(r.cardAfterRecovery)) findings.push('the card says "No longer offered" after the options recovered')
+  r.findings = findings
+  if (findings.length) { const error = new Error(`SR-004 first open with a failing CLI: ${findings.join('; ')}`); error.details = r; throw error }
+  return r
+})
+
+
 let exitCode = 0
 try {
   assert(chrome && existsSync(chrome), 'Google Chrome not found (use --browser-executable)')
@@ -622,8 +700,9 @@ try {
     await fs.mkdir(path.join(ownedRoot, 'claude-config'), { recursive: true }); await setupCli()
     const env = { ...baseEnv(), HOME: path.join(ownedRoot, 'home'), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true',
       AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', LMSTUDIO_HOSTS: fake.origin, ANTIGRAVITY_CLI_COMMAND: fakeAgy, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_EXTRA_MODELS: 'rsw-alt-model',
-      CLAUDE_CODE_EXECUTABLE_PATH: cli.link, CLAUDE_CONFIG_DIR: path.join(ownedRoot, 'claude-config'), CLAUDE_AGENT_SDK_AUTH_MODE: 'api-key',
-      ...(process.env.AUTOBYTEUS_TEST_VAULT ? { AUTOBYTEUS_TEST_VAULT: process.env.AUTOBYTEUS_TEST_VAULT } : {}) }
+      CLAUDE_CODE_EXECUTABLE_PATH: cli.link, CLAUDE_CONFIG_DIR: path.join(ownedRoot, 'claude-config'),
+      ...(cli.mode === 'scripted' ? { FAKE_RUNTIME_STATE_DIR: cli.stateDir }
+        : { CLAUDE_AGENT_SDK_AUTH_MODE: 'api-key', ...(process.env.AUTOBYTEUS_TEST_VAULT ? { AUTOBYTEUS_TEST_VAULT: process.env.AUTOBYTEUS_TEST_VAULT } : {}) }) }
     backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(env))
     await waitFor('backend health', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 1000)
     frontend = spawnOwned('frontend', 'pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...baseEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl })
@@ -637,7 +716,7 @@ try {
   page.on('pageerror', (e) => evidence.browserErrors.push(e.message))
   for (const route of ['/chat', '/workspace', '/agents']) { await page.goto(`${frontUrl}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {}); await delay(4000) }
   const context0 = attached ? { nativeModel: attached.nativeModel, workspace: attached.workspace } : await setup()
-  Object.assign(evidence, { definitions, cli: { bundled: execFileSync(cli.bundled, ['--version'], { encoding: 'utf8' }).trim(), system: execFileSync(cli.system, ['--version'], { encoding: 'utf8' }).trim() } })
+  Object.assign(evidence, { definitions, cli: cli.mode === 'real' ? { mode: 'real', bundled: execFileSync(cli.bundled, ['--version'], { encoding: 'utf8' }).trim(), system: execFileSync(cli.system, ['--version'], { encoding: 'utf8' }).trim() } : { mode: 'scripted', version: cliVersion('bundled') } })
   if (hold) {
     await fs.writeFile(path.join(outDir, 'hold.json'), JSON.stringify({ backendUrl, frontUrl, ownedRoot, definitions, ...context0 }, null, 2))
     console.log(`HOLD ${frontUrl} ${backendUrl} (stop with SIGTERM)`)

@@ -109,6 +109,11 @@
 //                  desktop window): `mobile-file-open-cases.mjs` (MSP-28…30 on its own nodes epsilon and zeta; MSP-31 on
 //                  alpha's desktop window, last).
 //
+//   MSP-32 autobyteus-9  The new-run model sheet on the production phone bundle (REQ-010, REQ-011, QR-001, QR-002; AC-010, AC-011): opening
+//                  the sheet re-reads the runtime's model list once, the list is shown, and "Refresh models" (a touch-sized control)
+//                  re-reads it again without emptying the list and without an error. A change of the list itself (a CLI update)
+//                  is the desktop probe `model-list-journeys-probe.mjs`; this scripted Antigravity list does not change.
+//
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
 // (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 19 minutes (MSP-21…23 about 5, MSP-24…27 about 4, MSP-28…31 about 4).
@@ -1224,6 +1229,56 @@ const runCases = async () => {
     assert(afterFirst.state === 'open' && afterFirst.conversation.includes(marker) && statesDuringFirst.every(state => state === 'open'), 'the first message keeps the screen', { statesDuringFirst });
     assert(newRunId && !newRunId.startsWith('temp') && stored, 'the new run tops the list with its permanent id', { top, stored });
     return { freshAgent, orgMarked, orgListQuery, orgAgent, agentOptions, factCheckerReadiness, launchDisabledWhenMissing, sheets, statesDuringFirst, newRunId, top };
+  });
+
+  await runCase('MSP-32', async () => {
+    const r = {};
+    const fresh = await openPhone({ storageState: paired, label: 'phone-model-sheet' });
+    const p = fresh.page;
+    const reads = [];
+    p.on('request', (request) => {
+      const body = request.postData() ?? '';
+      if (request.method() === 'POST' && request.url().endsWith('/graphql') && body.includes('providerModelCatalogSnapshots')) reads.push({ runtime: /"runtimeKind":"([^"]+)"/.exec(body)?.[1] ?? null });
+    });
+    await p.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded' });
+    await p.locator(sel('mobile-run-tree')).waitFor({ timeout: 60_000 });
+    await p.locator(sel('mobile-new-run-button')).click();
+    await p.locator(sel('mobile-new-run')).waitFor();
+    await p.locator(sel('mobile-run-target-select-toggle')).click();
+    await p.locator(sel('mobile-run-target-select-option')).filter({ hasText: 'Project Task Manager' }).first().click();
+    await sleep(1500);
+    const toggle = p.locator(sel('mobile-run-model-select-toggle'));
+    await toggle.waitFor({ timeout: 20_000 });
+    r.modelRowBefore = (await toggle.innerText()).replace(/\s+/g, ' ').trim();
+    await sleep(1500);
+    const before = reads.length;
+    await toggle.click();
+    const sheet = p.locator(sel('mobile-run-model-select-sheet'));
+    await sheet.waitFor({ timeout: 10_000 });
+    const rowsOf = async () => (await sheet.locator(sel('mobile-run-model-select-option')).allInnerTexts()).map(text => text.replace(/\s+/g, ' ').trim());
+    await waitFor('the sheet re-reads the runtime list when it opens', async () => reads.length > before, 15_000);
+    await sleep(1500);
+    r.opened = { reads: reads.length - before, runtime: reads.at(-1)?.runtime ?? null, rows: await rowsOf() };
+    assert(r.opened.rows.length > 0, 'the model sheet lists no model', r.opened);
+    assert(r.opened.reads === 1, 'QR-002: more than one read for one opening', r.opened);
+    const button = p.locator('[data-test="model-list-refresh-button"]:visible').first();
+    await button.waitFor({ timeout: 10_000 });
+    r.control = { text: (await button.innerText()).trim(), box: await button.boundingBox() };
+    assert(r.control.text === 'Refresh models', 'the control does not read Refresh models', r.control);
+    assert(r.control.box && r.control.box.height >= 44 && r.control.box.width >= 44, 'the control is not touch-sized', r.control);
+    await shot(p, 'MSP-32-model-sheet-open');
+    const beforeRefresh = reads.length;
+    await button.click();
+    await waitFor('Refresh models re-reads the list', async () => reads.length > beforeRefresh, 15_000);
+    await sleep(1500);
+    r.afterRefresh = { reads: reads.length - beforeRefresh, runtime: reads.at(-1)?.runtime ?? null, rows: await rowsOf(), error: await p.locator('[data-test="model-list-refresh-error"]:visible').count(), button: (await button.innerText()).trim() };
+    assert(r.afterRefresh.reads === 1, 'Refresh models did not read exactly once', r.afterRefresh);
+    assert(JSON.stringify(r.afterRefresh.rows) === JSON.stringify(r.opened.rows), 'the list changed or emptied on a refresh that read the same models', r);
+    assert(r.afterRefresh.error === 0, 'a refresh error shows although the read succeeded', r.afterRefresh);
+    assert(r.afterRefresh.button === 'Refresh models', 'the control did not return to Refresh models', r.afterRefresh);
+    await shot(p, 'MSP-32-model-sheet-refreshed');
+    await fresh.context.close();
+    return r;
   });
 
   await runCase('MSP-08', async () => {

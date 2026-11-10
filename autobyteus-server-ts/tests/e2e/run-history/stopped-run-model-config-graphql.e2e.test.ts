@@ -872,4 +872,72 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     expect(findPersistedScopeConfig(tree, "/helper")).toBeNull();
     expect(JSON.stringify(tree)).not.toMatch(/thinking_display|thinking_enabled|top_k/);
   }, 180_000);
+
+  // MSR-003 (autobyteus-9, SR-004 / CR-004, REQ-011, REQ-013, QR-001): a saved run's options answer says whether the runtime's
+  // model list was read. A list that cannot be read is an explicit answer (`modelListReadable: false`, no current model, no
+  // replacements, the owner's text), never "the model is not offered" and never an empty readable list; it is not sticky.
+  it("MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read", async () => {
+    const target = makeTarget("saved-run-options-readable");
+    const claude = makeFakeClaude(target);
+    const server = await startServer(target, claude.environment);
+    const workspaceRootPath = path.join(target.runtimeRoot, "workspaces", "options");
+    fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+    const launch = { runtimeKind: CLAUDE_SDK, llmModelIdentifier: "claude-fake-sonnet", llmConfig: null, autoExecuteTools: false, workspaceRootPath };
+    claude.offer("claude-fake-sonnet,claude-new-model");
+
+    const agentDefinitionId = await createAgentDefinition(server.serverUrl, `msr-options-agent-${Date.now()}`);
+    const createdAgent = await executeGraphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(server.serverUrl, `
+      mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }
+    `, { input: { agentDefinitionId, ...launch } });
+    if (!createdAgent.createAgentRun.success || !createdAgent.createAgentRun.runId) throw new Error(createdAgent.createAgentRun.message);
+    const runId = createdAgent.createAgentRun.runId;
+    await executeGraphql(server.serverUrl, `mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }`, { id: runId });
+
+    const leadId = await createAgentDefinition(server.serverUrl, `msr-options-lead-${Date.now()}`);
+    const helperId = await createAgentDefinition(server.serverUrl, `msr-options-helper-${Date.now()}`);
+    const teamDefinitionId = await createTeamDefinition(server.serverUrl, {
+      name: `msr-options-team-${Date.now()}`, coordinatorMemberName: "lead",
+      nodes: [{ memberName: "lead", ref: leadId, refScope: "SHARED" }, { memberName: "helper", ref: helperId, refScope: "SHARED" }],
+    });
+    const createdTeam = await executeGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(server.serverUrl, `
+      mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }
+    `, { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...launch }], memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: leadId, ...launch },
+      { memberAddress: "/helper", agentDefinitionId: helperId, ...launch },
+    ] } });
+    if (!createdTeam.createAgentTeamRun.success || !createdTeam.createAgentTeamRun.teamRunId) throw new Error(createdTeam.createAgentTeamRun.message);
+    const teamRunId = createdTeam.createAgentTeamRun.teamRunId;
+    await executeGraphql(server.serverUrl, `mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }`, { id: teamRunId });
+
+    const fields = "currentModelIdentifier modelListReadable unavailableReason currentModel { llmModelIdentifier } replacements { llmModelIdentifier }";
+    const agentOptions = async () => (await executeGraphql<{ agentRunModelOptions: JsonRecord }>(server.serverUrl,
+      `query($id: String!) { agentRunModelOptions(agentRunId: $id) { ${fields} } }`, { id: runId })).agentRunModelOptions;
+    const teamOptions = async () => (await executeGraphql<{ teamRunModelOptions: JsonRecord[] }>(server.serverUrl,
+      `query($id: String!) { teamRunModelOptions(teamRunId: $id) { scopeAddress ${fields} } }`, { id: teamRunId })).teamRunModelOptions;
+    const unreadable = {
+      currentModelIdentifier: "claude-fake-sonnet", modelListReadable: false, currentModel: null, replacements: [],
+      unavailableReason: "The model list of Claude Agent SDK could not be read. Try again.",
+    };
+
+    // Readable: the current model and its replacements.
+    const readableAgent = await agentOptions();
+    expect(readableAgent).toMatchObject({ currentModelIdentifier: "claude-fake-sonnet", modelListReadable: true, unavailableReason: null,
+      currentModel: { llmModelIdentifier: "claude-fake-sonnet" } });
+    expect((readableAgent.replacements as JsonRecord[]).map((row) => row.llmModelIdentifier)).toEqual(["claude-new-model"]);
+    const readableTeam = await teamOptions();
+    expect(readableTeam.length).toBeGreaterThanOrEqual(3);
+    for (const row of readableTeam) expect(row, `scope ${String(row.scopeAddress)}`).toMatchObject({ modelListReadable: true, unavailableReason: null });
+
+    // The CLI offers nothing: every scope says the list could not be read, with no model and no replacement.
+    claude.offer("none");
+    expect(await agentOptions()).toEqual(unreadable);
+    const unreadableTeam = await teamOptions();
+    expect(unreadableTeam.map((row) => row.scopeAddress)).toEqual(readableTeam.map((row) => row.scopeAddress));
+    for (const row of unreadableTeam) expect(row, `scope ${String(row.scopeAddress)}`).toMatchObject(unreadable);
+
+    // The CLI works again: the next read is readable again (the unreadable answer is not sticky).
+    claude.offer("claude-fake-sonnet,claude-new-model");
+    expect(await agentOptions()).toMatchObject({ modelListReadable: true, currentModel: { llmModelIdentifier: "claude-fake-sonnet" } });
+    expect((await teamOptions()).every((row) => row.modelListReadable === true)).toBe(true);
+  }, 180_000);
 });
