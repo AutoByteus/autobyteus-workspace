@@ -11,7 +11,7 @@
 | SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; architecture review ARCH-REV-002 (round 2): Pass, no new findings; the reviewer handed off to the Implementation Engineer |
 | SR-006 | Design | Implementation Engineer, Design Impact from early check U-008 (message of 2026-11-10) | N/A (no report ID; the engineer's message) | Requirements Approved; design Ready (SR-005), review Pass (ARCH-REV-002) | Requirements Approved; design Ready (SR-006) | BEH-002 (the rule that realizes REQ-001) | D-1's candidate rule corrected; architecture review ARCH-REV-003 (round 3): Pass, no findings |
 | SR-007 | Design (and wording of REQ-007, AC-009) | Implementation Engineer, second Design Impact (message of 2026-11-10) | N/A | Requirements Approved; design Ready (SR-006), review Pass (ARCH-REV-003) | Requirements Approved; design Ready (SR-007) | REQ-007, AC-009; BEH-002 | D-3 corrected; architecture review ARCH-REV-004 (round 4): Fail with one finding (AR-002) |
-| SR-008 | Design (and wording of REQ-007, AC-009) | Architecture review ARCH-REV-004, round 4, `design-review-report.md` | AR-002 | Requirements Approved; design Ready (SR-007), review Fail | Requirements Approved; design Ready (SR-008) | REQ-007, AC-009; BEH-002 | D-3 corrected; back to architecture review |
+| SR-008 | Design (and wording of REQ-007, AC-009) | Architecture review ARCH-REV-004, round 4, `design-review-report.md` | AR-002 | Requirements Approved; design Ready (SR-007), review Fail | Requirements Approved; design Ready (SR-008) | REQ-007, AC-009; BEH-002 | D-3 corrected; architecture review ARCH-REV-005 (round 5): Pass, no open findings |
 
 ## Revision Entries
 
@@ -200,3 +200,4 @@
 - Downstream and architecture-review impact: review round 5 on D-3
 - Remaining gaps, assumptions or blocked decisions: U-005 (continues); follow-ups FU-001 … FU-003
 - Next action: architecture review, round 5
+- Review result (recorded 2026-11-10, informational): `Pass`, ARCH-REV-005, round 5, on SR-008 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). AR-002 resolved by the strict route (b). The reviewer verified in the code that the second released migration reads only configured placements (`own-file-completion.ts:76-93`) and that v1 own files require `address` and are written at the standard place. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
