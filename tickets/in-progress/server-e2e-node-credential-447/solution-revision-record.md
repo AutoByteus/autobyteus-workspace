@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Requirements + Design) | Initial baseline from Task autobyteus-447 (FU-004 of autobyteus-436) | FU-004 (436) | N/A | Requirements Approved; Design Ready | BEH-001…BEH-005; REQ-001…REQ-008; AC-001…AC-008 | Architecture Design Complete, Medium / Low, direct implementation route |
 | SR-002 | Mixed (Requirements + Design) | Delivery DR-001 Blocked (Requirement Gap named a prerequisite: E-002); user direction "for other errors fix them" | DR-001 E-002; API/E2E FU-002…FU-004 | Requirements Approved (SR-001); Design Ready, implemented | Requirements Approved (SR-002); Design Ready (D10–D13) | BEH-006; UC-004; REQ-004 (amended), REQ-009, REQ-010; AC-004 (amended), AC-009, AC-010 | Architecture Design Complete, Medium / Low, direct implementation route |
+| SR-003 | Evidence / scope decision | Implementation IR-003 question: two gated failures outside D10–D13 | IMP-18 EXC-E2E-004, `task-copy-idle-lifetime` | Requirements Approved (SR-002) | Requirements Approved (SR-003, DEC-005 added) | DEC-005; FU-005, FU-006 | Not folded in: follow-ups; validation proceeds |
 
 ## Revision Entries
 
@@ -53,3 +54,12 @@
 - Downstream and architecture-review impact: no architecture review by rule.
 - Remaining gaps, assumptions or blocked decisions: D13's cause not yet known.
 - Next action: implementation of D10–D13, then the configured route; delivery resumes its plan (integrate, rerun by impact, finalize).
+
+### SR-003: Two load-only gated failures recorded as follow-ups (DEC-005)
+
+- Phase and classification: Evidence-only clarification with a scope decision; no change to intended behavior or to REQ/AC.
+- Trigger: implementation IR-003 (`/software_engineering_team/implementation_engineer`). SR-002 is done: full `pnpm test:e2e` has 0 failed files (IMP-17), D10–D12 pass, D13 did not reproduce in 3 load runs. The deterministic gated set (IMP-18) had 2 failed files outside D10–D13, both passing alone (IMP-19).
+- Decision: DEC-005. EXC-E2E-004 (probable product race in Task delegation) and `task-copy-idle-lifetime` (cause unknown) are follow-ups FU-005 and FU-006, not part of this ticket. FU-004 is closed as handled by D13 (assertion improved, not reproduced).
+- Approval: within the user's latest instruction ("finish this ticket", via the delivery engineer); the user is informed in the Solution Designer's conversation and may fold them in instead.
+- Design/classification impact: none; Medium/Low unchanged; design unchanged.
+- Next action: implementation continues its normal route with the IR-003 package; FU-001, FU-005 and FU-006 are sent to the Project Task Manager when the ticket leaves the team.

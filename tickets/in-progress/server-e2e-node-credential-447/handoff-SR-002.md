@@ -57,3 +57,4 @@ The implementation engineer implements D10–D13, then the configured route cont
 ## Route record
 
 - 2026-11-10: handoff rules applied; the Medium/Low rule matched. Sent to `/software_engineering_team/implementation_engineer`.
+- 2026-11-10: the delivery engineer reported that the user had told it directly to fold the E-002 correction into this ticket and finish, and that it would make the edit itself. The Solution Designer briefly withdrew SR-002 from implementation to avoid two agents changing the branch. Delivery then saw `5abf8591db` (D10–D13) and withdrew its own edit; the Solution Designer reinstated SR-002 unchanged. The user's decision (E-002 fixed in this ticket) is part of SR-002. Delivery resumes on the validated package through the normal route.

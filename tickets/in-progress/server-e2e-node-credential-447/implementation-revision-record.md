@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `handoff-SR-001.md`, initial | N/A | `Initial Baseline` | SR-001 | D1…D9 implemented; the 15 files and the full server E2E suite green; Medium/Low confirmed |
-| IR-003 | Solution Designer, `handoff-SR-002.md` (SR-002, after delivery DR-001 was blocked) | SR-002 D10–D13; FU-002…FU-004 | `Design Impact` (solution revision) | SR-002, DR-001 | D10–D13 done; full default E2E 0 failed; gated set 2 failures outside D10–D13 returned to the Solution Designer |
+| IR-003 | Solution Designer, `handoff-SR-002.md` (SR-002, after delivery DR-001 was blocked) | SR-002 D10–D13; FU-002…FU-004 | `Design Impact` (solution revision) | SR-002, DR-001 | D10–D13 done; full default E2E 0 failed; the 2 gated failures outside D10–D13 are follow-ups FU-005/FU-006 (SR-003, DEC-005) |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-001 (failure origin of API/E2E API-11, API-REV-001) | CR-001, CR-002 | `Local Fix` | SR-001, API-REV-001, CRR-001 | Gated Codex native policy fixture child attaches its own launch credential; TESTING.md sentence; Medium/Low unchanged |
 
 ## Revision Entries
@@ -69,5 +69,5 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Implementation delta: see `implementation-handoff.md` "SR-002 Implementation (IR-003)".
 - Changed files or areas: `tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts`, `tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts`, `tests/e2e/helpers/agy-run-capsule.ts` (new), `tests/e2e/helpers/collaboration-root-harness.ts`, `tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts`, `tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts`, `tests/e2e/projects/delegated-copy-model-change.e2e.test.ts` (commit `5abf8591db`).
 - Local validation and result: IMP-13…IMP-21.
-- Next recipient or routing: Solution Designer (the two gated failures outside the design need a decision before validation continues).
+- Next recipient or routing: Solution Designer asked about the two gated failures; decision SR-003 / DEC-005: follow-ups FU-005, FU-006 (not caused by this ticket), FU-004 closed by D13. Then the normal direct-route handoff to API/E2E.
 - Remaining limitations or risks: DCM-009's cause is unknown; it did not reproduce in 3 load runs, and the improved assertion will name it next time. EXC-E2E-004 points to a product race. The idle-lifetime cause is not established.
