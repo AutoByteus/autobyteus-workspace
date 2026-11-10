@@ -23,6 +23,7 @@
  *     tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts --no-watch
  * Live: add `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_ANTHROPIC_STORED_CONFIG_LIVE=1` after `env -i`.
  */
+import { testLaunchCredential } from "../../setup/test-launch-credential.js";
 import "reflect-metadata";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
@@ -80,7 +81,7 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
 
   const gql = async <T>(query: string, variables: Json = {}): Promise<T> => {
     const response = await originalFetch(new URL("/graphql", mainUrl), {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
+      method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${testLaunchCredential()}` }, body: JSON.stringify({ query, variables }),
     });
     const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
     if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((error) => error.message).join("; ")}`);

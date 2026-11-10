@@ -15,6 +15,7 @@
  * request prefix changed is rejected with a 400 instead of being dropped silently. The recorded body stays exactly as
  * production built it. `writeBodies` also writes every recorded request body to the evidence directory.
  */
+import { testLaunchCredential } from "../../setup/test-launch-credential.js";
 import "reflect-metadata";
 import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
@@ -359,7 +360,8 @@ export class NativeRuntimeLiveHarness {
 
   async gql<T>(query: string, variables: Json = {}): Promise<T> {
     const response = await this.originalFetch(new URL("/graphql", this.mainUrl), {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
+      method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${testLaunchCredential()}` },
+      body: JSON.stringify({ query, variables }),
     });
     const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
     if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((error) => error.message).join("; ")}`);

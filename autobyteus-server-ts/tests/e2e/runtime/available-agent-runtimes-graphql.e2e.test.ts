@@ -36,6 +36,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { omitEmptyToolResultFields } from "autobyteus-ts/tools/tool-result-json.js";
 import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
+import { testLaunchCredential } from "../../setup/test-launch-credential.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { initializeRuntimeLoggerBootstrap } from "../../../src/logging/runtime-logger-bootstrap.js";
 import type { LoggingConfig } from "../../../src/config/logging-config.js";
@@ -137,7 +138,8 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
 
   const post = async (query: string, variables?: Record<string, unknown>) => {
     const response = await stub.realFetch(new URL("/graphql", baseUrl), {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
+      method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${testLaunchCredential()}` },
+      body: JSON.stringify({ query, variables }),
     });
     const text = await response.text();
     responses.push(text);
@@ -514,7 +516,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     const walk = (dir: string) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) walk(full); else files.push(full);
+        if (entry.isDirectory()) walk(full); else if (entry.isFile()) files.push(full); // not the node-access control socket
       }
     };
     walk(fake.dataDir);
