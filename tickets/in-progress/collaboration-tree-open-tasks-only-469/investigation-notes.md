@@ -51,7 +51,7 @@
 | BEH-002 | Contract | A Task is closed | Its runs are stopped and hidden in the tree; their entries stay | The tree, its index and its message view keep every run | Module docs, code (`Read`) | High |
 | BEH-003 | Operational | A top run is loaded (first use after a start, restore, open) | The tree is read; each listed run's own file and message log are read; the index and the message view are built from all of them | Load cost grows with every delegation ever made | Store code (`Read`); `Measured` below | High |
 | BEH-004 | Contract | A closed Task is reopened and its assigner messages the run; a follow-up Task by run ID | The run is found in the top run's index and continues | — | Lifecycle code (`Read`) | High |
-| BEH-005 | User | The top run's Team tab (messages) | Shows the run's messages with every listed run, closed ones included | — | Store code (`Read`); not opened in the app | Medium |
+| BEH-005 | User | The top run's Team tab (messages) | The server composes the top run's own log with the log of every listed run and keeps a message when both its agents are in the tree (`composeMessageLogs`, `agentRunIdsOfTree`). The web client then shows the rows of the focused agent (`CollaborationMessagesPanel.vue`, `rows` = "the focused member's perspective rows"). A stored message holds two agent run IDs and no names; the names come from the tree | — | Store and component code (`Read`); `evidence/team-tab-messages-2026-11-10.txt` (`Measured`); not opened in the app | High for the server, Medium for the client |
 | BEH-006 | User | The Memory page's Agents list | Lists a delegated run under its definition while its top run lists it | — | `task-agent-link-check.ts` (`Read`) | High |
 | BEH-007 | User | The top run's token total; files attached in earlier conversations | Found through the tree (location service) | — | 461 review AR-003 (`Read`) | Medium (not read line by line) |
 
@@ -96,7 +96,7 @@
 | `python3 -I validate_task_record_as_lasting_record.py ~/.autobyteus/server-data` (461 ticket, `evidence/data-model-validation/`) | The rule on every stored delegated run | 196 delegated runs: 170 with only closed Task records, 11 with an open one, 15 with none (started 2026-08 … 2026-10); the delegator is recoverable for all 170; "every run below a holder" from Task records alone misses exactly the 15 and 1 run assigned by an agent of one of them | `Measured` | The rules are feasible; runs without a Task keep their entry; history readers need Task records plus kept entries | `…/delegated-copies-outlive-delegator-461/evidence/data-model-validation/task-record-validation-2026-11-10.txt` |
 | Inline read-only script over the Project Task Manager's run (2026-11-10) | The tree's size | `collaboration_tree.json` 39,840 bytes, 145 entries from 2026-10-08 to 2026-11-10; 134 of closed Tasks, 11 of open ones, 0 of no Task; own files of listed runs: 143 files, 1,570,039 bytes | `Measured` | BEH-003 | Recorded here (counts only) |
 | Inline read-only script (2026-11-10) | What a load of that run reads in message logs | The run's own log: 6,303,733 bytes. Logs of listed runs: 133 files, 13,329,598 bytes for closed Tasks; 10 files, 798,002 bytes for open ones | `Measured` | About 15 MB of 22 MB read per load belongs to closed Tasks | Recorded here |
-| The same script | The Team tab's content | The run's own log holds 2,097 messages: 1,956 with a run of a closed Task, 139 with a run of an open Task | `Measured` | DEC-001 | Recorded here |
+| `evidence/measure_team_tab_messages.py` | The Team tab's content for the manager | Own log: 2,097 messages (1,957 with a run of closed Tasks, 139 with a listed run whose Task is open or that has no Task, 1 with a run not in the tree). Only in the listed runs' logs and shown today when such a member is focused: 2,224 (2,141 inside one delegated team, 83 between two runs; 2,098 from logs of runs of closed Tasks) | `Measured` | DEC-001: keeping every message of the top run's own agent needs no log of a dismissed run | Recorded here |
 | Inline read-only script (2026-11-10) | Tasks | 346 Project Tasks with runs (336 fully closed); 15 temporary Tasks (14 closed, 1 open for 19 days) | `Measured` | No timer for temporary Tasks is needed now | Recorded here |
 
 - Temporary diagnostics: `None`.
@@ -157,7 +157,7 @@ Not started.
 ## Requirement Implications
 
 - The entry list is not only a display list: it decides what a top run reads when it loads, which message endpoints a team or org run accepts, what the Memory page lists and where history readers look. The rules of the Task touch each of them.
-- One visible effect needs the user: the top run's Team tab (DEC-001). The Memory page (DEC-002) is settled by the Task: it is listed under "must keep working", so a dismissed run stays listed there.
+- The one visible effect, the top run's Team tab (DEC-001), was decided by the user on 2026-11-10: no visible change. The Memory page (DEC-002) is settled by the Task: it is listed under "must keep working", so a dismissed run stays listed there.
 
 ## Notes For Architecture Design
 

@@ -5,6 +5,7 @@
 | Revision ID | Phase | Trigger / Report / Round | Finding IDs | Prior Status | Current Status | Affected Behavior / Requirement IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-469`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-007, REQ-001 … REQ-008 | Presented to the user; DEC-001 needs him |
+| SR-002 | Requirements | The user's answer to DEC-001 | N/A | Ready for Approval | Approved | BEH-005, REQ-004, AC-011, DEC-001 | Approved; architecture investigation starts |
 
 ## Revision Entries
 
@@ -30,3 +31,26 @@
 - Downstream and architecture-review impact: none yet
 - Remaining gaps, assumptions or blocked decisions: DEC-001; notes R-001, U-001, U-002
 - Next action: the user answers DEC-001; then architecture investigation and design
+
+### SR-002 — No visible change: the Team tab keeps every message
+
+- Phase and classification: Requirements, `Approval`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10: "this ticket is just about the collaboration tree itself ... this file should only contain the current active ones ... I don't think under UI there will be any difference. How user see it? ... I don't think there will be difference. Right?"; `evidence/team-tab-messages-2026-11-10.txt`
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Ready for Approval`; no design
+- Current authoritative requirements/design status: requirements `Approved`; no design
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: BEH-005, REQ-004, AC-011, DEC-001
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the user's answer settles the one open decision. The Solution Designer's recommendation (A, show only messages with listed runs) is withdrawn: the user wants no visible change, and the check of how the tab is built showed that keeping every message needs no log of a dismissed run. The tab shows the focused agent's messages; a top run's own agent has all of them in its own log (2,097 for the manager, 1,957 of them with runs of closed Tasks). The 2,224 further messages that the listed runs' logs add to the composed view (2,141 inside one delegated team, 83 between two runs) are shown only when a member of a listed run is focused, and rows of closed runs are hidden today.
+- Canonical requirements, investigation and design sections changed: `requirements-doc.md` status, BEH-005, REQ-004, AC-011, DEC-001, readiness; `investigation-notes.md` BEH-005 and the measurement
+- Supplemental artifacts added, changed or removed: `evidence/measure_team_tab_messages.py`, `evidence/team-tab-messages-2026-11-10.txt`
+- Product design evidence or product decisions incorporated: DEC-001 = B
+- Intended behavior changed: `Yes` (the Team tab stays unchanged instead of pending)
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: approved at `SR-002`. DEC-001 by the user (the quote above); the rest by the Solution Designer within the Task's direction, the user informed in the same conversation
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: N/A (no design yet)
+- Post-design task-size/risk classification and rationale changes: N/A
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none
+- Downstream and architecture-review impact: none yet
+- Remaining gaps, assumptions or blocked decisions: notes R-001, U-001, U-002; ASM-001; where the Team tab gets the name of a dismissed run's agent (design)
+- Next action: architecture investigation and design
