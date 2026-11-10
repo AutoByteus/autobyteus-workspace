@@ -191,7 +191,7 @@ describe('ChatModelMenu of a saved run asks its editor to re-read the options (R
     await openMenu(menu)
 
     expect(menu.findAll('[role="menuitemradio"]')).toHaveLength(2)
-    expect(menu.get('[data-test="model-list-refresh-error"]').exists()).toBe(true)
+    expect(menu.find('[data-test="model-list-refresh-error"]').exists()).toBe(true)
   })
 
   it('falls back to the runtime catalog when no editor provides the options', async () => {

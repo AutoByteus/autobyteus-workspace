@@ -8,7 +8,7 @@
     <span v-else></span>
     <button
       type="button"
-      data-row
+      :data-row="refreshing ? undefined : ''"
       data-test="model-list-refresh-button"
       class="whitespace-nowrap rounded font-medium text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none disabled:cursor-wait disabled:text-gray-400 disabled:hover:bg-transparent"
       :class="touch ? 'h-11 min-w-[2.75rem] px-3 active:bg-slate-100' : 'px-1.5 py-0.5'"
