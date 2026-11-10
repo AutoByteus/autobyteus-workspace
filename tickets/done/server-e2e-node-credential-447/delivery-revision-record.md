@@ -5,7 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass API-REV-002 (direct route) | N/A | Blocked (prerequisite E-002 on the integrated state) | `docs-sync-report.md`, `release-deployment-report.md`, `evidence/delivery/` |
-| DR-002 | API/E2E Pass API-REV-003 (SR-002 D10–D13, IR-003; user decision to finish in this ticket) | Blocked (DR-001) | Delivery Completed (finalized on `personal`, no release) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/delivery/DEL-05-*` |
+| DR-002 | API/E2E Pass API-REV-003 (SR-002 D10–D13, IR-003; user decision to finish in this ticket) | Blocked (DR-001) | Delivery Completed (finalized on `personal`, no release) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/delivery/DEL-05-*`, `DEL-06-*` |
 
 ## Revision Entries
 
@@ -35,7 +35,7 @@
 - Docs sync report: `docs-sync-report.md` (DR-002 recheck: no further impact)
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
-- Integration and post-integration verification: merged `origin/personal` @ `aae0a53a81` (records only) as `b770635ea3`. DEL-05 ran the whole server E2E suite on it: 123 passed, 124 skipped, 0 failed.
+- Integration and post-integration verification: merged `origin/personal` @ `aae0a53a81` (records only) as `b770635ea3`, where DEL-05 passed (123 passed, 0 failed). After the archive commit `1fe1f17334`, `origin/personal` moved to `637eba61e4` (autobyteus-435, server src changes). It was merged as `1a698e86ee`, rebuilt, and DEL-06 reran the guard (4/4) and the whole suite: 123 passed, 124 skipped, 0 failed.
 - Verification: from the evidence, AC-001…AC-010 proven; no user check needed.
 - Finalization state: the ticket is archived in this commit; the merge into `personal` follows, and its results are recorded in the record commit after it.
 - Terminal return to the Solution Designer: `Sent` after the record commit's push

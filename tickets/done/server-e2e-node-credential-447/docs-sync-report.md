@@ -5,8 +5,8 @@
 - Ticket: `server-e2e-node-credential-447` (Project Task `autobyteus-447`)
 - Trigger: DR-001: API/E2E Pass `API-REV-002`. DR-002: API/E2E Pass `API-REV-003` (SR-002 D10–D13, IR-003). Both on the direct route: `task_size: Medium`, `architectural_risk: Low`, test-code review `Not Required — direct low-risk route`.
 - Bootstrap base reference: `origin/personal` @ `310fc27452`
-- Integrated base reference used for docs sync: `origin/personal` @ `aae0a53a81` (DR-001 merged `f78b60dddd` as `5c29d6fca2`; DR-002 merged `aae0a53a81`, records only, as `b770635ea3`; no conflicts)
-- Post-integration verification reference: `evidence/delivery/DEL-05-full-e2e-integrated-r2-summary.log` (whole server E2E suite, 0 failed). DR-001's DEL-01 failure (E-002) was fixed in this ticket by SR-002.
+- Integrated base reference used for docs sync: `origin/personal` @ `637eba61e4` (DR-001 merged `f78b60dddd` as `5c29d6fca2`; DR-002 merged `aae0a53a81` as `b770635ea3`, then `637eba61e4` (autobyteus-435) as `1a698e86ee`; no conflicts. 435 touched no doc this ticket changed except `docs/design-cases.md`, where both additions are kept)
+- Post-integration verification reference: `evidence/delivery/DEL-06-full-e2e-integrated-r3-summary.log` (guard and whole server E2E suite on the final integrated state, 0 failed; DEL-05 before it, same result). DR-001's DEL-01 failure (E-002) was fixed in this ticket by SR-002.
 
 ## DR-002 Recheck (SR-002 D10–D13)
 

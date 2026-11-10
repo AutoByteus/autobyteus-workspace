@@ -6,7 +6,7 @@
 - Date: `2026-11-10`
 - Classification: `task_size: Medium`, `architectural_risk: Low`, route `Direct Low-Risk`. Architecture review, source code review and test-code review: `Not Applicable`. CRR-001 was a failure-origin review only.
 - Current Status: `Verified from evidence / finalized on personal; no release`
-- Branch: `codex/server-e2e-node-credential-447`. Base `origin/personal` @ `310fc27452` at bootstrap. Integrated by merge twice: `f78b60dddd` (`5c29d6fca2`, DR-001) and `aae0a53a81` (`b770635ea3`, DR-002, records only).
+- Branch: `codex/server-e2e-node-credential-447`. Base `origin/personal` @ `310fc27452` at bootstrap. Integrated by merge twice: `f78b60dddd` (`5c29d6fca2`, DR-001) `aae0a53a81` (`b770635ea3`, DR-002, records only), and `637eba61e4` (`1a698e86ee`, DR-002, autobyteus-435; rebuilt and rerun).
 
 ## Delivery Summary
 
@@ -27,7 +27,7 @@
 
 - Verified from evidence (delivery's judgement; no user check needed). AC-001…AC-010 are directly proven. Final confidence is 95%, with no category below 95% (API-REV-003).
 - Key evidence:
-  - `evidence/delivery/DEL-05-full-e2e-integrated-r2-summary.log`: the whole server E2E suite on the final integrated state, `Test Files 123 passed | 124 skipped (247)`, 0 failed, 0 gateway-token refusals, 0 secrets.
+  - `evidence/delivery/DEL-06-full-e2e-integrated-r3-summary.log` (final integrated state with `637eba61e4`; DEL-05 before it, same result): the whole server E2E suite, `Test Files 123 passed | 124 skipped (247)`, 0 failed, 0 gateway-token refusals, 0 secrets.
   - `evidence/implementation/IMP-17-full-e2e-summary.log` (same code).
   - `evidence/implementation/IMP-18-gated-agy-set-summary.log` (60 gated files: RPE, DCF, DCM, daily-assistant pass; 2 load-only failures, FU-005/FU-006).
   - `evidence/api-e2e/API-07-mcp-gateway-token-e2e.log`.

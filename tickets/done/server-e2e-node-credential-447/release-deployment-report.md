@@ -39,8 +39,9 @@ History: DR-001 was blocked (E-002 failed on the integrated state after autobyte
 | DEL-03 (DR-001) guard on the merged tree | `vitest run tests/architecture/e2e-node-credential-paths.test.ts` | Pass, 4/4 | `evidence/delivery/DEL-03-guard-integrated.log` |
 | DEL-04 (DR-001) 455's gated suites with this ticket's harness | `RUN_AGY_FAILURE_E2E=1`, scripted AGY | Pass, 48/48 | `evidence/delivery/DEL-04-455-gated-suites-summary.log` |
 | **DEL-05 (DR-002) whole server E2E suite on the final integrated state `b770635ea3`** (AC-001, AC-009, REQ-006, REQ-008; named for delivery by the ticket) | `env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" NO_COLOR=1 pnpm test:e2e` | **Pass**: `Test Files  123 passed \| 124 skipped (247)`, `Tests  547 passed \| 606 skipped (1153)`. 0 `MCP_GATEWAY_TOKEN_REQUIRED`; 3 `NODE_CREDENTIAL_REQUIRED`, all from the deliberate refusal case NAS-14 (passes); 0 secrets | `evidence/delivery/DEL-05-full-e2e-integrated-r2-summary.log` |
+| **DEL-06 (DR-002, re-integration before the merge)**: `origin/personal` moved to `637eba61e4` after DEL-05 (autobyteus-435, with server `src/` changes in task execution and collaboration); merged as `1a698e86ee` (no conflicts; this ticket's design case kept), rebuilt, then guard and whole suite | guard `vitest run tests/architecture/e2e-node-credential-paths.test.ts`; `env -i … pnpm test:e2e` | **Pass**: guard `4 passed (4)`; `Test Files  123 passed \| 124 skipped (247)`, `Tests  547 passed \| 606 skipped (1153)`; 0 gateway-token refusals; 3 `NODE_CREDENTIAL_REQUIRED` from NAS-14 only; 0 secrets | `evidence/delivery/DEL-06-full-e2e-integrated-r3-summary.log` |
 
-- Post-integration verification result: `Passed`
+- Post-integration verification result: `Passed` (DEL-06 is the final integrated state, `origin/personal` @ `637eba61e4`)
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 
@@ -51,7 +52,7 @@ History: DR-001 was blocked (E-002 failed on the integrated state after autobyte
 
 | Acceptance-Criteria ID | Cases And Files Checked | What You Saw | Judgement |
 | --- | --- | --- | --- |
-| AC-001 | IMP-07, IMP-17, **DEL-05** | 0 failed files on the branch and on the final integrated state; every FU-004 file `✓` | Proven |
+| AC-001 | IMP-07, IMP-17, DEL-05, **DEL-06** | 0 failed files on the branch and on the final integrated state (`637eba61e4` merged); every FU-004 file `✓` | Proven |
 | AC-002 | API-10 summary header; IMP-05; IMP-18 header; DEL-04 | 0 credential/token refusals across all gated scripted suites | Proven |
 | AC-003 | API-07 log; DEL-05 `tool-management/mcp-*` `✓` | Token admitted; owner credential, none and wrong token refused 401 | Proven |
 | AC-004 | API-12; `git diff --name-only origin/personal...HEAD` has no product path; DEL-05 refusal suites `✓` | No product change | Proven |
@@ -63,7 +64,7 @@ History: DR-001 was blocked (E-002 failed on the integrated state after autobyte
 
 - More evidence requested: `None`
 - User check needed: `No` (test harness only; every criterion is proven by real runs)
-- Re-verification after later re-integration: see Repository Finalization (target checked before push)
+- Re-verification after later re-integration: `origin/personal` advanced to `637eba61e4` after verification. Delivery edits were committed first (`1fe1f17334`), then re-integrated (`1a698e86ee`), rebuilt and rerun (DEL-06, Pass). The user-facing handoff state did not change, and the verification judgement stands on DEL-06.
 
 ## Release Decision
 
