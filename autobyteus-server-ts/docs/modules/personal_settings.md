@@ -2,8 +2,8 @@
 
 ## Scope
 
-Tools, skills, avatar and default runtime/model of a definition from an agent
-package, or of a built-in agent, are **personal settings**: they are kept on
+Tools, skills, avatar, default runtime/model and the semantic memory switch of a
+definition from an agent package, or of a built-in agent, are **personal settings**: they are kept on
 this node in one file, outside the definition's files, so package updates,
 restarts and AutoByteus updates keep them. Teams and Orgs have two of them:
 avatar and default runtime/model. The value in the definition's files is the
@@ -49,7 +49,9 @@ the first `:`, because IDs may contain `:`):
 
 - Fields: `toolsAdded`, `toolsRemoved`, `skillsAdded`, `skillsRemoved` (agents
   only), `avatarUrl`, `defaultLaunchConfig` (exactly `runtimeKind`,
-  `llmModelIdentifier`, `llmConfig`, naming both a runtime and a model).
+  `llmModelIdentifier`, `llmConfig`, naming both a runtime and a model),
+  `semanticMemoryEnabled` (agents only; a boolean, kept only when it differs from
+  the base value, see [Agent Memory](./agent_memory.md#semantic-memory)).
 - Written atomically, with a 2-space indent and a trailing newline; no version
   field.
 - Reading is tolerant: an invalid field or record is skipped with the warning
@@ -63,7 +65,8 @@ the first `:`, because IDs may contain `:`):
 
 - Tools: the base list minus `toolsRemoved`, then `toolsAdded` not already
   present, in that order. Skills alike.
-- Avatar and default runtime/model: the personal value replaces the base value.
+- Avatar, default runtime/model and semantic memory: the personal value replaces
+  the base value.
 - A record for a definition that no longer exists is kept and unused.
 
 Applied on every store-backed read of the three definition services: by ID,
@@ -99,7 +102,8 @@ the files' text, so it is not counted as a change.
 
 - `AgentDefinition`, `AgentTeamDefinition` and `AgentOrgDefinition` carry
   `personalSettings: [PersonalSetting!]!` (`TOOLS`, `SKILLS`, `AVATAR`,
-  `DEFAULT_LAUNCH_CONFIG`) and `personalSettingsBase: PersonalSettingsBase`
+  `DEFAULT_LAUNCH_CONFIG`, `SEMANTIC_MEMORY`; tools, skills and semantic memory
+  for agents only) and `personalSettingsBase: PersonalSettingsBase`
   (`PACKAGE`, `BUILT_IN`, or `null` when personal settings do not apply).
 - `resetAgentPersonalSetting`, `resetAgentTeamPersonalSetting`,
   `resetAgentOrgPersonalSetting` (`definitionId`, `setting`) remove one personal

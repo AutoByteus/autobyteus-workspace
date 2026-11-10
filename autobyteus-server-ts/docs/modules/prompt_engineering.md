@@ -43,15 +43,26 @@ Each section has one owner:
 | `Working With Other Agents` (and, for team and organization members, `AgentTeam Addressing` before it) | The member's `collaborationRole` (`standalone_agent`, `task_agent`, `team_member`, `org_agent`) and `renderCollaborationSections(...)`, the one owner of the collaboration text | Every run that has a member context, shared across runtimes |
 | `Handoffs` (a subsection) | The same renderer | Only when the agent has handoff rules |
 | `Project` | `renderProjectSection` from `AgentRunConfig.project`, which the run's config builder reads with `RunProjectContextReader.contextOfRun(root)` from the Project's [`project_runs.json`](./projects.md#runs-started-under-a-project) and the Project's current name | Only for a run started under a Project (an Agent run, or every member of a Team run, by the Team's run id), on start and on every restore (Antigravity restores its start-time instructions, which already hold it); omitted when the Project was deleted. Org members and Task copies get none |
+| `Semantic Memory` | `renderSemanticMemorySection` with the folder `AgentSemanticMemory.prepareForRun(definition)` returned (the composer requires the key `semanticMemoryPath`, an absolute path or `null`) | Only for an agent with `semanticMemoryEnabled`, every runtime and run kind, after the Project section; absent otherwise, with no other change to the prompt |
 | `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
 The shared logical order is Agent Identity, optional Team Instruction, the
-collaboration sections for the agent's role, and the optional Project section.
-It reads: "You work in the Project <name> (Project ID <id>). Use this Project ID
-with the Project tools; ask the user before working on another Project." All
+collaboration sections for the agent's role, the optional Project section and
+the optional Semantic Memory section. The Project section reads: "You work in the
+Project <name> (Project ID <id>). Use this Project ID with the Project tools; ask
+the user before working on another Project." The Semantic Memory section is
+exactly:
+
+```text
+## Semantic Memory
+
+Your semantic memory is the folder `<folder>`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.
+```
+
+with `<folder>` the absolute folder (see [Agent Memory](./agent_memory.md#semantic-memory)). All
 five runtime paths (native AutoByteus, Codex, Claude, Antigravity, ACP/Grok)
 compose it the same way. Native AutoByteus appends
 Working Environment, Bash Operating Practice, and File And Directory Practice
