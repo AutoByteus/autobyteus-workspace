@@ -252,3 +252,34 @@ Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture read
 - The user, 2026-11-10: "I agree with your decision one and three" (contract TC-1: no cascade on Stop; TC-4: delivery in steps, this ticket = delegations from a standalone agent run), and asked what the second (TC-3, a delegated run whose delegating run was deleted) means. TC-3 stays open.
 
 - The user, 2026-11-10, on TC-3 after its explanation (a delegated run whose delegating run was deleted; cost: deleting the hub would list its 144 delegated runs): "I like your recommendation" → listed as a run of its own. With TC-1, TC-3, TC-4 and TC-6 decided by the user and TC-2, TC-5 by the Solution Designer, the contract is approved; the requirements were rewritten on it (SR-007).
+
+### Architecture investigation for the contract's first step (delegations made from a standalone agent run), 2026-11-10
+
+Reading gate for this phase: `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`, `collaboration_model.md`, `docs/design/data_migration_guideline.md` (all sections), the earlier `memory-layout-contract.md`. All findings below are `Read` unless marked.
+
+**F-1 The server has two delegation paths in one adapter.** `StandaloneRootTaskExecutionAdapter.planActivation` / `beginActivation` (`standalone-root-task-execution-adapter.ts:110-178`) branch on the placement: `remote_agent` goes to `RemoteDelegation` (ask the other node for a run, record a link, send the work packet); `agent` and team placements are hosted in the root (`rootAgents.beginTaskPreparation`, `teams.beginRootTaskTeam`). The same `RootTaskExecutionLifecycle` and Task linking (`root-task-dispatch.ts`) run both.
+
+**F-2 The link machinery is complete for a linked run.** `agent-collaboration/execution/remote/`:
+- `remote-run-links.ts` (`RemoteRunLinks`): the root's endpoints from its links and its back-link; inbound checks (`inboundEndpoint`, `admitsWorkPacket`, `admitsOwner`, also against stored links before a restore); `deliver`; `ownerCommand`.
+- `remote-endpoint.ts`: three endpoint kinds: `delegated_run`, `delegated_team` (one per member), `delegator` (from `delegatedFrom`); the pair rule (only the delegator and the delegated run or team message each other); each endpoint's Task ownership chain; the closure fence text.
+- `remote-run-channel.ts` (`RemoteRunChannel`, an interface): `startDelegatedRun`, `deliverMessage`, `runSummaries`, `agentProjection`, `ownerCommand` (`post_message`, `interrupt`, `terminate`), `observeRun`. One implementation today, the peer client.
+- Inbound: `remote-collaboration/inbound/remote-message-receiver.ts` checks the stored links, resolves or restores the target root (`CollaborationRootResolver`), then `acceptRemoteWorkPacket` or `acceptRemoteMessage`; `remote-delegation-receiver.ts` creates the run (`prepareAgentRun` with `delegatedFrom`, or `RemoteTeamRunStarter` → `TeamRunService.createTeamRun` with `delegatedFrom`).
+- A root with `delegatedFrom` has its own idle shutdown (`StandaloneHostIdleShutdown`, `RemoteTeamIdleShutdown`).
+
+**F-3 What a local delegated run has that a linked run lacks today** (each is work of the first step):
+1. a saved Task and reference files (`remote-delegation.ts` `delegationPlacement` refuses both); a follow-up Task by run ID (`root-task-execution-lifecycle.ts:186-190` refuses a remote target);
+2. a launch resolved by the delegating side (the Project's folder, inheritance from the delegating run, tool approval); a peer-started run uses its node's defaults;
+3. stop on Task closure (a remote run is only fenced: `closureFence`, `task-execution-resource-release.ts:25`) and reactivation;
+4. messages by run ID between runs of the same Task that are not delegator and delegated run (the pair rule refuses them; `docs/modules/agent_communication.md` "Task-linked message scope" allows them);
+5. a message by address to the delegating run's standing instances (CM-5), and the delegator in `list_available_agents` and `@`;
+6. in the client, a local run needs no relay: it is a run of this node and can be opened as one.
+
+**F-4 Consequence for the Task side in this step.** `hostRoot` is how the Task side reaches the root that runs a delegated run (`project-task-execution-resource-composition.ts:60-64`). While team and org runs still host, the field is kept for every record with one meaning, "the root that runs it": the hosting run for a hosted run, the run's own root for an independent run, the link holder for a run on a peer (today's value). It is removed when nothing is hosted (FU-005). The role rename (`subWork`) is independent of hosting and is done now.
+
+**F-5 Nested runs in this step.** A delegated team run of a standalone run becomes a top-level team run with `delegatedFrom`. Delegations by its members are then delegations made from a team run: hosted by that team run (existing code path for any top-level team run), until FU-003. Their links move from the standalone run's tree into that team run's tree and their `taskAgent.coordinatingRun` becomes that team run (32 runs in the user's data).
+
+**F-6 History.** A delegated team run has no history row today (a tree with a `taskAgent` section is not admitted as a team run; the earlier contract's guard G2) and a delegated agent run is not returned by the standard metadata reader (G1). As ordinary runs they are admitted and need history rows; the migration adds them. A run with `delegatedFrom` on this node is listed under its delegating run when that run is stored, otherwise as a run of its own (a run a peer started is already listed that way).
+
+**Design direction that follows (to be written as the new `design-spec.md`):** local delegation from a standalone run uses the link machinery. The channel gets a second implementation for this node (in-process), the link owner and its types lose the word "remote", and the hosted path leaves the standalone root. F-3's six items are the added capabilities; F-4 … F-6 the data and history consequences.
+
+**Not read yet:** the Task side's release and status code in detail; the stream and view DTOs of a standalone root; the history index code; the web client's tree and stores for delegated runs; the standalone root's creation of the collaboration package for a delegated agent run (contract V-10); the earlier ticket's DEC-005 (V-9); released migrations that read these shapes (V-11).
