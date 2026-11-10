@@ -1,0 +1,2 @@
+Build Android APK	Build APK	2026-11-09T07:34:00.8883223Z ##[error]Exception in thread "main" java.io.IOException: Downloading from https://services.gradle.org/distributions/gradle-8.13-bin.zip failed: timeout (10000ms)
+Build Android APK	Build APK	2026-11-09T07:34:00.8992338Z ##[error]Process completed with exit code 1.

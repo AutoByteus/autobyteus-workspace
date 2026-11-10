@@ -2,7 +2,8 @@ import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../agen
 import type {
   ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import { ProjectError } from "../domain/project-errors.js";
 import {
   assertTaskExecutionReopenable, closedAssignments, closeTaskExecutionResources, latestEntryOf, linkExistingTaskExecution, linkNewTaskExecution,

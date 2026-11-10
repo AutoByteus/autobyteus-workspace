@@ -244,7 +244,7 @@ function Get-ContainerStartFailure([string]$ContainerName) {
   "container $ContainerName did not reach running state (status=$($state.Status) running=$($state.Running) exitCode=$($state.ExitCode) error=$($state.Error))"
 }
 
-function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults) {
+function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults, [switch]$NoUrls) {
   $existingState = Read-NodeState $NodeName
   $containerName = if ($existingState) { $existingState.containerName } else { $NodeName }
   $createdAt = if ($existingState) { $existingState.createdAt } else { Get-NowUtc }
@@ -256,7 +256,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
   }
 
   Write-LauncherInfo "Checking image $ImageRef"
-  & docker pull $ImageRef
+  & docker pull $ImageRef | Out-Host
   if ($LASTEXITCODE -ne 0) { Fail-Launcher "docker pull failed for $ImageRef" }
   $desiredImageId = Get-ImageId $ImageRef
   if (-not $desiredImageId) { Fail-Launcher "Could not inspect image $ImageRef after pull." }
@@ -276,7 +276,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
       if (Test-ContainerRunning $containerName) {
         Save-NodeState $state
         Write-LauncherInfo "$NodeName is already running with the current image and launcher config."
-        Print-Urls $state
+        if (-not $NoUrls) { Print-Urls $state }
         return
       }
 
@@ -286,7 +286,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
         if (-not $startFailure) {
           Save-NodeState $state
           Write-LauncherInfo "Started $NodeName."
-          Print-Urls $state
+          if (-not $NoUrls) { Print-Urls $state }
           return
         }
         $startOutput = "$startOutput`n$startFailure"
@@ -300,11 +300,11 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
         Fail-Launcher "docker start failed: $startOutput"
       }
     } elseif ($currentImageId -ne $desiredImageId) {
-      Write-LauncherInfo "Image changed for $NodeName; recreating the managed container while keeping named volumes."
+      Write-LauncherInfo "Recreating the container of ${NodeName}: a newer image was downloaded. Its named volumes are kept."
     } elseif (-not $currentConfigHash) {
-      Write-LauncherInfo "Refreshing $NodeName; existing container predates launcher config tracking."
+      Write-LauncherInfo "Recreating the container of ${NodeName}: the container predates launcher configuration tracking. Its named volumes are kept."
     } else {
-      Write-LauncherInfo "Launcher config changed for $NodeName; recreating the managed container while keeping named volumes."
+      Write-LauncherInfo "Recreating the container of ${NodeName}: the launcher configuration changed. Its named volumes are kept."
     }
   }
 
@@ -340,7 +340,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
       if (-not $startFailure) {
         Save-NodeState $state
         Write-LauncherInfo "Started $NodeName."
-        Print-Urls $state
+        if (-not $NoUrls) { Print-Urls $state }
         return
       }
       $output = "$output`n$startFailure"

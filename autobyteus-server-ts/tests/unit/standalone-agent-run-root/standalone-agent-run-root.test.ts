@@ -642,6 +642,27 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(stored.snapshot.tree.taskExecutions).toHaveLength(2);
   });
 
+  it("a stopped host's digest follows a Task closed while it is stopped, from memory, and matches its stored view's (autobyteus-435 AC-011-1, QR-002)", async () => {
+    const resources = new InMemoryTaskExecutionResources();
+    resources.addTask("A");
+    const f = await buildManager(resources);
+    const root = (await f.manager.resolveRoot(HOST))!;
+    const assigned = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    await flushMicrotasks();
+    const copy = { agentRunId: ingressOfOutcome(assigned) };
+    await f.manager.stopRoot(HOST);
+    const storedReads = (["readTree", "readTreeSync", "readMessages", "readMessagesLog"] as const)
+      .map((name) => vi.spyOn(StandaloneRootPackageStore.prototype, name));
+
+    expect(f.manager.getAgentStatuses([HOST])[0]).toMatchObject({ isActive: false, closedTaskExecutionsDigest: closedTaskExecutionsDigest([]) });
+    resources.close("A");
+    const closed = f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest;
+    expect(closed).toBe(closedTaskExecutionsDigest([copy]));
+    for (const read of storedReads) expect(read).not.toHaveBeenCalled();
+    // The client re-reads the stopped host's stored view once: its closed list gives the same digest.
+    expect(closedTaskExecutionsDigest((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions)).toBe(closed);
+  });
+
   it("reactivation: once the agent reopens the Task, the assigner's run-ID message restores the copy, delivers, and lists it again (AC-001/004/015, REQ-007/008)", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A");
@@ -672,10 +693,11 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([]);
     live.close();
-    // autobyteus-446: the reopen returns the history poll's digest to the empty set's; a stopped root answers none.
+    // autobyteus-446: the reopen returns the history poll's digest to the empty set's; a stopped root answers the Task
+    // index's digest (autobyteus-435), here the empty set's too.
     expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).toBe(closedTaskExecutionsDigest([]));
     await f.manager.stopRoot(HOST);
-    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).toBeNull();
+    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).toBe(closedTaskExecutionsDigest([]));
     expect((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions).toEqual([]);
   });
 
@@ -733,11 +755,12 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     await f.manager.stopRoot(HOST);
   });
 
-  it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED and send_message_to guidance (AC-001, AC-004)", async () => {
+  it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED and the self words (AC-001, AC-004; autobyteus-435 AC-013-1)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
     await expect(root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/research_assistant", description: "Do it" }))
-      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("send_message_to") });
+      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED",
+        message: "/research_assistant is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team." });
     await delegateReviewer(root, f);
     const reviewer = f.handles.get("code-reviewer-run-1")!.input.identity;
     await expect(root.delegateToNewCopy({ identity: reviewer }, { recipient_address: "/code_reviewer", description: "Copy me" }))

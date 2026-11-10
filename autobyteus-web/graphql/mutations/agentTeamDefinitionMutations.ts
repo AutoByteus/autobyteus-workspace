@@ -17,6 +17,8 @@ const AgentTeamDefinitionMutationFields = gql`
     ownerApplicationName
     ownerPackageId
     ownerLocalApplicationId
+    personalSettings
+    personalSettingsBase
     defaultLaunchConfig {
       llmModelIdentifier
       runtimeKind
@@ -43,6 +45,15 @@ export const CreateAgentTeamDefinition = gql`
 export const UpdateAgentTeamDefinition = gql`
   mutation UpdateAgentTeamDefinition($input: UpdateAgentTeamDefinitionInput!) {
     updateAgentTeamDefinition(input: $input) {
+      ...AgentTeamDefinitionMutationFields
+    }
+  }
+  ${AgentTeamDefinitionMutationFields}
+`
+
+export const ResetAgentTeamPersonalSetting = gql`
+  mutation ResetAgentTeamPersonalSetting($definitionId: String!, $setting: PersonalSetting!) {
+    resetAgentTeamPersonalSetting(definitionId: $definitionId, setting: $setting) {
       ...AgentTeamDefinitionMutationFields
     }
   }

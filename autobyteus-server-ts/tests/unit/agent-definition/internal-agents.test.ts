@@ -93,7 +93,7 @@ describe("InternalAgentVisibility, the one rule (REQ-003…007)", () => {
       packageDefinitions: {
         reloader: { applyPendingChanges: async () => undefined },
         store: {
-          listFolderRoots: () => agents.map((entry) => ({ definition: entry })),
+          listFolderRoots: () => agents.map((entry) => ({ definition: entry, location: { sourceClass: "server_data" } })),
           listNestedDefinitions: () => [],
         },
       } as never,

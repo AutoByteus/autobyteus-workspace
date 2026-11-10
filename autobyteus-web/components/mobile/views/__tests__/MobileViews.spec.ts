@@ -102,7 +102,7 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       const explorer = useFileExplorerStore();
       vi.spyOn(explorer, 'openFilePreview').mockImplementation(async (filePath, workspaceId) => {
         const state = explorer._getOrCreateWorkspaceState(workspaceId);
-        state.openFiles.push({ path: filePath, type: 'Text', mode: 'preview', content: '# Notes', url: null, relativeResourceContext: null, isLoading: false, error: null });
+        state.openFiles.push({ path: filePath, type: 'Text', mode: 'preview', content: '# Notes', url: null, contentRevision: 0, relativeResourceContext: null, isLoading: false, error: null });
         state.activeFile = filePath;
       });
       const { router, wrapper } = await mountView(MobileFiles, targetOf(), { screen: 'files' });

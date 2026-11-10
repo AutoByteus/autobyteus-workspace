@@ -46,6 +46,8 @@ const createRootSettingsStore = (defaultRoot: string): AgentPackageRootSettingsS
   );
 
 /** Package tests that are not about skill names use a guard that accepts every source. */
+/** Package-edit capture has its own tests (package-edit-capture.test.ts); here it does nothing. */
+const noCapture = { captureAndBackUp: async () => undefined };
 const noSkillNameConflicts = {
   assertNoIncomingSkillNameConflicts: () => ({ conflicts: [], notices: [] }),
 };
@@ -100,6 +102,7 @@ describe("AgentPackageService", () => {
     );
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
@@ -160,6 +163,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
@@ -220,6 +224,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
@@ -292,6 +297,7 @@ describe("AgentPackageService", () => {
     let shouldFailRefresh = false;
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
@@ -346,6 +352,7 @@ describe("AgentPackageService", () => {
 
     let refreshCount = 0;
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
@@ -417,6 +424,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
@@ -499,6 +507,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
@@ -594,6 +603,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
@@ -662,6 +672,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
@@ -743,6 +754,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
@@ -789,6 +801,7 @@ describe("AgentPackageService", () => {
     await writeAgentPackageRoot(localRoot, "local-agent");
 
     const service = new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({

@@ -8,17 +8,21 @@ import { NodeCatalogPort } from "../../../../src/agent-collaboration/collaborato
 import { RemoteCatalogLister } from "../../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../../../src/built-in-agents/built-in-agent-registry.js";
 
 /**
  * autobyteus-308 REQ-005 / AC-003, AC-005: an internal agent is not a collaborator while "Show internal agents" is
  * off: `list_available_agents`, `@` candidates, `@` by ID, catalog delegation (whose refusal is "not an available
  * agent") and a peer's available-agents answer all derive from `isEligibleAgent`. With the setting on, it behaves like
- * any other agent. Synthesized definitions only.
+ * any other agent. Synthesized definitions only. autobyteus-455 REQ-002 / QR-001: the real Model Router stays out with
+ * the setting on too, by its own registry mark, not by the internal rule.
  */
 const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: null };
 const agents = [
   new AgentDefinition({ id: "reviewer", name: "Code Reviewer", description: "Reviews", instructions: "x", defaultLaunchConfig: launch }),
   new AgentDefinition({ id: "router", name: "Model Router", description: "Routes", instructions: "x", defaultLaunchConfig: launch, internal: true }),
+  new AgentDefinition({ id: MODEL_ROUTER_AGENT_DEFINITION_ID, name: "Built-in Model Router", description: "Routes", instructions: "x",
+    defaultLaunchConfig: launch, internal: true }),
 ];
 
 const setup = () => {
@@ -61,5 +65,18 @@ describe("internal agents and collaboration eligibility (autobyteus-308)", () =>
     await expect(admission.policy.requireEligible(port, { kind: "agent", definitionId: "router" })).resolves.toMatchObject({ kind: "agent" });
     await expect(admission.catalogDefinitionAt(port, "/model_router")).resolves.toMatchObject({ kind: "agent" });
     expect((await lister.list()).agents.map((entry) => entry.address)).toEqual(["/code_reviewer", "/model_router"]);
+  });
+
+  it("the built-in Model Router is never a collaborator, also with internal agents shown (autobyteus-455 AC-001, QR-001)", async () => {
+    const { admission, port, lister, show } = setup();
+    for (const shown of [false, true]) {
+      show(shown);
+      expect((await admission.policy.listEligible(port)).map((entry) => entry.address), `shown=${shown}`).not.toContain("/built_in_model_router");
+      expect((await admission.policy.listCandidates(port)).candidates.map((candidate) => candidate.definitionId)).not.toContain(MODEL_ROUTER_AGENT_DEFINITION_ID);
+      await expect(admission.policy.requireEligible(port, { kind: "agent", definitionId: MODEL_ROUTER_AGENT_DEFINITION_ID }))
+        .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_INVALID" });
+      await expect(admission.catalogDefinitionAt(port, "/built_in_model_router")).resolves.toBeNull();
+      expect((await lister.list()).agents.map((entry) => entry.address)).not.toContain("/built_in_model_router");
+    }
   });
 });

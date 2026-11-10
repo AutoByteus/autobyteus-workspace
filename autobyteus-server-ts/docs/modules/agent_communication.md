@@ -394,7 +394,11 @@ startup into ordinary, unowned delegated runs of the same root (migration
 [Run History](./run_history.md)). The runtime has no collaborator concept.
 
 - **Own-team refusal (CM-1, DEC-008).** `resolveDelegationPlacement`
-  (`catalog-delegation.ts`) first asks the root's index `isOwnTeamAddress(sender,
+  (`catalog-delegation.ts`) first compares the address with the sender's own
+  (`agentAddressOf(sender)`): its own address is refused with
+  `COLLABORATION_SELF_TARGET_REJECTED` and `selfDelegationRefusedMessage` ("you can't
+  delegate to yourself. Do the work yourself, or delegate it to another agent or agent
+  team.", autobyteus-435). Then it asks the root's index `isOwnTeamAddress(sender,
   address)`. It is true for the sender's own address, any address inside (or equal
   to) a team instance that contains the sender at any depth, and, in a Team root,
   every configured root placement for a configured member. Then
@@ -502,8 +506,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   copies are not "in the run" by address: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
-  policy: shared Agents (minus built-ins such as the Daily Assistant, and
-  internal agents while hidden), then
+  policy: shared Agents (minus the Model Router, a built-in marked
+  `collaborationEligible: false`, and internal agents while hidden), then
   shared Agent Teams, in catalog order, **including** definitions already in the
   run; only the port's own definition is left out. That is a Team run's Team.
   For an Agent root, `focusedAgentRunId` is required (omitting it is an error),
@@ -647,7 +651,8 @@ Known limits:
   saved conversation. Nothing is lost.
 - Own-team delegation: every root refuses it with
   `COLLABORATION_SELF_TARGET_REJECTED` (CM-1, DEC-008), including a standalone
-  run's root; use `send_message_to` for a teammate.
+  run's root; use `send_message_to` for a teammate. Its own address is refused with the
+  same code and words of its own (autobyteus-435).
 
 ### Sender Of An Agent-To-Agent Message (RD-004)
 

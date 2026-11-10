@@ -92,6 +92,7 @@
         <form class="space-y-4" @submit.prevent="saveOrg">
           <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <AgentOrgAvatarEditor :key="`${view}:${selectedOrg.id}`" v-model="formAvatarUrl" :name="formName" :disabled="saving" @pending="avatarPending = $event" />
+            <AgentOrgPersonalSettings v-if="view === 'org-edit'" :org="selectedOrg" :disabled="saving || avatarPending" @avatar-reset="(url) => { formAvatarUrl = url; initialAvatarUrl = url }" />
           </section>
           <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"><h2 class="font-semibold text-slate-900">{{ t('agentOrgs.experience.form.basics') }}</h2><div class="mt-4 space-y-4"><label class="block"><span class="text-sm font-medium text-slate-700">{{ t('agentOrgs.experience.form.name') }}</span><input v-model="formName" required class="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></label><label class="block"><span class="text-sm font-medium text-slate-700">{{ t('agentOrgs.experience.detail.description') }}</span><textarea v-model="formDescription" rows="3" class="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></textarea></label></div></section>
 
@@ -156,6 +157,7 @@ import { Icon } from '@iconify/vue'
 import AgentOrgCatalogCard from './AgentOrgCatalogCard.vue'
 import AgentOrgAvatar from './AgentOrgAvatar.vue'
 import AgentOrgAvatarEditor from './AgentOrgAvatarEditor.vue'
+import AgentOrgPersonalSettings from './AgentOrgPersonalSettings.vue'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useRunStart } from '~/composables/runSettings/useRunStart'

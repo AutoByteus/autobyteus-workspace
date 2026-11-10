@@ -138,7 +138,13 @@ success, the unchanged text after failure). The editor therefore keeps the later
 input, shows the correct unsaved state, and the next Save submits it. A failed Save
 keeps differing input visible and Save-able. With no Save pending, returning the
 editor to the current committed text makes it clean again. Explicit tab close retains its existing discard behavior;
-reopening a closed file fetches committed content. Drafts are not persisted across
+reopening a closed file fetches committed content.
+
+An explicit open of a file that is already open reads it again (autobyteus-450, `fileExplorerContentActions._openFileWithMode`). An explicit open is a file link, a message attachment or the Files tab. A first open is unchanged.
+- **Text:** the cached `content` is cleared and fetched again (`network-only`). An `editorDraft` stays, and the link's read-only preview shows the new committed text.
+- **Other types** (image, PDF, audio, video, spreadsheet): `contentRevision` is bumped, and the viewer fetches the file again.
+
+So each open shows the file's current content. A viewer that is left open does not refresh by itself when the file changes later. Drafts are not persisted across
 application/page restarts. This does not add remote notifications, automatic
 merge, competing-write arbitration, or an outage-isolation guarantee.
 

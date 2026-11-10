@@ -48,7 +48,7 @@ export const useRunHistorySectionLoad = (options: {
    */
   const pollTick = async (): Promise<void> => {
     await runHistoryStore.refreshTreeQuietly();
-    await collaborationStore.refreshListedStatuses(runHistoryStore.activeListedAgentRunIds);
+    await collaborationStore.refreshListedStatuses(runHistoryStore.listedAgentRunIds);
   };
 
   let timer: ReturnType<typeof setInterval> | null = null;

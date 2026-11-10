@@ -5,6 +5,8 @@ import { DefinitionLoadIssueEntry, toGraphqlDefinitionLoadIssueEntries } from ".
 import type { DefinitionLoadIssueEntry as DomainDefinitionLoadIssueEntry } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 import { AgentOrgDefinition as DomainOrg, AgentOrgDefinitionUpdate, AgentOrgMember as DomainMember } from "../../../agent-org-definition/domain/agent-org-definition.js";
 import { GraphqlDefaultLaunchConfig, GraphqlDefaultLaunchConfigInput, toDomainDefaultLaunchConfig, toGraphqlDefaultLaunchConfig } from "./default-launch-config.js";
+import { PersonalSetting, PersonalSettingsBase, toDomainPersonalSetting, toGraphqlPersonalSettings } from "./personal-settings.js";
+import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
 
 export enum AgentOrgMemberType { AGENT = "AGENT", AGENT_TEAM = "AGENT_TEAM" }
 export enum AgentOrgMemberScope { SHARED = "SHARED", AGENT_ORG_OWNED = "AGENT_ORG_OWNED", APPLICATION_OWNED = "APPLICATION_OWNED" }
@@ -39,6 +41,10 @@ registerEnumType(AgentOrgMemberScope, { name: "AgentOrgMemberScope" });
   /** Set when the AgentOrg is served from its last working version; names the file and reason. */
   /** Every load issue in this Org's definition folder: the Org first, then its org-owned definitions in path order. */
   @Field(() => [DefinitionLoadIssueEntry]) loadIssues!: DefinitionLoadIssueEntry[];
+  /** The settings that hold the user's personal value on this node (avatar, runtime/model). */
+  @Field(() => [PersonalSetting]) personalSettings!: PersonalSetting[];
+  /** The base of the personal settings (a package); null when they do not apply. */
+  @Field(() => PersonalSettingsBase, { nullable: true }) personalSettingsBase!: PersonalSettingsBase | null;
 }
 @InputType() class CreateAgentOrgDefinitionInput {
   @Field(() => String) name!: string;
@@ -91,8 +97,13 @@ const member = (value: AgentOrgMemberInput): DomainMember => new DomainMember({
   refType: value.refType === AgentOrgMemberType.AGENT ? "agent" : "agent_team",
   refScope: toDomainScope(value.refScope),
 });
-const project = (value: DomainOrg, issues: readonly DomainDefinitionLoadIssueEntry[] = []): AgentOrgDefinition => ({
+const project = (
+  value: DomainOrg,
+  issues: readonly DomainDefinitionLoadIssueEntry[] = [],
+  personal: PersonalSettingsView | null = null,
+): AgentOrgDefinition => ({
   loadIssues: toGraphqlDefinitionLoadIssueEntries(issues),
+  ...toGraphqlPersonalSettings(personal),
   id: value.id ?? "", name: value.name, description: value.description, instructions: value.instructions,
   category: value.category, avatarUrl: value.avatarUrl, revision: value.revision,
   defaultLaunchConfig: toGraphqlDefaultLaunchConfig(value.defaultLaunchConfig),
@@ -112,14 +123,17 @@ export class AgentOrgDefinitionResolver {
   private readonly service = getStudioAgentOrgDefinitionService();
   @Query(() => [AgentOrgDefinition]) async agentOrgDefinitions(): Promise<AgentOrgDefinition[]> {
     const issues = await this.service.listFolderLoadIssues();
-    return (await getStudioDefinitionAdmissionService().scan())
+    const definitions = (await getStudioDefinitionAdmissionService().scan())
       .flatMap((result) => result.status === "available" && result.subjectKind === "agent_org" ? [result.definition] : [])
-      .filter((definition): definition is DomainOrg => "members" in definition)
-      .map((definition) => project(definition, issues.get(definition.id ?? "") ?? []));
+      .filter((definition): definition is DomainOrg => "members" in definition);
+    return Promise.all(definitions.map(async (definition) =>
+      project(definition, issues.get(definition.id ?? "") ?? [], await this.service.getPersonalSettingsView(definition.id ?? ""))));
   }
   @Query(() => AgentOrgDefinition, { nullable: true }) async agentOrgDefinition(@Arg("id", () => String) id: string): Promise<AgentOrgDefinition | null> {
     const admitted = await getStudioDefinitionAdmissionService().requireAvailable("agent_org", id).catch(() => null);
-    return admitted && "members" in admitted.definition ? project(admitted.definition, await this.service.getFolderLoadIssues(id)) : null;
+    return admitted && "members" in admitted.definition
+      ? project(admitted.definition, await this.service.getFolderLoadIssues(id), await this.service.getPersonalSettingsView(id))
+      : null;
   }
   @Query(() => DefinitionEndpointCatalog) async agentOrgEndpointCatalog(@Arg("id", () => String) id: string): Promise<DefinitionEndpointCatalog> {
     await getStudioDefinitionAdmissionService().requireAvailable("agent_org", id);
@@ -130,8 +144,20 @@ export class AgentOrgDefinitionResolver {
     catch (error) { throw graphError(error); }
   }
   @Mutation(() => AgentOrgDefinition) async updateAgentOrgDefinition(@Arg("input", () => UpdateAgentOrgDefinitionInput) input: UpdateAgentOrgDefinitionInput): Promise<AgentOrgDefinition> {
-    try { return project(await this.service.updateDefinition(input.id, new AgentOrgDefinitionUpdate({ ...input, members: input.members?.map(member), handoffs: input.handoffs, defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig), expectedRevision: input.expectedRevision }))); }
-    catch (error) { throw graphError(error); }
+    try {
+      const updated = await this.service.updateDefinition(input.id, new AgentOrgDefinitionUpdate({ ...input, members: input.members?.map(member), handoffs: input.handoffs, defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig), expectedRevision: input.expectedRevision }));
+      return project(updated, [], await this.service.getPersonalSettingsView(input.id));
+    } catch (error) { throw graphError(error); }
+  }
+  /** "Reset to the package's setting": removes one personal setting (avatar or runtime/model). */
+  @Mutation(() => AgentOrgDefinition) async resetAgentOrgPersonalSetting(
+    @Arg("definitionId", () => String) definitionId: string,
+    @Arg("setting", () => PersonalSetting) setting: PersonalSetting,
+  ): Promise<AgentOrgDefinition> {
+    try {
+      const definition = await this.service.resetPersonalSetting(definitionId, toDomainPersonalSetting(setting));
+      return project(definition, [], await this.service.getPersonalSettingsView(definitionId));
+    } catch (error) { throw graphError(error); }
   }
   @Mutation(() => Boolean) deleteAgentOrgDefinition(@Arg("id", () => String) id: string): Promise<boolean> { return this.service.deleteDefinition(id); }
 }

@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import android.content.res.Configuration
+import org.autobyteus.mobile.ui.DesktopFullScreenController
 import org.autobyteus.mobile.ui.SystemBarInsets
 import org.autobyteus.mobile.ui.WebShellScreen
 import org.junit.Assert.assertEquals
@@ -77,7 +79,7 @@ class WebShellWindowInsetsTest {
                         override fun onPageFinished(view: WebView, url: String) { loaded.countDown() }
                     }
                 }
-                val root = WebShellScreen(activity).render(webView, null, WebShellScreen.Callbacks({}, {}, {}))
+                val root = WebShellScreen(activity) { false }.render(webView, null, WebShellScreen.Callbacks({}, {}, {}))
                 activity.setContentView(root)
                 webView.loadDataWithBaseURL("https://inset.check/mobile", page, "text/html", "utf-8", null)
                 webViewRef.set(webView)
@@ -126,6 +128,84 @@ class WebShellWindowInsetsTest {
                 println("INSETS ime not shown on this device; keyboard case not exercised")
             }
             assertEquals(0, root.paddingLeft + root.paddingRight - bars.left - bars.right)
+        }
+    }
+
+    /**
+     * autobyteus-435 REQ-004 (DEC-020, API-REV-001 F1) and the keyboard while in full screen: the page spans the whole
+     * landscape screen, cutout included (below API 35 the decor stops fitting the system windows while on), and only the
+     * keyboard pads it; off, the screen is laid out as before. Exercises the cutout only on a device that has one.
+     */
+    @Test
+    fun inDesktopFullScreenThePageSpansTheScreenAndOnlyTheKeyboardPadsIt() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            val loaded = CountDownLatch(1)
+            val webViewRef = AtomicReference<WebView>()
+            val rootRef = AtomicReference<View>()
+            val windowRef = AtomicReference<android.view.Window>()
+            val controllerRef = AtomicReference<DesktopFullScreenController>()
+            scenario.onActivity { activity ->
+                val controller = DesktopFullScreenController.forActivity(activity)
+                val webView = WebView(activity).apply {
+                    settings.javaScriptEnabled = true
+                    webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView, url: String) { loaded.countDown() }
+                    }
+                }
+                val root = WebShellScreen(activity) { controller.isOn }.render(webView, null, WebShellScreen.Callbacks({}, {}, {}))
+                activity.setContentView(root)
+                webView.loadDataWithBaseURL("https://inset.check/mobile", page, "text/html", "utf-8", null)
+                webViewRef.set(webView); rootRef.set(root); windowRef.set(activity.window); controllerRef.set(controller)
+            }
+            assertTrue("page loaded", loaded.await(20, TimeUnit.SECONDS))
+            val webView = webViewRef.get()
+            val root = rootRef.get()
+            val controller = controllerRef.get()
+
+            onMain { controller.setOn(true) }
+            assertTrue("landscape", waitUntil(10_000) { onMain { root.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE } })
+            val screenWidth = onMain { root.rootView.width }
+            assertTrue("the page spans the screen, cutout included", waitUntil(8_000) { onMain {
+                val at = IntArray(2).also { root.getLocationOnScreen(it) }
+                at[0] == 0 && root.width == screenWidth && root.paddingLeft == 0 && root.paddingRight == 0 && root.paddingTop == 0
+            } })
+            val cutout = onMain { ViewCompat.getRootWindowInsets(root)?.getInsets(WindowInsetsCompat.Type.displayCutout()) }
+            val closed = evaluate(webView, "String(innerHeight) + '|' + String(innerWidth)")
+            println("FULLSCREEN closed sdk=${android.os.Build.VERSION.SDK_INT} cutout=$cutout root=${root.width}x${root.height} screenWidth=$screenWidth page=$closed")
+
+            evaluate(webView, "document.getElementById('field').focus()")
+            onMain {
+                webView.requestFocus()
+                WindowCompat.getInsetsController(windowRef.get(), webView).show(WindowInsetsCompat.Type.ime())
+            }
+            val imeShown = waitUntil(8_000) { onMain { ViewCompat.getRootWindowInsets(root)?.isVisible(WindowInsetsCompat.Type.ime()) == true } }
+            if (imeShown) {
+                val ime = onMain { ViewCompat.getRootWindowInsets(root)!!.getInsets(WindowInsetsCompat.Type.ime()) }
+                assertTrue("only the keyboard pads the page: $ime", waitUntil(5_000) { onMain {
+                    root.paddingBottom == ime.bottom && ime.bottom > 0 && root.paddingLeft == 0 && root.paddingTop == 0
+                } })
+                val open = evaluate(webView, "String(innerHeight) + '|' + String(innerWidth)")
+                println("FULLSCREEN open ime=$ime padding=${root.paddingLeft},${root.paddingTop},${root.paddingRight},${root.paddingBottom} page=$open")
+                assertTrue("the page got shorter above the keyboard", open.trim('"').split('|')[0].toInt() < closed.trim('"').split('|')[0].toInt())
+                assertEquals("the page keeps the full width", closed.trim('"').split('|')[1], open.trim('"').split('|')[1])
+                onMain { WindowCompat.getInsetsController(windowRef.get(), webView).hide(WindowInsetsCompat.Type.ime()) }
+                waitUntil(5_000) { onMain { ViewCompat.getRootWindowInsets(root)?.isVisible(WindowInsetsCompat.Type.ime()) != true } }
+            } else {
+                println("FULLSCREEN ime not shown on this device; keyboard case not exercised")
+            }
+
+            onMain { controller.setOn(false) }
+            assertTrue("portrait again", waitUntil(10_000) { onMain { root.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT } })
+            if (!edgeToEdge) {
+                // Before Android 15 the window keeps the bars apart itself again: the root gets no inset (autobyteus-277).
+                assertTrue("off: laid out as before", waitUntil(5_000) { onMain {
+                    val top = IntArray(2).also { root.getLocationOnScreen(it) }[1]
+                    listOf(root.paddingLeft, root.paddingTop, root.paddingRight, root.paddingBottom) == listOf(0, 0, 0, 0) && top > 0
+                } })
+            } else {
+                val bars = onMain { ViewCompat.getRootWindowInsets(root)!!.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()) }
+                assertTrue("off: the root takes the bars again", waitUntil(5_000) { onMain { root.paddingTop == bars.top && root.paddingBottom == bars.bottom } })
+            }
         }
     }
 }

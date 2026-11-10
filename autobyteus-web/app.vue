@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <AppLocalizationGate>
-      <!-- Conditionally display server status overlays in Electron environment -->
-      <template v-if="isEmbeddedWindow">
+      <!-- The embedded server's start/stop overlays: only the Electron desktop window runs that server. -->
+      <template v-if="showsServerOverlays">
         <ServerLoading />
         <ServerShutdown />
       </template>
@@ -35,12 +35,16 @@ import { useAgentPackageDefinitionChangeFeed } from '~/composables/agentPackages
 import { useUpdateNotificationChangeFeed } from '~/composables/notifications/useUpdateNotificationChangeFeed'
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates'
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime'
+import { isElectronEnvironment } from '~/utils/browserServerConfig'
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore'
 
 const config = useRuntimeConfig()
 const serverStore = useServerStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 const isEmbeddedWindow = computed(() => windowNodeContextStore.isEmbeddedWindow)
+// A browser page (the phone's included) is an embedded window by default but runs no server: mounting the overlays
+// there would check a health URL at every start (autobyteus-435 REQ-001).
+const showsServerOverlays = computed(() => isEmbeddedWindow.value && isElectronEnvironment())
 const isAppReady = computed(() =>
   !isEmbeddedWindow.value || serverStore.status === ServerStatus.RUNNING
 )

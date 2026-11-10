@@ -272,7 +272,8 @@ for (const knownId of [false, true]) {
       expect(files.getOpenFiles('B')).toHaveLength(2);
       expect(files.getActiveFileData('B')?.accessIntent).toEqual({ source: 'event-monitor', readOnly: true });
       expect((await launch.openPath(action)).status).toBe('opened'); await flush();
-      expect(bridge).toHaveBeenCalledTimes(1); expect(files.getOpenFiles('B')).toHaveLength(2);
+      // The same link again reads the file again (autobyteus-450 REQ-003), in the same tab.
+      expect(bridge).toHaveBeenCalledTimes(2); expect(files.getOpenFiles('B')).toHaveLength(2);
       expect(active.activeAgentContext).toBe(context); expect(context.conversation).toBe(conversation);
       expect(draftStore.config?.workspaceId).toBe('A');
       if (knownId) expect(resolve).not.toHaveBeenCalled();

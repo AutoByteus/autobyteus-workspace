@@ -98,6 +98,11 @@ export class FileAgentTeamDefinitionProvider {
     };
   }
 
+  /** Whether the Team files written from `left` would differ from those written from `right` (the strings `update` writes). */
+  rendersDifferently(left: AgentTeamDefinition, right: AgentTeamDefinition): boolean {
+    return JSON.stringify(this.content(left)) !== JSON.stringify(this.content(right));
+  }
+
   private async nextTeamId(name: string): Promise<string> {
     const base = slugify(name);
     let candidate = base;

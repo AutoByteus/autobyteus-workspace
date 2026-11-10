@@ -155,4 +155,30 @@ describe('useMobileRunOpening', () => {
     expect(store.pending).toEqual({ key: 'agent:b', status: 'opening' });
     expect(store.failure).toBeNull();
   });
+
+  // autobyteus-435 REQ-005, DS-006: the route names an agent run's or a Team subject's row, so a reload can reopen it.
+  it('a tap on an agent, Team or delegated row writes its row on the list entry and the run screen', async () => {
+    const { router, opening } = await setup();
+    await opening.open(row({ kind: 'agentRun', run }, 'agent:host/agent:cua-run'));
+    expect(router.currentRoute.value.query).toEqual({ row: 'agent:host/agent:cua-run', screen: 'run' });
+    await opening.open(row({ kind: 'team', team: { teamRunId: 't-1' } as never }, 'team:t-1'));
+    expect(router.currentRoute.value.query).toEqual({ row: 'team:t-1', screen: 'run' });
+  });
+
+  it('reopen (the restore) runs the shared action without navigating, and settles the pending open the restore began', async () => {
+    const { router, opening, store } = await setup();
+    await router.replace({ path: '/mobile', query: { row: 'agent:host', screen: 'desktop' } });
+    store.begin('agent:host');
+    shared.actions.onOpenAgentRun.mockImplementation(async () => { shared.selectionParams!.emitRunSelected({ type: 'agent', runId: 'host' }); });
+    await opening.reopen({ ...row({ kind: 'agentRun', run }), open: { kind: 'agentRun', run } });
+    expect(shared.actions.onOpenAgentRun).toHaveBeenCalledWith(run);
+    expect(router.currentRoute.value.query).toEqual({ row: 'agent:host', screen: 'desktop' });
+    expect(store.pending).toBeNull();
+    expect(store.failure).toBeNull();
+
+    store.begin('agent:host');
+    shared.actions.onOpenAgentRun.mockImplementation(async () => undefined);
+    await opening.reopen({ ...row({ kind: 'agentRun', run }), open: { kind: 'agentRun', run } });
+    expect(store.failure).toEqual({ key: 'agent:host' });
+  });
 });

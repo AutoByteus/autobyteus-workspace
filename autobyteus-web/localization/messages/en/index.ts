@@ -42,6 +42,7 @@ import workspaceMessages from './workspace';
 import runSettingsMessages from './runSettings';
 import workspaceFolderMessages from './workspaceFolders';
 import agentPackageDefinitionsMessages from './agentPackageDefinitions';
+import personalSettingsMessages from './personalSettings';
 import type { TranslationCatalog } from '../../runtime/types';
 
 const enMessages: TranslationCatalog = {
@@ -89,6 +90,7 @@ const enMessages: TranslationCatalog = {
   ...runSettingsMessages,
   ...workspaceFolderMessages,
   ...agentPackageDefinitionsMessages,
+  ...personalSettingsMessages,
 };
 
 export default enMessages;

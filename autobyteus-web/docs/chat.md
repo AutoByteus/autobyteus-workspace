@@ -179,8 +179,12 @@ server, which rejects run input with empty text.
   ("Delegate to an agent or team") and never changes the target.
   Candidates come from `utils/collaborators/draftMentionEligibility.ts`, which
   mirrors the server's `CollaboratorCandidatePolicy` for the would-be run:
-  shared, non-built-in Agents, then shared Agent Teams, never Orgs, minus only the
-  target's own definition (a Team target's shared members are offered). After
+  shared Agents (the Daily Assistant too; never the Model Router, which
+  `utils/collaborators/collaborationIneligibleAgentDefinitionIds.ts` keeps out as
+  the server's registry marks it `collaborationEligible: false`), then shared Agent
+  Teams, never Orgs, minus only the target's own definition (a Daily Assistant
+  draft does not offer the Daily Assistant; a Team target's shared members are
+  offered). After
   "@", the hint reads "to delegate to an agent or team." The first message keeps
   its mentions.
 - The workspace menu accepts an existing workspace or an absolute folder path
@@ -356,9 +360,11 @@ explicit attachment owner, then the app routes to `/workspace` and finishes
 the sent draft. On failure the orphan team draft and selection are removed and
 the New chat and its row stay intact.
 
-`composables/chat/useChatRouteRunSync.ts` (used by `pages/chat.vue`) replaces
-`/chat?id=temp-*` with the permanent id whenever the displayed context is
-promoted, on every send path.
+`composables/useDraftRunPromotionRouteSync.ts` (used by `pages/chat.vue`)
+replaces `/chat?id=temp-*` with the permanent id whenever the displayed context
+is promoted, on every send path. The phone's route follows the same promotion
+through the same composable (`composables/mobile/useMobileRouteRunSync.ts`
+replaces its `row`).
 
 ## Run View (D-17)
 
@@ -408,7 +414,8 @@ target mode.
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
   time the menu opens. Shared
-  Agents (no Daily Assistant or built-ins), then shared Agent Teams, including
+  Agents (the Daily Assistant too, except in its own run; never the Model
+  Router), then shared Agent Teams, including
   ones already in the run (configured members); only the run's own
   definition is left out, and Agent Orgs are never offered. In a standalone Agent
   run the options depend on the focused agent. The host's composer never offers
@@ -552,7 +559,7 @@ target mode.
   server readback, start-surface tools and control geometry. It runs in an owned
   temp data root and needs Chrome, logged-in `claude` and `codex` CLIs and a
   prior `pnpm -C autobyteus-server-ts build`.
-- `composables/chat/__tests__/useChatRouteRunSync.spec.ts`
+- `composables/__tests__/useDraftRunPromotionRouteSync.spec.ts`
 - `components/chat/__tests__/ChatComposer.spec.ts`, `chatComposerMenus.spec.ts`
 - `components/chat/__tests__/ChatThinkingControl.spec.ts`, `chatThinkingMenu.spec.ts`,
   `ChatWorkspaceMenu.spec.ts`; `utils/__tests__/llmThinkingConfigAdapter.spec.ts`

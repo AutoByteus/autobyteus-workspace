@@ -2,13 +2,14 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GetAgentOrgDefinitions } from '~/graphql/queries/agentOrgDefinitionQueries'
-import { CreateAgentOrgDefinition, DeleteAgentOrgDefinition, UpdateAgentOrgDefinition } from '~/graphql/mutations/agentOrgDefinitionMutations'
+import { CreateAgentOrgDefinition, DeleteAgentOrgDefinition, ResetAgentOrgPersonalSetting, UpdateAgentOrgDefinition } from '~/graphql/mutations/agentOrgDefinitionMutations'
 import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import type { DefinitionHandoff } from '~/types/collaboration/handoffs'
 import type { DefinitionLoadIssueEntry } from '~/types/agentPackageDefinitions'
 import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
+import type { PersonalSetting, PersonalSettingsFields } from '~/types/personalSettings'
 
 export type AgentOrgMember = {
   __typename?: 'AgentOrgMember'
@@ -17,7 +18,7 @@ export type AgentOrgMember = {
   refType: 'AGENT' | 'AGENT_TEAM'
   refScope: 'SHARED' | 'AGENT_ORG_OWNED' | 'APPLICATION_OWNED'
 }
-export type AgentOrgDefinition = {
+export type AgentOrgDefinition = PersonalSettingsFields & {
   id: string
   name: string
   description: string
@@ -31,7 +32,7 @@ export type AgentOrgDefinition = {
   /** Issues of the Org and its org-owned definitions (Org first, then path order); empty when clean. */
   loadIssues?: DefinitionLoadIssueEntry[]
 }
-export type AgentOrgDefinitionDraft = Omit<AgentOrgDefinition, 'id' | 'revision' | 'loadIssues'>
+export type AgentOrgDefinitionDraft = Omit<AgentOrgDefinition, 'id' | 'revision' | 'loadIssues' | keyof PersonalSettingsFields>
 
 type AgentOrgMemberInput = Omit<AgentOrgMember, '__typename'>
 
@@ -112,6 +113,14 @@ export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () =
     publish(id, updated)
     return updated
   }
+  /** "Reset to the package's setting": the Org's base value applies again. */
+  const resetPersonalSetting = async (id: string, setting: PersonalSetting): Promise<AgentOrgDefinition> => {
+    const { data, errors } = await getApolloClient().mutate({ mutation: ResetAgentOrgPersonalSetting, fetchPolicy: 'no-cache', variables: { definitionId: id, setting } })
+    if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    const reset = mutationDefinition(data?.resetAgentOrgPersonalSetting, id)
+    publish(id, reset)
+    return reset
+  }
   const remove = async (id: string): Promise<boolean> => {
     const { data, errors } = await getApolloClient().mutate({ mutation: DeleteAgentOrgDefinition, fetchPolicy: 'no-cache', variables: { id } })
     if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
@@ -119,5 +128,5 @@ export const useAgentOrgDefinitionStore = defineStore('agentOrgDefinition', () =
     if (deleted) publish(id, null)
     return deleted
   }
-  return { definitions, loading, error, byId, fetchAll, reloadIfLoaded, refreshAndReload, create, update, remove }
+  return { definitions, loading, error, byId, fetchAll, reloadIfLoaded, refreshAndReload, create, update, resetPersonalSetting, remove }
 })

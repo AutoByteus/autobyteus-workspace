@@ -76,20 +76,33 @@ export function useMobileRunOpening(disclosure: {
     return selection.onSelectTeamMember(open.target);
   };
 
-  const open = async (row: MobileRunTreeRow): Promise<void> => {
-    if (!row.open) return;
-    const rowOpen = row.open;
-    opening.begin(row.key);
-    const orgQuery = isOrgOpen(rowOpen) ? agentOrgRouteQuery(rowOpen.orgRun, orgCommandOf(rowOpen), rowOpen.orgRun.isActive) : undefined;
-    await navigation.openRun({ orgQuery });
+  /** Runs the row's shared open action, then settles the pending open: committed by the action, else it fails. */
+  const settle = async (key: string, rowOpen: MobileRowOpen): Promise<void> => {
     try {
-      await runSharedAction(row.key, rowOpen);
+      await runSharedAction(key, rowOpen);
     } catch (error) {
       console.warn('[mobile] Failed to open run:', error);
     }
     // Not committed (failed, rejected, superseded by the store, stream recovery): the pending open fails.
-    opening.fail(row.key);
+    opening.fail(key);
   };
 
-  return { open };
+  const open = async (row: MobileRunTreeRow): Promise<void> => {
+    if (!row.open) return;
+    const rowOpen = row.open;
+    opening.begin(row.key);
+    // An Org subject is named by its Org keys; an agent run or a Team subject by its row (autobyteus-435 DS-006).
+    await navigation.openRun(isOrgOpen(rowOpen)
+      ? { orgQuery: agentOrgRouteQuery(rowOpen.orgRun, orgCommandOf(rowOpen), rowOpen.orgRun.isActive) }
+      : { rowKey: row.key });
+    await settle(row.key, rowOpen);
+  };
+
+  /**
+   * The page-start restore (autobyteus-435 DS-006): the route already names the row and its screen, and the restore
+   * began the pending open, so only the shared open action runs, with no navigation.
+   */
+  const reopen = async (row: MobileRunTreeRow & { open: MobileRowOpen }): Promise<void> => settle(row.key, row.open);
+
+  return { open, reopen };
 }

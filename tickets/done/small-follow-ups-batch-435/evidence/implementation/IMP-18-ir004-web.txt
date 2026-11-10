@@ -1,0 +1,14 @@
+# IMP-18 IR-004 web checks on 06a072014f; macOS darwin 25.5.0, Node v22.23.1; 2026-11-10
+# pnpm -C autobyteus-web typecheck: production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files); [typecheck] PASS
+# guard:web-boundary, guard:localization-boundary, audit:localization-literals: exit 0 each
+# test:nuxt utils/__tests__/nodeIdentityProbe.spec.ts utils/__tests__/nodeConnectionErrorText.spec.ts stores/__tests__/nodeListStore: Test Files 3 passed, Tests 26 passed
+#   (nodeIdentityProbe.spec: 'a readable 403 REMOTE_ACCESS_HOST_REFUSED is host_refused; another 403 is not an AutoByteus node', one request)
+# full suite: pnpm -C autobyteus-web test:nuxt --run
+ Test Files  740 passed (740)
+      Tests  5587 passed | 2 skipped (5589)
+   Duration  323.13s (transform 32.37s, setup 2166.01s, collect 217.30s, tests 98.82s, environment 183.65s, prepare 100.63s)
+
+# also (IR-003 + IR-004 server, unchanged by IR-004): pnpm -C autobyteus-server-ts test:unit on 06a072014f
+ Test Files  969 passed | 5 skipped (974)
+      Tests  8266 passed | 9 skipped (8275)
+   Duration  709.73s (transform 17.71s, setup 22.40s, import 301.69s, tests 298.99s, environment 812ms)

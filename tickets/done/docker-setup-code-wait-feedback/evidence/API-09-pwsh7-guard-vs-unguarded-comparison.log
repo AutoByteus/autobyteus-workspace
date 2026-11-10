@@ -1,0 +1,45 @@
+# API-09 — independent pwsh 7.6.9 comparison: unguarded vs. IR-002's guarded 2>&1 pattern under Stop,
+# plus independent corroboration of the documented PowerShell 5.1/7 behavior difference (PR #13361)
+Commit: 63365f010a14e9b2ad38d69680bbb0f656567012 (branch codex/docker-setup-code-wait-feedback)
+Environment: macOS (Darwin 25.6.0), pwsh 7.6.9
+Date: 2026-11-09
+
+Why: the implementation's IMP-07 smoke check only ran the *guarded* pattern and asserted "pwsh 7 behaves the
+same with or without the guard" without showing the unguarded run. Before trusting that claim, I independently
+ran the *unguarded* pattern myself (the exact pre-IR-002 shape) under $ErrorActionPreference='Stop' on this
+machine's real pwsh 7.6.9, to confirm it really does not throw here — i.e. that IR-001's original code was
+never going to be caught by any `pwsh`-based regression test on this machine, consistent with the "PowerShell 7
+doesn't reproduce this" framing, and that the IR-002 guard is not covering up a reproducible-on-7 defect.
+
+Command (unguarded, pre-IR-002 shape):
+  pwsh -NoLogo -NoProfile -Command '
+  $ErrorActionPreference = "Stop"
+  try {
+    $answer = & bash -c "echo err-text 1>&2; exit 1" 2>&1
+    Write-Host "no throw: LASTEXITCODE=$LASTEXITCODE answer=[$answer]"
+  } catch {
+    Write-Host "THREW: $($_.Exception.GetType().FullName): $($_.Exception.Message)"
+  }
+  '
+
+Output:
+  no throw: LASTEXITCODE=1 answer=[err-text]
+
+Result: confirmed — on this machine's pwsh 7.6.9, the unguarded `2>&1` capture of a failing native command does
+NOT throw under Stop, matching the implementation's claim and the IMP-07 guarded-pattern result. Guarded and
+unguarded behave identically here, so the guard is a documented no-op on PowerShell 7 and specifically targets
+Windows PowerShell 5.1, which remains unavailable on this machine (macOS) and so stays unproven by execution —
+unchanged from the implementation's own framing.
+
+Independent corroboration (web research, not test execution): PowerShell/PowerShell PR #13361
+("stderr should not be treated as an ErrorRecord" for native commands) merged 2020-08-07 into the
+7.1.0-preview.6 milestone, behind the experimental feature `PSNotApplyErrorActionToStderr`; by this machine's
+pwsh 7.6.9 (stable), that behavior is active by default (confirmed directly by the no-throw result above, no
+feature flag set). Independent sources describe the general Windows PowerShell pattern of a native command's
+`2>&1`-captured stderr becoming a terminating error under `$ErrorActionPreference='Stop'`, and the standard
+workaround — scoping `$ErrorActionPreference` to `Continue` around the one call, restoring it right after —
+matching IR-002's fix exactly. This corroborates the claimed mechanism without being execution proof under
+Windows PowerShell 5.1 itself.
+
+What to look for: `no throw: LASTEXITCODE=1 answer=[err-text]` for the unguarded run (matches IMP-07's guarded
+result); no `THREW:` line.

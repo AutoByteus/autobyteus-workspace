@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -77,6 +79,13 @@ class DesktopFullScreenWindowTest {
     }
 
     private fun barsVisible(activity: Activity): Boolean? {
+        if (Build.VERSION.SDK_INT < 30) {
+            // Before API 30 WindowInsetsCompat cannot tell a hidden bar apart (measured on API 29: it stays "visible"
+            // while the window is in immersive full screen); the decor's system UI flags say it.
+            @Suppress("DEPRECATION") val hide = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            @Suppress("DEPRECATION") val flags = activity.window.decorView.systemUiVisibility and hide
+            return when (flags) { hide -> false; 0 -> true; else -> null }
+        }
         val insets = ViewCompat.getRootWindowInsets(activity.window.decorView) ?: return null
         val status = insets.isVisible(WindowInsetsCompat.Type.statusBars())
         val navigation = insets.isVisible(WindowInsetsCompat.Type.navigationBars())

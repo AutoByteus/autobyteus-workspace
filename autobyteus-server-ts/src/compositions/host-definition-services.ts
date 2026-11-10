@@ -9,6 +9,7 @@ import { DefinitionAdmissionService } from "../collaboration-definition-admissio
 import { FileAgentOrgDefinitionProvider } from "../agent-org-definition/providers/file-agent-org-definition-provider.js";
 import type { AgentPackageDefinitions } from "../agent-package-definitions/services/agent-package-definitions.js";
 import type { AgentDefinitionChangeSignal } from "../agent-definition/services/agent-definition-change-signal.js";
+import { PersonalSettingsService } from "../personal-settings/services/personal-settings-service.js";
 
 export type HostDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -19,6 +20,8 @@ export type HostDefinitionServices = Readonly<{
   agentPackageDefinitions: AgentPackageDefinitions;
   /** One signal for every agent definition change (package reloads, application-owned saves, package commands). */
   agentDefinitionChanges: AgentDefinitionChangeSignal;
+  /** The node's personal settings (the studio server sets the change feed's announce function on it). */
+  personalSettings: PersonalSettingsService;
   close(): void;
 }>;
 
@@ -31,7 +34,14 @@ export const createHostDefinitionServices = (input: {
     throw new Error("Complete HostDefinitionServices input is required.");
   }
   const definitions = createBundleBackedDefinitionServices(input);
-  AgentDefinitionService.bindProcessInstance(definitions.agentDefinitionService);
+  // The package updates reach the personal settings through the process instance.
+  PersonalSettingsService.bindProcessInstance(definitions.personalSettings);
+  try {
+    AgentDefinitionService.bindProcessInstance(definitions.agentDefinitionService);
+  } catch (error) {
+    PersonalSettingsService.releaseProcessInstance(definitions.personalSettings);
+    throw error;
+  }
   try {
     AgentTeamDefinitionService.bindProcessInstance(
       definitions.agentTeamDefinitionService,
@@ -40,6 +50,7 @@ export const createHostDefinitionServices = (input: {
     AgentDefinitionService.releaseProcessInstance(
       definitions.agentDefinitionService,
     );
+    PersonalSettingsService.releaseProcessInstance(definitions.personalSettings);
     throw error;
   }
 
@@ -48,12 +59,14 @@ export const createHostDefinitionServices = (input: {
     definitions.agentDefinitionService,
     definitions.agentTeamDefinitionService,
     definitions.packageDefinitions,
+    definitions.personalSettings,
   );
   try {
     AgentOrgDefinitionService.bindProcessInstance(agentOrgDefinitionService);
   } catch (error) {
     AgentTeamDefinitionService.releaseProcessInstance(definitions.agentTeamDefinitionService);
     AgentDefinitionService.releaseProcessInstance(definitions.agentDefinitionService);
+    PersonalSettingsService.releaseProcessInstance(definitions.personalSettings);
     throw error;
   }
   const definitionAdmissionService = new DefinitionAdmissionService({
@@ -70,6 +83,7 @@ export const createHostDefinitionServices = (input: {
     AgentOrgDefinitionService.releaseProcessInstance(agentOrgDefinitionService);
     AgentTeamDefinitionService.releaseProcessInstance(definitions.agentTeamDefinitionService);
     AgentDefinitionService.releaseProcessInstance(definitions.agentDefinitionService);
+    PersonalSettingsService.releaseProcessInstance(definitions.personalSettings);
     throw error;
   }
 
@@ -81,6 +95,7 @@ export const createHostDefinitionServices = (input: {
     definitionAdmissionService,
     agentPackageDefinitions: definitions.packageDefinitions,
     agentDefinitionChanges: definitions.agentDefinitionChanges,
+    personalSettings: definitions.personalSettings,
     close: () => {
       if (closed) return;
       closed = true;
@@ -93,6 +108,7 @@ export const createHostDefinitionServices = (input: {
       AgentDefinitionService.releaseProcessInstance(
         definitions.agentDefinitionService,
       );
+      PersonalSettingsService.releaseProcessInstance(definitions.personalSettings);
     },
   });
 };

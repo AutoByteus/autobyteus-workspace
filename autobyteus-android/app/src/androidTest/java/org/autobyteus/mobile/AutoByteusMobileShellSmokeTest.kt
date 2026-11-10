@@ -106,7 +106,7 @@ class AutoByteusMobileShellSmokeTest {
         instrumentation.runOnMainSync {
             val webView = WebView(context)
             try {
-                val root = WebShellScreen(context).render(
+                val root = WebShellScreen(context) { false }.render(
                     webView = webView,
                     diagnostic = null,
                     callbacks = noOpWebCallbacks(),
@@ -142,7 +142,7 @@ class AutoByteusMobileShellSmokeTest {
         instrumentation.runOnMainSync {
             val webView = WebView(context)
             try {
-                val root = WebShellScreen(context).render(
+                val root = WebShellScreen(context) { false }.render(
                     webView = webView,
                     diagnostic = diagnostic,
                     callbacks = noOpWebCallbacks(),
@@ -162,7 +162,7 @@ class AutoByteusMobileShellSmokeTest {
                 assertTrue(visibleText.contains("Browser"))
 
                 // The same WebView shown again without a diagnostic (a load that succeeded) is visible again.
-                WebShellScreen(context).render(webView = webView, diagnostic = null, callbacks = noOpWebCallbacks())
+                WebShellScreen(context) { false }.render(webView = webView, diagnostic = null, callbacks = noOpWebCallbacks())
                 assertEquals(View.VISIBLE, webView.visibility)
             } finally {
                 webView.destroy()

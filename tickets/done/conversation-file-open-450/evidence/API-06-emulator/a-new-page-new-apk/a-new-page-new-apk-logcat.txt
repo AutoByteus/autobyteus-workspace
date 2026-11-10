@@ -1,0 +1,43 @@
+11-09 12:45:27.992 I/chromium( 5267): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:45:28.042 I/chromium( 5210): [INFO:CONSOLE(2033)] "[Workspace] Connecting to file system changes for workspace: agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:28.042 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:62867/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:28.092 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:28.173 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Session established: acf77fdd-ec0a-411c-bafc-0849c1aa23d4", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:28.173 I/chromium( 5210): [INFO:CONSOLE(2033)] "[Workspace] Connected to file system changes: acf77fdd-ec0a-411c-bafc-0849c1aa23d4", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:28.460 I/chromium( 5267): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:45:28.528 I/chromium( 5267): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:45:36.174 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:36.175 I/chromium( 5210): [INFO:CONSOLE(2033)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:40.244 I/chromium( 5210): [INFO:CONSOLE(2033)] "[Workspace] Connecting to file system changes for workspace: agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:40.244 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:62867/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:40.250 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:40.256 I/chromium( 5267): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:45:40.350 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Session established: f4ed3088-bfa9-490a-90a2-01cc9b50cd81", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:40.350 I/chromium( 5210): [INFO:CONSOLE(2033)] "[Workspace] Connected to file system changes: f4ed3088-bfa9-490a-90a2-01cc9b50cd81", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:48.489 I/chromium( 5210): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:48.489 I/chromium( 5210): [INFO:CONSOLE(2033)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:45:50.017 D/ActivityManager(  570): sync unfroze 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 for 6
+11-09 12:45:50.019 I/am_unfreeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,6]
+11-09 12:45:50.575 I/ActivityManager(  570): Killing 5267:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a207i5 (adj 0): isolated not needed
+11-09 12:45:50.575 I/am_kill (  570): [0,5267,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,0,isolated not needed,0]
+11-09 12:45:50.657 I/am_proc_died(  570): [0,5267,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,0,10]
+11-09 12:45:50.708 W/.apps.wellbeing( 1343): ApkAssets: Deleting an ApkAssets object '<empty> and /product/overlay/NavigationBarMode3Button/NavigationBarMode3ButtonOverlay.apk' with 1 weak references
+11-09 12:45:50.712 W/.apps.wellbeing( 1343): ApkAssets: Deleting an ApkAssets object '<empty> and /product/overlay/NavigationBarMode2Button/NavigationBarMode2ButtonOverlay.apk' with 1 weak references
+11-09 12:45:50.718 W/.apps.wellbeing( 1343): ApkAssets: Deleting an ApkAssets object '<empty> and /product/overlay/TransparentNavigationBar/TransparentNavigationBarOverlay.apk' with 1 weak references
+11-09 12:45:50.731 W/.apps.wellbeing( 1343): ApkAssets: Deleting an ApkAssets object '<empty> and /product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk' with 1 weak references
+11-09 12:45:53.411 D/NavigationModeController(  809): getCurrentUserContext: contextUser=0 currentUser=0
+11-09 12:45:54.450 V/ResourcesManager( 5607): The following library key has been added: ResourcesKey{ mHash=37b003ed mResDir=null mSplitDirs=[] mOverlayDirs=[/product/overlay/EmulationPixel7/EmulationPixel7Overlay.apk,/product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk] mLibDirs=[/data/app/~~OW2KZ2_JJDlx7XKA4InblQ==/com.google.android.webview-RpWGmNo4zT7GALfxZFUv4A==/WebViewGoogle.apk,/data/app/~~4znSzZzGnrP04JdDfPidZQ==/com.google.android.trichromelibrary_636771932-wMGf1tC2Pw8VpQJAgci2kg==/TrichromeLibrary.apk,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v35 mCompatInfo={420dpi always-compat} mLoaders=[]}
+11-09 12:45:54.566 I/chromium( 5607): [1109/124554.564308:INFO:variations_seed_loader.cc(66)] Failed to open file for reading.: No such file or directory (2)
+11-09 12:45:54.718 I/am_proc_start(  570): [0,5694,99006,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,,{org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0}]
+11-09 12:45:54.718 I/ActivityManager(  570): Start proc 5694:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i6 for  {org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0}
+11-09 12:45:54.719 I/am_proc_bound(  570): [0,5694,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0]
+11-09 12:45:54.764 I/cr_WebViewApkApp( 5694): Launched version=124.0.6367.219 minSdkVersion=29 isBundle=false processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+11-09 12:45:55.219 W/chromium( 5694): [WARNING:runtime_features.cc(694)] SharedStorage for M118+ cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI,SharedStorageAPIM118 in addition.
+11-09 12:45:58.666 I/chromium( 5607): [INFO:CONSOLE(655)] "serverStore: Initializing server config", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (655)
+11-09 12:45:58.666 I/chromium( 5607): [INFO:CONSOLE(655)] "serverStore: Not in Electron environment. Skipping server initialization.", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (655)
+11-09 12:45:58.748 I/chromium( 5694): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:45:58.775 I/chromium( 5694): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:46:00.012 I/chromium( 5694): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:46:01.232 I/chromium( 5607): [INFO:CONSOLE(2033)] "Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:46:01.241 I/chromium( 5607): [INFO:CONSOLE(981)] "Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (981)
+11-09 12:46:01.257 I/chromium( 5607): [INFO:CONSOLE(885)] "Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403", source: http://10.0.2.2:62867/mobile/_nuxt/oacfvCcM.js (885)

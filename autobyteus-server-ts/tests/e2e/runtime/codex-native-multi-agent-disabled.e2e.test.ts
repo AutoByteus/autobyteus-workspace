@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { spawn, execFile, type ChildProcess } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, it } from "vitest";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // Requires current server prebuild/build, installed logged-in Codex, explicit two bounded live turns.
 // RUN_CODEX_E2E=1 RUN_CODEX_NATIVE_POLICY_LIVE=1 CODEX_NATIVE_POLICY_AUTH_FILE=<auth.json>
@@ -60,7 +61,9 @@ enabled = false
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
     const env: NodeJS.ProcessEnv = { PATH: process.env.PATH, HOME: home, CODEX_HOME: codexHome, TMPDIR: root, LANG: "en_US.UTF-8", APP_ENV: "test",
       DATABASE_URL: `file:${path.join(root, "test.db")}`, AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(root, "temp_workspace"), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: "",
-      CODEX_APP_SERVER_COMMAND: process.env.CODEX_NATIVE_POLICY_BINARY || "codex", CODEX_APP_SERVER_SANDBOX: "read-only" };
+      CODEX_APP_SERVER_COMMAND: process.env.CODEX_NATIVE_POLICY_BINARY || "codex", CODEX_APP_SERVER_SANDBOX: "read-only",
+      // The fixture child composes the node and calls it; it attaches this launch owner credential itself.
+      ...builtServerLaunchEnvironment() };
     for (const key of ["HTTPS_PROXY", "HTTP_PROXY", "ALL_PROXY", "NO_PROXY", "SSL_CERT_FILE", "SSL_CERT_DIR", "CODEX_CA_BUNDLE", "NODE_EXTRA_CA_CERTS"]) {
       if (process.env[key]) env[key] = process.env[key];
     }

@@ -1,0 +1,45 @@
+# API-15 temporary probe: tests/e2e/helpers/agy-run-capsule.ts findAgyRunCapsule skips an incomplete capsule (AC-010 c, D12); commit 86404668ff; macOS, Node v22.23.1; 2026-11-10T10:18:31Z
+# Setup: a temp memory folder with (A) an agy-project folder without manifest.json, (B) one with a half-written manifest naming the target run, then (C) the target's complete capsule.
+# Command: node --experimental-strip-types /tmp/api15-probe-script/probe.ts (script content below; no tsx in the worktree)
+#   // API-15 temporary probe (autobyteus-447 D12): findAgyRunCapsule skips a capsule that is not complete yet.
+#   import fs from "node:fs";
+#   import os from "node:os";
+#   import path from "node:path";
+#   import { findAgyRunCapsule } from "/Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/e2e/helpers/agy-run-capsule.ts";
+#   
+#   const memory = fs.mkdtempSync(path.join(os.tmpdir(), "api15-memory-"));
+#   const workspace = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "api15-ws-")));
+#   const capsule = (...parts: string[]) => { const dir = path.join(memory, ...parts, "agy-project"); fs.mkdirSync(dir, { recursive: true }); return dir; };
+#   const results: Record<string, unknown> = {};
+#   let threw = false;
+#   try {
+#     // A: another member's capsule: folder created, manifest not yet written (the writer's order, agy-run-capsule.ts:58-70).
+#     capsule("agent_teams", "team_1", "a_member_other");
+#     // B: a capsule whose manifest is half-written.
+#     fs.writeFileSync(path.join(capsule("agent_teams", "team_1", "b_member_partial"), "manifest.json"), '{"version":1,"runId":"run-target","work');
+#     results.whileIncomplete = findAgyRunCapsule(memory, "run-target");
+#     // C: the target capsule, complete.
+#     const target = capsule("agent_teams", "team_1", "c_member_target");
+#     fs.writeFileSync(path.join(target, "manifest.json"), JSON.stringify({ version: 1, runId: "run-target", workspacePath: workspace }));
+#     results.whenComplete = findAgyRunCapsule(memory, "run-target");
+#     results.expectedPath = target;
+#     results.unknownRun = findAgyRunCapsule(memory, "run-unknown");
+#   } catch (error) { threw = true; results.error = String(error); }
+#   const ok = !threw && results.whileIncomplete === null && results.unknownRun === null
+#     && (results.whenComplete as { path?: string; workspacePath?: string } | null)?.path === results.expectedPath
+#     && (results.whenComplete as { workspacePath?: string } | null)?.workspacePath === workspace;
+#   console.log(JSON.stringify({ ...results, threw, result: ok ? "PASS" : "FAIL" }, null, 2));
+#   fs.rmSync(memory, { recursive: true, force: true }); fs.rmSync(workspace, { recursive: true, force: true });
+#   process.exit(ok ? 0 : 1);
+{
+  "whileIncomplete": null,
+  "whenComplete": {
+    "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api15-memory-OtxBYb/agent_teams/team_1/c_member_target/agy-project",
+    "workspacePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api15-ws-jPdMmA"
+  },
+  "expectedPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api15-memory-OtxBYb/agent_teams/team_1/c_member_target/agy-project",
+  "unknownRun": null,
+  "threw": false,
+  "result": "PASS"
+}
+exit=0

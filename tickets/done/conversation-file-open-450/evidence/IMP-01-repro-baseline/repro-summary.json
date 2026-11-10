@@ -1,0 +1,124 @@
+{
+  "startedAt": "2026-11-09T10:21:31.395Z",
+  "timeline": [
+    {
+      "t": 4222,
+      "event": "stack",
+      "runId": "content_creator_d6aa525096d645489d980dd592a8d210",
+      "postPath": "<root>/workspace/posts/post.md"
+    },
+    {
+      "t": 39818,
+      "event": "desktop",
+      "D1_firstOpen": "VERSION-ONE-1111",
+      "D2_newLinkAfterRewrite": "VERSION-ONE-1111",
+      "D3_after10sOpen": "VERSION-ONE-1111",
+      "D4_closeButtonFound": false,
+      "D5_afterReload": "VERSION-TWO-2222"
+    },
+    {
+      "t": 51563,
+      "event": "phone",
+      "P1_firstOpen": "VERSION-TWO-2222",
+      "P2_newLinkAfterRewrite": "VERSION-TWO-2222",
+      "P3_afterReload": "VERSION-THREE-3333"
+    },
+    {
+      "t": 60376,
+      "event": "bug1",
+      "fileInputFound": true,
+      "chipKind": "name-chip",
+      "chipLabel": "attach-450.png",
+      "thumbnailRequests": [
+        {
+          "url": "/rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+          "status": 401,
+          "type": "image",
+          "mainFrame": false
+        },
+        {
+          "url": "/rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+          "status": 401,
+          "type": "image",
+          "mainFrame": false
+        },
+        {
+          "url": "/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+          "status": 401,
+          "type": "image",
+          "mainFrame": false
+        }
+      ],
+      "afterTap": {
+        "phoneUrlChanged": false,
+        "phoneUrl": "/mobile/?screen=run",
+        "newWindow": "/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+        "viewerOpen": 0,
+        "requestsAfterTap": [
+          {
+            "url": "/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+            "status": 401,
+            "type": "document",
+            "mainFrame": true
+          }
+        ]
+      }
+    }
+  ],
+  "desktop": {
+    "D1_firstOpen": "VERSION-ONE-1111",
+    "D2_newLinkAfterRewrite": "VERSION-ONE-1111",
+    "D3_after10sOpen": "VERSION-ONE-1111",
+    "D4_closeButtonFound": false,
+    "D5_afterReload": "VERSION-TWO-2222"
+  },
+  "phone": {
+    "P1_firstOpen": "VERSION-TWO-2222",
+    "P2_newLinkAfterRewrite": "VERSION-TWO-2222",
+    "P3_afterReload": "VERSION-THREE-3333"
+  },
+  "bug1": {
+    "fileInputFound": true,
+    "chipKind": "name-chip",
+    "chipLabel": "attach-450.png",
+    "thumbnailRequests": [
+      {
+        "url": "/rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+        "status": 401,
+        "type": "image",
+        "mainFrame": false
+      },
+      {
+        "url": "/rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+        "status": 401,
+        "type": "image",
+        "mainFrame": false
+      },
+      {
+        "url": "/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+        "status": 401,
+        "type": "image",
+        "mainFrame": false
+      }
+    ],
+    "afterTap": {
+      "phoneUrlChanged": false,
+      "phoneUrl": "/mobile/?screen=run",
+      "newWindow": "/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+      "viewerOpen": 0,
+      "requestsAfterTap": [
+        {
+          "url": "/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png",
+          "status": 401,
+          "type": "document",
+          "mainFrame": true
+        }
+      ]
+    }
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  }
+}

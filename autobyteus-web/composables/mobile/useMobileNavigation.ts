@@ -7,22 +7,31 @@ export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity' | 'desk
 
 const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'desktop', 'new'];
 /** `full=1`: the VNC Viewer's in-page full screen, its own entry, so Back leaves full screen first. */
-const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'reference', 'message', 'full'] as const;
+const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'contextFile', 'contextFileName', 'reference', 'message', 'full'] as const;
 /** The Org route keys, built only by `agentOrgRouteQuery`; `activeWorkspaceTarget` resolves the open Org from them. */
 const ORG_KEYS = ['rootSubjectKind', 'definitionId', 'orgRunId', 'mode', 'memberAddress', 'agentRunId'] as const;
+/**
+ * The open subject's keys: an Org's keys, or `row`, the run list row of an open agent run or Team subject
+ * (`MobileRunTreeRow.key`, autobyteus-435 DS-006), which a reload or Android's restore reopens.
+ */
+const SUBJECT_KEYS = [...ORG_KEYS, 'row'] as const;
 
 const one = (value: LocationQuery[string] | undefined): string => String(Array.isArray(value) ? value[0] ?? '' : value ?? '').trim();
 const pick = (query: LocationQuery, keys: readonly string[]): Record<string, string> =>
   Object.fromEntries(keys.flatMap((key) => (one(query[key]) ? [[key, one(query[key])]] : [])));
 /** Keys this owner does not write (`unsupported`, `pairing`): kept on the list entry, never carried forward. */
 const foreignOf = (query: LocationQuery): LocationQueryRaw => Object.fromEntries(Object.entries(query)
-  .filter(([key]) => !(SCREEN_KEYS as readonly string[]).includes(key) && !(ORG_KEYS as readonly string[]).includes(key)));
+  .filter(([key]) => !(SCREEN_KEYS as readonly string[]).includes(key) && !(SUBJECT_KEYS as readonly string[]).includes(key)));
+
+/** The subject a run screen opens: exactly one of an Org's route keys or a run list row (agent run or Team subject). */
+export type MobileRunSubject = { orgQuery: Record<string, string>; rowKey?: never } | { rowKey: string; orgQuery?: never };
 
 /**
  * The phone's screen state (autobyteus-277 DS-004): `/mobile`'s route query, so the system Back key walks
- * file → view → run → list. This is the only writer of that query, for the screen keys and the Org keys. Forward moves
- * push; ← goes back; opening a run first rewrites the list entry with the opened subject's Org keys (none for an agent
- * or a Team run), so Back returns to a list where the same subject is still open.
+ * file → view → run → list. This is the only writer of that query, for the screen keys and the subject keys. Forward
+ * moves push; ← goes back; opening a run first rewrites the list entry with the opened subject's keys (an Org's keys, or
+ * the `row` of an agent run or a Team subject), so Back returns to a list where the same subject is still open, and a
+ * reload or a restore after process death can reopen it (autobyteus-435 REQ-005).
  */
 export function useMobileNavigation() {
   const route = useRoute();
@@ -36,6 +45,11 @@ export function useMobileNavigation() {
   const openFileWorkspaceId = computed(() => (screen.value === 'files' ? one(route.query.workspace) || null : null));
   /** A node file (autobyteus-436): a file on the node's computer opened by its absolute path, read-only. */
   const openNodeFilePath = computed(() => (screen.value === 'files' ? one(route.query.nodeFile) || null : null));
+  /** A file attached to a message (autobyteus-450): its node URL path (no credential) and the name it was sent with. */
+  const openContextFileEntry = computed(() => {
+    const locator = screen.value === 'files' ? one(route.query.contextFile) : '';
+    return locator ? { locator, name: one(route.query.contextFileName) || locator.split('/').at(-1) || locator } : null;
+  });
   const desktopFullScreen = computed(() => screen.value === 'desktop' && one(route.query.full) === '1');
   const openReference = computed(() => {
     if (screen.value !== 'messages') return null;
@@ -44,7 +58,10 @@ export function useMobileNavigation() {
     return messageId && referenceId ? { messageId, referenceId } : null;
   });
 
-  const orgKeys = (): Record<string, string> => pick(route.query, ORG_KEYS);
+  /** The run list row the route names (an agent run or a Team subject), or null. */
+  const openRowKey = computed(() => one(route.query.row) || null);
+
+  const subjectKeys = (): Record<string, string> => pick(route.query, SUBJECT_KEYS);
   /** Whether this entry has an entry of this app under it (vue-router's history state; a reload or a link has none). */
   const hasEntryBelow = (): boolean => Boolean(router.options.history.state?.back);
   const push = (query: LocationQueryRaw) => router.push({ path: route.path, query });
@@ -55,17 +72,26 @@ export function useMobileNavigation() {
       router.back();
       return;
     }
-    const parent: LocationQueryRaw = openFilePath.value || openNodeFilePath.value ? { ...orgKeys(), screen: 'files' }
-      : desktopFullScreen.value ? { ...orgKeys(), screen: 'desktop' }
-      : openReference.value ? { ...orgKeys(), screen: 'messages' }
-        : screen.value === 'run' || screen.value === 'new' ? { ...orgKeys() }
-          : screen.value === 'list' ? route.query : { ...orgKeys(), screen: 'run' };
+    const parent: LocationQueryRaw = openFilePath.value || openNodeFilePath.value || openContextFileEntry.value
+      ? { ...subjectKeys(), screen: 'files' }
+      : desktopFullScreen.value ? { ...subjectKeys(), screen: 'desktop' }
+      : openReference.value ? { ...subjectKeys(), screen: 'messages' }
+        : screen.value === 'run' || screen.value === 'new' ? { ...subjectKeys() }
+          : screen.value === 'list' ? route.query : { ...subjectKeys(), screen: 'run' };
     await router.replace({ path: route.path, query: parent });
+  };
+
+  /**
+   * Names another row on the current entry, every other key kept (a draft run promoted to the node's run at its first
+   * send, autobyteus-435 DS-006b). Only the current entry: the History API rewrites no other.
+   */
+  const replaceRowKey = async (rowKey: string): Promise<void> => {
+    await router.replace({ path: route.path, query: { ...route.query, row: rowKey } });
   };
 
   /** Back to the run list in place of this entry (a screen whose subject is gone). */
   const toList = async (): Promise<void> => {
-    await router.replace({ path: route.path, query: { ...foreignOf(route.query), ...orgKeys() } });
+    await router.replace({ path: route.path, query: { ...foreignOf(route.query), ...subjectKeys() } });
   };
 
   const backThen = (): Promise<void> => new Promise((resolve) => {
@@ -74,35 +100,40 @@ export function useMobileNavigation() {
   });
 
   /**
-   * Opens the run screen of a subject: the current entry (the list) is rewritten with the subject's Org keys, or none,
-   * then the run screen is pushed with them. `replace` (New run's Create run): the New run entry gives way, so Back
-   * from the new run returns to the list.
+   * Opens the run screen of a subject: the current entry (the list) is rewritten with the subject's keys, then the run
+   * screen is pushed with them. `replace` (New run's Create run): the New run entry gives way, so Back from the new run
+   * returns to the list.
    */
-  const openRun = async (input: { orgQuery?: Record<string, string>; replace?: boolean } = {}): Promise<void> => {
+  const openRun = async (input: MobileRunSubject & { replace?: boolean }): Promise<void> => {
+    const subject: Record<string, string> = input.orgQuery ?? { row: input.rowKey };
     if (input.replace && screen.value === 'new' && hasEntryBelow()) {
       await backThen();
     } else if (input.replace) {
-      await router.replace({ path: route.path, query: { ...(input.orgQuery ?? {}), screen: 'run' } });
+      await router.replace({ path: route.path, query: { ...subject, screen: 'run' } });
       return;
     }
-    await router.replace({ path: route.path, query: { ...foreignOf(route.query), ...(input.orgQuery ?? {}) } });
-    await push({ ...(input.orgQuery ?? {}), screen: 'run' });
+    await router.replace({ path: route.path, query: { ...foreignOf(route.query), ...subject } });
+    await push({ ...subject, screen: 'run' });
   };
 
-  const openView = (view: MobileView) => push({ ...orgKeys(), screen: view });
-  const openNewRun = () => push({ ...orgKeys(), screen: 'new' });
+  const openView = (view: MobileView) => push({ ...subjectKeys(), screen: view });
+  const openNewRun = () => push({ ...subjectKeys(), screen: 'new' });
   /** Full screen is an entry above the VNC Viewer; leaving it is `back()`. */
-  const openDesktopFullScreen = () => push({ ...orgKeys(), screen: 'desktop', full: '1' });
+  const openDesktopFullScreen = () => push({ ...subjectKeys(), screen: 'desktop', full: '1' });
   const openFile = (input: { workspaceId: string; path: string }) =>
-    push({ ...orgKeys(), screen: 'files', workspace: input.workspaceId, file: input.path });
+    push({ ...subjectKeys(), screen: 'files', workspace: input.workspaceId, file: input.path });
   /** Opens a node file by its absolute path on the Files screen (a history entry; Back closes it). */
-  const openNodeFile = (input: { path: string }) => push({ ...orgKeys(), screen: 'files', nodeFile: input.path });
+  const openNodeFile = (input: { path: string }) => push({ ...subjectKeys(), screen: 'files', nodeFile: input.path });
+  /** Opens a message's attached file on the Files screen (a history entry; Back returns to the conversation). */
+  const openContextFile = (input: { locator: string; name: string }) =>
+    push({ ...subjectKeys(), screen: 'files', contextFile: input.locator, contextFileName: input.name });
   const openMessageReference = (input: { messageId: string; referenceId: string }) =>
-    push({ ...orgKeys(), screen: 'messages', message: input.messageId, reference: input.referenceId });
+    push({ ...subjectKeys(), screen: 'messages', message: input.messageId, reference: input.referenceId });
 
   return {
-    screen, openFilePath, openFileWorkspaceId, openNodeFilePath, openReference, desktopFullScreen,
-    back, toList, openRun, openView, openNewRun, openFile, openNodeFile, openMessageReference, openDesktopFullScreen,
+    screen, openRowKey, openFilePath, openFileWorkspaceId, openNodeFilePath, openContextFileEntry, openReference, desktopFullScreen,
+    back, toList, replaceRowKey, openRun, openView, openNewRun, openFile, openNodeFile, openContextFile, openMessageReference,
+    openDesktopFullScreen,
   };
 }
 

@@ -1,0 +1,25 @@
+# IMP-20 D13 load attempt 3: DCM with the other delegated-copy files in one run; machine load average ~39 (other agents' runs); commit 6ffb8f3bcb; macOS, Node v22.23.1; 2026-11-10T10:11:17Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/projects/delegated-copy-model-change.e2e.test.ts tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts
+11:11  up 21 days, 20:50, 9 users, load averages: 47.20 41.19 40.30
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 26993ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  2826ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1182ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  2836ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model  10104ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  2929ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1645ms
+     ✓ DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1352ms
+     ✓ DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1116ms
+     ✓ DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker  1074ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 19594ms
+     ✓ DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G  542ms
+     ✓ DCF-02: a Team copy's default and every member run in F  542ms
+     ✓ DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G  1205ms
+     ✓ DCF-04: a Task of a Project with no link, and a description-only delegation, run in the top-level run's folder  741ms
+     ✓ DCF-05: with links F1 and F2 the copy runs in F1  358ms
+     ✓ DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured placement, run in F; their managers stay in G  2033ms
+     ✓ DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart both keep their folder and wake there  12576ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3829ms
+     ✓ a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself  3066ms
+ Test Files  3 passed (3)
+      Tests  18 passed (18)

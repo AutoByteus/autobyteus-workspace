@@ -2,7 +2,6 @@ import { reachingAddressOf } from "../../agent-collaboration/collaborators/messa
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { CommittedTaskExecution, TaskExecutionPreparationOperation } from "../../agent-team-execution/domain/prepared-task-execution.js";
-import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecutionActivationPlan, type TaskExecutionActivationOperation,
   type RootTaskExecutionAdapter,
   type TaskExecutionActivationCommitResult,
@@ -16,7 +15,7 @@ import {
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { taskExecutionConversationUnavailable } from "../../agent-collaboration/execution/task/task-execution-conversation-availability.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
+import { foldTeamAggregateStatus, taskExecutionReferenceKey, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { placementSourceOf, projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { projectTaskExecutionSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import { restoreTaskAgentNode, restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";

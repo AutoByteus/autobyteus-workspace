@@ -32,6 +32,8 @@ const writePackage = async (root: string, agentId: string, skillName?: string): 
   return skillName ? writeSkill(path.join(root, "agents", agentId, "skills", skillName), skillName) : null;
 };
 
+/** Package-edit capture has its own tests (package-edit-capture.test.ts); here it does nothing. */
+const noCapture = { captureAndBackUp: async () => undefined };
 describe("AgentPackageService skill-name validation (REQ-023)", () => {
   let base: string;
   let defaultRoot: string;
@@ -44,6 +46,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
   const inheritedPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
 
   const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">) => new AgentPackageService({
+      packageEditCapture: noCapture,
     rootSettingsStore: new AgentPackageRootSettingsStore(
       { getAppDataDir: () => defaultRoot, getRegisteredAgentPackageRoots: parseAdditionalRoots,
         get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue },

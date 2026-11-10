@@ -206,7 +206,9 @@ describe("Agent package definitions live refresh at the real server/wire boundar
         }
         if (target.endsWith("/branches/main")) return Response.json({ commit: { sha: githubRevision } });
         if (target.startsWith("https://codeload.github.com/apar-e2e/agents/tar.gz/")) {
-          expect(target).toContain(githubRevision);
+          const requested = target.slice(target.lastIndexOf("/") + 1);
+          // An update first downloads the installed revision (to keep the user's edits): the archive written when it was current.
+          if (requested !== githubRevision) return new Response(await fs.readFile(path.join(base, `github-${requested.slice(0, 6)}.tar.gz`)));
           const archive = path.join(base, `github-${githubRevision.slice(0, 6)}.tar.gz`);
           await create({ gzip: true, file: archive, cwd: path.dirname(upstream), portable: true }, ["wrapper"]);
           return new Response(await fs.readFile(archive));

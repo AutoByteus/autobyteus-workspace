@@ -15,6 +15,7 @@ import type { AgentRunCollaborationContext } from './agentRunCollaborationContex
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
+import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -96,11 +97,14 @@ export class AgentRunCollaborationStreamingService {
       this.socket = null
       this.phase = 'disconnected'
       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
-      // 4004: this run cannot host delegated copies; retrying cannot help.
-      if (!this.intentionalClose && event.code !== 4004) this.recoveryFailed('The Agent collaboration stream closed.')
-      else if (event.code === 4004) {
+      // 4004: this run cannot host delegated copies; a credential refusal: the node refuses this client. Retrying
+      // cannot help either.
+      const finalClose = event.code === 4004 ? 'This run cannot host delegated copies.'
+        : isCredentialRefusalClose(event.code, event.reason) ? 'The node refused this connection\'s credential.' : null
+      if (!this.intentionalClose && !finalClose) this.recoveryFailed('The Agent collaboration stream closed.')
+      else if (finalClose) {
         this.reconnect.startOver()
-        this.settleReadiness(new Error('This run cannot host delegated copies.'))
+        this.settleReadiness(new Error(finalClose))
       }
     }
   }

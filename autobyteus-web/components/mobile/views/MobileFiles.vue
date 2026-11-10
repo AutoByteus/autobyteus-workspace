@@ -73,11 +73,11 @@
       :open-error="openFileError"
       @close="navigation.back()"
     />
-    <!-- A node file (autobyteus-436): a file a conversation named outside the agent's folder, opened by its absolute
-         path, read-only. -->
+    <!-- A node file, read-only: a file a conversation named outside the agent's folder, by its absolute path
+         (autobyteus-436), or a file attached to a message (autobyteus-450). -->
     <MobileFileViewer
-      v-else-if="nodeFilePath"
-      :path="nodeFilePath"
+      v-else-if="nodeFileSource"
+      :path="mobileNodeFileName(nodeFileSource)"
       :file-state="nodeFileState"
       :error-message="nodeFileError"
       @close="navigation.back()"
@@ -91,7 +91,7 @@ import { Icon } from '@iconify/vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import MobileFileViewer from '~/components/mobile/views/MobileFileViewer.vue';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
-import { useMobileNodeFile } from '~/composables/mobile/useMobileNodeFile';
+import { mobileNodeFileName, useMobileNodeFile, type MobileNodeFileSource } from '~/composables/mobile/useMobileNodeFile';
 import { useMobileWorkspaceFileExplorer, type MobileWorkspaceFileNode } from '~/composables/mobile/useMobileWorkspaceFileExplorer';
 import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun';
 import { useLocalization } from '~/composables/useLocalization';
@@ -133,9 +133,14 @@ const openFileError = computed(() => {
   return openFileMatches.value ? explorer.getFileOpenError(openPath.value) : 'unavailable';
 });
 watch([openPath, openFileMatches], ([path, matches]) => { if (path && matches) void explorer.openFileReadOnly(path); }, { immediate: true });
-/** The node file the route opens, by its absolute path. */
-const nodeFilePath = navigation.openNodeFilePath;
-const { fileState: nodeFileState, errorMessage: nodeFileError } = useMobileNodeFile(nodeFilePath);
+/** The node file the route opens: by its absolute path, or a message's attached file. */
+const nodeFileSource = computed<MobileNodeFileSource | null>(() => {
+  const path = navigation.openNodeFilePath.value;
+  if (path) return { kind: 'path', path };
+  const attached = navigation.openContextFileEntry.value;
+  return attached ? { kind: 'contextFile', locator: attached.locator, name: attached.name } : null;
+});
+const { fileState: nodeFileState, errorMessage: nodeFileError } = useMobileNodeFile(nodeFileSource);
 
 const openNode = async (node: MobileWorkspaceFileNode): Promise<void> => {
   if (node.is_file) {

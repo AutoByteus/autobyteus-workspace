@@ -10,6 +10,8 @@ import {
 } from "../types/agent-team-definition.js";
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
 import { toGraphqlDefinitionLoadIssueEntries } from "../types/definition-problems.js";
+import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
+import { toGraphqlPersonalSettings } from "../types/personal-settings.js";
 import type { DefinitionLoadIssueEntry } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 
 const logger = {
@@ -44,6 +46,7 @@ export class AgentTeamDefinitionConverter {
   static toGraphql(
     domainDefinition: DomainAgentTeamDefinition,
     loadIssues: readonly DefinitionLoadIssueEntry[] = [],
+    personalSettings: PersonalSettingsView | null = null,
   ): GraphqlAgentTeamDefinition {
     try {
       const graphqlNodes: GraphqlTeamMember[] = domainDefinition.nodes.map((member) => ({
@@ -81,6 +84,7 @@ export class AgentTeamDefinitionConverter {
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
         loadIssues: toGraphqlDefinitionLoadIssueEntries(loadIssues),
         revision: domainDefinition.revision,
+        ...toGraphqlPersonalSettings(personalSettings),
       };
     } catch (error) {
       logger.error(

@@ -1,0 +1,13 @@
+# IMP-15 full phone probe on the IR-002 rework
+# Commands: pnpm -C autobyteus-web build:mobile-web; pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/sfb435-r2-probe
+#   (server dist from IMP-10's build: no server source changed since e5ca0e1da7)
+# Commit f9cb6f7153; macOS darwin 25.5.0, Node v22.23.1, headless Chrome; 2026-11-10. Full JSON: IMP-15-rework-mobile-shell-probe.json
+
+result: Pass
+unknownBrowserErrors: 0
+failed cases: []
+cases run: 32
+MSP-07 (New run -> Create run -> first message keeps the screen; the new run tops the list with its permanent id): Pass
+MSP-32: Pass refused: [] refusedSockets: []
+failed requests to http://localhost:8000/health: 0
+cleanup: {'frontendExited': True, 'serversLeft': 0, 'rootRemoved': True}

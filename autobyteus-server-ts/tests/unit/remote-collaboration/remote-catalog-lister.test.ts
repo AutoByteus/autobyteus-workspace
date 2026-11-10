@@ -4,7 +4,7 @@ import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definit
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { NodeCatalogPort } from "../../../src/agent-collaboration/collaborators/node-catalog-port.js";
-import { BUILT_IN_AGENT_DEFINITIONS } from "../../../src/built-in-agents/built-in-agent-registry.js";
+import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { RemoteCatalogLister } from "../../../src/remote-collaboration/inbound/remote-catalog-lister.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -20,13 +20,13 @@ const agent = (id: string, name: string, ownershipScope: AgentDefinition["owners
   new AgentDefinition({ id, name, description, instructions: "secret instructions", ownershipScope, defaultLaunchConfig: opus });
 
 const setup = () => {
-  const builtIn = BUILT_IN_AGENT_DEFINITIONS[0]!;
   const agents = [
     agent("publisher", "Publisher"),
     agent("writer", "Writer", "shared", "Writes the articles"),
     agent("member-only", "Member Only", "team_local"),
     agent("app-agent", "App Agent", "application_owned"),
-    agent(builtIn.id, "Built In"),
+    agent(DAILY_ASSISTANT_AGENT_DEFINITION_ID, "Daily Assistant", "shared", "Your general-purpose assistant"),
+    agent(MODEL_ROUTER_AGENT_DEFINITION_ID, "Model Router"),
   ];
   const teams = [
     new AgentTeamDefinition({ id: "studio", name: "Studio Team", description: "Writes and checks articles", instructions: "x", coordinatorMemberName: "writer",
@@ -53,6 +53,7 @@ describe("RemoteCatalogLister (autobyteus-261)", () => {
     await expect(lister.list()).resolves.toEqual({ accepted: true, agents: [
       { name: "Publisher", kind: "agent", address: "/publisher" },
       { name: "Writer", kind: "agent", address: "/writer", description: "Writes the articles" },
+      { name: "Daily Assistant", kind: "agent", address: "/daily_assistant", description: "Your general-purpose assistant" },
       { name: "Studio Team", kind: "agent_team", address: "/studio_team", description: "Writes and checks articles" },
     ] });
   });
@@ -63,15 +64,15 @@ describe("RemoteCatalogLister (autobyteus-261)", () => {
     for (const entry of agents) {
       await expect(admission.catalogDefinitionAt(port, entry.address), entry.address).resolves.toMatchObject({ kind: entry.kind });
     }
-    // Built-ins, team-local and application-owned definitions are neither listed nor delegable.
-    for (const address of ["/built_in", "/member_only", "/app_agent", "/app_team"]) {
+    // The Model Router, team-local and application-owned definitions are neither listed nor delegable (autobyteus-455 AC-004).
+    for (const address of ["/model_router", "/member_only", "/app_agent", "/app_team"]) {
       await expect(admission.catalogDefinitionAt(port, address), address).resolves.toBeNull();
     }
   });
 
   it("reads the catalog on every call: a Team added between two calls is in the second (AC-405, REQ-407)", async () => {
     const f = setup();
-    expect((await f.lister.list()).agents).toHaveLength(3);
+    expect((await f.lister.list()).agents).toHaveLength(4);
     f.teams.push(new AgentTeamDefinition({ id: "review", name: "Review Squad", description: "", instructions: "x", coordinatorMemberName: "publisher",
       nodes: [new TeamMember({ memberName: "publisher", ref: "publisher", refScope: "shared" })] }));
     expect((await f.lister.list()).agents.at(-1)).toEqual({ name: "Review Squad", kind: "agent_team", address: "/review_squad" });

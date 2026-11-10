@@ -368,6 +368,20 @@ delegated run, …) are defined in the
   delegates; opened by ID it works. It is not the same as a **built-in agent**
   (shipped and synced by AutoByteus, e.g. the Daily Assistant), which may or may
   not be internal.
+- **Base value:** the value of a setting in a definition's files: a package's
+  files, or a built-in agent's template copied at every start. A personal
+  setting sits on top of it.
+- **Personal setting:** one of four settings (tools, skills, avatar, default
+  runtime/model; Teams and Orgs have only the last two) of a definition from an
+  agent package or of a built-in agent, kept on this node in
+  `<app-data>/agent-packages/personal-settings.json` instead of in the
+  definition's files, so package updates and restarts keep it. Tools and skills
+  are kept as names added to and removed from the base value; avatar and
+  runtime/model replace it. The **effective** value (the base value with the
+  personal settings applied) is what every reader gets. "Reset to the package's
+  setting" removes one. The user's own definitions in the app's storage have no
+  personal settings: edits go into their files. Contract and rules:
+  [personal_settings.md](autobyteus-server-ts/docs/modules/personal_settings.md).
 
 ## Model Routing
 

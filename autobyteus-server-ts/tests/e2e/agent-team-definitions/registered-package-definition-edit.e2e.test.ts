@@ -20,12 +20,14 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // `autobyteus-agents`; every save goes through the same `update*Definition` mutations and full payload the edit pages send.
 // Only the AGY CLI is scripted (tests/fixtures/agy-failure-cli.mjs `linked_skills`): `CALL_TOOL:{...}` makes the Manager
 // call the real `delegate_task`; `AGY_FAKE_EXTRA_MODELS` offers the models the package Team default names.
-// Cases: RPE-001 the Team default runtime/model and description are saved into `team-config.json`/`team.md` of the package;
+// Cases: RPE-001 the Team description is saved into `team.md` of the package and the default runtime/model into the user's
+// personal settings (`<app-data>/agent-packages/personal-settings.json`, autobyteus-95), not into `team-config.json`;
 // its team-local Agents stay; two consecutive saves with the returned revision both pass (no reload race with the package
 // folder watcher); no "read-only" text. RPE-002 a stale revision conflicts and changes nothing. RPE-003 an Org of the
-// package is saved into `org-config.json`. RPE-004 an Org-owned Team is still refused outside its Org save. RPE-005 a
+// package: description into `org.md`, default into the personal settings. RPE-004 an Org-owned Team is still refused outside its Org save. RPE-005 a
 // folder the disk refuses gives "read-only at source path". RPE-006 a running Manager delegates the package Team: the
-// copy records and runs on the saved Team default; after another edit a new copy runs on the new default.
+// copy records and runs on the saved Team default; after another, default-only edit (package files byte-identical) a new
+// copy runs on the new default.
 // RPE-007 a package Team is deleted from its package folder. RPE-008 a save keeps a team-local skill's relative link to a
 // Team-shared file verbatim (the real Software Engineering Team has such links).
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
@@ -125,6 +127,9 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
       members: (org.members as Rec[]).map(({ memberName, ref, refType, refScope }) => ({ memberName, ref, refType, refScope })),
       defaultLaunchConfig: org.defaultLaunchConfig, ...edits } });
   const fileJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8")) as Rec;
+  /** The user's personal setting of a package definition (personal-settings-file-contract.md §3: keyed `<kind>:<id>`). */
+  const personalSetting = async (kind: "agent_team" | "agent_org", id: string) =>
+    (await fileJson(path.join(dataDir, "agent-packages", "personal-settings.json")))[`${kind}:${id}`] as Rec | undefined;
   const snapshot = async (dir: string) => {
     const out: Record<string, string> = {};
     const visit = async (current: string) => {
@@ -229,7 +234,7 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
     expect(errors, "owned cleanup").toEqual([]);
   }, 120_000);
 
-  it("RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the default runtime/model into the package", async () => {
+  it("RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the description into the package and the default runtime/model into the personal settings", async () => {
     const before = await readTeam(TEAM_ID);
     expect(before).toMatchObject({ id: TEAM_ID, name: TEAM_NAME, defaultLaunchConfig: null });
     const teamLocalBefore = await snapshot(path.join(teamDir(), "agents"));
@@ -239,12 +244,14 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
     expect(team).toMatchObject({ id: TEAM_ID, description: "Edited in the app",
       defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAVED, llmConfig: null } });
     expect(team.revision).not.toBe(before.revision);
+    // The default is the user's own setting (autobyteus-95): recorded in the personal settings, not in the package file.
+    expect(await personalSetting("agent_team", TEAM_ID)).toEqual({ defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAVED, llmConfig: null } });
     const config = await fileJson(path.join(teamDir(), "team-config.json"));
-    expect(config.defaultLaunchConfig).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: SAVED });
+    expect(config.defaultLaunchConfig ?? null).toBeNull();
     expect(config.members).toEqual(teamConfig.members);
     expect(await fs.readFile(path.join(teamDir(), "team.md"), "utf8")).toContain("description: Edited in the app");
     expect(await snapshot(path.join(teamDir(), "agents")), "team-local Agents untouched").toEqual(teamLocalBefore);
-    // Nothing is written into app data for it.
+    // No copy of the Team is written into app data.
     await expect(fs.access(path.join(dataDir, "agent-teams", TEAM_ID))).rejects.toThrow();
     // A second save right after, with the revision the first returned, still passes (no reload race with the folder watcher).
     await wait(1_500);
@@ -254,7 +261,7 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
     expect(reread).toMatchObject({ description: "Edited in the app", instructions: "Ship software, edited twice.",
       defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAVED } });
     expect(JSON.stringify(reread)).not.toMatch(/read-only|readonly/i);
-    evidence.rpe001 = { before, saved: team, reread, teamConfig: config };
+    evidence.rpe001 = { before, saved: team, reread, teamConfig: config, personalSetting: await personalSetting("agent_team", TEAM_ID) };
   });
 
   it("RPE-002 (AC-003): a stale revision conflicts and leaves the package unchanged", async () => {
@@ -267,14 +274,15 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
     evidence.rpe002 = stale.errors;
   });
 
-  it("RPE-003 (AC-002): the Org edit page's save writes the Org default into the package", async () => {
+  it("RPE-003 (AC-002): the Org edit page's save writes the description into the package and the Org default into the personal settings", async () => {
     const org = await readOrg(ORG_ID);
     expect(org).toMatchObject({ id: ORG_ID, defaultLaunchConfig: null });
     const saved = await saveOrg(org, { description: "Org edited in the app", defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAVED, llmConfig: null } });
     expect(saved.errors, JSON.stringify(saved.errors)).toBeUndefined();
     expect(saved.data!.updateAgentOrgDefinition).toMatchObject({ description: "Org edited in the app",
       defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAVED } });
-    expect((await fileJson(path.join(orgDir(), "org-config.json"))).defaultLaunchConfig).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: SAVED });
+    expect(await personalSetting("agent_org", ORG_ID)).toEqual({ defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAVED, llmConfig: null } });
+    expect((await fileJson(path.join(orgDir(), "org-config.json"))).defaultLaunchConfig ?? null).toBeNull();
     expect(await fs.readFile(path.join(orgDir(), "org.md"), "utf8")).toContain("description: Org edited in the app");
     await expect(fs.access(path.join(orgDir(), "agent-teams", "squad", "team-config.json"))).resolves.toBeUndefined();
     expect((await readOrg(ORG_ID)).defaultLaunchConfig).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: SAVED });
@@ -355,11 +363,15 @@ suite("Registered package Teams and Orgs are edited and saved into the package (
     expect(first.result.launch_notes ?? []).toEqual([]);
     expect(first.models).toEqual([SAVED]);
 
-    // The user edits the default again in the app; a new copy uses the newly saved value.
+    // The user edits only the default again in the app: the package's files stay byte-identical, the personal setting and
+    // the definition read change, and a new copy uses the newly saved value.
     const team = await readTeam(TEAM_ID);
+    const packageFiles = await snapshot(teamDir());
     const edited = await saveTeam(team, { defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: EDITED, llmConfig: null } });
     expect(edited.errors, JSON.stringify(edited.errors)).toBeUndefined();
-    expect((await fileJson(path.join(teamDir(), "team-config.json"))).defaultLaunchConfig).toMatchObject({ llmModelIdentifier: EDITED });
+    expect(await snapshot(teamDir()), "a default-only save leaves the package files unchanged").toEqual(packageFiles);
+    expect(await personalSetting("agent_team", TEAM_ID)).toEqual({ defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: EDITED, llmConfig: null } });
+    expect((await readTeam(TEAM_ID)).defaultLaunchConfig).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: EDITED });
     const second = await delegatePackageTeam();
     expect(launchOf(f(second.source, "defaultLaunchConfiguration"))).toEqual({ runtimeKind: AGY, model: EDITED });
     expect(second.models).toEqual([EDITED]);

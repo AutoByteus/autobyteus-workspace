@@ -114,7 +114,7 @@
   "tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts": 1,
   "tests/unit/agent-collaboration/collaboration-launch-configuration-resolver.test.ts": 5,
   "tests/unit/agent-collaboration/collaborators/collaborator-admission-launch-defaults.test.ts": 5,
-  "tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts": 5,
+  "tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts": 4,
   "tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-defaults-only.test.ts": 2,
   "tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver-model-routing.test.ts": 2,
   "tests/unit/agent-collaboration/collaborators/collaborator-launch-resolver.test.ts": 3,

@@ -1,7 +1,5 @@
-import {
-  taskExecutionReferenceKey,
-  type TaskExecutionReference,
-} from "./task-execution-reference.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 
 /** Injectable timer seam so grace-period behavior is testable with a controllable clock. */
 export type TaskExecutionIdleTimers = Readonly<{

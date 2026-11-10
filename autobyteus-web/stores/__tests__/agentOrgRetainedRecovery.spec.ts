@@ -27,12 +27,13 @@ class Socket {
   static OPEN = 1; static CONNECTING = 0; static instances: Socket[] = []
   readyState = 1
   onmessage: ((event: { data: string }) => void) | null = null
-  onclose: (() => void) | null = null
+  /** As a browser's WebSocket, a close always carries its code and reason; `close()` here is a lost connection (1006). */
+  onclose: ((event: { code: number; reason: string }) => void) | null = null
   onerror: (() => void) | null = null
   sent: string[] = []
   constructor(_url: string) { Socket.instances.push(this) }
   send(value: string) { this.sent.push(value) }
-  close() { this.readyState = 3; this.onclose?.() }
+  close() { this.readyState = 3; this.onclose?.({ code: 1006, reason: '' }) }
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
 const envelope = (active: boolean) => {

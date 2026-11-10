@@ -1,0 +1,253 @@
+{
+  "label": "a-new-page-new-apk",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450",
+  "apk": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk",
+  "startedAt": "2026-11-09T11:40:58.074Z",
+  "taps": [
+    {
+      "name": "text",
+      "found": true,
+      "pairingScreen": false,
+      "viewerText": false,
+      "viewerImage": false,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    },
+    {
+      "name": "png",
+      "found": true,
+      "pairingScreen": false,
+      "viewerText": false,
+      "viewerImage": true,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    }
+  ],
+  "connections": [
+    {
+      "openedAt": 23697,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 29000,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjYyMDM4IiwicGFpcmluZ0NvZGUiOiJKSmZEc3o1TmtwcjRSOXJPWTl1aU41ZHIiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA5VDExOjQ2OjEzLjM3NVoiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0",
+      "webSocket": false
+    },
+    {
+      "openedAt": 29154,
+      "path": "/mobile/_nuxt/oacfvCcM.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 29288,
+      "path": "/mobile/_nuxt/GvWo52pL.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 29290,
+      "path": "/mobile/_nuxt/D0usbjkD.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 29316,
+      "path": "/mobile/_nuxt/CTE5Ax7p.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 29323,
+      "path": "/mobile/_nuxt/ZLlsNRoP.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 43323,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 43608,
+      "path": "/ws/agent/content_creator_fd2455acdf42412bb9bc0e0264a84689?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 53558,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57391,
+      "path": "/mobile",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57443,
+      "path": "/mobile/_nuxt/oacfvCcM.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57551,
+      "path": "/mobile/_nuxt/GvWo52pL.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57563,
+      "path": "/mobile/_nuxt/D0usbjkD.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57574,
+      "path": "/mobile/_nuxt/CTE5Ax7p.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57607,
+      "path": "/mobile/_nuxt/ZLlsNRoP.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 61450,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 63766,
+      "path": "/ws/agent/content_creator_fd2455acdf42412bb9bc0e0264a84689?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 70798,
+      "path": "/ws/agent-collaboration/content_creator_fd2455acdf42412bb9bc0e0264a84689?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 76282,
+      "path": "/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 88615,
+      "path": "/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 102472,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 105504,
+      "path": "/mobile",
+      "webSocket": false
+    },
+    {
+      "openedAt": 105531,
+      "path": "/mobile/_nuxt/oacfvCcM.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 105539,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css",
+      "webSocket": false
+    },
+    {
+      "openedAt": 105543,
+      "path": "/mobile/_nuxt/GvWo52pL.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 105549,
+      "path": "/mobile/_nuxt/D0usbjkD.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 105567,
+      "path": "/mobile/_nuxt/CTE5Ax7p.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 108930,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    }
+  ],
+  "timeline": [
+    {
+      "t": 15299,
+      "event": "attachments sent by the second phone"
+    },
+    {
+      "t": 18048,
+      "event": "apk",
+      "versionName": "0.1.0"
+    },
+    {
+      "t": 86590,
+      "event": "tap",
+      "name": "text",
+      "found": true,
+      "pairingScreen": false,
+      "viewerText": false,
+      "viewerImage": false,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    },
+    {
+      "t": 98776,
+      "event": "tap",
+      "name": "png",
+      "found": true,
+      "pairingScreen": false,
+      "viewerText": false,
+      "viewerImage": true,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    },
+    {
+      "t": 163313,
+      "event": "revocation",
+      "status": 200,
+      "pairingShown": false,
+      "screen": [
+        ""
+      ]
+    }
+  ],
+  "error": null,
+  "run": "content_creator_fd2455acdf42412bb9bc0e0264a84689",
+  "revocation": {
+    "status": 200,
+    "pairingShown": false,
+    "screen": [
+      ""
+    ]
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-09T11:43:41.561Z"
+}

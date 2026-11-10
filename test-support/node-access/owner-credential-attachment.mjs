@@ -9,7 +9,9 @@ import http from 'node:http';
  * `Authorization: Bearer <credential>` for the node's loopback port, unless the request already carries a credential
  * (an `Authorization` header, a peer signature as one node sends another, or the browser WebSocket credential
  * `access_token` in its query, as a phone sends it).
- * Test code only; never a production path.
+ * The server test setup (`autobyteus-server-ts/tests/setup/test-launch-credential.ts`) installs it before any test
+ * code runs, so a `fetch` a test keeps is already the attached one; it attaches nothing until a port or the loopback
+ * credential is registered. Test code only; never a production path.
  */
 
 const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost', '::1', '[::1]']);
@@ -36,7 +38,11 @@ const credentialForUrl = (url) => {
   return credentialsByPort.get(port) ?? loopbackCredential;
 };
 
-const install = () => {
+/**
+ * Patches `fetch` and `http.request` so they attach registered credentials. Idempotent; the attach functions call it
+ * too, for processes that have no server test setup (web probes).
+ */
+export const installOwnerCredentialAttachment = () => {
   if (installed) return;
   installed = true;
 
@@ -83,7 +89,7 @@ const install = () => {
  * the function that stops attaching it.
  */
 export const attachOwnerCredential = (baseUrl, credential) => {
-  install();
+  installOwnerCredentialAttachment();
   const url = new URL(baseUrl);
   const port = url.port || (url.protocol === 'https:' ? '443' : '80');
   credentialsByPort.set(port, credential);
@@ -98,7 +104,7 @@ export const attachOwnerCredential = (baseUrl, credential) => {
  * function that stops attaching it.
  */
 export const attachOwnerCredentialToLoopback = (credential) => {
-  install();
+  installOwnerCredentialAttachment();
   loopbackCredential = credential;
   return () => {
     if (loopbackCredential === credential) loopbackCredential = null;
