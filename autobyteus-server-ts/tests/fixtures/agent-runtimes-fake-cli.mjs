@@ -14,7 +14,9 @@
 //   grok-latest                  latest version `grok update --check --json` reports (default = installed)
 //   <codex|grok>-login           write `complete` to let a waiting login finish signed in
 //   codex-models                 comma-separated model ids for app-server `model/list` (default gpt-5.6-luna)
-// The Claude Agent SDK's own start (stream-json) gets one model, `claude-fake-sonnet`.
+// The Claude Agent SDK's own start (stream-json) gets one model, `claude-fake-sonnet`; the `claude-models` state file
+// changes that while a server runs: comma-separated model ids (a CLI update starts offering a model), or `none` (the CLI
+// offers no model, as when it fails or is signed out).
 // Usage limits (autobyteus-303 `list_available_agent_runtimes`), answered from the recorded, redacted answers in
 // `tests/fixtures/usage-limits/`:
 //   Codex app-server `account/rateLimits/read`, Claude SDK control request `get_usage`, `agy -p /usage --output-format
@@ -197,9 +199,11 @@ const main = async () => {
             response: JSON.parse(usageFixture("claude-get-usage.json")) } })}\n`);
           return;
         }
+        const offered = state("claude-models", "claude-fake-sonnet");
+        const models = offered === "none" ? [] : offered.split(",").map((id) => ({
+          value: id, displayName: id === "claude-fake-sonnet" ? "Claude Fake Sonnet" : id, description: "Scripted test model." }));
         out(`${JSON.stringify({ type: "control_response", response: { subtype: "success", request_id: frame.request_id,
-          response: { commands: [], models: [{ value: "claude-fake-sonnet", displayName: "Claude Fake Sonnet", description: "Scripted test model." }],
-            account: {}, output_style: "default", available_output_styles: [] } } })}\n`);
+          response: { commands: [], models, account: {}, output_style: "default", available_output_styles: [] } } })}\n`);
       }).on("close", () => process.exit(0));
       return;
     }

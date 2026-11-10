@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { WorkingContextFinalizer } from "autobyteus-ts/memory/working-context-finalizer.js";
@@ -39,11 +40,14 @@ const makeTarget = (label: string) => {
   return { runtimeRoot, database, isolatedHome };
 };
 
-const startServer = async (target: ReturnType<typeof makeTarget>): Promise<RunningTestServer> => {
+const startServer = async (
+  target: ReturnType<typeof makeTarget>,
+  extraEnvironment: Record<string, string> = {},
+): Promise<RunningTestServer> => {
   const server = await startBuiltTestServer({
     runtimeRoot: target.runtimeRoot,
     databaseUrlOverride: target.database.databaseUrl,
-    environment: createSanitizedTestEnvironment({ HOME: target.isolatedHome }),
+    environment: createSanitizedTestEnvironment({ HOME: target.isolatedHome, ...extraEnvironment }),
   });
   ownedServers.add(server);
   return server;
@@ -131,6 +135,7 @@ const updateAgent = (serverUrl: string, input: {
   updateStoppedAgentRunSelection: {
     success: boolean;
     outcome: string;
+    message: string;
     isActive: boolean;
     editability: { editable: boolean; reason: string | null };
     canonicalSelection: { llmModelIdentifier: string; llmConfig: JsonRecord | null } | null;
@@ -139,7 +144,7 @@ const updateAgent = (serverUrl: string, input: {
 }>(serverUrl, `
   mutation UpdateStoppedAgent($input: UpdateStoppedAgentRunSelectionInput!) {
     updateStoppedAgentRunSelection(input: $input) {
-      success outcome isActive
+      success outcome message isActive
       editability { editable reason }
       canonicalSelection { llmModelIdentifier llmConfig }
       fieldErrors { path message }
@@ -160,6 +165,7 @@ const updateTeam = (serverUrl: string, input: {
   updateStoppedTeamRunSelections: {
     success: boolean;
     outcome: string;
+    message: string;
     isActive: boolean;
     editability: { editable: boolean; reason: string | null };
     canonicalExecutionTree: JsonRecord | null;
@@ -168,7 +174,7 @@ const updateTeam = (serverUrl: string, input: {
 }>(serverUrl, `
   mutation UpdateStoppedTeam($input: UpdateStoppedTeamRunSelectionsInput!) {
     updateStoppedTeamRunSelections(input: $input) {
-      success outcome isActive
+      success outcome message isActive
       editability { editable reason }
       canonicalExecutionTree
       fieldErrors { path message }
@@ -236,6 +242,28 @@ const findPersistedScopeConfig = (tree: JsonRecord, address: string): JsonRecord
   if (tree.rootTeam.address === address) return tree.rootTeam.defaultLaunchConfiguration.llmConfig;
   return tree.rootTeam.members.find((member: JsonRecord) => member.address === address)
     ?.launchConfiguration.llmConfig ?? null;
+};
+
+const FAKE_RUNTIME_CLI = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../fixtures/agent-runtimes-fake-cli.mjs",
+);
+const CLAUDE_SDK = "claude_agent_sdk";
+
+/**
+ * A scripted Claude Code CLI (`agent-runtimes-fake-cli.mjs` linked as `claude`) whose offered models the test changes
+ * while the server runs: the `claude-models` state file holds comma-separated model ids, `none` makes it offer no model.
+ * `CLAUDE_CODE_EXECUTABLE_PATH` points the server's Claude Agent SDK runtime at it; no account or network is involved.
+ */
+const makeFakeClaude = (target: ReturnType<typeof makeTarget>) => {
+  const stateDir = path.join(target.runtimeRoot, "fake-claude");
+  fs.mkdirSync(stateDir, { recursive: true, mode: 0o700 });
+  const executable = path.join(stateDir, "claude");
+  fs.symlinkSync(FAKE_RUNTIME_CLI, executable);
+  return {
+    environment: { CLAUDE_CODE_EXECUTABLE_PATH: executable, FAKE_RUNTIME_STATE_DIR: stateDir },
+    offer: (models: string) => fs.writeFileSync(path.join(stateDir, "claude-models"), models),
+  };
 };
 
 afterEach(async () => {
@@ -682,5 +710,165 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       isActive: true,
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
     });
+  }, 180_000);
+
+  // MSR-001 (autobyteus-9, AC-012, AC-013): the model list of the runtime a stopped run is saved onto is read fresh on every
+  // Save. The scripted Claude CLI starts offering a model while the server runs, then offers none (an unreadable list), and
+  // the run is saved back onto its first runtime (a runtime switch there and back, TESTING.md Rule 10).
+  it("MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list", async () => {
+    const target = makeTarget("stopped-claude-offered-models");
+    const claude = makeFakeClaude(target);
+    const server = await startServer(target, claude.environment);
+    const NEW_MODEL = "claude-new-model";
+    const notOffered = (model: string, scope = "") =>
+      `'${model}' is not offered by Claude Agent SDK now${scope}. Refresh the model list and choose again. Saved settings were not changed.`;
+    // A diagnostic follows "could not be read" only where the runtime has its own (Antigravity, Grok Build, DeepSeek Harness).
+    const unreadable = "The model list of Claude Agent SDK could not be read. Try again. Saved settings were not changed.";
+    const model = await autoByteusReasoningModel(server.serverUrl);
+    const workspaceRootPath = path.join(target.runtimeRoot, "workspaces", "msr");
+    fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+
+    // The stopped standalone agent.
+    const definitionId = await createAgentDefinition(server.serverUrl, `msr-agent-${Date.now()}`);
+    const created = await executeGraphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
+      server.serverUrl, `
+      mutation CreateMsrAgentRun($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }
+    `, { input: { agentDefinitionId: definitionId, workspaceRootPath, llmModelIdentifier: model, llmConfig: INITIAL_CONFIG,
+      autoExecuteTools: false, runtimeKind: "autobyteus" } });
+    if (!created.createAgentRun.success || !created.createAgentRun.runId) throw new Error(created.createAgentRun.message);
+    const runId = created.createAgentRun.runId;
+    const metadataPath = path.join(target.runtimeRoot, "memory", "agents", runId, "run_metadata.json");
+    const snapshot = new WorkingContextFinalizer().finalize({
+      messages: [new Message(MessageRole.SYSTEM, { content: "Owned API/E2E snapshot" })],
+    });
+    fs.writeFileSync(
+      path.join(path.dirname(metadataPath), "working_context_snapshot.json"),
+      JSON.stringify(WorkingContextSnapshotSerializer.serialize(snapshot, { agent_id: runId })),
+      "utf8",
+    );
+    await executeGraphql(server.serverUrl, `mutation($runId: String!) { terminateAgentRun(agentRunId: $runId) { success } }`, { runId });
+    const stoppedAgentFile = fs.readFileSync(metadataPath, "utf8");
+    const toClaude = (llmModelIdentifier: string) => ({ agentRunId: runId, runtimeKind: CLAUDE_SDK, llmModelIdentifier, llmConfig: null });
+
+    // The CLI does not offer the model yet: a refusal that names it, says what to do and that nothing was saved.
+    await expect(updateAgent(server.serverUrl, toClaude(NEW_MODEL))).resolves.toMatchObject({
+      success: false, outcome: "MODEL_UNAVAILABLE", message: notOffered(NEW_MODEL),
+    });
+    expect(fs.readFileSync(metadataPath, "utf8")).toBe(stoppedAgentFile);
+    // The CLI starts offering it while the server runs: the next Save finds it and records the choice.
+    claude.offer(`claude-fake-sonnet,${NEW_MODEL}`);
+    const saved = await updateAgent(server.serverUrl, toClaude(NEW_MODEL));
+    expect(saved).toMatchObject({ success: true, outcome: "UPDATED" });
+    const switched = fs.readFileSync(metadataPath, "utf8");
+    expect(switched).not.toBe(stoppedAgentFile);
+    expect(JSON.stringify(readJson(metadataPath))).toContain(NEW_MODEL);
+    // The CLI offers nothing (it failed or is signed out): an unreadable list, not "the model is not offered".
+    claude.offer("none");
+    await expect(updateAgent(server.serverUrl, toClaude(NEW_MODEL))).resolves.toMatchObject({
+      success: false, outcome: "MODEL_LIST_UNAVAILABLE", message: unreadable,
+    });
+    expect(fs.readFileSync(metadataPath, "utf8")).toBe(switched);
+    // Back to the first runtime: the run is saved on it again.
+    await expect(updateAgent(server.serverUrl, {
+      agentRunId: runId, runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG,
+    })).resolves.toMatchObject({ success: true, outcome: "UPDATED", canonicalSelection: { llmModelIdentifier: model, llmConfig: INITIAL_CONFIG } });
+    expect(JSON.stringify(readJson(metadataPath))).not.toContain(NEW_MODEL);
+
+    // A stopped Team run: one member saved onto the Claude Agent SDK runtime.
+    claude.offer("claude-fake-sonnet");
+    const label = `msr-team-${Date.now()}`;
+    const leadId = await createAgentDefinition(server.serverUrl, `${label}-lead`);
+    const reviewerId = await createAgentDefinition(server.serverUrl, `${label}-reviewer`);
+    const teamDefinitionId = await createTeamDefinition(server.serverUrl, {
+      name: `${label}-root`,
+      coordinatorMemberName: "lead",
+      nodes: [
+        { memberName: "lead", ref: leadId, refScope: "SHARED" },
+        { memberName: "reviewer", ref: reviewerId, refScope: "SHARED" },
+      ],
+    });
+    const launch = { runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG, autoExecuteTools: false, workspaceRootPath };
+    const team = await executeGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
+      server.serverUrl, `
+      mutation CreateMsrTeamRun($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }
+    `, { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...launch }], memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: leadId, ...launch },
+      { memberAddress: "/reviewer", agentDefinitionId: reviewerId, ...launch },
+    ] } });
+    if (!team.createAgentTeamRun.success || !team.createAgentTeamRun.teamRunId) throw new Error(team.createAgentTeamRun.message);
+    const teamRunId = team.createAgentTeamRun.teamRunId;
+    const treePath = path.join(target.runtimeRoot, "memory", "agent_teams", teamRunId, "team_run_execution_tree.json");
+    await executeGraphql(server.serverUrl, `mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success } }`, { teamRunId });
+    const stoppedTreeFile = fs.readFileSync(treePath, "utf8");
+    const reviewerToClaude = (llmModelIdentifier: string) => ({
+      teamRunId,
+      selectionPatches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/reviewer", runtimeKind: CLAUDE_SDK, llmModelIdentifier, llmConfig: null }],
+    });
+    const teamRefusal = await updateTeam(server.serverUrl, reviewerToClaude(NEW_MODEL));
+    expect(teamRefusal).toMatchObject({ success: false, outcome: "MODEL_UNAVAILABLE" });
+    expect(teamRefusal.message).toBe(notOffered(NEW_MODEL, " (for '/reviewer')"));
+    expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedTreeFile);
+    claude.offer(`claude-fake-sonnet,${NEW_MODEL}`);
+    await expect(updateTeam(server.serverUrl, reviewerToClaude(NEW_MODEL))).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
+    const switchedTree = fs.readFileSync(treePath, "utf8");
+    expect(switchedTree).not.toBe(stoppedTreeFile);
+    expect(JSON.stringify(readJson(treePath))).toContain(NEW_MODEL);
+    claude.offer("none");
+    const teamUnreadable = await updateTeam(server.serverUrl, reviewerToClaude(NEW_MODEL));
+    expect(teamUnreadable).toMatchObject({ success: false, outcome: "MODEL_LIST_UNAVAILABLE" });
+    expect(teamUnreadable.message).toBe(unreadable);
+    expect(fs.readFileSync(treePath, "utf8")).toBe(switchedTree);
+    await expect(updateTeam(server.serverUrl, {
+      teamRunId,
+      selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG }],
+    })).resolves.toMatchObject({ success: true });
+    expect(JSON.stringify(readJson(treePath))).not.toContain(NEW_MODEL);
+  }, 180_000);
+
+  // MSR-002 (autobyteus-9, AC-008): a new run stores the settings its model declares and nothing else, so no undeclared key
+  // is stored or reaches a provider later; a launch that carries only undeclared keys still starts and stores none.
+  it("MSR-002: a new agent run and a new Team run store only the settings the model declares", async () => {
+    const target = makeTarget("new-run-declared-settings");
+    const server = await startServer(target);
+    const model = await autoByteusReasoningModel(server.serverUrl);
+    const workspaceRootPath = path.join(target.runtimeRoot, "workspaces", "declared");
+    fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+    const submitted = { ...INITIAL_CONFIG, thinking_enabled: false, thinking_display: "omitted", extra_params: { reasoning_effort: "high", top_k: 5 } };
+    const launch = (llmConfig: JsonRecord | null) => ({ runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig, autoExecuteTools: false, workspaceRootPath });
+
+    const agentDefinitionId = await createAgentDefinition(server.serverUrl, `msr-declared-agent-${Date.now()}`);
+    const createAgent = async (llmConfig: JsonRecord | null) => {
+      const created = await executeGraphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(server.serverUrl, `
+        mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }
+      `, { input: { agentDefinitionId, ...launch(llmConfig) } });
+      if (!created.createAgentRun.success || !created.createAgentRun.runId) throw new Error(created.createAgentRun.message);
+      return created.createAgentRun.runId;
+    };
+    // The top-level value of a declared key wins over the same key inside the extra_params container; undeclared keys are dropped.
+    const kept = await agentResume(server.serverUrl, await createAgent(submitted));
+    expect(kept.metadataConfig.llmConfig).toEqual(INITIAL_CONFIG);
+    // Only undeclared keys: the launch succeeds and stores nothing.
+    const none = await agentResume(server.serverUrl, await createAgent({ thinking_enabled: false, thinking_display: "omitted", top_k: 5 }));
+    expect(none.metadataConfig.llmConfig).toBeNull();
+
+    const leadId = await createAgentDefinition(server.serverUrl, `msr-declared-lead-${Date.now()}`);
+    const helperId = await createAgentDefinition(server.serverUrl, `msr-declared-helper-${Date.now()}`);
+    const teamDefinitionId = await createTeamDefinition(server.serverUrl, {
+      name: `msr-declared-team-${Date.now()}`, coordinatorMemberName: "lead",
+      nodes: [{ memberName: "lead", ref: leadId, refScope: "SHARED" }, { memberName: "helper", ref: helperId, refScope: "SHARED" }],
+    });
+    const team = await executeGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(server.serverUrl, `
+      mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }
+    `, { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...launch(submitted) }], memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: leadId, ...launch(submitted) },
+      { memberAddress: "/helper", agentDefinitionId: helperId, ...launch({ thinking_display: "omitted" }) },
+    ] } });
+    if (!team.createAgentTeamRun.success || !team.createAgentTeamRun.teamRunId) throw new Error(team.createAgentTeamRun.message);
+    const treePath = path.join(target.runtimeRoot, "memory", "agent_teams", team.createAgentTeamRun.teamRunId, "team_run_execution_tree.json");
+    const tree = readJson(treePath);
+    expect(findPersistedScopeConfig(tree, "/")).toEqual(INITIAL_CONFIG);
+    expect(findPersistedScopeConfig(tree, "/lead")).toEqual(INITIAL_CONFIG);
+    expect(findPersistedScopeConfig(tree, "/helper")).toBeNull();
+    expect(JSON.stringify(tree)).not.toMatch(/thinking_display|thinking_enabled|top_k/);
   }, 180_000);
 });

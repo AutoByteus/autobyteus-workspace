@@ -6,7 +6,7 @@
  *
  * Cases:
  *   C55-E2E-001  the catalog (GraphQL) lists each model exactly once with 1M/1M/128K limits and the thinking schema
- *                (toggle default off; effort default Sonnet 5.5 `high`, Haiku 5.5 `medium`; no display setting) (AC-001, REQ-005/008)
+ *                (toggle default on, the provider's own default; effort default Sonnet 5.5 `high`, Haiku 5.5 `medium`; no display setting) (AC-001, REQ-005/008; autobyteus-9 AC-003)
  *   C55-E2E-002  Sonnet 5.5, thinking Off: tool turn; every call sends exactly `thinking: {type: "between_tools"}`
  *   C55-E2E-003  Sonnet 5.5, thinking On:  `{type: "adaptive"}` (never `display`)
  *   C55-E2E-004  Haiku 5.5, thinking Off:  `{type: "disabled"}`
