@@ -58,8 +58,8 @@ on Task closure and peer authentication come in later slices.
   transport cause `channel/transport-failure-reason.ts` classifies from Node's `fetch` error. The texts agents read
   are unchanged.
 - There is nothing to publish. Peers can start every definition that a local `delegate_task` may target
-  as a catalog copy, at the same catalog address: shared Agents and shared Agent Teams, never built-ins,
-  Agent Orgs, team-local or application-owned definitions, nor internal agents while this node hides them
+  as a catalog copy, at the same catalog address: shared Agents (the Daily Assistant too) and shared Agent
+  Teams, never the Model Router, Agent Orgs, team-local or application-owned definitions, nor internal agents while this node hides them
   ([Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 - How a remote run runs is decided in one place, `NodeCatalogPort`
   (`agent-collaboration/collaborators/node-catalog-port.ts`): each agent's own default runtime, model and
