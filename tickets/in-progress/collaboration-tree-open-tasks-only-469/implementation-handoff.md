@@ -21,7 +21,8 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: SR-005 … SR-008 (two Design Impacts raised by this implementation and decided: SR-006 for D-1, U-008; SR-007 and SR-008 for D-3, AR-002)
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-005
-- Related code-review / API/E2E / delivery revision IDs: N/A
+- Related code-review revision IDs: CRR-001 (Pass; `code-review-report.md`; non-blocking CR-001 on `knowsRunId` naming, no action required)
+- Related API/E2E / delivery revision IDs: N/A
 - Triggering finding IDs: N/A
 - Code commits: `832f0a4572` (implementation and unit tests), `42652879b3` (integration-test updates); documents and evidence are in the commit that carries this handoff
 
