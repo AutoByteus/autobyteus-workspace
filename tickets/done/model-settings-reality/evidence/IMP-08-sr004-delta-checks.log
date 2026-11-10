@@ -1,0 +1,43 @@
+# IMP-08 SR-004 delta checks (IR-003: CR-004, API-14 failure origin)
+commit tested: dfa0faa76 (working tree identical; code, tests and docs committed together)
+env: Linux arm64 container, uid 0, node v22.23.3, 2026-11-10 15:10-15:55 UTC
+
+## Reproduction first (probes/locked-menu-failed-refresh.repro.spec.ts, evidence/API-14-repro-unit.log)
+Before the change: `keeps the options that were shown and answers false ...` FAILED (`expected true to be false`).
+After the change the same scenario is the durable case in stores/__tests__/existingRunModelOptionsActions.spec.ts
+("keeps the options that were shown and answers false when the server answers that the list could not be read").
+The new reload cases were also run against the pre-change stores (git checkout HEAD -- the two store files, restored after):
+  x existingRunModelOptionsActions > keeps the options that were shown and answers false when the server answers that the list could not be read
+  x existingRunModelOptionsActions > shows unavailable with the owner's message when nothing was loaded before (the first read of an edit)
+  x existingRunModelOptionsActions > merges per scope: a readable scope is replaced, an unreadable one keeps its options, and the read is a failure
+  x delegatedLaunchDraftStore > merges a re-read per copy: a readable copy replaces, an unreadable one keeps its options, and the read answers false
+and pass on the changed stores.
+
+## Server (cd autobyteus-server-ts)
+corepack pnpm exec vitest run tests/unit/llm-management tests/unit/run-history tests/unit/api/graphql tests/unit/agent-collaboration tests/unit/agent-org-execution
+ Test Files  174 passed (174)
+      Tests  1446 passed (1446)
+node ./scripts/typecheck.mjs
+ [typecheck] server src (tsconfig.build.json): 0 errors
+ [typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+ [typecheck] PASS
+corepack pnpm exec vitest run tests/architecture   (includes web-generated-graphql-current and tracked-imports; run after the commit)
+ Test Files  12 passed (12)
+      Tests  68 passed (68)
+ (a first run, made while the web suite was loading the machine and before the new files were tracked, failed 3 files on 5 s timeouts and tracked-imports on the untracked new file; both causes gone on the rerun)
+
+## Web (cd autobyteus-web)
+NUXT_TEST=true corepack pnpm exec vitest run
+ Test Files  1 failed | 741 passed (742)
+      Tests  1 failed | 5582 passed | 2 skipped (5585)
+ FAIL  stores/__tests__/projectRunsStore.spec.ts > projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one   (identical on the base sources, FU-005)
+nuxt prepare; node ./scripts/typecheck.mjs   (after regenerating generated/graphql.ts from the freshly built server schema)
+ [typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+ [typecheck] PASS
+node ./scripts/guard-web-boundary.mjs        [guard:web-boundary] Passed.
+node ./scripts/guard-localization-boundary.mjs [guard:localization-boundary] Passed.
+node ./scripts/audit-localization-literals.mjs [audit:localization-literals] Passed with zero unresolved findings.
+
+## Generated GraphQL types
+server: `node autobyteus-server-ts/scripts/print-graphql-schema.mjs <file>` (4 `modelListReadable` fields: RunModelOptionsObject, TeamScopeModelOptionsObject, AgentOrgRunModelOptionObject, DelegatedLaunchModelOptionsObject)
+web: `node scripts/codegen-local.mjs --schema-file <file>`; diff of generated/graphql.ts: 13 insertions, 5 deletions, only the field and the five query result types

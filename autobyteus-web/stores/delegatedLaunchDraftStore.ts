@@ -11,6 +11,7 @@ import {
   type DelegatedTargetKey,
 } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import { cloneExistingAgentRunSelection, existingAgentRunSelectionsEqual, selectionAllowed } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { mergeReloadedOptions } from '~/services/runConfigEditing/existingRunModelOptionsState'
 import type {
   ExistingRunModelConfigFieldError,
   ExistingRunModelOptionsState,
@@ -94,6 +95,27 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
         if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.optionsByKey = {}
         this.optionsStatus = 'unavailable'
+      }
+    },
+    /**
+     * Re-reads the copies' options (a picker opened, or Refresh models): the options shown stay until the answer arrives, a
+     * copy the server could not read never replaces options already shown (`mergeReloadedOptions`), and the answer is false
+     * when any copy could not be read. An answer made stale by a newer read is not a failure.
+     */
+    async reloadOptions(): Promise<boolean> {
+      const root = this.root
+      if (!root) return true
+      const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
+      const stale = () => requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision
+      try {
+        const options = await loadDelegatedLaunchModelOptions(root)
+        if (stale()) return true
+        const merged = mergeReloadedOptions(this.optionsByKey, options)
+        this.optionsByKey = merged.options
+        this.optionsStatus = 'ready'
+        return merged.complete
+      } catch {
+        return stale()
       }
     },
     /** A model, its settings or its agent runtime changed on a copy row; `original` is what the target ran with before this edit. */

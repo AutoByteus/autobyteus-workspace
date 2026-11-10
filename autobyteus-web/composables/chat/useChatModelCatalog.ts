@@ -86,7 +86,8 @@ export interface ChatModelGroup {
 /**
  * Menu data for the Chat model menu: runtime availability (loaded once; unavailable runtimes
  * re-checked on each open), per-runtime
- * catalogs loaded on demand and cached by the provider store, and cross-runtime search
+ * catalogs loaded on demand, shown from the provider store's snapshot and read again when a menu opens
+ * or on "Refresh models", and cross-runtime search
  * over enabled runtimes (catalogs load on the first search keystroke; RSK-001).
  */
 export function useChatModelCatalog() {
@@ -117,9 +118,23 @@ export function useChatModelCatalog() {
 
   const catalogState = (runtimeKind: string): ChatCatalogState => catalogs.catalogSnapshot(runtimeKind).state
 
+  /** Loads a runtime's catalog when it has not loaded (search, Retry); a loaded list is left as it is. */
   const ensureCatalog = (runtimeKind: string): void => {
     void catalogs.fetchProvidersWithModels(runtimeKind).catch(() => undefined)
   }
+
+  /** A picker opened: the runtime's list is read again in the background while the loaded list stays usable (REQ-010). */
+  const refreshCatalog = (runtimeKind: string): void => {
+    void catalogs.refreshCatalog(runtimeKind)
+  }
+
+  /** "Refresh models" (REQ-011): the same, and on the AutoByteus runtime its discovered providers are re-discovered. */
+  const refreshModelList = (runtimeKind: string): void => {
+    void catalogs.refreshModelList(runtimeKind)
+  }
+
+  const catalogRefreshing = (runtimeKind: string): boolean => catalogs.catalogSnapshot(runtimeKind).refreshing
+  const catalogRefreshFailed = (runtimeKind: string): boolean => catalogs.catalogSnapshot(runtimeKind).refreshError !== null
 
   const modelGroups = (runtimeKind: string): ChatModelGroup[] =>
     catalogs.providersWithModelsForSelection(runtimeKind).map(({ provider, models }) => ({
@@ -167,6 +182,10 @@ export function useChatModelCatalog() {
     ensureAvailability,
     catalogState,
     ensureCatalog,
+    refreshCatalog,
+    refreshModelList,
+    catalogRefreshing,
+    catalogRefreshFailed,
     modelGroups,
     modelCount,
     findModel,

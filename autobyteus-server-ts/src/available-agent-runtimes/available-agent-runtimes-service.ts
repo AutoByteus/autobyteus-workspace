@@ -262,9 +262,8 @@ export class AvailableAgentRuntimesService {
     models: StepOutcome<Awaited<ReturnType<ModelCatalogService["runtimeModelSelectionCatalog"]>>>,
     limits: UsageLimitsReading | null,
   ): ExternalAgentRuntimeEntry["models"] {
+    // An empty external list arrives as a failed read (`ModelListUnavailableError`, the catalog's rule).
     if (!models.ok) return failureText(`${name} model list`, models.error);
-    // An available runtime always offers a model: an empty list is a failed read, not "no models".
-    if (!models.value.offeredModels.length) return "unknown: no models could be read";
     const available = models.value.offeredModels.map(toAvailableModel);
     return limits?.state === "read" ? blockByLimits(available, limits.limits) : available;
   }

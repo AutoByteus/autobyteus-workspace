@@ -50,7 +50,6 @@ describe("claude-sdk-model-normalizer", () => {
         description: "Sonnet 5 · Efficient for routine tasks",
         supportsEffort: true,
         supportedEffortLevels: ["low", "medium", "high"],
-        supportsAdaptiveThinking: true,
       },
       {
         identifier: "sonnet",
@@ -60,7 +59,6 @@ describe("claude-sdk-model-normalizer", () => {
         description: "Sonnet 5 · Efficient for routine tasks",
         supportsEffort: false,
         supportedEffortLevels: [],
-        supportsAdaptiveThinking: false,
       },
       {
         identifier: "opus",
@@ -70,7 +68,6 @@ describe("claude-sdk-model-normalizer", () => {
         description: "Opus 4.8 · Best for everyday, complex tasks · ~2× usage vs Sonnet",
         supportsEffort: false,
         supportedEffortLevels: [],
-        supportsAdaptiveThinking: false,
       },
       {
         identifier: "haiku",
@@ -80,12 +77,11 @@ describe("claude-sdk-model-normalizer", () => {
         description: "Haiku 4.5 · Fastest for quick answers",
         supportsEffort: false,
         supportedEffortLevels: [],
-        supportsAdaptiveThinking: false,
       },
     ]);
   });
 
-  it("exposes thinking_enabled and reasoning_effort when Claude thinking is supported", () => {
+  it("offers effort only, at the SDK's levels and with no default, and no thinking on/off switch", () => {
     const model = toModelInfo({
       identifier: "opus",
       resolvedModel: null,
@@ -94,7 +90,6 @@ describe("claude-sdk-model-normalizer", () => {
       description: "Opus 4.8 · Best for everyday, complex tasks",
       supportsEffort: true,
       supportedEffortLevels: ["low", "medium", "high", "max"],
-      supportsAdaptiveThinking: true,
     });
 
     expect(model).toMatchObject({
@@ -104,19 +99,10 @@ describe("claude-sdk-model-normalizer", () => {
       value: "opus",
       canonical_name: "opus",
     });
-    expect(model.config_schema).toMatchObject({
-      properties: {
-        thinking_enabled: expect.objectContaining({
-          type: "boolean",
-          default: false,
-        }),
-        reasoning_effort: expect.objectContaining({
-          type: "string",
-          default: "medium",
-          enum: ["low", "medium", "high", "max"],
-        }),
-      },
-    });
+    const properties = (model.config_schema as { properties: Record<string, Record<string, unknown>> }).properties;
+    expect(Object.keys(properties)).toEqual(["reasoning_effort"]);
+    expect(properties.reasoning_effort).toMatchObject({ type: "string", enum: ["low", "medium", "high", "max"] });
+    expect(properties.reasoning_effort).not.toHaveProperty("default");
   });
 
   it("uses the SDK resolved model as canonical name and falls back to the SDK value", () => {
@@ -128,7 +114,6 @@ describe("claude-sdk-model-normalizer", () => {
       description: null,
       supportsEffort: false,
       supportedEffortLevels: [],
-      supportsAdaptiveThinking: false,
     };
 
     expect(toModelInfo(descriptor)).toMatchObject({
@@ -141,24 +126,13 @@ describe("claude-sdk-model-normalizer", () => {
       .toBe("claude-fable-5[1m]");
   });
 
-  it("keeps adaptive-thinking and effort capabilities independent", () => {
-    const model = toModelInfo({
-      identifier: "default",
-      resolvedModel: null,
-      resolvedModelAmbiguous: false,
-      displayName: "Default",
-      description: null,
-      supportsEffort: false,
-      supportedEffortLevels: [],
-      supportsAdaptiveThinking: true,
-    });
+  it("offers no settings for a model whose SDK row reports no effort support, whatever else it reports", () => {
+    const [descriptor] = normalizeModelDescriptors([
+      { value: "default", displayName: "Default", supportsAdaptiveThinking: true, supportsEffort: false },
+    ]);
+    const model = toModelInfo(descriptor!);
 
-    expect(model.config_schema).toMatchObject({
-      properties: {
-        thinking_enabled: expect.objectContaining({ type: "boolean" }),
-      },
-    });
-    expect(model.config_schema).not.toHaveProperty("properties.reasoning_effort");
+    expect(model.config_schema).toBeUndefined();
     expect(model.description).toBeNull();
   });
 
@@ -175,7 +149,6 @@ describe("claude-sdk-model-normalizer", () => {
         description: null,
         supportsEffort: false,
         supportedEffortLevels: [],
-        supportsAdaptiveThinking: false,
       },
       {
         identifier: "string-only",
@@ -185,7 +158,6 @@ describe("claude-sdk-model-normalizer", () => {
         description: null,
         supportsEffort: false,
         supportedEffortLevels: [],
-        supportsAdaptiveThinking: false,
       },
     ]);
   });

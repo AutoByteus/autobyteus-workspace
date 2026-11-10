@@ -1,4 +1,4 @@
-import type { ProviderModelCatalogSnapshot } from './llmProviderConfigSupport'
+import type { ProviderModelCatalogSnapshot, RuntimeCatalogSnapshot } from './llmProviderConfigSupport'
 
 export type ProviderRequestTokens = Readonly<Record<string, number>>
 
@@ -40,3 +40,36 @@ export const mergeWholeCatalogProviders = (
   }
   return published
 }
+
+/** A whole-catalog read starts: a first load shows `loading`; a refresh keeps the list usable and `ready`. */
+export const startedCatalogRead = (
+  current: RuntimeCatalogSnapshot,
+  requestId: number,
+  refresh: boolean,
+): RuntimeCatalogSnapshot => refresh
+  ? { ...current, currentRequestId: requestId, refreshing: true, refreshError: null }
+  : { ...current, currentRequestId: requestId, state: 'loading', errorMessage: null }
+
+export const loadedCatalogSnapshot = (
+  runtimeKind: string,
+  requestId: number,
+  providersById: Record<string, ProviderModelCatalogSnapshot>,
+): RuntimeCatalogSnapshot => ({
+  runtimeKind,
+  currentRequestId: requestId,
+  state: 'ready',
+  hasSuccessfulPayload: true,
+  providersById,
+  errorMessage: null,
+  refreshing: false,
+  refreshError: null,
+})
+
+/** A failed first load is an `error` with no list; a failed refresh keeps the last good list and records why. */
+export const failedCatalogRead = (
+  current: RuntimeCatalogSnapshot,
+  refresh: boolean,
+  message: string,
+): RuntimeCatalogSnapshot => refresh
+  ? { ...current, refreshing: false, refreshError: message }
+  : { ...current, state: 'error', errorMessage: message }

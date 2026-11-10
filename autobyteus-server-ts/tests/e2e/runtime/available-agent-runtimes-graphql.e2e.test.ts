@@ -509,7 +509,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     const walk = (dir: string) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) walk(full); else files.push(full);
+        if (entry.isDirectory()) walk(full); else if (entry.isFile()) files.push(full); // not the node-access control socket
       }
     };
     walk(fake.dataDir);

@@ -152,6 +152,24 @@ describe("AgentRunProvisioningService", () => {
     expect(recorded).not.toHaveProperty("activationState");
   });
 
+  it.each([
+    [RuntimeKind.CLAUDE_AGENT_SDK, "opus", { thinking_enabled: false, thinking_display: "x", reasoning_effort: "xhigh" }, { reasoning_effort: "xhigh" }],
+    [RuntimeKind.CODEX_APP_SERVER, "model-1", { reasoning_effort: "low", service_tier: "fast", other: 1 }, { reasoning_effort: "low", service_tier: "fast" }],
+    [RuntimeKind.AUTOBYTEUS, "claude-fable-5", { thinking_enabled: false, reasoning_effort: "max" }, { reasoning_effort: "max" }],
+    [RuntimeKind.AUTOBYTEUS, "claude-fable-5", { thinking_display: "omitted" }, null],
+  ])("stores only declared settings of a new %s run (AC-008)", async (runtimeKind, llmModelIdentifier, llmConfig, expected) => {
+    await buildService().prepareAgentRun({
+      agentDefinitionId: "agent-def-1",
+      workspaceRootPath: "/tmp/workspace-one",
+      llmModelIdentifier,
+      autoExecuteTools: false,
+      llmConfig,
+      runtimeKind,
+    });
+
+    expect(historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata.llmConfig).toEqual(expected);
+  });
+
   it("records a start under the chosen Project with the allocated id before any run record; the run record gains no key (SR-009)", async () => {
     const order: string[] = [];
     historyCatalogService.recordPreparedRun.mockImplementation(async () => { order.push("records"); });

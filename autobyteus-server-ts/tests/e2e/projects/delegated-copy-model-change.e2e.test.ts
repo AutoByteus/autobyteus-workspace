@@ -44,7 +44,12 @@ import { fileURLToPath } from "node:url";
 //   stopped and only the reviewer gets its own model: it resumes on it in the same conversation, while the coordinator and
 //   the never-started member keep their models and the choice is recorded on the reviewer alone; then a Team choice saved
 //   together with the reviewer's own choice: the coordinator and the follower take the Team's, the reviewer keeps its own.
-// About 25 seconds. Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
+// DCM-010 (autobyteus-9, AC-012, AC-013) a stopped agent copy saved onto the Claude Agent SDK runtime follows the Claude CLI's
+//   current model list, which the test changes while the server runs (the scripted `claude` of agent-runtimes-fake-cli.mjs,
+//   `claude-models` state): a model it does not offer yet is refused with the "refresh the model list" text, the CLI starts
+//   offering it and the Save records it, the CLI offers nothing and the refusal says the list could not be read; each refusal
+//   changes nothing; then the copy is saved back onto AGY (a runtime switch there and back).
+// About 40 seconds. Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts --no-watch
 const { home, priorHome } = await vi.hoisted(async () => {
@@ -66,8 +71,11 @@ const MODEL = "gemini-3.8-flash-low";
 const ALT = "dcm-alt-model";
 const ALT2 = "dcm-alt2-model";
 const NOT_OFFERED = "dcm-no-such-model";
+const CLAUDE = "claude_agent_sdk";
+const NEW_CLAUDE_MODEL = "claude-new-model";
 const GROK = "grok_build";
 const GROK_MODEL = "grok-4.7";
+const FAKE_RUNTIME_CLI = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../fixtures/agent-runtimes-fake-cli.mjs");
 const FAKE_GROK_SCRIPT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../fixtures/grok-acp/fake-grok-cli.mjs");
 type Kind = "agent" | "team" | "org";
 type Frame = { type: string; payload: Record<string, any> };
@@ -97,7 +105,9 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
   let dataDir = "", workspace = "", argvLog = "", app: FastifyInstance | undefined, url!: URL;
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
-  let grokDir = "", grokRecord = "";
+  let grokDir = "", grokRecord = "", claudeDir = "";
+  /** The scripted Claude CLI's offered models, changed while the server runs: ids, comma-separated, or `none`. */
+  const claudeOffers = async (models: string) => fs.writeFile(path.join(claudeDir, "claude-models"), models);
   const ids: Record<string, string> = {};
   const names: Record<string, string> = {};
   const savedEnv = new Map<string, string | undefined>();
@@ -179,7 +189,10 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     grokDir = await fs.mkdtemp(path.join(os.tmpdir(), "dcm-fake-grok-"));
     grokRecord = path.join(grokDir, "acp-client-messages.jsonl");
     await fs.writeFile(path.join(grokDir, "grok"), `#!/bin/sh\nexec "${process.execPath}" "${FAKE_GROK_SCRIPT}" "$@"\n`, { mode: 0o755 });
+    claudeDir = await fs.mkdtemp(path.join(os.tmpdir(), "dcm-fake-claude-"));
+    await fs.symlink(FAKE_RUNTIME_CLI, path.join(claudeDir, "claude"));
     for (const [key, value] of Object.entries({ AGY_FAKE_CASE: "linked_skills", AGY_FAKE_ARGV_LOG: argvLog, AGY_FAKE_EXTRA_MODELS: `${ALT},${ALT2}`,
+      CLAUDE_CODE_EXECUTABLE_PATH: path.join(claudeDir, "claude"), FAKE_RUNTIME_STATE_DIR: claudeDir,
       GROK_BUILD_COMMAND: path.join(grokDir, "grok"), FAKE_ACP_FIXTURE: grokAcpFixturePath("cancel"), FAKE_ACP_RECORD: grokRecord,
       FAKE_ACP_REPORT_MCP_READY: "1" })) {
       savedEnv.set(key, process.env[key]);
@@ -214,6 +227,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     if (dataDir && leftover) errors.push(`processes still referencing the data dir: ${leftover}`);
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
     if (grokDir) await fs.rm(grokDir, { recursive: true, force: true });
+    if (claudeDir) await fs.rm(claudeDir, { recursive: true, force: true });
     for (const [key, value] of savedEnv) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }
     if (home) {
       if (priorHome === undefined) delete process.env["HOME"]; else process.env["HOME"] = priorHome;
@@ -659,6 +673,44 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     // A refused stop shows its whole result (outcome, message) (autobyteus-447 D13).
     const stopped = await stop(root.rootKind, root.rootId, { agentRunId: copyRunId });
     expect(stopped.success, JSON.stringify(stopped)).toBe(true);
+    await terminate(kind, root.rootId);
+  }, 240_000);
+
+  it.each(["team", "agent"] as const)("DCM-010: %s root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal says what to do and saves nothing", async (kind) => {
+    const root = await startRoot(kind);
+    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.writer!)}`, description: "Draft the notes." }));
+    expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
+    const copyRunId = delegated.target_agent_run_id as string;
+    await until(async () => (await launchesOf(copyRunId)).length > 0, `${kind}: copy started`, 60_000);
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    const recordedSelection = async () => JSON.stringify(objectsIn(await root.storedTree()).find((record) =>
+      (record.agentRunId ?? record.agent_run_id) === copyRunId && (record.startedAt ?? record.started_at)));
+    const toClaude = [{ agentRunId: copyRunId, selection: choice(NEW_CLAUDE_MODEL, CLAUDE) }];
+    const stoppedRecord = await recordedSelection();
+
+    // The CLI does not offer the model yet: the refusal names it, says to refresh the list and that nothing was saved.
+    await claudeOffers("claude-fake-sonnet");
+    const refused = await update(root.rootKind, root.rootId, toClaude);
+    expect(refused).toMatchObject({ success: false, outcome: "MODEL_UNAVAILABLE" });
+    expect(refused.message).toMatch(new RegExp(`'${NEW_CLAUDE_MODEL}' is not offered by Claude Agent SDK now.*Refresh the model list and choose again\\. Saved settings were not changed\\.$`));
+    expect(await recordedSelection(), "a refused Save changes nothing").toBe(stoppedRecord);
+    // The CLI starts offering it while the server runs: the next Save records the choice with its runtime.
+    await claudeOffers(`claude-fake-sonnet,${NEW_CLAUDE_MODEL}`);
+    await expect(update(root.rootKind, root.rootId, toClaude)).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
+    const savedRecord = await recordedSelection();
+    expect(savedRecord).toContain(NEW_CLAUDE_MODEL);
+    expect(savedRecord).toContain(CLAUDE);
+    // The CLI offers nothing: the list could not be read, which is not "the model is not offered".
+    await claudeOffers("none");
+    const unreadable = await update(root.rootKind, root.rootId, toClaude);
+    expect(unreadable).toMatchObject({ success: false, outcome: "MODEL_LIST_UNAVAILABLE" });
+    expect(unreadable.message).toBe("The model list of Claude Agent SDK could not be read. Try again. Saved settings were not changed.");
+    expect(await recordedSelection(), "an unreadable list changes nothing").toBe(savedRecord);
+    // Back onto AGY: the copy is saved on its first runtime again and keeps no trace of the Claude choice.
+    await expect(update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: choice(MODEL, AGY) }]))
+      .resolves.toMatchObject({ success: true });
+    expect(await recordedSelection()).not.toContain(NEW_CLAUDE_MODEL);
+
     await terminate(kind, root.rootId);
   }, 240_000);
 });

@@ -348,6 +348,20 @@ delegated run, …) are defined in the
   and the Work Journal show it ("Agent runtime changed from … to …").
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime
   (wording toward the agent; in code, the earlier raw-trace segment).
+- **Offered models:** the models an agent runtime offers now, read from the
+  runtime (`offeredModels` in code). The UI action "Refresh models" re-reads them.
+  "Model list" names that read of a runtime's offered models, not a second thing:
+  it appears in `model_list_unavailable` / `MODEL_LIST_UNAVAILABLE` (the read
+  failed, so nothing is known about the model; `model_unavailable` means the read
+  worked and the model is not in it), `ModelListUnavailableError`, and in UI texts
+  and component names ("Refresh models", `ModelListRefreshControl`). An external
+  agent runtime that answers with no models has failed to read its list. A saved
+  run's options answer says so with `modelListReadable: false` (the options are
+  then empty and not authoritative); readers decide only from that flag.
+- **Declared settings:** the model settings keys a model's settings schema declares
+  (`config_schema`; for an external agent runtime at run creation, the keys the
+  runtime's backend reads). Only declared settings are stored in a new run and
+  reach a provider.
 - **Available agent runtime:** an agent runtime installed on the node and not
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.

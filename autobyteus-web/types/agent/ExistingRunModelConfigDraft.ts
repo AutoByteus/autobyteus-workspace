@@ -46,6 +46,8 @@ export type ExistingRunModelOptions = Readonly<{
   replacements: readonly ExistingRunModelChoice[]
   unavailableReason: string | null
 }>
+/** What the server answers for one scope: `modelListReadable` is false only when the runtime's model list could not be read. */
+export type ExistingRunModelOptionsAnswer = ExistingRunModelOptions & Readonly<{ modelListReadable: boolean }>
 export type ExistingRunModelChoice = Readonly<{
   llmModelIdentifier: string
   providerName: string
@@ -58,4 +60,6 @@ export type ExistingRunModelChoice = Readonly<{
 export type ExistingRunModelOptionsState = Readonly<{
   status: 'loading' | 'ready' | 'unavailable'
   options: ExistingRunModelOptions | null
+  /** Why the options are `unavailable`, in the server's words, when it answered that the model list could not be read. */
+  message?: string | null
 }>

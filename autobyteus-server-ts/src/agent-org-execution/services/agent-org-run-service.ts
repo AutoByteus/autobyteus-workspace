@@ -19,6 +19,7 @@ import type { AgentOrgRun } from "../domain/agent-org-run.js";
 import { AgentOrgRunManager } from "./agent-org-run-manager.js";
 import { AgentOrgRunPlanner, type ResolvedAgentOrgLaunchPlan } from "./agent-org-run-planner.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
@@ -162,11 +163,10 @@ export class AgentOrgRunService {
     for (const [index, [address, configuration]] of entries.entries()) {
       const result = results[index]!;
       if (result.kind !== "valid") {
-        const detail = result.kind === "invalid"
-          ? result.errors.map((error) => `${error.path}: ${error.message}`).join("; ")
-          : result.kind === "model_unavailable"
-            ? result.catalogDiagnostic?.message ?? "The selected model is unavailable."
-            : "The selected model configuration schema is unavailable.";
+        const detail = isUnavailableModelSelection(result)
+          ? runModelSelectionRefusal({ result, llmModelIdentifier: configuration.llmModelIdentifier,
+            runtimeKind: configuration.runtimeKind, savedSettingsUnchanged: false }).message
+          : result.errors.map((error) => `${error.path}: ${error.message}`).join("; ");
         throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': ${detail}`);
       }
       canonical.set(address, Object.freeze({ ...configuration,

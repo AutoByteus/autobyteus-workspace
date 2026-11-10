@@ -1,9 +1,10 @@
 import { getApolloClient } from '~/utils/apolloClient'
 import { StopDelegatedExecution, UpdateDelegatedLaunchSelections } from '~/graphql/mutations/delegatedLaunchMutations'
 import { DelegatedLaunchModelOptions } from '~/graphql/queries/runModelOptionsQueries'
+import { optionsStateOfAnswer } from './existingRunModelOptionsState'
 import type {
   ExistingRunModelConfigFieldError,
-  ExistingRunModelOptions,
+  ExistingRunModelOptionsAnswer,
   ExistingRunModelOptionsState,
   ExistingAgentRunSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
@@ -77,7 +78,7 @@ export const updateDelegatedLaunchSelections = async (input: DelegatedRoot & Rea
   return required(response, 'updateDelegatedLaunchSelections')
 }
 
-type OptionsRow = ExistingRunModelOptions & Readonly<{ scope: 'agent' | 'team'; agentRunId: string | null; teamRunId: string | null }>
+type OptionsRow = ExistingRunModelOptionsAnswer & Readonly<{ scope: 'agent' | 'team'; agentRunId: string | null; teamRunId: string | null }>
 
 /** Options of every editable copy of the run, keyed by where its choice is recorded. */
 export const loadDelegatedLaunchModelOptions = async (root: DelegatedRoot): Promise<Record<DelegatedTargetKey, ExistingRunModelOptionsState>> => {
@@ -85,10 +86,10 @@ export const loadDelegatedLaunchModelOptions = async (root: DelegatedRoot): Prom
     query: DelegatedLaunchModelOptions, variables: root, fetchPolicy: 'network-only',
   })
   const rows: OptionsRow[] | undefined = data?.delegatedLaunchModelOptions
-  if (errors?.length || !rows || rows.some((row: OptionsRow) => typeof row.currentModelIdentifier !== 'string' || !Array.isArray(row.replacements))) {
+  if (errors?.length || !rows || rows.some((row: OptionsRow) => typeof row.currentModelIdentifier !== 'string' || typeof row.modelListReadable !== 'boolean' || !Array.isArray(row.replacements))) {
     throw new Error('Model options unavailable.')
   }
-  return Object.fromEntries(rows.map(({ scope, agentRunId, teamRunId, ...options }: OptionsRow) => [
-    scope === 'agent' ? `agent:${agentRunId}` : `team:${teamRunId}`, { status: 'ready', options },
+  return Object.fromEntries(rows.map(({ scope, agentRunId, teamRunId, ...answer }: OptionsRow) => [
+    scope === 'agent' ? `agent:${agentRunId}` : `team:${teamRunId}`, optionsStateOfAnswer(answer),
   ])) as Record<DelegatedTargetKey, ExistingRunModelOptionsState>
 }

@@ -1,0 +1,398 @@
+{
+  "startedAt": "2026-11-10T17:04:27.470Z",
+  "result": "Pass",
+  "steps": [
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "the backend was restarted",
+      "details": null
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'bundled'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'failing'",
+      "details": {
+        "version": "failing"
+      }
+    },
+    {
+      "text": "Claude CLI is now 'system'",
+      "details": {
+        "version": "2.1.200 (Claude Code)"
+      }
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 95519
+    },
+    {
+      "label": "frontend",
+      "pid": 95601
+    },
+    {
+      "label": "backend",
+      "pid": 96274
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 96274,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 95601,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 95519,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/tmp/runtime-switch-members-probe-VQYcod"
+    }
+  ],
+  "browserErrors": [],
+  "failures": [],
+  "ownedRoot": "/tmp/runtime-switch-members-probe-VQYcod",
+  "backendUrl": "http://127.0.0.1:36613",
+  "frontUrl": "http://127.0.0.1:45267",
+  "definitions": {
+    "agent": {
+      "id": "switch-probe-agent",
+      "name": "Switch Probe Agent"
+    },
+    "host": {
+      "id": "switch-probe-host",
+      "name": "Switch Probe Host"
+    },
+    "writer": {
+      "id": "switch-probe-writer",
+      "name": "Switch Probe Writer"
+    },
+    "writerAgy": {
+      "id": "switch-probe-writer-agy",
+      "name": "Switch Probe Writer Agy"
+    },
+    "team": {
+      "id": "switch-probe-team",
+      "name": "Switch Probe Team"
+    },
+    "org": {
+      "id": "switch-probe-org",
+      "name": "Switch Probe Org"
+    }
+  },
+  "cli": {
+    "mode": "scripted",
+    "version": "2.1.200 (Claude Code)"
+  },
+  "API-11": {
+    "title": "New-run picker: the Claude CLI is updated while the app runs; the next open lists the new models, Refresh models and a failing CLI behave, a new model launches (AC-010, AC-011, QR-001, QR-002)",
+    "result": "Pass",
+    "details": {
+      "steps": [],
+      "l0": [
+        "claude-fake-sonnet"
+      ],
+      "firstOpen": {
+        "rows": [
+          "claude-fake-sonnet"
+        ],
+        "reads": 1
+      },
+      "versionAfterUpdate": "2.1.200 (Claude Code)",
+      "l1": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "added": [
+        "claude-new-model"
+      ],
+      "removed": [],
+      "immediateRows": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "busySeen": false,
+      "opening2": {
+        "rows": [
+          "claude-fake-sonnet",
+          "claude-new-model"
+        ],
+        "reads": 1
+      },
+      "failed": {
+        "error": "Couldn’t refresh models",
+        "button": "Retry",
+        "rows": [
+          "claude-fake-sonnet",
+          "claude-new-model"
+        ]
+      },
+      "afterRetry": {
+        "rows": [
+          "claude-fake-sonnet",
+          "claude-new-model"
+        ],
+        "button": "Refresh models"
+      },
+      "picked": "claude-new-model",
+      "runId": "daily_assistant_2a6ec3cf28974ae4b80b8c3fa3888622",
+      "launched": {
+        "llmModelIdentifier": "claude-new-model",
+        "llmConfig": null,
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "replied": null
+    },
+    "ms": 35772
+  },
+  "API-12": {
+    "title": "Stopped Team member switched to the Claude Agent SDK runtime after a CLI update: new model listed, stale selection and unreadable list refuse with the right texts and save nothing, Save succeeds, switch back (AC-012, AC-013, Rule 10)",
+    "result": "Pass",
+    "details": {
+      "steps": [],
+      "teamRunId": "switch_probe_team_a7a1e3264d45458b8e79396e99eeade3",
+      "runtimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli",
+        "deepseek_harness",
+        "reason",
+        "unavailable"
+      ],
+      "bundledRows": [
+        "claude-fake-sonnet"
+      ],
+      "l1": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "added": [
+        "claude-new-model"
+      ],
+      "immediateRows": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "updatedRows": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "picked": "claude-new-model",
+      "refusedNotOffered": "'claude-new-model' is not offered by Claude Agent SDK now (for '/worker'). Refresh the model list and choose again. Saved settings were not changed.",
+      "refusedUnreadable": "The model list of Claude Agent SDK could not be read. Try again. Saved settings were not changed.",
+      "saveNote": null,
+      "saved": {
+        "runtimeKind": "claude_agent_sdk",
+        "model": "claude-new-model"
+      },
+      "shotPrefix": "API-12-back",
+      "firstRuntimeRows": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli",
+        "deepseek_harness",
+        "reason",
+        "unavailable"
+      ],
+      "lockedRuntimeBanner": 0,
+      "backNote": null,
+      "back": {
+        "runtimeKind": "autobyteus",
+        "model": "rsw-native:lmstudio@127.0.0.1:34159"
+      },
+      "returnChat": "W worker Idle You NATIVE-TEAM-ONE please answer W worker NATIVE-REPLY-1 You NATIVE-TEAM-TWO please answer W worker NATIVE-REPLY-2 Context Files (0) (drag, paste, or upload) Projects Files Team Terminal Activity Token Artifacts VNC Viewer Messages 0 Messages No team messages yet Accepted inter-agent messages will appear here with their reference files.",
+      "afterMessage": {
+        "runtimeKind": "autobyteus",
+        "model": "rsw-native:lmstudio@127.0.0.1:34159",
+        "pending": false
+      }
+    },
+    "ms": 43480
+  },
+  "API-14": {
+    "title": "Stopped Team run on the Claude Agent SDK runtime: the Team-level (runtime-locked) model menu re-reads the run's options when it opens and on Refresh models, shows busy, and keeps its options with an error when the CLI fails (REQ-010, REQ-011, QR-001)",
+    "result": "Pass",
+    "details": {
+      "firstModel": "claude-fake-sonnet",
+      "teamRunId": "switch_probe_team_6e7631678abe4f4d8e9b029d89d043e4",
+      "runtimeLocked": 1,
+      "firstRows": [
+        "claude-fake-sonnet"
+      ],
+      "l1": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "added": [
+        "claude-new-model"
+      ],
+      "refreshControl": 1,
+      "openedRows": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "busySeen": true,
+      "rowsWhileBusy": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "failedSeen": true,
+      "afterFailure": {
+        "error": "Couldn’t refresh models",
+        "button": "Retry",
+        "rows": [
+          "claude-fake-sonnet",
+          "claude-new-model"
+        ],
+        "menuText": "Claude Agent SDK claude-fake-sonnet Claude Fake Sonnet · Scripted test model. claude-new-model Scripted test model. Couldn’t refresh models Retry"
+      },
+      "cardAfterFailure": "Workspace workspace Model claude-fake-sonnet Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "noteAfterFailure": [],
+      "afterRecovery": {
+        "rows": [
+          "claude-fake-sonnet",
+          "claude-new-model"
+        ],
+        "button": "Refresh models"
+      },
+      "findings": []
+    },
+    "ms": 15185
+  },
+  "API-19": {
+    "title": "AutoByteus runtime: a model a local server (LM Studio) starts offering while the app runs appears after \"Refresh models\", which re-discovers discovered providers (AC-011, REQ-011, REQ-014)",
+    "result": "Pass",
+    "details": {
+      "before": [
+        "rsw-native-b:lmstudio@127.0.0.1:34159",
+        "rsw-native:lmstudio@127.0.0.1:34159"
+      ],
+      "after": [
+        "rsw-native-b:lmstudio@127.0.0.1:34159",
+        "rsw-native-c:lmstudio@127.0.0.1:34159",
+        "rsw-native:lmstudio@127.0.0.1:34159"
+      ]
+    },
+    "ms": 3854
+  },
+  "API-14b": {
+    "title": "Saved-run (locked) menu opened for the first time while the CLI is already failing: the card never says \"No longer offered\", the menu shows the error with Retry, the run's own model stays editable, Refresh models recovers (AC-012 failure alternate, SR-004)",
+    "result": "Pass",
+    "details": {
+      "firstModel": "claude-fake-sonnet",
+      "teamRunId": "switch_probe_team_1926a1b85663491387b701df5f8b0b97",
+      "cardText": "Workspace workspace Model claude-fake-sonnet Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "notes": [],
+      "viewText": "Switch Probe Team Stopped This agent Team settings Workspace workspace Model claude-fake-sonnet Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve Members L lead Coordinator claude-fake-sonnet · Claude Agent SDK · Auto-approve W worker claude-fake-sonnet · Claude Agent SDK · Auto-approve",
+      "triggerEnabled": true,
+      "menuText": "Claude Agent SDK No models available Couldn’t refresh models Retry",
+      "menuRows": [],
+      "menuError": "Couldn’t refresh models",
+      "menuButton": "Retry",
+      "recovered": true,
+      "rowsAfterRecovery": [
+        "claude-fake-sonnet",
+        "claude-new-model"
+      ],
+      "cardAfterRecovery": "Workspace workspace Model claude-fake-sonnet Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve",
+      "findings": []
+    },
+    "ms": 16112
+  },
+  "completedAt": "2026-11-10T17:06:53.249Z"
+}

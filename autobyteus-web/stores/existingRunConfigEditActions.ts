@@ -44,7 +44,7 @@ const schemaStateFor = (
   }
   if (!options || options.status === 'loading') return loadingSchemaState()
   if (!offeredOptions) {
-    return { status: 'unavailable', message: localizationRuntime.translate('workspace.runModelConfig.optionsUnavailable') }
+    return { status: 'unavailable', message: options.message ?? localizationRuntime.translate('workspace.runModelConfig.optionsUnavailable') }
   }
   return selectionAllowed(original, selection, options)
     ? { status: 'ready', message: null }

@@ -105,7 +105,7 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     input.rootConfiguration.runtimeKind = "antigravity_cli";
     input.teamOverrides[0]!.configuration.llmModelIdentifier = "root-model";
     await expect(h.service.create(input)).rejects.toThrow(
-      "Invalid configuration for '/team': Antigravity model discovery timed out; check the CLI and retry.",
+      "Invalid configuration for '/team': The model list of Antigravity CLI could not be read: Antigravity model discovery timed out; check the CLI and retry. Try again.",
     );
     expect(h.create).not.toHaveBeenCalled();
   });
@@ -116,12 +116,12 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     const failed = harness();
     failed.catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error("secret /private/credential-path"));
     await expect(failed.service.create(input)).rejects.toThrow(
-      "Invalid configuration for '/': Antigravity model discovery failed; check authentication or network and retry.",
+      "Invalid configuration for '/': The model list of Antigravity CLI could not be read: Antigravity model discovery failed; check authentication or network and retry. Try again.",
     );
     const missing = harness();
     missing.catalog.runtimeModelSelectionCatalog.mockResolvedValue(view([]));
     await expect(missing.service.create(input)).rejects.toThrow(
-      "Invalid configuration for '/': The selected model is unavailable.",
+      "Invalid configuration for '/': 'root-model' is not offered by Antigravity CLI now. Refresh the model list and choose again.",
     );
   });
 

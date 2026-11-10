@@ -5,6 +5,9 @@ import { asObject, asString, type JsonObject } from "./codex-app-server-json.js"
 
 const VALID_CODEX_SERVICE_TIERS = new Set(["fast"]);
 
+/** The model settings a Codex session reads from a run's stored `llmConfig`. New runs keep only these keys. */
+export const CODEX_SESSION_SETTING_KEYS: readonly string[] = ["reasoning_effort", "service_tier"];
+
 export const normalizeCodexReasoningEffort = (value: unknown): string | null =>
   asString(value);
 

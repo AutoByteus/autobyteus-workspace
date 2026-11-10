@@ -381,7 +381,7 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
-  it("forwards typed thinking and effort options to the pinned Claude SDK", async () => {
+  it("forwards the typed effort option to the pinned Claude SDK and sets no thinking option", async () => {
     const client = new ClaudeSdkClient();
     const queryFn = vi.fn(() => createMockQuery());
     client.setCachedModuleForTesting({ query: queryFn });
@@ -391,16 +391,16 @@ describe("ClaudeSdkClient", () => {
       sessionBinding: createSessionBinding(),
       model: "opus",
       workingDirectory: "/tmp/claude-client-reasoning",
-      thinking: { type: "adaptive" },
       effort: "high",
     }) }).open();
 
     expect(queryFn).toHaveBeenCalledWith(expect.objectContaining({
       options: expect.objectContaining({
-        thinking: { type: "adaptive" },
         effort: "high",
       }),
     }));
+    const options = (queryFn.mock.calls[0] as unknown as [{ options: Record<string, unknown> }])[0].options;
+    expect(options).not.toHaveProperty("thinking");
   });
 
 

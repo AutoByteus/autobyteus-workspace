@@ -89,6 +89,7 @@ import type { RunMemberDelegatedFacts } from '~/utils/runSettings/runMemberTree'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { useLocalization } from '~/composables/useLocalization'
 import { useRunStopAction, type RunStopSubject } from '~/composables/runSettings/useRunStopAction'
+import { provideLockedModelOptionsRefresh } from '~/composables/useLockedModelOptionsRefresh'
 import type { ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import {
   runWorkspaceChoiceFromRootPath,
@@ -162,6 +163,8 @@ watch(selectedCanonical, (payload) => {
 }, { deep: true })
 
 const delegatedDraft = useDelegatedLaunchDraftStore()
+// The saved run's model menus re-read its options (the run's scopes and its delegated copies) when they open (REQ-010).
+provideLockedModelOptionsRefresh(async () => (await Promise.all([draftStore.reloadModelOptions(), delegatedDraft.reloadOptions()])).every(Boolean))
 /** The run whose copies are shown (DS-001): their choices are kept per run. */
 const delegatedRoot = computed<DelegatedRoot | null>(() => {
   const kind = selectedKind.value, rootRunId = selectedRunId.value

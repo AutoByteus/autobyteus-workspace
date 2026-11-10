@@ -1,0 +1,8 @@
+# API-14 reproduction at unit level (probes/locked-menu-failed-refresh.repro.spec.ts, copied temporarily to autobyteus-web/stores/__tests__/existingRunModelOptionsActions.unreadable.spec.ts, then removed)
+# Command: cd autobyteus-web && NUXT_TEST=true corepack pnpm exec vitest run stores/__tests__/existingRunModelOptionsActions.unreadable.spec.ts
+# Commit: 817bd9950 · ENV-1 · 2026-11-10 · Case API-14 (expected: red until the fix)
+   × reloadModelOptions when the runtime list cannot be read (the server answers, it does not throw) > keeps the options that were shown and answers false, so the menu shows its error with Retry 6ms
+     → expected true to be false // Object.is equality
+   ✓ reloadModelOptions when the runtime list cannot be read (the server answers, it does not throw) > still shows an unavailable state when nothing was loaded before (the first read of an edit) 1ms
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)

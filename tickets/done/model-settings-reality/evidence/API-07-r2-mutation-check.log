@@ -1,0 +1,9 @@
+# API-07 sensitivity (mutation) check, round 2 — does MSR-003 fail when an unreadable list is answered as readable?
+# Step: run-model-selection-service.ts optionsWithEvidence: modelListReadable: false -> true in the unreadable answer; corepack pnpm -C autobyteus-server-ts build (exit 0); vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts -t MSR-003
+# Commit dfa0faa76 · ENV-1 · 2026-11-10. Source restored from a copy (git status of autobyteus-server-ts/src clean), dist rebuilt (exit 0).
+     × MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read 6931ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { …(5) } to deeply equal { …(5) }
+-   "modelListReadable": false,
++   "modelListReadable": true,
+      Tests  1 failed | 4 skipped (5)

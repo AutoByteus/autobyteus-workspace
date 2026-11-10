@@ -13,6 +13,8 @@ import { planExistingTeamModelConfigPatches } from '~/services/runConfigEditing/
 import type { ExistingRunModelConfigMutationResult } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 
 const requiresOutcomeVerification = (outcome: string): boolean => outcome === 'PERSISTENCE_INDETERMINATE'
+/** The Save was refused because the selected model cannot be used now: not offered, its list could not be read, or its settings could not be checked. */
+const UNAVAILABLE_MODEL_OUTCOMES: ReadonlySet<string> = new Set(['MODEL_UNAVAILABLE', 'MODEL_LIST_UNAVAILABLE', 'SCHEMA_UNAVAILABLE'])
 
 export const existingRunConfigResultActions = {
     applyAgentFailureCanonical(
@@ -81,7 +83,7 @@ export const existingRunConfigResultActions = {
   applyResultState(this: any, result: ExistingRunModelConfigMutationResult): void {
     this.feedback = { kind: result.success ? 'success' : 'error', message: result.message }
     this.fieldErrors = [...(result.fieldErrors ?? [])]
-    if (result.outcome !== 'MODEL_UNAVAILABLE' && result.outcome !== 'SCHEMA_UNAVAILABLE') return
+    if (!UNAVAILABLE_MODEL_OUTCOMES.has(result.outcome)) return
     const affectedAddresses = this.draft?.kind === 'team'
       ? planExistingTeamModelConfigPatches(this.draft.planner).map((patch) => patch.scopeAddress)
       : this.draft?.kind === 'agent_org'

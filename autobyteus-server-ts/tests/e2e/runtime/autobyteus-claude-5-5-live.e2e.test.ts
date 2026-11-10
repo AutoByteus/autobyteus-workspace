@@ -6,7 +6,7 @@
  *
  * Cases:
  *   C55-E2E-001  the catalog (GraphQL) lists each model exactly once with 1M/1M/128K limits and the thinking schema
- *                (toggle default off; effort default Sonnet 5.5 `high`, Haiku 5.5 `medium`; no display setting) (AC-001, REQ-005/008)
+ *                (toggle default on, the provider's own default; effort default Sonnet 5.5 `high`, Haiku 5.5 `medium`; no display setting) (AC-001, REQ-005/008; autobyteus-9 AC-003)
  *   C55-E2E-002  Sonnet 5.5, thinking Off: tool turn; every call sends exactly `thinking: {type: "between_tools"}`
  *   C55-E2E-003  Sonnet 5.5, thinking On:  `{type: "adaptive"}` (never `display`)
  *   C55-E2E-004  Haiku 5.5, thinking Off:  `{type: "disabled"}`
@@ -202,7 +202,7 @@ describeLive("AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live)"
       expect(entry.maxInputTokens).toBe(1_000_000);
       expect(entry.maxOutputTokens).toBe(MAX_OUTPUT_TOKENS);
       expect(Object.keys(props).sort(), `${model.value} schema keys`).toEqual(["reasoning_effort", "thinking_enabled"]);
-      expect(props.thinking_enabled!.default, `${model.value} toggle default`).toBe(false);
+      expect(props.thinking_enabled!.default, `${model.value} toggle default`).toBe(true);
       expect(props.reasoning_effort!.default, `${model.value} effort default`).toBe(model.effortDefault);
       expect(props.reasoning_effort!.enum).toEqual(["low", "medium", "high", "xhigh", "max"]);
     }

@@ -20,7 +20,12 @@
       test-id="mobile-run-model-select"
       item-noun="models"
       @update:model-value="updateModel"
-    />
+      @open="refreshModelsOnOpen"
+    >
+      <template #footer>
+        <ModelListRefreshControl touch :refreshing="modelListRefreshing" :failed="modelListRefreshFailed" @refresh="refreshModels" />
+      </template>
+    </MobileChoiceSheet>
     <p v-if="modelLoadError" class="py-2 text-sm text-red-700" role="alert">Couldn’t load the models.
       <button type="button" class="ml-1 h-11 min-w-[2.75rem] px-1 font-semibold underline" @click="retry">Retry</button>
     </p>
@@ -40,6 +45,7 @@
 <script setup lang="ts">
 import { computed, toRef, watch } from 'vue';
 import MobileChoiceSheet from '~/components/mobile/newRun/MobileChoiceSheet.vue';
+import ModelListRefreshControl from '~/components/common/ModelListRefreshControl.vue';
 import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue';
 import { useRuntimeCurrentModelDescriptor } from '~/composables/useRuntimeCurrentModelDescriptor';
 import { normalizeScopedRuntimeKind, resolveEffectiveScopedRuntimeKind, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection';
@@ -59,8 +65,9 @@ const emit = defineEmits<{
 
 const {
   effectiveRuntimeKind, ensureModelsForRuntime, groupedModelOptions, hasModelIdentifier, isLoadingModels,
-  modelLoadError, modelConfigSchemaByIdentifier, normalizedStoredRuntimeKind, reloadModelsForRuntime, runtimeOptions,
-} = useRuntimeScopedModelSelection({ runtimeKind: toRef(props, 'runtimeKind'), loadCatalog: true });
+  modelLoadError, modelListRefreshFailed, modelListRefreshing, modelConfigSchemaByIdentifier, normalizedStoredRuntimeKind,
+  refreshModels, refreshModelsOnOpen, reloadModelsForRuntime, runtimeOptions,
+} = useRuntimeScopedModelSelection({ runtimeKind: toRef(props, 'runtimeKind') });
 const currentSeed = useRuntimeCurrentModelDescriptor(effectiveRuntimeKind, computed(() => props.seedModelIdentifier ?? null));
 
 const runtimeItems = computed(() => runtimeOptions.value.filter((option) => option.enabled).map((option) => ({ id: option.value, label: option.label })));

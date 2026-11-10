@@ -10,6 +10,7 @@ import {
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { delegatedLaunchSelections, type DelegatedLaunchSelectionValue, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -389,11 +390,13 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const results = await input.validator.validateMany([...plan.inputs, ...host]);
     const hostResult = input.hostSelection ? results.at(-1)! : null;
     if (hostResult && hostResult.kind !== "valid") {
-      return hostResult.kind === "invalid"
-        ? outcome("VALIDATION_FAILED", "The agent's own model settings are invalid.", tree,
-          hostResult.errors.map((error) => ({ path: `hostPatch.${error.path}`, message: error.message })))
-        : outcome(hostResult.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE",
-          "The agent's model options are unavailable; saved settings were not changed.", tree);
+      if (!isUnavailableModelSelection(hostResult)) {
+        return outcome("VALIDATION_FAILED", "The agent's own model settings are invalid.", tree,
+          hostResult.errors.map((error) => ({ path: `hostPatch.${error.path}`, message: error.message })));
+      }
+      const refusal = runModelSelectionRefusal({ result: hostResult, llmModelIdentifier: input.hostSelection!.llmModelIdentifier,
+        runtimeKind: input.hostSelection!.runtimeKind, savedSettingsUnchanged: true });
+      return outcome(refusal.outcome, refusal.message, tree);
     }
     const validation = interpretDelegatedLaunchValidation(plan.targets, results.slice(0, plan.targets.length));
     if (validation.kind === "refused") return outcome(validation.result.outcome, validation.result.message, tree, validation.result.fieldErrors);

@@ -464,7 +464,7 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
       .mockResolvedValueOnce({ data: { createCustomProvider: customSetting } })
     vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
     const store = useLLMProviderConfigStore()
-    vi.spyOn(store, 'refreshLocalCatalog').mockResolvedValue(undefined as never)
+    vi.spyOn(store, 'refreshCatalog').mockResolvedValue(undefined as never)
 
     await store.fetchProviderCredentialSettings()
     await expect(store.saveQwenConfiguration({ baseUrl: 'https://example.invalid', apiKey: 'synthetic-qwen' }))
@@ -482,5 +482,146 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     ])
     expect(JSON.stringify(store.providerCredentialSettings)).not.toContain('synthetic-')
     expect(mutate).toHaveBeenCalledTimes(3)
+  })
+})
+
+describe('llmProviderConfig model list refresh (REQ-010, REQ-011, QR-001, QR-002)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    useLLMProviderConfigStore().resetCatalogState()
+  })
+
+  it('keeps the loaded list usable while it re-reads, then shows the new model', async () => {
+    const reread = deferred<unknown>()
+    const query = vi.fn()
+      .mockResolvedValueOnce({ data: catalogResponse('claude_agent_sdk', ['opus']) })
+      .mockReturnValueOnce(reread.promise)
+    vi.mocked(getApolloClient).mockReturnValue({ query } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('claude_agent_sdk')
+
+    const refresh = store.refreshCatalog('claude_agent_sdk')
+    expect(store.catalogSnapshot('claude_agent_sdk')).toMatchObject({ state: 'ready', refreshing: true, refreshError: null })
+    expect(store.models('claude_agent_sdk')).toEqual(['claude_agent_sdk-opus'])
+    expect(query).toHaveBeenLastCalledWith(expect.objectContaining({ fetchPolicy: 'network-only', variables: { runtimeKind: 'claude_agent_sdk' } }))
+
+    reread.resolve({ data: catalogResponse('claude_agent_sdk', ['opus', 'fable']) })
+    await refresh
+    expect(store.catalogSnapshot('claude_agent_sdk')).toMatchObject({ state: 'ready', refreshing: false, refreshError: null })
+    expect(store.models('claude_agent_sdk')).toEqual(['claude_agent_sdk-opus', 'claude_agent_sdk-fable'])
+  })
+
+  it('keeps the last list and records why when the re-read fails, and never rejects', async () => {
+    const query = vi.fn()
+      .mockResolvedValueOnce({ data: catalogResponse('codex_app_server', ['sol']) })
+      .mockRejectedValueOnce(new Error('MODEL_CATALOG_REQUEST_FAILED'))
+    vi.mocked(getApolloClient).mockReturnValue({ query } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('codex_app_server')
+
+    await expect(store.refreshCatalog('codex_app_server')).resolves.toMatchObject({ state: 'ready', refreshing: false })
+    expect(store.catalogSnapshot('codex_app_server')).toMatchObject({
+      state: 'ready', errorMessage: null, refreshing: false, refreshError: 'MODEL_CATALOG_REQUEST_FAILED',
+    })
+    expect(store.models('codex_app_server')).toEqual(['codex_app_server-sol'])
+  })
+
+  it('clears an earlier refresh error when the next re-read starts', async () => {
+    const retry = deferred<unknown>()
+    const query = vi.fn()
+      .mockResolvedValueOnce({ data: catalogResponse('codex_app_server', ['sol']) })
+      .mockRejectedValueOnce(new Error('MODEL_CATALOG_REQUEST_FAILED'))
+      .mockReturnValueOnce(retry.promise)
+    vi.mocked(getApolloClient).mockReturnValue({ query } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('codex_app_server')
+    await store.refreshCatalog('codex_app_server')
+
+    const second = store.refreshCatalog('codex_app_server')
+    expect(store.catalogSnapshot('codex_app_server')).toMatchObject({ refreshing: true, refreshError: null })
+    retry.resolve({ data: catalogResponse('codex_app_server', ['sol', 'terra']) })
+    await second
+    expect(store.models('codex_app_server')).toEqual(['codex_app_server-sol', 'codex_app_server-terra'])
+  })
+
+  it('shares one server read between concurrent refreshes of a runtime', async () => {
+    const reread = deferred<unknown>()
+    const query = vi.fn()
+      .mockResolvedValueOnce({ data: catalogResponse('claude_agent_sdk', ['opus']) })
+      .mockReturnValueOnce(reread.promise)
+    vi.mocked(getApolloClient).mockReturnValue({ query } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('claude_agent_sdk')
+
+    const refreshes = [store.refreshCatalog('claude_agent_sdk'), store.refreshCatalog('claude_agent_sdk'), store.refreshCatalog('claude_agent_sdk')]
+    reread.resolve({ data: catalogResponse('claude_agent_sdk', ['opus', 'fable']) })
+    await Promise.all(refreshes)
+
+    expect(query).toHaveBeenCalledTimes(2)
+  })
+
+  it('does not let a read that was reset overwrite the cleared catalog', async () => {
+    const reread = deferred<unknown>()
+    const query = vi.fn()
+      .mockResolvedValueOnce({ data: catalogResponse('claude_agent_sdk', ['opus']) })
+      .mockReturnValueOnce(reread.promise)
+    vi.mocked(getApolloClient).mockReturnValue({ query } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('claude_agent_sdk')
+
+    const refresh = store.refreshCatalog('claude_agent_sdk')
+    store.resetCatalogState()
+    reread.resolve({ data: catalogResponse('claude_agent_sdk', ['stale']) })
+    await refresh
+
+    expect(store.catalogSnapshot('claude_agent_sdk').state).toBe('idle')
+    expect(store.models('claude_agent_sdk')).toEqual([])
+  })
+
+  it('loads normally when nothing loaded yet, and a failed first load stays an error with Retry as before', async () => {
+    const query = vi.fn()
+      .mockRejectedValueOnce(new Error('MODEL_CATALOG_REQUEST_FAILED'))
+      .mockResolvedValueOnce({ data: catalogResponse('codex_app_server', ['sol']) })
+    vi.mocked(getApolloClient).mockReturnValue({ query } as never)
+    const store = useLLMProviderConfigStore()
+
+    await store.refreshCatalog('codex_app_server')
+    expect(store.catalogSnapshot('codex_app_server')).toMatchObject({ state: 'error', errorMessage: 'MODEL_CATALOG_REQUEST_FAILED', refreshError: null })
+
+    await store.refreshCatalog('codex_app_server')
+    expect(store.catalogSnapshot('codex_app_server')).toMatchObject({ state: 'ready', errorMessage: null })
+    expect(store.models('codex_app_server')).toEqual(['codex_app_server-sol'])
+  })
+
+  it('"Refresh models" on the AutoByteus runtime re-discovers discovered providers, then re-reads the list', async () => {
+    const query = vi.fn().mockResolvedValue({ data: { providerModelCatalogSnapshots: [
+      snapshot('OPENAI', 'READY', ['gpt']), snapshot('LMSTUDIO', 'READY', ['local-a']),
+    ] } })
+    const mutate = vi.fn().mockResolvedValue({ data: { reloadProviderModelCatalog: snapshot('LMSTUDIO', 'READY', ['local-a', 'local-b']) } })
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('autobyteus')
+
+    await store.refreshModelList('autobyteus')
+
+    expect(mutate).toHaveBeenCalledTimes(1)
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
+      mutation: RELOAD_PROVIDER_MODEL_CATALOG, variables: { providerId: 'LMSTUDIO', runtimeKind: 'autobyteus' },
+    }))
+    expect(query).toHaveBeenCalledTimes(2)
+  })
+
+  it('"Refresh models" on an external runtime only re-reads its list', async () => {
+    const query = vi.fn().mockResolvedValue({ data: catalogResponse('codex_app_server', ['sol']) })
+    const mutate = vi.fn()
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as never)
+    const store = useLLMProviderConfigStore()
+    await store.fetchProvidersWithModels('codex_app_server')
+
+    await store.refreshModelList('codex_app_server')
+
+    expect(mutate).not.toHaveBeenCalled()
+    expect(query).toHaveBeenCalledTimes(2)
   })
 })

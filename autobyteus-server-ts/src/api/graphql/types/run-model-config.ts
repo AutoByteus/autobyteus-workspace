@@ -53,6 +53,9 @@ export class RunModelOptionObject {
 export class RunModelOptionsObject {
   @Field(() => String)
   currentModelIdentifier!: string;
+  /** False only when the runtime's model list could not be read; the options are then empty and `unavailableReason` says why. */
+  @Field(() => Boolean)
+  modelListReadable!: boolean;
   @Field(() => RunModelOptionObject, { nullable: true })
   currentModel!: RunModelOptionObject | null;
   @Field(() => [RunModelOptionObject])

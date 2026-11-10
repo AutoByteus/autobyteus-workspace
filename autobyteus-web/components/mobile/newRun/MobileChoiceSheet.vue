@@ -66,7 +66,8 @@ const props = withDefaults(defineProps<{
   /** The value shown when it is not one of the items (an agent's own default model). */
   selectedLabel?: string;
 }>(), { placeholder: 'Choose', itemNoun: '', disabled: false, selectedLabel: '' });
-const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
+// `open`: the sheet opened (the model sheet re-reads its list then, REQ-010).
+const emit = defineEmits<{ 'update:modelValue': [value: string]; open: [] }>();
 
 const isOpen = ref(false);
 const query = ref('');
@@ -86,6 +87,7 @@ watch(() => props.modelValue, () => { if (isOpen.value) close(); });
 
 function open(): void {
   isOpen.value = true;
+  emit('open');
   void nextTick(() => document.querySelector(`[data-testid="${props.testId}-sheet"] [aria-current=true]`)?.scrollIntoView?.({ block: 'center' }));
 }
 function close(): void {

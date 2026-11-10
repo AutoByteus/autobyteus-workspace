@@ -13,6 +13,7 @@ import type {
   ApplicationProviderCredentialReadinessPort,
 } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { ModelListUnavailableError } from "../../../src/llm-management/services/model-catalog-service.js";
 
 const configuration = (
   leaves: Array<Readonly<{ runtimeKind: string; llmModelIdentifier: string; memberAddress?: string | null }>>,
@@ -105,8 +106,45 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
       runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini-test",
     }]));
     expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-      message: "Antigravity CLI could not provide its authenticated model catalog: Antigravity model discovery failed; check authentication or network and retry.",
+      message: "The model list of Antigravity CLI could not be read: Antigravity model discovery failed; check authentication or network and retry. Try again.",
     })]);
+  });
+
+  it("reports a model the runtime does not offer with the one 'not offered' wording (REQ-013)", async () => {
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { resolveExactCurrentLlmModel: async () => null },
+      providerCredentialReadiness: credentialPort(),
+    });
+    const issues = await validator.validate(configuration([{
+      runtimeKind: RuntimeKind.GROK_BUILD, llmModelIdentifier: "grok-9",
+    }]));
+    expect(issues).toEqual([expect.objectContaining({ code: "MODEL_UNAVAILABLE",
+      message: expect.stringMatching(/^'grok-9' is not offered by Grok Build now \(for '.+'\)\. Refresh the model list and choose again\.$/),
+    })]);
+  });
+
+  it("words an empty Claude model list with the runtime's display name (AC-013)", async () => {
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { resolveExactCurrentLlmModel: async () => { throw new ModelListUnavailableError(RuntimeKind.CLAUDE_AGENT_SDK); } },
+      providerCredentialReadiness: credentialPort(),
+    });
+    const issues = await validator.validate(configuration([{
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus",
+    }]));
+    expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
+      message: "The model list of Claude Agent SDK could not be read: Claude Agent SDK returned no models. Try again.",
+    })]);
+    expect(issues[0]!.message).not.toContain("claude_agent_sdk");
   });
 
   it("reports a safe Grok Build catalog diagnostic through application launch issues (AC-015)", async () => {
@@ -123,7 +161,7 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
       runtimeKind: RuntimeKind.GROK_BUILD, llmModelIdentifier: "grok-4.7",
     }]));
     expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-      message: "Grok Build could not provide its authenticated model catalog: Grok Build model discovery failed; check Grok authentication or network and retry.",
+      message: "The model list of Grok Build could not be read: Grok Build model discovery failed; check Grok authentication or network and retry. Try again.",
     })]);
   });
 

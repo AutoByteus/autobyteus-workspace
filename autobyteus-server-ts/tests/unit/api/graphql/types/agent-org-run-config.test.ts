@@ -67,7 +67,7 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
     const mutation = readFileSync(new URL('graphql/mutations/agentOrgRunMutations.ts', web), 'utf8')
       .match(/export const UpdateStoppedAgentOrgRunConfig = gql`([\s\S]*?)`/)![1]!;
     io.getRunConfig.mockResolvedValue({ orgRunId: 'org', executionTree: tree, isActive: false, editability: { editable: true, reason: null } });
-    io.runModelOptions.mockResolvedValue([{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, currentModelIdentifier: 'model', replacements: [], unavailableReason: null }]);
+    io.runModelOptions.mockResolvedValue([{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, currentModelIdentifier: 'model', modelListReadable: true, currentModel: null, replacements: [], unavailableReason: null }]);
     io.updateStoppedRunConfig.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', canonical: tree,
       isActive: false, editability: { editable: true, reason: null }, fieldErrors: [] });
     expect((await graphql({ schema, source: read, variableValues: { orgRunId: 'org' } })).errors).toBeUndefined();

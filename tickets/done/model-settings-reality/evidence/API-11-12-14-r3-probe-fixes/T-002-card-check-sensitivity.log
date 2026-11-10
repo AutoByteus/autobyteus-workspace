@@ -1,0 +1,4 @@
+# T-002 sensitivity: the new card check of API-14 applied to the recorded states of round 1 (code 817bd9950, Fail) and round 2 (code dfa0faa76)
+# check: /No longer offered/i on cardAfterFailure + noteAfterFailure (the expression API-14 now uses)
+round 1: flags it = true | cardAfterFailure = "Workspace workspace Model claude-haiku-4-5-20251001 Claude Agent SDK No longer offered by Claude Agent SDK. Choose another model before this run resumes. Thinking Not available for this model Tool approval Auto-approve"
+round 2: flags it = false | cardAfterFailure = "Workspace workspace Model claude-haiku-4-5-20251001 Claude Agent SDK Thinking Not available for this model Tool approval Auto-approve"

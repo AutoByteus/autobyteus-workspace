@@ -1,0 +1,24 @@
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'system'
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'system'
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'system'
+  · Claude CLI is now 'failing'
+  · Claude CLI is now 'system'
+API-11 Pass
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'system'
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'system'
+  · Claude CLI is now 'failing'
+  · Claude CLI is now 'system'
+API-12 Pass
+  · Claude CLI is now 'bundled'
+  · Claude CLI is now 'system'
+  · Claude CLI is now 'failing'
+  · Claude CLI is now 'system'
+API-14 Fail — QR-001/REQ-011 in the saved-run (locked) menu: no error shown after a failed refresh; no Retry (button reads "Refresh models"); the options were emptied by a failed refresh (menu reads "No models available")
+EXIT=1

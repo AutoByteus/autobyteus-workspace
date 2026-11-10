@@ -321,7 +321,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     const walk = (dir: string) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) walk(full); else dataFiles.push(full);
+        if (entry.isDirectory()) walk(full); else if (entry.isFile()) dataFiles.push(full); // not the node-access control socket
       }
     };
     walk(fake.dataDir);

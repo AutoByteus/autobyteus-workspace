@@ -287,7 +287,7 @@ describe('existingRunConfigStore', () => {
     expect(store.dirty).toBe(false)
   })
 
-  it.each(['MODEL_UNAVAILABLE', 'SCHEMA_UNAVAILABLE', 'PERSISTENCE_FAILED'] as const)(
+  it.each(['MODEL_UNAVAILABLE', 'MODEL_LIST_UNAVAILABLE', 'SCHEMA_UNAVAILABLE', 'PERSISTENCE_FAILED'] as const)(
     'retains AgentOrg edits for determinate %s without canonical refresh',
     async outcome => {
       const store = useExistingRunConfigStore()
@@ -313,6 +313,9 @@ describe('existingRunConfigStore', () => {
       expect(store.draft.planner.scopesByAddress['/team/worker']!.draftSelection).toEqual(attemptedMember)
       expect(store.patches.length).toBeGreaterThan(0)
       expect(mocks.readOrg).toHaveBeenCalledTimes(1)
+      // A refused model (not offered, list unreadable, settings unchecked) marks the edited scopes with the server's message.
+      if (outcome !== 'PERSISTENCE_FAILED') expect(store.schemaStateByAddress['/']).toEqual({ status: 'unavailable', message: 'Determinate failure.' })
+      else expect(store.schemaStateByAddress['/']).toEqual({ status: 'ready', message: null })
     },
   )
 
@@ -655,6 +658,22 @@ it('does not let missing replacement metadata block current-model settings', () 
   expect(store.canSave).toBe(true)
   store.updateAgentModelConfig({ llmModelIdentifier: 'unknown', llmConfig: null })
   expect(store.canSave).toBe(false)
+})
+
+it('words an unreadable model list for another model with the server\'s message, while the run\'s own model stays editable (SR-004)', () => {
+  setActivePinia(createPinia())
+  const store = useExistingRunConfigStore()
+  store.syncAgentCanonical(agentPayload())
+  const message = 'The model list of Codex App Server could not be read. Try again.'
+  store.modelOptionsByAddress['/'] = { status: 'unavailable', options: null, message }
+  store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: { effort: 'high' } })
+  expect(store.schemaStateByAddress['/']).toEqual({ status: 'ready', message: null })
+  store.updateAgentModelConfig({ llmModelIdentifier: 'unknown', llmConfig: null })
+  expect(store.schemaStateByAddress['/']).toEqual({ status: 'unavailable', message })
+  store.modelOptionsByAddress['/'] = { status: 'unavailable', options: null }
+  store.deriveSchemaStates()
+  expect(store.schemaStateByAddress['/']!.status).toBe('unavailable')
+  expect(store.schemaStateByAddress['/']!.message).not.toBe(message)
 })
 
 describe('Cancel and reload after a lifecycle change (REQ-014/015)', () => {

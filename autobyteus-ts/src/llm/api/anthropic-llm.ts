@@ -180,7 +180,7 @@ const sanitizeExplicitThinking = (
   if (thinking.type === 'adaptive') {
     return thinking;
   }
-  if (policy.thinkingOffShape !== 'omit' && thinking.type === policy.thinkingOffShape) {
+  if (thinking.type === policy.thinkingOffShape) {
     return policy.thinkingOffShape === 'between_tools' ? { type: 'between_tools' } : thinking;
   }
   return undefined;
@@ -196,7 +196,7 @@ const buildThinkingFromToggle = (
       return { ...ADAPTIVE_THINKING };
     case 'adaptive':
       if (enabled === true) return { ...ADAPTIVE_THINKING };
-      if (enabled === false && policy.thinkingOffShape !== 'omit') return { type: policy.thinkingOffShape };
+      if (enabled === false) return { type: policy.thinkingOffShape };
       return null;
   }
 };

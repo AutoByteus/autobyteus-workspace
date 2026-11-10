@@ -1,0 +1,204 @@
+{
+  "startedAt": "2026-11-10T14:56:19.101Z",
+  "cases": {
+    "T09": {
+      "title": "Every AutoByteus-runtime Claude row on the real catalog: switch rows (Opus 5, Sonnet 5, Sonnet 5.5, Haiku 5.5) default to On with an Off choice; always-on rows (Fable 5, Fable 5.1, Opus 5.5) offer effort only (autobyteus-9 AC-002, AC-003)",
+      "result": "Pass",
+      "ms": 30296,
+      "details": {
+        "claude-opus-5": {
+          "switchRow": true,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-sonnet-5": {
+          "switchRow": true,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-sonnet-5-5": {
+          "switchRow": true,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-haiku-5-5": {
+          "switchRow": true,
+          "effortDefault": "medium",
+          "shown": {
+            "trigger": "Medium",
+            "draft": {
+              "thinking_enabled": true,
+              "reasoning_effort": "medium"
+            }
+          },
+          "checked": [
+            "medium"
+          ],
+          "items": [
+            "primary-off",
+            "primary-low",
+            "primary-medium",
+            "primary-high",
+            "primary-xhigh",
+            "primary-max"
+          ]
+        },
+        "claude-fable-5": {
+          "switchRow": false,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "reasoning_effort-low",
+            "reasoning_effort-medium",
+            "reasoning_effort-high",
+            "reasoning_effort-xhigh",
+            "reasoning_effort-max"
+          ]
+        },
+        "claude-fable-5-1": {
+          "switchRow": false,
+          "effortDefault": "high",
+          "shown": {
+            "trigger": "High",
+            "draft": {
+              "reasoning_effort": "high"
+            }
+          },
+          "checked": [
+            "high"
+          ],
+          "items": [
+            "reasoning_effort-low",
+            "reasoning_effort-medium",
+            "reasoning_effort-high",
+            "reasoning_effort-xhigh",
+            "reasoning_effort-max"
+          ]
+        },
+        "claude-opus-5-5": {
+          "switchRow": false,
+          "effortDefault": "medium",
+          "shown": {
+            "trigger": "Medium",
+            "draft": {
+              "reasoning_effort": "medium"
+            }
+          },
+          "checked": [
+            "medium"
+          ],
+          "items": [
+            "reasoning_effort-low",
+            "reasoning_effort-medium",
+            "reasoning_effort-high",
+            "reasoning_effort-xhigh",
+            "reasoning_effort-max"
+          ]
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 8949
+    },
+    {
+      "label": "frontend",
+      "pid": 9038
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 9038,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 8949,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/chat-composer-polish-qKGWGk"
+    }
+  ],
+  "ownedRoot": "/tmp/chat-composer-polish-qKGWGk",
+  "backendUrl": "http://127.0.0.1:40897",
+  "frontUrl": "http://127.0.0.1:39935",
+  "workspaces": {
+    "alpha-notes": "agent_ws_9f8c66063f35ec09082d96280063352d8a382e2b03f1cd699b620df745d1b45c",
+    "autobyteus_mcps": "agent_ws_ed01f6a6db18681cf6127d77d22a870da87f7e7f0b9855c58f2caeed6f375122",
+    "MCPS-tools": "agent_ws_8f00a51f9255ac9f11ba4e423ad59f6449b044cf387bdc0261035d46ea23ccd4",
+    "beta-site": "agent_ws_08c3765bd52302f30bb9ab98f90d9248ef9d3e5d8290020e87d88985d72833ce",
+    "gamma-api": "agent_ws_47e7289c2ecfd6afaa523dfc4aeb418d29d29c69a40f6e2bee6528c7010e4be2",
+    "delta-infra": "agent_ws_299e930e679db082980afb54863859efadbd76060c4b6bf1c9c01a4594a9e8c8",
+    "epsilon-docs": "agent_ws_1327072d015a02b32400e34d7994d3a6bbaa7d72b3e2a8681f8e3ff9bc682bae",
+    "zeta-mobile": "agent_ws_99450015ee64673b10351523ad01546df2eaefa28b01f2e4c937a060479424ef",
+    "eta-data": "agent_ws_8d3c2aea1b06d01f526c535ac1abb12ced414f27e0d03e6f738f42a4966f1971",
+    "theta-ml": "agent_ws_d1a151a6452bf59d7f660776c8fb97b13ed6312b3a9a271c0fb9d5165e0be6fb",
+    "iota-web": "agent_ws_4532543edb7e89f257958d3d81cd786ca0c3ae204e7b0fd017df2d60202d040f",
+    "kappa-cli": "agent_ws_fbd51b255c911a18dab75a422a7f6558c6e9487cf73da43fcea4db498260a4b2",
+    "lambda-sdk": "agent_ws_97b5718c1714f194f0ca9c023ee9a12866b75be527e01132d04d0356d7ea01e8",
+    "notes": "agent_ws_5b5e90764f0c0f7eec5e1979c024b3a2c2827f19c2dfa6b41e09f673d8414d0d"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-11-10T14:57:13.294Z"
+}

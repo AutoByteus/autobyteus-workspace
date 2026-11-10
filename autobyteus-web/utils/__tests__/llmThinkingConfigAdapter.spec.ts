@@ -45,6 +45,21 @@ describe('llmThinkingConfigAdapter', () => {
     });
   });
 
+  it('shows the Claude Agent SDK effort-only schema (no default, no none level) as thinking on, not Off, and not switchable (REQ-005, REQ-006)', () => {
+    const sdkEffortOnly = {
+      reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'] },
+    };
+
+    for (const config of [null, {}, { reasoning_effort: 'xhigh' }]) {
+      expect(getThinkingControlState(sdkEffortOnly, config)).toMatchObject({
+        supported: true, enabled: true, canDisable: false,
+      });
+    }
+    // Nothing to switch: the toggle cannot write an effort the user did not choose.
+    expect(applyThinkingToggle(sdkEffortOnly, true, null)).toBeNull();
+    expect(applyThinkingToggle(sdkEffortOnly, false, null)).toBeNull();
+  });
+
   it('shows AutoByteus OpenAI Responses none defaults as disabled and emits only advertised values', () => {
     const openAiResponsesSchema = {
       reasoning_effort: {

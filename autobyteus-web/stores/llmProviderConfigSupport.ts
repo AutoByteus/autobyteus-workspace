@@ -85,7 +85,12 @@ export interface RuntimeCatalogSnapshot {
   state: CatalogRequestState
   hasSuccessfulPayload: boolean
   providersById: Record<string, ProviderModelCatalogSnapshot>
+  /** The first load failed (`state` is `error`); the list is empty. */
   errorMessage: string | null
+  /** A re-read of an already loaded list is in flight; the list stays usable (`state` stays `ready`). */
+  refreshing: boolean
+  /** The last re-read failed; the last good list is kept (`state` stays `ready`). */
+  refreshError: string | null
 }
 
 export interface CustomLlmProviderDraftInput { name: string; baseUrl: string; apiKey: string }
@@ -153,4 +158,6 @@ export const emptyRuntimeCatalogSnapshot = (runtimeKind: string): RuntimeCatalog
   hasSuccessfulPayload: false,
   providersById: {},
   errorMessage: null,
+  refreshing: false,
+  refreshError: null,
 })

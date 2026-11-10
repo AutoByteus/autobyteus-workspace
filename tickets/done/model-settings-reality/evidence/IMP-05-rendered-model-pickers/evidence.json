@@ -1,0 +1,152 @@
+{
+  "startedAt": "2026-11-10T13:22:29.168Z",
+  "commit": "817bd9950",
+  "scenarios": {
+    "R1": {
+      "description": "Chat model menu: opening the runtime list re-reads it in the background; the list stays usable while it reads; a new model appears (AC-010)",
+      "status": "Pass",
+      "details": {
+        "reads": 3
+      }
+    },
+    "R2": {
+      "description": "Chat model menu: a failed refresh keeps the last list, shows the error with Retry; Retry and \"Refresh models\" re-read (QR-001, AC-011)",
+      "status": "Pass",
+      "details": {
+        "readsBefore": 3,
+        "afterRetry": 5,
+        "finalReads": 6,
+        "rows": [
+          "opus",
+          "fable"
+        ]
+      }
+    },
+    "R3": {
+      "description": "Concurrent opens share one server read (QR-002)",
+      "status": "Pass",
+      "details": {
+        "reads": 1
+      }
+    },
+    "R4": {
+      "description": "Launch-config picker: opening refreshes, \"Refresh models\" is inside the list, a new model appears and a failure shows Retry (AC-010, AC-011)",
+      "status": "Pass",
+      "details": {
+        "options": 3
+      }
+    },
+    "R5": {
+      "description": "Narrow viewport (390x844): the chat model menu drill-in shows the refresh control and the list fits",
+      "status": "Pass",
+      "details": {}
+    },
+    "R6": {
+      "description": "Launch panel: the SDK effort-only schema (no default) - what the Thinking control and the effort setting read before a choice",
+      "status": "Pass",
+      "details": {
+        "toggleState": "no [role=switch]",
+        "text": "Launch config picker (definition default)\n\nRuntime\nClaude Agent SDK\nCodex App Server\nModel\nAnthropic / claude-opus-5-5\nThinking\n\nUse the model settings below to control thinking.\n\nUse setting\nAdvanced"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "devServer": "terminated",
+    "temporaryPage": "removed"
+  },
+  "finishedAt": "2026-11-10T13:23:39.260Z",
+  "result": "Pass"
+}

@@ -6,7 +6,8 @@
 // sanitized environment, so a running desktop app or the user's `~/.autobyteus` data is never touched.
 //
 // Cases:
-//   T01 merged thinking menu at desktop width (AC-001, AC-004, AC-005, REQ-001a/002/003, QR-002)
+//   T01 merged thinking menu at desktop width on an AutoByteus-runtime Claude row with a thinking switch: the untouched
+//       default is On at the model's default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)
 //   T02 a chat launched at "High" records {thinking_enabled:true, reasoning_effort:'high'} (AC-001)
 //   T03 a chat launched Off records Off; in ⚙ run settings an Advanced effort edit turns the
 //       Thinking toggle on and the saved config keeps the effort (AC-010, REQ-008)
@@ -15,11 +16,18 @@
 //   T06 new-chat layout at 1440×1000 and 1280×700: current padding (`pt-[14vh] pb-10`, set by ticket
 //       chat-composer-menus-open-upward, whose own probe proves the exact position), no overlap/clipping (AC-009)
 //   T07 narrow (bottom sheet) smoke of both menus
+//   T08 the Claude Agent SDK runtime's effort-only thinking menu from the real Claude CLI catalog: no Off/On choice, an
+//       unchosen effort writes nothing and reads as the default, a chosen level is the only key written (autobyteus-9
+//       AC-005, AC-006)
+//   T09 every AutoByteus-runtime Claude row on the real catalog: switch rows default to On with an Off choice, always-on rows
+//       (Fable 5, Fable 5.1, Opus 5.5) offer effort only (autobyteus-9 AC-002, AC-003)
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` (its workspace contract packages need `dist/`,
-// e.g. `pnpm -C autobyteus-application-sdk-contracts build`), Google Chrome, and a logged-in `claude` CLI
-// (T01–T03). T04 uses the Codex catalog when available (logged-in `codex` CLI); T02/T03 send one
-// short message each to a real Claude SDK run.
+// e.g. `pnpm -C autobyteus-application-sdk-contracts build`), Google Chrome, and the Anthropic key in the test vault
+// (run with AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault; the owned backend then offers the AutoByteus runtime's Claude
+// rows to T01–T03, and T02/T03 send one short message each to a real Claude run). T04 uses the Codex catalog when
+// available (logged-in `codex` CLI), else the Claude Agent SDK catalog; T08 reads the Claude CLI's model list (`claude`
+// on PATH or the SDK-bundled CLI; no sign-in is needed to list models).
 //
 // Usage: pnpm test:e2e:chat-composer-polish [--output-dir test-results/chat-composer-polish]
 //        [--model claude-opus-5-5] [--cases T01,T05] [--keep]
@@ -48,12 +56,13 @@ const arg = (name, fallback) => {
   return i !== -1 && process.argv[i + 1] && !process.argv[i + 1].startsWith('--') ? process.argv[i + 1] : fallback
 }
 const outDir = path.resolve(webDir, arg('output-dir', 'test-results/chat-composer-polish'))
-const preferredModel = arg('model', 'claude-opus-5-5')
+const preferredModel = arg('model', 'claude-sonnet-5-5')
 const keep = process.argv.includes('--keep')
 const onlyCases = arg('cases', null)?.split(',') ?? null
 const chrome = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH
   ?? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find(existsSync))
 const CLAUDE = 'claude_agent_sdk'
+const AUTOBYTEUS = 'autobyteus'
 const CODEX = 'codex_app_server'
 
 const evidence = { startedAt: new Date().toISOString(), cases: {}, processes: [], cleanup: [] }
@@ -71,7 +80,7 @@ const waitFor = async (label, fn, timeout = 90000, interval = 250) => {
 }
 
 // A sanitized environment: nothing from a surrounding AutoByteus process leaks into owned processes.
-const baseEnv = () => Object.fromEntries(['HOME', 'PATH', 'USER', 'LANG', 'TMPDIR', 'SHELL', 'TERM']
+const baseEnv = () => Object.fromEntries(['HOME', 'PATH', 'USER', 'LANG', 'TMPDIR', 'SHELL', 'TERM', 'AUTOBYTEUS_TEST_VAULT']
   .filter((k) => process.env[k] !== undefined).map((k) => [k, process.env[k]]))
 const owned = []
 const spawnOwned = (label, command, args, cwd, env) => {
@@ -181,31 +190,42 @@ const state = { claudeModel: null, effortLevels: [], runs: [] }
 const cases = []
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
-defineCase('T01', 'Claude SDK merged thinking menu at desktop width: Off state, pick High, Off, Medium, Off→Medium (A-1)', async (page) => {
-  const models = (await catalog(CLAUDE)).filter((m) => m.props.thinking_enabled && Array.isArray(m.props.reasoning_effort?.enum) && m.props.reasoning_effort.enum.length)
-  assert(models.length, 'No Claude SDK model with thinking_enabled + reasoning_effort in the catalog')
+const titleCase = (value) => value.charAt(0).toUpperCase() + value.slice(1)
+
+defineCase('T01', 'AutoByteus-runtime Claude row with a thinking switch: merged menu at desktop width; untouched = On at the default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)', async (page) => {
+  const models = (await catalog(AUTOBYTEUS)).filter((m) => m.id.startsWith('claude-') && m.props.thinking_enabled && Array.isArray(m.props.reasoning_effort?.enum) && m.props.reasoning_effort.enum.length)
+  assert(models.length, 'No AutoByteus-runtime Claude model with thinking_enabled + reasoning_effort in the catalog (is the Anthropic key in the test vault? run with AUTOBYTEUS_TEST_VAULT)')
   const model = models.find((m) => m.id === preferredModel) ?? models[0]
   state.claudeModel = model.id; state.effortLevels = model.props.reasoning_effort.enum
-  assert(state.effortLevels.includes('high') && state.effortLevels.includes('medium'), 'Effort list lacks high/medium', state.effortLevels)
+  const defaultEffort = model.props.reasoning_effort.default
+  assert(model.props.thinking_enabled.default === true, 'AC-003: the catalog default of the thinking switch is not On', model.props.thinking_enabled)
+  assert(state.effortLevels.includes('high') && state.effortLevels.includes('medium') && state.effortLevels.includes(defaultEffort), 'Effort list lacks high/medium/default', state.effortLevels)
   const vp = page.viewportSize()
   await newChat(page)
-  await pickModel(page, CLAUDE, model.id)
+  await pickModel(page, AUTOBYTEUS, model.id)
   const initial = { trigger: await triggerText(page), bulb: await bulb(page), draft: await draftConfig(page) }
-  assert(initial.trigger === 'Off' && initial.bulb.muted, 'AC-004: fresh trigger is not Off with a muted bulb', initial)
-  assert(initial.draft?.thinking_enabled === false, 'Fresh draft does not record thinking off', initial)
+  assert(initial.trigger === titleCase(defaultEffort) && !initial.bulb.muted, 'AC-003: an untouched row does not read as On at its default effort', { initial, defaultEffort })
+  assert(initial.draft?.thinking_enabled === true && initial.draft?.reasoning_effort === defaultEffort, 'AC-003: the draft does not record what the menu shows (thinking on, default effort)', initial)
   await openThinking(page)
-  const off = await thinkingMenu(page)
-  const ids = primary(off).map((i) => i.test.replace('chat-thinking-option-primary-', ''))
+  const onMenu = await thinkingMenu(page)
+  const ids = primary(onMenu).map((i) => i.test.replace('chat-thinking-option-primary-', ''))
   assert(eq(ids, ['off', ...state.effortLevels]), 'AC-001: merged list is not Off · effort levels', ids)
-  assert(off.items.every((i) => i.test.startsWith('chat-thinking-option-primary-')), 'Removed two-group menu still rendered (thinking_enabled / reasoning_effort groups)', off.items)
-  assert(!/Reasoning effort|Thinking enabled/i.test(off.text), 'Old group captions still shown', off.text)
-  assert(eq(off.items.filter((i) => i.checked === 'true').map((i) => i.test), ['chat-thinking-option-primary-off']), 'AC-004/REQ-002: only Off must be checked while off', off.items)
-  assert(off.position === 'absolute' && Math.round(off.box.w) === 176 && insideViewport(off.box, vp), 'Desktop popover is not an anchored w-44 menu inside the viewport', off)
-  await page.screenshot({ path: path.join(outDir, 'T01-menu-off-1440.png') })
+  assert(onMenu.items.every((i) => i.test.startsWith('chat-thinking-option-primary-')), 'Removed two-group menu still rendered (thinking_enabled / reasoning_effort groups)', onMenu.items)
+  assert(!/Reasoning effort|Thinking enabled/i.test(onMenu.text), 'Old group captions still shown', onMenu.text)
+  assert(eq(onMenu.items.filter((i) => i.checked === 'true').map((i) => i.test), [`chat-thinking-option-primary-${defaultEffort}`]), 'AC-003/REQ-002: only the default effort must be checked while thinking is on', onMenu.items)
+  assert(onMenu.position === 'absolute' && Math.round(onMenu.box.w) === 176 && insideViewport(onMenu.box, vp), 'Desktop popover is not an anchored w-44 menu inside the viewport', onMenu)
+  await page.screenshot({ path: path.join(outDir, 'T01-menu-default-on-1440.png') })
   const focused = await page.evaluate(() => document.activeElement?.getAttribute('data-test'))
+  await page.locator(sel('chat-thinking-option-primary-off')).click()
+  const off = { trigger: await triggerText(page), bulb: await bulb(page), draft: await draftConfig(page) }
+  assert(off.trigger === 'Off' && off.bulb.muted && off.bulb.color !== initial.bulb.color && off.draft?.thinking_enabled === false, 'AC-004: Off did not turn thinking off with a muted bulb in one action', off)
+  await openThinking(page)
+  const offMenu = await thinkingMenu(page)
+  assert(eq(offMenu.items.filter((i) => i.checked === 'true').map((i) => i.test), ['chat-thinking-option-primary-off']), 'REQ-002: only Off must be checked while off', offMenu.items)
+  await page.screenshot({ path: path.join(outDir, 'T01-menu-off-1440.png') })
   await page.locator(sel('chat-thinking-option-primary-high')).click()
   const high = { trigger: await triggerText(page), bulb: await bulb(page), draft: await draftConfig(page) }
-  assert(high.trigger === 'High' && !high.bulb.muted && high.bulb.color !== initial.bulb.color, 'AC-001/REQ-003: trigger not "High" with an active bulb', high)
+  assert(high.trigger === 'High' && !high.bulb.muted && high.bulb.color !== off.bulb.color, 'AC-001/REQ-003: trigger not "High" with an active bulb', { high, off })
   assert(high.draft?.thinking_enabled === true && high.draft?.reasoning_effort === 'high', 'AC-001: draft llmConfig not {thinking_enabled:true, reasoning_effort:high}', high)
   await openThinking(page)
   const highMenu = await thinkingMenu(page)
@@ -214,7 +234,7 @@ defineCase('T01', 'Claude SDK merged thinking menu at desktop width: Off state, 
   await page.keyboard.press('Escape')
   await choosePrimary(page, 'off')
   const offAgain = { trigger: await triggerText(page), bulb: await bulb(page), draft: await draftConfig(page) }
-  assert(offAgain.trigger === 'Off' && offAgain.bulb.muted && offAgain.bulb.color === initial.bulb.color && offAgain.draft?.thinking_enabled === false, 'AC-005: Off did not turn thinking off in one action', offAgain)
+  assert(offAgain.trigger === 'Off' && offAgain.bulb.muted && offAgain.draft?.thinking_enabled === false, 'AC-005: Off did not turn thinking off in one action', offAgain)
   await choosePrimary(page, 'medium')
   const medium = { trigger: await triggerText(page), draft: await draftConfig(page) }
   assert(medium.trigger === 'Medium' && medium.draft?.thinking_enabled === true && medium.draft?.reasoning_effort === 'medium', 'AC-005: Medium after Off did not re-enable at medium', medium)
@@ -225,20 +245,20 @@ defineCase('T01', 'Claude SDK merged thinking menu at desktop width: Off state, 
   await choosePrimary(page, 'medium')
   const repick = { trigger: await triggerText(page), draft: await draftConfig(page) }
   assert(repick.trigger === 'Medium' && repick.draft?.thinking_enabled === true, 'A-1: re-picking the stored effort while Off left thinking off', repick)
-  return { model: model.id, effortLevels: state.effortLevels, initial, openFocus: focused, offMenu: { ids, box: off.box, position: off.position }, high, offAgain, medium, storedOffMedium, repick }
+  return { model: model.id, effortLevels: state.effortLevels, defaultEffort, initial, openFocus: focused, onMenu: { ids, box: onMenu.box, position: onMenu.position }, off, high, offAgain, medium, storedOffMedium, repick }
 })
 
 defineCase('T02', 'Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)', async (page) => {
-  assert(state.claudeModel, 'T01 must select a Claude SDK model first')
+  assert(state.claudeModel, 'T01 must select a Claude model first')
   await newChat(page)
-  await pickModel(page, CLAUDE, state.claudeModel)
+  await pickModel(page, AUTOBYTEUS, state.claudeModel)
   await choosePrimary(page, 'high')
   const draft = await draftConfig(page)
   const runId = await send(page, 'Reply with the single word OK and nothing else.')
   state.runs.push(runId)
   const cfg = await runConfig(runId)
   const recorded = cfg.metadataConfig.llmConfig
-  assert(cfg.metadataConfig.runtimeKind === CLAUDE && cfg.metadataConfig.llmModelIdentifier === state.claudeModel, 'Run launched with an unexpected runtime/model', cfg)
+  assert(cfg.metadataConfig.runtimeKind === AUTOBYTEUS && cfg.metadataConfig.llmModelIdentifier === state.claudeModel, 'Run launched with an unexpected runtime/model', cfg)
   assert(recorded?.thinking_enabled === true && recorded?.reasoning_effort === 'high', 'AC-001: recorded run llmConfig is not thinking on at high', { draft, recorded })
   const reply = await page.waitForFunction(() => /\bOK\b/.test(document.querySelector('[data-testid="agent-workspace-surface"]')?.innerText ?? ''), null, { timeout: 180000 }).then(() => true).catch(() => false)
   await page.screenshot({ path: path.join(outDir, 'T02-run-high.png') })
@@ -247,10 +267,11 @@ defineCase('T02', 'Launch a chat at High: the created run records thinking_enabl
 })
 
 defineCase('T03', 'Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)', async (page) => {
-  assert(state.claudeModel, 'T01 must select a Claude SDK model first')
+  assert(state.claudeModel, 'T01 must select a Claude model first')
   await newChat(page)
-  await pickModel(page, CLAUDE, state.claudeModel)
-  assert(await triggerText(page) === 'Off', 'Fresh chat is not Off')
+  await pickModel(page, AUTOBYTEUS, state.claudeModel)
+  await choosePrimary(page, 'off')
+  assert(await triggerText(page) === 'Off', 'Chat is not Off after choosing Off')
   const runId = await send(page, 'Reply with the single word OK and nothing else.')
   state.runs.push(runId)
   const recordedOff = (await runConfig(runId)).metadataConfig.llmConfig
@@ -312,6 +333,67 @@ defineCase('T04', 'A model without an on/off switch keeps the per-parameter thin
     await page.keyboard.press('Escape')
   }
   return { runtimeKind: pick.runtimeKind, model: pick.id, keys: Object.keys(pick.props), before, items: menu.items.map((i) => i.test), after }
+})
+
+defineCase('T08', 'Claude Agent SDK runtime: the effort-only thinking menu on the real Claude CLI catalog: no Off/On choice, nothing written until a level is chosen (autobyteus-9 AC-005, AC-006)', async (page) => {
+  const models = (await catalog(CLAUDE)).filter((m) => Array.isArray(m.props.reasoning_effort?.enum) && m.props.reasoning_effort.enum.length)
+  assert(models.length, 'The Claude CLI offers no model with an effort setting')
+  assert(models.every((m) => !m.props.thinking_enabled), 'AC-005: an SDK model still declares a thinking on/off setting', models.map((m) => [m.id, Object.keys(m.props)]))
+  assert(models.every((m) => m.props.reasoning_effort.default === undefined || m.props.reasoning_effort.default === null), 'AC-006: an SDK model declares a default effort the SDK does not report', models.map((m) => [m.id, m.props.reasoning_effort.default]))
+  const model = models[0]
+  await newChat(page)
+  await pickModel(page, CLAUDE, model.id)
+  const before = { trigger: await triggerText(page), draft: await draftConfig(page) }
+  assert(!before.draft || (before.draft.thinking_enabled === undefined && before.draft.reasoning_effort === undefined), 'AC-006: an untouched SDK model already writes thinking settings', before)
+  assert(before.trigger !== 'Off', 'AC-005: the SDK thinking control reads Off', before)
+  await openThinking(page)
+  const menu = await thinkingMenu(page)
+  assert(menu.items.length && menu.items.every((i) => !i.test.startsWith('chat-thinking-option-primary-')), 'AC-005: the SDK menu shows the merged Off list', menu.items)
+  assert(!/\boff\b/i.test(menu.items.map((i) => i.label).join(' ')), 'AC-005: an Off choice is shown', menu.items)
+  const effortItems = menu.items.filter((i) => i.test.startsWith('chat-thinking-option-reasoning_effort-'))
+  assert(eq(effortItems.map((i) => i.test.replace('chat-thinking-option-reasoning_effort-', '')), model.props.reasoning_effort.enum), 'AC-006: the menu lists other levels than the SDK reports', { effortItems: effortItems.map((i) => i.test), enum: model.props.reasoning_effort.enum })
+  assert(effortItems.every((i) => i.checked !== 'true'), 'AC-006: a level is checked although none was chosen', effortItems)
+  await page.screenshot({ path: path.join(outDir, 'T08-sdk-effort-only-menu.png') })
+  await page.locator(sel('chat-thinking-option-reasoning_effort-high')).click()
+  const after = { trigger: await triggerText(page), draft: await draftConfig(page) }
+  assert(eq(after.draft, { reasoning_effort: 'high' }), 'AC-006: choosing High must write the effort alone', after)
+  return { model: model.id, levels: model.props.reasoning_effort.enum, before, items: menu.items.map((i) => ({ test: i.test, label: i.label, checked: i.checked })), after }
+})
+
+defineCase('T09', 'Every AutoByteus-runtime Claude row on the real catalog: switch rows (Opus 5, Sonnet 5, Sonnet 5.5, Haiku 5.5) default to On with an Off choice; always-on rows (Fable 5, Fable 5.1, Opus 5.5) offer effort only (autobyteus-9 AC-002, AC-003)', async (page) => {
+  const SWITCH = ['claude-opus-5', 'claude-sonnet-5', 'claude-sonnet-5-5', 'claude-haiku-5-5']
+  const EFFORT_ONLY = ['claude-fable-5', 'claude-fable-5-1', 'claude-opus-5-5']
+  const rows = await catalog(AUTOBYTEUS)
+  const byId = new Map(rows.map((m) => [m.id, m]))
+  const results = {}
+  for (const id of [...SWITCH, ...EFFORT_ONLY]) {
+    const model = byId.get(id)
+    assert(model, `the AutoByteus catalog has no ${id} row (is the Anthropic key in the test vault?)`, rows.filter((m) => m.id.startsWith('claude-')).map((m) => m.id))
+    const hasSwitch = Boolean(model.props.thinking_enabled)
+    assert(hasSwitch === SWITCH.includes(id), `${id}: the schema ${hasSwitch ? 'has' : 'lacks'} a thinking switch`, model.props)
+    const effort = model.props.reasoning_effort
+    assert(effort?.enum?.length && effort.default, `${id}: no effort setting with a default`, model.props)
+    if (hasSwitch) assert(model.props.thinking_enabled.default === true, `${id}: the switch default is not On`, model.props.thinking_enabled)
+    await newChat(page)
+    await pickModel(page, AUTOBYTEUS, id)
+    const shown = { trigger: await triggerText(page), draft: await draftConfig(page) }
+    await openThinking(page)
+    const menu = await thinkingMenu(page)
+    const checked = menu.items.filter((i) => i.checked === 'true').map((i) => i.test.replace(/^chat-thinking-option-(primary|reasoning_effort)-/, ''))
+    if (hasSwitch) {
+      assert(shown.trigger === titleCase(effort.default) && shown.draft?.thinking_enabled === true && shown.draft?.reasoning_effort === effort.default, `AC-003: ${id} does not read as On at its default effort`, shown)
+      assert(eq(primary(menu).map((i) => i.test.replace('chat-thinking-option-primary-', '')), ['off', ...effort.enum]) && eq(checked, [effort.default]), `AC-003/AC-001: ${id} menu is not Off · levels with the default checked`, { menu: menu.items, checked })
+    } else {
+      assert(!menu.items.some((i) => i.test === 'chat-thinking-option-primary-off') && !menu.items.some((i) => i.test.startsWith('chat-thinking-option-primary-')), `AC-002: ${id} offers an Off/On choice`, menu.items)
+      const levels = menu.items.filter((i) => i.test.startsWith('chat-thinking-option-reasoning_effort-')).map((i) => i.test.replace('chat-thinking-option-reasoning_effort-', ''))
+      assert(eq(levels, effort.enum) && eq(checked, [effort.default]), `AC-002: ${id} menu is not the effort levels with the default checked`, { levels, checked, enum: effort.enum, default: effort.default })
+      assert(shown.draft?.thinking_enabled === undefined, `AC-002: ${id} writes a thinking switch value`, shown)
+    }
+    await page.screenshot({ path: path.join(outDir, `T09-${id}.png`) })
+    await page.keyboard.press('Escape')
+    results[id] = { switchRow: hasSwitch, effortDefault: effort.default, shown, checked, items: menu.items.map((i) => i.test.replace('chat-thinking-option-', '')) }
+  }
+  return results
 })
 
 const WORKSPACES = ['alpha-notes', 'autobyteus_mcps', 'MCPS-tools', 'beta-site', 'gamma-api', 'delta-infra', 'epsilon-docs', 'zeta-mobile', 'eta-data', 'theta-ml', 'iota-web', 'kappa-cli', 'lambda-sdk', 'notes']
@@ -429,7 +511,7 @@ defineCase('T06', 'Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overl
     await page.keyboard.press('Escape')
     let thBox = null
     if (state.claudeModel) {
-      await pickModel(page, CLAUDE, state.claudeModel)
+      await pickModel(page, AUTOBYTEUS, state.claudeModel)
       await openThinking(page)
       thBox = (await thinkingMenu(page)).box
       await page.screenshot({ path: path.join(outDir, `T06-thinking-menu-${vp.width}x${vp.height}.png`) })
@@ -450,7 +532,7 @@ defineCase('T07', 'Narrow bottom sheet (413×738): merged thinking list and work
   await newChat(page)
   let thinking = null
   if (state.claudeModel) {
-    await pickModel(page, CLAUDE, state.claudeModel)
+    await pickModel(page, AUTOBYTEUS, state.claudeModel)
     await openThinking(page)
     const m = await thinkingMenu(page)
     thinking = { position: m.position, ids: primary(m).map((i) => i.test.replace('chat-thinking-option-primary-', '')), box: m.box }

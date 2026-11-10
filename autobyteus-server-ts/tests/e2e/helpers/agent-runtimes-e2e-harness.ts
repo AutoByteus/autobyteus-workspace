@@ -1,3 +1,4 @@
+import { testLaunchCredential } from "../../setup/test-launch-credential.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -151,7 +152,8 @@ export const createGraphqlClient = (url: URL, realFetch: typeof fetch) => {
   const responses: string[] = [];
   const post = async (query: string, variables?: Record<string, unknown>) => {
     const response = await realFetch(new URL("/graphql", url), {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
+      method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${testLaunchCredential()}` },
+      body: JSON.stringify({ query, variables }),
     });
     const text = await response.text();
     responses.push(text);

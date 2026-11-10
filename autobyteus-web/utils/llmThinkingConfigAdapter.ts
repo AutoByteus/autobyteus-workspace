@@ -96,13 +96,16 @@ const openAiState = (
   const summaryParam = schema.reasoning_summary;
   const effort = effectiveValue(schema, config, 'reasoning_effort');
   const summary = effectiveValue(schema, config, 'reasoning_summary');
-  const enabled = (effort !== undefined && effort !== 'none') ||
-    (summary !== undefined && summary !== 'none');
   const effortCanDisable = !effortParam || enumIncludes(effortParam, 'none');
   const summaryCanDisable = !summaryParam || enumIncludes(summaryParam, 'none');
   const canDisable = effortCanDisable && summaryCanDisable;
-  const canEnable = positiveOpenAiValue(summaryParam) !== undefined ||
-    nonOffEnumValue(effortParam, ['none']) !== undefined;
+  // An effort-only schema with no `none` level and no default (the Claude Agent SDK runtime's) cannot turn thinking off: an
+  // unchosen level is the model's own default, so thinking is on, not Off, and there is nothing to enable.
+  const alwaysOn = Boolean(effortParam) && !summaryParam && !effortCanDisable && effort === undefined;
+  const enabled = alwaysOn || (effort !== undefined && effort !== 'none') ||
+    (summary !== undefined && summary !== 'none');
+  const canEnable = !alwaysOn && (positiveOpenAiValue(summaryParam) !== undefined ||
+    nonOffEnumValue(effortParam, ['none']) !== undefined);
 
   return {
     supported: true,

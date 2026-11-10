@@ -19,6 +19,7 @@ const options = (current: string, replacements: string[]) => ({ status: 'ready',
   currentModelIdentifier: current, currentModel: null, unavailableReason: null,
   replacements: replacements.map((llmModelIdentifier) => ({ llmModelIdentifier, providerName: 'p', displayName: llmModelIdentifier, canonicalName: llmModelIdentifier, description: null, configSchema: null, recommended: false })),
 } })
+const unreadable = { status: 'unavailable', options: null, message: 'The model list of Claude Agent SDK could not be read. Try again.' }
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 beforeEach(() => {
@@ -39,6 +40,83 @@ describe('delegatedLaunchDraftStore', () => {
     expect(store.dirty).toBe(true)
     store.bind({ rootKind: 'AGENT', rootRunId: 'other' })
     expect(store.dirty).toBe(false)
+  })
+
+  it('re-reads the copies\' options in the background: the options shown stay until the answer, and a failed read keeps them (REQ-010)', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    store.bind(root)
+    await flush()
+    let answer!: (value: unknown) => void
+    client.loadDelegatedLaunchModelOptions.mockReturnValueOnce(new Promise((resolve) => { answer = resolve }))
+
+    const reloading = store.reloadOptions()
+    expect(store.optionsStatus).toBe('ready')
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet']))
+
+    answer({ 'agent:copy': options('opus', ['sonnet', 'fable']) })
+    await expect(reloading).resolves.toBe(true)
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet', 'fable']))
+
+    client.loadDelegatedLaunchModelOptions.mockRejectedValueOnce(new Error('Model options unavailable.'))
+    await expect(store.reloadOptions()).resolves.toBe(false)
+    expect(store.optionsStatus).toBe('ready')
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet', 'fable']))
+  })
+
+  // API-14 (CR-004): a copy whose runtime list the server could not read never replaces the options shown.
+  it('merges a re-read per copy: a readable copy replaces, an unreadable one keeps its options, and the read answers false', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    client.loadDelegatedLaunchModelOptions.mockResolvedValue({ 'agent:copy': options('opus', ['sonnet']), 'team:t': options('haiku', ['sonnet']) })
+    store.bind(root)
+    await flush()
+    client.loadDelegatedLaunchModelOptions.mockResolvedValueOnce({ 'agent:copy': options('opus', ['sonnet', 'fable']), 'team:t': unreadable })
+
+    await expect(store.reloadOptions()).resolves.toBe(false)
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet', 'fable']))
+    expect(store.optionsByKey['team:t']).toEqual(options('haiku', ['sonnet']))
+    expect(store.optionsStatus).toBe('ready')
+
+    client.loadDelegatedLaunchModelOptions.mockResolvedValueOnce({ 'agent:copy': options('opus', ['fable']), 'team:t': options('haiku', ['opus']) })
+    await expect(store.reloadOptions()).resolves.toBe(true)
+    expect(store.optionsByKey['team:t']).toEqual(options('haiku', ['opus']))
+  })
+
+  it('an unreadable first read is unavailable with the server\'s message, and a stale unreadable answer is not a failure', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    client.loadDelegatedLaunchModelOptions.mockResolvedValue({ 'agent:copy': unreadable })
+    store.bind(root)
+    await flush()
+    expect(store.optionsByKey['agent:copy']).toEqual(unreadable)
+
+    let answer!: (value: unknown) => void
+    client.loadDelegatedLaunchModelOptions.mockReturnValueOnce(new Promise((resolve) => { answer = resolve }))
+    const reloading = store.reloadOptions()
+    store.bind({ rootKind: 'AGENT', rootRunId: 'other' })
+    answer({ 'agent:copy': unreadable })
+    await expect(reloading).resolves.toBe(true)
+  })
+
+  it('an options answer made stale by another run or a newer read is not applied and is not a failure', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    store.bind(root)
+    await flush()
+    let answer!: (value: unknown) => void
+    client.loadDelegatedLaunchModelOptions.mockReturnValueOnce(new Promise((resolve) => { answer = resolve }))
+
+    const reloading = store.reloadOptions()
+    store.bind({ rootKind: 'AGENT', rootRunId: 'other' })
+    answer({ 'agent:stale': options('x', []) })
+
+    await expect(reloading).resolves.toBe(true)
+    expect(store.optionsByKey['agent:stale']).toBeUndefined()
+  })
+
+  it('has nothing to re-read without a bound run', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    client.loadDelegatedLaunchModelOptions.mockClear()
+
+    await expect(store.reloadOptions()).resolves.toBe(true)
+    expect(client.loadDelegatedLaunchModelOptions).not.toHaveBeenCalled()
   })
 
   it('a change back to what ran is no change; an offered replacement is allowed, another model is not', async () => {

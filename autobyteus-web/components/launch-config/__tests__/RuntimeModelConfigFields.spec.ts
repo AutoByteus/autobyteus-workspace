@@ -10,15 +10,12 @@ vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: vi.fn(
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
 
-const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'Anthropic',
-  displayName: id, canonicalName: id, description: null, configSchema: null, recommended: false })
-
 const flushPromises = async () => {
   await Promise.resolve()
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
-describe('RuntimeModelConfigFields stored historical values', () => {
+describe('RuntimeModelConfigFields (a new launch)', () => {
   let providers: any[]
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -31,7 +28,8 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     } })) })
     ;(useLLMProviderConfigStore as any).mockReturnValue({
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
-      refreshLocalCatalog: vi.fn().mockResolvedValue([]),
+      refreshCatalog: vi.fn().mockResolvedValue([]),
+      refreshModelList: vi.fn(),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       providerSnapshots: vi.fn().mockReturnValue([]),
           catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
@@ -46,38 +44,34 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     })
   })
 
-  it('keeps removed runtime/model/config values visible inside disabled shared controls', async () => {
+  const claudeProviders = () => [{
+    provider: { id: 'ANTHROPIC', name: 'Anthropic', providerType: 'ANTHROPIC', isCustom: false },
+    models: [{
+      modelIdentifier: 'opus', name: 'Opus', value: 'opus', canonicalName: 'claude-opus-5-5',
+      providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'api', configSchema: null,
+    }],
+  }]
+
+  it('re-reads the runtime list when the model picker opens, and on "Refresh models" (REQ-010, REQ-011, AC-010)', async () => {
+    providers = claudeProviders()
     const wrapper = mount(RuntimeModelConfigFields, {
-      props: {
-        runtimeKind: 'removed-runtime',
-        llmModelIdentifier: 'removed-model',
-        llmConfig: { temperature: 0.2, nested: { enabled: true } },
-        disabled: true,
-        readOnly: true,
-        runtimeSelectionLocked: true,
-        historicalValueUnavailableMessage: 'Saved value is no longer available.',
-        historicalModelConfigTitle: 'Saved model configuration',
-        historicalModelConfig: true,
-      },
+      props: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: '', llmConfig: null },
+      attachTo: document.body,
+      global: { mocks: { $t: (key: string) => key } },
     })
     await flushPromises()
-    await wrapper.vm.$nextTick()
+    const store = (useLLMProviderConfigStore as any)()
+    store.refreshCatalog.mockClear()
 
-    expect((wrapper.get('select').element as HTMLSelectElement).value).toBe('removed-runtime')
-    expect(wrapper.text()).toContain('Runtime is not available in current capabilities.')
-    expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-model')
-    expect(wrapper.get('[data-test="historical-model-unavailable"]').text())
-      .toBe('Saved value is no longer available.')
-    const fallback = wrapper.get('[data-test="historical-model-config-fallback"]')
-    expect(fallback.text()).toContain('Saved model configuration')
-    expect(fallback.text()).toContain('temperature')
-    expect(fallback.text()).toContain('0.2')
-    expect(fallback.text()).toContain('{"enabled":true}')
-    expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
-      .map((row) => row.attributes('data-historical-key'))).toEqual(['nested', 'temperature'])
-    expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
-    expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
-    expect(wrapper.emitted('update:llmConfig')).toBeUndefined()
+    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).get('button').trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(store.refreshCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+    expect(store.refreshModelList).not.toHaveBeenCalled()
+
+    document.body.querySelector<HTMLButtonElement>('[data-test="model-list-refresh-button"]')!.click()
+    expect(store.refreshModelList).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+    wrapper.unmount()
+    document.body.innerHTML = ''
   })
 
   it('keeps an editable numeric draft rendered while reporting current-schema validation errors', async () => {
@@ -97,9 +91,6 @@ describe('RuntimeModelConfigFields stored historical values', () => {
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'gpt-4',
         llmConfig: { budget: 0 },
-        runtimeSelectionLocked: true,
-        modelSelectionLocked: true,
-        historicalModelConfig: true,
       },
     })
     await flushPromises()
@@ -107,10 +98,6 @@ describe('RuntimeModelConfigFields stored historical values', () => {
 
     expect(wrapper.find('input[type="number"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Value must be at least 1.')
-    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
-      status: 'invalid',
-      message: 'Value must be at least 1.',
-    }])
   })
 
   it('reports an unavailable selected launch model after its runtime catalog is ready', async () => {
@@ -126,16 +113,11 @@ describe('RuntimeModelConfigFields stored historical values', () => {
 
     expect(wrapper.get('[data-test="selected-model-unavailable"]').text())
       .toContain('The selected model is unavailable for the current runtime.')
-    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
-      status: 'unavailable',
-      message: 'The selected model is unavailable for the current runtime.',
-    }])
+    expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
+    wrapper.unmount()
   })
 
-  it.each([
-    { consumer: 'launch', historicalModelConfig: false },
-    { consumer: 'existing-run Settings', historicalModelConfig: true },
-  ])('accepts and emits exact Codex enum members for the $consumer consumer', async ({ historicalModelConfig }) => {
+  it('accepts and emits exact Codex enum members', async () => {
     providers = [{
       provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
       models: [{
@@ -162,127 +144,58 @@ describe('RuntimeModelConfigFields stored historical values', () => {
         runtimeKind: 'codex_app_server',
         llmModelIdentifier: 'gpt-5.6-codex',
         llmConfig: { reasoning_effort: 'medium' },
-        runtimeSelectionLocked: historicalModelConfig,
-        modelSelectionLocked: historicalModelConfig,
-        historicalModelConfig,
-        advancedInitiallyExpanded: true,
-        idPrefix: historicalModelConfig ? 'existing-codex' : 'launch-codex',
+        idPrefix: 'launch-codex',
       },
     })
     await flushPromises()
     await wrapper.vm.$nextTick()
+    await wrapper.findAll('button').find((button) => button.text().includes('Advanced'))?.trigger('click')
 
-    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
-      status: 'ready',
-      message: null,
-    }])
     expect(wrapper.text()).not.toContain('Enter a value of type enum.')
-
-    const fieldId = historicalModelConfig
-      ? '#existing-codex-reasoning_effort'
-      : '#launch-codex-reasoning_effort'
-    await wrapper.get(fieldId).setValue('low')
+    await wrapper.get('#launch-codex-reasoning_effort').setValue('low')
 
     expect(wrapper.emitted('update:llmConfig')?.at(-1)).toEqual([
       { reasoning_effort: 'low' },
     ])
   })
 
-  it('offers only verified replacements and emits a reset coherent pair for existing Settings', async () => {
-    providers = [{
-      provider: { id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false },
-      models: ['saved', 'larger', 'smaller'].map((id) => ({
-        modelIdentifier: id, name: id, value: id, canonicalName: id,
-        providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api',
-        configSchema: null,
-      })),
-    }]
+  it('choosing a model emits it with cleared settings; choosing another runtime clears the model too', async () => {
+    providers = claudeProviders()
+    ;(useRuntimeAvailabilityStore as any).mockReturnValue({
+      availabilities: [{ runtimeKind: 'claude_agent_sdk', enabled: true, reason: null }, { runtimeKind: 'codex_app_server', enabled: true, reason: null }],
+      fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      isRuntimeEnabled: vi.fn(() => true), runtimeReason: vi.fn().mockReturnValue(null),
+    })
     const wrapper = mount(RuntimeModelConfigFields, {
-      props: {
-        runtimeKind: 'autobyteus', llmModelIdentifier: 'saved', llmConfig: { old: true },
-        originalModelIdentifier: 'saved', runtimeSelectionLocked: true,
-        modelOptions: { status: 'ready', options: {
-          currentModelIdentifier: 'saved', currentModel: choice('saved'), replacements: [choice('larger')], unavailableReason: null,
-        } },
-      },
+      props: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: '', llmConfig: { stale: true } },
     })
     await flushPromises()
-    const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
-    expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id))).toEqual(['larger'])
-    picker.vm.$emit('update:modelValue', 'smaller')
-    expect(wrapper.emitted('selection-change')).toBeUndefined()
-    picker.vm.$emit('update:modelValue', 'larger')
-    expect(wrapper.emitted('selection-change')?.at(-1)).toEqual([{ llmModelIdentifier: 'larger', llmConfig: null }, true])
-    await wrapper.setProps({ modelOptions: { status: 'unavailable', options: null } })
-    expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id))).toEqual([])
-    expect(wrapper.get('[data-test="model-options-status"]').text()).toContain('saved model identity remains visible')
-    await wrapper.setProps({ modelSelectionLocked: true, modelOptions: undefined })
-    expect(picker.props('disabled')).toBe(true)
-    expect(wrapper.find('[data-test="model-options-status"]').exists()).toBe(false)
-    expect(picker.props('modelValue')).toBe('saved')
+
+    wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'opus')
+    expect(wrapper.emitted('update:llmModelIdentifier')?.at(-1)).toEqual(['opus'])
+    expect(wrapper.emitted('update:llmConfig')?.at(-1)).toEqual([null])
+
+    await wrapper.get('select').setValue('codex_app_server')
+    expect(wrapper.emitted('update:runtimeKind')?.at(-1)).toEqual(['codex_app_server'])
+    expect(wrapper.emitted('update:llmModelIdentifier')?.at(-1)).toEqual([''])
+    expect(wrapper.emitted('update:llmConfig')?.at(-1)).toEqual([null])
     wrapper.unmount()
   })
 
-  it('labels existing-run Claude choices with the shared policy (D-16 V-L5 regression)', async () => {
-    providers = []
-    const claudeChoice = (id: string, displayName: string, canonicalName: string) => ({ llmModelIdentifier: id, providerName: 'Anthropic',
-      displayName, canonicalName, description: null, configSchema: null, recommended: false })
-    const wrapper = mount(RuntimeModelConfigFields, {
-      props: {
-        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', llmConfig: null,
-        originalModelIdentifier: 'sonnet', runtimeSelectionLocked: true,
-        modelOptions: { status: 'ready', options: {
-          currentModelIdentifier: 'sonnet', currentModel: claudeChoice('sonnet', 'Sonnet 5', 'claude-sonnet-5'),
-          replacements: [claudeChoice('opus', 'Opus 5.5', 'claude-opus-5-5')], unavailableReason: null,
-        } },
-      },
-    })
+  it('shows an unavailable runtime and keeps the chosen runtime and model unchanged', async () => {
+    const wrapper = mount(RuntimeModelConfigFields, { props: { runtimeKind: 'removed-runtime', llmModelIdentifier: 'kept-model' } })
     await flushPromises()
-    const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
-    expect(picker.props('options')[0].items[0]).toMatchObject({
-      id: 'opus', name: 'claude-opus-5-5', description: 'Opus 5.5', selectedLabel: 'Anthropic / claude-opus-5-5',
-    })
-    wrapper.unmount()
-  })
-
-  it('keeps a server-offered external model visible when the separate display catalog lags', async () => {
-    providers = [{
-      provider: { id: 'ANTHROPIC', name: 'Anthropic', providerType: 'ANTHROPIC', isCustom: false },
-      models: [{ modelIdentifier: 'saved', name: 'saved', value: 'saved', canonicalName: 'saved',
-        providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'claude_agent_sdk', configSchema: null }],
-    }]
-    const wrapper = mount(RuntimeModelConfigFields, { props: {
-      runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'saved', llmConfig: null,
-      originalModelIdentifier: 'saved', runtimeSelectionLocked: true,
-      modelOptions: { status: 'ready', options: { currentModelIdentifier: 'saved',
-        currentModel: choice('saved'), replacements: [choice('new-runtime-model')], unavailableReason: null } },
-    } })
-    await flushPromises()
-    const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
-    expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id)))
-      .toContain('new-runtime-model')
-    picker.vm.$emit('update:modelValue', 'new-runtime-model')
-    expect(wrapper.emitted('selection-change')?.at(-1)).toEqual([{ llmModelIdentifier: 'new-runtime-model', llmConfig: null }, true])
-    await wrapper.setProps({ llmModelIdentifier: 'new-runtime-model' })
-    await flushPromises()
-    expect(wrapper.find('[data-test="selected-model-unavailable"]').exists()).toBe(false)
-    expect(wrapper.emitted('schema-state')?.at(-1)?.[0]).toMatchObject({ status: 'ready' })
-    wrapper.unmount()
-  })
-
-  it.each(['', '   '])('classifies blank %j as required, but prioritizes an actual runtime failure', async model => {
-    const wrapper = mount(RuntimeModelConfigFields, { props: { runtimeKind: 'autobyteus', llmModelIdentifier: model } })
-    await flushPromises()
-    expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{ status: 'invalid', reason: 'model_required', message: 'Select a model before launch.' }])
-    await wrapper.setProps({ runtimeKind: 'removed-runtime' }); await flushPromises()
-    expect(wrapper.emitted('schema-state')?.at(-1)?.[0]).toMatchObject({ status: 'unavailable' })
+    expect(wrapper.text()).toContain('Runtime is not available in current capabilities.')
+    expect((wrapper.get('select').element as HTMLSelectElement).value).toBe('removed-runtime')
     expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
+    expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     wrapper.unmount()
   })
+
   it('keeps a nonempty unavailable model visible instead of treating it as missing', async () => {
     const wrapper = mount(RuntimeModelConfigFields, { props: { runtimeKind: 'autobyteus', llmModelIdentifier: 'retired' } })
     await flushPromises()
-    expect(wrapper.emitted('schema-state')?.at(-1)?.[0]).toMatchObject({ status: 'unavailable' })
+    expect(wrapper.find('[data-test="selected-model-unavailable"]').exists()).toBe(true)
     expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     wrapper.unmount()
   })
@@ -310,45 +223,5 @@ describe('RuntimeModelConfigFields stored historical values', () => {
       expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
       wrapper.unmount()
     })
-
-    it('shows stopped exact default with its schema and only offered replacement', async () => {
-      const wrapper = mount(RuntimeModelConfigFields, { props: {
-        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', llmConfig: null,
-        originalModelIdentifier: 'default', runtimeSelectionLocked: true,
-        modelOptions: { status: 'ready', options: { currentModelIdentifier: 'default',
-          currentModel: { ...choice('default'), displayName: 'Opus (1M context)', canonicalName: 'claude-opus-5-5[1m]' },
-          replacements: [choice('opus[1m]')], unavailableReason: null } },
-      } })
-      await flushPromises()
-      const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
-      expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id)))
-        .toEqual(['opus[1m]'])
-      expect(picker.props('selectedDisplay')).toContain('claude-opus-5-5[1m]')
-      await picker.get('button').trigger('click')
-      const option = document.body.querySelector<HTMLElement>('[role="option"]')!
-      expect(option.getAttribute('aria-selected')).toBe('false')
-      option.click()
-      expect(wrapper.emitted('selection-change')?.at(-1)).toEqual([
-        { llmModelIdentifier: 'opus[1m]', llmConfig: null }, true,
-      ])
-      wrapper.unmount()
-    })
-
-    it('does not re-offer filtered default from a saved sibling', async () => {
-      const wrapper = mount(RuntimeModelConfigFields, { props: {
-        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus[1m]', llmConfig: null,
-        originalModelIdentifier: 'opus[1m]', runtimeSelectionLocked: true,
-        modelOptions: { status: 'ready', options: { currentModelIdentifier: 'opus[1m]',
-          currentModel: choice('opus[1m]'), replacements: [choice('sonnet')], unavailableReason: null } },
-      } })
-      await flushPromises()
-      const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
-      expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id)))
-        .toEqual(['sonnet'])
-      picker.vm.$emit('update:modelValue', 'default')
-      expect(wrapper.emitted('selection-change')).toBeUndefined()
-      wrapper.unmount()
-    })
   })
-
 })
