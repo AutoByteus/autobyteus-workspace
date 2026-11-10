@@ -304,7 +304,7 @@ R-001: corrected (A-5). U-001, U-002: answered (A-4, A-6). ASM-001: confirmed. "
 | U-006 | Whether the three readers that serve a message's attached file admit a message by "both agents are in the tree" | D-5 | Implementation Engineer |
 | U-007 | Settled by B-5 (review finding AR-001): the startup admission scan and the maintenance repair read trees without the Task records; they read the run's own parts only (D-11) | — | Closed |
 | U-008 | Whether an entry with `start: "starting"` can exist after a restart, and whether a run with an open `failed` entry and an own file is in the tree today | D-1's candidate rule | Implementation Engineer |
-| U-009 | Whether a history index row projected from a tree's own parts equals the row projected from the composed tree (`projectTeamRunHistoryIndexRow`, the Org equivalent) | D-11: the maintenance repair reads own parts | Implementation Engineer (a test; a Design Impact if a row needs delegated runs) |
+| U-009 | Whether a history index row projected from a tree's own parts equals the row projected from the composed tree (`projectTeamRunHistoryIndexRow`, the Org equivalent) | D-11: the maintenance repair reads own parts | Answered by the Architecture Reviewer's reading in ARCH-REV-002: both row projectors use own parts only. The Implementation Engineer keeps a test of it |
 
 ### B-5 Startup order and every construction site of the three tree stores (after review finding AR-001)
 

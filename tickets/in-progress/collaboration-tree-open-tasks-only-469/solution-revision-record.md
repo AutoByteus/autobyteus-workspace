@@ -8,7 +8,7 @@
 | SR-002 | Requirements | The user's answer to DEC-001 | N/A | Ready for Approval | Approved | BEH-005, REQ-004, AC-011, DEC-001 | Approved; architecture investigation starts |
 | SR-003 | Requirements and design | Architecture investigation | N/A | Requirements Approved; no design | Requirements Approved; design Ready | REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, DEC-003, DEC-005 … DEC-007 | Sent to architecture review; withdrawn before a decision (see SR-004) |
 | SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; architecture review ARCH-REV-001: Fail with one finding (AR-001) |
-| SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; back to architecture review |
+| SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; architecture review ARCH-REV-002 (round 2): Pass, no new findings; the reviewer handed off to the Implementation Engineer |
 
 ## Revision Entries
 
@@ -126,3 +126,4 @@
 - Downstream and architecture-review impact: review round 2
 - Remaining gaps, assumptions or blocked decisions: notes U-003, U-005, U-006, U-008, U-009; follow-ups FU-001 … FU-003
 - Next action: architecture review, round 2
+- Review result (recorded 2026-11-10, informational): `Pass`, ARCH-REV-002, round 2, on SR-005 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). AR-001 resolved by D-11 and DS-008; D-12 matches today's rule (`remote-task-execution-links.ts:60-63`); the reviewer read both history row projectors and found they use own parts only (U-009). The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
