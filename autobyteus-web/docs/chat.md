@@ -594,7 +594,21 @@ target mode.
 - Browser probe: `pnpm test:e2e:chat-composer-menus-open-upward`
   (`tests/e2e/chat-composer-menus-open-upward-probe.mjs`). It needs Chrome, a
   logged-in `claude` CLI and a prior `pnpm -C autobyteus-server-ts build`.
-- `composables/chat/__tests__/useChatModelCatalog.spec.ts`
+- `composables/chat/__tests__/useChatModelCatalog.spec.ts`,
+  `useChatModelCatalog.refresh.spec.ts`; model-list refresh:
+  `components/common/__tests__/ModelListRefreshControl.spec.ts`,
+  `components/chat/__tests__/ChatModelMenu.refresh.spec.ts`,
+  `components/mobile/newRun/__tests__/MobileRuntimeModelRows.refresh.spec.ts`,
+  `composables/__tests__/useLockedModelOptionsRefresh.spec.ts`,
+  `services/runConfigEditing/__tests__/existingRunModelOptionsState.spec.ts`,
+  `stores/__tests__/existingRunModelOptionsActions.spec.ts`,
+  `stores/__tests__/delegatedLaunchDraftStore.spec.ts`
+- Browser probe: `node tests/e2e/model-list-journeys-probe.mjs --output-dir <fresh dir>`
+  (the Claude CLI changes while the app runs: new-run picker, a stopped Team
+  member's settings, the saved run's locked menu, discovered-provider refresh, a
+  failing CLI at refresh and at first open). `--cli scripted` (default) needs no
+  credentials; `--cli real` needs the test vault, two Claude Code versions and a
+  prior `pnpm -C autobyteus-server-ts build`.
 - `components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts`
 - `components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts`
 - `components/workspace/config/__tests__/RunConfigPanel.spec.ts`,
