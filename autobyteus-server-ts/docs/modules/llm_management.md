@@ -189,9 +189,18 @@ submitted keys the current schema declares. Top-level keys the schema does not
 declare are left out of the canonical config (`validation.selection`) instead of
 producing an error, and a model without a schema canonicalizes any config to
 `null`; when leaving keys out empties a config, the canonical config is `null`
-(a submitted `{}` stays `{}`). It returns distinct model-unavailable,
-schema-unavailable, and field-validation results; it does not guess a
-replacement model or write a rendered default merely because the UI displayed it.
+(a submitted `{}` stays `{}`). It returns distinct results for a model the
+runtime does not offer now (`model_unavailable`), a model list that could not be
+read (`model_list_unavailable`, with the runtime's own diagnostic where it has
+one), an unreadable schema (`schema_unavailable`), and field validation; it does
+not guess a replacement model or write a rendered default merely because the UI
+displayed it. `run-model-selection-refusal.ts` is the one owner of the refusal
+wording and outcomes (`MODEL_UNAVAILABLE`, `MODEL_LIST_UNAVAILABLE`,
+`SCHEMA_UNAVAILABLE`): every Save and launch refusal site takes its text from it. A
+refused Save names the model and scope, says nothing was saved, and says to refresh
+the model list and choose again; an unreadable list says so and suggests trying
+again. A launch-source fallback for an unreadable list keeps the stored reason
+`model_unavailable` and carries the distinction in its `detail`.
 
 Every caller of `validate`/`validateMany` stores or launches only the canonical
 selection it gets back, never its raw input: stopped-run saves (agent, team,
@@ -199,9 +208,19 @@ AgentOrg), delegated-copy selections, the Model Router launch setting, AgentOrg
 launch (the execution tree is built from each placement's canonical config), and
 `LaunchUsabilityCheck` (a usable candidate or inherited launch carries the
 canonical selection). So no validated save, edit or launch carries a setting the
-selected model does not declare. Resuming a saved run and launching a new
-standalone agent or team run do not go through this check; there the runtime
-adapters receive the stored config (`AnthropicLLM` reads only the keys it owns).
+selected model does not declare. Resuming a saved run does not go through this
+check; there `LLMFactory` cuts the stored config to the model's declared settings
+when the LLM is created (AutoByteus) and the Claude session reads only
+`reasoning_effort`. A new standalone agent or team run stores and launches only
+declared settings: `projectNewRunLlmConfig`
+(`src/llm-management/services/new-run-llm-config-projection.ts`), called by
+`AgentRunProvisioningService` and `TeamRunService.createTeamRun`, keeps for the
+AutoByteus agent runtime the keys the selected model's schema declares (via
+`LLMFactory.canonicalRunLlmConfig`) and for an external agent runtime the keys its
+backend reads (`CLAUDE_SESSION_SETTING_KEYS`, `CODEX_SESSION_SETTING_KEYS`,
+`ACP_SESSION_SETTING_KEYS`; Antigravity CLI reads none). It reads no runtime
+catalog, so a launch costs no model-list read. Undeclared keys are dropped silently
+and a config with nothing declared stores `null`.
 
 Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI,
 Grok Build and DeepSeek Harness requires fresh membership in that runtime/workspace **offered** catalog and
@@ -212,7 +231,11 @@ live or static-definition provenance and a valid active context no greater than
 the evidenced maximum. Same-model settings bypass native capacity lookup but
 still require ordinary catalog/schema validation.
 
-`ModelCatalogService.runtimeModelSelectionCatalog` separates offered rows for
+`ModelCatalogService.runtimeModelSelectionCatalog` owns the rule that an external
+agent runtime always offers a model: an empty list is a failed read, so it throws
+`ModelListUnavailableError` (the available-agent-runtimes read, the GraphQL
+catalog and descriptor queries, and validation all see the failure instead of
+"no models"). It separates offered rows for
 new selections from `findExactCurrent(id)` over the same raw runtime snapshot.
 An unchanged saved ID, including a Claude `default` omitted from offered rows,
 must resolve exactly and pass its own schema; a changed ID must be in offered
@@ -235,16 +258,34 @@ settings-only command adapter is retained. Metadata feasibility alone is not
 proof of actual same-conversation inference for every provider/model/version.
 
 Runtime application remains bootstrap/session owned. AutoByteus receives the
-persisted config during LLM creation, Codex maps `reasoning_effort` and
-`service_tier` into thread configuration, and Claude maps supported
-`thinking_enabled` and `reasoning_effort` values into SDK `thinking` and
-`effort` query options while retaining the same Claude session UUID. Catalog
-capabilities expose Claude thinking and effort fields only when the installed
-SDK model descriptor supports them. Editing never hot-mutates an already-live
+persisted config during LLM creation (only the settings the model declares
+reach the provider), Codex maps `reasoning_effort` and
+`service_tier` into thread configuration, and Claude maps `reasoning_effort` into
+the SDK `effort` query option while retaining the same Claude session UUID. The
+Claude Agent SDK runtime sends no `thinking` option: the Claude CLI keeps
+thinking with `thinking: disabled` on every current model, so Off would have no
+effect. Its catalog schema offers effort only, at the levels the SDK reports for
+the model and with no default (an unchosen effort sends nothing and reads
+"Default"), only when the installed SDK model descriptor supports effort. Editing never hot-mutates an already-live
 backend; an eligible later restore consumes the saved model/settings pair in
 the same provider conversation. Save does not rewrite history or compacted
 state. Ordinary later compaction retains its runtime-owned algorithm, but model
 budgets and future timing can differ.
+
+### Refreshing The Offered Models
+
+The server reads each runtime's model list fresh on every catalog request, so a
+model a runtime starts offering while the app runs (a Claude Code update, a new
+Ollama or custom-endpoint model) is listed by the next read; nothing is cached
+for the app's lifetime on the server. The web client re-reads a runtime's list
+when a model picker opens and on the picker's **Refresh models** action (on the
+AutoByteus agent runtime this also re-discovers the discovered providers: Ollama,
+LM Studio and custom endpoints). The list already shown stays usable while the
+read runs and is kept when it fails (the picker shows the error with Retry).
+Built-in AutoByteus provider rows are curated catalog entries: a newly released
+provider model there arrives with an AutoByteus update. A saved run's model menus
+re-read that run's options (`runModelOptions` and the delegated-copy options) the
+same way.
 
 ### Claude Agent SDK Model Descriptions
 

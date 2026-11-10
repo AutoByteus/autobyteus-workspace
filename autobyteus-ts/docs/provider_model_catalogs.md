@@ -79,13 +79,13 @@ or credentials.
 | LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
 | LLM | `grok-4.7` | `grok-4.7` | xAI / Grok | 2026-09-26 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high/xhigh reasoning (default high), 500k-token curated context metadata, and cache-aware pricing with a long-context tier above 200k input tokens. |
-| LLM | `claude-fable-5-1` | `claude-fable-5-1` | Anthropic | 2026-09-22 | Exact ID; uses 1M context/input / 128k output metadata and Standard cache-aware pricing effective 2026-09-01. Adaptive thinking is always on, so the catalog exposes no thinking toggle; its only setting is effort (default `high`). |
-| LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
-| LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
+| LLM | `claude-fable-5-1` | `claude-fable-5-1` | Anthropic | 2026-09-22 | Exact ID; uses 1M context/input / 128k output metadata and Standard cache-aware pricing effective 2026-09-01. Adaptive thinking is always on, so the catalog exposes no thinking switch; its only setting is effort (default `high`). |
+| LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; adaptive thinking is always on, so the catalog exposes no thinking switch and its only setting is effort (default `high`); standard cache-aware pricing and Fable data-retention/cost caveats below. |
+| LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. Thinking defaults to on; off sends `{ type: "disabled" }` and no effort, and thinking really stops (with Anthropic's note that Opus 5 can write tool calls into text while it is off). |
 | LLM | `claude-opus-5-5` | `claude-opus-5-5` | Anthropic | 2026-09-23 | Exact Messages API ID; 1M context/input / 128k output, adaptive-only thinking request policy, effort default `medium`, and Standard $4 input / $20 output / $0.20 cache read / $5 five-minute write / $8 one-hour write per MTok. Signed native thinking remains private working-context material during tool continuation. |
-| LLM | `claude-sonnet-5-5` | `claude-sonnet-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "between_tools" }` (never `disabled`). Forced `tool_choice` fails locally. Standard pricing effective 2026-09-28. |
+| LLM | `claude-sonnet-5-5` | `claude-sonnet-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking, on by default; thinking off sends `{ type: "between_tools" }` (never `disabled`). Forced `tool_choice` fails locally. Standard pricing effective 2026-09-28. |
 | LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Exact provider ID only, with no `claude-sonnet-4.8` alias. |
-| LLM | `claude-haiku-5-5` | `claude-haiku-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "disabled" }`. Standard pricing effective 2026-10-07, tiered at 100k prompt tokens (cache tokens included). |
+| LLM | `claude-haiku-5-5` | `claude-haiku-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking, on by default; thinking off sends `{ type: "disabled" }`. Standard pricing effective 2026-10-07, tiered at 100k prompt tokens (cache tokens included). |
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `qwen3.8-max` | `qwen3.8-max` | Qwen / Alibaba | 2026-08-06 | Native Qwen offering with source-dated 1M context metadata; input/output limits remain unknown. |
@@ -181,13 +181,26 @@ base `LLMConfig` defaults
 `defaultConfig` when one exists, otherwise it starts from a normal `LLMConfig`.
 If `configInput` is already an `LLMConfig`, it is treated as an effective config
 and merged over those defaults. If `configInput` is a plain run/default-launch
-record, it is interpreted as a sparse override: missing standard fields do not
-override model defaults, standard keys such as `temperature`, `top_p`,
-`max_tokens`, penalties, and stop sequences become first-class `LLMConfig`
-fields, and unknown provider-specific keys flow through `extraParams`.
+record, it is interpreted as a sparse override that is first cut to what the
+model declares: missing standard fields do not override model defaults, standard
+keys such as `temperature`, `top_p`, `max_tokens`, penalties, and stop sequences
+become first-class `LLMConfig` fields, and a settings key reaches `extraParams`
+only when the model's `configSchema` declares it (see "Declared settings").
 Standard/reserved keys are filtered out of nested `extra_params`/`extraParams`
 so they cannot accidentally override the first-class values later in request
 construction.
+
+**Declared settings.** `projectRawLlmConfig(raw, declaredSettingKeys)`
+(`src/llm/utils/llm-config-overrides.ts`) keeps standard and reserved keys as
+given and keeps a settings key only when the selected model's schema declares it,
+whether it was stored at the top level or inside an `extra_params`/`extraParams`
+container; a declared key is written as a top-level key and a top-level value wins
+over the same key in a container. Every other key is dropped, so a key a model no
+longer declares in a saved run never reaches a provider, and a model with no
+schema sends no stored settings (the model's own catalog defaults are still sent).
+`LLMFactory.createLLM` applies it at run activation, and
+`LLMFactory.canonicalRunLlmConfig(modelIdentifier, raw)` gives the same canonical
+form to a new run's stored config.
 
 Server/runtime boundaries should therefore pass persisted raw `llmConfig`
 records directly to `LLMFactory`; they should not wrap those records as
@@ -228,43 +241,58 @@ verified 2026-07-31 against the [Claude models overview](https://platform.claude
 Do not add `claude-sonnet-4.8` unless Anthropic publishes that exact API ID.
 
 Every catalog Claude model uses adaptive thinking; none uses the older
-fixed-budget extended-thinking request shape. The built-in schemas expose a
-thinking toggle where the provider supports one:
+fixed-budget extended-thinking request shape. Anthropic's thinking behavior
+differs by model, and the built-in schemas offer only what has a real effect:
 
-- `thinking_enabled: true` maps to `thinking: { type: "adaptive" }`. No catalog
-  model exposes a display setting and the adapter never sends `display`, so
-  Anthropic's default `omitted` applies: thinking blocks come back with empty
-  text and the full signature, which tool continuation keeps and passes back.
+- **Rows with a thinking switch** (Opus 5, Sonnet 5, Sonnet 5.5, Haiku 5.5)
+  expose `thinking_enabled`, defaulting to **On** as Anthropic does when nothing
+  is sent. On maps to `thinking: { type: "adaptive" }`; Off sends the model's own
+  off shape (table below), and Off really turns thinking off (verified against the
+  API 2026-11-10: `disabled` on Opus 5, Sonnet 5 and Haiku 5.5 returns no thinking
+  tokens). No catalog model exposes a display setting and the adapter never sends
+  `display`, so Anthropic's default `omitted` applies: thinking blocks come back
+  with empty text and the full signature, which tool continuation keeps and passes
+  back.
+- **Always-on rows** (Opus 5.5, Fable 5, Fable 5.1) cannot turn thinking off
+  (`disabled` is rejected), so their schema has no `thinking_enabled`; effort is
+  their only setting and the adapter always sends `thinking: { type: "adaptive" }`.
 - The adapter never sends fixed budgets and strips provider-invalid manual
-  `thinking: { type: "enabled", budget_tokens: ... }`.
-- The adapter removes `temperature`, `top_p`, and `top_k` request fields for
-  every model.
+  `thinking: { type: "enabled", budget_tokens: ... }` on rows with a switch.
+- The adapter removes `temperature`, `top_p`, and `top_k` request fields on rows
+  with a switch; on always-on rows an explicit sampling parameter, a non-adaptive
+  `thinking` value or a forced `tool_choice` (Opus 5.5 only) fails locally, as the
+  API rejects them for these models.
 
 Per-model request rules live in one exact-value table,
 `src/llm/api/anthropic-model-request-policy.ts`. Every Anthropic catalog row
 has an explicit entry; a unit test pins each row's policy, and a model value
 without an entry fails locally. Each row records
-the thinking mode, the shape sent when the thinking toggle is off, and whether
+the thinking mode, the shape sent when the thinking switch is off, and whether
 a forced `tool_choice` (`any`/`tool`) fails locally:
 
-| Model value | Thinking mode | Toggle off sends | Forced `tool_choice` |
+| Model value | Thinking mode | Switch off sends | Forced `tool_choice` |
 | --- | --- | --- | --- |
-| `claude-opus-5-5` | adaptive required | — (fails locally) | fails locally |
+| `claude-opus-5-5` | adaptive required (always on) | — (no switch) | fails locally |
+| `claude-fable-5`, `claude-fable-5-1` | adaptive required (always on) | — (no switch) | allowed |
 | `claude-sonnet-5-5` | adaptive | `{ type: "between_tools" }` | fails locally |
 | `claude-haiku-5-5` | adaptive | `{ type: "disabled" }` | allowed |
 | `claude-sonnet-5` | adaptive | `{ type: "disabled" }` | allowed |
-| `claude-opus-5`, `claude-fable-5`, `claude-fable-5-1` | adaptive | nothing | allowed |
+| `claude-opus-5` | adaptive | `{ type: "disabled" }` | allowed |
+
+Opus 5 with thinking off can write tool calls into its text on tool-heavy work
+(Anthropic's note), which its switch description states.
 
 An explicit caller `thinking` value (a per-call kwarg) reaches an adaptive model
 only when its type is `adaptive` or that model's own off shape (`between_tools`
 is reduced to `{ type: "between_tools" }`); anything else is dropped.
 
-**Run config keys.** A run's stored `llmConfig` reaches the adapter as
-`LLMConfig.extraParams`. `AnthropicLLM` reads only the keys it owns,
-`thinking_enabled` and `reasoning_effort`, and sends no other config key. A key a
-schema no longer declares (for example a display setting kept in a saved run) is
-therefore inert, and saved runs keep resuming without a data migration. Per-call
-kwargs are applied as before.
+**Run config keys.** `LLMFactory` cuts a run's stored `llmConfig` to the settings
+the selected model declares before any adapter sees it (see "Declared settings"
+below), so a stored `thinking_enabled` on a row that no longer declares it
+(Fable 5, Fable 5.1, Opus 5.5) or a display setting kept in a saved run is dropped
+and saved runs keep resuming without a data migration. `AnthropicLLM` then reads
+only the keys it owns, `thinking_enabled` and `reasoning_effort`, from
+`LLMConfig.extraParams`. Per-call kwargs are applied as before.
 
 **Effort.** Every catalog Claude model exposes `reasoning_effort` with Anthropic's
 levels `low`, `medium`, `high`, `xhigh`, `max` (verified 2026-10-29 against the
@@ -276,25 +304,28 @@ configured level as `output_config: { effort }` (merged into a per-call
 sends no effort, so the model default applies. With `thinking_enabled: false`
 the request carries the model's off shape and no effort, whatever level the
 config still holds: off means thinking off at the model's default effort (this
-also avoids Anthropic's rejection of `xhigh`/`max` with thinking off). An unknown
-level fails locally. The level vocabulary is `ANTHROPIC_EFFORT_LEVELS` in
+also avoids Anthropic's rejection of `xhigh`/`max` with thinking off on Opus 5). An
+unknown level fails locally. The level vocabulary is `ANTHROPIC_EFFORT_LEVELS` in
 `anthropic-model-request-policy.ts`. Changing effort mid-run restarts Anthropic's
 prompt cache for that run (provider behavior).
 
 Claude Sonnet 5.5 and Haiku 5.5 (verified 2026-10-09 against the
 [Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) and
 [Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview)
-overviews) both default the thinking toggle to off, which sends each model's
-lowest setting. Sonnet 5.5 rejects `disabled`, so off sends `between_tools`,
-and Claude still writes short progress notes between tool calls (they are not
-shown, because display is always Anthropic's `omitted` default). Haiku 5.5 off
-sends `disabled`. The beta `display: "updates"` is not exposed.
+overviews) default the thinking switch to on, as every switch row does. Sonnet 5.5
+rejects `disabled`, so off sends `between_tools`, and Claude still writes short
+progress notes between tool calls (they are not shown, because display is always
+Anthropic's `omitted` default). Haiku 5.5 off sends `disabled`. The beta
+`display: "updates"` is not exposed.
 
-Fable 5.1 is different at the catalog boundary: adaptive thinking is always on,
-so its schema has no `thinking_enabled`; effort is its only setting. The
-Fable-family request policy still removes manual `enabled`/`disabled` thinking
-shapes and unsupported sampling parameters. The per-message effort beta is not
-represented in the catalog.
+Fable 5, Fable 5.1 and Opus 5.5 are different at the catalog boundary: adaptive
+thinking is always on, so their schemas have no `thinking_enabled`; effort is the
+only setting. The per-message effort beta is not represented in the catalog.
+
+The **Claude Agent SDK runtime** (server) offers effort only, at the levels the
+SDK reports for each model and with no default: an unchosen effort sends nothing
+and the model's own default applies. It offers no thinking switch because the
+Claude CLI keeps thinking with `thinking: disabled` on every current model.
 
 Claude Opus 5 standard pricing is input `$5`, output `$25`, cache read `$0.50`,
 5-minute cache write `$6.25`, and 1-hour cache write `$10` per million tokens.

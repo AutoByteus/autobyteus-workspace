@@ -89,9 +89,8 @@ new built-in enum value for every saved endpoint.
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-6-astra`, `gpt-5.5`,
       current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`,
-      and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
-      the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
-      `kimi-k2.7-code-highspeed` rows).
+      and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.8-flash`, and
+      the Kimi `kimi-k3` row).
     - Resolves each built-in definition's colocated static metadata through
       `ModelMetadataResolver`. Numeric fields use live provider metadata first,
       then static definition values, then `unknown`; the definition remains the
@@ -171,42 +170,40 @@ Current examples of provider-specific model rules:
   OpenAI schemas with `max`.
 - Every Anthropic row uses adaptive thinking rather than fixed-budget extended
   thinking and exposes Anthropic effort (`reasoning_effort`, sent as
-  `output_config.effort`). The adapter strips provider-invalid manual thinking
-  budgets and unsupported sampling fields (`temperature`, `top_p`, `top_k`).
-  Claude rows below generation 5 are not in the catalog. Do not add a
+  `output_config.effort`). Opus 5, Sonnet 5, Sonnet 5.5 and Haiku 5.5 expose a
+  thinking switch that defaults to On; Off sends the model's own off shape
+  (`disabled`, or `between_tools` on Sonnet 5.5) and no effort, and really turns
+  thinking off. Opus 5.5, Fable 5 and Fable 5.1 are always on: they expose effort
+  only, and the adapter always sends adaptive thinking. The adapter strips
+  provider-invalid manual thinking budgets and unsupported sampling fields
+  (`temperature`, `top_p`, `top_k`) on rows with a switch; on always-on rows these
+  fail locally. Claude rows below generation 5 are not in the catalog. Do not add a
   `claude-sonnet-4.8` alias unless Anthropic publishes that exact API ID, and
   do not make Fable 5 a default or fallback without a separate product
-  decision.
+  decision. `docs/provider_model_catalogs.md` holds the per-model table.
 - `claude-fable-5-1` is a separate exact row with a 1M context/input limit,
   128k output limit, and source-verified 2026-09-22 Standard prices of `10`
   input, `50` output, `0.25` cache read, `12.5` 5-minute write, and `20`
   1-hour write per MTok. Because adaptive thinking is always on, it has no
-  manual thinking config schema; the existing
-  Fable-family request policy still removes fixed/disabled thinking shapes and
-  unsupported sampling fields. Fable 5 remains unchanged and no alias is
-  introduced.
+  thinking switch in its config schema; like Fable 5, its request policy removes
+  fixed/disabled thinking shapes and unsupported sampling fields.
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with a flat user-facing V4 thinking schema; the
   adapter maps that schema to the provider request shape.
-- `gemini-3.5-flash` uses the existing Gemini adapter, the shared Gemini
-  thinking schema, docs-backed curated token limits, and explicit API-key /
-  Vertex identity mapping in `src/utils/gemini-model-mapping.ts`.
+- `gemini-3.8-flash` uses the existing Gemini adapter, the shared Gemini
+  thinking schema (`thinking_level`, `include_thoughts`), docs-backed curated
+  token limits, and its own string thinking-level request policy in `GeminiLLM`.
 - `grok-4.7` is the sole built-in Grok row, uses the existing xAI Chat
   Completions path, and exposes always-on `low`/`medium`/`high`/`xhigh` reasoning with
   `high` as the default. Its adapter removes xAI-invalid stop and penalty
   fields locally before the shared OpenAI-compatible request builder runs.
-- `glm-5.2` replaces `glm-5.1` as the active GLM model and exposes
-  `thinking_type` plus `reasoning_effort` schema fields. `GlmLLM` maps the flat
-  thinking key to provider-native `thinking.type` and omits
-  `reasoning_effort` when thinking is disabled.
-- `kimi-k2.6` remains the general-purpose Kimi model. It disables thinking
-  automatically for tool workflows when the caller has not supplied an explicit
-  thinking override and normalizes provider-safe K2.6 temperature defaults.
-- `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` are distinct official Kimi
-  K2.7 Code serving routes. They share the Kimi K2.7 family policy in
-  `src/llm/api/kimi-k2-7-code-policy.ts`, keep thinking on, and normalize fixed
-  sampling/tool-choice constraints locally in `KimiLLM` before the shared
-  request builder runs.
+- `glm-5.3` is the active built-in GLM model and exposes `reasoning_effort`
+  (`low`/`high`/`max`, default `max`); thinking is always enabled and `GlmLLM`
+  always sends provider-native `thinking.type: enabled` with a valid effort.
+- `kimi-k3` is the Kimi model. Its thinking is always enabled: `KimiLLM` sends
+  `thinking: { type: "enabled", reasoning_effort }` (`low`/`high`/`max`, default
+  `max`) and removes the flat `thinking_type` / `reasoning_effort` config keys
+  from the request body.
 - `minimax-m3` is the active MiniMax LLM entry. MiniMax M2.7 is removed from the
   built-in registry and curated metadata without a compatibility alias.
 
@@ -352,7 +349,7 @@ src/llm/
   tiers, and local/no-bill or missing/placeholder status. Missing dimensions
   remain untrusted; server-side accounting decides whether estimated costs can
   be shown and must not treat constructor/default zero values as free pricing.
-- **`extraParams`**: Dictionary of model-specific parameters (validates against `configSchema`).
+- **`extraParams`**: The model-specific settings a request carries: the model's own catalog defaults plus the stored settings its `configSchema` declares (a stored key the model does not declare is dropped by `LLMFactory`, see below).
 
 `LLMConfig` is the effective configuration object passed to provider
 instances. Factory-created runtime paths compose that effective config in this
@@ -370,13 +367,21 @@ base `LLMConfig` defaults
 selected model's `defaultConfig` when present, otherwise from a fresh
 `LLMConfig`. Passing an `LLMConfig` means the caller already has an effective
 config, so the factory merges it over the model defaults. Passing a plain object
-means the caller is providing a sparse raw run/default-launch `llmConfig`;
-`llm-config-overrides.ts` applies only explicitly present fields. Missing
+means the caller is providing a sparse raw run/default-launch `llmConfig`: the
+factory first cuts it to what the model declares (`projectRawLlmConfig` in
+`llm-config-overrides.ts`), then applies only explicitly present fields. Missing
 standard fields do not override model defaults, standard keys such as
 `temperature`, `top_p`, `max_tokens`, penalties, and stop sequences become
-first-class `LLMConfig` fields, and unknown provider-specific keys are preserved
-in `extraParams`. Standard/reserved keys are filtered out of nested
-`extra_params` / `extraParams` containers to avoid first-class-field collisions.
+first-class `LLMConfig` fields, and a settings key is kept in `extraParams` only
+when the model's `configSchema` declares it, whether it was stored at the top
+level or inside an `extra_params` / `extraParams` container (a top-level value
+wins over the same key in a container). Every other settings key is dropped, so
+a key a model no longer declares in a saved run never reaches a provider, and a
+model without a schema sends no stored settings. Standard/reserved keys are
+filtered out of nested `extra_params` / `extraParams` containers to avoid
+first-class-field collisions.
+`LLMFactory.canonicalRunLlmConfig(modelIdentifier, raw)` gives a new run's stored
+config the same canonical form (declared settings as top-level keys, no container).
 
 Server runtime boundaries should pass persisted raw `llmConfig` records to
 `LLMFactory` directly. They should not turn the entire raw record into
@@ -399,13 +404,9 @@ such as Anthropic and Mistral so agent bookkeeping identifiers do not leak to
 provider SDK request payloads. External adapters filter these internal kwargs
 at their request boundary instead of requiring upstream callers to remove them.
 Provider adapters can still normalize provider-specific request legality before
-delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
-Moonshot-safe temperature defaults unless a caller explicitly passes a
-per-request `temperature`, while the `kimi-k2.7-code` and
-`kimi-k2.7-code-highspeed` variants enforce fixed temperature, sampling, and
-tool-choice values to keep requests provider-valid. `GlmLLM` owns GLM
-`thinking_type` to `thinking.type` conversion and
-omits stale effort values when thinking is disabled. `DeepSeekLLM` similarly
+delegating to this builder. For example, `KimiLLM` owns the Kimi K3 thinking
+request shape (`thinking: { type: "enabled", reasoning_effort }`), and `GlmLLM`
+owns GLM `thinking_type` to `thinking.type` conversion with a valid effort. `DeepSeekLLM` similarly
 owns V4 thinking request normalization: user-facing `thinking_type` is converted
 to top-level `thinking.type`, stale caller-supplied `thinking` and
 `extra_body.thinking` values are dropped, and disabled thinking omits

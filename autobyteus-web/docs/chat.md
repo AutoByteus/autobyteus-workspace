@@ -214,21 +214,25 @@ while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
 `hasThinkingSwitch`, `getThinkingDependentParamKeys`, `applyThinkingParamChoice`
 (menu choices) and `applyThinkingDependentEdit` (form edits).
 
-- **Schema with an on/off switch** (Claude `thinking_enabled` — AutoByteus Claude
-  rows and the Claude Agent SDK runtime — and DeepSeek-style `thinking_type`): one
+- **Schema with an on/off switch** (Claude `thinking_enabled` — the AutoByteus
+  Claude rows Opus 5, Sonnet 5, Sonnet 5.5 and Haiku 5.5, which default to On — and
+  DeepSeek-style `thinking_type`): one
   "Thinking" list. It is `Off` followed by each effort level (for example Off ·
   Low · Medium · High · Xhigh · Max), or `Off · On` when there is no effort list.
   Exactly one row is checked, and it matches what will be sent. Picking a level
   turns thinking on at that level in one action; Off turns thinking off (the
-  AutoByteus runtime then sends no effort). Re-picking the stored level while Off
+  AutoByteus runtime then sends the model's off shape and no effort). Re-picking the stored level while Off
   also turns thinking on. Any other dependent settings appear below a divider,
   and changing one also turns thinking on. Claude rows offer no thinking display
   setting.
 - **Trigger.** It reads "Off" when thinking is off, the active level when the
   model has an effort setting, and "On" otherwise. The bulb is muted when off.
-- **Other schemas** (for example Codex `reasoning_effort` with no switch, or the
-  effort-only Claude Opus 5.5 and Fable 5.1, whose thinking cannot be switched
-  off) keep the per-parameter menu, and a pick changes only that parameter.
+- **Other schemas** (for example Codex `reasoning_effort` with no switch, the
+  effort-only Claude Opus 5.5, Fable 5 and Fable 5.1, whose thinking cannot be
+  switched off, or the Claude Agent SDK runtime, which offers effort only) keep the
+  per-parameter menu, and a pick changes only that parameter. An effort with no
+  schema default (the SDK runtime's) reads "Default" until a level is chosen and
+  writes nothing to the run's settings.
 
 ## Start Surfaces
 
@@ -313,6 +317,20 @@ app reload; a row keeps its last state until its re-check answers. Available
 runtimes are not re-checked on open.
 
 ### Model labels
+
+Model lists stay current without a restart. Opening a model picker re-reads that
+runtime's list in the background (`llmProviderConfig.refreshCatalog`): the list
+already shown stays usable, a new model appears when the read answers, and a failed
+read keeps the last list and shows an error with Retry. Every picker also has a
+**Refresh models** action (`ModelListRefreshControl`, shared by the chat model menu,
+the launch-config and application launch-profile selectors and the phone's model
+sheet; `refreshModelList` also re-discovers the AutoByteus runtime's discovered
+providers) and a busy state while it reads. Concurrent refreshes of one runtime share
+one server read, and every picker showing that runtime updates from the one store
+snapshot. A saved run's model menus re-read that run's options through
+`existingRunConfigStore.reloadModelOptions` and
+`delegatedLaunchDraftStore.reloadOptions`, provided to the menus by the editor
+(`useLockedModelOptionsRefresh`).
 
 Chat names models the same way on every surface that uses the chat model menu (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:
 

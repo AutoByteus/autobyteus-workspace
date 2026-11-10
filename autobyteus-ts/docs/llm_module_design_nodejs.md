@@ -126,11 +126,9 @@ Two OpenAI-style paths coexist:
   `turnId` and `requestId`. Provider adapters name their own
   controlled fields; the sanitizer must not own provider-specific model policy.
 - Provider adapters keep provider-specific request legality local before
-  delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
-  requests to Moonshot-safe temperature defaults and applies separate
-  fixed sampling/tool-choice constraints for both K2.7 Code official IDs:
-  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed`. `GlmLLM` maps the flat GLM
-  thinking schema to provider-native request fields.
+  delegating to that builder. `KimiLLM`, for example, owns the Kimi K3 thinking
+  request shape (`thinking: { type: "enabled", reasoning_effort }`), and `GlmLLM`
+  maps the flat GLM thinking schema to provider-native request fields.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -170,18 +168,25 @@ The second argument has two meanings:
 
 The raw override applier maps standard keys such as `temperature`, `top_p`,
 `max_tokens`, penalties, and stop sequences into first-class `LLMConfig`
-fields. Missing fields preserve model defaults, unknown provider-specific keys
-flow into `extraParams`, and standard/reserved keys are filtered out of nested
-`extra_params` / `extraParams` containers so they cannot collide with
-first-class fields later. Server-side AutoByteus run assembly should pass raw
-persisted `llmConfig` objects to `LLMFactory`; it should not wrap the entire
+fields. Before it runs, `projectRawLlmConfig` cuts the record to what the
+selected model declares: a settings key survives only when the model's
+`configSchema` declares it (stored at the top level or inside an
+`extra_params` / `extraParams` container, written as a top-level key, a
+top-level value winning over a container value), standard/reserved keys keep
+their handling and are filtered out of nested containers so they cannot collide
+with first-class fields later, and every other key is dropped. Missing fields
+preserve model defaults. A model without a schema sends no stored settings, and
+a key a model no longer declares in a saved run never reaches a provider.
+`LLMFactory.canonicalRunLlmConfig(modelIdentifier, raw)` gives a new run's stored
+config the same canonical form. Server-side AutoByteus run assembly should pass
+raw persisted `llmConfig` objects to `LLMFactory`; it should not wrap the entire
 record as `new LLMConfig({ extraParams: llmConfig })`.
 
 Provider/model invariants are enforced after this factory composition and
-before request construction. The Kimi K2.7 Code policy is the concrete example:
-both `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` seed fixed defaults from
-the catalog and are still normalized by `KimiLLM` before the OpenAI-compatible
-request builder runs.
+before request construction. The Kimi K3 request shape is the concrete example:
+the catalog seeds `reasoning_effort: max` and `thinking_type: enabled`, and
+`KimiLLM` rewrites them into the provider's `thinking` object before the
+OpenAI-compatible request builder runs.
 
 ## 4. Provider Implementations
 
@@ -276,17 +281,15 @@ The current latest-model support set is summarized in
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
   or fallback.
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
-- Gemini `gemini-3.5-flash` with the same provider value for API-key and
-  Vertex runtimes (verified 2026-05-20).
+- Gemini `gemini-3.8-flash` (verified 2026-09-02), with introductory and
+  standard pricing schedules.
 - xAI Grok `grok-4.7` as the sole built-in Grok row (verified 2026-09-26),
   using the existing Chat Completions path with always-on low/medium/high/xhigh
   reasoning and no legacy alias.
-- Moonshot/Kimi `kimi-k2.6` general-purpose model plus the K2.7 Code
-  `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` serving routes. HighSpeed is
-  a distinct official provider identifier for the faster K2.7 Code route, not a
-  compatibility alias (standard K2.7 verified 2026-06-16; HighSpeed verified
-  2026-06-26).
-- Zhipu GLM `glm-5.2` (verified 2026-06-16).
+- Moonshot/Kimi `kimi-k3` (verified 2026-08-22), with thinking always enabled
+  and `low`/`high`/`max` effort.
+- Zhipu GLM `glm-5.3`, with thinking always enabled and `low`/`high`/`max`
+  effort. `glm-5.2` is served only through the Qwen provider's static rows.
 - MiniMax `minimax-m3` / `MiniMax-M3` (verified 2026-06-24). MiniMax M2.7 is
   removed and must not be retained as an alias.
 
@@ -328,33 +331,30 @@ Provider adapters own request-shape differences:
   and is rendered as user-role text, so the cached system prefix never changes
   mid-conversation. `cache_control` is adapter-owned: it is dropped from
   invocation kwargs and config `extraParams`.
-- The `claude-fable-5-1` definition exposes no manual thinking schema because
-  adaptive thinking is always on. Its exact 1M context/input and 128k output
+- Anthropic thinking settings are real or absent. Opus 5, Sonnet 5, Sonnet 5.5
+  and Haiku 5.5 expose a `thinking_enabled` switch that defaults to On; Off sends
+  the model's own off shape (`disabled`, or `between_tools` on Sonnet 5.5) and no
+  effort, and thinking really stops. Opus 5.5, Fable 5 and Fable 5.1 are always
+  on: their definitions expose effort only and the adapter always sends adaptive
+  thinking, rejecting manual enabled/disabled thinking and unsupported sampling
+  fields locally. The `claude-fable-5-1` exact 1M context/input and 128k output
   limits plus Standard `10/50/0.25/12.5/20`
   input/output/cache-read/5-minute-write/1-hour-write prices are static catalog
-  metadata; the existing Fable-family request policy still rejects manual
-  enabled/disabled thinking and unsupported sampling fields.
+  metadata.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4 and
   maps the flat user-facing `thinking_type` config to
   top-level `thinking.type` before the shared request builder runs, dropping
   stale caller-supplied `thinking` / `extra_body.thinking` values.
-- `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
-  modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
-  Gemini thinking config schema.
+- `GeminiLLM` uses the exact `gemini-3.8-flash` ID and shares the existing
+  Gemini thinking config schema (`thinking_level`, `include_thoughts`).
 - `GrokLLM` keeps the xAI Chat Completions transport, defaults reasoning to
   `high`, and strips provider-invalid stop and penalty fields from copied config
   and invocation kwargs before the shared request builder runs.
-- `GlmLLM` maps GLM `thinking_type` to provider-native `thinking.type`, sends
-  `reasoning_effort` for enabled thinking, and omits stale effort values when
-  thinking is disabled.
-- `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
-  thinking when tool workflows have no explicit thinking override. Kimi also
-  normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
-  workflows and `1` for non-tool requests, while preserving explicit
-  per-request temperature kwargs. For `kimi-k2.7-code` and
-  `kimi-k2.7-code-highspeed`, it keeps thinking on and normalizes fixed
-  sampling/tool-choice fields to provider-valid values through the shared Kimi
-  K2.7 policy.
+- `GlmLLM` always sends provider-native `thinking.type: enabled` with a valid
+  `reasoning_effort` (`low`/`high`/`max`, default `max`).
+- `KimiLLM` always sends `thinking: { type: "enabled", reasoning_effort }` with
+  a valid effort (`low`/`high`/`max`, default `max`) and removes the flat
+  `thinking_type` / `reasoning_effort` keys from the request body.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
