@@ -356,3 +356,9 @@ Decision (SR-006): the candidate rule is "the run's current entry names this top
 | Agent texts (U-005) | The wrong-kind guidance of `delegate_task` by run ID would have changed for a copy that left the tree; `resolveExistingCopy` applies the same checks to closed copies through `closedTaskExecutionOf` | The engineer's reading |
 
 Decision (SR-007): a save leaves out a stored local entry once its run's own file exists; an entry whose run has no own file is kept unchanged and in place. The reader ignores both.
+
+### B-8 Architecture review ARCH-REV-004, finding AR-002 (2026-11-10)
+
+The reviewer's reading of the released migration `20261017_task_agent_own_run_v1` (`app-data-migrations/migrations/task-agent-own-run-v1/coordinating-run-migration.ts`): the plan is post-order over nested records (`:51-60`); `run()` continues past a per-run `FAILED_OPERATION` (`:84-95`); a parent Team then gets its own file with `taskExecutions: []` (`:174-180`); `reduceTree` keeps the parent as a full record until it and every nested record own their files (`:193-195`). So a full Team record whose own file exists can still hold the only record of a nested run. SR-007's check looked at the entry's own run only and would have left such an entry out.
+
+Decision (SR-008): the review's route (b), made strict. A save leaves out a stored local entry only when it is a link by an exact key set and its run's own file exists at the standard place. Every other stored local entry is kept unchanged; current code does not look inside it. Reasons against route (a): it would make current code walk the nesting of a released shape, and it gains only that a fully owned full record leaves one save earlier, which the released migration achieves anyway by reducing it to a link.

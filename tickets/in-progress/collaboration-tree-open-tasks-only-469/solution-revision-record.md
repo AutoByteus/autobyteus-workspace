@@ -10,7 +10,8 @@
 | SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; architecture review ARCH-REV-001: Fail with one finding (AR-001) |
 | SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; architecture review ARCH-REV-002 (round 2): Pass, no new findings; the reviewer handed off to the Implementation Engineer |
 | SR-006 | Design | Implementation Engineer, Design Impact from early check U-008 (message of 2026-11-10) | N/A (no report ID; the engineer's message) | Requirements Approved; design Ready (SR-005), review Pass (ARCH-REV-002) | Requirements Approved; design Ready (SR-006) | BEH-002 (the rule that realizes REQ-001) | D-1's candidate rule corrected; architecture review ARCH-REV-003 (round 3): Pass, no findings |
-| SR-007 | Design (and wording of REQ-007, AC-009) | Implementation Engineer, second Design Impact (message of 2026-11-10) | N/A | Requirements Approved; design Ready (SR-006), review Pass (ARCH-REV-003) | Requirements Approved; design Ready (SR-007) | REQ-007, AC-009; BEH-002 | D-3 corrected; to architecture review |
+| SR-007 | Design (and wording of REQ-007, AC-009) | Implementation Engineer, second Design Impact (message of 2026-11-10) | N/A | Requirements Approved; design Ready (SR-006), review Pass (ARCH-REV-003) | Requirements Approved; design Ready (SR-007) | REQ-007, AC-009; BEH-002 | D-3 corrected; architecture review ARCH-REV-004 (round 4): Fail with one finding (AR-002) |
+| SR-008 | Design (and wording of REQ-007, AC-009) | Architecture review ARCH-REV-004, round 4, `design-review-report.md` | AR-002 | Requirements Approved; design Ready (SR-007), review Fail | Requirements Approved; design Ready (SR-008) | REQ-007, AC-009; BEH-002 | D-3 corrected; back to architecture review |
 
 ## Revision Entries
 
@@ -176,3 +177,26 @@
 - Downstream and architecture-review impact: a narrow re-review of D-3
 - Remaining gaps, assumptions or blocked decisions: U-005 (three findings recorded in B-7, none a Design Impact; the engineer continues); follow-ups FU-001 … FU-003
 - Next action: architecture review of D-3 as corrected
+
+### SR-008 — A save leaves out only a link whose run owns its file (answer to AR-002)
+
+- Phase and classification: Design, `Design Impact` resolved; requirement wording made precise
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: Architecture Reviewer, `design-review-report.md` and `architecture-review-revision-record.md`, ARCH-REV-004, round 4, decision `Fail`
+- Triggering finding IDs: AR-002 (High, Design Impact)
+- Prior authoritative requirements/design status: requirements `Approved`; design `Ready` at SR-007, reviewed `Fail`
+- Current authoritative requirements/design status: requirements `Approved` (REQ-007 and AC-009 made precise); design `Ready` at SR-008
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-007, AC-009; BEH-002
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: AR-002 is correct. SR-007 left out a stored entry once its own run had its file. A full Team record of the released migration's unfinished state can have its own file and still hold the only record of a nested run. The condition is now positive and narrow: the entry is a link by an exact key set, and its run's own file exists at the standard place. Everything else stored is kept unchanged and not looked into. Of the review's two routes this is (b), with an exact key set instead of today's two-absent-keys test; route (a) is rejected because it makes current code walk a released shape's nesting (notes B-8). This is the third correction of D-3's save rule (SR-004 dropped everything, SR-007 looked at the own run only). The cause each time was the same: the rule was phrased as what may be dropped by exclusion, with the shape inventory taken from the user's finished data. The rule now names the one thing it may drop and keeps the rest.
+- Canonical requirements, investigation and design sections changed: `design-spec.md` D-3, Legacy Removal Policy, Persisted Data (reader/writer behavior, checklist item 4), Removal Plan (two rows), Backward-Compatibility Rejection Log (two rows), the file mapping row of `task-agent-own-records.ts`, Guidance; `requirements-doc.md` REQ-007, AC-009 (three fixtures, the reviewer's among them); `investigation-notes.md` B-8
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No` for the user. For stored data: a full record is never left out by a save
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: approved by the Solution Designer within the direction (data preservation; nothing visible changes); the user is informed
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: D-3 and the sections above; D-1 (round 3) and D-11 (round 2) stand
+- Post-design task-size/risk classification and rationale changes: `Large`, `High`, unchanged
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: sent to `/software_engineering_team/architecture_reviewer`; the Implementation Engineer, which implements D-3, was told directly
+- Downstream and architecture-review impact: review round 5 on D-3
+- Remaining gaps, assumptions or blocked decisions: U-005 (continues); follow-ups FU-001 … FU-003
+- Next action: architecture review, round 5
