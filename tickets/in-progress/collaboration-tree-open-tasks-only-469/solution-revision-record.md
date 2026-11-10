@@ -6,7 +6,8 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-469`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-007, REQ-001 … REQ-008 | Presented to the user; DEC-001 needs him |
 | SR-002 | Requirements | The user's answer to DEC-001 | N/A | Ready for Approval | Approved | BEH-005, REQ-004, AC-011, DEC-001 | Approved; architecture investigation starts |
-| SR-003 | Requirements and design | Architecture investigation | N/A | Requirements Approved; no design | Requirements Approved; design Ready | REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, DEC-003, DEC-005 … DEC-007 | Design complete; Large, High; to architecture review |
+| SR-003 | Requirements and design | Architecture investigation | N/A | Requirements Approved; no design | Requirements Approved; design Ready | REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, DEC-003, DEC-005 … DEC-007 | Sent to architecture review; withdrawn before a decision (see SR-004) |
+| SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; to architecture review |
 
 ## Revision Entries
 
@@ -77,4 +78,27 @@
 - Applied handoff-rule outcome / result-file reference, when a handoff occurred: see `handoff-architecture-design-complete.md`
 - Downstream and architecture-review impact: first review
 - Remaining gaps, assumptions or blocked decisions: notes U-003 … U-005; follow-up FU-001
+- Next action: architecture review
+
+### SR-004 — No stored list: the tree is built from the Task records
+
+- Phase and classification: Requirements (user change of the model) and Design, `Design Rebuilt`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10, after the SR-003 handoff: "the task information also contains that, right? And this collaboration tree itself can be built actually in memory from ... the tasks which are still in progress ... then we don't need to keep this on disk ... what's the point?"; then "I would take your recommendation. Let them leave the tree." and "I think it's clearer. Now it's cleaner. We don't have this duplicated information stored on disk." Investigation notes "The Task-Record Model" (B-1 … B-4); `evidence/links-without-task-2026-11-10.txt`. The Architecture Reviewer's observations of 2026-11-10 (a message; no report, no round).
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` at SR-003; design `Ready` at SR-003, in review
+- Current authoritative requirements/design status: requirements `Approved` at SR-004; design `Ready` at SR-004
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002; DEC-005 (reason changed), DEC-008, DEC-009 (the user), DEC-010 (new)
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the user replaced the model. SR-003 kept the stored list of delegated runs and trimmed it at closure and at load. The user asked why the list is stored at all when the Task record holds the same relationship, and decided it is not (DEC-009). The 14 runs that have no Task record leave the tree (DEC-008). The Solution Designer agrees with the model: it removes a redundant stored copy instead of maintaining it, and needs no step at closure, at load or for old data.
+- Canonical requirements, investigation and design sections changed: `requirements-doc.md` rows above, approval and outcome lines; `investigation-notes.md` section "The Task-Record Model" and the unknowns list; `design-spec.md` rewritten (it now has a Design Decisions section; the reviewer noted SR-003 cited D-numbers without defining them)
+- Supplemental artifacts added, changed or removed: `evidence/measure_links_without_task.py`, `evidence/links-without-task-2026-11-10.txt`
+- Product design evidence or product decisions incorporated: DEC-008, DEC-009
+- Intended behavior changed: `Yes`: no top run stores a list of local delegated runs; runs without a Task record are in no tree; a run whose Task record cannot be read is absent until it is readable
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: approved at `SR-004`. DEC-008 and DEC-009 by the user (quotes above); DEC-010 and the unchanged rest by the Solution Designer within that direction, the user informed
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: the SR-003 design is withdrawn; no review decision existed for it
+- Post-design task-size/risk classification and rationale changes: still `Large`, `High`; the reasons changed (design spec)
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: see `handoff-architecture-design-complete.md`
+- Downstream and architecture-review impact: the first review round will be on SR-004
+- Remaining gaps, assumptions or blocked decisions: notes U-003 … U-008; follow-ups FU-001 … FU-003; a note for `autobyteus-461` (design spec, "Relationship to autobyteus-461")
 - Next action: architecture review

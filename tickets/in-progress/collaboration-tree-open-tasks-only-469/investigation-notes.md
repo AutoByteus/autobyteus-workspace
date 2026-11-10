@@ -251,3 +251,56 @@ Not started.
 | U-004 | Relinking one of the 2 older Org links that sat in a configured Team's list puts it in the root list, so the root restores it | The host of a restored run | Implementation Engineer (a test on that shape) |
 | U-005 | The Team and Org counterparts of each standalone step were mapped by name and by their shared functions, not read line by line | Design rows for those two kinds | Implementation Engineer; Architecture Reviewer |
 | U-006 | Whether the three readers that serve a message's attached file admit a message by "both agents are in the tree" | D-5: an attachment of a message with an unlinked run must still open (AC-007, AC-011) | Implementation Engineer (read `api/rest/agent-collaboration-references.ts`, `agent-org-reference-content-service.ts`, `team-communication-projection-service.ts`; give them the reader's rule when they do) |
+
+## The Task-Record Model (2026-11-10, after the user's decision DEC-009)
+
+The user asked why a top run stores a list at all when the Task record holds the same relationship, and decided that it should not (DEC-009). SR-003's design is withdrawn; the Architecture Reviewer stopped its review without a report and sent observations, used below.
+
+### B-1 What a Task record holds (`Read` and `Measured`)
+
+| Fact | Source |
+| --- | --- |
+| One file per Task, `agent_run_resources.json`: `{ taskId, agentRunResources: [entry] }`. Every entry, of every role, has `hostRoot { kind, runId }` (the top run), `agentRun` (`{kind:"agent", agentRunId}` or `{kind:"team", teamRunId, coordinatorAgentRunId}`), `linkedAt`, `start`, `closedAt`. An `assigned` entry also has `assignedBy` and usually `recipientAddress` | Field names read from the user's files (no content): 378 `assigned`, 28 `delegated`, 2 `broughtIn`; `start`: 406 `started`, 2 `failed` |
+| The server reads every record once at startup into memory and keeps, per run, its current entry (newest open, else latest) and, per top run, an index of the runs whose current entry is closed | `compositions/project-task-execution-resource-composition.ts:47-54`; `projects/services/task-execution-resource-service.ts:202-204, 313-336` |
+| A link's four fields are all in the run's own file (A-1), so a tree record can be composed from the run reference and the own file alone | `run-history/store/task-agent-own-records.ts:43-140` |
+| 362 record files, 281 KB, the largest 2.6 KB, for five weeks of use | `Measured` 2026-11-10 |
+
+### B-2 What the Task records cannot supply
+
+| Case | Count (`Measured`, `evidence/links-without-task-2026-11-10.txt`) | Decision |
+| --- | --- | --- |
+| Local links of a run with no Task record | 14 (started 2026-08-18 … 2026-10-13; under 8 top runs: 2 standalone, the rest Team and Org) | They leave the tree (DEC-008, the user) |
+| Local links of a run with an open Task | 11, all `start: started` | In the tree |
+| Local links of runs of closed Tasks only | 170 | Not in the tree |
+| Links to a run on another node | 2; the Task record holds the run and coordinator but not the node or the other members | Stay stored (DEC-003) |
+
+### B-3 Who reads a stored tree
+
+The three stores are constructed with their defaults in 17 places (grep of `new StandaloneRootPackageStore(`, `new TeamRunExecutionTreeStore(`, `new AgentOrgRunExecutionTreeStore(`): the three managers, the three location services, the history and catalog services, the Team communication projection, the collaborator port resolver, `run-history/services/root-run-package-current-validator.ts`, `run-history/maintenance/collaboration-run-history-index-repair.ts`, `application-platform/execution/application-execution-scope-kernel-builder.ts`. All of them compose through `composeTreeFile` / `composeTreeFileSync` (A-1), some synchronously.
+
+### B-4 The Architecture Reviewer's observations (message of 2026-11-10; no report was written)
+
+| Observation | Use |
+| --- | --- |
+| The 461 contract (revision 2) removes `hostRoot` from the Task record, while this model looks runs up by it | This ticket keeps the Task record's shape. `autobyteus-461` must revise that part of its contract when it resumes: the Task record is now the only index of local delegation, so an entry has to keep naming the run it is found under (design spec, "Relationship to autobyteus-461") |
+| Stopped-run Settings of a delegated copy read and write the stored tree (`standalone-agent-run-root-manager.ts:356-424`; `agent-team-run-manager.ts:271-310, 388-394`) | They use the store's read and save, so they get the same source as the view; the save writes own files only |
+| `StandaloneRootLocationService.listAgents` has six callers, among them the token total; its comment names converted collaborators, which have no Task | Design D-7; DEC-008 states the consequence for the 2 standalone cases |
+| Tree-file existence is a weak presence signal for the Memory page | Design D-6 uses the coordinating run's own file |
+| `team-run-history-service.ts:73,82`, `RootRunPackageReadinessIndex`, the index repair read stored trees | B-3; U-007 |
+| Web: "closed" and "reopened" for an unknown execution fail the view | Design D-8 |
+| SR-003 had no section defining D-1 … D-9; "migration" wording remained in the requirements; note statuses were stale | Fixed in SR-004 |
+
+### Status of earlier items
+
+R-001: corrected (A-5). U-001, U-002: answered (A-4, A-6). ASM-001: confirmed. "Architecture Investigation Findings: Not started" in the first part of this file is superseded by the sections "Architecture Investigation" and this one.
+
+### Open unknowns for implementation (replaces the earlier list)
+
+| ID | Unknown | Why it matters | Owner |
+| --- | --- | --- | --- |
+| U-003 | A live root's in-memory message list after a run is dropped: whether any step re-checks it against the tree | D-5 | Implementation Engineer |
+| U-004 | The 2 older Org links in a configured Team's list: whether either belongs to an open Task. Composing every local run into the root list changes its host for a restore | D-2 | Implementation Engineer (a test on that shape; report a Design Impact if such a run cannot be restored) |
+| U-005 | The Team and Org counterparts of each standalone step were mapped by name and through their shared functions, not read line by line | Design rows for those kinds | Implementation Engineer; Architecture Reviewer |
+| U-006 | Whether the three readers that serve a message's attached file admit a message by "both agents are in the tree" | D-5 | Implementation Engineer |
+| U-007 | Startup order: whether any stored tree is read before the Task records are loaded (`root-run-package-current-validator.ts`, `collaboration-run-history-index-repair.ts`, restart resume) | D-1: a tree cannot be composed before the source is loaded | Implementation Engineer; Architecture Reviewer |
+| U-008 | Whether an entry with `start: "starting"` can exist after a restart, and whether a run with an open `failed` entry and an own file is in the tree today | D-1's candidate rule | Implementation Engineer |
