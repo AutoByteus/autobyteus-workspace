@@ -2,8 +2,8 @@
 // launcher, from autobyteus-ts/dist, on the container's bash and dash. Run (from the worktree root, after
 // `pnpm -C autobyteus-ts build`):
 //   docker run --rm -v "$PWD:$PWD:ro" -w "$PWD" node:22-bookworm node tickets/in-progress/run-bash-background/evidence/IMP-08-linux-wrapper-harness.mjs
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 const root = path.resolve('autobyteus-ts/dist/tools/terminal');
@@ -66,6 +66,19 @@ await check('R-0 timeout and Stop: whole group stopped, no wrapper output', asyn
   return eq([r.timedOut, r.exitCode, r.stderr.replace('tool-timeout\n', ''), s.timedOut, s.exitCode, s.stderr.replace('tool-abort\n', ''), s.backgroundTasksStarted, m.hasRunning()],
     [true, null, 'before\n', true, null, '', [], false]);
 });
+await check('CR-001 ~/.bash_logout read as often as the plain login shell, same exit code', async (c0) => {
+  const home = mkdtempSync(path.join(os.tmpdir(), 'logout-')); const marker = path.join(home, 'logout-runs');
+  writeFileSync(path.join(home, '.bash_logout'), `echo ran >> '${marker}'\n`);
+  const env = { ...process.env, HOME: home }; const c = Object.assign(c0, { customData: { terminalChildEnvironment: () => env } });
+  const reads = () => existsSync(marker) ? readFileSync(marker, 'utf8').split('\n').filter(Boolean).length : 0;
+  const rows = [];
+  for (const command of ['echo hi', '(sleep 0.2; exit 3) & echo started', 'exit 3', 'set -e; false; echo no', "trap 'exit 4' EXIT; true", "trap 'echo t' EXIT; (sleep 0.2; exit 3) & exit 5"]) {
+    rmSync(marker, { force: true }); const plain = spawnSync('bash', ['--noprofile', '--norc', '-lc', command], { env, encoding: 'utf8' }); await sleep(600); const plainReads = reads();
+    rmSync(marker, { force: true }); const wrapped = await fg(c, command); await sleep(600);
+    eq([command, wrapped.exitCode, reads()], [command, plain.status, plainReads]); rows.push([command, plain.status, plainReads]);
+  }
+  rmSync(home, { recursive: true, force: true }); return rows;
+});
 await check('R-0 empty and comment-only commands', async c => eq([(await fg(c, '')).exitCode, (await fg(c, '# note')).exitCode, (await fg(c, '')).stderr], [0, 0, '']));
 await check('R-6 jobs do not inherit fds 62/63 (bash 4+)', async c => { const r = await fg(c, 'sleep 3 & ls /proc/$!/fd | tr "\\n" " "'); return eq(r.stdout.trim().split(' ').filter(fd => ['62', '63'].includes(fd)), []); });
 await check('background output file and tail', async (c, m) => { const s = await bg(c, 'echo one; sleep 0.2; echo two; exit 2'); const o = await endOf(m, s.pid); return eq([o, readFileSync(s.outputFile, 'utf8')], [{ exitCode: 2 }, 'one\ntwo\n']); });
@@ -83,5 +96,5 @@ await check('background output file and tail', async (c, m) => { const s = await
 }
 const bash = execFileSync('bash', ['-c', 'echo $BASH_VERSION'], { encoding: 'utf8' }).trim();
 console.log(JSON.stringify({ bash, node: process.version, kernel: os.release(), passed: results.filter(r => r.ok).length, failed: results.filter(r => !r.ok).length }, null, 0));
-for (const r of results) console.log(`${r.ok ? 'PASS' : 'FAIL'} ${r.name}${r.ok ? '' : `: ${r.error ?? JSON.stringify(r.detail)}`}`);
+for (const r of results) console.log(`${r.ok ? 'PASS' : 'FAIL'} ${r.name}${r.ok ? (r.name.startsWith('CR-001') ? ` [command, exit code, logout reads]: ${JSON.stringify(r.detail)}` : '') : `: ${r.error ?? JSON.stringify(r.detail)}`}`);
 process.exit(results.every(r => r.ok) ? 0 : 1);
