@@ -1,0 +1,27 @@
+# DEL-01 release smoke check (python3 scripts/release_smoke.py), run 2026-11-10T12:33:34Z-12:36:51Z on b45a886d5f (origin/personal 2ea04c565c + this handoff document)
+# grok 'different same-named skill': xAI 429, "Requests per Minute (actual/limit): 21/21" (the account's per-minute request limit). Waived by the user for this release, in his words: "Waive please" (2026-11-10, at the release decision).
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): resource-exhausted: Too many requests for team ee02a95d-4d28-4bed-8ac1-f1ccba5ac3a1 and model grok-4.7. Your team's rate limit is — Requests per Minute (actual/limit): 21/21. Y
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    b45a886d5ff508d19a94ed9af78097e6a39cecfc
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 165s, antigravity 21s, autobyteus 9s
+result    FAIL
+logs      <temp>/release-smoke-d3e2g7g3
+
+## full 429 reason (from live.log)
+Rate limited: API error (status 429 Too Many Requests): resource-exhausted: Too many requests for team <id> and model grok-4.7. Your team's rate limit is — Requests per Minute (actual/limit): 21/21. Your rate limit tier is determined based on your historical API spend. To learn how to increase your rate…
