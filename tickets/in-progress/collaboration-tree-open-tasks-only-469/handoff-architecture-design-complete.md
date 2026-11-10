@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-469` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("A run's collaboration tree lists only the runs whose Task is open: stop the tree from growing with every delegation"). Prerequisite PRE-001 of `autobyteus-461`.
 - Package identifier: `collaboration-tree-open-tasks-only-469`
-- Current solution revision: `SR-005` (answers ARCH-REV-001 finding AR-001 on `SR-004`)
+- Current solution revision: `SR-006` (corrects D-1's candidate rule after the Implementation Engineer's Design Impact; `SR-005` passed review ARCH-REV-002)
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-10
 
@@ -18,6 +18,10 @@ After the SR-003 handoff the user asked why a top run stores a list at all, sinc
 ## What changed since SR-004 (review round 1: Fail, one finding)
 
 AR-001: the startup package admission scan reads every Team and Org tree before the Task records are loaded. Answer: the reviewer's first route. Admission and the maintenance repair read a run's own parts only (D-11, `readOwnParts`); no startup step is reordered. Notes B-5 trace the startup order of both entry points and place all 19 construction sites before or after the binding. U-004 and U-007 are closed; AC-005 is aligned to DEC-010; Guideline checklist item 2 and Key Tradeoffs are corrected.
+
+## What changed since SR-005 (review round 2: Pass)
+
+The Implementation Engineer's early check U-008 went against D-1's rule: an entry is `starting` from the moment a delegation is recorded until its work is delivered, also for a follow-up Task given to a run already in the tree, and after a crash between the commit and `markStarted`. Leaving out `starting` would drop runs that REQ-001 keeps in the tree. Corrected rule: the run's current entry names this top run and is open, whatever its `start`; a missing own file is silent for `starting` and `failed`, a warning for `started`. Also from the engineer's checks: the view rule takes the form `isMessageOfView(message, ownAgentRunIds, treeAgentRunIds)`; the three attachment readers need no change (notes B-6). No requirement changed.
 
 ## Goals and status
 
@@ -62,11 +66,11 @@ Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-ope
 
 ## Open risks
 
-Design spec "Risks"; notes U-003, U-005, U-006, U-008, U-009.
+Design spec "Risks"; notes U-005.
 
 ## Next expected action
 
-Independent architecture review of `SR-005`, round 2.
+Architecture review of the corrected rule in `SR-006` (design spec D-1, the `openDelegatedRunsOf` interface row, Guidance; notes B-6).
 
 ## Route
 

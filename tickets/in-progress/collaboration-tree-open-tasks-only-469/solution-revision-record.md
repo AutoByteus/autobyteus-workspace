@@ -9,6 +9,7 @@
 | SR-003 | Requirements and design | Architecture investigation | N/A | Requirements Approved; no design | Requirements Approved; design Ready | REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, DEC-003, DEC-005 … DEC-007 | Sent to architecture review; withdrawn before a decision (see SR-004) |
 | SR-004 | Requirements and design | The user's decisions DEC-009 and DEC-008 after the SR-003 handoff | N/A (the review of SR-003 was stopped without a report) | Requirements Approved at SR-003; design Ready (SR-003) | Requirements Approved; design Ready (SR-004) | REQ-001, REQ-003, REQ-007, AC-001, AC-005, AC-009, AC-010, QR-002, DEC-005, DEC-008 … DEC-010 | Design rebuilt; Large, High; architecture review ARCH-REV-001: Fail with one finding (AR-001) |
 | SR-005 | Design (and wording of four requirement rows) | Architecture review ARCH-REV-001, round 1, `design-review-report.md` | AR-001 | Requirements Approved at SR-004; design Ready, review Fail | Requirements Approved; design Ready (SR-005) | BEH-003, BEH-007; REQ-001, REQ-003, AC-001, AC-005, AC-008 (wording) | Design revised; architecture review ARCH-REV-002 (round 2): Pass, no new findings; the reviewer handed off to the Implementation Engineer |
+| SR-006 | Design | Implementation Engineer, Design Impact from early check U-008 (message of 2026-11-10) | N/A (no report ID; the engineer's message) | Requirements Approved; design Ready (SR-005), review Pass (ARCH-REV-002) | Requirements Approved; design Ready (SR-006) | BEH-002 (the rule that realizes REQ-001) | D-1's candidate rule corrected; to architecture review |
 
 ## Revision Entries
 
@@ -127,3 +128,26 @@
 - Remaining gaps, assumptions or blocked decisions: notes U-003, U-005, U-006, U-008, U-009; follow-ups FU-001 … FU-003
 - Next action: architecture review, round 2
 - Review result (recorded 2026-11-10, informational): `Pass`, ARCH-REV-002, round 2, on SR-005 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). AR-001 resolved by D-11 and DS-008; D-12 matches today's rule (`remote-task-execution-links.ts:60-63`); the reviewer read both history row projectors and found they use own parts only (U-009). The reviewer delivered the implementation handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
+
+### SR-006 — An open entry puts a run in the tree, whatever its start state
+
+- Phase and classification: Design, `Design Impact` resolved
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the Implementation Engineer's message of 2026-11-10 (early check U-008, which the design named as an escalation trigger); verified by the Solution Designer at the base revision (notes B-6)
+- Triggering finding IDs: N/A (the engineer's message carries no finding ID)
+- Prior authoritative requirements/design status: requirements `Approved`; design `Ready` at SR-005, architecture review `Pass` (ARCH-REV-002)
+- Current authoritative requirements/design status: requirements `Approved` (unchanged); design `Ready` at SR-006
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: BEH-002; the design rule that realizes REQ-001. No requirement text changes: REQ-001 already says "while the run has an open Task entry"
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: SR-005's rule left out an entry whose `start` is `starting`. The engineer showed, and the code confirms, that every entry is `starting` from the moment a delegation is recorded until its work is delivered, also for a follow-up Task given to a run already in the tree, and after a crash between the activation commit and `markStarted`. The rule would have dropped runs that REQ-001 keeps in the tree. The Solution Designer's exclusion rested on an assumption about `starting` that was left as U-008 instead of being read. Corrected rule: the run's current entry names this top run and is open, whatever its `start`; a missing own file is silent for `starting` and `failed` and a warning for `started`.
+- Canonical requirements, investigation and design sections changed: `design-spec.md` D-1, the evidence table, the interface row of `openDelegatedRunsOf`, the view rule's signature (`isMessageOfView(message, ownAgentRunIds, treeAgentRunIds)`, the engineer's equivalent form for a loaded root), the three attachment readers removed from the file mapping (they have no tree rule), Change Scope consumers, Change Sequence, Risks, Guidance; `investigation-notes.md` B-6
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: none
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: D-1's rule only; ARCH-REV-002's pass covered the old rule (its residual note judged "start ≠ starting" sound on the premise U-008 was to check)
+- Post-design task-size/risk classification and rationale changes: `Large`, `High`, unchanged
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: the rule for a revised package with Large or High applies: sent to `/software_engineering_team/architecture_reviewer`; the Implementation Engineer was answered directly (it asked) and continues with the corrected rule, which it already implements
+- Downstream and architecture-review impact: a narrow re-review of D-1's rule
+- Remaining gaps, assumptions or blocked decisions: U-005 (in progress); follow-ups FU-001 … FU-003
+- Next action: architecture review of the corrected rule; implementation continues on the parts the rule does not touch

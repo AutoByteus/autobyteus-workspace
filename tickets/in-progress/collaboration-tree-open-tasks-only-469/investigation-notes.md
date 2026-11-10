@@ -330,3 +330,17 @@ Nothing between the rebuild and the Task record load constructs a tree store (th
 | `application-platform/execution/application-execution-scope-kernel-builder.ts:180` | The application runtime, which `buildStudioServer` creates after line 329 | After (`Inferred` from the read range; a start on data with Team and Org runs is in AC-008) |
 
 Also `Measured` 2026-11-10: both links to a run on another node were delegated by the top run's own agent; none was delegated by an agent of a local delegated run.
+
+### B-6 The Implementation Engineer's early checks (message of 2026-11-10; Design Impact on D-1's rule)
+
+Verified by the Solution Designer at the base revision for the first row; the others are the engineer's readings.
+
+| Check | Answer | Source |
+| --- | --- | --- |
+| U-008 | **Against SR-005's rule.** Every entry is created `starting` (`entryOf`), for a new copy and for a follow-up Task given to an existing copy (`linkExistingTaskExecution`). A new copy's order is: Task entry (`starting`) → activation commit (own file) → seed accepted → `markStarted`. So an entry is `starting` while the run already exists and may already work, and stays `starting` after a crash between the commit and `markStarted`; nothing settles it at startup. For an existing copy the new `starting` entry is its current entry until the work is delivered. A rule that leaves out `starting` would drop runs that are in the tree today, also from the stored reads made while the root is loaded (`api/rest/context-files.ts:45-46`, `general-process-run-supervisor.ts:104-108`, `token-usage-stats.ts:329`). A run with an open `failed` entry and an own file is in the tree today, as the design keeps it | `projects/domain/task-execution-resources.ts:70-104`; `agent-collaboration/execution/task/root-task-dispatch.ts:59-81`; `root-task-execution-lifecycle.ts:199-221`; `task-execution-resource-service.ts:317-333` |
+| U-003 | As expected: a loaded root's message list changes only by appends (`root-communication-engine.ts:67, 236`); nothing re-checks it against the tree, so the adapters' trim is needed | The engineer's reading |
+| U-006 | The three attachment readers find the message by ID in the root's records and apply no tree rule (`agent-collaboration-references.ts:22-31`, `agent-org-reference-content-service.ts:70`, `team-communication-projection-service.ts:55-70`); they need no change | The engineer's reading |
+| U-009 | Both history row projectors use own parts only | The Architecture Reviewer's reading (ARCH-REV-002) |
+| U-005 | In progress, file by file | — |
+
+Decision (SR-006): the candidate rule is "the run's current entry names this top run and is open, whatever its `start`". A missing own file is silent for `starting` and `failed`, a warning for `started`.
