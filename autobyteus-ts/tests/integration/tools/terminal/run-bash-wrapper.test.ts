@@ -5,8 +5,8 @@
  * Command: pnpm -C autobyteus-ts exec vitest run tests/integration/tools/terminal/run-bash-wrapper.test.ts
  */
 import { describe, it, expect, afterEach } from 'vitest';
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { runBash } from '../../../../src/tools/terminal/tools/run-bash.js';
@@ -184,6 +184,29 @@ suite('run_bash command wrapper: R-0 regression list', () => {
     const r = await fg(ctx, "trap 'rc=$?; echo trap-rc=$rc >&2; exit $rc' EXIT; (sleep 0.2; exit 3) & (exit 4)");
     expect([r.stderr, r.exitCode, r.backgroundTasksStarted.length]).toEqual(['trap-rc=4\n', 4, 1]);
     expect((await endOf(managerOf(ctx), r.backgroundTasksStarted[0].pid)).outcome).toEqual({ exitCode: 3 });
+  });
+
+  it('reads ~/.bash_logout of the login shell exactly as often as the plain shell does, with the same exit code (CR-001)', async () => {
+    const home = mkdtempSync(path.join(os.tmpdir(), 'ab-logout-'));
+    const marker = path.join(home, 'logout-runs');
+    writeFileSync(path.join(home, '.bash_logout'), `echo ran >> '${marker}'\n`);
+    const env = { ...process.env, HOME: home };
+    const ctx = Object.assign(context(), { customData: { terminalChildEnvironment: () => env } });
+    const reads = () => existsSync(marker) ? readFileSync(marker, 'utf8').split('\n').filter(Boolean).length : 0;
+    const settle = () => new Promise(r => setTimeout(r, 600)); // the & job (0.2 s) has ended, its shell exited
+    try {
+      for (const command of ['echo hi', '(sleep 0.2; exit 3) & echo started', 'exit 3', 'set -e; false; echo no',
+        "trap 'exit 4' EXIT; true", "trap 'echo t' EXIT; (sleep 0.2; exit 3) & exit 5"]) {
+        rmSync(marker, { force: true });
+        const plain = spawnSync('bash', ['--noprofile', '--norc', '-lc', command], { env, encoding: 'utf8' });
+        await settle();
+        const plainReads = reads();
+        rmSync(marker, { force: true });
+        const wrapped = await fg(ctx, command);
+        await settle();
+        expect([command, wrapped.exitCode, reads()]).toEqual([command, plain.status, plainReads]);
+      }
+    } finally { rmSync(home, { recursive: true, force: true }); }
   });
 
   it('exec cmd replaces the wrapper: the call ends at the shell exit, with no task list', async () => {

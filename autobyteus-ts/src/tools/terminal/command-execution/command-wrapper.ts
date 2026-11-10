@@ -54,7 +54,9 @@ __ab_fg_end() {
       __ab_pids=$__ab_left; builtin test -n "$__ab_pids" && builtin command sleep 0.1
     done
   } 2>/dev/null
-  builtin exit "$__ab_rc"
+  # No exit builtin: in a login shell (bash -lc) it reads ~/.bash_logout. The status is returned instead: as
+  # the script's last command it is the shell's exit code; from the EXIT trap the shell keeps the status that ended it.
+  __ab_status "$__ab_rc"
 }
 builtin trap "$__ab_trap" EXIT
 { builtin :
