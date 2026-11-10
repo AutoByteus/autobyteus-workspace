@@ -1,0 +1,9 @@
+# IMP-04 web typecheck: pnpm -C autobyteus-web typecheck (then typecheck:update-baseline: 96 -> 93 test-file errors, nodeIdentityProbe.spec.ts 3 -> 0)
+# Commit e5ca0e1da7 tree; macOS, Node v22.23.1; 2026-11-10.
+
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 38.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 27.0s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
