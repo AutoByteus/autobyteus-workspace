@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Pass | CR-001 (non-blocking) |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 / API-REV-001 F-1…F-3 | Pass | Fail: Design Impact (F-3), implementation Local Fix (F-2), API/E2E Local Fix (F-1) | CR-002, CR-003; C-06 corrected |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 / IR-002 (SR-009) | Fail (CRR-002) | Pass | CR-002, CR-003 resolved; CR-001 open, non-blocking |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-002 Pass | Pass (CRR-003) | Pass | None |
 
 ## Revision Entries
 
@@ -104,3 +105,34 @@ None.
   - The two changed server E2E helpers have not been run.
   - Still to run: BR-001 … BR-005, BR-007, BR-011, BR-015, and EXC-E2E-007 (per DEC-011).
   - Memory Sync imported sources with delegated runs are untested.
+
+### CRR-004: Proportional test-code review after API/E2E round 2: Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); test commits `009f707955`, `431de4c9d1`, `c7eb0d8626`
+- Relevant solution revision IDs: SR-009 (DEC-011)
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The new upgrade-startup E2E proves AC-001, AC-005, AC-006 and AC-008 … AC-012 through a built server, with a positive control for the read check.
+  - Updated E2Es replace old expectations with positive checks of the approved behavior; none is weakened.
+  - EXC-E2E-007 follows DEC-011.
+  - The probe checks Team-tab rows and names across closures and a restart.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (first test-code review).
+
+- New or remaining finding IDs: none (one non-blocking note: the per-frame Team-tab sample is recorded, not asserted)
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - Memory Sync imported sources with delegated runs are untested.
+  - Signing, notarization and the non-macOS release jobs need the release runner.
