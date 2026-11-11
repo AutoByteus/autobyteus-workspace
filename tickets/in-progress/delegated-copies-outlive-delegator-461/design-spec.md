@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-031` (the contract's executable model and generated walkthrough). Earlier: `SR-027` (the contract starts from the runs the user starts and from talking inside one run: RUN-1 … RUN-4, IN-1 … IN-8). SR-026 was contract revision 7: every case in one file, checked case by case; TC-13, one place for an agent run's log. SR-025 answers ARCH-REV-008 AR-018: TC-12 revised, a delegated team run is rooted at `/`). SR-024 first added TC-12, raised by the Implementation Engineer. SR-023 answered ARCH-REV-006: AR-016, AR-017. SR-022 was contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationTree`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Current solution revision ID: `SR-033` (the contract's Task rules as cases; SR-031: the contract's executable model and generated walkthrough). Earlier: `SR-027` (the contract starts from the runs the user starts and from talking inside one run: RUN-1 … RUN-4, IN-1 … IN-8). SR-026 was contract revision 7: every case in one file, checked case by case; TC-13, one place for an agent run's log. SR-025 answers ARCH-REV-008 AR-018: TC-12 revised, a delegated team run is rooted at `/`). SR-024 first added TC-12, raised by the Implementation Engineer. SR-023 answered ARCH-REV-006: AR-016, AR-017. SR-022 was contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationTree`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
 - Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10 (revised in revision 6), TC-11, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
@@ -98,10 +98,12 @@ Each new name says what its owner owns.
 
 - Refusals keep today's texts and order: CM-1 (never inside one's own team), the Project folder, the target, the launch.
 - `delegatedFrom.delegatingRun` is the sender's own run: for a member of a team run, that team run; for an agent of an org run, that org run (contract §3.1, cases DL-1 … DL-6).
-- **Role and refusals, from the `DelegationTree`:** `runOfAgent(sender)` and `tasksOf(that run)`. If the sender's run has an open entry, the new run is `subWork` of the sender's newest open Task (CM-6), and `task_id` is refused with today's `TASK_AGENT_RESOURCE_OWNED_SENDER` text. Otherwise the new run is `assigned`: to the saved Task named by `task_id`, or to a new Task with no Project for described work.
+- **Role and refusals, from the `DelegationTree`** (contract §2.4; cases S12 … S15, S23): `runOfAgent(sender)` and `tasksOf(that run)`.
+  - If the sender's run has any Task entry, `task_id` is refused with today's `TASK_AGENT_RESOURCE_OWNED_SENDER` text, and described work is `subWork` of the run's current Task: its newest open entry (by `linkedAt`; tie: the greater Task ID). When none of its entries is open, it is refused: "Your Task is DONE or CANCELLED, so you can't start new work."
+  - Otherwise the new run is `assigned`: to the saved Task named by `task_id`, or to a new Task with no Project for described work.
 - **History row:** `DelegatedRunStarter` writes the new run's history row when it creates the run, as for any new run (DS-11).
 - A failure after the entry was written: `markFailed`, and the new run is terminated before the answer. That is today's order.
-- The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §5.1, S13, T-3).
+- The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §5.1, S1).
 
 ### DS-2 Message by run ID
 
@@ -120,7 +122,7 @@ Each new name says what its owner owns.
 
 ### DS-3 Message by address
 
-`sender's root: resolveMessageRecipient → (1) own team, unchanged → (2) its own run's standing agents, unchanged → (3) new: the standing agents of the run that assigned the sender's Task: CrossRunMessageDelivery asks DelegationTree.assignerOf(each open Task of the sender's run) → that run's root resolves the address → DS-2's delivery step`
+`sender's root: resolveMessageRecipient → (1) its own team, unchanged → (2) new, for a delegated run only: the standing agents of the run that assigned its Task: DelegationTree.assignerOf(each open Task of the sender's run) → DelegationTree.standingAgentsOf(that run), by address, read once from that run's own file (no root is restored to resolve an address) → (3) for a run the user started: its own run's standing agents, unchanged → DS-2's delivery step` (contract §2.3; the steps as the contract numbers them; a miss inside the own team never falls through)
 
 ### DS-4 Stop
 
@@ -134,7 +136,7 @@ Nothing else stops (TC-1). A delegated run's later report wakes its stopped dele
 
 - A peer's run is fenced, as today.
 - Views drop the run (469).
-- Deleting a Task: its open runs are stopped first, then the record goes, and the runs are ordinary runs (contract §5.1, S13, T-3).
+- Deleting a Task: its open runs are stopped first, then the record goes, and the runs are ordinary runs (contract §5.1, S16, T-3).
 
 ### DS-6 Reopen and follow-up
 
@@ -214,7 +216,7 @@ This migration is terminal by then and does not run again. The residue is inert,
 6. **Current-only boundary:** source shapes are frozen copies in `frozen/`; current code reads only the target.
 7. **Cost:** 362 Task record files (281 KB), 196 run files, 8 tree files, the team and org trees, 2 history indexes: one pass, once.
 8. **References:** Task entry → run (by ID; checked present); peer entry → node; the address of an agent run.
-9. **Evidence:** fixtures per row of the table, per contract case E1 … E10, and per partial state:
+9. **Evidence:** fixtures per row of the table, per contract case E1 … E12, and per partial state:
    - a full Team record whose own file exists, with a nested record without one;
    - a Task file with one preserved run's entry beside converted ones: after the migration every entry is in the target shape, and the Task and its other runs are usable (in the view, in messages and delegation, at closure);
    - a link without an own file;
@@ -232,7 +234,7 @@ This migration is terminal by then and does not run again. The residue is inert,
    - **a migrated delegated team** loads, plans, and saves team-level and member Settings while stopped, rooted at `/`; its web Settings show its name; a member resumed after the migration is told its new address and reaches its teammates by their new addresses; a stale old address gets today's guidance; a member with its own launch keeps it after the team Settings save (TC-12 revised);
    - **a delegated team with a handoff outside the team** (a team copied from an org) loads and plans; `get_handoff_rules` names the external target; `send_message_to` to it reaches the org's agent through the contract's §2.3 step 2 when the org assigned the team's Task, and gets today's guidance when no Task relates them;
    - **a new delegated team**, local and on the peer path, is rooted at `/`, and its Task entry carries `recipientAddress`; on the peer path, node B's answer names the members by their own addresses (`/lead`), and node A stores them so in `members`;
-   - **closing a Task stops only its runs with no other open Task**, and after a reopen only an `assigned` entry is continued, by its assigner (contract §5.1, S10 … S13);
+   - **closing a Task stops only its runs with no other open Task**, and after a reopen only an `assigned` entry is continued, by its assigner (contract §5.1, S10, S11, S14, S16);
    - **the contract's stories, run against the server** (the acceptance test of this ticket): each story of `stories.py` (standalone with a peer node on two server instances, team, org) is driven through the real tools, and after every step the server's files are compared with the state in `collaboration-walkthrough.md` (run IDs, times and texts mapped; `…` matches anything). A difference is a code defect or a contract defect, and the contract's model decides which;
    - **every case of the contract's §5**, walked run by run (§5.1 a standalone agent, §5.2 a team, §5.3 an org), one test per case ID (RUN-1 … RUN-4, IN-1 … IN-8, DL-0 … DL-13, A-1 … C-4, R-1 … R-10, E-1 … E-4, T-1 … T-7): the exact call and address or run ID, the records written (Task entry, the run's own file, which message logs), the tree change, the result and the header the receiver sees. DL-11's third row changes: a delegated team's member that delegates to its own team's definition gets a new copy, as in a team the user started (its team is rooted at `/`, so the address is a catalog address, not its own team). `evidence/data-model-validation/validate_every_case.py` is the data check of the same cases, line by line by case ID;
    - **TC-13:** a delegated and a user-started agent run both write and read their log at `agents/<id>/communication_messages_*`; a migrated user-started run's moved log reads back whole;
@@ -445,6 +447,8 @@ Steps 1 … 9 ship together: the stored model and the runtime change at once. In
 | The size of one change over three root kinds | One shared delegation owner (`TaskDelegation`) and one Stop rule; the change sequence lands in commits with tests per step; the API/E2E round covers each kind |
 
 ## Guidance For Implementation
+
+- **The contract and its executable model are the reference** (the user, 2026-11-11), not the base code. `evidence/collaboration-model/` holds the rules as code. `collaboration-walkthrough.md` gives the exact disk after every call of every story. `walkthrough.py --check` must stay green. Where the code and the model differ, send the point to the Solution Designer, who decides it on the data model's merits and updates the contract and the model first.
 
 - Start from the peer path. A peer-started run already is the target shape; extract from it rather than write a second starter.
 - Every new name above is the owner's name; do not add a "manager" or "helper" around them.

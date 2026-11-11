@@ -1,105 +1,91 @@
-# Handoff: Architecture Design Complete
+# Handoff: Architecture Design Complete (round 9)
 
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-461` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("Stopping an agent (e.g. the Project Task Manager) must not stop the task agents and task agent teams it delegated to")
 - Package identifier: `delegated-copies-outlive-delegator-461`
-- Current solution revision: `SR-024` (TC-12: a delegated team run's file is the ordinary team file with the team's own root address; after ARCH-REV-007 passed SR-023)
+- Current solution revision: `SR-033`
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-11
-- Classification: `task_size = Large`, `architectural_risk = High`
+- Classification: `task_size = Large`, `architectural_risk = High` (unchanged)
 
 ## Status and approval
 
-- Requirements `Approved` with `target-collaboration-contract.md` revision 5. The user took every decision on 2026-11-11 (TC-4 revised, TC-7, TC-8, TC-9, TC-10, DEC-011) and approved the package for review after the Solution Designer's own validation (quotes in `solution-revision-record.md` SR-014 … SR-018).
-- Design `Ready`, self-validated (design spec "Self-Validation").
+- Requirements `Approved` (SR-018), with the contract as their behavior-defining supplement.
+- The contract now stands at revision 8, built on the user's direction. The decisions since round 8 (TC-12 revised, TC-13, the peer member addresses, §2.4) were taken by the Solution Designer within that direction, and the user was informed.
+- The user's direction for this round (2026-11-11):
+  - the contract records every collaboration case, local and across nodes: the address, the data change and the transition of each;
+  - it is validated as such;
+  - the code is implemented from it, and refactored where it differs.
+- The user asked for the package to go to review.
+- Design `Ready`, self-validated.
 
-## History you need
+## What happened since your round 8 (ARCH-REV-008 failed SR-024 with AR-018)
 
-- The earlier round, ARCH-REV-001 (on SR-010, contract revision 2), failed with AR-001 … AR-010. Its report and revision record are in this folder.
-- The prerequisite `autobyteus-469` has since been delivered (`827f1e68dc`). It removed the stored list of delegated runs and made the Task record the index.
-- The branch is rebased onto that base. The contract was re-validated on the latest code and data and rewritten as revision 5.
-- The design is new. Its table "Earlier Review Findings" answers AR-001 … AR-010.
+| SR | Change | Why |
+| --- | --- | --- |
+| SR-025 | **TC-12 revised: every team run is rooted at `/`**, a delegated one too. The delegation address is the Task entry's `recipientAddress`, now on every entry. A handoff `to` outside a delegated team is an external target, resolved when it is sent by the assigner's standing agents. | Answers AR-018: no reader of `/` changes, and the peer path already roots at `/`. |
+| SR-025 | **Contract §5.4.1, every address case**, replayed on the user's 6,646 stored addressed sends. Every delivered send reaches the same receiver, except 53 older sends to a delegated run that today's code already refuses. 0 sends are newly found, and 0 addresses collide. | The user asked for every address, written exactly and checked. |
+| SR-026 | **The contract as one file, every case.** **TC-13: one place for an agent run's message log**, the run's own folder (DS-10 step 5b moves 8 logs). Extra message copies in former hosts' logs are kept. | Collecting the cases showed two log locations, 8 runs in `collaboration/` and 42 in the run folder. |
+| SR-027 … SR-029 | The cases are organized by the run the user starts (a standalone agent, a team, an org), then walked as states of the disk. | The user. |
+| SR-030 | The contract's JSON examples are checked against its rules (`validate_contract_examples.py`). Three wrong transitions were fixed, closure/deletion and the assigner's continuation among them. **A peer team's members are stored with their own addresses** (`/lead`): node B's answer no longer mounts them, and the migration drops the prefix from 4 stored addresses. | Self-validation; P8 (every address belongs to its run's own space). |
+| SR-031 | **The contract as an executable model.** `evidence/collaboration-model/model.py` holds the rules as code; `stories.py` holds three stories; `walkthrough.py` generates `collaboration-walkthrough.md`, every state file by file, peer node included. `--check` keeps the contract, the walkthrough and the §3 … §4 examples equal to the model. | Hand-written transitions had been wrong. The user wants the code built from a validated record. |
+| SR-032 | **Contract §2.4, which Task a delegation belongs to.** A run that works on a Task cannot use `task_id`. Sub-work joins the run's newest open entry, and is refused only when none is open. | Raised by the Implementation Engineer and decided on the model's merits. Both rules equal today's code. |
+| SR-033 | The §2.4 rules as states: S12 … S15, S23. | The user. |
 
-## The design in short
+## What to review
 
-**Data model**
-- The delegation is stored once on each node, as `delegatedFrom { delegatingRun, delegatorAgentRunId }`, one hop.
-- On this node it is in the run's Task entry, replacing `hostRoot` and `assignedBy`. A peer-started run carries it in its own file, because its Task is on the other node.
-- `taskAgent` goes. The standalone `collaboration_tree.json` goes: the address moves to `run_metadata.json`, and peer runs' node and members move into their Task entries.
-- `subWork` replaces `delegated`.
+1. **AR-018's answer (TC-12 revised).**
+   - Readers: none that equates the root or the team scope with `/` changes. The handoff compiler keeps a delegated team's outside `to` as an external target. Node B's answer stops mounting peer members.
+   - Migration: DS-10 step 4 rebases a delegated team's members and handoffs (153 of 153 without a collision) and fills `recipientAddress` (30 of 30). The members of the 11 open delegated teams are told their new addresses.
+   - Tests: the design's test list.
+2. **The contract's rules (§2), records (§3), tree (§4) and cases (§5).**
+   - Are they complete?
+   - Is each rule right for the data model? For example: the address steps; rules (a) and (b); §2.4; TC-13; peer member addresses.
+3. **The executable model as the reference.**
+   - Does `model.py` express §2 … §4 faithfully?
+   - Do the stories cover the cases a reviewer would expect?
+   - The design makes the stories the ticket's acceptance test: they run against the server (two instances for the peer node), and the server's files are compared with the walkthrough after every step.
+4. **DS-10 additions**: step 3 (peer member prefix), step 4 (rebasing to `/`, `recipientAddress`), and step 5b (moving logs, with an unfinished `20261018_…` item left for its own retry).
 
-**Runtime**
-- Every run is its own root and owns its life. A run's life is bound to its Task, never to the run that delegated it.
-- No hosting remains, for standalone, team and org runs alike.
+## How to check
 
-**Messages**
-- Centered on the Task: two runs may talk when they share an open Task, or when one is the run that assigned the other's Task.
-- By address: the sender's team, then the standing agents of the run that assigned its Task.
-- Validated on every stored message: 1,540 of 1,604 allowed as today; the 64 others all involve legacy runs; none newly allowed.
+From the ticket folder:
+- `python3 -I evidence/collaboration-model/walkthrough.py --check target-collaboration-contract.md` must print three "match" lines.
+- `python3 -I evidence/data-model-validation/validate_contract_examples.py collaboration-walkthrough.md` prints 0 findings.
+- `python3 -I evidence/data-model-validation/validate_every_case.py <server-data dir>`, read-only on the user's data. Its saved output is `every-case-2026-11-11.txt`, and every line starts with its case ID.
 
-**Owners**
-- The Task side answers the delegation questions from memory, through its port.
-- `TaskMessageScope`, `TaskDelegation` and `DelegatedRunStarter` (extracted from the peer path).
-- Each run's own gate orders its transitions.
+## Known limits (proposed as follow-up work, not blocking)
 
-## Round 2 answers (SR-019)
-
-AR-004 (restart notice), AR-005 (migration: prerequisites, preserved partial states, retry recognition, checklist, fixtures), AR-008 (the stream connect no longer starts the host), AR-011 (`DelegatedRunCommands`: message, interrupt, tool approval and Stop to the child's own root), AR-012 (token totals cover the runs delegated from a run, recursively; results unchanged), AR-013 (each root writes its own log, receiver first, as the peer path), AR-014 (the index maps every agent of every delegating run), AR-015 (requirements corrected), and the residuals are answered in the design spec.
-
-## Revision 6 (SR-022), after your round-5 pass
-
-The user stopped implementation and decided two changes:
-
-**TC-10 revised.** A delegated run carries its own `delegatedFrom` again: its origin, written once at creation, equal by rule to its Task entries' value. Each side reads its own:
-- routing, placement and lifecycle read the Task entries;
-- the "delegated from" label and the Memory page read the run's file.
-
-**TC-11.** The relationships live in an in-memory `DelegationTree`, owned by collaboration (contract §2.6):
-- It is built from the Task records at startup and kept current by the Task side's change notice per Task.
-- It owns the communication rule (`canMessage`) and feeds the views.
-- It replaces the Task-side lookup questions and `TaskRunIndex`.
-- `TaskMessageScope` is now `CrossRunMessageDelivery` (the order of one message only).
-
-Migration step 4 writes the run's `delegatedFrom`.
-
-Validated read-only (`evidence/data-model-validation/contract-revision-6-2026-11-11.txt`):
-- origins computed for 196 of 196 runs;
-- equal to the Task entries for 181 of 181;
-- the tree is a forest (183 nodes, 0 cycles);
-- the rule on the tree equals the rule on the records for 230 of 230 pairs.
-
-## Points for the reviewer
-
-1. "Ordering Without A Shared Queue": each race that today's per-root queue resolved, with its new owner.
-2. "Readers Of Removed Or Renamed Fields": decided by area, verified file by file in implementation.
-3. DS-11 and migration step 8 (added by the self-validation): every delegated run gets a history row; the list decides from the Task side where it shows.
-4. The size: three root kinds and the whole hosting machinery in one change (the user's decision TC-4, against in-between states). The change sequence lands as separate commits with tests.
+- The model is not run on the user's data. The rules are checked there by `validate_every_case.py`, a second implementation of the same rules. Running the migrated data through the model itself would leave one implementation.
+- The migration (E1 … E12) is not yet a story of the model. A delegation to a peer from an org, or from a delegated team, is not yet a story. Idle shutdown, restart and legacy runs are prose only.
 
 ## Workspace
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461`
-- Branch: `codex/delegated-copies-outlive-delegator-461` (not pushed)
+- Branch: `codex/delegated-copies-outlive-delegator-461` (not pushed); ticket documents up to `9db7b74e7b` and this handoff
 - Base: `origin/personal` `827f1e68dc`
-- Finalization target: `personal` (a release only on the user's word)
+- Implementation is in progress on the same branch, by the Implementation Engineer, who has been informed of each SR.
 
 ## Documents
 
 Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/tickets/in-progress/delegated-copies-outlive-delegator-461/`
 
+- `target-collaboration-contract.md` (revision 8): principles, addresses and rules, records with their code owners, the tree, every case (§5), existing data before and after (§6), decisions, and the validation index
+- `collaboration-walkthrough.md`: generated; 41 states
+- `evidence/collaboration-model/`: `model.py`, `stories.py`, `walkthrough.py`
+- `design-spec.md` (SR-033)
 - `requirements-doc.md`
-- `target-collaboration-contract.md` (revision 5)
 - `investigation-notes.md`
-- `design-spec.md`
-- `solution-revision-record.md`
-- `evidence/data-model-validation/` (read-only scripts and their counts)
-- `follow-ups.md` (FU-002 open; FU-003 … FU-005 withdrawn)
-- The earlier round's `design-review-report.md` and `architecture-review-revision-record.md`
+- `solution-revision-record.md` (SR-025 … SR-033 since your last round)
+- `evidence/data-model-validation/`: read-only scripts and their outputs
+- `follow-ups.md`
+- Your `design-review-report.md` and `architecture-review-revision-record.md`
 
 ## Constraints
 
 - `DESIGN.md`, `TESTING.md`, `RELEASE.md`; the Data Migration Guideline; the Collaboration Model, which this change rewrites.
-- Never run a migration or startup on the user's data.
+- Never run a migration or a startup on the user's data.
 
 ## Route
 
-`get_handoff_rules` (2026-11-11): "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer`.
+`get_handoff_rules`: "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/software_engineering_team/architecture_reviewer`.
