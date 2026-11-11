@@ -330,3 +330,35 @@ Recorded from the Solution Designer's conversation; not yet written into the con
 - The user asked whether the contract works when analyzed, for example for communication. Walk recorded as contract §12 (W1 … W12). It found three gaps in §10 as written: the link's pair rule (delegator only, from the cross-node code `remote-endpoint.ts` `pairRule([link.delegatorAgentRunId])`) contradicts §10.3 step 2 (every agent of the delegating run by address); the Task route was limited to entry agents without need; finding a run from an agent's run ID when no link exists was not stated. Corrections are in §12. `Measured`: `measure_routes_run_level.py` → `routes-run-level-2026-11-10.txt`: 1,601 cross-run messages; 1,559 on a link at run level (1,557 delegator ↔ delegated run, 2 with another agent of the delegating run); 6 through the Task's record (a Task's assigner run and a run of that Task); 36 with no route (33 where neither run has a Task record, 3 others).
 
 - The user, 2026-11-10: "let's first fix the problem regarding the collaboration tree which is constantly growing … we can fix this problem first and then after this problem is fixed we come back to this ticket again"; after the trade-offs were named (the original Stop problem stays until then; the part built on today's hosting code is redone later): "you can ask the Project Task Manager to create a Task … send the detailed message … and then you can work on the Task first". Recorded as prerequisite PRE-001; this ticket waits (SR-013). Not checked for the prerequisite: the Memory page's rule for listing a delegated run.
+
+## Re-investigation after autobyteus-469 (2026-11-11, SR-014)
+
+Base: `origin/personal` `827f1e68dc` (the branch was rebased; its own commits touch only this ticket folder). Statements are `Read` at that revision unless marked `Measured` (the user's data, read-only, counts only).
+
+### What 469 changed under this ticket
+
+| Fact | Source |
+| --- | --- |
+| No top run stores a list of local delegated runs; a stored tree is composed from the Task side's open entries keyed by `hostRoot` (`openDelegatedRunsOf`) and each run's own file | `projects/services/task-execution-resource-service.ts:227-232`; `run-history/store/task-execution-tree-split.ts`; `tickets/done/collaboration-tree-open-tasks-only-469/design-spec.md` D-1 … D-3 |
+| Startup admission reads a run's own parts only (`readOwnParts`) | 469 D-11 |
+| The hosting is unchanged: a standalone root owns `rootAgents` and `teams`, places every new local copy at the root, and its `stop()` ends every child, then the host | `standalone-agent-run-root/services/standalone-root-builder.ts:113, 121`; `standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts:121-141`; `standalone-agent-run-root/domain/standalone-agent-run-root.ts:435-466` |
+| The standalone tree file is read for: the host (address, run ID, definition), the creation time, the links to runs on a peer, and its existence (`packageExists`; the history row's `hasCollaboration` flag is set at its first write). Without a stored file the root builds an empty tree whose host address is derived from the definition name | `standalone-agent-run-root/services/standalone-agent-run-root-manager.ts:442-476`; `standalone-host-member-context-builder.ts:29-36`; `run-history/services/agent-run-history-catalog-service.ts:271-280` |
+| Users at the latest code: `hostRoot` 14 files; `taskAgent` 10; `coordinatingRun` 19; `remoteTaskExecutions` 34 (outside migrations) | grep |
+| The Task record entry stores `hostRoot`, `assignedBy` (assigned only), `recipientAddress` (assigned only), `agentRun`, `start`, `closedAt`; no node or members of a peer's run | `projects/stores/task-execution-resource-schema.ts:11-44`; `Measured`: both entries of peer runs have the same keys as local ones |
+
+### Measurements (`evidence/data-model-validation/contract-after-469-2026-11-11.txt`, `relationship-in-task-record-2026-11-11.txt`)
+
+- 196 delegated runs (43 agent, 153 team); 408 Task entries (406 local, 2 of peer runs); 11 runs with an open Task; 15 runs with no Task record.
+- `hostRoot` equals the run's `coordinatingRun` in 406 of 406 local entries, and equals the one-hop delegating run in 375 of 406; the 31 others are nested runs (32 nested runs; one has no Task record).
+- `assignedBy` equals the run's own delegator in 376 of 376 assigned entries; `recipientAddress` equals the run's address in 371 of 371. All 30 `delegated` and `broughtIn` entries belong to runs that record a delegator.
+- 54 runs have more than one entry: same `hostRoot` and same assigner in 54 of 54.
+- 8 standalone tree files: all still hold old local entries (ignored since 469, dropped at the next save); 1 holds the 2 peer links; the host address equals the definition ID in 8 of 8. 6 of 43 delegated agent runs have an address that is not the definition ID.
+- Open delegated runs grouped by `hostRoot`: held by 2 runs; grouped one hop: by 3 runs.
+
+### Consequences for the contract (revision 5)
+
+- Revision 2's two-ended relationship (a link in the delegating run, a back-link on the delegated run) no longer matches the base: 469 removed the link and made the Task record the index. Storing a back-link as well would be a second copy of the Task record's fact. Proposed: the relationship is stored once, in the Task entry (`delegatedBy`, one hop), replacing `hostRoot` and `assignedBy` (TC-7).
+- Revision 2 removed `hostRoot` as derivable; it is now the key of the views and cannot be removed without a replacement.
+- The standalone tree file has one own fact left (the host address) besides the peer links; both have better places (TC-8).
+- The 15 runs without a Task record have no relationship left once `taskAgent` goes (TC-9).
+- Communication: the routes keep their reach; the lookup moves to the Task records (contract §10). DEC-011 still needs the user.

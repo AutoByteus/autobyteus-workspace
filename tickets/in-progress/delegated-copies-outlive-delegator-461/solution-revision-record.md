@@ -17,6 +17,7 @@
 | SR-011 | Requirements | The user asked that communication be written into the contract | N/A | Contract revision 2 approved; DEC-011 open | Contract revision 3 proposed (§10 added); DEC-011 open, recommendation B | Contract §10 (M1 … M9, address order, delivery, lookup); DEC-011 | For the user's review and decision |
 | SR-012 | Mixed | The user: a run is connected with its Task; closed Tasks need not stay in the collaboration tree; is the on-disk contract designed and validated? | N/A | Contract revision 3 proposed | Contract revision 4 proposed (§11 added) | Contract §11 (L1 … L11, what reads what, validation); DEC-011 (B, agreed in conversation, to confirm); TC-4 reopened by the user (teams and orgs in this ticket if it fits; not sized) | For the user's review |
 | SR-013 | Requirements | The user's ordering decision: fix the growing collaboration tree first, as its own Task | N/A | Contract revision 4 proposed; design Needs Revision | Blocked: Waiting For Prerequisite PRE-001 | PRE-001 (new); every REQ waits | The prerequisite is sent to the Project Task Manager |
+| SR-014 | Requirements (supplement) | PRE-001 delivered (`autobyteus-469`, verified Terminal 2026-11-11); the user: resume on the latest base and re-validate the contract | N/A | Blocked: Waiting For Prerequisite | Ready for Approval (contract revision 5 proposed; design Needs Revision) | Contract §1 … §12; TC-7 … TC-9; DEC-011 | Presented to the user |
 
 ## Revision Entries
 
@@ -318,3 +319,26 @@
 - Downstream and architecture-review impact: none until the ticket continues
 - Remaining gaps, assumptions or blocked decisions: the prerequisite Task's key
 - Next action: the Project Task Manager creates the Task and gives it to this team; this ticket continues when it is delivered
+
+### SR-014 — Resumed on the 469 base; contract revision 5
+
+- Phase and classification: Requirements (behavior-defining supplement), `Requirement Change` driven by a changed base
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: PRE-001 delivered (`827f1e68dc`); the user, 2026-11-11: "your current ticket should be based on the latest version … re-investigate and then update the data model and the other contract", and "for this ticket we need to build on top of the other one … and start to validate our contract once again"
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: Blocked, Waiting For Prerequisite; requirements approved at SR-007 with contract revision 2; revisions 3 and 4 proposed
+- Current authoritative requirements/design status: requirements `Ready for Approval` with contract revision 5 proposed; design `Needs Revision` (rebuilt after approval)
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: the contract's principles P2, P3, records §2, attributes §3, existing data §5, operations §6, validation §7, simulations §8, decisions TC-7 … TC-9, communication §10, §11, §12; DEC-011 unchanged and still open
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the branch was rebased onto `827f1e68dc` and the contract was re-validated against that code and the user's current data (notes "Re-investigation after autobyteus-469"). 469 removed the link revision 2 relied on and made the Task record the index of delegated runs, so revision 2's two-ended relationship would now be a second copy. Revision 5 stores the relationship once, in the Task entry (`delegatedBy`, one hop), removes the standalone tree file, and moves every peer-run fact into the Task entry. Revisions 3 and 4 are folded in and rewritten on that base.
+- Canonical requirements, investigation and design sections changed: `target-collaboration-contract.md` (revision 5); `requirements-doc.md` status lines; `investigation-notes.md` new section
+- Supplemental artifacts added, changed or removed: `evidence/data-model-validation/validate_contract_after_469.py`, `contract-after-469-2026-11-11.txt`, `validate_relationship_in_task_record.py`, `relationship-in-task-record-2026-11-11.txt`
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `Yes` (proposed): the 15 old runs without a Task record appear in the run list (TC-9); otherwise the stored model only
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: not approved; the user decides TC-7, TC-8, TC-9 and DEC-011
+- Behavior-defining supplement versions and approval references: contract revision 5, proposed
+- Affected design/review basis invalidated or rebuilt: the design of SR-010 and its review ARCH-REV-001 apply to revision 2 and are rebuilt after approval
+- Post-design task-size/risk classification and rationale changes: N/A until the design is rebuilt
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none (approval hold in the Solution Designer's conversation)
+- Downstream and architecture-review impact: a new design and review round after approval
+- Remaining gaps, assumptions or blocked decisions: TC-7, TC-8, TC-9, DEC-011; V-10 … V-14 in the design
+- Next action: the user's decisions

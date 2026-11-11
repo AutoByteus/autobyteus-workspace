@@ -1,539 +1,426 @@
 # Delegation Contract — A Delegated Run Is An Ordinary Run
 
-Status: **revision 2, approved by the user** (2026-11-10, SR-007; TC-1 … TC-6 decided). Proposed at SR-006.
-**Revision 4, proposed** (2026-11-10, SR-012): §11 "The life of a link" added (the user: a run is connected with its Task; the collaboration tree need not keep runs whose Task is finished). Where §11 differs from §2.2, §3, §5, §6 or §8 (which say a link is kept for good), §11 is the newer rule; those sections are rewritten when revision 4 is approved.
-**Revision 3, proposed** (2026-11-10, SR-011): §10 "Communication" added at the user's request ("how communication works should also be written down in the contract"). §1 … §9 are unchanged and stay approved; §10 is proposed, and its rows marked DEC-011 wait for the user's decision. Revision 1 gave the words and rules; revision 2 adds
-the data level: every record with example JSON, every case, an attribute-by-attribute redundancy check, the
-existing data before and after with counts, and simulations. It is the behavior-defining supplement of
-`requirements-doc.md`; the design is built on it. Base `origin/personal`
-`aae0a53a81`. Task `autobyteus-461`.
+Status: **revision 5, proposed** (2026-11-11, SR-014). Rebased on `origin/personal` `827f1e68dc`, which contains autobyteus-469. Task `autobyteus-461`.
 
-Model for this document: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md` (revision 5),
-which made a task agent's *storage* its own. This contract finishes that step: the *relationship* and the
-*lifecycle* become the run's own too.
+History:
+- Revision 1 gave the words and rules; revision 2 added the data level, and the user approved it (2026-11-10, SR-007; TC-1 … TC-6).
+- Revisions 3 (§10 Communication) and 4 (§11 the life of a link) were proposed on 2026-11-10 and never approved.
+- autobyteus-469 then changed the base: a top run stores no list of the runs it delegated to on this node. The Task record became the index, and the tree is built in memory from the Tasks that are open.
+- Revision 5 rewrites §2 … §12 on that base. Every count was measured again on the user's data on 2026-11-11 (read-only): `evidence/data-model-validation/contract-after-469-2026-11-11.txt` and `relationship-in-task-record-2026-11-11.txt`.
+- What changes against the approved revision 2 is listed in §9.1. The user decides TC-7 … TC-9 and DEC-011 before this revision governs the design.
 
-Authorities: [Collaboration Model](../../../autobyteus-server-ts/docs/design/collaboration_model.md);
-[Data Migration Guideline](../../../autobyteus-server-ts/docs/design/data_migration_guideline.md); `DESIGN.md`
-(rules 7, 8, 10). Evidence for every "today": `investigation-notes.md` and the read-only data check
-`evidence/data-model-validation/` (script and `counts-2026-11-10.txt`). Revision 2 was amended on 2026-11-10 with the role name `subWork` (TC-6).
+Model for this document: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md`, which made a delegated run's *storage* its own. autobyteus-469 made the *list of delegated runs* the Task's. This contract finishes the step: the *relationship* and the *lifecycle* become the run's and the Task's, and nothing hosts another run.
 
-The user's direction (2026-11-10): a delegated agent run or agent team run is its own, normal run; it is
-started and stopped like any other; its life depends on its Task; the relationship is kept and shown in the
-UI; the contract is put right first and the code then reflects it; no redundant attributes.
+Authorities: [Collaboration Model](../../../autobyteus-server-ts/docs/design/collaboration_model.md); [Data Migration Guideline](../../../autobyteus-server-ts/docs/design/data_migration_guideline.md); `DESIGN.md` (rules 7, 8, 10).
+
+The user's direction (2026-11-10): a delegated agent run or agent team run is its own, normal run; it is started and stopped like any other; its life depends on its Task; the relationship is kept and shown in the UI; the contract is put right first and the code then reflects it; no redundant attributes. And (2026-11-10, 469): "the agent or agent team is connected with the task".
 
 ## 0. The main scenario
 
-One Project Task Manager run (a standalone agent run) is kept for months and delegates Project Tasks to
-teams; a team's member delegates sub-work to another agent or team. On the user's machine today
-(read-only, 2026-11-10): **196 delegated runs** (43 agent runs, 153 team runs), **197 links** (195 on this
-node, 2 to a peer), **407 Task records** of runs in 361 files; 170 delegated runs name a standalone run as
-their coordinating run, 20 a team run, 6 an org run.
+One Project Task Manager run (a standalone agent run) is kept for months and delegates Project Tasks to teams. A member of such a team delegates sub-work to another agent or team.
+
+On the user's machine today (read-only, 2026-11-11):
+- **196 delegated runs**: 43 agent runs and 153 team runs.
+- **408 Task record entries**: 406 of runs on this node, 2 of runs on a peer.
+- **11 delegated runs have an open Task.**
+- **15 delegated runs have no Task record**: old runs, started 2026-08-18 … 2026-10-13.
 
 ## 1. Principles
 
-- **P1 A delegated run is an ordinary run.** An agent run at `memory/agents/<id>/` with `run_metadata.json`,
-  or a team run at `memory/agent_teams/<id>/` with `team_run_execution_tree.json`. It is read, started,
-  stopped, woken, configured, archived and deleted by the ordinary run code. One section, `delegatedFrom`,
-  says who delegated it.
-- **P2 Delegation is a relationship, stored as two ends.** The delegated run holds the back-link
-  (`delegatedFrom`); the delegating run holds the link. Neither end holds anything else of the other run.
-- **P3 One hop.** A link connects a run to the run of the agent that delegated. A run delegated by an agent
-  of a delegated run links to that delegated run, never to the top of the chain.
-- **P4 One owner per fact.** A fact that can change has one place. The facts of the relationship never
-  change after the delegation; the two ends each record only what that end needs to act without reading
-  the other run (the two runs may be on different nodes). §3 checks every attribute against this.
-- **P5 The Task owns the work.** A Task records the runs working on it by their own identity. Closing the
-  Task ends their work.
-- **P6 Every run owns its own life.** Nothing hosts, idles, wakes or stops another run. A message wakes
-  its receiver.
-- **P7 Move, never lose, never lock out** (as in the memory layout contract P6): existing data is converted
-  once; nothing is deleted; a run that cannot be converted is left intact and reported; the app still starts.
+- **P1 A delegated run is an ordinary run.** It is an agent run at `memory/agents/<id>/` or a team run at `memory/agent_teams/<id>/`. The ordinary run code reads, starts, stops, wakes, configures, archives and deletes it. Its own files hold only its own facts.
+- **P2 The delegation is stored once, in the Task's record.** An entry says which run works on the Task, which run and which agent delegated it, and whether its work is open. The delegating run stores nothing of the delegated run, and the delegated run stores nothing of the delegating run. *(Revision 2 stored the relationship as two ends, a back-link and a link. 469 removed the link and made the Task record the index, so the back-link would be a second copy of the record's fact.)* The exception is a run started by a peer: its Task record is on the other node, so it keeps `delegatedFrom` (§2.4).
+- **P3 One hop.** An entry names the run of the agent that delegated. It never names the top of a chain.
+- **P4 One owner per fact.** §3 checks every attribute against this.
+- **P5 The Task owns the work.** Closing the Task ends the work of every run recorded in it. A run is shown under the run that delegated it while one of its Task entries is open (469).
+- **P6 Every run owns its own life.** Nothing hosts, idles, wakes or stops another run. A message wakes its receiver.
+- **P7 Never lose, never lock out.** Existing data is converted once and nothing is deleted. A run that cannot be converted is left intact and reported, and the app still starts.
 
-Words: **delegator** = the agent that called `delegate_task`; **delegating run** = the run that agent is a
-part of (it holds the link); **delegated run** = the run the delegation created. The word **coordinating
-run** is removed (it meant the top run of a chain, which "hosts, idles, wakes and stops" the others).
+Words:
+- **delegator**: the agent that called `delegate_task`.
+- **delegating run**: the run that agent is a part of.
+- **delegated run**: the run the delegation created.
+- **entry agent**: the agent a message to the run enters through; an agent run itself, or a team's coordinator.
+- The word **coordinating run** is removed. It meant the top run of a chain, which hosted the others.
 
 ## 2. The records
 
-### 2.1 The back-link: `delegatedFrom` on the delegated run
+### 2.1 A Task's record of a run (`agent_run_resources.json`)
 
-Agent run, `memory/agents/code_reviewer_91c2/run_metadata.json` (every other field as in any run file):
-
-```json
-{
-  "runId": "code_reviewer_91c2",
-  "agentDefinitionId": "code-reviewer",
-  "workspaceRootPath": "/Users/me/projects/x",
-  "memoryDir": "/Users/me/.autobyteus/server-data/memory/agents/code_reviewer_91c2",
-  "llmModelIdentifier": "sonnet",
-  "llmConfig": null,
-  "autoExecuteTools": true,
-  "runtimeKind": "claude_agent_sdk",
-  "platformAgentRunId": "…",
-  "startedAt": "2026-11-10T09:12:00.000Z",
-  "delegatedFrom": {
-    "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
-    "delegatorAgentRunId": "project_task_manager_7c8d"
-  }
-}
-```
-
-Team run, `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`:
-
-```json
-{
-  "createdAt": "2026-11-10T09:39:18.439Z",
-  "archivedAt": null,
-  "applicationBinding": null,
-  "handoffs": [ "…" ],
-  "rootTeam": {
-    "address": "/software_engineering_team",
-    "teamDefinitionId": "software-engineering-team",
-    "teamRunId": "software_engineering_team_0218",
-    "coordinatorAddress": "/software_engineering_team/solution_designer",
-    "defaultLaunchConfiguration": { "…": "…" },
-    "members": [ { "address": "/software_engineering_team/solution_designer", "agentRunId": "solution_designer_65a9", "…": "…" } ],
-    "taskExecutions": []
-  },
-  "delegatedFrom": {
-    "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
-    "delegatorAgentRunId": "project_task_manager_7c8d"
-  }
-}
-```
-
-Fields of `delegatedFrom`:
-
-| Field | Meaning | Present |
-| --- | --- | --- |
-| `delegatingRun { kind, runId }` | The run the delegator is a part of: `agent`, `agent_team` or `agent_org`. It holds the link; reports by address go to its standing instances | Always |
-| `delegatorAgentRunId` | The agent that delegated: the run reports to it, and it may message this run by run ID | Always for new runs; absent on 4 old records in the user's data |
-| `nodeId` | The peer node the delegating run is on | Only when the delegating run is on another node; absent means this node |
-
-Values by who delegates (the cases):
-
-| Case | Who delegates | `delegatingRun` | `delegatorAgentRunId` | `nodeId` |
-| --- | --- | --- | --- | --- |
-| D1 | A standalone agent (the Project Task Manager) | `{agent, <its run id>}` | its run id | absent |
-| D2 | A member of a team run the user started | `{agent_team, <that team run>}` | the member | absent |
-| D3 | A direct agent of an org run | `{agent_org, <that org run>}` | that agent | absent |
-| D4 | A member of a team mounted in an org run | `{agent_org, <that org run>}` | the member | absent |
-| D5 | A member of a **delegated** team run (nested) | `{agent_team, <that delegated team run>}` — one hop, **not** the top run | the member | absent |
-| D6 | A delegated agent run delegates (nested) | `{agent, <that delegated agent run>}` | its run id | absent |
-| D7 | An agent on a peer node | `{kind, <the run there>}` | that agent | the peer's node ID |
-
-D7 is today's shape for a run a peer started (`delegatedFrom { nodeId, coordinatingRun, delegatorAgentRunId }`),
-with `coordinatingRun` renamed. D1–D6 replace today's `taskAgent` section.
-
-### 2.2 The link, in the delegating run's record
-
-Unchanged on disk. Four cases:
-
-```json
-{ "address": "/code_reviewer", "agentRunId": "code_reviewer_91c2",
-  "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T09:12:00.000Z" }
-```
-```json
-{ "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218",
-  "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T09:39:18.439Z" }
-```
-```json
-{ "address": "/researcher", "agentRunId": "researcher_4410", "nodeId": "node-b-1f0e",
-  "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T10:02:00.000Z" }
-```
-```json
-{ "address": "/research_team", "teamRunId": "research_team_77aa", "nodeId": "node-b-1f0e",
-  "coordinatorAddress": "/research_team/lead",
-  "members": [ { "address": "/research_team/lead", "agentRunId": "lead_0c11" },
-               { "address": "/research_team/analyst", "agentRunId": "analyst_5d20" } ],
-  "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T10:05:00.000Z" }
-```
-
-Where the links of a run are: a standalone agent run, `collaboration/collaboration_tree.json`
-`taskExecutions`; a team run, `rootTeam.taskExecutions`; an org run, `rootOrg.taskExecutions`. One list per
-run. A link is always in the record of the delegating run (P3): for D5 it is in the delegated team run's own
-`rootTeam.taskExecutions` (empty today), for D6 in the delegated agent run's own `collaboration_tree.json`.
-
-A remote link also keeps the team's coordinator and members, because the delegating node cannot read a run
-on another node and must route a message to any member by run ID (CM-11). A local link does not: the team
-run's own tree on the same node is the owner of that fact.
-
-### 2.3 A Task's record of a run (`agent_run_resources.json`)
+The one record of a delegation. A run on this node:
 
 ```json
 {
   "taskId": "project_task_440e",
   "agentRunResources": [
     { "role": "assigned",
-      "assignedBy": "project_task_manager_7c8d",
+      "delegatedBy": { "run": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+                       "agentRunId": "project_task_manager_7c8d" },
       "recipientAddress": "/software_engineering_team",
       "agentRun": { "kind": "team", "teamRunId": "software_engineering_team_0218",
                     "coordinatorAgentRunId": "solution_designer_65a9" },
       "linkedAt": "2026-11-10T09:39:18.439Z", "start": "started", "closedAt": null },
     { "role": "subWork",
+      "delegatedBy": { "run": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
+                       "agentRunId": "solution_designer_65a9" },
       "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
       "linkedAt": "2026-11-10T11:00:00.000Z", "start": "started", "closedAt": null }
   ]
 }
 ```
 
-A run on a peer (the Task side cannot read it, so the record names where its link is):
+A run on a peer. This node cannot read that run, so the entry also holds what a message to it needs:
 
 ```json
-{ "role": "assigned", "assignedBy": "project_task_manager_7c8d", "recipientAddress": "/researcher",
-  "agentRun": { "kind": "agent", "agentRunId": "researcher_4410" },
+{ "role": "assigned",
+  "delegatedBy": { "run": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "agentRunId": "project_task_manager_7c8d" },
+  "recipientAddress": "/research_team",
+  "agentRun": { "kind": "team", "teamRunId": "research_team_77aa", "coordinatorAgentRunId": "lead_0c11" },
   "nodeId": "node-b-1f0e",
-  "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
-  "linkedAt": "2026-11-10T10:02:00.000Z", "start": "started", "closedAt": null }
+  "members": [ { "address": "/research_team/lead", "agentRunId": "lead_0c11" },
+               { "address": "/research_team/analyst", "agentRunId": "analyst_5d20" } ],
+  "linkedAt": "2026-11-10T10:05:00.000Z", "start": "started", "closedAt": null }
 ```
 
-`role` says how the run belongs to the Task:
+Fields:
 
-| `role` | Meaning | Written by |
+| Field | Meaning | Present |
 | --- | --- | --- |
-| `assigned` | The run was given this Task as its own work, by an agent that is not working on the Task (a saved Project Task, or a description-only delegation that created a Task with no Project). Only its assigner can continue it after the Task was closed and reopened | `delegate_task` by an agent that owns no Task |
-| `subWork` | A run that works on this Task handed part of the work to this run; it joins the same Task and no Task is created. It stays closed when the Task is reopened | `delegate_task` by a run that works on the Task |
-| `broughtIn` | Older records only (2 in the user's data); nothing writes it | — |
+| `role` | `assigned`: the run was given this Task as its own work by an agent that works on no Task; only that agent can continue it after a reopen. `subWork`: a run working on this Task handed part of it to this run. `broughtIn`: older records only, never written | Always |
+| `delegatedBy.run { kind, runId }` | The run the delegator is a part of: `agent`, `agent_team` or `agent_org`. The delegated run is shown under it and reports to it by address. One hop (P3) | Always |
+| `delegatedBy.agentRunId` | The delegator | Always |
+| `recipientAddress` | The address the run was delegated to, its display name | `assigned` (as today), and every entry of a peer's run |
+| `agentRun` | The run, by kind and ID; a team's coordinator | Always |
+| `nodeId` | The peer the run is on | Only for a peer's run; absent means this node |
+| `members` | Every member of a peer's team run, by address and run ID | Only for a peer's team run |
+| `linkedAt`, `start`, `startError`, `closedAt` | Unchanged | As today |
 
-`subWork` is today's `delegated`, renamed (the user, 2026-11-10): every run in this record is a delegated run, so the old value said nothing; "sub-work" is already the Collaboration Model's word (CM-6).
+`delegatedBy` replaces today's `hostRoot` and `assignedBy`:
+- `hostRoot` named the top run that *hosted* the run. In 31 of 406 entries that is not the run that delegated it (nested delegations).
+- `assignedBy` was the delegator, on `assigned` entries only.
 
-`hostRoot` is removed. For a run on this node, everything the Task side asked the "host" for (stop the run
-when the Task closes, the run's status, where it is shown) is asked of the run itself, by its own ID; the
-run it is shown under is the run's own `delegatedFrom.delegatingRun`.
+The new field gets a new name because its meaning is new. It is one hop, and it is on every role (Data Migration Guideline: never reuse a name for another meaning).
 
-### 2.4 A run's own address, launch and settings
+`subWork` is today's `delegated`, renamed (TC-6, the user): every run in this record is a delegated run, so the old value said nothing.
 
-- A team run's address is `rootTeam.address`, as today (in the user's data the back-link's `address`
-  equals it in 153 of 153 team runs).
-- An agent run's address is kept where every standalone run keeps it: `collaboration/collaboration_tree.json`
-  `host.address`, written when the delegation creates the run. It cannot be derived from the definition
-  (6 of 43 delegated agent runs in the user's data have an address that is not their definition's ID).
-- How a delegation resolved the launch (`launchSource`: origin and skipped layers) is the run's own fact:
-  a top-level optional `launchSource` on an agent run; a team run already has its members' `launchSource`
-  and gets `rootTeam.defaultLaunchSource`.
-- A Settings edit of a stopped delegated run is saved like any stopped run's: it changes the run's own
-  launch fields. `userLaunchSelection` (the edit kept beside the started launch) is removed; the 9 records
-  that carry one (3 agent runs, 6 team runs) are converted to their effective launch. *To verify in the
-  design (§6, V-9): the reason DEC-005 of the earlier ticket kept the edit beside the started values.*
-- `pendingRuntimeSwitch` is already a top-level field of a run file; the copy inside `taskAgent` goes (0
-  records carry one).
+### 2.2 A delegated run's own files
+
+The ordinary files of its kind. The `taskAgent` section is removed: its relationship facts are in the Task record (§2.1), and its own facts move to the ordinary places:
+
+| Today in `taskAgent` | Target |
+| --- | --- |
+| `coordinatingRun` | Removed: nothing hosts |
+| `delegatorAgentRunId` | The Task record's `delegatedBy.agentRunId` |
+| `address` | Agent run: `address` in its `run_metadata.json` (§2.3). Team run: its own `rootTeam.address` (equal in 153 of 153) |
+| `launchSource` | Agent run: top-level `launchSource`. Team run: the members' `launchSource` (as today) and `rootTeam.defaultLaunchSource` |
+| `userLaunchSelection` | The run's own launch fields, like any stopped run's Settings edit (TC-5; V-9) |
+| `pendingRuntimeSwitch` | Already a top-level field of a run file (0 records carry the copy) |
+
+A delegated agent run, `memory/agents/code_reviewer_91c2/run_metadata.json`:
+
+```json
+{
+  "runId": "code_reviewer_91c2",
+  "agentDefinitionId": "code-reviewer",
+  "address": "/code_reviewer",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "memoryDir": "…/memory/agents/code_reviewer_91c2",
+  "llmModelIdentifier": "sonnet",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "runtimeKind": "claude_agent_sdk",
+  "platformAgentRunId": "…",
+  "startedAt": "2026-11-10T09:12:00.000Z",
+  "launchSource": { "origin": "catalog", "fallbacks": [] }
+}
+```
+
+Nothing in it says it was delegated. The Task record says so.
+
+### 2.3 A run's own address
+
+- **Agent run:** `address` in `run_metadata.json`. It is written when the address is first fixed: for a delegated run, at the delegation; for a run the user started, when it first collaborates (as `collaboration_tree.json` `host.address` is written today).
+  - It is stored because it cannot always be derived: 6 of 43 delegated agent runs have an address that is not their definition's ID.
+  - When it is absent, the address is derived from the definition's name, as today for a run that never collaborated. That absence has one truthful meaning: "not fixed yet".
+- **Team run:** `rootTeam.address`, as today.
+
+### 2.4 A run started by a peer
+
+`delegatedFrom { nodeId, delegatingRun, delegatorAgentRunId }` on the run's own file, as today, with `coordinatingRun` renamed `delegatingRun` (0 such runs on the user's machine). The Task record of that delegation is on the other node, so this run keeps the one relationship fact it needs to answer and to admit messages.
+
+### 2.5 The delegating run's own files: nothing about delegated runs
+
+- **Standalone agent run:** `collaboration/collaboration_tree.json` is removed (TC-8). After 469 it holds three things:
+  - the run's own identity (`host`): its address moves to `run_metadata.json`, and its run ID and definition are already there;
+  - its creation time: the run's own `createdAt` in its history row;
+  - links to runs on a peer: these move into their Task record entries (§2.1).
+  - The run's message log stays in `collaboration/` (CM-9).
+  - The history row's `hasCollaboration` flag is set by the first delegation instead of by the file's first write.
+- **Team run and org run:** their tree file is the run itself (members, settings, coordinator) and stays. Their `taskExecutions` lists go, also the org's per-team lists (469 FU-003). So do their `remoteTaskExecutions` lists, which move into Task record entries (§2.1).
 
 ## 3. Every attribute, checked for redundancy
 
 | Attribute | Where | Kept? | Why |
 | --- | --- | --- | --- |
-| `delegatedFrom.delegatingRun` | delegated run | Kept | The only way from the run to the run it is shown under and reports to by address; cannot be derived (the delegator's run is not findable from an agent run ID across nodes, and only by a scan on one node) |
-| `delegatedFrom.delegatorAgentRunId` | delegated run | Kept | Which agent it reports to and may be messaged by. In case D1/D6 its value equals `delegatingRun.runId` (142 of 196 runs); it is still kept in every case so that all seven cases are read by one rule and the 4 old records without a delegator stay unambiguous |
-| `delegatedFrom.nodeId` | delegated run | Only for a peer | Absent means this node; this node's own ID is never stored |
-| ~~`taskAgent.coordinatingRun`~~ | delegated run | **Removed** | It named the top of the chain, the host. Nothing hosts |
-| ~~`taskAgent.address`~~ | delegated run | **Removed** | Team: duplicate of its own `rootTeam.address` (153 of 153 equal). Agent: the run's own address, kept in the ordinary place (§2.4) |
-| ~~`taskAgent.launchSource`, `.userLaunchSelection`, `.pendingRuntimeSwitch`~~ | delegated run | **Moved or removed** | The run's own launch facts, not relationship facts (§2.4) |
-| link `address` | delegating run | Kept | The delegating run lists and names its delegated runs without reading them (H2 of the memory layout contract; a run on a peer cannot be read at all) |
-| link `agentRunId` / `teamRunId` | delegating run | Kept | The link itself. No separate `kind`: the field name says it |
-| link `delegatorAgentRunId` | delegating run | Kept | Which of its agents delegated: the tree row's parent, and who may message that run. Same value as the back-link's by necessity (195 of 195 equal today); each end must act without the other |
-| link `startedAt` | delegating run | Kept | The time of the delegation: the list's order. A fact of the link |
-| link `nodeId`, `coordinatorAddress`, `members` | delegating run | Only for a peer | §2.2 |
-| ~~`hostRoot`~~ | Task record | **Removed** | Equal to the run's own back-link in 405 of 405 records of runs on this node: derivable |
-| `nodeId`, `delegatingRun` | Task record | Only for a run on a peer | The 2 records of remote runs in the user's data have no other pointer on this node |
-| `role` value `delegated` | Task record | **Renamed** `subWork` | One word, one meaning (`DESIGN.md` rule 10): "delegated" already names every run of the record |
-| `assignedBy`, `recipientAddress` | Task record | Kept | Facts of one assignment (a run can get several Tasks, one entry each), shown by every Task view (`get_project_task`, the Task page) without opening the run. Today they equal the run's delegator (375 of 375 records of runs on this node) and address (370 of 370 that carry it) |
+| `delegatedBy.run` | Task record entry | **Added** (replaces `hostRoot`) | The index that builds a run's view without reading every run folder (469). One hop. The only stored place of the relationship (P2) |
+| `delegatedBy.agentRunId` | Task record entry | **Added** (replaces `assignedBy`, and the run's `taskAgent.delegatorAgentRunId`) | Who may message the run as its delegator and whose row the run is shown under. Present for every role. In 376 of 376 `assigned` entries today's `assignedBy` equals it; the 30 `subWork` and `broughtIn` entries take it from the run's own file (all 30 have it) |
+| ~~`hostRoot`~~ | Task record entry | **Removed** | Named the hosting top run. Equal to the run's `coordinatingRun` in 406 of 406, and to the one-hop delegating run in 375 of 406 |
+| ~~`assignedBy`~~ | Task record entry | **Removed** | `delegatedBy.agentRunId` |
+| `recipientAddress` | Task record entry | Kept | The assignment's display name on every Task view without opening the run. Equals the run's address in 371 of 371 that carry it. A peer's run has no other place on this node |
+| `nodeId`, `members` | Task record entry | Only for a peer's run | Moved from the tree link; this node cannot read that run |
+| The same `delegatedBy` on every entry of one run | Task records | Repeated per entry, equal by rule | A run's later Tasks are given only by its assigner. Measured: 54 runs have more than one entry; in 54 of 54 every entry names the same run and the same assigner |
+| ~~`taskAgent` (all fields)~~ | delegated run | **Removed** | Relationship facts → Task record; own facts → own fields (§2.2) |
+| `address` | agent run's `run_metadata.json` | **Moved** here (from `taskAgent.address` and the standalone tree's `host.address`) | Not derivable in 6 of 43 delegated agent runs |
+| ~~`collaboration_tree.json`~~ | standalone run | **Removed** | No content of its own left (§2.5) |
+| ~~`taskExecutions`, `remoteTaskExecutions`~~ | team and org tree files | **Removed** | No local list since 469; remote links → Task record |
+| `delegatedFrom` | a peer-started run | Kept, `coordinatingRun` → `delegatingRun` | Its Task record is on the other node |
 
-No attribute is added to any record of a run on this node. Three are removed (`coordinatingRun`,
-back-link `address`, `hostRoot`), one is renamed in place (`taskAgent` → `delegatedFrom`, with
-`coordinatingRun` → `delegatingRun` at a new, one-hop value).
+Result: the relationship of a delegation on this node is stored once, in one entry per Task. No run file carries anything of another run.
 
 ## 4. The main scenario as data
 
-The Project Task Manager (standalone) delegates Task T1 to the software engineering team; its solution
-designer delegates sub-work to the product team; the product designer delegates to an image agent.
+The Project Task Manager (standalone) delegates Task T1 to the software engineering team. Its solution designer delegates sub-work to the product team, and the product designer delegates to an image agent.
 
 ```text
 memory/agents/project_task_manager_7c8d/
-  run_metadata.json                         no delegatedFrom: the user started it
-  collaboration/collaboration_tree.json     taskExecutions: [ link → software_engineering_team_0218 ]
+  run_metadata.json             "address": "/project_task_manager"       (no delegatedFrom: the user started it)
+  collaboration/                its message log only
 
 memory/agent_teams/software_engineering_team_0218/
-  team_run_execution_tree.json              delegatedFrom { delegatingRun {agent, project_task_manager_7c8d},
-                                                            delegatorAgentRunId project_task_manager_7c8d }
-                                            rootTeam.taskExecutions: [ link → product_team_e03d ]        (D5)
+  team_run_execution_tree.json  rootTeam (members, settings); no taskExecutions; no taskAgent
 
 memory/agent_teams/product_team_e03d/
-  team_run_execution_tree.json              delegatedFrom { delegatingRun {agent_team, software_engineering_team_0218},
-                                                            delegatorAgentRunId solution_designer_65a9 }
-                                            rootTeam.taskExecutions: [ link → image_maker_33f0 ]
+  team_run_execution_tree.json  the same
 
 memory/agents/image_maker_33f0/
-  run_metadata.json                         delegatedFrom { delegatingRun {agent_team, product_team_e03d},
-                                                            delegatorAgentRunId product_designer_1a2b }
+  run_metadata.json             "address": "/image_maker"; no taskAgent
 
 projects/<project>/tasks/T1/agent_run_resources.json
-  [ assigned  software_engineering_team_0218 (assignedBy project_task_manager_7c8d),
-    subWork   product_team_e03d, subWork image_maker_33f0 ]
+  assigned  software_engineering_team_0218  delegatedBy { run {agent, project_task_manager_7c8d},           agentRunId project_task_manager_7c8d }
+  subWork   product_team_e03d               delegatedBy { run {agent_team, software_engineering_team_0218}, agentRunId solution_designer_65a9 }
+  subWork   image_maker_33f0                delegatedBy { run {agent_team, product_team_e03d},              agentRunId product_designer_1a2b }
 ```
 
-Today the two inner links are in the Project Task Manager's tree and both inner runs name the Project Task
-Manager as `coordinatingRun`.
+The views, built in memory (469, one hop):
+- The manager's view shows the engineering team, because one open entry names the manager's run.
+- The engineering team's view shows the product team.
+- The product team's view shows the image agent.
+
+Today all three entries name the manager as `hostRoot`, the three runs are hosted in the manager's process, and the manager's view lists all three.
 
 ## 5. Existing data: every shape, before and after
 
-Counts: `evidence/data-model-validation/counts-2026-11-10.txt` (the user's data, read-only).
+Counts: the user's data, read-only, 2026-11-11.
 
 | Case | Count | Before | After |
 | --- | --- | --- | --- |
-| E1 delegated agent run, delegator is a part of the run that holds its link (D1–D4) | 159 of 196 runs (with E2) | `taskAgent { coordinatingRun: X, delegatorAgentRunId, address }` | `delegatedFrom { delegatingRun: X, delegatorAgentRunId }`; link stays where it is |
-| E2 delegated team run, same | (in the 159) | the same section on the team tree | the same; `rootTeam.address` already holds the address |
-| E3 nested: the delegator is a part of another delegated run (D5, D6) | 32 | `coordinatingRun` = the top run; link in the top run's tree | `delegatingRun` = the delegator's own run; **the link moves** into that run's record |
-| E4 old record without `delegatorAgentRunId` | 4 | `coordinatingRun` only | `delegatingRun` = today's `coordinatingRun`; no `delegatorAgentRunId`; link stays |
-| E5 delegator's run is not stored (deleted) | 1 | — | `delegatingRun` = today's `coordinatingRun`; `delegatorAgentRunId` kept |
-| E6 detached: no stored run links it (its coordinating run was deleted) | 1 | not listed, not restored | an ordinary run with a `delegatedFrom` that names a run no longer stored (TC-3) |
-| E7 link stored under an org member (older data, C6 of the memory layout contract) | 2 | `rootOrg.members[].taskExecutions` | moved to `rootOrg.taskExecutions` (one list per run) |
-| E8 link to a run on a peer | 2 | link with `nodeId` | unchanged |
-| E9 Task record of a run on this node | 405 | with `hostRoot` | without it |
-| E10 Task record of a run on a peer | 2 | with `hostRoot` | `nodeId` + `delegatingRun` (= today's `hostRoot`) |
-| E13 Task record with role `delegated` | 28 | `"role": "delegated"` | `"role": "subWork"` |
-| E11 a Settings edit beside the started launch | 9 (3 agent runs, 6 team runs) | `userLaunchSelection` | the run's own launch (V-9) |
-| E12 run started by a peer on this node | 0 | `delegatedFrom { nodeId, coordinatingRun, delegatorAgentRunId }` | `coordinatingRun` renamed `delegatingRun` |
+| E1 Task entry, delegator is an agent of the top run | 375 entries | `hostRoot` = top run; `assignedBy` on `assigned` | `delegatedBy { run: the top run, agentRunId }` |
+| E2 Task entry of a nested run (the delegator is an agent of a delegated run) | 31 entries (31 of the 32 nested runs; the 32nd has no Task record, E7) | `hostRoot` = the top run | `delegatedBy.run` = the delegated run the delegator is a part of (one hop) |
+| E3 Task entry of a peer's run | 2 entries | `hostRoot`; the node and members only in the tree link | `delegatedBy`, `nodeId`, and `members` for a team, from the link |
+| E4 Task entry with role `delegated` | 28 | `"delegated"` | `"subWork"` |
+| E6 delegated run's `taskAgent` | 196 runs | `taskAgent { coordinatingRun, delegatorAgentRunId?, address, launchSource?, userLaunchSelection?, pendingRuntimeSwitch? }` | Removed. Address → `run_metadata.address` (agent runs); `launchSource` → own field; `userLaunchSelection` → own launch (9 records; V-9) |
+| E7 delegated run with no Task record | 15 runs | Hidden from the run list (a task agent is never a root candidate); out of every tree since 469 | An ordinary run of its own in the run list (TC-9) |
+| E8 standalone `collaboration_tree.json` | 8 files (all still holding old local entries; 1 holding the 2 peer links) | host, createdAt, entries | Removed after its facts moved (§2.5); the message log stays |
+| E9 team and org tree `taskExecutions` lists | Every tree | Old local entries, kept until the next save (469) | Removed |
+| E10 a peer-started run on this node | 0 | `delegatedFrom { nodeId, coordinatingRun, delegatorAgentRunId }` | `coordinatingRun` → `delegatingRun` |
 
-Message logs, memory, folders: not touched (each run already has its own, CM-8, CM-9).
+Message logs, memory and folders are not touched: each run already has its own (CM-8, CM-9).
 
 ## 6. Operations
 
 | Operation | Reads | Writes | Behavior |
 | --- | --- | --- | --- |
-| Delegate | the target's definition | first the delegated run's own files with `delegatedFrom`, then the link in the delegating run's record, then the Task record | Same tool result and task message as today; a link always points to a run that exists |
-| A delegated run works, idles, wakes | its own files | its own folder | Its own root: shut down when quiet for the grace period, restored by its next message |
-| Message, either way | sender's link or back-link | both runs' logs (CM-9) | By run ID through the link; the receiving run is restored when it is not running |
+| Delegate | the target's definition | the new run's own files, then the Task record entry | Same tool result and task message as today |
+| Build a run's view | the run's own file; the open Task entries whose `delegatedBy.run` is this run; those runs' own files | — | One hop. A peer's run from its entry |
+| A delegated run works, idles, wakes | its own files | its own folder | Its own root: shut down when quiet, restored by its next message |
+| Message | §10 | both runs' logs (CM-9) | The receiver is restored when it is not running |
 | Stop a run (any) | — | its history row | That run only (TC-1) |
-| Close a Task | the Task record | `closedAt` | Every run of the record is asked, by its own ID, to stop; a closed run takes no input except the assigner's reactivation, as today |
-| Open a run in the app | its record (links) | — | Each link is a row under its delegator; a team row's members and every status come from that run itself |
+| Close a Task | the Task record | `closedAt` | Every run of the record is asked, by its own ID, to stop |
+| Reopen and continue, or a follow-up Task | the Task record | the entry (reopened), or a new entry | The run is in its delegating run's view again (469) |
 | Settings of a stopped delegated run | its own files | its own files | The ordinary stopped-run save |
-| Archive / delete a run | its links | its own folder | Refused while a run it delegated to is working (TC-2); its delegated runs are never deleted with it |
-| Server shutdown / restart | — | — | Every run ends; each is restored by its next message; an update restart resumes busy runs |
+| Archive / delete a run | its open Task entries as delegating run | its own folder | Refused while a run it delegated to works on an open Task (TC-2); its delegated runs are never deleted with it |
+| Server start | — | — | Admission reads each run's own files only (469 D-11) |
 
 ## 7. Validation
 
-### 7.1 Done
+### 7.1 Done (read-only, 2026-11-11)
 
 | ID | Check | Result |
 | --- | --- | --- |
-| V-1 | The target back-link can be built for every stored delegated run | 196 of 196: 159 same run as today, 32 one-hop (nested), 4 without delegator and 1 with an unstored delegator fall back to today's `coordinatingRun` (`Measured`) |
-| V-2 | The same fact on both ends never disagrees today | address 195 of 195, delegator 195 of 195, holder 195 of 195 (`Measured`) |
-| V-3 | `hostRoot` is derivable for runs on this node | 405 of 405; the 2 others are the 2 remote runs (`Measured`) |
-| V-4 | The back-link's `address` is redundant for team runs, needed somewhere for agent runs | 153 of 153 equal `rootTeam.address`; 6 of 43 agent addresses are not derivable from the definition (`Measured`) |
-| V-5 | The link shape on disk needs no change | The stored local link is already `{address, run ID, delegatorAgentRunId, startedAt}`; 0 local links carry other fields (`Measured`) |
-| V-6 | A run with only a back-link already works as an ordinary run | Runs started by a peer: an ordinary standalone run or top-level team run with `delegatedFrom`, own idle shutdown, restored by an inbound message (`Read`: `remote-delegation-receiver.ts`, `remote-team-run-starter.ts`, `collaboration-root-resolver.ts`) |
-| V-7 | What `hostRoot` is used for | Five uses (`Read`, `grep hostRoot`, 14 files): stop on Task closure, the closed set of a root's view, the Task page's run status, deleting a deleted run's Tasks with no Project, the client's locator. Each has a target in §2.3 or §6 |
+| V-1 | `delegatedBy.run` can be computed for every entry of a run on this node | 406 of 406: 375 equal today's `hostRoot`; 31 are one hop below it (nested). The one run whose delegator's run is no longer stored has no Task record (it is among E7) |
+| V-2 | `delegatedBy.agentRunId` exists for every entry | 376 `assigned` from `assignedBy`; 30 `subWork`/`broughtIn` from the run's own file (30 of 30 record a delegator) |
+| V-3 | All entries of one run agree | 54 runs with more than one entry: same `hostRoot` 54/54, same assigner 54/54 |
+| V-4 | `recipientAddress` and `assignedBy` equal the run's own facts | 371/371 and 376/376 |
+| V-5 | `hostRoot` equals the run's `coordinatingRun` | 406/406 |
+| V-6 | What the standalone tree file still holds after 469 | 8 files: the host (address leaf equals the definition ID in 8 of 8), the creation time, old local entries (8 of 8, ignored), 2 peer links (1 file) |
+| V-7 | A delegated agent run's address needs a stored place | 6 of 43 differ from the definition ID |
+| V-8 | What the Task record lacks for a peer's run | The node and, for a team, its members: both only in the tree link today |
+| V-9 | Open runs per holding run | By `hostRoot`: held by 2 runs. One hop: by 3 runs (one open run is nested under a delegated team) |
 
 ### 7.2 To do in the design, before the contract is final
 
-- V-8 Every code reader of `taskAgent` (11 files + 15 in migrations), `coordinatingRun` (18 + 10),
-  `delegatedFrom` (22 + 6) and `hostRoot` (14), with the decision for each.
-- V-9 Why the earlier ticket kept a Settings edit beside the started launch (its DEC-005), and whether the
-  ordinary stopped-run save loses anything.
-- V-10 That a delegated agent run's `collaboration_tree.json` (its address) is written when the delegation
-  creates it.
-- V-11 The migration: released migrations that read these shapes (as §5.4 of the memory layout contract),
-  the per-run input gate, and fixtures for E1–E12.
-- V-12 The client: where it reads `hostRoot` and the composed child records.
+- V-10 Every code reader of `hostRoot` (14 files), `assignedBy`, `taskAgent` (10), `coordinatingRun` (19), `remoteTaskExecutions` (34), `delegatedFrom` and the standalone tree file, with the decision for each.
+- V-11 Why the earlier ticket kept a Settings edit beside the started launch (its DEC-005), and whether the ordinary stopped-run save loses anything (carried from revision 2).
+- V-12 The migration: released migrations that read these shapes, the fixtures for E1 … E10, and the order relative to the 469 code (no startup read of trees before the Task records).
+- V-13 The client: where it reads `hostRoot`, `taskAgent` and the composed records.
+- V-14 Finding the run of a non-entry agent run ID while that run is stopped (§10.5).
 - Nothing in this contract has been run as code.
 
 ## 8. Simulations
 
-| # | Case | Rules | Result |
-| --- | --- | --- | --- |
-| S1 | The Project Task Manager delegates T1 to the software engineering team | §2.1 D1, §2.2, §2.3 | The team run's own tree with `delegatedFrom`; one link in the manager's tree; one `assigned` Task record |
-| S2 | The solution designer delegates sub-work to the product team | D5, P3 | The product team run names the software engineering team run; the link is in that team's tree; a `subWork` record joins T1. Nothing is written in the manager's run |
-| S3 | The product team's coordinator reports to the solution designer | §6 Message | By run ID; stored in both team runs' logs |
-| S4 | The user stops the Project Task Manager | P6, TC-1 | Its own agent stops. No other file or run changes |
-| S5 | The software engineering team reports while the manager is stopped | §6 Message | The manager is restored and gets the message once |
-| S6 | T1 is closed | P5 | The three runs of T1's record are each asked to stop; their records get `closedAt` |
-| S7 | The user stops the software engineering team run while the product team works | TC-1 | Only the software engineering team stops; the product team's report later wakes its delegator |
-| S8 | A follow-up Task T2 is given to the same team by its run ID | §2.3 | The link and the back-link do not change; T2's record gets an `assigned` entry with its own `assignedBy` |
-| S9 | The manager's run is opened in the app | §6 Open | Its links give the rows (address, run ID, delegator); nothing of a delegated run is read until its row is shown or opened |
-| S10 | The software engineering team run is opened | §6 Open | Its own link gives the product team row: the tree is followed one hop at a time |
-| S11 | The user deletes the manager's run while a team works | TC-2 | Refused with the reason |
-| S12 | The user deletes it when nothing works | TC-2, TC-3 | Its folder is removed; its delegated runs stay; each is then listed as a run of its own |
-| S13 | A delegation to a peer node | D7, §2.2, §2.3 | The peer's run has `delegatedFrom` with `nodeId`; this node has the link with `nodeId` and the Task record with `nodeId` + `delegatingRun` |
-| S14 | Old record without a delegator (E4) | §2.1 | Shown under today's run; it reports by address only, as today |
-| S15 | Server restart | §6 | No run is running; each is restored by its next message |
+| # | Case | Result |
+| --- | --- | --- |
+| S1 | The manager delegates T1 to the engineering team | The team run's own files; one `assigned` entry with `delegatedBy { run: the manager, agentRunId: the manager }`. Nothing in the manager's folder |
+| S2 | The solution designer delegates sub-work to the product team | A `subWork` entry with `delegatedBy.run` = the engineering team run. Nothing in either team's files |
+| S3 | The product team's coordinator reports to the solution designer | By run ID; the entry names the solution designer as delegator; stored in both logs |
+| S4 | The user stops the manager | Its own agent stops; nothing else changes |
+| S5 | The engineering team reports while the manager is stopped | The manager is restored and gets the message once |
+| S6 | T1 is closed | The three runs are each asked to stop; their entries get `closedAt`; they leave the views |
+| S7 | The user stops the engineering team while the product team works | Only the engineering team stops; the product team's report later wakes it |
+| S8 | A follow-up Task T2 to the same team by run ID | A new `assigned` entry in T2 with the same `delegatedBy` |
+| S9 | The manager's run is opened in the app | Its view: its own agent, and the open entries naming it (the engineering team) |
+| S10 | The engineering team run is opened | Its view lists the product team: one hop at a time |
+| S11 | The user deletes the manager while the team works | Refused with the reason (TC-2) |
+| S12 | The user deletes it when nothing works | Its folder is removed. Its entries still name it, so the delegated runs are shown as runs of their own (TC-3) |
+| S13 | A delegation to a peer | The entry holds `nodeId` (and `members` for a team). The peer's run has `delegatedFrom` |
+| S14 | One of the 15 runs without a Task record | An ordinary run in the run list (TC-9) |
+| S15 | Server restart | No run is running; each is restored by its next message |
 
 ## 9. Decisions
 
 | ID | Question | Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- |
-| TC-1 | Does Stop of a delegated run still stop the runs it delegated to? | No: Stop stops the run you clicked; closing the Task stops every run working on it | The user | Decided by the user, 2026-11-10: no cascade |
-| TC-2 | Archive or delete of a run whose delegated runs are working | Refused with the reason; its delegated runs are never deleted with it (the user, 2026-10-17, for the hub) | Solution Designer | Decided |
-| TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own. Today it is hidden ("detached", the earlier contract §10, with a Memory page view as a follow-up); as an ordinary run it no longer needs a special state | The user | Decided by the user, 2026-11-10: listed as a run of its own ("I like your recommendation") |
-| TC-4 | Delivery | The contract is approved once. This ticket: delegations made from a standalone agent run. Next Tasks: from a team run; from an org run; removal of the remaining hosting code. The design confirms the cut lines | The user | Decided by the user, 2026-11-10: in steps, as recommended |
-| TC-6 | The Task record's role name for sub-work | `subWork` instead of `delegated`, renamed by the same migration that removes `hostRoot` | The user | Decided by the user, 2026-11-10 |
-| TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's (§2.4), subject to V-9 | Solution Designer | Decided, to verify |
+| TC-1 | Does Stop of a delegated run still stop the runs it delegated to? | No | The user | Decided, 2026-11-10 |
+| TC-2 | Archive or delete of a run whose delegated runs are working | Refused with the reason; its delegated runs are never deleted with it | Solution Designer | Decided |
+| TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own | The user | Decided, 2026-11-10 |
+| TC-4 | Delivery | In steps: delegations from a standalone run first; then team runs; then org runs; then removal of the remaining hosting code | The user | Decided, 2026-11-10 |
+| TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's, subject to V-11 | Solution Designer | Decided, to verify |
+| TC-6 | The role name for sub-work | `subWork` | The user | Decided, 2026-11-10 |
+| **TC-7** | Where the delegation is stored | **Once, in the Task record (`delegatedBy`), one hop; no back-link on the delegated run.** Revision 2 stored it on both ends. Since 469 the Task record is the index the views are built from, and a back-link would be a second copy to keep equal | The user | **Needs user** |
+| **TC-8** | The standalone run's `collaboration_tree.json` | **Remove it**: its address moves to `run_metadata.json`, and its peer links move to their Task entries | The user | **Needs user** |
+| **TC-9** | The 15 old delegated runs with no Task record | **Shown as ordinary runs in the run list.** They have no relationship left to show them under, and they are runs with conversations the user can open, archive or delete. Today they are hidden from the run list and appear only on the Memory page | The user | **Needs user** |
+| **DEC-011** | Which runs may message each other beyond a delegation (§10.2 M4, M5) | **B**: also runs of one Task, and a Task's assigner with every run of the Task, as today | The user | **Needs user** |
 
-## 10. Communication (revision 3, proposed)
+### 9.1 What revision 5 changes against the approved revision 2
 
-How agents of different runs reach each other. Written down today in three places, which this section replaces for delegated runs: the Collaboration Model (CM-4, CM-5, CM-9, CM-11), `docs/modules/agent_communication.md` ("Task-linked message scope", "Address resolution order") and `docs/modules/standalone_agent_run_root.md` (`@`).
-
-### 10.1 The tools and what they mean
-
-| Tool or surface | Meaning | Never does |
+| Revision 2 (approved) | Revision 5 | Why |
 | --- | --- | --- |
-| `send_message_to(recipient_address)` | Reaches the one standing agent at that address that the sender can talk with (§10.3) | Create a run; reach a delegated run (it has no address, CM-5) |
+| P2: two ends, a back-link `delegatedFrom` on the delegated run and a link in the delegating run | One record, the Task entry's `delegatedBy` (TC-7) | 469 removed the link and made the Task record the index |
+| `hostRoot` removed as derivable | `hostRoot` replaced by `delegatedBy` (one hop) | The index needs a key; the old key named the hosting top run |
+| A link kept for good in the delegating run's tree | No stored list; a view is built from open entries | 469 |
+| Remote run: link in the tree; Task entry with `nodeId` + `delegatingRun` | Everything in the Task entry: `nodeId`, `members` | One place |
+| An agent run's address in its own `collaboration_tree.json` | In `run_metadata.json`; the tree file is removed (TC-8) | It was the file's last own fact |
+| E7 (old links under an org member) moved to the org's one list | Removed with the lists | 469 |
+
+## 10. Communication
+
+What an agent can do with `send_message_to` stays as today (the user, 2026-11-11: "how it communicates earlier, it should be similar or the same"). What changes is how the server finds the receiver: through the Task record, not through one top run that hosts everyone.
+
+### 10.1 The tools
+
+| Tool | Meaning | Never does |
+| --- | --- | --- |
+| `send_message_to(recipient_address)` | Reaches the one standing agent at that address that the sender can talk with (§10.3) | Create a run; reach a delegated run, which has no address (CM-5) |
 | `send_message_to(target_agent_run_id)` | Reaches exactly that agent run (§10.2) | Create a run |
-| `delegate_task` | Creates the relationship: a new delegated run and its link (§2), or a further Task for a run it already delegated to | — |
-| The user's composer | The user's own message to the run that is open; always allowed, and it wakes the run | — |
-| `@` in the composer | Adds a note for the agent the user is typing to: a catalog agent or team → that agent is told to `delegate_task`; an agent it can talk with by address (§10.3) → it is told to `send_message_to` that address | Send anything by itself |
+| `delegate_task` | Creates a delegated run and its Task entry, or gives a run it delegated to a further Task | — |
+| The user's composer and `@` | Unchanged | — |
 
 ### 10.2 Who can message whom by run ID
 
-The example: the Project Task Manager **M** (a standalone run) assigns Task T1 to the engineering team **E**; E's solution designer hands sub-work of T1 to the product team **P** and to an image agent **I**. M also assigns another Task, T2, to a research agent **R**. The links: M–E, E–P, E–I, M–R.
+Setup:
+- The Project Task Manager **M** assigns Task T1 to the engineering team **E**.
+- E's solution designer hands sub-work of T1 to the product team **P** and to an image agent **I**.
+- M also assigns Task T2 to a research agent **R**.
 
-| # | From → to | Today | Target | Why |
+| # | From → to | Today | Target | Found through |
 | --- | --- | --- | --- | --- |
-| M1 | M → an agent of E (normally E's coordinator) | Allowed | Allowed | The link: M delegated to E |
-| M2 | An agent of E → M | Allowed | Allowed | The link, the other way |
-| M3 | E's solution designer → an agent of P; P → E's solution designer | Allowed | Allowed | The link E–P |
-| M4 | P ↔ I (two runs of the same Task, neither delegated to the other) | Allowed (same Task) | **DEC-011.** A: refused. B: allowed, to the run's entry agent (an agent run itself; a team's coordinator) | B: both are recorded in T1 |
-| M5 | M ↔ P (the Task's assigner and a run of that Task it did not delegate to) | Allowed (M belongs to no Task and is never checked) | **DEC-011.** A: refused. B: allowed | B: M assigned T1, and P is recorded in T1 |
-| M6 | P ↔ R (runs of different Tasks) | Refused: "You can't message this agent: it works on a different Task." | Refused, the same text | The Task rule |
-| M7 | Anyone → a run whose Task is closed; a run of a closed Task → anyone | Refused: the Task is DONE or CANCELLED. Exception: its assigner's message after the Task was reopened continues it | Unchanged | The Task owns the work (P5) |
-| M8 | A run ID that is none of the above | Refused: not in this run | Refused; the text tells the agent to go through the agent that delegated to it | No relationship |
-| M9 | Any of M1 … M3 when the two runs are on different nodes | Allowed | Allowed | The link; M4 and M5 are not offered across nodes (as today) |
+| M1 | Any agent of M ↔ any agent of E | Allowed | Allowed | E's entry: `delegatedBy.run` = M |
+| M2 | Any agent of E ↔ any agent of P | Allowed | Allowed | P's entry: `delegatedBy.run` = E |
+| M3 | P ↔ I (two runs of one Task, neither delegated to the other) | Allowed (same Task) | **DEC-011** A: refused. B: allowed | Both entries are in T1 |
+| M4 | M ↔ P (the Task's assigner and a run of the Task it did not delegate to) | Allowed | **DEC-011** A: refused. B: allowed | T1's `assigned` entry names M |
+| M5 | P ↔ R (different Tasks) | Refused | Refused, same text | The Task rule |
+| M6 | Anyone ↔ a run whose Task is closed | Refused; the assigner may continue it after a reopen | Unchanged | The Task rule |
+| M7 | Any other run ID | Refused unless the target is active elsewhere (live-only route, unchanged) | Unchanged | — |
+| M8 | M1, M2 across nodes | Allowed, the delegator only (CM-11) | Unchanged | The entry's `nodeId` and `members`; the peer run's `delegatedFrom` |
 
-A refused sender is always told why and what to do next; nothing is delivered and nothing is started.
+A refused sender is always told why and what to do next. Nothing is delivered and nothing is started.
 
 ### 10.3 Who can be reached by address
 
-An address is resolved in this order; the first match wins, and a miss inside a team never falls through to another team:
+The first match wins. A miss inside a team never falls through to another team.
 
 1. **The sender's own team:** a teammate, or the team's own address (its coordinator). Unchanged.
-2. **The agents of the run that delegated to the sender's run** (CM-5): for E's members, M at `/project_task_manager`; for P's members, E's members at their addresses. Today this step names the *top* run's agents instead; the target names the delegating run's (one hop, P3).
-3. **DEC-011, only if B:** the agent that assigned the sender's Task (for P's and I's members: M at `/project_task_manager`).
+2. **The standing agents of the delegating run** (CM-5): for E's members, M at `/project_task_manager`; for P's members, E's members.
+   - Today this step names the agents of the *top* run. The target names those of `delegatedBy.run`, one hop.
+3. **Only if DEC-011 = B:** the agent that assigned the sender's Task. For P's and I's members that is M at `/project_task_manager`, so today's example "a product team member reaches the manager by address" keeps working.
 
-Any other address: "No agent or agent team you can talk with has the address … " with the existing guidance (answer by run ID; delegate for new work). The same list is what `list_available_agents` shows as agents already in reach, and what `@` offers besides the catalog.
-
-Across nodes there is no address route, as today: a run on a peer answers by run ID.
+Any other address gets "No agent or agent team you can talk with has the address …", with today's guidance.
 
 ### 10.4 What every delivered message does
 
-- **It wakes its receiver.** A receiver that was stopped by the user, shut down for being quiet, or not yet started is restored with its conversation and then gets the message, once. Opening or watching a run never does this.
-- **It is stored with both runs** (CM-9): one line in the sender's run's log and one in the receiver's, with one message ID; between two agents of one run, once.
-- **It names its sender**: the sender's run ID, the address that reaches the sender when there is one, and the node's name when the sender is on a peer. Unchanged.
-- **Reference files** are passed on one node; not across nodes (as today).
+- It wakes its receiver once, restoring the conversation.
+- It is stored in both runs' logs with one message ID (CM-9).
+- It names its sender.
+- Reference files pass on one node.
+
+All unchanged.
 
 ### 10.5 How the server finds the receiver
 
-| Route | Found through | Checked on the receiving side by |
-| --- | --- | --- |
-| The link (M1 … M3, M9) | The link in the sender's run (run ID, and for a team its members) or the sender's back-link | The receiver's own link or back-link: only the two ends of a link are admitted |
-| The delegating run's agents by address (§10.3 step 2) | The sender's back-link names the run; that run answers which agent stands at the address | The same back-link |
-| The Task (M4, M5, §10.3 step 3; DEC-011 = B) | The Task's record: it lists every run working on the Task with its entry agent and where it runs, and names the assigner | The Task's record again: the sender is the entry agent of a run of the receiver's open Task, or that Task's assigner |
+**The run of a delegated run's entry agent.** The Task records are held in memory. The entry whose `agentRun` names that agent run, or a team's coordinator, gives the run, its `delegatedBy` and its Tasks.
 
-No run keeps an index of other runs' agents. The link and the Task's record are the only two places a relationship is written.
+**A team member that is not the coordinator:**
+- In a running team: the team's own root answers.
+- In a stopped team: the team's own file lists its members (V-14). The alternative is a refusal that points to the coordinator, as 469 does for a closed team (its DEC-006).
 
-### 10.6 Measured on the user's data (read-only, 2026-11-10)
+**The admission:** the sender and the receiver stand in one of the relationships of §10.2. Both ends check it against the same entry.
 
-`evidence/data-model-validation/cross-run-messages-2026-11-10.txt`, `non-pair-messages-2026-11-10.txt`: 13,142 messages inside one run; 1,600 between two runs, of which 1,556 on a link (M1 … M3), 32 between two runs delegated by the same run (all 2026-10, from runs that belong to no Task: the retired collaborator feature; neither A nor B carries these), 8 of kind M5 (2026-10, 2026-11), 4 on old records without a delegator.
+No run keeps an index of other runs' agents. The Task record is the one place a relationship is written.
 
-## 11. The life of a link (revision 4, proposed)
+### 10.6 Measured (read-only, 2026-11-10; messages have not changed shape since)
 
-**Rule.** The Task's record is the lasting record of who worked on what. The link in the delegating run is the live connection: it exists while a Task that the delegated run works on is open. The delegated run's own back-link (`delegatedFrom`) is written once and never changes.
+1,601 stored messages go between two runs:
+- 1,559 between a delegating run and its delegated run (M1, M2);
+- 6 between a Task's assigner and a run of that Task it did not delegate to (M4);
+- 36 with no route: 33 between runs that have no Task record (the retired collaborator feature), 3 on old records.
 
-The example: the Project Task Manager `project_task_manager_7c8d` (**M**) and the engineering team run `software_engineering_team_0218` (**E**), Task `T1`.
+The last 36 are refused in the target, under A and under B. They are history and stay in the logs.
 
-### 11.1 Every step, as files
+## 11. The life of a delegation, as records
 
-**L1. M delegates T1 to E.** Three writes: E's own files, then the link, then the Task's record.
+Replaces revision 4's "life of a link": since 469 there is no stored link to keep alive.
 
-```text
-E's tree            "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
-                                       "delegatorAgentRunId": "project_task_manager_7c8d" }
-M's tree            "taskExecutions": [ { "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218",
-                                          "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T09:39:18.439Z" } ]
-T1's record         { "role": "assigned", "assignedBy": "project_task_manager_7c8d", "recipientAddress": "/software_engineering_team",
-                      "agentRun": { "kind": "team", "teamRunId": "software_engineering_team_0218", "coordinatorAgentRunId": "solution_designer_65a9" },
-                      "linkedAt": "2026-11-10T09:39:18.439Z", "start": "started", "closedAt": null }
-```
+| Step | Task record | Run files | Views (in memory) |
+| --- | --- | --- | --- |
+| L1 M delegates T1 to E | New `assigned` entry, `delegatedBy` = M | E's own files | M's view shows E |
+| L2 E goes quiet, later wakes | — | — | Unchanged |
+| L3 T1 closes | `closedAt` | — | E leaves M's view once stopped |
+| L4 T1 reopened, M messages E | `closedAt: null` | — | E is in M's view again |
+| L5 M gives E T2 by run ID | New `assigned` entry in T2, same `delegatedBy` | — | E stays while either Task is open |
+| L6 E's designer delegates sub-work to P | `subWork` entry, `delegatedBy.run` = E | P's own files | P in E's view, not in M's |
+| L7 A temporary Task | The same, under `ad-hoc-tasks/` | — | Until that Task closes; no timer |
+| L8 A run on a peer | The entry holds `nodeId`, `members` | The peer's own | The same rule |
 
-**L2. E goes quiet and is shut down; later a message wakes it.** No file changes. The link stays: the Task is open.
+## 12. The contract walked through for communication
 
-**L3. T1 is closed.** E is stopped. The record gets its closing time; the link is removed from M's tree; E's own file does not change.
+Revision 4's walk (W1 … W12) found three gaps, and all three are part of §10 above:
+- A delegation connects two runs, not two agents.
+- The Task route is between runs.
+- A run is found from its entry agent's ID through the Task records.
 
-```text
-T1's record         … "closedAt": "2026-11-10T15:02:11.000Z"
-M's tree            "taskExecutions": [ ]
-E's tree            "delegatedFrom": { … }            (unchanged)
-```
+What remains to check in the design is V-14: a non-entry member of a stopped team.
 
-**L4. T1 is reopened and M messages E's coordinator by its run ID.** The sender's run has no link to that run ID, so the Task's records are asked: E is a run of T1, and M assigned it. The record is reopened, the link is written again, the message is delivered and wakes E.
-
-```text
-T1's record         … "closedAt": null
-M's tree            "taskExecutions": [ { "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218",
-                                          "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T09:39:18.439Z" } ]
-```
-
-The link's `startedAt` is the run's first delegation, read from the first entry of the run in the Task's records.
-
-**L5. M gives E a second Task, T2, by E's run ID.** T2's record gets an `assigned` entry for E. If E's link is not in M's tree (every earlier Task of E is closed), it is written as in L4; otherwise nothing changes in M's tree.
-
-**L6. T1 closes while T2 is open.** E keeps working (it has another open Task); the link stays. It is removed when E's last open Task closes.
-
-**L7. E's solution designer hands sub-work of T1 to the product team P.** P's `delegatedFrom` names E; the link is in E's tree; T1's record gets a `subWork` entry for P. When T1 closes, E's and P's entries close, and both links go (M → E, E → P).
-
-**L8. A temporary Task** (a description-only delegation by a run that works on no Task): the same files with the Task's record under `ad-hoc-tasks/`. Its link stays until the temporary Task is closed, or until the delegating run is deleted (its temporary Tasks are deleted with it, as today). No timer closes it (the user's question; recommendation: none in this ticket).
-
-**L9. An old delegated run that belongs to no Task** (recorded before every delegation got a Task): there is no record that could close, so its link stays for good and it stays listed, as today.
-
-**L10. A run on a peer:** the link (with `nodeId`) follows the same rule on the delegating node. The peer's own files are the peer's.
-
-**L11. The delegating run is not in memory when the Task closes or reopens:** its tree file is edited through the same owner that loads it (the run's manager), so a loaded copy and the file never differ.
-
-### 11.2 What reads what
-
-| Question | Answered from |
-| --- | --- |
-| Which runs is this run working with now? (the tree's rows, `@`, messages on a link) | Its links |
-| May these two runs message each other, and where is the receiver? | The link or back-link; else the Task's records (§10.5) |
-| Which runs ever worked below this run? (its token total, earlier attachments) | The Task's records: the runs its agents assigned and their sub-work, together with its links (for runs of L9) |
-| Who delegated this run? | Its own `delegatedFrom` |
-
-### 11.3 Validated on the user's data (read-only, 2026-11-10)
-
-`evidence/data-model-validation/task-record-validation-2026-11-10.txt`:
-
-- **The rule applies to 181 of 196 delegated runs.** 170 have only closed records (their links go: 157 in standalone runs, 11 in team runs, 2 in org runs); 11 have an open record (links stay).
-- **15 runs have no Task record** (started 2026-08: 2, 2026-09: 3, 2026-10: 10; the time before every delegation got a Task): case L9, their links stay.
-- **Nothing is lost when a link goes:** for all 170, the delegator is in the Task's record (the assigner) or in the run's own back-link; the address and the start time are in the record and in the run's own file.
-- **"Every run below a run"** from Task records alone equals the set from today's links for 14 of 27 holding runs. For the other 13 it misses 16 runs: the 15 of L9 and 1 run that was assigned by an agent of one of those. With the kept links of L9 included, the sets are equal.
-- **Messages between two runs** (1,601 in the logs): 1,557 on a link; 6 more found through the Task's records; 38 on neither route (32 between runs of L9, the rest on old records). Those 38 are refused in the target, whichever option DEC-011 takes.
-- The manager's list today: 145 links, 134 closed. After the rule: 11.
-
-Not validated: any code. The rule is checked against the stored data only.
-
-## 12. The contract walked through for communication (2026-11-10)
-
-Each case was followed through the records of §2, §10 and §11: where the sender finds the receiver, what the receiving side checks, what is written. Setup as in §10.2 (M, E with coordinator Ec and member Em, P with Pc and Pm, I, R).
-
-| # | Case | Finds the receiver through | Receiving side admits because | Result |
+| # | Case | Found through | Admitted because | Result |
 | --- | --- | --- | --- | --- |
-| W1 | M → Ec by run ID | M's link to E; E's members from E's own tree | E's back-link names M's run | Works |
-| W2 | Ec → M by run ID; Em → M by address | E's back-link | M's link to E | Works |
-| W3 | Pm → Em by address (an agent of the delegating run that is not the delegator) | P's back-link names E's run; E answers who stands at the address | **Gap 1**: §10.5 admits "only the two ends of a link" and the link code pairs the delegated run with the delegator alone, so Em is refused, while §10.3 step 2 says every agent of the delegating run is reachable | Fixed below |
-| W4 | Em → Pc by run ID (another member of the delegating team) | E's link to P | The same gap | Fixed below |
-| W5 | P ↔ I (two runs of one Task) | T1's record | Both runs are recorded in T1 | Works (DEC-011 = B) |
-| W6 | M → Pc; Pm → M by address (the Task's assigner and a run of the Task) | T1's record; the assigner's run is the delegating run of T1's assigned run | M's run assigned T1 | Works (B) |
-| W7 | A non-entry agent as sender or receiver on the Task route (Em → Pm) | **Gap 2**: §10.2 M4 and §10.5 limit the Task route to a run's entry agent; the record lists a team by its run ID and coordinator only | — | Fixed below |
-| W8 | M → Ec after T1 closed and was reopened (the link is gone, §11 L4) | **Gap 3**: no link; the record must be found from an agent's run ID | M assigned the record | Fixed below |
-| W9 | P ↔ R (different Tasks) | — | — | Refused, as today |
-| W10 | Anyone ↔ a run of a closed Task | — | — | Refused, as today |
-| W11 | The receiver is not in memory | The checks read the receiver's stored files; then the run is loaded and its agent woken | — | Works (existing path for a message from another node) |
-| W12 | The delegating run was deleted | The back-link names a run that is not stored | — | Refused: "does not exist"; the run is listed as its own (TC-3) |
+| W1 | M → Ec (E's coordinator) by run ID | E's entry (`agentRun.coordinatorAgentRunId`) | `delegatedBy.run` = M | Works |
+| W2 | Em (an E member) → M by address | E's entry: `delegatedBy.run` = M; M's standing address | The same entry | Works |
+| W3 | Pm → Em by address | P's entry: `delegatedBy.run` = E; E answers who stands at the address | P's entry | Works |
+| W4 | Em → Pc by run ID | P's entry | P's entry names E | Works |
+| W5 | P ↔ I | T1's record | Both in T1 | Works if B |
+| W6 | Pm → M by address | T1's `assigned` entry names M | M assigned T1 | Works if B |
+| W7 | M → Ec after T1 closed and reopened | E's entry, reopened by the assigner's message | M assigned it | Works |
+| W8 | P ↔ R | — | — | Refused |
+| W9 | Anyone ↔ a closed run | — | — | Refused, except the assigner's reactivation |
+| W10 | The receiver is stopped | Its entry; then its own root is loaded and its agent woken | — | Works |
+| W11 | The delegating run was deleted | Its entries name a run that is not stored | — | Refused; the run is a run of its own (TC-3) |
 
-**Corrections to §10 that the walk requires (part of revision 4):**
-
-1. **A link connects two runs, not two agents.** Any agent of the delegating run and any agent of the delegated run may message each other: by run ID, and by address towards the delegating run. `delegatorAgentRunId` stays what it is: the agent that delegated, which the delegated run reports to by default. (Across nodes the rule stays as today: the delegator only.)
-2. **The Task route is between runs too:** any agent of a run recorded in an open Task, with any agent of another run of that Task, and with any agent of the run that assigned it.
-3. **Finding a run from an agent's run ID without a link:** the Task records, held in memory, are looked up by a run's entry agent (an agent run's ID; a team's coordinator); for another member of a team, the open Tasks' team runs are asked for their members from their own trees. No new stored attribute.
-
-**Measured against every stored message between two runs** (`evidence/data-model-validation/routes-run-level-2026-11-10.txt`, read-only): 1,601 messages; 1,559 on a link (1,557 between the delegator itself and the delegated run, 2 with another agent of the delegating run: cases W3/W4); 6 through the Task's record (all W6); 36 with no route (33 between runs that have no Task record at all, the time before every delegation got a Task; 3 others). So 1,565 of 1,601 have a route under the corrected rules.
-
-Not covered by this walk: the code. It is a check of the rules against the stored model.
+Not covered: the code. This is a check of the rules against the stored model.
