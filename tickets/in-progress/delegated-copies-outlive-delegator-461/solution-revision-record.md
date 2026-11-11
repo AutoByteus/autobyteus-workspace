@@ -25,7 +25,8 @@
 | SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Architecture review ARCH-REV-003: Fail (AR-005, narrowed) |
 | SR-020 | Design | Architecture review ARCH-REV-003 (round 3) on SR-019 | AR-005 (narrowed); residual | Design Ready, review Fail | Design Ready | DS-10; `TaskRunIndex` | Architecture review ARCH-REV-004: Fail (AR-005, narrowed again) |
 | SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Architecture review ARCH-REV-005 (round 5): Pass, no open findings; then reopened by the user (SR-022) |
-| SR-022 | Requirements (supplement) and design | The user, after the round-5 pass (implementation stopped by the user): the run keeps its own `delegatedFrom`; an in-memory structure of the relationships for communication | N/A | Requirements Approved (rev 5); design Ready, review Pass | Contract revision 6; design Ready (SR-022) | Contract P2, §2.2, §2.4, §2.6, §3, E6, §6, V-15 … V-18, §8, TC-10, TC-11, §9.2, §10.5; design | Presented to the user; review next |
+| SR-022 | Requirements (supplement) and design | The user, after the round-5 pass (implementation stopped by the user): the run keeps its own `delegatedFrom`; an in-memory structure of the relationships for communication | N/A | Requirements Approved (rev 5); design Ready, review Pass | Contract revision 6; design Ready (SR-022) | Contract P2, §2.2, §2.4, §2.6, §3, E6, §6, V-15 … V-18, §8, TC-10, TC-11, §9.2, §10.5; design | Architecture review ARCH-REV-006: Fail (AR-016, AR-017) |
+| SR-023 | Requirements (supplement: examples) and design | Architecture review ARCH-REV-006 on SR-022; the user asked for JSON of every case | AR-016, AR-017 | Design Ready, review Fail | Design Ready | Contract §2.4, §2.6, §13 (new); design readers table, ordering, DS-10, tests | Back to architecture review |
 
 ## Revision Entries
 
@@ -511,3 +512,19 @@
 - Approval impact: the user's decisions TC-10 (revised) and TC-11, as quoted
 - Classification: `Large`, `High`, unchanged
 - Next action: the user's go-ahead, then architecture review (the earlier pass covered revision 5)
+
+### SR-023 — Answers to round 6; every case as JSON in the contract
+
+- Phase and classification: Design, `Design Impact` resolved; the contract gains examples, with no change of rules (§2.4 names the peer test)
+- Triggering: `design-review-report.md`, ARCH-REV-006, `Fail` (AR-016, AR-017); the user, 2026-11-11: "show me the contract file again … for each case, like there's a JSON stuff like that for each case … this makes us able to see the exact data itself"
+- What changed:
+  - **AR-016:** at `827f1e68dc`, several readers treat the presence of `delegatedFrom` as "started by a peer". Two named tests now: `isDelegated` (present) and `isPeerStarted` (`nodeId` present). The readers table decides per reader:
+    - peer endpoint, peer channel and runtime-switch exclusion: `isPeerStarted` only;
+    - idle shutdowns: `isDelegated`;
+    - the stored message view's back-link and `storedBackLink`: removed (469's view rule needs none).
+    - Tests are added. The contract's §2.4 states the test.
+  - **AR-017:** the tree is updated synchronously inside the Task's ordered change, before it resolves, from the Task side's memory. The gate-head re-check reads the Task side's port, which is the authority. An interleaving test is added. The contract's §2.6 says the same.
+  - **The contract's new §13, "Every case as data":** exact JSON for every delegation case (D1 … D8: the Task entry, the delegated run's own file, the in-memory tree node) and for every stored shape before and after the migration (E1 … E10, and a preserved partial state). Found while writing it: an empty `collaborators: []` remains in 39 trees and is not read (DS-10 now says "non-empty").
+- Intended behavior changed: `No`
+- Classification: `Large`, `High`
+- Next action: architecture review, round 7

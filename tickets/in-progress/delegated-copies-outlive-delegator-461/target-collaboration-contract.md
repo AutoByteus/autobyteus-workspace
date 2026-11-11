@@ -164,6 +164,8 @@ A run without `delegatedFrom` was started by the user (or by an application). Wh
 
 The same `delegatedFrom` as every delegated run (§2.2), with `nodeId`, and with `coordinatingRun` renamed `delegatingRun` (0 such runs on the user's machine). Its Task record is on the other node, so on this node its own `delegatedFrom` is also what admits messages from its delegator.
 
+**"Started by a peer" is its own test: `delegatedFrom.nodeId` is present (`isPeerStarted(run)`).** The presence of `delegatedFrom` alone means only "a delegated run", local or peer. Every reader decides which of the two it needs (the design's readers table, AR-016): a peer delegator endpoint and the peer channel only for `isPeerStarted`; the idle shutdown for every delegated run.
+
 ### 2.5 The delegating run's own files: nothing about delegated runs
 
 - **Standalone agent run:** `collaboration/collaboration_tree.json` is removed (TC-8). After 469 it holds three things:
@@ -187,7 +189,7 @@ The relationships between runs, held in memory for communication and views, as t
 | Per node: its agents | A standalone run's own agent; a team run's members; an org run's agents and mounted teams' members; a peer's team from its entry's `members` | The run's own file, read once and kept; an org run is re-read on a miss (it can materialize a mounted team later) |
 | Per node: its node | `nodeId` for a peer's run | Its entry |
 
-**Built** at startup from the Task entries, which are loaded then whether or not any run runs. **Kept current** by every delegation, closure, reopen and Task deletion, in the same step as the Task change.
+**Built** at startup from the Task entries, which are loaded then whether or not any run runs. **Kept current** by every delegation, closure, reopen and Task deletion, synchronously inside the Task's ordered change: before the change resolves and before that Task's next change. The Task side's record stays the authority for "is this run's Task open"; the tree answers who is related to whom.
 
 **It answers:**
 
@@ -498,3 +500,189 @@ Setup as in §10.2:
 | W11 | One of the 15 legacy runs ↔ anyone | — | No Task | Refused (TC-9); 64 such messages in the history |
 
 Not covered: the code. This is a check of the rules against the stored model and the stored messages.
+
+## 13. Every case as data
+
+The exact files and in-memory nodes for each case, after this change (§13.1), and every stored shape before and after the migration (§13.2).
+
+The runs used in the examples:
+- `project_task_manager_7c8d`: the manager, a standalone run the user started.
+- `software_engineering_team_0218`: a delegated team run, coordinator `solution_designer_65a9`.
+- `product_team_e03d`: a delegated team run, coordinator `product_designer_1a2b`.
+- `image_maker_33f0`: a delegated agent run.
+- `marketing_team_5a00`: a team run the user started, member `copywriter_77c1`.
+- `company_org_9d00`: an org run, with the direct agent `ceo_agent_1f2e` and the mounted team `/dev_team`, member `dev_lead_4c3d`.
+- `node-b-1f0e`: a peer node.
+
+### 13.1 Delegation cases (the target)
+
+The delegating run's own files never change in any case: nothing about a delegated run is stored there (P2). Only the Task entry, the delegated run's own file, and the in-memory tree are shown.
+
+**D1: a standalone agent delegates (the manager → the engineering team, Task T1).**
+
+T1's `agent_run_resources.json`, the new entry:
+```json
+{ "role": "assigned",
+  "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+                     "delegatorAgentRunId": "project_task_manager_7c8d" },
+  "recipientAddress": "/software_engineering_team",
+  "agentRun": { "kind": "team", "teamRunId": "software_engineering_team_0218", "coordinatorAgentRunId": "solution_designer_65a9" },
+  "linkedAt": "2026-11-10T09:39:18.439Z", "start": "started", "closedAt": null }
+```
+`memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`:
+```json
+{ "createdAt": "2026-11-10T09:39:18.439Z", "archivedAt": null, "applicationBinding": null, "handoffs": [ "…" ],
+  "rootTeam": { "address": "/software_engineering_team", "teamDefinitionId": "software-engineering-team",
+                "teamRunId": "software_engineering_team_0218", "coordinatorAddress": "/software_engineering_team/solution_designer",
+                "defaultLaunchConfiguration": { "…": "…" },
+                "members": [ { "address": "/software_engineering_team/solution_designer", "agentRunId": "solution_designer_65a9", "…": "…" },
+                             { "address": "/software_engineering_team/code_reviewer", "agentRunId": "code_reviewer_m_3b10", "…": "…" } ] },
+  "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+                     "delegatorAgentRunId": "project_task_manager_7c8d" } }
+```
+The tree, in memory (not stored):
+```json
+{ "run": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
+  "parent": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+  "delegatorAgentRunId": "project_task_manager_7c8d",
+  "tasks": [ { "taskId": "T1", "role": "assigned", "open": true, "assigner": { "kind": "agent", "runId": "project_task_manager_7c8d" } } ],
+  "agents": [ "solution_designer_65a9", "code_reviewer_m_3b10" ] }
+```
+
+**D2: a member of a team run the user started delegates to an agent (copywriter → image agent, Task T3).**
+```json
+{ "role": "assigned",
+  "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "marketing_team_5a00" }, "delegatorAgentRunId": "copywriter_77c1" },
+  "recipientAddress": "/image_maker",
+  "agentRun": { "kind": "agent", "agentRunId": "image_maker_33f0" },
+  "linkedAt": "2026-11-11T08:00:00.000Z", "start": "started", "closedAt": null }
+```
+`memory/agents/image_maker_33f0/run_metadata.json`:
+```json
+{ "runId": "image_maker_33f0", "agentDefinitionId": "image-maker", "address": "/image_maker",
+  "workspaceRootPath": "/Users/me/projects/x", "memoryDir": "…/memory/agents/image_maker_33f0",
+  "llmModelIdentifier": "gpt-image", "llmConfig": null, "autoExecuteTools": true, "runtimeKind": "autobyteus",
+  "platformAgentRunId": "…", "startedAt": "2026-11-11T08:00:00.000Z",
+  "launchSource": { "origin": "catalog", "fallbacks": [] },
+  "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "marketing_team_5a00" }, "delegatorAgentRunId": "copywriter_77c1" } }
+```
+Tree node: `parent` = `marketing_team_5a00`; `tasks` = `[T3, assigned, open, assigner marketing_team_5a00]`.
+
+**D3: a direct agent of an org run delegates to a team (the CEO agent → the product team, Task T4).**
+```json
+{ "role": "assigned",
+  "delegatedFrom": { "delegatingRun": { "kind": "agent_org", "runId": "company_org_9d00" }, "delegatorAgentRunId": "ceo_agent_1f2e" },
+  "recipientAddress": "/product_team",
+  "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
+  "linkedAt": "2026-11-11T08:10:00.000Z", "start": "started", "closedAt": null }
+```
+The product team's own file carries `"delegatedFrom": { "delegatingRun": { "kind": "agent_org", "runId": "company_org_9d00" }, "delegatorAgentRunId": "ceo_agent_1f2e" }`. The org's `agent_org_run_execution_tree.json` keeps its own units only: no `taskExecutions`, no `remoteTaskExecutions`.
+
+**D4: a member of a team mounted in an org run delegates (the dev lead → an agent, Task T5).** As D3, with `"delegatorAgentRunId": "dev_lead_4c3d"` and the same `delegatingRun` (the org run: a mounted team is a part of the org run).
+
+**D5: a member of a delegated team delegates sub-work (the solution designer → the product team, part of T1).**
+```json
+{ "role": "subWork",
+  "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
+                     "delegatorAgentRunId": "solution_designer_65a9" },
+  "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
+  "linkedAt": "2026-11-10T11:00:00.000Z", "start": "started", "closedAt": null }
+```
+The product team's own file: the same `delegatedFrom` (one hop: the engineering team, not the manager).
+
+Tree node:
+```json
+{ "run": { "kind": "agent_team", "runId": "product_team_e03d" },
+  "parent": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
+  "tasks": [ { "taskId": "T1", "role": "subWork", "open": true, "assigner": { "kind": "agent", "runId": "project_task_manager_7c8d" } } ] }
+```
+So the product team can reach the engineering team (same Task) and the manager (T1's assigner), and is shown under the engineering team.
+
+**D6: a delegated agent run delegates (the image agent → an upscaler, part of its Task T3).** A `subWork` entry in T3 with `"delegatingRun": { "kind": "agent", "runId": "image_maker_33f0" }`, `"delegatorAgentRunId": "image_maker_33f0"`. The same `delegatedFrom` in the upscaler's own `run_metadata.json`.
+
+**D7: a run a peer started on this node** (node B runs it; the Task record is on node A). Its own file only, with `nodeId`:
+```json
+"delegatedFrom": { "nodeId": "node-a-77d2",
+                   "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+                   "delegatorAgentRunId": "project_task_manager_7c8d" }
+```
+It is "started by a peer" because `nodeId` is present (§2.4, `isPeerStarted`). Its node has no Task entry for it, and it is not in node B's tree.
+
+**D8: a delegation to a peer** (this node's view): the Task entry holds the peer run's node and members (§2.1, the second example). The tree node has `"node": "node-b-1f0e"` and `"agents"` from the entry's `members`.
+
+### 13.2 Existing data: every shape, before → after the migration
+
+**E1: Task entry, delegator is an agent of the top run** (375):
+```json
+before: { "role": "assigned", "assignedBy": "project_task_manager_7c8d", "recipientAddress": "/software_engineering_team",
+          "hostRoot": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "agentRun": { "…": "…" }, "linkedAt": "…", "start": "started", "closedAt": "…" }
+after:  { "role": "assigned",
+          "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" },
+          "recipientAddress": "/software_engineering_team", "agentRun": { "…": "…" }, "linkedAt": "…", "start": "started", "closedAt": "…" }
+```
+
+**E2: Task entry of a nested run** (31):
+```json
+before: { "role": "delegated", "hostRoot": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+          "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" }, "…": "…" }
+after:  { "role": "subWork",
+          "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" },
+          "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" }, "…": "…" }
+```
+The delegator comes from the run's own `taskAgent.delegatorAgentRunId`; the delegating run is the run that agent is a part of.
+
+**E3: Task entry of a peer's run** (2): `hostRoot` → `delegatedFrom`, plus the link's facts:
+```json
+before (entry): { "role": "assigned", "assignedBy": "project_task_manager_7c8d", "hostRoot": { "…": "…" }, "agentRun": { "kind": "team", "teamRunId": "research_team_77aa", "coordinatorAgentRunId": "lead_0c11" }, "…": "…" }
+before (link in the manager's collaboration_tree.json):
+                { "address": "/research_team", "teamRunId": "research_team_77aa", "nodeId": "node-b-1f0e", "coordinatorAddress": "/research_team/lead",
+                  "members": [ { "address": "/research_team/lead", "agentRunId": "lead_0c11" }, { "address": "/research_team/analyst", "agentRunId": "analyst_5d20" } ],
+                  "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "…" }
+after (entry):  { "role": "assigned", "delegatedFrom": { "…": "the manager" }, "recipientAddress": "/research_team",
+                  "agentRun": { "kind": "team", "teamRunId": "research_team_77aa", "coordinatorAgentRunId": "lead_0c11" },
+                  "nodeId": "node-b-1f0e",
+                  "members": [ { "address": "/research_team/lead", "agentRunId": "lead_0c11" }, { "address": "/research_team/analyst", "agentRunId": "analyst_5d20" } ], "…": "…" }
+```
+`coordinatorAddress` is not kept: it is the member whose run ID is `coordinatorAgentRunId`.
+
+**E4: role `delegated`** (28): `"role": "delegated"` → `"role": "subWork"`.
+
+**E6: a delegated run's own file** (196):
+```json
+before (agent): { "runId": "image_maker_33f0", "…": "…",
+                  "taskAgent": { "coordinatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "copywriter_77c1",
+                                 "address": "/image_maker", "launchSource": { "origin": "catalog", "fallbacks": [] } } }
+after (agent):  { "runId": "image_maker_33f0", "…": "…", "address": "/image_maker", "launchSource": { "origin": "catalog", "fallbacks": [] },
+                  "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "marketing_team_5a00" }, "delegatorAgentRunId": "copywriter_77c1" } }
+before (team):  { "rootTeam": { "…": "…", "taskExecutions": [] }, "taskAgent": { "coordinatingRun": { "…": "…" }, "delegatorAgentRunId": "solution_designer_65a9", "address": "/product_team" } }
+after (team):   { "rootTeam": { "…": "…" }, "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" } }
+```
+- 4 old runs have no `delegatorAgentRunId`: their `delegatedFrom` has only `delegatingRun`, today's `coordinatingRun`.
+- 1 run's delegator's run is no longer stored: `delegatingRun` = today's `coordinatingRun`, `delegatorAgentRunId` kept.
+- With `userLaunchSelection` (9): its values become the run's own launch fields; `launchSource` is dropped.
+
+**E7: a delegated run with no Task record** (15): the same as E6. No Task entry names it, so it is not in the tree. It is listed as a run of its own (TC-9), labeled with its `delegatedFrom`.
+
+**E8: the manager's `collaboration_tree.json`** (8):
+```json
+before: { "subjectKind": "agent", "createdAt": "…",
+          "host": { "address": "/project_task_manager", "agentRunId": "project_task_manager_7c8d", "agentDefinitionId": "project-task-manager" },
+          "collaborators": [],
+          "taskExecutions": [ { "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218", "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "…" },
+                              { "address": "/research_team", "teamRunId": "research_team_77aa", "nodeId": "node-b-1f0e", "…": "…" } ] }
+after:  the file is removed; run_metadata.json gains "address": "/project_task_manager"; the peer link went to its Task entry (E3);
+        collaboration/ keeps the message log
+```
+
+**E9: team and org trees**: `rootTeam.taskExecutions`, `rootOrg.taskExecutions`, the org's per-team `taskExecutions`, and `remoteTaskExecutions` are removed. An empty `collaborators: []` left by `20261015_…` (39 trees, all empty) is not read and stays.
+
+**E10: a peer-started run on this node** (0): `"delegatedFrom": { "nodeId": …, "coordinatingRun": … }` → `"delegatedFrom": { "nodeId": …, "delegatingRun": … }`.
+
+**A preserved partial state** (a predecessor's unfinished item, §5 and the design's DS-10): a tree whose `taskExecutions` still holds a full record:
+```json
+{ "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218", "platformAgentRunId": "…",
+  "members": [ { "…": "…" } ], "taskExecutions": [ { "address": "/product_team", "teamRunId": "product_team_e03d", "…": "…" } ], "…": "…" }
+```
+- The tree file stays as it is, and so do the own files of the two runs.
+- Their Task entries are converted as in E1 and E2, with the delegator read from this record.
+- The item is reported as a warning.

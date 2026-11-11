@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-461` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("Stopping an agent (e.g. the Project Task Manager) must not stop the task agents and task agent teams it delegated to")
 - Package identifier: `delegated-copies-outlive-delegator-461`
-- Current solution revision: `SR-022` (contract revision 6, after ARCH-REV-005 passed revision 5)
+- Current solution revision: `SR-023` (answers ARCH-REV-006: AR-016, AR-017; the contract gains §13, every case as JSON)
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-11
 - Classification: `task_size = Large`, `architectural_risk = High`
