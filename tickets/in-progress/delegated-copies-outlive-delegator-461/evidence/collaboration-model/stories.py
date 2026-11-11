@@ -207,13 +207,16 @@ def team():
           call='`delegate_task(recipient_address: "/architecture_reviewer")`, by `solution_designer_7a33`',
           op=lambda: w.delegate(U_SD, "/architecture_reviewer", "2026-11-01T14:00:00.000Z", ("agent", "x", None), description="…"),
           found="Its own team: use `send_message_to`. Nothing is written.", today="The same.", checked="—"),
-     dict(id="U7", title="Delegating to the team's own definition creates a new copy", cases="DL-11, DL-8",
+     dict(id="U7", title="Refused: delegating to the team's own definition", cases="DL-11",
           call='`delegate_task(recipient_address: "/software_engineering_team", description: "Review our process …")`, by `solution_designer_7a33`',
-          op=lambda: w.delegate(U_SD, "/software_engineering_team", "2026-11-01T14:30:00.000Z",
-                                ("agent_team", "software_engineering_team_9e9e", {"solution-designer": "solution_designer_9e01", "architecture-reviewer": "architecture_reviewer_9e02", "implementation-engineer": "implementation_engineer_9e03", "code-reviewer": "code_reviewer_9e04"}, "adhoc_task_91a1"),
-                                description="Review our process …"),
-          found="`/software_engineering_team` is a catalog address, not the team's own address (the team's root `/` never is). The team works on no Task, so a Task with no Project is created for the work (`ad-hoc-tasks/`).",
-          today="The same in a team the user started. (In a delegated team today it is refused; now it behaves the same.)", checked="16 description-only entries."),
+          op=lambda: w.delegate(U_SD, "/software_engineering_team", "2026-11-01T14:30:00.000Z", ("agent_team", "x", {}), description="Review our process …"),
+          found="A run never lists nor delegates to its own definition (autobyteus-455 AC-006): it would make a copy of itself, and each copy could copy itself again. The same holds in a delegated team (rooted at `/` since TC-12) and for an agent run whose stored address differs from its definition's. Nothing is written.",
+          today="The same in a team the user started. In a delegated team today the own-team refusal answers instead; now it is this refusal, the same in every team.", checked="—"),
+     dict(id="U8", title="A description-only delegation from a run that works on no Task", cases="DL-8",
+          call='`delegate_task(recipient_address: "/research_agent", description: "Collect onboarding examples …")`, by `solution_designer_7a33`',
+          op=lambda: w.delegate(U_SD, "/research_agent", "2026-11-01T14:40:00.000Z", ("agent", "research_agent_8f80", None, "adhoc_task_91a1"), description="Collect onboarding examples …"),
+          found="U works on no Task, so the work gets a Task with no Project (`ad-hoc-tasks/`), with an `assigned` entry. Its result names the new Task's ID.",
+          today="The same.", checked="16 description-only entries."),
     ]
     return w, steps
 

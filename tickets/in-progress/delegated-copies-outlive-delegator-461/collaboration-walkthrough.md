@@ -2720,7 +2720,8 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | U4 | The image agent reports back by address | B-3 |
 | U5 | The image agent hands part of its work further | DL-6 |
 | U6 | Refused: delegating to a teammate | DL-11 |
-| U7 | Delegating to the team's own definition creates a new copy | DL-11, DL-8 |
+| U7 | Refused: delegating to the team's own definition | DL-11 |
+| U8 | A description-only delegation from a run that works on no Task | DL-8 |
 
 ---
 
@@ -3218,13 +3219,31 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### U7 — Delegating to the team's own definition creates a new copy [DL-11, DL-8]
+#### U7 — Refused: delegating to the team's own definition [DL-11]
 
 **Call:** `delegate_task(recipient_address: "/software_engineering_team", description: "Review our process …")`, by `solution_designer_7a33`
 
-**Result to the caller:** `{"delegated": true, "target_kind": "team", "target_team_run_id": "software_engineering_team_9e9e", "target_team_coordinator_agent_run_id": "solution_designer_9e01", "task_id": "adhoc_task_91a1"}`
+**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_TARGET_NOT_FOUND", "message": "'/software_engineering_team' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use." }`
 
-**How:** `/software_engineering_team` is a catalog address, not the team's own address (the team's root `/` never is). The team works on no Task, so a Task with no Project is created for the work (`ad-hoc-tasks/`).
+**How:** A run never lists nor delegates to its own definition (autobyteus-455 AC-006): it would make a copy of itself, and each copy could copy itself again. The same holds in a delegated team (rooted at `/` since TC-12) and for an agent run whose stored address differs from its definition's. Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** The same in a team the user started. In a delegated team today the own-team refusal answers instead; now it is this refusal, the same in every team.
+
+**Checked on the user's data:** —
+
+---
+
+#### U8 — A description-only delegation from a run that works on no Task [DL-8]
+
+**Call:** `delegate_task(recipient_address: "/research_agent", description: "Collect onboarding examples …")`, by `solution_designer_7a33`
+
+**Result to the caller:** `{"delegated": true, "target_kind": "agent", "target_agent_run_id": "research_agent_8f80", "task_id": "adhoc_task_91a1"}`
+
+**How:** U works on no Task, so the work gets a Task with no Project (`ad-hoc-tasks/`), with an `assigned` entry. Its result names the new Task's ID.
 
 **On disk after this step:**
 
@@ -3239,13 +3258,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
         "delegatorAgentRunId": "solution_designer_7a33"
       },
-      "recipientAddress": "/software_engineering_team",
-      "agentRun": {
-        "kind": "team",
-        "teamRunId": "software_engineering_team_9e9e",
-        "coordinatorAgentRunId": "solution_designer_9e01"
-      },
-      "linkedAt": "2026-11-01T14:30:00.000Z",
+      "recipientAddress": "/research_agent",
+      "agentRun": {"kind": "agent", "agentRunId": "research_agent_8f80"},
+      "linkedAt": "2026-11-01T14:40:00.000Z",
       "start": "started",
       "closedAt": null
     }
@@ -3259,77 +3274,30 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
   "taskId": "adhoc_task_91a1",
   "projectId": null,
   "title": "…",
-  "description": "Review our process …",
+  "description": "Collect onboarding examples …",
   "status": "IN_PROGRESS",
-  "createdAt": "2026-11-01T14:30:00.000Z",
-  "updatedAt": "2026-11-01T14:30:00.000Z"
+  "createdAt": "2026-11-01T14:40:00.000Z",
+  "updatedAt": "2026-11-01T14:40:00.000Z"
 }
 ```
 
-**Created:** `memory/agent_teams/software_engineering_team_9e9e/solution_designer_9e01/` (memory folder): the agent's own memory; its first input is kept there
+**Created:** `memory/agents/research_agent_8f80/` (memory folder): the agent's own memory; its first input is kept there
 
-**Created:** `memory/agent_teams/software_engineering_team_9e9e/team_run_execution_tree.json`:
+**Created:** `memory/agents/research_agent_8f80/run_metadata.json`:
 ```json
 {
-  "schemaVersion": 1,
-  "createdAt": "2026-11-01T14:30:00.000Z",
-  "archivedAt": null,
-  "applicationBinding": null,
-  "handoffs": [
-    {"from": "/solution_designer", "to": "/architecture_reviewer", "rules": ["When the design is ready for review …"]},
-    {"from": "/architecture_reviewer", "to": "/implementation_engineer", "rules": ["When the review passes …"]},
-    {
-      "from": "/implementation_engineer",
-      "to": "/code_reviewer",
-      "rules": ["When the implementation is ready for review …"]
-    }
-  ],
-  "rootTeam": {
-    "address": "/",
-    "teamDefinitionId": "software-engineering-team",
-    "teamDefinitionName": "Software Engineering Team",
-    "teamRunId": "software_engineering_team_9e9e",
-    "coordinatorAddress": "/solution_designer",
-    "defaultLaunchConfiguration": {"…": "…"},
-    "members": [
-      {
-        "address": "/solution_designer",
-        "agentDefinitionId": "solution-designer",
-        "role": "…",
-        "description": "…",
-        "agentRunId": "solution_designer_9e01",
-        "platformAgentRunId": "…",
-        "launchConfiguration": {"…": "…"}
-      },
-      {
-        "address": "/architecture_reviewer",
-        "agentDefinitionId": "architecture-reviewer",
-        "role": "…",
-        "description": "…",
-        "agentRunId": "architecture_reviewer_9e02",
-        "platformAgentRunId": "…",
-        "launchConfiguration": {"…": "…"}
-      },
-      {
-        "address": "/implementation_engineer",
-        "agentDefinitionId": "implementation-engineer",
-        "role": "…",
-        "description": "…",
-        "agentRunId": "implementation_engineer_9e03",
-        "platformAgentRunId": "…",
-        "launchConfiguration": {"…": "…"}
-      },
-      {
-        "address": "/code_reviewer",
-        "agentDefinitionId": "code-reviewer",
-        "role": "…",
-        "description": "…",
-        "agentRunId": "code_reviewer_9e04",
-        "platformAgentRunId": "…",
-        "launchConfiguration": {"…": "…"}
-      }
-    ]
-  },
+  "runId": "research_agent_8f80",
+  "agentDefinitionId": "research-agent",
+  "address": "/research_agent",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "memoryDir": "…/memory/agents/research_agent_8f80",
+  "llmModelIdentifier": "…",
+  "llmConfig": {"…": "…"},
+  "autoExecuteTools": true,
+  "runtimeKind": "…",
+  "platformAgentRunId": "…",
+  "startedAt": "2026-11-01T14:40:00.000Z",
+  "launchSource": {"origin": "agent_default", "fallbacks": []},
   "delegatedFrom": {
     "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
     "delegatorAgentRunId": "solution_designer_7a33"
@@ -3337,21 +3305,21 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Created:** `memory/team_run_history_index.json`, new row:
+**Created:** `memory/run_history_index.json`, new row:
 ```json
 {
-  "teamRunId": "software_engineering_team_9e9e",
-  "teamDefinitionId": "software-engineering-team",
-  "teamDefinitionName": "Software Engineering Team",
+  "runId": "research_agent_8f80",
+  "agentDefinitionId": "research-agent",
+  "agentName": "Research Agent",
   "workspaceRootPath": "/Users/me/projects/x",
   "summary": "…",
-  "createdAt": "2026-11-01T14:30:00.000Z",
+  "createdAt": "2026-11-01T14:40:00.000Z",
   "archivedAt": null,
   "terminatedAt": null
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, `memory/agents/image_maker_44a1/run_metadata.json`, `memory/agents/upscaler_55b2/` (memory folder), `memory/agents/upscaler_55b2/run_metadata.json`, `memory/run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, `memory/agents/image_maker_44a1/run_metadata.json`, `memory/agents/upscaler_55b2/` (memory folder), `memory/agents/upscaler_55b2/run_metadata.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
 
 **In memory (the `DelegationTree`):**
 ```json
@@ -3391,7 +3359,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "agents": ["upscaler_55b2"]
   },
   {
-    "run": {"kind": "agent_team", "runId": "software_engineering_team_9e9e"},
+    "run": {"kind": "agent", "runId": "research_agent_8f80"},
     "parent": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
     "delegatorAgentRunId": "solution_designer_7a33",
     "tasks": [
@@ -3402,12 +3370,12 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["architecture_reviewer_9e02", "code_reviewer_9e04", "implementation_engineer_9e03", "solution_designer_9e01"]
+    "agents": ["research_agent_8f80"]
   }
 ]
 ```
 
-**Against today:** The same in a team the user started. (In a delegated team today it is refused; now it behaves the same.)
+**Against today:** The same.
 
 **Checked on the user's data:** 16 description-only entries.
 

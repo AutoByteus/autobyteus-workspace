@@ -798,3 +798,23 @@
   - `walkthrough.py --check` passes.
 - Approval: within the user's decision of SR-035 (option 1). The way members learn their addresses is less intrusive than the "told once" the user was shown, and the user is informed. The architecture review passed SR-035 in round 10 (ARCH-REV-010); this refinement is sent to the reviewer as a narrow note.
 - ARCH-REV-011 (2026-11-11): Pass, no finding. Its note is applied: the correction is checked after address step 2 (`model.py` `resolve`; contract §2.3), so it can never hide an agent of the assigning run. `walkthrough.py --check` passes.
+
+### SR-037 — A run never delegates to its own definition (the Implementation Engineer's Unclear)
+
+- Triggering: the Implementation Engineer (Unclear, 2026-11-11). The model's `delegate` gave a new copy for the sender run's own definition, and story U7 called that "the same in a team the user started". Today's code refuses it in every root:
+  - `collaborator-candidate-policy.ts` `requireEligible` ("… is this run's own definition");
+  - `CollaboratorAdmission.catalogDefinitionAt`, so `delegate_task("/software_engineering_team")` from a member of a team the user started ends as `COLLABORATION_TARGET_NOT_FOUND`, "'/software_engineering_team' is not the address of an available agent or agent team. …";
+  - an approved earlier requirement, autobyteus-455 AC-006: "a run neither lists nor delegates to its own definition".
+- The Solution Designer's error: SR-025 read today's behavior from a heuristic count (5 delegated-team calls "to their own team's definition") and wrongly took it for a new copy in a team the user starts. That error became the DL-11 change in the exception the user approved at SR-035.
+- Decision (on the data model's merits): **a run never delegates to its own definition** (option (b)). A run delegating to its own definition copies itself, and each copy could copy itself again. An agent that needs its own kind of work done does it itself, or asks a teammate. The rule holds in every run:
+  - in a delegated team, now rooted at `/`, the refusal is the own-definition refusal that teams the user starts already give;
+  - for an agent run whose stored address differs from its definition's (6 of 43), its definition's catalog address is refused the same way.
+
+  The "already in this run" admission rule is unchanged.
+- Effect on the user's approved exception (SR-035): one of its three agent-visible changes, the new copy, is withdrawn. Only the refusal's text changes inside a delegated team. Today that team answers with its own-team text; it now answers with the own-definition text every team already gives. The exception is narrower, so the user is informed.
+- Done:
+  - `model.py` refuses the own definition.
+  - U7 is now that refusal, and the new state U8 shows a description-only delegation (DL-8) from a run that works on no Task.
+  - `requirements-doc.md`'s exception and the design's test line are corrected.
+  - `walkthrough.py --check` passes.
+

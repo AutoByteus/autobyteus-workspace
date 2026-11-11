@@ -320,7 +320,13 @@ class World:
         if (skind == "agent_team" and address in team) or (prefix and (address == prefix or address.startswith(prefix + "/"))):
             raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is in your own team; you can't delegate to it. Talk with it using send_message_to.")
         def_id = next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
-        if def_id is None: raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"No agent or agent team has the address {address}.")
+        f = self.file_of(srun_key)
+        own_def = f.get("agentDefinitionId") or f.get("rootTeam", {}).get("teamDefinitionId") or f.get("rootOrg", {}).get("orgDefinitionId")
+        if def_id is None or def_id == own_def:
+            # a run never lists nor delegates to its own definition (base: collaborator-candidate-policy requireEligible;
+            # autobyteus-455 AC-006): it would copy itself, and each copy could copy itself again
+            raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"'{address}' is not the address of an available agent or agent team. "
+                          "If you have list_available_agents, it shows the addresses you can use.")
         # which Task
         if task_key and self.entries_of(snode, srun_key):
             # a run that works on a Task delegates its own work by description only (base: new-copy-work.ts:49)

@@ -454,7 +454,8 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | U4 | The image agent reports back by address | B-3 |
 | U5 | The image agent hands part of its work further | DL-6 |
 | U6 | Refused: delegating to a teammate | DL-11 |
-| U7 | Delegating to the team's own definition creates a new copy | DL-11, DL-8 |
+| U7 | Refused: delegating to the team's own definition | DL-11 |
+| U8 | A description-only delegation from a run that works on no Task | DL-8 |
 
 ### 5.3 You start an org (O)
 
