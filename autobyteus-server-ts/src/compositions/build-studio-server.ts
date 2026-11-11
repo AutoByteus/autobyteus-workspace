@@ -46,6 +46,7 @@ import { getGeneralProcessPublishedArtifactPublisher } from "../services/publish
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { composeTaskDelegation } from "./task-delegation-composition.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import {
@@ -271,6 +272,7 @@ export const buildStudioServer = async (input: {
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let releaseRemoteCollaboration: (() => void) | null = null;
+  let releaseTaskDelegation: (() => void) | null = null;
   let nodeAccess: NodeAccess | null = null;
   let releaseModelRouting: (() => void) | null = null;
   let processResourcesClosed = false;
@@ -279,6 +281,7 @@ export const buildStudioServer = async (input: {
     processResourcesClosed = true;
     await nodeAccess?.close();
     releaseRemoteCollaboration?.();
+    releaseTaskDelegation?.();
     releaseModelRouting?.();
     await closeStudioProcessResources({
       hostDefinitionServices,
@@ -369,6 +372,9 @@ export const buildStudioServer = async (input: {
       rootResolver,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
+    // autobyteus-461 DS-1: every root delegates through the one TaskDelegation (each delegated run is its own run).
+    releaseTaskDelegation = composeTaskDelegation({ tasks: taskExecutionResources, agentRuns: generalProcessRunSupervisor.agentRunService,
+      teamRuns: generalProcessRunSupervisor.teamRunService, rootResolver }).release;
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver,

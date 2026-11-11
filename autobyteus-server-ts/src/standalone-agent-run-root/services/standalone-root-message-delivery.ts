@@ -1,3 +1,4 @@
+import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
@@ -14,7 +15,8 @@ import {
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js";
+import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { buildTaskAssigneeWorkPacket, buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -171,6 +173,15 @@ export class StandaloneRootMessageDelivery {
       delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }));
   }
 
+  /** DS-1: the work packet of a local delegation that created this run: its first input (makes the run's agent ready). */
+  async acceptWorkPacket(packet: WorkPacket): Promise<AgentOperationResult> {
+    let run;
+    try { run = await this.readyHost(); }
+    catch (error) { return { accepted: false, code: "AGENT_ROOT_HOST_UNAVAILABLE", message: error instanceof Error ? error.message : String(error) }; }
+    return run.postUserMessage(buildTaskAssigneeWorkPacket({ delegator: packet.delegator, delegatorAddress: packet.delegatorAddress,
+      description: packet.description, comments: packet.comments, ...(packet.task ? { task: packet.task } : {}), referenceFiles: packet.referenceFiles }));
+  }
+
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
   deliverToRunId(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
     this.options.authorizeIdentity(input.sender.identity);
@@ -193,14 +204,12 @@ export class StandaloneRootMessageDelivery {
   async delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     if (input.node !== undefined) {
-      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context, this.options.taskExecutions);
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context);
     }
-    // DS-001: the work and its Task first, then the placement for that work, then the copy.
-    const work = await this.options.taskExecutions.prepareNewCopyWork(context, input);
-    return delegateToResolvedTarget(
-      async () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation, await this.options.taskExecutions.newCopyFolder(work)),
-      (placement) => this.options.taskExecutions.dispatchNewCopy(context, work, placement),
-    );
+    // DS-1: the new run is an ordinary run of its own; this run is its delegating run (TaskDelegation owns the order).
+    return getTaskDelegation().toNewRun({ sender: context.identity, senderRun: this.options.root,
+      delegatorAddress: reachingAddressOf(this.options.getIndex(), null, context.identity), spawn: input,
+      resolvePlacement: async (work, folder) => localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) });
   }
 
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */

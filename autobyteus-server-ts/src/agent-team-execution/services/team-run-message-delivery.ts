@@ -1,3 +1,4 @@
+import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -97,6 +98,16 @@ export class TeamRunMessageDelivery {
       || !this.options.remoteLinks.admitsWorkPacket(input.fromNodeId, input.senderAgentRunId, input.targetAgentRunId)) return Promise.resolve(notLinked);
     return post(buildTaskAssigneeWorkPacket({ delegator: { agentRunId: input.senderAgentRunId }, delegatorAddress: null,
       delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }), coordinatorAgentRunId);
+  }
+
+  /** The delegator's own address when it reaches exactly that agent run-wide (the work packet's reply line). */
+  delegatorAddressOf(identity: CollaborationMemberExecutionIdentity) { return reachingAddressOf(this.options.getIndex(), null, identity); }
+
+  /** DS-1: the work packet of a local delegation that created this team run: the coordinator's first input. */
+  acceptWorkPacket(packet: WorkPacket, coordinatorAgentRunId: string,
+    post: (message: AgentInputUserMessage, agentRunId: string) => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return post(buildTaskAssigneeWorkPacket({ delegator: packet.delegator, delegatorAddress: packet.delegatorAddress, description: packet.description,
+      comments: packet.comments, ...(packet.task ? { task: packet.task } : {}), referenceFiles: packet.referenceFiles }), coordinatorAgentRunId);
   }
 
   /** `send_message_to(address)`: the sender's own instance, then run-wide standing instances; else not found. */

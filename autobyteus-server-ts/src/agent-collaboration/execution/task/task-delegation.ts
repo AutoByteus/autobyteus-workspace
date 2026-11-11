@@ -1,0 +1,261 @@
+import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
+import { resolveRemoteRunChannel, type RemoteAgentLaunch, type RemoteRunChannel } from "../remote/remote-run-channel.js";
+import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
+import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import { DelegatedRunStartError, type DelegatedRunStarter } from "../delegation/delegated-run-starter.js";
+import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
+import { findRoutingDecisionRecorder } from "../../../model-routing/domain/routing-decision-recorder-binding.js";
+import { decisionRecordsOf, type DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
+import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../domain/agent-team-address.js";
+import { runReferenceOf, taskExecutionResourceRejectionCode, type TaskExecutionResourcePort } from "./task-execution-resource-port.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
+import { TaskDelegationError, type DelegatedCopy, type SpawnTaskInput, type TaskDelegationOutcome } from "./task-delegation-command.js";
+import { requireTaskString, validateTaskReferenceFiles, type DelegatedProjectTask } from "./task-execution-input.js";
+
+/** The work packet a new run starts with (its first input), as the delegated run's own root posts it. */
+export type WorkPacket = Readonly<{
+  delegator: CollaborationMemberExecutionIdentity;
+  /** The delegator's own address when it reaches exactly that agent, for the run's reply; null otherwise. */
+  delegatorAddress: AgentTeamAddress | null;
+  description: string;
+  comments: readonly string[];
+  task?: DelegatedProjectTask;
+  referenceFiles: readonly string[];
+}>;
+
+/** A local placement: an agent or a team on this node. */
+export type LocalDelegationPlacement = Extract<DelegationPlacement, { kind: "agent" | "agent_team" }>;
+/** A placement without `node` is a local one (a peer placement needs `node`). */
+export const localPlacement = (placement: DelegationPlacement): LocalDelegationPlacement => {
+  if (placement.kind === "remote_agent") throw new Error("A delegation without a node resolved to a peer.");
+  return placement;
+};
+
+type Join = Readonly<{ role: "assigned"; taskId: string } | { role: "assigned"; adHocTask: { description: string; referenceFiles: readonly string[] } } | { role: "subWork" }>;
+type NewRunWork = Readonly<{ description: string; comments: readonly string[]; referenceFiles: readonly string[]; task?: DelegatedProjectTask; join: Join; delegation: DelegationWork }>;
+
+const message = (error: unknown): string => error instanceof Error ? error.message : String(error);
+const firstLineOf = (description: string): string => description.split(/\r?\n/).map((line) => line.trim()).find(Boolean) ?? "";
+const workText = (description: string, comments: readonly string[]): string =>
+  comments.length ? [description, "", "Comments:", ...comments.map((comment) => `- ${comment}`)].join("\n") : description;
+/** A coded refusal from the runtime or the Task side (as opposed to an infrastructure fault), as the agent reads it. */
+const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
+  if (error instanceof TaskDelegationError || taskExecutionResourceRejectionCode(error)) return { delegated: false, message: message(error) };
+  const code = (error as { code?: unknown } | null)?.code;
+  return error instanceof Error && typeof code === "string" ? { delegated: false, message: error.message } : null;
+};
+
+/**
+ * `delegate_task`'s order for a new run (design DS-1, `TaskDelegation`), root-neutral: the standalone, team and org roots
+ * all delegate through it. Nothing hosts the new run: it is an ordinary run whose relationship is its Task entry and its
+ * own `delegatedFrom` (contract P1, P2).
+ *
+ * 1. The work and its Task: a sender whose run works on an open Task delegates sub-work of its newest open Task (CM-6),
+ *    and may not name `task_id`; any other sender assigns a saved Task, or a new Task with no Project.
+ * 2. The placement, resolved by the sender's root (refusals keep today's texts and order).
+ * 3. The run is created inert by `DelegatedRunStarter` (a prepared agent run, a team run not started), as the peer
+ *    path creates it before the link: its ID is known before the Task entry is written.
+ * 4. The Task entry (`starting`), whose `delegatedFrom` names the sender's run and the sender; the tree follows.
+ * 5. The work packet, posted by the new run's own root (its first input starts it). 6. `markStarted`.
+ * A failure after creation ends the new run; after the link it is also `markFailed`.
+ */
+export class TaskDelegation {
+  constructor(private readonly dependencies: Readonly<{
+    tasks(): TaskExecutionResourcePort;
+    tree(): Pick<DelegationTree, "currentTaskOf">;
+    starter: Pick<DelegatedRunStarter, "startAgent" | "startTeam">;
+    /** The new run's own root posts its work packet (it starts the agent, or the team's coordinator). */
+    deliverWorkPacket(run: RootExecutionIdentity, packet: WorkPacket): Promise<AgentOperationResult>;
+    /** Ends a run created for a delegation that did not go through (cancels a prepared agent run, ends a team run). */
+    discard(run: TaskExecutionReference): Promise<void>;
+    /** The peer channel; by default the process's (none where remote collaboration is not composed). */
+    channel?(): RemoteRunChannel | null;
+  }>) {}
+
+  /**
+   * `delegate_task` with `node` (DEC-111, CM-10): the run is created by the peer, which owns it; this node keeps its
+   * Task entry, with the peer's node, the team's members and the address (contract §2.1, E3; no tree link). The order
+   * is `toNewRun`'s: work, run (on the peer), Task entry, work packet (through the channel), `markStarted`. The result
+   * names the peer, and the launches the peer resolved are returned for the root's notes (REQ-009).
+   */
+  async toPeerRun(input: Readonly<{
+    sender: CollaborationMemberExecutionIdentity;
+    senderRun: RootExecutionIdentity;
+    spawn: SpawnTaskInput;
+    placement: Omit<RemoteAgentPlacement, "work">;
+  }>): Promise<Readonly<{ outcome: TaskDelegationOutcome; launches: readonly RemoteAgentLaunch[] }>> {
+    const refused = (text: string) => ({ outcome: { delegated: false as const, message: text }, launches: [] });
+    const channel = resolveRemoteRunChannel(this.dependencies.channel);
+    if (!channel) return refused(REMOTE_ROOT_REFUSAL_TEXT.off);
+    const tasks = this.dependencies.tasks();
+    let work: NewRunWork;
+    try { work = await this.prepareWork(input.senderRun, input.spawn); }
+    catch (error) { const refusal = asRefusal(error); if (refusal && !refusal.delegated) return refused(refusal.message); throw error; }
+    const { placement } = input;
+    const started = await channel.startDelegatedRun({ nodeId: placement.peer.nodeId, address: placement.address, delegatorAgentRunId: input.sender.agentRunId,
+      delegatingRun: { kind: input.senderRun.rootSubjectKind, runId: input.senderRun.rootRunId }, work: work.delegation });
+    if (!started.accepted) return refused(started.message);
+    const team = started.kind === "agent_team";
+    const coordinator = team ? started.members.find((member) => member.address === started.coordinatorAddress) : null;
+    if (team && !coordinator) return refused(`The team on ${placement.peer.name} named no coordinator among its members.`);
+    const execution: TaskExecutionReference = team ? { teamRunId: started.teamRunId } : { agentRunId: started.agentRunId };
+    const entryAgentRunId = team ? coordinator!.agentRunId : (execution as { agentRunId: string }).agentRunId;
+    let link: { taskId: string };
+    try {
+      link = await tasks.linkNewTaskExecution({
+        ...(work.join.role === "subWork" ? { role: "subWork" as const } : "taskId" in work.join
+          ? { role: "assigned" as const, taskId: work.join.taskId } : { role: "assigned" as const, adHocTask: work.join.adHocTask }),
+        recipientAddress: placement.address,
+        delegatedFrom: { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId }, execution,
+        nodeId: placement.peer.nodeId,
+        ...(team ? { teamCoordinatorAgentRunId: entryAgentRunId, members: started.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId })) } : {}),
+      } as Parameters<TaskExecutionResourcePort["linkNewTaskExecution"]>[0]);
+    } catch (error) {
+      // The peer's run, never given work, ends on its node (its idle shutdown, or the prepared run's expiry).
+      const refusal = asRefusal(error);
+      if (refusal && !refusal.delegated) return refused(refusal.message);
+      throw error;
+    }
+    const delivered = await channel.deliverMessage({ nodeId: placement.peer.nodeId, kind: "work_packet", senderAgentRunId: input.sender.agentRunId,
+      targetRoot: team ? { kind: "agent_team", runId: started.teamRunId } : { kind: "agent", runId: entryAgentRunId }, targetAgentRunId: entryAgentRunId,
+      content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString() })
+      .catch((error: unknown) => ({ accepted: false as const, code: REMOTE_REFUSAL.PEER_UNREACHABLE, message: message(error) }));
+    if (!delivered.accepted) {
+      await tasks.markFailed(execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: delivered.message ?? "The work was not delivered." });
+      return refused(delivered.message ?? "The work was not delivered.");
+    }
+    await tasks.markStarted(execution);
+    const copy: DelegatedCopy = team ? { kind: "team", teamRunId: started.teamRunId, teamCoordinatorAgentRunId: entryAgentRunId } : { kind: "agent", agentRunId: entryAgentRunId };
+    const createdTaskId = work.join.role === "assigned" && "adHocTask" in work.join ? link.taskId : null;
+    return { outcome: { delegated: true, copy, node: placement.peer.name, ...(createdTaskId ? { taskId: createdTaskId } : {}) }, launches: started.launches };
+  }
+
+  /**
+   * `delegate_task` with an address to a local agent or team. `senderRun` is the sender's own run (a standalone run, the
+   * team run of a member, the org run of an org's agent). `resolvePlacement` is the sender root's resolution.
+   */
+  async toNewRun(input: Readonly<{
+    sender: CollaborationMemberExecutionIdentity;
+    senderRun: RootExecutionIdentity;
+    delegatorAddress: AgentTeamAddress | null;
+    spawn: SpawnTaskInput;
+    resolvePlacement(work: DelegationWork, folder: string | null): Promise<LocalDelegationPlacement>;
+  }>): Promise<TaskDelegationOutcome> {
+    const tasks = this.dependencies.tasks();
+    let work: NewRunWork, placement: LocalDelegationPlacement;
+    let folder: string | null;
+    try {
+      work = await this.prepareWork(input.senderRun, input.spawn);
+      folder = work.task ? await tasks.projectFolderForNewCopy(work.task.projectId) : null;
+    } catch (error) {
+      const refusal = asRefusal(error);
+      if (refusal) return refusal;
+      throw error;
+    }
+    try {
+      placement = await input.resolvePlacement(work.delegation, folder);
+    } catch (error) {
+      // Today's refusal of the placement step: nothing at the address the sender can delegate to; anything else throws.
+      if ((error as { code?: unknown } | null)?.code === "COLLABORATION_TARGET_NOT_FOUND") return { delegated: false, message: message(error) };
+      throw error;
+    }
+    const delegatedFrom = { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId };
+    const runOrigin = { delegatingRun: { kind: input.senderRun.rootSubjectKind, runId: input.senderRun.rootRunId }, delegatorAgentRunId: input.sender.agentRunId };
+    // 3. The run, inert.
+    let copy: DelegatedCopy, execution: TaskExecutionReference;
+    try {
+      if (placement.kind === "agent") {
+        const started = await this.dependencies.starter.startAgent({ source: placement.source, address: placement.address, delegatedFrom: runOrigin });
+        copy = { kind: "agent", agentRunId: started.agentRunId };
+        execution = { agentRunId: started.agentRunId };
+      } else {
+        const started = await this.dependencies.starter.startTeam({ source: placement.source, address: placement.address, delegatedFrom: runOrigin });
+        copy = { kind: "team", teamRunId: started.teamRunId, teamCoordinatorAgentRunId: started.coordinatorAgentRunId };
+        execution = { teamRunId: started.teamRunId };
+      }
+    } catch (error) {
+      if (error instanceof DelegatedRunStartError) return { delegated: false, message: error.message };
+      throw error;
+    }
+    // 4. The Task entry: the one record of the delegation on this node.
+    let link: { taskId: string };
+    try {
+      link = await tasks.linkNewTaskExecution({
+        ...(work.join.role === "subWork" ? { role: "subWork" as const } : "taskId" in work.join
+          ? { role: "assigned" as const, taskId: work.join.taskId } : { role: "assigned" as const, adHocTask: work.join.adHocTask }),
+        recipientAddress: placement.address,
+        delegatedFrom, execution,
+        ...(copy.kind === "team" ? { teamCoordinatorAgentRunId: copy.teamCoordinatorAgentRunId } : {}),
+      } as Parameters<TaskExecutionResourcePort["linkNewTaskExecution"]>[0]);
+    } catch (error) {
+      await this.dependencies.discard(execution).catch((discardError) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(discardError) }));
+      const refusal = asRefusal(error);
+      if (refusal) return refusal;
+      throw error;
+    }
+    // 5. The work packet starts the run in its own root.
+    const run = copy.kind === "agent" ? { rootSubjectKind: "agent" as const, rootRunId: copy.agentRunId } : { rootSubjectKind: "agent_team" as const, rootRunId: copy.teamRunId };
+    let delivered: AgentOperationResult;
+    try {
+      delivered = await this.dependencies.deliverWorkPacket(run, { delegator: input.sender, delegatorAddress: input.delegatorAddress,
+        description: work.description, comments: work.comments, ...(work.task ? { task: work.task } : {}), referenceFiles: work.referenceFiles });
+    } catch (error) {
+      delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: message(error) };
+    }
+    if (!delivered.accepted) {
+      const reason = delivered.message ?? delivered.code ?? "The work was not delivered.";
+      await tasks.markFailed(execution, { code: delivered.code ?? "TASK_DISPATCH_FAILED", message: reason });
+      await this.dependencies.discard(execution).catch((error) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(error) }));
+      return { delegated: false, message: reason };
+    }
+    await tasks.markStarted(execution);
+    if (placement.routingDecision) await this.recordRoutingDecision(placement, input.sender, { ...work.delegation.task, taskId: work.delegation.task.taskId ?? link.taskId });
+    const createdTaskId = work.join.role === "assigned" && "adHocTask" in work.join ? link.taskId : null;
+    return { delegated: true, copy, ...(createdTaskId ? { taskId: createdTaskId } : {}),
+      ...(placement.launchNotes?.length ? { launchNotes: placement.launchNotes } : {}) };
+  }
+
+  /** Step 1 (DS-1): the work and how the new run joins a Task, from the sender's own run's Task work (the tree). */
+  private async prepareWork(senderRun: RootExecutionIdentity, spawn: SpawnTaskInput): Promise<NewRunWork> {
+    const tasks = this.dependencies.tasks();
+    const linked = Object.prototype.hasOwnProperty.call(spawn, "task_id");
+    const allowed = linked ? ["recipient_address", "task_id"] : ["recipient_address", "description", "reference_files"];
+    if (Object.keys(spawn).some((key) => !allowed.includes(key))) throw new TaskDelegationError("VALIDATION_ERROR", "Delegation accepts exactly one work source.");
+    const senderReference = runReferenceOf(senderRun);
+    const current = senderReference ? this.dependencies.tree().currentTaskOf(senderReference) : null;
+    if (linked) {
+      if (current) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
+      const saved = await tasks.resolveAssignment(requireTaskString(spawn.task_id, "task_id"));
+      return {
+        description: saved.description, comments: saved.comments, task: { taskKey: saved.taskReference, projectId: saved.projectId },
+        referenceFiles: await validateTaskReferenceFiles(saved.referenceFiles), join: { role: "assigned", taskId: saved.taskId },
+        delegation: { text: workText(saved.description, saved.comments), task: { taskId: saved.taskId, taskKey: saved.taskReference, projectId: saved.projectId, title: saved.title } },
+      };
+    }
+    if (current && !current.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
+    // A run no Task names could not be told apart from an unreadable Task's work: refuse before any planning.
+    if (!current) tasks.assertResourceDataReadable();
+    const description = requireTaskString(spawn.description, "description");
+    const referenceFiles = await validateTaskReferenceFiles(spawn.reference_files ?? []);
+    if (current) {
+      const identity = await tasks.describeTask(current.taskId);
+      return { description, comments: [], referenceFiles, join: { role: "subWork" }, delegation: { text: description, task: { taskId: current.taskId, ...identity } } };
+    }
+    return { description, comments: [], referenceFiles, join: { role: "assigned", adHocTask: { description, referenceFiles } },
+      delegation: { text: description, task: { taskId: null, taskKey: null, projectId: null, title: firstLineOf(description) } } };
+  }
+
+  /** The new run's decision records (REQ-012); recording never fails the delegation. */
+  private async recordRoutingDecision(placement: LocalDelegationPlacement, sender: CollaborationMemberExecutionIdentity,
+    task: DelegationWork["task"] & { taskId: string }): Promise<void> {
+    const recorder = findRoutingDecisionRecorder();
+    if (!recorder || !placement.routingDecision) return;
+    try {
+      await recorder.record(decisionRecordsOf(placement.routingDecision, { recordedAt: new Date().toISOString(), task,
+        delegatingRunId: sender.agentRunId, delegatingAgentName: getAgentTeamAddressBasename(sender.memberAddress), fromNode: null }));
+    } catch (error) {
+      console.warn(`Model Routing: the decisions of copy ${placement.routingDecision.copyAddress} could not be recorded: ${message(error)}`);
+    }
+  }
+}

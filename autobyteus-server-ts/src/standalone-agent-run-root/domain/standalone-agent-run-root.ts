@@ -362,6 +362,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
   }
 
+  /** The work packet of a local delegation that created this run (DS-1): its first input, in the gate. */
+  acceptWorkPacket(packet: import("../../agent-collaboration/execution/task/task-delegation.js").WorkPacket): Promise<AgentOperationResult> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptWorkPacket(packet); });
+  }
   /** The work packet of the peer's delegation that started this run (N-6). */
   acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteWorkPacket(input); });

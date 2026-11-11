@@ -12,7 +12,8 @@ import {
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js";
+import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -142,14 +143,12 @@ export class AgentOrgRunMessageDelivery {
   async delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     if (input.node !== undefined) {
-      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context, this.options.taskExecutions);
+      return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context);
     }
-    // DS-001: the work and its Task first, then the placement for that work, then the copy.
-    const work = await this.options.taskExecutions.prepareNewCopyWork(context, input);
-    return delegateToResolvedTarget(
-      async () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation, await this.options.taskExecutions.newCopyFolder(work)),
-      (placement) => this.options.taskExecutions.dispatchNewCopy(context, work, placement),
-    );
+    // DS-1: the new run is an ordinary run of its own; this org run is its delegating run.
+    return getTaskDelegation().toNewRun({ sender: context.identity, senderRun: context.identity.root,
+      delegatorAddress: reachingAddressOf(this.options.getIndex(), null, context.identity), spawn: input,
+      resolvePlacement: async (work, folder) => localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) });
   }
 
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */

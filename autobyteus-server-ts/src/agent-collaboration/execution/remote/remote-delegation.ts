@@ -1,3 +1,4 @@
+import { getTaskDelegation } from "../task/task-delegation-binding.js";
 import type { RemoteTaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
@@ -84,26 +85,19 @@ export class RemoteDelegation {
   }
 
   /**
-   * `delegate_task` with `node`: the peer and address, then the root's lifecycle with the input without `node`: it
-   * prepares the work, which goes with the remote placement it dispatches (DS-002). A delegated result names the peer
-   * (CM-11).
+   * `delegate_task` with `node`: the peer and address, then `TaskDelegation.toPeerRun` with the input without `node`
+   * (autobyteus-461: the run's relationship is its Task entry, not a link in this run). A delegated result names the
+   * peer (CM-11) and carries the peer's launch notes (REQ-009), as for a run on this node.
    */
-  async delegate(
-    input: SpawnTaskInput & Readonly<{ node: string }>,
-    context: TaskDelegationContext,
-    copies: RemoteCopySteps,
-  ): Promise<TaskDelegationOutcome> {
+  async delegate(input: SpawnTaskInput & Readonly<{ node: string }>, context: TaskDelegationContext): Promise<TaskDelegationOutcome> {
     const placement = await this.delegationPlacement(input);
     if (!("kind" in placement)) return placement;
     const { node: _node, ...local } = input;
-    const work = await copies.prepareNewCopyWork(context, local as SpawnTaskInput);
-    const outcome = await copies.dispatchNewCopy(context, work, remotePlacementWith(placement, work.delegation));
+    const { outcome, launches } = await getTaskDelegation().toPeerRun({ sender: context.identity, senderRun: context.identity.root,
+      spawn: local as SpawnTaskInput, placement });
     if (!outcome.delegated) return outcome;
-    // The peer's launches (REQ-009): a line per routed agent and per skipped layer, as for a copy on this node.
-    const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;
-    const notes = remoteLaunchNotes(this.startedLaunches.get(runId) ?? []);
-    this.startedLaunches.delete(runId);
-    return { ...outcome, node: placement.peer.name, ...(notes.length ? { launchNotes: notes } : {}) };
+    const notes = remoteLaunchNotes(launches);
+    return { ...outcome, ...(notes.length ? { launchNotes: notes } : {}) };
   }
 
   /**

@@ -23,7 +23,7 @@ import type { RootEventListener, RootLivePosition, RootSnapshotConnection } from
 import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
-import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js"; import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -323,12 +323,11 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       if (input.node !== undefined) {
-        return this.remoteDelegation.delegate({ ...input, node: input.node }, context, this.taskExecutions);
+        return this.remoteDelegation.delegate({ ...input, node: input.node }, context);
       }
-      // DS-001: the work and its Task first, then the placement for that work, then the copy.
-      const work = await this.taskExecutions.prepareNewCopyWork(context, input);
-      return delegateToResolvedTarget(async () => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation, await this.taskExecutions.newCopyFolder(work)), (placement) =>
-        this.taskExecutions.dispatchNewCopy(context, work, placement));
+      // DS-1: the new run is an ordinary run of its own; this team run is its delegating run.
+      return getTaskDelegation().toNewRun({ sender: context.identity, senderRun: context.identity.root, delegatorAddress: this.delivery.delegatorAddressOf(context.identity),
+        spawn: input, resolvePlacement: async (work, folder) => localPlacement(await this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) });
     });
   }
 
@@ -362,6 +361,9 @@ export class RootTeamRun {
   }
 
   /** N-6 for a Team a peer started: the delegator's work packet starts the coordinator with the task notification. */
+  acceptWorkPacket(packet: import("../../agent-collaboration/execution/task/task-delegation.js").WorkPacket): Promise<AgentOperationResult> {
+    return this.delivery.acceptWorkPacket(packet, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId));
+  }
   acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     return this.delivery.acceptRemoteWorkPacket(input, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId));
   }
