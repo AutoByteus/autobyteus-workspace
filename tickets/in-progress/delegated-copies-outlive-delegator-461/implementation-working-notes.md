@@ -230,3 +230,27 @@ OPEN (DS-8, primary behavior, in scope): a delegating run's live view of its LOC
 Plan: LocalChildObservation per root (beside remoteChildren), driven by DelegationTree changes for that run.
 Then: unit run results (pnpm test:unit started 16:37, log /tmp/ae461/unit-full.log), integration rerun,
 web codegen + web tests, handoff docs, code review handoff.
+
+## Round 2 (CRR-002 → designer SR-040, SR-041; IR-002)
+
+Done and committed: CR-461-001 (96921d79f0: closure stop re-checks isOpen at the gate close; agent + team;
+tests task-run-control.test, lifecycle, standalone root), CR-461-002 first cut (same commit; superseded by
+SR-040/041 below), CR-461-003 (c29ad8b104: WorkPacket.assertAllowed at the gate head; acceptWorkPacketIfAllowed),
+CR-461-004 (c29ad8b104: team/org token roll-up; DelegatedRunAgentsReader rename), CR-461-005 (f01c75e686: dead exports).
+
+TODO SR-040 + SR-041 (design-spec "The history poll" ~line 168, Removal Plan ~line 411):
+1. DelegationTree keeps each run's agents by run ID AND address, read once from its own file (contract §4,
+   model.py agents_with_addresses). Poll + view read addresses there (no file per request).
+2. Poll: every listed run (active or stopped): isActive; statuses = every agent of openChildrenOf(X) local
+   children with tree address and status from the child's own root (TaskRunControl.ownStatus / paired), else
+   offline; NO closedTaskExecutionsDigest field.
+3. Web refreshListedStatuses: one rule: re-read when isActive or local children (ID+address) differ, at most once
+   per distinct answer; else apply statuses; remove stopped-host digest branch; docs/workspace_layout.md; tests
+   (design list).
+4. Remove: closedTaskExecutionsDigest (+ shared fn in collaboration-stream-contracts root-execution-view-dtos.ts),
+   closed_task_executions/closedTaskExecutions (contracts, GraphQL types, runHistoryQueries, web readers),
+   task_executions_reopened / TASK_EXECUTIONS_REOPENED, delegated_launch_selections_changed /
+   DELEGATED_LAUNCH_SELECTIONS_CHANGED (editor reloads rows after Save), Memory explorer isTaskTeam,
+   startedByAgentName, TASK_AGENT, TASK_TEAM_MEMBER. File lists in the design's Removal Plan.
+Then: web codegen, web typecheck + specs, server gates, IR-002 in revision record, handoff update, send to code
+reviewer (targeted re-review). FU-008 and FU-009 are withdrawn into the ticket.
