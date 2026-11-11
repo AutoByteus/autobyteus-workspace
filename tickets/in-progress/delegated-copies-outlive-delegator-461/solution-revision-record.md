@@ -27,6 +27,7 @@
 | SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Architecture review ARCH-REV-005 (round 5): Pass, no open findings; then reopened by the user (SR-022) |
 | SR-022 | Requirements (supplement) and design | The user, after the round-5 pass (implementation stopped by the user): the run keeps its own `delegatedFrom`; an in-memory structure of the relationships for communication | N/A | Requirements Approved (rev 5); design Ready, review Pass | Contract revision 6; design Ready (SR-022) | Contract P2, §2.2, §2.4, §2.6, §3, E6, §6, V-15 … V-18, §8, TC-10, TC-11, §9.2, §10.5; design | Architecture review ARCH-REV-006: Fail (AR-016, AR-017) |
 | SR-023 | Requirements (supplement: examples) and design | Architecture review ARCH-REV-006 on SR-022; the user asked for JSON of every case | AR-016, AR-017 | Design Ready, review Fail | Design Ready | Contract §2.4, §2.6, §13 (new); design readers table, ordering, DS-10, tests | Architecture review ARCH-REV-007 (round 7): Pass, no open findings |
+| SR-024 | Requirements (supplement) and design | Implementation Engineer, Design Impact (Unclear): the shape of a delegated team run's file | N/A | Design Ready, review Pass (ARCH-REV-007) | Design Ready (SR-024) | Contract §2.2, E6 (team), §9 TC-12, V-19; design `DelegatedRunStarter`, DS-10 step 4, removal plan, tests | Narrow architecture review |
 
 ## Revision Entries
 
@@ -529,3 +530,24 @@
 - Classification: `Large`, `High`
 - Next action: architecture review, round 7
 - Review result (recorded 2026-11-11, informational): `Pass`, ARCH-REV-007, round 7, on SR-023 (contract revision 6). AR-016 and AR-017 resolved; contract §13 and the DS-10 `collaborators` detail consistent; no open findings. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
+
+### SR-024 — A delegated team run's file is the ordinary team file (TC-12)
+
+- Phase and classification: Requirements (behavior-defining supplement, the Solution Designer's decision within the direction) and Design; `Design Impact` resolved
+- Triggering: the Implementation Engineer's message of 2026-11-11 (implementation paused on this point; step 1 committed at `15574e1ba5`). A delegated team's own file has its own schema today (`task-agent-team-tree-schema.ts`): a mounted root address, no `teamDefinitionName`, member `followsTeam`, `launchSource` and `userLaunchSelection`. The ordinary team schema requires `/` (`team-run-execution-tree-schema.ts:44-57`). The contract kept the mounted address but did not say how the two shapes become one.
+- The Solution Designer's own validation gap: the contract's attribute check covered the relationship fields, not the remaining shape of a delegated team's file against the ordinary team schema. That check was the contract's job, and §2.2 now has it.
+- Measured (read-only, `evidence/data-model-validation/validate_team_run_shapes.py`, `team-run-shapes-2026-11-11.txt`):
+  - 153 of 153 delegated teams: root = delegation address (equal to `taskAgent.address`), members directly under it; `archivedAt`, `applicationBinding`, member `role` and `description` all present; `teamDefinitionName` absent in all; `followsTeam` on 770 of 770 members (10 false); member `launchSource` on 10; member `userLaunchSelection` on 8; 2 teams (2026-09, copied from an org) with a handoff to `/Teacher`, outside the team.
+  - 601 of 601 user-started teams: root `/`, members under it.
+- Decision (TC-12, the Implementation Engineer's option A, generalized): one team file shape, where the root address is the team's own address (`/` when the user started it, the delegation address when delegated, local or peer-started); members under it; handoff `to` kept as stored.
+  - The migration fills `teamDefinitionName` (definition-name port, else the definition ID).
+  - It applies any team-level selection to the members that follow the team, turns member selections into their own launch, and drops `followsTeam`.
+  - Member `launchSource` becomes an optional ordinary field.
+  - New delegated team runs are created at their delegation address, also on the peer path (today `/`).
+  - No stored address changes, so no agent is told a new name. Options B (rebase to `/`, renaming 770 agents in their own conversations) and C (two shapes) are rejected.
+- Also fixed: the contract's examples used `launchSource.origin: "catalog"`, which is not a valid origin; now `agent_default`.
+- Intended behavior changed: `No` (agents keep their addresses; the team Settings edit is TC-5's ordinary save)
+- Approval impact: the Solution Designer's decision within the user's direction (P1: a delegated run is an ordinary run; no visible change); the user is informed
+- Classification: `Large`, `High`, unchanged
+- Applied handoff-rule outcome: narrow architecture review; the Implementation Engineer is answered directly and proceeds with TC-12
+- Next action: architecture review, round 8 (TC-12 only)

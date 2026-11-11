@@ -1,0 +1,27 @@
+   151  delegated: every handoff address under the root address
+   153  delegated: every member address directly under the root address
+   153  delegated: files
+   153  delegated: has applicationBinding
+   153  delegated: has archivedAt
+     0  delegated: has rootTeam.teamDefinitionName
+   770  delegated: members
+   770  delegated: members with description
+   770  delegated: members with followsTeam
+    10  delegated: members with launchSource
+   770  delegated: members with role
+     8  delegated: members with userLaunchSelection
+     0  delegated: root address is /
+   153  delegated: taskAgent.address equals rootTeam.address
+   601  user-started: every handoff address under the root address
+   601  user-started: every member address directly under the root address
+   601  user-started: files
+   601  user-started: has applicationBinding
+   601  user-started: has archivedAt
+   601  user-started: has rootTeam.teamDefinitionName
+  3156  user-started: members
+  3156  user-started: members with description
+     0  user-started: members with followsTeam
+     0  user-started: members with launchSource
+  3156  user-started: members with role
+     0  user-started: members with userLaunchSelection
+   601  user-started: root address is /
