@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-019` (answers architecture review ARCH-REV-002: AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Current solution revision ID: `SR-020` (answers architecture review ARCH-REV-003: AR-005, narrowed). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
 - Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
@@ -69,7 +69,7 @@ Each new name says what its owner owns.
 | Name | Owner | Owns |
 | --- | --- | --- |
 | Task-side port methods `runOfAgent(agentRunId)`, `delegationOf(run)`, `assigningRunOf(taskId)`, `openRunsDelegatedFrom(run)` | The Task side (`TaskExecutionResourceService` behind `TaskExecutionResourcePort`) | The answers about the Task records. It loads them at startup and changes them on every delegation, closure and reopen, so it keeps the index. Callers only ask |
-| `TaskRunIndex` (private to `projects/services/`, only if the service file needs the split) | The Task side | The in-memory maps over the entries: by agent run (every agent of every run named by an entry or as a delegating run), by run, by delegating run, by Task. Built from the records at startup (whether or not any run runs), updated with each change. The agents of a run are read once from its own file and kept (they never change) |
+| `TaskRunIndex` (private to `projects/services/`, only if the service file needs the split) | The Task side | The in-memory maps over the entries: by agent run (every agent of every run named by an entry or as a delegating run), by run, by delegating run, by Task. Built from the records at startup (whether or not any run runs), updated with each change. The agents of a run are read once from its own file and kept. A standalone run and a team run never gain agents. An org run can materialize a mounted team later (new member run IDs), so on a lookup miss the index re-reads the own files of the org runs it knows, once per miss |
 | `TaskMessageScope` (`agent-collaboration/communication/`) | Collaboration messaging | The Task rule for a message between two runs (contract §10.2), and the route to the receiver. Named after the existing "Task-linked message scope" (`agent_communication.md`). It asks the Task side's port |
 | `TaskDelegation` (`agent-collaboration/execution/task/`) | Delegation | `delegate_task`'s order for a new run (Task entry, start, work packet, `markStarted`) and for an existing run (follow-up Task). Root-neutral: the standalone, team and org roots all delegate through it |
 | `DelegatedRunStarter` (`agent-collaboration/execution/delegation/`) | Starting a delegated run | Creating an ordinary agent run or team run for a delegation, with its resolved launch, address and `launchSource`. Extracted from the peer path's two starters, which keep only peer concerns |
@@ -164,7 +164,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 
 | Step | Source | Target | Recognized as done (retry) |
 | --- | --- | --- | --- |
-| 1 | Task entry `hostRoot`, `assignedBy` | `delegatedFrom { delegatingRun: the delegator's run (one hop, from the run's own file and the stored runs), delegatorAgentRunId }`. 375 entries take today's `hostRoot`; 31 nested entries take the delegated run the delegator is a part of | The entry has `delegatedFrom` and no `hostRoot` |
+| 1 | Task entry `hostRoot`, `assignedBy` | **Every** entry gets `delegatedFrom { delegatingRun, delegatorAgentRunId }`, one hop. The delegator is read from the run's own file; for a run without one (a released partial state), from its kept full record in the tree, through a frozen reader; else `assignedBy`. The delegating run is the stored run the delegator is a part of; when that run cannot be found, today's `hostRoot` (the only stored value). 375 entries take today's `hostRoot`; 31 nested entries take the delegated run the delegator is a part of | The entry has `delegatedFrom` and no `hostRoot` |
 | 2 | role `delegated` | `subWork` (28) | No `delegated` role left in the file |
 | 3 | Peer link in a standalone tree (2) | `nodeId`, and `members` for a team, on its Task entry | The entry has `nodeId` |
 | 4 | `taskAgent` on 196 runs | Removed. Agent run: `address` and `launchSource` → `run_metadata.json`. Team run: `rootTeam.defaultLaunchSource`. `userLaunchSelection` (9) becomes the run's own launch; the edited agent's `launchSource` is dropped (today's display shows no origin for an edited agent) | The file has no `taskAgent` |
@@ -175,11 +175,11 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 
 **Prerequisites** (`prerequisiteMigrationIds`): `20261015_collaborators_to_delegated_runs_v1`, `20261017_task_agent_own_run_v1`, `20261018_append_only_message_logs_v1` and `20261019_delegated_copy_own_file_complete_v1`. The runner holds this migration until each is `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS` (`app-data-migration-runner.ts:145-157`).
 
-**Released partial states are preserved** (AR-005). A warning success of `20261017_task_agent_own_run_v1` can leave a tree with a stored local entry that is not a link (a full record not yet reduced), or a link whose run has no own file at the standard place. That is the rule 469 keeps on save (`task-execution-tree-split.ts:191`); the review's MP-A traces how it arises. For such a tree:
-- steps 5 and 6 leave the tree file untouched;
-- steps 1 and 4 leave untouched every run named in that entry, nested runs included;
-- the item is reported as a preserved warning (`PRESERVED_UNMIGRATED_DELEGATION`), and the migration completes `SUCCEEDED_WITH_WARNINGS`;
-- current code no longer reads a standalone tree or a delegation list, so the residue is inert. It is kept, never deleted, as the Data Migration Guideline requires.
+**Released partial states are preserved** (AR-005). A warning success of `20261017_task_agent_own_run_v1` can leave a tree with a stored local entry that is not a link (a full record not yet reduced), or a link whose run has no own file at the standard place. That is the rule 469 keeps on save (`task-execution-tree-split.ts:191`); the review's MP-A traces how it arises. For such a tree (route (a) of ARCH-REV-003):
+- **Task entries are converted all the same (step 1).** Every Task file ends in the target shape, so no Task is damaged by one old entry. The record parse is strict per entry (`task-execution-resource-schema.ts:19-66`), and a damaged Task contributes nothing (`task-execution-resource-service.ts:56-63, 207-246`). A preserved run's `delegatedFrom` comes from its kept full record (step 1's row).
+- **The tree file is left untouched** (steps 5 and 6 skip it). It holds the only copy of the kept record, and current code does not read it, so it is inert residue, kept and never deleted (Data Migration Guideline).
+- **The own files of the runs named in the kept entry are left untouched** (step 4 skips them, nested runs included). Current code reads a run file tolerantly and ignores the old `taskAgent` field, so such a run with an own file is an ordinary run without a stored address (derived from its definition, contract §2.3). A run with no own file is reported missing when its row is composed, as since 469.
+- The item is reported as a preserved warning (`PRESERVED_UNMIGRATED_DELEGATION`), and the migration completes `SUCCEEDED_WITH_WARNINGS`. `20261017_task_agent_own_run_v1` is terminal at that point (the runner's prerequisite), so nothing will retry it; the kept residue is for recovery by hand only.
 
 **Order.** All Task records first (steps 1 … 3: they need each run's `taskAgent`), then the run files (step 4), then the trees (steps 5, 6), the busy-run record (7) and the history rows (8). A run whose Task record cannot be read keeps its `taskAgent` and is reported; the others go on.
 
@@ -187,13 +187,14 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 1. **Need:** a stored name changes meaning (`hostRoot` → `delegatedFrom`, one hop), a field is renamed (`delegated` → `subWork`), and facts move (peer links, address). A tolerant reader cannot do this.
 2. **Availability:** startup admission reads own files only (469 D-11). A run or Task that cannot be converted is left intact and reported; the app starts.
 3. **Source and target:** contract §5, E1 … E10, measured on the user's data; plus the released partial states above.
-4. **Disposition:** converted; already current (recognized per the table); preserved with a warning (partial states, unreadable records); never deleted.
+4. **Disposition:** converted; already current (recognized per the table); preserved with a warning (partial states, unreadable records); never deleted. **Every Task entry is converted, also the entries of preserved runs, so a Task file never mixes shapes.** Only a preserved run's own file and its tree stay as they were. A Task record that cannot be read at all is left as it was and reported; its runs keep their `taskAgent`.
 5. **Commit and retry:** one atomic write per file; each step is recognized as done by structure, so a retry continues where it stopped. No journal.
 6. **Current-only boundary:** source shapes are frozen copies in `frozen/`; current code reads only the target.
 7. **Cost:** 362 Task record files (281 KB), 196 run files, 8 tree files, the team and org trees, 2 history indexes: one pass, once.
 8. **References:** Task entry → run (by ID; checked present); peer entry → node; the address of an agent run.
 9. **Evidence:** fixtures per row of the table, per contract case E1 … E10, and per partial state:
    - a full Team record whose own file exists, with a nested record without one;
+   - a Task file with one preserved run's entry beside converted ones: after the migration every entry is in the target shape, and the Task and its other runs are usable (in the view, in messages and delegation, at closure);
    - a link without an own file;
    - an unreadable Task record;
    - an interrupted run with half the runs converted;
@@ -357,6 +358,8 @@ Nothing of the hosting machinery is kept.
 | AR-013 Logs across two roots | DS-2: the receiver's root writes its log, then the sender's root writes its own; failure outcomes as the peer path |
 | AR-014 Agents of a stopped delegating team or org run | Ownership Map: the Task side's index maps every agent of every run named as `delegatingRun`, read once from its own file |
 | AR-015 Stale requirements doc | Corrected (supplements, follow-ups, scenarios, REQ-005, REQ-009, unknowns, ASM-003) |
+| AR-005, round 3 (a preserved run's Task entry would damage its Task) | DS-10: every Task entry is converted, a preserved run's `delegatedFrom` from its kept full record; only its own file and its tree stay; checklist item 4; a fixture for a Task with a preserved run beside converted ones |
+| Round 3 residual (an org's agents can grow) | `TaskRunIndex`: on a miss, the org runs' own files are re-read |
 | Residuals | DS-1: role and owned-sender refusal from the Task side; the history row at creation. The team gate is named |
 
 ## Change Sequence

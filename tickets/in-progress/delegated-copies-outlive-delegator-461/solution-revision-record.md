@@ -22,7 +22,8 @@
 | SR-016 | Design | The user: names by ownership; finish the open items, then stop for his review | N/A | Design Draft (SR-015) | Design Draft, for the user's review | DS-1 … DS-10; V-10, V-11, V-14, U-A, U-B | Presented to the user; not sent to review |
 | SR-017 | Requirements and design | The user widens the scope: team and org runs in this ticket (TC-4 revised) | N/A | Design Draft (SR-016) | Requirements Ready for Approval; design Draft, for the user's review | REQ-001, REQ-002, REQ-010, REQ-011, BEH-002, BEH-004, AC-006, AC-012, SCN-002; TC-4 | Presented to the user; not sent to review |
 | SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | Architecture review ARCH-REV-002: Fail (AR-004, AR-005, AR-008, AR-011 … AR-015) |
-| SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Back to architecture review |
+| SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Architecture review ARCH-REV-003: Fail (AR-005, narrowed) |
+| SR-020 | Design | Architecture review ARCH-REV-003 (round 3) on SR-019 | AR-005 (narrowed); residual | Design Ready, review Fail | Design Ready | DS-10; `TaskRunIndex` | Back to architecture review |
 
 ## Revision Entries
 
@@ -451,3 +452,17 @@
 - Classification: `Large`, `High`, unchanged
 - Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
 - Next action: architecture review, round 3
+
+### SR-020 — Every Task entry is converted, also a preserved run's
+
+- Phase and classification: Design, `Design Impact` resolved
+- Triggering report: `design-review-report.md`, ARCH-REV-003, decision `Fail`, one finding
+- Triggering finding IDs: AR-005 (narrowed); one non-blocking residual
+- Prior status / current status: design Ready (SR-019), reviewed Fail → design Ready (SR-020); requirements Approved, unchanged
+- What changed:
+  - **DS-10 (AR-005):** SR-019 left a preserved run's Task entries in the old shape. A Task file is parsed strictly per entry, so one old entry would have damaged the whole Task and dropped its other runs. Route (a): step 1 converts every entry; a preserved run's `delegatedFrom` comes from its kept full record (frozen reader), else `assignedBy` and today's `hostRoot`. Only the preserved run's own file and its tree stay untouched. Checklist item 4 and a fixture (a Task with a preserved run beside converted ones) are added.
+  - **Residual:** `TaskRunIndex` re-reads the org runs' own files on a lookup miss, because an org can materialize a mounted team with new member run IDs later.
+- Intended behavior changed: `No`
+- Classification: `Large`, `High`, unchanged
+- Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
+- Next action: architecture review, round 4
