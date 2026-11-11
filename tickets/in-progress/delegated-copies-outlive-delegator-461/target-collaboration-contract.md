@@ -296,7 +296,7 @@ Message logs, memory and folders are not touched: each run already has its own (
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's, subject to V-11 | Solution Designer | Decided, to verify |
 | TC-6 | The role name for sub-work | `subWork` | The user | Decided, 2026-11-10 |
 | **TC-7** | Where the delegation is stored | **Once, in the Task record (`delegatedBy`), one hop; no back-link on the delegated run.** Revision 2 stored it on both ends. Since 469 the Task record is the index the views are built from, and a back-link would be a second copy to keep equal | The user | **Needs user** |
-| **TC-8** | The standalone run's `collaboration_tree.json` | **Remove it**: its address moves to `run_metadata.json`, and its peer links move to their Task entries | The user | **Needs user** |
+| **TC-8** | The standalone run's `collaboration_tree.json` | **Remove it**: its address moves to `run_metadata.json`, and its peer links move to their Task entries | The user | **Decided by the user, 2026-11-11**: the node information of a delegated run on a peer goes "on the task itself … I mean the agent run resource file" (the run's entry in `agent_run_resources.json`), and the file is removed |
 | **TC-9** | The 15 old delegated runs with no Task record | **Shown as ordinary runs in the run list.** They have no relationship left to show them under, and they are runs with conversations the user can open, archive or delete. Today they are hidden from the run list and appear only on the Memory page | The user | **Needs user** |
 | **DEC-011** | Which runs may message each other beyond a delegation (§10.2 M4, M5) | **B**: also runs of one Task, and a Task's assigner with every run of the Task, as today | The user | **Needs user** |
 

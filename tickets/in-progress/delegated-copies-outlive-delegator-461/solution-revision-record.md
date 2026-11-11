@@ -342,3 +342,4 @@
 - Downstream and architecture-review impact: a new design and review round after approval
 - Remaining gaps, assumptions or blocked decisions: TC-7, TC-8, TC-9, DEC-011; V-10 … V-14 in the design
 - Next action: the user's decisions
+- Update 2026-11-11 (same round): the user decided TC-8. Quote: "do you think it's better to put the node information on the task itself … If it's put there, do you think it's even possible to remove this collaboration tree on JSON on the disk completely?", and after the answer, "Yeah, I mean the … agent run resource file". The node and members of a peer's run go into its entry in `agent_run_resources.json`; the standalone `collaboration_tree.json` is removed. TC-7, TC-9 and DEC-011 remain open.
