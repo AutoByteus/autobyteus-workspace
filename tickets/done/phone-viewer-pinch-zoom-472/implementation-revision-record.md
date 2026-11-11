@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-002 Pass, SR-003) | N/A | `Initial Baseline` | SR-003, ARCH-REV-002 | Implemented; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-002 (failure-origin of API-REV-001) | CR-001 (F-1) | `Local Fix` | SR-003, CRR-001, CRR-002, API-REV-001 | Fixed; back to code review (targeted) |
+| IR-003 | Code Reviewer, `code-review-report.md` CRR-005 (failure-origin of API-REV-003, merged state, delivery re-entry DR-001) | CR-002 (F-2) | `Local Fix` | SR-004, CRR-005, API-REV-003, DR-001 | Fixed; back to code review (targeted) |
 
 ## Revision Entries
 
@@ -80,3 +81,25 @@ The current code and `implementation-handoff.md` remain authoritative.
   - U-1 (the REQ-006 wording) is the Solution Designer's; the implementation matches the reviewed design and is not changed for it.
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (Medium / High; targeted source review of CR-001, then API/E2E rechecks API-01).
 - Remaining limitations or risks: the fix is checked in Chrome (MSP-39) and by unit specs. On the Android app, API/E2E rechecks `pan2-hold` and a moving pinch at the 3× cap.
+
+### IR-003 — A live refresh of a zoomed PDF keeps its position (merged state with autobyteus-452)
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/done/phone-viewer-pinch-zoom-472/code-review-report.md` (CRR-005, failure-origin review of API-REV-003 on the merged state, delivery re-entry DR-001), round 3.
+- Triggering finding IDs: CR-002 (API/E2E F-2, API-06)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002, code review Pass (CRR-003); API-REV-003 Fail (F-2) on the merge `965a6b43c4` with autobyteus-452.
+- Current authoritative result: CR-002 fixed in `43ef1748da` (on `22f4806207`). Checks IMP-21…IMP-26 are listed in `implementation-handoff.md`.
+- Related solution revision IDs: SR-004 (REQ-006: a live refresh keeps the zoom and position)
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-005
+- Related API/E2E revision IDs: API-REV-003
+- Related delivery revision IDs: DR-001
+- Why this implementation revision is recorded: since autobyteus-452, a live refresh reloads a media file in place: a new `contentRevision`, no `isLoading`, the same `PdfViewer`. The pages are drawn again and the scroller collapses meanwhile. `onTouchLoaded` put the remembered place back only on the first load (`if (placed) return`), and `onScroll` then remembered the collapsed top. As a result the zoom stayed and the position reset to the top-left. The image path was not affected.
+- Approved behavior or requirement IDs affected: REQ-006 (SR-004), AC-005.
+- Implementation delta: `components/fileExplorer/viewers/PdfViewer.vue` uses one rule for every load of the document.
+  - A watch on `resolvedUrl` (touch mode) starts a new generation for each new source, including the first load and each in-place reload. It pauses remembering (`placed = false`) and clears a pending scroll write, so the collapse is not remembered.
+  - `onTouchLoaded` no longer short-circuits. It waits for the pages' layout; if a newer generation began meanwhile, it does nothing and the newer generation's own `loaded` puts the place back. Otherwise it puts back the zoom memory's position, which still holds the place from before the reload, and resumes remembering. This also holds when one rewrite redraws twice.
+- Changed files or areas: `PdfViewer.vue`; `components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts`. The latter gains a new case for a live refresh in place, including two redraws back to back. Its vue-pdf-embed double now emits `loaded` when its source changes, as the real component does.
+- Local validation and result: the new case fails without the fix (the position stays at the top-left) and passes with it; the remount case still passes. The rest is in IMP-21…IMP-26 (see the handoff).
+- Next recipient or routing: `/software_engineering_team/code_reviewer` (Medium / High; targeted source review of CR-002). Then API/E2E rechecks API-06 (PDF and image live refresh) and MSP-43 on the merged state.
+- Remaining limitations or risks: the Android in-app live refresh (API-06) is API/E2E's recheck. The note on the design's AR-001 premise (viewers are always remounted on a reload) is the Solution Designer's; no design change is needed for this fix.
