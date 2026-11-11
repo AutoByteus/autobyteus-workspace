@@ -18,17 +18,18 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-ope
 
 The desktop opens a node file the way the phone does, through one shared loader. A remote run's path names the node it is on, on both clients. The phone shows text files of any size.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 fixes CR-001…CR-003 of CRR-001; IR-001 was the initial round)
 - Implementation revision record: `tickets/in-progress/desktop-node-file-open-471/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: CR-001, CR-002, CR-003 (API/E2E F-1, F-2, F-3)
 - Note: IMP-01…IMP-05 ran on `7917df2a15`; `c686acfaff` and `2e2b9ed436` change only probe files, so those results still hold.
-- Commits: `12ccdcc116` (shared loader), `e04b875f78` (Files panel store routing), `a64f407954` (link handler, remote-run message, phone limit), `7917df2a15` (probes, docs), `c686acfaff` (probe case renumbered, assumption 6), `2e2b9ed436` (MSP-37 assertion fix). Code under test: `2e2b9ed436`. The handoff and evidence are in the docs commit that follows it.
+- IR-002 commit: `b0f3d1c42b` (code under test for IMP-11…IMP-16).
+- IR-001 commits: `12ccdcc116` (shared loader), `e04b875f78` (Files panel store routing), `a64f407954` (link handler, remote-run message, phone limit), `7917df2a15` (probes, docs), `c686acfaff` (probe case renumbered, assumption 6), `2e2b9ed436` (MSP-37 assertion fix). Code under test: `2e2b9ed436`. The handoff and evidence are in the docs commit that follows it.
 
 ## Routing Classification (Mandatory)
 
@@ -45,8 +46,8 @@ The desktop opens a node file the way the phone does, through one shared loader.
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 (REQ-001, REQ-002) | Desktop: a path outside the run's folder opens read-only in the Files panel; refusals give plain reasons | `useEventMonitorFilePreview.openPath` → `locator ??= { kind: 'absolute' }` → `fileExplorerStore.openFilePreview(abs, workspaceId, { accessIntent: read-only })` → `_openFileWithMode` → `loadRouteOf` = `node-file` → `_loadNodeFile` → `loadNodeFile` (`utils/fileExplorer/nodeFileContent.ts`) → text content / object URL / `node-file-preview:<refusal>` → `FileExplorerTabs` words it (`nodeFilePreviewErrorMessageKey`) | Done. Unit: `fileExplorerNodeRouting.spec.ts`, `FileExplorerTabs.spec.ts`, `WorkspaceToolShell.spec.ts`, `useEventMonitorFilePreview.spec.ts`. Browser: MSP-37 |
-| BEH-004 (REQ-003) | "This file is on {{node}}, where this run runs." on desktop and phone; host-workspace text removed | Desktop: the remote-run check (`useRemoteRunsStore().runOfAgentRun`) runs first in `openPath` → `onOtherNode(nodeName)`. Phone: `openMobileFilePath` returns `{ status: 'unavailable', nodeName }`; `useEventMonitorFilePreview.openMobilePath` and `useMobileAttachmentOpening` word it. Key `…MarkdownRenderer.file_on_other_node` (en, zh-CN); `file_available_on_host` removed | Done. Unit: `useEventMonitorFilePreview(.mobileBoundary).spec.ts`, `useMobileAttachmentOpening.spec.ts`. Phone: MSP-29. `grep` shows no "host workspace" UI text (the only matches are the Docker launcher's "host workspaces" volumes text, which is unrelated) |
+| BEH-001 (REQ-001, REQ-002) | Desktop: a path outside the run's folder opens read-only in the Files panel; refusals give plain reasons | `useEventMonitorFilePreview.openPath` → `locator ??= { kind: 'absolute' }` → `fileExplorerStore.openFilePreview(abs, workspaceId, { accessIntent: read-only })` → `_openFileWithMode` → `loadRouteOf` = `node-file` → `_loadNodeFile` → `loadNodeFile` (`utils/fileExplorer/nodeFileContent.ts`) → text content / object URL / `node-file-preview:<refusal>` → `FileExplorerTabs` words it (`nodeFilePreviewErrorMessageKey`) | Done. Unit: `fileExplorerNodeRouting.spec.ts`, `FileExplorerTabs.spec.ts`, `WorkspaceToolShell.spec.ts`, `useEventMonitorFilePreview.spec.ts`. Browser: MSP-37. IR-002 (CR-003): every node file is read-only whoever opens it: the store gives the `node-file` route a read-only intent (`source: 'node-file'`) when the caller gave none (`fileExplorerNodeRouting.spec.ts`) |
+| BEH-004 (REQ-003) | "This file is on {{node}}, where this run runs." on desktop and phone, for links and path attachments; host-workspace text removed | One decision, `remoteRunFileNode(agentRunId)` (`composables/remoteRuns/remoteRunFile.ts`). Links (both clients): `AgentEventMonitor` → `useEventMonitorFilePreview.openPath`, which checks the conversation's run (`originRunId`) first; the run view no longer answers links itself (IR-002, CR-001; `remote.filePath` removed). Desktop path attachments: `UserMessage` asks the run view (`useRunViewFiles().refuseRemoteRunPath()`, provided by `AgentEventMonitor`), which shows the message on its file status line and reads nothing (IR-002, CR-002). Phone attachments: `useMobileAttachmentOpening` → `openMobileFilePath` (same decision). Key `…MarkdownRenderer.file_on_other_node` (en, zh-CN) | Done. Real-caller spec: `AgentEventMonitor.remoteRunFiles.spec.ts` (desktop link, desktop attachment, phone link; a local run's attachment opens as before). Unit: `useEventMonitorFilePreview(.mobileBoundary).spec.ts`, `useMobileAttachmentOpening.spec.ts`. Phone probe: MSP-29 |
 | BEH-005 (REQ-004) | Phone shows a text file of any size | `MobileFileViewer.vue`: `MOBILE_FILE_VIEW_MAX_CHARS`, `isTooLarge` and the "too large" line removed | Done. Unit: `MobileFileViewer.spec.ts` (130,004 characters, last line shown). Phone: MSP-16 (a Markdown file over 130,000 characters, last line on screen) |
 | BEH-002 (preserved) | Embedded window opens local files | `loadRouteOf` = `local` only in the embedded window with the trusted capability, as before | Unchanged; `useEventMonitorFilePreview.spec.ts` and `fileExplorerNodeRouting.spec.ts` keep their embedded cases |
 | BEH-003 (preserved) | Phone opens node files | `useMobileNodeFile` now calls the shared loader; same refusal messages and object-URL lifetime | `useMobileNodeFile.spec.ts` unchanged in behavior; MSP-16 |
@@ -63,6 +64,7 @@ All under `autobyteus-web/`:
 - `stores/fileExplorerContentActions.ts`: `loadRouteOf`, `_loadNodeFile`, the object-URL set and its release in `closeFile`, `closePathScopedFiles`, `closeAllFiles`, `closeOtherFiles` and on reload.
 - `components/fileExplorer/FileExplorerTabs.vue`: words node-file refusals.
 - `composables/useEventMonitorFilePreview.ts`, `composables/mobile/mobileFileOpening.ts`, `composables/mobile/useMobileAttachmentOpening.ts`: node-file fallback and the remote-run message.
+- IR-002: `composables/remoteRuns/remoteRunFile.ts` (new: `remoteRunFileNode`, `FILE_ON_OTHER_NODE_MESSAGE_KEY`, `RUN_VIEW_FILES_KEY`, `useRunViewFiles`), `components/workspace/agent/AgentEventMonitor.vue` (no own remote branch; passes `originRunId`; provides the run-view file status), `components/conversation/UserMessage.vue` (desktop path attachments ask the run view), `stores/fileExplorerState.ts` (`source: 'node-file'`), `localization/messages/{en,zh-CN}/remoteRuns.ts` (`remote.filePath` removed). New spec `components/workspace/agent/__tests__/AgentEventMonitor.remoteRunFiles.spec.ts`.
 - `components/mobile/views/MobileFileViewer.vue`: no limit.
 - `localization/messages/{en,zh-CN}/workspace.ts`.
 - Specs: `utils/fileExplorer/__tests__/nodeFileContent.spec.ts` (new), `stores/__tests__/fileExplorerNodeRouting.spec.ts`, `components/fileExplorer/__tests__/FileExplorerTabs.spec.ts`, `components/layout/__tests__/WorkspaceToolShell.spec.ts`, `composables/__tests__/useEventMonitorFilePreview{,.mobileBoundary}.spec.ts`, `composables/mobile/__tests__/{useMobileNodeFile,useMobileAttachmentOpening}.spec.ts`, `components/mobile/views/__tests__/MobileFileViewer.spec.ts`.
@@ -101,7 +103,7 @@ All under `autobyteus-web/`:
 - Dead code found elsewhere, added to `follow-ups.md`: None
 - Shared structures remain tight: `Yes` (`MobileFileOpenOutcome.unavailable` gains only `nodeName`; the loader's result is a tagged union)
 - Canonical shared design guidance was reapplied during implementation: `Yes`
-- Changed source implementation files stayed within size guardrails: `Yes`. Effective non-empty lines: `fileExplorerContentActions.ts` 414, `FileExplorerTabs.vue` 359, `useEventMonitorFilePreview.ts` 132, `useMobileNodeFile.ts` 76, `nodeFileContent.ts` 55, `MobileFileViewer.vue` 52; the largest change is +101/−8 in `fileExplorerContentActions.ts`.
+- Changed source implementation files stayed within size guardrails: `Yes`. After IR-002: `fileExplorerContentActions.ts` 419, `UserMessage.vue` 162, `useEventMonitorFilePreview.ts` 134, `AgentEventMonitor.vue` 112 (script and template), `remoteRunFile.ts` 21. Effective non-empty lines: `fileExplorerContentActions.ts` 414, `FileExplorerTabs.vue` 359, `useEventMonitorFilePreview.ts` 132, `useMobileNodeFile.ts` 76, `nodeFileContent.ts` 55, `MobileFileViewer.vue` 52; the largest change is +101/−8 in `fileExplorerContentActions.ts`.
 - Notes: none.
 
 ## Persisted Data Transition Check (When Applicable)
@@ -134,6 +136,18 @@ Evidence: `tickets/in-progress/desktop-node-file-open-471/evidence/implementatio
 | IMP-06b | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<tmp> --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37` | `2e2b9ed436` | clean env (`env -i`, temp HOME); test-owned host nodes alpha, epsilon, zeta; headless Chrome | phone viewer and node-file opening (MSP-16), attachments (MSP-28), remote-run message (MSP-29), reopen (MSP-30, MSP-31), desktop Files panel node files in a non-embedded window (MSP-37) | AC-001, AC-002, AC-003, AC-004, AC-005 | Pass | `IMP-06b-mobile-shell-probe.log`, `IMP-06b-mobile-shell-probe-cases.json`, `IMP-06b-MSP-37-{markdown,image,missing,folder}.png`, `IMP-06b-MSP-16-outside-big-end.png`, `IMP-06b-MSP-29-remote-path-notice.png` | `mobile-shell probe: Pass`, `"unknownBrowserErrors": 0`; MSP-37 `nodeFileRequests` 200/200/404/400 with alerts `…This file was not found on the computer.` / `…This path is a folder, not a file.`; MSP-16 `"bigChars": 130061`, `"lastLineVisible": true`, `"tooLarge": false`; MSP-29 `"toast": "This file is on zeta-node, where this run runs."` |
 | IMP-07 | `git grep -n -i -E 'host workspace\|file_available_on_host\|MOBILE_FILE_VIEW_MAX_CHARS\|isTooLarge\|mobile-file-preview-large\|too large'` over `autobyteus-web` and its docs | `2e2b9ed436` | git | removed text and key | AC-003, AC-004 | Pass | `IMP-07-removed-text-grep.log` | docs: no match. Code: only negative assertions in the 471 specs and probes, and unrelated text (the upload "File too large.", the highlight-cache comments, the Docker "host workspaces" volumes) |
 
+IR-002 rows (code under test `b0f3d1c42b`; they supersede IMP-01…IMP-06b for the current code):
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-10 | Real-caller and store specs without the fix: `git stash` of the production files, then `vitest run` on `AgentEventMonitor.remoteRunFiles.spec.ts` and `fileExplorerNodeRouting.spec.ts`; stash popped | `b0f3d1c42b` minus its production change | shell | the run view, user message, link opener and store | CR-001, CR-002, CR-003 | Fail without the fix, as expected; pass with it (IMP-12) | (observed; not saved) | without the fix: run view `Tests  3 failed \| 1 passed (4)`, store `Tests  2 failed \| 10 passed (12)` |
+| IMP-11 | `pnpm -C autobyteus-web typecheck` | `b0f3d1c42b` | shell | web app, Electron main, scripts | all | Pass | `IMP-11-web-typecheck.log` | `production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)`, `PASS` |
+| IMP-12 | `pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run` | `b0f3d1c42b` | shell | every web spec, incl. the new real-caller spec | AC-001…AC-005 | Pass | `IMP-12-web-nuxt-tests-excerpt.log` (full log not committed) | `Test Files  751 passed (751)`, `Tests  5680 passed (5680)` |
+| IMP-13 | web guards and `audit:localization-literals` | `b0f3d1c42b` | shell | boundaries, locales (`remote.filePath` removed) | AC-003 | Pass | `IMP-13-web-guards.log` | `[audit:localization-literals] Passed with zero unresolved findings.` |
+| IMP-14 | `pnpm -C autobyteus-server-ts build` | `b0f3d1c42b` | shell | server build for the probe (no server change) | — | Pass | `IMP-14-server-build.log` | `Sanitized built-module/bootstrap smoke passed without DATABASE_URL.` |
+| IMP-15 | `pnpm -C autobyteus-web build:mobile-web` | `b0f3d1c42b` | shell | the phone bundle with IR-002 | AC-003, AC-004 | Pass | `IMP-15-mobile-web-build.log` | `Mobile web assets written to …/dist-mobile/public` |
+| IMP-16 | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<tmp> --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37` | `b0f3d1c42b` | clean env (`env -i`, temp HOME); test-owned host nodes; headless Chrome | as IMP-06b, on the IR-002 code | AC-001…AC-005 | Pass | `IMP-16-mobile-shell-probe.log`, `IMP-16-mobile-shell-probe-cases.json` | `mobile-shell probe: Pass`, `"unknownBrowserErrors": 0`, MSP-29 `"toast": "This file is on zeta-node, where this run runs."`, MSP-16 `"lastLineVisible": true` |
+
 - Not run, and why:
   - AC-001 with a real Electron window on a test-owned Docker node: left to API/E2E. It needs an isolated desktop instance, a test-owned node container running this worktree's server, pairing, and a run on the Docker node. MSP-37 runs the same Files panel path (non-embedded window, owner credential on its requests, node-file route) in a browser window on a host node.
   - `test:e2e:event-monitor-file-preview` (the packaged Electron embedded-window regression, AC-005): only its negative text check changed, and its embedded-window path is unchanged and covered by unit specs. Left to API/E2E as the AC-005 regression run.
@@ -160,7 +174,8 @@ Evidence: `tickets/in-progress/desktop-node-file-open-471/evidence/implementatio
 - Scope: only the files in the design's mapping, plus their specs, probes and docs. No server code changed.
 - Single owners: one loader (`nodeFileContent.ts`), one load-route rule (`loadRouteOf`), and one place that words node-file refusals in each client.
 - Lifetimes: every object URL the store makes is in `nodeFileObjectUrls` and is released on close, close-all, close-others, deleted-scope close, reload, and when a later load replaces it. A load that finishes after its file closed creates no URL.
-- Read-only: every node file the link handler opens has `accessIntent.readOnly: true`, and the route is GET-only (436).
+- Read-only: every node file is read-only whoever opens it (IR-002: the store's `node-file` route sets the intent when a caller gives none), and the route is GET-only (436).
+- Real callers (IR-002): the run view (`AgentEventMonitor`) and the message attachment chips (`UserMessage`) are now exercised together with the link opener in `AgentEventMonitor.remoteRunFiles.spec.ts`. The specs tested the composable and store in isolation, which is how CR-001…CR-003 escaped IR-001.
 - No secrets or file contents are logged by the new code. The store's existing `console.log` of the initial file state carries no content.
 - Removed text: `grep -ri "host workspace\|file_available_on_host\|too large"` over `autobyteus-web` (outside unrelated upload/cache comments and the Docker launcher's "host workspaces" text) matches only the new specs' negative assertions.
 
@@ -168,7 +183,7 @@ Evidence: `tickets/in-progress/desktop-node-file-open-471/evidence/implementatio
 
 1. AC-001 in Electron: an isolated desktop instance (`pnpm --silent isolated-app start --build`) plus a test-owned node container (TESTING.md § Docker server nodes) running this worktree's server. In a window on the Docker node, a run whose conversation links a Markdown file and a PNG outside its folder (inside the container), plus a missing path and a folder. Expected: both open read-only in the Files panel; the reasons read "This file was not found on the computer." and "This path is a folder, not a file."; no "host workspace" text.
 2. AC-002 unreadable file: a file the node's user cannot read gives "The file preview could not be opened." (unit-covered; the server returns `NODE_FILE_UNREADABLE`).
-3. AC-003 on the desktop in a real window: a delegated run on another node; a click on its path shows "This file is on <node>, where this run runs." in the status line.
+3. AC-003 on the desktop in a real window (IR-002 rechecks: API-01 D3, D5–D9, API-02): a delegated run on another node; a click on its path link and on its path attachment each shows "This file is on <node>, where this run runs." in the status line.
 4. Object-URL lifetime: open, close and reload several node images and PDFs; no growth in blob URLs.
 5. AC-005: `pnpm -C autobyteus-web test:e2e:event-monitor-file-preview` (embedded window, local files).
 
