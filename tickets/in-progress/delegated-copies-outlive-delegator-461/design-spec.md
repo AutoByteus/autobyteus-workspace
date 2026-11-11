@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-021` (answers architecture review ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
-- Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
+- Current solution revision ID: `SR-022` (contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationTree`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10 (revised in revision 6), TC-11, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
 - Design status: `Ready`.
@@ -21,7 +21,8 @@ The second is the Stop bug and is wrong in the domain: you delegate a Task to so
 
 - **Every run is its own run**, with its own root, and its own start, Stop, idle shutdown and wake. Its life is bound to its Task, never to the run that delegated it (contract P6).
 - **The Task record holds the delegation** (`delegatedFrom`, one hop). It decides which runs a run shows under it, and who may message whom (contract §10).
-- **The index lives with the Task records.** The Task side owns them, builds the index in memory at startup, and keeps it current. It owns no run.
+- **The relationships live in an in-memory `DelegationTree`**, owned by collaboration. It is built from the Task records at startup and kept current with every Task change. It answers who delegated whom, who can reach whom, and which run an agent is in. It owns no run (contract §2.6, TC-11).
+- **A delegated run carries its own `delegatedFrom`** (its origin, written once), and each of its Task entries carries the same value as the assignment (contract P2).
 - **A root contains its own run only.**
 
 The target shape already exists: a run a peer delegates to this node is an ordinary run with its own root, idle shutdown and wake. Local delegation adopts that shape and its code.
@@ -68,9 +69,9 @@ Each new name says what its owner owns.
 
 | Name | Owner | Owns |
 | --- | --- | --- |
-| Task-side port methods `runOfAgent(agentRunId)`, `delegationOf(run)`, `assigningRunOf(taskId)`, `openRunsDelegatedFrom(run)` | The Task side (`TaskExecutionResourceService` behind `TaskExecutionResourcePort`) | The answers about the Task records. It loads them at startup and changes them on every delegation, closure and reopen, so it keeps the index. Callers only ask |
-| `TaskRunIndex` (private to `projects/services/`, only if the service file needs the split) | The Task side | The in-memory maps over the entries: by agent run (every agent of every run named by an entry or as a delegating run), by run, by delegating run, by Task. Built from the records at startup (whether or not any run runs), updated with each change. The agents of a run are read once from its own file and kept. A standalone run and a team run never gain agents. An org run can materialize a mounted team later (new member run IDs), so on a lookup miss the index re-reads the own files of the org runs it knows, once per miss |
-| `TaskMessageScope` (`agent-collaboration/communication/`) | Collaboration messaging | The Task rule for a message between two runs (contract §10.2), and the route to the receiver. Named after the existing "Task-linked message scope" (`agent_communication.md`). It asks the Task side's port |
+| `DelegationTree` (`agent-collaboration/delegation/delegation-tree.ts`) | Collaboration | The relationships between runs, in memory (contract §2.6): nodes, one-hop edges, each node's Tasks and agents, each Task's assigner. Built at startup from the Task records (through `TaskExecutionResourcePort`); kept current by the Task side's change notice for one Task (`entriesChanged(taskId)`, a notification), on which it re-reads that Task's entries. Agents are read once per run from its own file; an org run is re-read on a miss. Questions: `runOfAgent`, `parentOf`, `openChildrenOf`, `assignerOf(task)`, `tasksOf(run)`, `subtreeOf(run)`, and **`canMessage(runA, runB)`**: the communication rule (contract §10.2) is a property of the tree, so the tree owns it. The same tree feeds the views (DS-8), so what the user sees and who can talk come from one structure. It owns no run |
+| The Task side (`TaskExecutionResourceService`) | Task records | It owns the records and their order of change. It keeps no relationship maps; it notifies `DelegationTree` after each committed change of a Task's entries |
+| `CrossRunMessageDelivery` (`agent-collaboration/communication/`) | Delivering a message between two runs | The order of one message between two runs: find the receiver's run and ask `canMessage` (`DelegationTree`), restore the receiver, the receiver's accept and log, then the sender's log. It owns no rule of its own: the rule is the tree's |
 | `TaskDelegation` (`agent-collaboration/execution/task/`) | Delegation | `delegate_task`'s order for a new run (Task entry, start, work packet, `markStarted`) and for an existing run (follow-up Task). Root-neutral: the standalone, team and org roots all delegate through it |
 | `DelegatedRunStarter` (`agent-collaboration/execution/delegation/`) | Starting a delegated run | Creating an ordinary agent run or team run for a delegation, with its resolved launch, address and `launchSource`. Extracted from the peer path's two starters, which keep only peer concerns |
 | `DelegatedRunIdleShutdown`, `DelegatedTeamIdleShutdown` | The delegated run's own root | Its idle schedule. Today's `StandaloneHostIdleShutdown` and `RemoteTeamIdleShutdown`, renamed because they now serve every delegated run, not only peer-started ones |
@@ -80,7 +81,7 @@ Each new name says what its owner owns.
 | ID | Scope | Start → End | Governing owner |
 | --- | --- | --- | --- |
 | DS-1 | Primary | `delegate_task` by an agent of any run (standalone, team, org) → a new run working on the Task | `TaskDelegation` |
-| DS-2 | Primary | `send_message_to(run ID)` to another run → delivered, receiver woken | `GlobalAgentRunMessageRouter` with `TaskMessageScope` |
+| DS-2 | Primary | `send_message_to(run ID)` to another run → delivered, receiver woken | `GlobalAgentRunMessageRouter` with `CrossRunMessageDelivery` |
 | DS-3 | Primary | `send_message_to(address)` beyond the sender's own run → delivered | The sender's root resolution, then DS-2 |
 | DS-4 | Primary | The user stops a run → that run only | The run's own root |
 | DS-5 | Primary | Task DONE/CANCELLED (or deleted) → each run of it stops | Task side → each run's own root |
@@ -93,11 +94,11 @@ Each new name says what its owner owns.
 
 ### DS-1 Delegate to a new run
 
-`agent: delegate_task(address) → the sender's root, whatever its kind: StandaloneAgentRunRoot, RootTeamRun or AgentOrgRun (its gate) → TaskDelegation.toNewRun → Task side: linkNewTaskExecution (entry: delegatedFrom = {this run, the delegator}, start "starting") → DelegatedRunStarter: prepare an ordinary standalone run (agent) or create a top-level team run (team) → the new run's root registered in ActiveCollaborationRootDirectory → the work packet delivered to its entry agent (DS-2's delivery step, which starts it) → Task side: markStarted → tool result, same text as today`
+`agent: delegate_task(address) → the sender's root, whatever its kind: StandaloneAgentRunRoot, RootTeamRun or AgentOrgRun (its gate) → TaskDelegation.toNewRun → Task side: linkNewTaskExecution (entry: delegatedFrom = {this run, the delegator}, start "starting"; then it notifies DelegationTree) → DelegatedRunStarter: prepare an ordinary standalone run (agent) or create a top-level team run (team), with the same delegatedFrom in the run's own file → the new run's root registered in ActiveCollaborationRootDirectory → the work packet delivered to its entry agent (DS-2's delivery step, which starts it) → Task side: markStarted → tool result, same text as today`
 
 - Refusals keep today's texts and order: CM-1 (never inside one's own team), the Project folder, the target, the launch.
 - `delegatedFrom.delegatingRun` is the sender's own run: for a member of a team run, that team run; for an agent of an org run, that org run (contract §2.1, cases D1 … D6).
-- **Role and refusals, from the Task side:** `runOfAgent(sender)` and `delegationOf(that run)`. If the sender's run has an open entry, the new run is `subWork` of the sender's newest open Task (CM-6), and `task_id` is refused with today's `TASK_AGENT_RESOURCE_OWNED_SENDER` text. Otherwise the new run is `assigned`: to the saved Task named by `task_id`, or to a new Task with no Project for described work.
+- **Role and refusals, from the `DelegationTree`:** `runOfAgent(sender)` and `tasksOf(that run)`. If the sender's run has an open entry, the new run is `subWork` of the sender's newest open Task (CM-6), and `task_id` is refused with today's `TASK_AGENT_RESOURCE_OWNED_SENDER` text. Otherwise the new run is `assigned`: to the saved Task named by `task_id`, or to a new Task with no Project for described work.
 - **History row:** `DelegatedRunStarter` writes the new run's history row when it creates the run, as for any new run (DS-11).
 - A failure after the entry was written: `markFailed`, and the new run is terminated before the answer. That is today's order.
 - The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §6, "Delete a Task").
@@ -106,8 +107,8 @@ Each new name says what its owner owns.
 
 `sender's agent: send_message_to(run ID) → GlobalAgentRunMessageRouter:`
 1. **The same run:** the sender's own root, as today (teammates of a team run, agents of an org run).
-2. **Another run:** `TaskMessageScope.route(sender, target)`:
-   - `runOfAgent(target)` finds the run.
+2. **Another run:** `CrossRunMessageDelivery.route(sender, target)`:
+   - `DelegationTree.runOfAgent(target)` finds the run.
    - Admit by contract §10.2: same open Task, or the assigner's run. A closed Task is refused, except the assigner's reactivation (DS-6).
    - `CollaborationRootResolver.resolveOrRestore(that run)`, then the receiver's `root.acceptFromRun` in its gate. The gate re-checks the Task rule at its head, writes the **receiver's** log, and wakes and delivers.
    - Then the sender's root writes the **sender's** log, with the same message ID (`commitSent`).
@@ -115,11 +116,11 @@ Each new name says what its owner owns.
    - If the receiver refuses, nothing is written. If the sender's log write fails after the receiver accepted, the message is delivered and the sender's root takes its existing persistence fail-stop (`standalone-root-persistence-coordinator.ts`, `latchAndThrow`), as for any failed write of its log.
 3. **Live-only**, as today.
 
-`TaskMessageScope` is the one owner of "may these two runs talk, and where is the receiver" (Principle 13). It answers from memory: nothing is resumed to find a receiver, also after a restart.
+`DelegationTree.canMessage` is the one owner of "may these two runs talk" and `runOfAgent` of "where is the receiver" (Principle 13); `CrossRunMessageDelivery` owns the order of the delivery. Both answer from memory: nothing is resumed to find a receiver, also after a restart.
 
 ### DS-3 Message by address
 
-`sender's root: resolveMessageRecipient → (1) own team, unchanged → (2) its own run's standing agents, unchanged → (3) new: the standing agents of the run that assigned the sender's Task: TaskMessageScope.assigningRunOf(sender run) → that run's root resolves the address → DS-2's delivery step`
+`sender's root: resolveMessageRecipient → (1) own team, unchanged → (2) its own run's standing agents, unchanged → (3) new: the standing agents of the run that assigned the sender's Task: CrossRunMessageDelivery asks DelegationTree.assignerOf(each open Task of the sender's run) → that run's root resolves the address → DS-2's delivery step`
 
 ### DS-4 Stop
 
@@ -137,7 +138,7 @@ Nothing else stops (TC-1). A delegated run's later report wakes its stopped dele
 
 ### DS-6 Reopen and follow-up
 
-`assigner: send_message_to(run ID) → DS-2: TaskMessageScope sees a closed entry whose assigner is the sender → Task side: reopenAssignment → the run's root, in its gate: re-check open, restore, deliver`
+`assigner: send_message_to(run ID) → DS-2: CrossRunMessageDelivery sees a closed entry whose assigner is the sender → Task side: reopenAssignment → the run's root, in its gate: re-check open, restore, deliver`
 
 A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assignExistingTaskExecution` → the same delivery.
 
@@ -147,7 +148,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 
 ### DS-8 View
 
-`user opens run X → X's root view: its own parts + child rows from openRunsDelegatedFrom(X) (one hop; the run's own file gives address and members) → each child's status from its own root when active, "offline" otherwise → while someone watches, a child's live output becomes the view's agent_presentation, through the path a remote child uses today (N-402) → the client shows the rows under the delegator agent`
+`user opens run X → X's root view: its own parts + child rows from DelegationTree.openChildrenOf(X) (one hop; the run's own file gives address and members) → each child's status from its own root when active, "offline" otherwise → while someone watches, a child's live output becomes the view's agent_presentation, through the path a remote child uses today (N-402) → the client shows the rows under the delegator agent`
 
 - **Opening a view never starts a run** (REQ-004, AR-008). The collaboration stream's connect stops starting the host: `AgentCollaborationStreamHandler.readyRoot` (`services/agent-streaming/agent-collaboration-stream-handler.ts:59-62, 73, 148`) resolves the root without `ensureHostReady`, and the host starts on its first input. The same holds for the team and org streams' connect.
 - **Commands to a local child from the delegating run's view** (AR-011): a message, interrupt, tool approval or Stop on a child row goes to the child's own root by its identity. `DelegatedRunCommands` (owner: the command route of a view) resolves it through `ActiveCollaborationRootDirectory` (`resolveOrRestore` for a message; a live root only for interrupt and tool approval; Stop to its root). Tool approval works, because the child runs on this node. A remote child keeps the remote route (`remote-child-commands.ts`, no tool approval). This holds in the standalone, team and org views.
@@ -167,7 +168,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 | 1 | Task entry `hostRoot`, `assignedBy` | **Every** entry gets `delegatedFrom { delegatingRun, delegatorAgentRunId }`, one hop. The delegator is read from the run's own file; for a run without one (a released partial state), from its kept full record in the tree, through a frozen reader; else `assignedBy`. The delegating run is the stored run the delegator is a part of; when that run cannot be found, today's `hostRoot` (the only stored value). 375 entries take today's `hostRoot`; 31 nested entries take the delegated run the delegator is a part of | The entry has `delegatedFrom` and no `hostRoot` |
 | 2 | role `delegated` | `subWork` (28) | No `delegated` role left in the file |
 | 3 | Peer link in a standalone tree (2) | `nodeId`, and `members` for a team, on its Task entry | The entry has `nodeId` |
-| 4 | `taskAgent` on 196 runs | Removed. Agent run: `address` and `launchSource` → `run_metadata.json`. Team run: `rootTeam.defaultLaunchSource`. `userLaunchSelection` (9) becomes the run's own launch; the edited agent's `launchSource` is dropped (today's display shows no origin for an edited agent) | The file has no `taskAgent` |
+| 4 | `taskAgent` on 196 runs | Replaced by the run's own `delegatedFrom { delegatingRun (one hop; else today's `coordinatingRun`), delegatorAgentRunId? }`, equal to its Task entries' value (contract E6, V-15, V-16). Agent run: `address` and `launchSource` → `run_metadata.json`. Team run: `delegatedFrom` beside `rootTeam`; `rootTeam.defaultLaunchSource`. `userLaunchSelection` (9) becomes the run's own launch; the edited agent's `launchSource` is dropped | The file has no `taskAgent` |
 | 5 | Standalone `collaboration_tree.json` (8) | `host.address` → `run_metadata.json` `address`; the file removed; the message log stays | The file is absent and `address` is in the metadata |
 | 6 | Team and org `taskExecutions` and `remoteTaskExecutions` lists | Removed | The lists are absent |
 | 7 | Busy-run record left by an interrupted update | Each entry under its own run's root | No entry with `place: "delegated"` |
@@ -232,7 +233,7 @@ This migration is terminal by then and does not run again. The residue is inert,
 
 ### DS-11 The run list
 
-`run list request → the history list projection reads the rows (every run has one) → for each row it asks the Task side delegationOf(run): a run with an entry whose delegatingRun is stored is not a top-level row (it is a child row of that run while an entry is open, and it is on its Task's page afterwards) → every other run is a top-level row`
+`run list request → the history list projection reads the rows (every run has one) → for each row it asks DelegationTree.parentOf(run): a run with an entry whose delegatingRun is stored is not a top-level row (it is a child row of that run while an entry is open, and it is on its Task's page afterwards) → every other run is a top-level row`
 
 - **Every run has a history row**, delegated or not. It is an ordinary run, and the ordinary run services need its row: the stopped-run Settings save refuses a run without one (`agent-execution/services/standalone-stopped-run-selection-updater.ts:67-69`, TC-5).
 - **Where a run shows:**
@@ -269,6 +270,7 @@ Counts are files outside migrations, by area (grep at `827f1e68dc`).
 | `coordinatingRun` | `run-history/store` (8), `agent-memory/services` (3), `agent-collaboration/execution` (3), `remote-collaboration/*` (4), `projects/services` | Removed with `taskAgent`. On a peer-started run, renamed `delegatingRun` inside `delegatedFrom` (contract §2.4) |
 | `remoteTaskExecutions` | streaming (6), `run-history/store` (6), web services (4), the three roots' domain and services, `api/graphql` (2), `agent-collaboration/execution` (2) | Remote children come from their Task entries (`nodeId`, `members`). In memory they stay a list of the view, built from those entries |
 | `userLaunchSelection` | `run-history/store` (6), streaming (2), web (3), contracts (2), others | Removed. A stopped delegated run's Settings edit is the ordinary stopped-run save (TC-5) |
+| The run's own `delegatedFrom` (new on local runs; on peer-started runs today) | The run list's "delegated from" label (DS-11), the Memory page, a test that it equals the Task entries' value; the peer-started run's inbound admission (as today) | Only these read it. Routing, placement and lifecycle read the Task entries through `DelegationTree` |
 | The standalone tree file (`readTree`, `StandaloneRootTreeFile`, its path) | `standalone-agent-run-root/` (7), `run-history/services` (4), `api/graphql/services/collaborator-root-port-resolver.ts`, `agent-org-execution/services`, `run-history/store` | The host address from `run_metadata.json`; nothing else is read. The history row's `hasCollaboration` is set by the first delegation |
 | `listAgents` of the standalone location service (token total, context files, last activity, process supervisor) | 6 callers | A standalone run's agents are its own. Context files and last activity read the run itself |
 | Token totals: `token-usage/providers/token-usage-run-store.ts` (`getTeamRunSummary` by `rootTeamRunId`, the org summary by agent run IDs, the standalone summary), `api/graphql/types/token-usage-stats.ts`, the attribution at capture (`agent-execution/events/processors/token-usage/token-usage-context-enricher.ts:38-42`) | 3 totals | **Unchanged results** (REQ-009, AC-012). A total of a run covers its own agents and every run delegated from it, one hop at a time and recursively, from the Task entries, open and closed. Each run record is counted once, by run ID. Attribution at capture stays the run's own root: a delegated team run's usage is its own team's. Usage rows a hosted copy wrote before the change keep their old `rootTeamRunId`; the run-ID set counts them once. 469's `ClosedDelegatedRunReader` becomes the reader of "runs delegated from X", for open and closed entries |
@@ -278,7 +280,7 @@ The implementation records the decision per file in its handoff. A reader not in
 ## Earlier Questions, Settled
 
 - **V-11 (why a Settings edit was kept beside the started launch):** the earlier ticket (`delegated-copy-model-change`, design lines 240, 336) kept it so that later copies, which projected from the started values, would not inherit an edit, and so that the origin text could still be shown. Neither holds for an ordinary run: every delegation resolves its own launch, and an edited agent shows no origin text. The edit becomes the run's own launch (DS-10 step 4).
-- **V-14 (a non-coordinator member of a stopped team):** the Task side's index reads that team's own file once and keeps its members.
+- **V-14 (a non-coordinator member of a stopped team):** `DelegationTree` reads that team's own file once and keeps its members.
 - **U-B (the web):** a local delegated run is shown the way a remote child already is (DS-8). The rows, selection and Stop buttons stay. The view's children are built from the Task entries.
 
 ## Self-Validation (2026-11-11, before review)
@@ -327,8 +329,9 @@ No other gap was found. Not validated: the code. The implementation verifies the
 
 | Owner | Owns |
 | --- | --- |
-| Task side (`TaskExecutionResourceService`, its port) | Every entry and `delegatedFrom`; open/closed, reopen, assign; the in-memory index and its four questions; the order of record changes. The index maps the agents of every run that is named as a `delegatingRun` or as an entry's run: a standalone run's own agent, a team run's members, an org run's agents and mounted teams' members. They are read once from each run's own file and kept, because a run's own agents never change (AR-014: a reply from a delegated run to any agent of its stopped assigning team or org) |
-| `TaskMessageScope` | Admission between runs and the route to the receiver |
+| Task side (`TaskExecutionResourceService`, its port) | Every entry and its `delegatedFrom`; open/closed, reopen, assign, delete; the order of record changes; the change notice to `DelegationTree` |
+| `DelegationTree` | The in-memory relationships: who delegated whom, each run's Tasks and agents, each Task's assigner (contract §2.6) |
+| `CrossRunMessageDelivery` | Admission between runs and the route to the receiver |
 | `TaskDelegation` | The order of a delegation to a new or an existing run |
 | `DelegatedRunStarter` | Creating an ordinary run for a delegation, local or peer |
 | Each run's root: standalone (`StandaloneAgentRunRoot`), team (`RootTeamRun`), org (`AgentOrgRun`) | Its own agents, its own log (and only its own), gate, Stop, closure stop, idle shutdown, view |
@@ -366,7 +369,7 @@ Nothing of the hosting machinery is kept.
 | AR-003 Derived consumers of the composed tree | "Readers Of Removed Or Renamed Fields" |
 | AR-004 Restart resume | DS-9; migration step 7 |
 | AR-005 Migration shapes | DS-10 |
-| AR-006 Two sources for nested rows | One source: `openRunsDelegatedFrom`, one hop |
+| AR-006 Two sources for nested rows | One source: `DelegationTree.openChildrenOf`, one hop |
 | AR-007 Archive/delete of a delegated run | An ordinary run; refused while a run it delegated to works on an open Task (TC-2) |
 | AR-008 Opening a view starts the agent | DS-8 |
 | AR-009 Peer-only pieces | `DelegatedRunStarter` and the idle shutdowns leave `remote-*`; the peer receiver keeps peer concerns |
@@ -383,19 +386,20 @@ Nothing of the hosting machinery is kept.
 | AR-011 Commands to a local child | DS-8: `DelegatedRunCommands` routes message, interrupt, tool approval and Stop to the child's own root |
 | AR-012 Team and org token totals | Readers table: every total covers the runs delegated from it, recursively, from the Task entries; results unchanged; no Requirement Gap |
 | AR-013 Logs across two roots | DS-2: the receiver's root writes its log, then the sender's root writes its own; failure outcomes as the peer path |
-| AR-014 Agents of a stopped delegating team or org run | Ownership Map: the Task side's index maps every agent of every run named as `delegatingRun`, read once from its own file |
+| AR-014 Agents of a stopped delegating team or org run | `DelegationTree` maps every agent of every run named as `delegatingRun`, read once from its own file |
 | AR-015 Stale requirements doc | Corrected (supplements, follow-ups, scenarios, REQ-005, REQ-009, unknowns, ASM-003) |
 | AR-005, round 3 (a preserved run's Task entry would damage its Task) | DS-10: every Task entry is converted, a preserved run's `delegatedFrom` from its kept full record; only its own file and its tree stay; checklist item 4; a fixture for a Task with a preserved run beside converted ones |
-| Round 3 residual (an org's agents can grow) | `TaskRunIndex`: on a miss, the org runs' own files are re-read |
+| Round 3 residual (an org's agents can grow) | `DelegationTree`: on a miss, the org runs' own files are re-read |
+| Revision 6 (the user, after round 5) | The run keeps its own `delegatedFrom`; `DelegationTree` replaces the Task-side lookup questions and `TaskRunIndex`; migration step 4 writes the run's `delegatedFrom` |
 | AR-005, round 4 (the hold vs. the predecessors' `FAILED` status) | DS-10: no prerequisite hold; registered after the four; each predecessor's unfinished items preserved with a warning; every Task entry always converted; tests per predecessor `FAILED` and per later finish |
 | Residuals | DS-1: role and owned-sender refusal from the Task side; the history row at creation. The team gate is named |
 
 ## Change Sequence
 
-1. Data model and the Task side: `delegatedFrom` on entries, `subWork`, peer fields, the port questions and index. Migration with fixtures (DS-10).
+1. Data model and the Task side: `delegatedFrom` on entries and on runs, `subWork`, peer fields, the change notice. `DelegationTree`. Migration with fixtures (DS-10).
 2. `DelegatedRunStarter` (extracted from the peer path) and the two idle shutdowns (renamed, generalized).
 3. `TaskDelegation`, and every root (standalone, team, org) delegating through it.
-4. `TaskMessageScope`, the router's second step, and address step 3.
+4. `CrossRunMessageDelivery`, the router's second step, and address step 3.
 5. Task closure, reopen and deletion by the run's own identity.
 6. Stop of each root kind: its own parts only.
 7. Views of all three kinds: children from the Task entries; local children shown like remote children, with their commands routed to their own roots (`DelegatedRunCommands`); the stream connect no longer starts the host; the web.

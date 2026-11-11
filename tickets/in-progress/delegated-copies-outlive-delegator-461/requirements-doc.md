@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` (SR-018, 2026-11-11). The user approved the package for architecture review after the Solution Designer's own validation: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me." The scope covers standalone, team and org runs (TC-4 revised, SR-017).
-- Current solution revision ID: `SR-018`
+- Current solution revision ID: `SR-022`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), with the user's decisions of 2026-11-10 in the Solution Designer's conversation
@@ -11,7 +11,7 @@
 - Date: 2026-11-10
 - Approved by and reference: `User` for the direction and every decision that needed him, all on 2026-11-10 in the Solution Designer's conversation: the structure is corrected in this ticket ("we should start to refactor in this ticket … put the data model correct"), contract first ("we always start with the contract"), the contract after its data validation ("after you validate it if it works … we're definitely go for this approach"; then "I agree with your decision one and three", "I like your recommendation" on the second, and `subWork`). The remaining details: `Solution Designer within the direction (user informed)`.
 - Exact approved requirements baseline / solution revision: this document at `SR-018` with `target-collaboration-contract.md` revision 5
-- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md` revision 5 (every decision taken by the user on 2026-11-11: TC-4 revised, TC-7, TC-8, TC-9, TC-10, DEC-011), approved at SR-018
+- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md` revision 6 (the user's decisions of 2026-11-11: TC-4 revised, TC-7, TC-8, TC-9, TC-10 revised, TC-11, DEC-011), SR-022. Revision 5 was approved at SR-018.
 - History: SR-001 … SR-003 were a smaller baseline (change only what Stop covers) and its design; the user replaced that direction at SR-004. Their IDs are kept below where the meaning is kept; `solution-revision-record.md` indexes the rounds.
 
 ## Problem And Desired Outcome

@@ -1,0 +1,15 @@
+     0    different answer
+   181    every entry's delegatedFrom equals the run's own
+   230    same answer on the tree and on the records
+   230  message rule: run pairs checked
+   196  origin: computed
+     1  origin: delegator's run not stored: today's coordinating run
+     4  origin: no delegator recorded: today's coordinating run
+   191  origin: one hop from the delegator
+   181  runs with entries and an own file
+   183  tree nodes with entries
+     0  tree: chains whose top is not a stored run
+     0  tree: cycles
+   153  tree: depth 1
+    30  tree: depth 2
+    16  tree: top runs (runs that delegated and were not delegated)

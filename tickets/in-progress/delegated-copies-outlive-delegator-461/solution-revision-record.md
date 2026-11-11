@@ -24,7 +24,8 @@
 | SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | Architecture review ARCH-REV-002: Fail (AR-004, AR-005, AR-008, AR-011 … AR-015) |
 | SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Architecture review ARCH-REV-003: Fail (AR-005, narrowed) |
 | SR-020 | Design | Architecture review ARCH-REV-003 (round 3) on SR-019 | AR-005 (narrowed); residual | Design Ready, review Fail | Design Ready | DS-10; `TaskRunIndex` | Architecture review ARCH-REV-004: Fail (AR-005, narrowed again) |
-| SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Architecture review ARCH-REV-005 (round 5): Pass, no open findings |
+| SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Architecture review ARCH-REV-005 (round 5): Pass, no open findings; then reopened by the user (SR-022) |
+| SR-022 | Requirements (supplement) and design | The user, after the round-5 pass (implementation stopped by the user): the run keeps its own `delegatedFrom`; an in-memory structure of the relationships for communication | N/A | Requirements Approved (rev 5); design Ready, review Pass | Contract revision 6; design Ready (SR-022) | Contract P2, §2.2, §2.4, §2.6, §3, E6, §6, V-15 … V-18, §8, TC-10, TC-11, §9.2, §10.5; design | Presented to the user; review next |
 
 ## Revision Entries
 
@@ -487,3 +488,26 @@
 - Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
 - Next action: architecture review, round 5
 - Review result (recorded 2026-11-11, informational): `Pass`, ARCH-REV-005, round 5, on SR-021 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). AR-001 … AR-015 resolved. The reviewer verified that `runPending` continues past failed migrations (`app-data-migration-runner.ts:79-100`), that `20261019_…` reads coordinating trees only for configured-place copies of team and org runs, and that no predecessor holds back a capability. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
+
+### SR-022 — Contract revision 6: the run's own `delegatedFrom` and the `DelegationTree`
+
+- Phase and classification: Requirements (behavior-defining supplement, the user's decisions) and Design
+- Triggering user feedback (2026-11-11, after ARCH-REV-005 passed; the user stopped the Implementation Engineer):
+  - "it's very reasonable to think that, OK, I was earlier delegated by someone else, it's reasonable to put that information on my side … that's not like a duplicate … it's just like more symmetric information"
+  - "there should be a in-memory stuff, just like the earlier standalone … root stuff, but it behaves already like a different purpose. It was only trying to host the relationship there, so which helps with the communicating"
+  - "Please continue to refine your data contract … until you refine the complete contract validated by yourself again"
+  - and, on the old root: "there's a lookup tree … they provide a policy how communication can happen … it behaves very much like one in-memory version of … what user can see … under the front end"
+- Prior status: requirements Approved with contract revision 5; design Ready (SR-021), architecture review Pass (ARCH-REV-005)
+- Current status: contract revision 6 (the user's direction); design Ready (SR-022); architecture review to repeat
+- What changed:
+  - **Contract.** P2: `delegatedFrom` is stored on the delegated run (its origin, written once) and on each Task entry (the assignment), with the same name and shape, equal by rule. The delegating run stores nothing; its side is in memory. §2.2 gives the run's `delegatedFrom` with its fields and readers. §2.4: a peer-started run is the same with `nodeId`. New §2.6: the `DelegationTree`. §3, E6, §6, §8 (S16, S17), §9.2, §10.5 and §11 L1 are updated. TC-10 revised and TC-11 decided by the user.
+  - **Design.** The `DelegationTree` (collaboration) replaces the Task-side lookup questions and `TaskRunIndex`. It owns the communication rule (`canMessage`) and feeds the views, so what the user sees and who can talk come from one structure. `TaskMessageScope` becomes `CrossRunMessageDelivery`, named for what it owns: the order of one message between two runs. Migration step 4 writes the run's `delegatedFrom`. The readers table gains the run's `delegatedFrom`.
+- Validation: `evidence/data-model-validation/validate_contract_revision_6.py`, `contract-revision-6-2026-11-11.txt` (read-only):
+  - origins computed for 196 of 196 runs;
+  - equal to every Task entry for 181 of 181;
+  - the tree is a forest (183 nodes, 0 cycles, every chain ends at a stored run);
+  - the message rule on the tree equals the rule on the records for 230 of 230 pairs.
+- Intended behavior changed: `No` for agents and the UI (the run list gains a "delegated from" label for runs whose Task is gone, from TC-9 and TC-3)
+- Approval impact: the user's decisions TC-10 (revised) and TC-11, as quoted
+- Classification: `Large`, `High`, unchanged
+- Next action: the user's go-ahead, then architecture review (the earlier pass covered revision 5)
