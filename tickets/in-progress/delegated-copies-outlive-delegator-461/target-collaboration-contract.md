@@ -7,7 +7,7 @@ History:
 - Revisions 3 (§10 Communication) and 4 (§11 the life of a link) were proposed on 2026-11-10 and never approved.
 - autobyteus-469 then changed the base: a top run stores no list of the runs it delegated to on this node. The Task record became the index, and the tree is built in memory from the Tasks that are open.
 - Revision 5 rewrites §2 … §12 on that base. Every count was measured again on the user's data on 2026-11-11 (read-only): `evidence/data-model-validation/contract-after-469-2026-11-11.txt` and `relationship-in-task-record-2026-11-11.txt`.
-- What changes against the approved revision 2 is listed in §9.1. The user decides TC-7 … TC-9 and DEC-011 before this revision governs the design.
+- What changes against the approved revision 2 is listed in §9.1. The user decided TC-7, TC-8 and DEC-011 on 2026-11-11; TC-9 is open.
 
 Model for this document: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md`, which made a delegated run's *storage* its own. autobyteus-469 made the *list of delegated runs* the Task's. This contract finishes the step: the *relationship* and the *lifecycle* become the run's and the Task's, and nothing hosts another run.
 
@@ -295,10 +295,11 @@ Message logs, memory and folders are not touched: each run already has its own (
 | TC-4 | Delivery | In steps: delegations from a standalone run first; then team runs; then org runs; then removal of the remaining hosting code | The user | Decided, 2026-11-10 |
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's, subject to V-11 | Solution Designer | Decided, to verify |
 | TC-6 | The role name for sub-work | `subWork` | The user | Decided, 2026-11-10 |
-| **TC-7** | Where the delegation is stored | **Once, in the Task record (`delegatedBy`), one hop; no back-link on the delegated run.** Revision 2 stored it on both ends. Since 469 the Task record is the index the views are built from, and a back-link would be a second copy to keep equal | The user | **Needs user** |
+| **TC-7** | Where the delegation is stored | **Once, in the Task record (`delegatedBy`), one hop; no back-link on the delegated run.** Revision 2 stored it on both ends. Since 469 the Task record is the index the views are built from, and a back-link would be a second copy to keep equal | The user | **Decided by the user, 2026-11-11**, with the Task-centered approach ("let's go with this approach") |
 | **TC-8** | The standalone run's `collaboration_tree.json` | **Remove it**: its address moves to `run_metadata.json`, and its peer links move to their Task entries | The user | **Decided by the user, 2026-11-11**: the node information of a delegated run on a peer goes "on the task itself … I mean the agent run resource file" (the run's entry in `agent_run_resources.json`), and the file is removed |
 | **TC-9** | The 15 old delegated runs with no Task record | **Shown as ordinary runs in the run list.** They have no relationship left to show them under, and they are runs with conversations the user can open, archive or delete. Today they are hidden from the run list and appear only on the Memory page | The user | **Needs user** |
-| **DEC-011** | Which runs may message each other beyond a delegation (§10.2 M4, M5) | **B**: also runs of one Task, and a Task's assigner with every run of the Task, as today | The user | **Needs user** |
+| **DEC-011** | Which runs may message each other | **Centered on the Task, with today's reach** (§10.2): runs of one open Task, and the run that assigned a Task with every run of it. Replaces the earlier choice between A and B | The user | **Decided by the user, 2026-11-11**: "the routing strategy will be centered around the task itself"; "let's go with this approach" |
+| **DEC-012** | A run with several open Tasks | **It may talk with the runs of any of its open Tasks.** It works on all of them; today it is judged by its newest Task only. 0 such runs today | Solution Designer | Decided (the user informed) |
 
 ### 9.1 What revision 5 changes against the approved revision 2
 
@@ -311,9 +312,9 @@ Message logs, memory and folders are not touched: each run already has its own (
 | An agent run's address in its own `collaboration_tree.json` | In `run_metadata.json`; the tree file is removed (TC-8) | It was the file's last own fact |
 | E7 (old links under an org member) moved to the org's one list | Removed with the lists | 469 |
 
-## 10. Communication
+## 10. Communication: centered on the Task
 
-What an agent can do with `send_message_to` stays as today (the user, 2026-11-11: "how it communicates earlier, it should be similar or the same"). What changes is how the server finds the receiver: through the Task record, not through one top run that hosts everyone.
+The user's direction (2026-11-11): what agents can do today stays supported. The reason two runs may talk is that they work on the same Task, not that one runs inside the other ("the product team may message the manager because it is doing part of the manager's Task, not because it is running inside the manager's process"). The Task decides who may talk and where the receiver is. Nothing hosts another run.
 
 ### 10.1 The tools
 
@@ -324,36 +325,39 @@ What an agent can do with `send_message_to` stays as today (the user, 2026-11-11
 | `delegate_task` | Creates a delegated run and its Task entry, or gives a run it delegated to a further Task | — |
 | The user's composer and `@` | Unchanged | — |
 
-### 10.2 Who can message whom by run ID
+### 10.2 The rule: who may message whom
 
-Setup:
-- The Project Task Manager **M** assigns Task T1 to the engineering team **E**.
-- E's solution designer hands sub-work of T1 to the product team **P** and to an image agent **I**.
-- M also assigns Task T2 to a research agent **R**.
+Two runs may message each other, by run ID, in either direction, when **at least one** holds:
 
-| # | From → to | Today | Target | Found through |
-| --- | --- | --- | --- | --- |
-| M1 | Any agent of M ↔ any agent of E | Allowed | Allowed | E's entry: `delegatedBy.run` = M |
-| M2 | Any agent of E ↔ any agent of P | Allowed | Allowed | P's entry: `delegatedBy.run` = E |
-| M3 | P ↔ I (two runs of one Task, neither delegated to the other) | Allowed (same Task) | **DEC-011** A: refused. B: allowed | Both entries are in T1 |
-| M4 | M ↔ P (the Task's assigner and a run of the Task it did not delegate to) | Allowed | **DEC-011** A: refused. B: allowed | T1's `assigned` entry names M |
-| M5 | P ↔ R (different Tasks) | Refused | Refused, same text | The Task rule |
-| M6 | Anyone ↔ a run whose Task is closed | Refused; the assigner may continue it after a reopen | Unchanged | The Task rule |
-| M7 | Any other run ID | Refused unless the target is active elsewhere (live-only route, unchanged) | Unchanged | — |
-| M8 | M1, M2 across nodes | Allowed, the delegator only (CM-11) | Unchanged | The entry's `nodeId` and `members`; the peer run's `delegatedFrom` |
+- **(a) Same Task:** both work on one open Task. Example: the engineering team, the product team and the image agent, all on T1.
+- **(b) The assigner's run:** one of them is the run whose agent assigned the other's open Task. Example: the manager, for every run working on a Task it assigned, at any depth.
 
-A refused sender is always told why and what to do next. Nothing is delivered and nothing is started.
+Unchanged:
+- **The Task rule:** two runs of different Tasks are refused ("it works on a different Task"); a run whose Task is closed is refused, except that its assigner continues it after a reopen.
+- **Inside one run:** teammates of a team run, or the agents of an org run, reach each other as today. That is one run; the Task is not asked.
+- **Runs on a peer:** a peer's run talks with the agent that delegated to it, as today (CM-11). The node is read from its Task entry.
+- **An active run elsewhere:** the live-only route, as today.
+
+Why this is today's reach without hosting:
+- Today two runs may talk when they are under one top run and do not work on different Tasks. The top run's own agents work on no Task, so they reach every run under them.
+- The run that assigned a Task *is* that top run. Measured: 375 of 376 assigned entries; the one exception was assigned by a delegated run that has no Task record (a legacy run).
+- So (a) and (b) give the same pairs as today for every run that works on a Task.
+
+A run with several open Tasks (0 today) may talk with the runs of any of its open Tasks (DEC-012).
 
 ### 10.3 Who can be reached by address
 
 The first match wins. A miss inside a team never falls through to another team.
 
 1. **The sender's own team:** a teammate, or the team's own address (its coordinator). Unchanged.
-2. **The standing agents of the delegating run** (CM-5): for E's members, M at `/project_task_manager`; for P's members, E's members.
-   - Today this step names the agents of the *top* run. The target names those of `delegatedBy.run`, one hop.
-3. **Only if DEC-011 = B:** the agent that assigned the sender's Task. For P's and I's members that is M at `/project_task_manager`, so today's example "a product team member reaches the manager by address" keeps working.
+2. **The standing agents of the run that assigned the sender's Task:**
+   - for every run working on a Task the manager assigned, `/project_task_manager`;
+   - for a Task assigned by a member of a team run the user started, that team's members.
 
-Any other address gets "No agent or agent team you can talk with has the address …", with today's guidance.
+   This is today's "standing agents of the top run", found through the Task.
+3. **The run's own standing agents:** for an agent of a run the user started (no Task), its own run's configured agents. Unchanged.
+
+Any other address gets "No agent or agent team you can talk with has the address …", with today's guidance. A delegated run's members are not reachable by address from outside it, as today (they are reached by run ID).
 
 ### 10.4 What every delivered message does
 
@@ -364,26 +368,29 @@ Any other address gets "No agent or agent team you can talk with has the address
 
 All unchanged.
 
-### 10.5 How the server finds the receiver
+### 10.5 How the server answers, from the Task records in memory
 
-**The run of a delegated run's entry agent.** The Task records are held in memory. The entry whose `agentRun` names that agent run, or a team's coordinator, gives the run, its `delegatedBy` and its Tasks.
+| Question | Answer |
+| --- | --- |
+| Which run does agent run ID X belong to? | X is a delegated run's entry agent (an agent run, or a team's coordinator): its Task entry. X is a member of a running team: that team's own run answers. X is a member of a stopped team: that team's own file lists it (V-14). X is an agent of a run the user started: that run |
+| May sender and receiver talk? | §10.2, from the two runs' open Task entries and each Task's assigned entry (`delegatedBy`) |
+| Which run assigned my Task? | The Task's `assigned` entry: `delegatedBy.run` |
+| Is the receiver running? | Its own run; if not, it is loaded and woken like any stopped run |
 
-**A team member that is not the coordinator:**
-- In a running team: the team's own root answers.
-- In a stopped team: the team's own file lists its members (V-14). The alternative is a refusal that points to the coordinator, as 469 does for a closed team (its DEC-006).
+No run keeps an index of other runs' agents. The Task records are the one place a relationship is written.
 
-**The admission:** the sender and the receiver stand in one of the relationships of §10.2. Both ends check it against the same entry.
+### 10.6 Validated on the user's data (read-only, 2026-11-11)
 
-No run keeps an index of other runs' agents. The Task record is the one place a relationship is written.
+`evidence/data-model-validation/task-centered-messaging-2026-11-11.txt`, every stored message between two runs:
 
-### 10.6 Measured (read-only, 2026-11-10; messages have not changed shape since)
+| | Messages |
+| --- | --- |
+| Between two runs | 1,604 |
+| Allowed today and by the Task rule | 1,540 (103 by (a), 1,437 by (b)) |
+| Allowed today, refused by the Task rule | 64: every one has a delegated run with no Task record on one side (legacy, 2026-08 … 2026-10) |
+| Refused today, allowed by the Task rule | 0 |
 
-1,601 stored messages go between two runs:
-- 1,559 between a delegating run and its delegated run (M1, M2);
-- 6 between a Task's assigner and a run of that Task it did not delegate to (M4);
-- 36 with no route: 33 between runs that have no Task record (the retired collaborator feature), 3 on old records.
-
-The last 36 are refused in the target, under A and under B. They are history and stay in the logs.
+The Task rule never allows more than today. It refuses only messages with the 15 legacy runs (TC-9), which stay in the logs.
 
 ## 11. The life of a delegation, as records
 
@@ -402,25 +409,23 @@ Replaces revision 4's "life of a link": since 469 there is no stored link to kee
 
 ## 12. The contract walked through for communication
 
-Revision 4's walk (W1 … W12) found three gaps, and all three are part of §10 above:
-- A delegation connects two runs, not two agents.
-- The Task route is between runs.
-- A run is found from its entry agent's ID through the Task records.
+Setup as in §10.2:
+- The manager M assigned T1 to the engineering team E (coordinator Ec, member Em).
+- E's designer handed sub-work of T1 to the product team P (coordinator Pc, member Pm) and to the image agent I.
+- M assigned T2 to the research agent R.
 
-What remains to check in the design is V-14: a non-entry member of a stopped team.
-
-| # | Case | Found through | Admitted because | Result |
+| # | Case | Found through | Admitted by | Result |
 | --- | --- | --- | --- | --- |
-| W1 | M → Ec (E's coordinator) by run ID | E's entry (`agentRun.coordinatorAgentRunId`) | `delegatedBy.run` = M | Works |
-| W2 | Em (an E member) → M by address | E's entry: `delegatedBy.run` = M; M's standing address | The same entry | Works |
-| W3 | Pm → Em by address | P's entry: `delegatedBy.run` = E; E answers who stands at the address | P's entry | Works |
-| W4 | Em → Pc by run ID | P's entry | P's entry names E | Works |
-| W5 | P ↔ I | T1's record | Both in T1 | Works if B |
-| W6 | Pm → M by address | T1's `assigned` entry names M | M assigned T1 | Works if B |
-| W7 | M → Ec after T1 closed and reopened | E's entry, reopened by the assigner's message | M assigned it | Works |
-| W8 | P ↔ R | — | — | Refused |
-| W9 | Anyone ↔ a closed run | — | — | Refused, except the assigner's reactivation |
-| W10 | The receiver is stopped | Its entry; then its own root is loaded and its agent woken | — | Works |
-| W11 | The delegating run was deleted | Its entries name a run that is not stored | — | Refused; the run is a run of its own (TC-3) |
+| W1 | M → Ec by run ID | E's entry in T1 (`agentRun.coordinatorAgentRunId`) | (b): M assigned T1 | Works |
+| W2 | Em → M by address `/project_task_manager` | T1's `assigned` entry: `delegatedBy.run` = M; M's standing address | (b) | Works |
+| W3 | Pm → M by address (the product team reaches the manager) | The same | (b): M assigned T1, P works on T1 | Works, as today |
+| W4 | Pm → Em by run ID | E's run answers for its member (running) or its file lists it (stopped) | (a): both on T1 | Works |
+| W5 | P ↔ I by run ID | Their T1 entries | (a) | Works |
+| W6 | M → Pc by run ID | P's T1 entry | (b) | Works |
+| W7 | M → Ec after T1 closed and reopened | E's T1 entry, reopened by the assigner's message | (b), the assigner | Works |
+| W8 | P ↔ R | — | Different Tasks | Refused, as today |
+| W9 | Anyone ↔ a run of a closed Task | — | — | Refused, except the assigner's reactivation |
+| W10 | The receiver is stopped | Its entry | — | Loaded and woken like any stopped run |
+| W11 | One of the 15 legacy runs ↔ anyone | — | No Task | Refused (TC-9); 64 such messages in the history |
 
-Not covered: the code. This is a check of the rules against the stored model.
+Not covered: the code. This is a check of the rules against the stored model and the stored messages.
