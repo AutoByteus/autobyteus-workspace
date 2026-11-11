@@ -1,4 +1,4 @@
-import { getTaskDelegation } from "../task/task-delegation-binding.js";
+import { delegateThrough } from "../task/task-delegation-binding.js";
 import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
@@ -60,8 +60,12 @@ export class RemoteDelegation {
     const placement = await this.delegationPlacement(input);
     if (!("kind" in placement)) return placement;
     const { node: _node, ...local } = input;
-    const { outcome, launches } = await getTaskDelegation().toPeerRun({ sender: context.identity, senderRun: context.identity.root,
-      spawn: local as SpawnTaskInput, placement });
+    let launches: readonly RemoteAgentLaunch[] = [];
+    const outcome = await delegateThrough(async (delegation) => {
+      const started = await delegation.toPeerRun({ sender: context.identity, senderRun: context.identity.root, spawn: local as SpawnTaskInput, placement });
+      launches = started.launches;
+      return started.outcome;
+    });
     if (!outcome.delegated) return outcome;
     const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;
     const link = peerRunLinksOf(this.options.root).find((candidate) => peerRunIdOf(candidate) === runId);

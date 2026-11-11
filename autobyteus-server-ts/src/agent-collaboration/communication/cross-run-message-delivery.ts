@@ -7,7 +7,7 @@ import {
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
 } from "../execution/domain/root-execution-identity.js";
-import { TaskDelegationError } from "../execution/task/task-delegation-command.js";
+import { ROOT_NOT_ACTIVE_MESSAGE, TaskDelegationError } from "../execution/task/task-delegation-command.js";
 import {
   ASSIGNER_ONLY_REACTIVATION_MESSAGE,
   runReferenceOf,
@@ -85,7 +85,7 @@ export class CrossRunMessageDelivery {
       throw error;
     }
     const sender = this.dependencies.senderRoot(senderRun);
-    if (!sender) return refusal("COLLABORATION_ROOT_NOT_ACTIVE", "Your run is not active, so the message was not sent.");
+    if (!sender) return refusal("COLLABORATION_ROOT_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
     const prepared = sender.prepareSendToRun({ senderIdentity: input.sender, receiverAgentRunId: input.targetAgentRunId, content: input.content,
       messageType: input.messageType, referenceFiles: input.referenceFiles });
     if (!prepared.ok) return prepared.refusal;

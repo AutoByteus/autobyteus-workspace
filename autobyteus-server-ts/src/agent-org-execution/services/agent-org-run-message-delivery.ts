@@ -12,7 +12,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js";
+import { delegateThrough } from "../../agent-collaboration/execution/task/task-delegation-binding.js";
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -152,15 +152,15 @@ export class AgentOrgRunMessageDelivery {
       return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context);
     }
     // DS-1: the new run is an ordinary run of its own; this org run is its delegating run.
-    return getTaskDelegation().toNewRun({ sender: context.identity, senderRun: context.identity.root,
+    return delegateThrough((delegation) => delegation.toNewRun({ sender: context.identity, senderRun: context.identity.root,
       delegatorAddress: reachingAddressOf(this.options.getIndex(), null, context.identity), spawn: input,
-      resolvePlacement: async (work, folder) => localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) });
+      resolvePlacement: async (work, folder) => localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) }));
   }
 
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
-    return getTaskDelegation().toExistingRun({ sender: context.identity, senderRun: context.identity.root, assign: input });
+    return delegateThrough((delegation) => delegation.toExistingRun({ sender: context.identity, senderRun: context.identity.root, assign: input }));
   }
 
   reserveAgentInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {

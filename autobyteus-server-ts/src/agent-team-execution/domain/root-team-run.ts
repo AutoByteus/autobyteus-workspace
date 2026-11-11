@@ -23,7 +23,7 @@ import type { RootEventListener, RootLivePosition, RootSnapshotConnection } from
 import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
-import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js"; import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
+import { delegateThrough } from "../../agent-collaboration/execution/task/task-delegation-binding.js"; import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
@@ -265,8 +265,8 @@ export class RootTeamRun {
         return this.remoteDelegation.delegate({ ...input, node: input.node }, context);
       }
       // DS-1: the new run is an ordinary run of its own; this team run is its delegating run.
-      return getTaskDelegation().toNewRun({ sender: context.identity, senderRun: context.identity.root, delegatorAddress: this.delivery.delegatorAddressOf(context.identity),
-        spawn: input, resolvePlacement: async (work, folder) => localPlacement(await this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) });
+      return delegateThrough((delegation) => delegation.toNewRun({ sender: context.identity, senderRun: context.identity.root, delegatorAddress: this.delivery.delegatorAddressOf(context.identity),
+        spawn: input, resolvePlacement: async (work, folder) => localPlacement(await this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) }));
     });
   }
 
@@ -274,7 +274,7 @@ export class RootTeamRun {
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
-      return getTaskDelegation().toExistingRun({ sender: context.identity, senderRun: context.identity.root, assign: input });
+      return delegateThrough((delegation) => delegation.toExistingRun({ sender: context.identity, senderRun: context.identity.root, assign: input }));
     });
   }
   /** The coordinator of this team run, or of a peer team run it delegated to (`send_message_to` guidance); else null. */

@@ -69,7 +69,7 @@ const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
 export class TaskDelegation {
   constructor(private readonly dependencies: Readonly<{
     tasks(): TaskExecutionResourcePort;
-    tree(): Pick<DelegationTree, "currentTaskOf" | "tasksOf">;
+    tree(): Pick<DelegationTree, "currentTaskOf" | "tasksOf"> & Partial<Pick<DelegationTree, "runOfAgent">>;
     /** A message to another run (DS-2, `CrossRunMessageDelivery`): stored in both runs' logs, the receiver woken. */
     deliverToRun?(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderDisplayName: string; targetAgentRunId: string; content: string;
       messageType: string; referenceFiles: readonly string[] }>): Promise<AgentOperationResult | null>;
@@ -207,6 +207,11 @@ export class TaskDelegation {
       throw error;
     }
     await this.recordCollaborating(input);
+    // A Task closed during the start (design "Ordering Without A Shared Queue"): the new run is not started.
+    if (!tasks.isOpen(execution)) {
+      await this.dependencies.discard(execution).catch((error) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(error) }));
+      return { delegated: false, message: "The Task was marked DONE or CANCELLED; its new work was not started." };
+    }
     // 5. The work packet starts the run in its own root.
     const run = copy.kind === "agent" ? { rootSubjectKind: "agent" as const, rootRunId: copy.agentRunId } : { rootSubjectKind: "agent_team" as const, rootRunId: copy.teamRunId };
     let delivered: AgentOperationResult;
@@ -234,6 +239,28 @@ export class TaskDelegation {
   }
 
   /**
+   * An ID of the other kind names the field to use, and a team run's coordinator or member names the team's run ID
+   * (today's refusals, REQ-009); `null` when it is neither.
+   */
+  private async wrongRunId(execution: TaskExecutionReference): Promise<TaskDelegationError | null> {
+    const tree = this.dependencies.tree();
+    const refuse = (text: string) => new TaskDelegationError("TASK_COPY_NOT_ASSIGNABLE", text);
+    if ("teamRunId" in execution) {
+      const id = execution.teamRunId;
+      return tree.tasksOf({ agentRunId: id }).length ? refuse(`${id} is a task agent's run id; use target_agent_run_id "${id}".`) : null;
+    }
+    const id = execution.agentRunId;
+    if (tree.tasksOf({ teamRunId: id }).length) return refuse(`${id} is a task agent team's run id; use target_team_run_id "${id}".`);
+    const run = await tree.runOfAgent?.(id) ?? null;
+    if (run?.rootSubjectKind !== "agent_team") return null;
+    const entries = tree.tasksOf({ teamRunId: run.rootRunId });
+    if (!entries.length) return null;
+    return entries.some((entry) => entry.entryAgentRunId === id)
+      ? refuse(`${id} is the coordinator of task agent team ${run.rootRunId}; use target_team_run_id "${run.rootRunId}".`)
+      : refuse(`${id} is a member of task agent team ${run.rootRunId}; to give that team a Task, use target_team_run_id "${run.rootRunId}".`);
+  }
+
+  /**
    * `delegate_task` with a run's own ID and `task_id` (DS-6, `model.py` `delegate_existing`): a follow-up Task for a run
    * the sender assigned. The saved Task first (its refusals come before the run's), then the run: one this node's Task
    * records name (a peer's run takes no saved Task); the Task side checks the sender is its last assigner and the
@@ -254,7 +281,7 @@ export class TaskDelegation {
       const entries = this.dependencies.tree().tasksOf(execution);
       if (entries.some((entry) => entry.nodeId !== undefined)) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
       const current = [...entries].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)).at(-1);
-      if (!current) throw notACopyOfThisRun(execution);
+      if (!current) throw await this.wrongRunId(execution) ?? notACopyOfThisRun(execution);
       entryAgentRunId = current.entryAgentRunId;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId });
@@ -324,7 +351,7 @@ export class TaskDelegation {
       await recorder.record(decisionRecordsOf(placement.routingDecision, { recordedAt: new Date().toISOString(), task,
         delegatingRunId: sender.agentRunId, delegatingAgentName: getAgentTeamAddressBasename(sender.memberAddress), fromNode: null }));
     } catch (error) {
-      console.warn(`Model Routing: the decisions of copy ${placement.routingDecision.copyAddress} could not be recorded: ${message(error)}`);
+      console.warn(`Model Routing: the decisions for the run at ${placement.routingDecision.copyAddress} could not be recorded: ${message(error)}`);
     }
   }
 }
