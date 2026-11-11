@@ -204,9 +204,8 @@ export const composeCollaboration = async (input: Readonly<{
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
-    const router = new GlobalAgentRunMessageRouter({ crossRun });
-    releases.push(GlobalAgentRunMessageRouter.setProcessInstance(router));
-    releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({ globalRouter: router, crossRunAddresses: addresses })));
+    releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun }), crossRunAddresses: addresses })));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ memoryDir, tree })));
     releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree })));
     releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree })));

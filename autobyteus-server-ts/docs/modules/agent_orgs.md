@@ -584,9 +584,9 @@ Definition GraphQL operations:
 
 Run GraphQL operations:
 
-- `createAgentOrgRun`, `restoreAgentOrgRun`, `terminateAgentOrgRun`
+- `createAgentOrgRun`, `terminateAgentOrgRun` (a stopped Org is restored by a message to one of its own agents on its view's stream, not by a mutation; autobyteus-461 SR-045/046)
 - `archiveStoredAgentOrgRun`, `deleteStoredAgentOrgRun` (stopped exact root)
-- `getAgentOrgRunInspection` (read-only retained package, distinct from Restore)
+- `getAgentOrgRunInspection` (read-only retained package; it never restores the run)
 - `getAgentOrgMemberRunProjection`
 - `getAgentOrgMemberEventMonitorActiveTracePage`
 - `getAgentOrgExecutionCheckpoint`

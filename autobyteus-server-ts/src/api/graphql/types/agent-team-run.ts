@@ -46,18 +46,6 @@ export class TerminateAgentTeamRunResult {
   message!: string;
 }
 
-@ObjectType()
-export class RestoreAgentTeamRunResult {
-  @Field(() => Boolean)
-  success!: boolean;
-
-  @Field(() => String)
-  message!: string;
-
-  @Field(() => String, { nullable: true })
-  teamRunId?: string | null;
-}
-
 @InputType()
 export class TeamMemberConfigInput {
   @Field(() => String)
@@ -213,27 +201,6 @@ export class AgentTeamRunResolver {
     } catch (error) {
       logger.error(`Error terminating agent team run with ID ${teamRunId}: ${String(error)}`);
       return { success: false, message: String(error) };
-    }
-  }
-
-  @Mutation(() => RestoreAgentTeamRunResult)
-  async restoreAgentTeamRun(
-    @Arg("teamRunId", () => String) teamRunId: string,
-  ): Promise<RestoreAgentTeamRunResult> {
-    try {
-      const run = await this.teamRunService.restoreTeamRun(teamRunId);
-      return {
-        success: true,
-        message: "Agent team run restored successfully.",
-        teamRunId: run.teamRunId,
-      };
-    } catch (error) {
-      logger.error(`Error restoring agent team run with ID ${teamRunId}: ${String(error)}`);
-      return {
-        success: false,
-        message: String(error),
-        teamRunId: null,
-      };
     }
   }
 

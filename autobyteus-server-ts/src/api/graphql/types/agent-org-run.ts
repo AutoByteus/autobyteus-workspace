@@ -218,18 +218,6 @@ export class AgentOrgRunResolver {
     }
   }
 
-  @Mutation(() => AgentOrgRunMutationResult)
-  async restoreAgentOrgRun(
-    @Arg("agentOrgRunId", () => String) agentOrgRunId: string,
-  ): Promise<AgentOrgRunMutationResult> {
-    try {
-      const run = await this.service.restore(agentOrgRunId);
-      return { success: true, message: "Agent organization run restored successfully.", agentOrgRunId: run.orgRunId };
-    } catch (error) {
-      return { success: false, message: message(error), agentOrgRunId: null };
-    }
-  }
-
   @Mutation(() => AgentOrgStoredRunMutationResult)
   async archiveStoredAgentOrgRun(
     @Arg("orgRunId", () => String) orgRunId: string,

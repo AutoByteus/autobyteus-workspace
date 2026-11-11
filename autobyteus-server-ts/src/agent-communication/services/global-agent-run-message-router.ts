@@ -43,20 +43,6 @@ const normalizeReferenceFiles = (referenceFiles: string[] | null | undefined): s
   Array.isArray(referenceFiles) ? [...referenceFiles] : [];
 
 export class GlobalAgentRunMessageRouter {
-  private static instance: GlobalAgentRunMessageRouter | null = null;
-
-  /** The composition root creates the process router with its cross-run delivery (SR-047 step 8); the returned function releases it. */
-  static setProcessInstance(router: GlobalAgentRunMessageRouter): () => void {
-    GlobalAgentRunMessageRouter.instance = router;
-    return () => { if (GlobalAgentRunMessageRouter.instance === router) GlobalAgentRunMessageRouter.instance = null; };
-  }
-
-  /** The process router; its callers are older lookups (FU-011). */
-  static getInstance(): GlobalAgentRunMessageRouter {
-    if (!GlobalAgentRunMessageRouter.instance) throw new Error("The message router is created by the composition root.");
-    return GlobalAgentRunMessageRouter.instance;
-  }
-
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -194,6 +180,3 @@ export class GlobalAgentRunMessageRouter {
   }
 
 }
-
-export const getGlobalAgentRunMessageRouter = (): GlobalAgentRunMessageRouter =>
-  GlobalAgentRunMessageRouter.getInstance();

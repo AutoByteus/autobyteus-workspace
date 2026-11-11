@@ -2002,9 +2002,7 @@ export type Mutation = {
   resetAgentOrgPersonalSetting: AgentOrgDefinition;
   resetAgentPersonalSetting: AgentDefinition;
   resetAgentTeamPersonalSetting: AgentTeamDefinition;
-  restoreAgentOrgRun: AgentOrgRunMutationResult;
   restoreAgentRun: RestoreAgentRunResult;
-  restoreAgentTeamRun: RestoreAgentTeamRunResult;
   retryEmbeddingModel: Scalars['Boolean']['output'];
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
@@ -2480,18 +2478,8 @@ export type MutationResetAgentTeamPersonalSettingArgs = {
 };
 
 
-export type MutationRestoreAgentOrgRunArgs = {
-  agentOrgRunId: Scalars['String']['input'];
-};
-
-
 export type MutationRestoreAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
-};
-
-
-export type MutationRestoreAgentTeamRunArgs = {
-  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -3639,13 +3627,6 @@ export type RestoreAgentRunResult = {
   message: Scalars['String']['output'];
   runId?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
-};
-
-export type RestoreAgentTeamRunResult = {
-  __typename?: 'RestoreAgentTeamRunResult';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-  teamRunId?: Maybe<Scalars['String']['output']>;
 };
 
 export type RunFileChangeEntryObject = {
