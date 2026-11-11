@@ -2,68 +2,58 @@ import { describe, expect, it } from "vitest";
 import { taskTeamExecutionDtoSchema } from "@autobyteus/team-stream-contracts";
 import { taskExecutionDtoSchema } from "@autobyteus/collaboration-stream-contracts";
 import { projectExecutionTree } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
-import { projectCollaborationTaskExecution } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
+import { projectDelegatedAgentRun, projectDelegatedTeamRun } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import { toDelegateTaskResult } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import { DelegateTaskResultSchema } from "../../../../src/agent-team-execution/task-delegation/task-delegation-result-contract.js";
-import type { TaskTeamExecution } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
-/** REQ-007, D-5: run views carry each member's complete launch, follower fact and recorded source; REQ-008: delegate_task carries launch_notes. */
+/**
+ * REQ-007, D-5: a view's child rows carry each agent's complete launch and recorded source, read from the child's own file
+ * (DS-8, autobyteus-461); REQ-008: delegate_task carries launch_notes.
+ */
 const claude = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/w" };
-const codex = { ...claude, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" };
 const fallback = { layer: "agent_default" as const, runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "runtime_unavailable" as const, detail: "no grok" };
-const copy: TaskTeamExecution = {
-  address: "/se" as never, teamRunId: "se-copy", startedAt: "2026-10-12T00:00:00.000Z", taskExecutions: [], delegatorAgentRunId: "pm",
-  members: [
-    { address: "/se/lead" as never, agentRunId: "lead-run", platformAgentRunId: null },
-    { address: "/se/ie" as never, agentRunId: "ie-run", platformAgentRunId: null },
-  ],
-  source: {
-    kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead" as never, handoffs: [],
-    defaultLaunchConfiguration: claude, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
-    members: [
-      { address: "/se/lead" as never, agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true, launchSource: { origin: "inherited", fallbacks: [fallback] } },
-      { address: "/se/ie" as never, agentDefinitionId: "ie", launchConfiguration: codex, followsTeam: false, launchSource: { origin: "agent_default", fallbacks: [] } },
-    ],
-  },
+const child = (run: DelegatedChild["run"], recipientAddress: string): DelegatedChild => ({ run, taskId: "T1", delegatorAgentRunId: "pm",
+  entryAgentRunId: "agentRunId" in run ? run.agentRunId : "lead-run", started: true, linkedAt: "2026-10-12T00:00:00.000Z", recipientAddress });
+/** A delegated team's own file: its lead takes the team's launch; its engineer has its own, with its own source. */
+const teamFile = (recorded: boolean) => {
+  const base = testExecutionTree({ rootTeamRunId: "se-run", coordinatorAddress: "/lead", children: [
+    testAgentNode("/lead", { agentRunId: "lead-run", workspaceRootPath: "/w" }),
+    testAgentNode("/ie", { agentRunId: "ie-run", workspaceRootPath: "/w" }),
+  ] });
+  const team = base.rootTeam;
+  return { ...base, rootTeam: { ...team, defaultLaunchConfiguration: { ...team.defaultLaunchConfiguration, ...claude }, members: [
+    { ...team.members[0]!, launchConfiguration: { ...team.members[0]!.launchConfiguration, ...claude },
+      ...(recorded ? { launchSource: { origin: "inherited" as const, fallbacks: [fallback] } } : {}) },
+    { ...team.members[1]!, launchConfiguration: { ...team.members[1]!.launchConfiguration, ...claude, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" },
+      ...(recorded ? { launchSource: { origin: "agent_default" as const, fallbacks: [] } } : {}) },
+  ] } };
 };
 
-describe("launch values and sources in run views", () => {
-  const tree = (task: TaskTeamExecution) => projectExecutionTree({
-    createdAt: copy.startedAt, archivedAt: null, applicationBinding: null, handoffs: [],
-    rootTeam: { address: "/", teamDefinitionId: "t", teamDefinitionName: "T", teamRunId: "root", coordinatorAddress: "/pm" as never,
-      defaultLaunchConfiguration: claude, taskExecutions: [task],
-      members: [{ address: "/pm" as never, agentDefinitionId: "pm", role: null, description: null, agentRunId: "pm", platformAgentRunId: null, launchConfiguration: claude }] },
-  } as never);
+describe("launch values and sources in run views' child rows", () => {
+  const teamView = (recorded: boolean) => projectExecutionTree(testExecutionTree({ rootTeamRunId: "root", coordinatorAddress: "/pm",
+    children: [testAgentNode("/pm", { agentRunId: "pm" })] }), [projectDelegatedTeamRun(child({ teamRunId: "se-run" }, "/se"), teamFile(recorded) as never)]);
 
-  it("the Team view (snake_case) carries each member's launch and follower fact; sources only when recorded", () => {
-    const dto = taskTeamExecutionDtoSchema.parse(tree(copy).root_team.task_executions[0]);
-    const source = dto.source;
-    expect(source.default_launch_source).toEqual({ origin: "inherited", fallbacks: [] });
-    expect(source.members[0]).toEqual({ address: "/se/lead", agent_definition_id: "lead",
-      launch_configuration: { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus", llm_config: null, auto_execute_tools: false, workspace_root_path: "/w" },
-      follows_team: true,
+  it("the Team view (snake_case) carries each member's launch and whether it took the team's; sources only when recorded", () => {
+    const dto = taskTeamExecutionDtoSchema.parse(teamView(true).root_team.task_executions[0]);
+    expect(dto.source.members[0]).toMatchObject({ address: "/lead",
+      launch_configuration: { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus" }, follows_team: true,
       launch_source: { origin: "inherited", fallbacks: [{ layer: "agent_default", runtime_kind: "grok_build", llm_model_identifier: "grok-4", reason: "runtime_unavailable", detail: "no grok" }] } });
-    expect(source.members.map((member) => [member.launch_configuration.llm_model_identifier, member.follows_team])).toEqual([["opus", true], ["sol-6.1", false]]);
-    const { defaultLaunchSource: _d, ...bareSource } = copy.source;
-    const unrecorded = { ...copy, source: { ...bareSource, members: bareSource.members.map(({ launchSource: _s, ...member }) => member) } } as TaskTeamExecution;
-    expect(JSON.stringify(tree(unrecorded).root_team.task_executions[0])).not.toMatch(/launch_source/);
+    expect(dto.source.members.map((member) => [member.launch_configuration.llm_model_identifier, member.follows_team])).toEqual([["opus", true], ["sol-6.1", false]]);
+    expect(JSON.stringify(teamView(false).root_team.task_executions[0])).not.toMatch(/launch_source/);
   });
 
-  it("a copy of a configured placement carries the configured origin", () => {
-    const configured = { ...copy, source: { ...copy.source, defaultLaunchSource: { origin: "configured", fallbacks: [] },
-      members: copy.source.members.map(({ launchSource: _s, ...member }) => member) } } as TaskTeamExecution;
-    expect(taskTeamExecutionDtoSchema.parse(tree(configured).root_team.task_executions[0]).source.default_launch_source)
-      .toEqual({ origin: "configured", fallbacks: [] });
-  });
-
-  it("the Org and Agent views (camelCase) carry the same for catalog copies", () => {
-    const projected = taskExecutionDtoSchema.parse(projectCollaborationTaskExecution(copy));
-    if (!("teamRunId" in projected) || projected.source.kind !== "agent_team") throw new Error("team copy expected");
-    const source = projected.source;
-    expect(source.members.map((member) => [member.launchConfiguration.llmModelIdentifier, member.followsTeam])).toEqual([["opus", true], ["sol-6.1", false]]);
-    expect(source.members[0]!.launchSource?.fallbacks[0]).toEqual(fallback);
-    expect(source.members[1]).toMatchObject({ launchConfiguration: { runtimeKind: "codex_app_server" }, launchSource: { origin: "agent_default" } });
+  it("the Org and Agent views (camelCase) carry the same, and an agent child's source from its own run_metadata", () => {
+    const projected = taskExecutionDtoSchema.parse(projectDelegatedTeamRun(child({ teamRunId: "se-run" }, "/se"), teamFile(true) as never));
+    if (!("teamRunId" in projected) || projected.source.kind !== "agent_team") throw new Error("team child expected");
+    expect(projected.source.members.map((member) => [member.launchConfiguration.llmModelIdentifier, member.followsTeam])).toEqual([["opus", true], ["sol-6.1", false]]);
+    expect(projected.source.members[0]!.launchSource?.fallbacks[0]).toEqual(fallback);
+    const agent = taskExecutionDtoSchema.parse(projectDelegatedAgentRun(child({ agentRunId: "writer-run" }, "/writer"), {
+      runId: "writer-run", agentDefinitionId: "writer", address: "/writer", platformAgentRunId: null, ...claude,
+      launchSource: { origin: "configured", fallbacks: [] } } as never));
+    expect(agent).toMatchObject({ agentRunId: "writer-run", source: { kind: "agent", launchSource: { origin: "configured" } } });
   });
 });
 

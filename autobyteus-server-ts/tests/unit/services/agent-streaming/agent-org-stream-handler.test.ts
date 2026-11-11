@@ -23,7 +23,7 @@ const statuses = [{
   statusHint: "IDLE" as const,
 }];
 
-const taskBearingPackage = () => {
+const orgPackage = () => {
   const worker = testOrgAgentNode("/worker", "agent-worker-configured");
   const lead = testOrgAgentNode("/team/lead", "agent-lead-configured");
   const teamWorker = testOrgAgentNode("/team/worker", "agent-team-worker-configured");
@@ -32,28 +32,8 @@ const taskBearingPackage = () => {
     coordinatorAddress: lead.address, members: [lead, teamWorker],
   });
   const base = testAgentOrgExecutionTree({ orgRunId, members: [agent, worker, team] });
-  const taskAgent = {
-    address: worker.address, agentRunId: "agent-worker-task", platformAgentRunId: null,
-    delegatorAgentRunId: agent.agentRunId, startedAt: "2026-09-01T00:00:01.000Z",
-    source: { kind: "agent", agentDefinitionId: worker.agentDefinitionId, launchConfiguration: worker.launchConfiguration },
-  } as const;
-  const taskTeam = {
-    address: team.address, teamRunId: "team-run-task",
-    members: [
-      { address: lead.address, agentRunId: "agent-task-lead", platformAgentRunId: null },
-      { address: teamWorker.address, agentRunId: "agent-task-worker", platformAgentRunId: null },
-    ],
-    taskExecutions: [], delegatorAgentRunId: agent.agentRunId, startedAt: "2026-09-01T00:00:02.000Z",
-    source: { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: lead.address, handoffs: [],
-      defaultLaunchConfiguration: team.defaultLaunchConfiguration,
-      members: [lead, teamWorker].map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
-        launchConfiguration: member.launchConfiguration, followsTeam: true })) },
-  } as const;
-  const executionTree = {
-    ...base,
-    rootOrg: { ...base.rootOrg, taskExecutions: [taskAgent, taskTeam] },
-  };
-  const taskStatuses = [worker, lead, teamWorker, taskAgent, ...taskTeam.members].map((member) => ({
+  const executionTree = base;
+  const memberStatuses = [worker, lead, teamWorker].map((member) => ({
     execution: createCollaborationMemberExecutionIdentity({
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       memberAddress: member.address,
@@ -62,7 +42,7 @@ const taskBearingPackage = () => {
     details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null },
     statusHint: "IDLE" as const,
   }));
-  return { tree: executionTree, closedTaskExecutions: [], messages, inputStates: [], statuses: [...statuses, ...taskStatuses] };
+  return { tree: executionTree, closedTaskExecutions: [], messages, inputStates: [], statuses: [...statuses, ...memberStatuses] };
 };
 
 const connection = () => {
@@ -75,7 +55,8 @@ const harness = (snapshot = { tree, closedTaskExecutions: [], messages, statuses
   const executeAgentCommand = vi.fn(async () => ({ accepted: true }));
   const executeAgentCommandWithExecutionKind = vi.fn(async (agentRunId: string) => ({
     result: { accepted: true },
-    executionKind: agentRunId.includes("task") ? "task" as const : "configured" as const,
+    // A child row's command goes to the child's own run: no execution kind of this Org (autobyteus-461).
+    executionKind: agentRunId.includes("child") ? null : "configured" as const,
   }));
   const recordRunActivity = vi.fn(async () => undefined);
   const run = {
@@ -93,7 +74,7 @@ const harness = (snapshot = { tree, closedTaskExecutions: [], messages, statuses
 
 describe("AgentOrgStreamHandler", () => {
   it("sends the native snapshot for AGY Org root, direct Agents and nested Team members", async () => {
-    const current = taskBearingPackage();
+    const current = orgPackage();
     const agy = (launch: typeof current.tree.rootOrg.defaultLaunchConfiguration) => ({
       ...launch, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI,
     });
@@ -153,25 +134,6 @@ describe("AgentOrgStreamHandler", () => {
     expect(emitted[1]).toMatchObject({ payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, is_active: false } });
   });
 
-  it("projects restored task Agent and Team runs at their configured recipient addresses", async () => {
-    const test = harness(taskBearingPackage()); const client = connection();
-    const sessionId = await test.handler.connect(client.socket, orgRunId);
-    expect(sessionId, client.sent.at(-1)).toBeTruthy();
-
-    const snapshot = client.sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)))
-      .find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");
-    expect(snapshot).toMatchObject({
-      type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-      payload: { root_org: {
-        execution_tree: { rootOrg: { taskExecutions: [
-          { address: "/worker", agentRunId: "agent-worker-task", delegatorAgentRunId: agent.agentRunId },
-          { address: "/team", teamRunId: "team-run-task", delegatorAgentRunId: agent.agentRunId },
-        ] } },
-      } },
-    });
-    expect(snapshot && snapshot.type === "ROOT_EXECUTION_VIEW_SNAPSHOT" ? snapshot.payload.root_org : null).not.toHaveProperty("task_records");
-  });
-
   it("rejects wrong-root commands and routes a correlated command only to the exact AgentRun", async () => {
     const test = harness(); const client = connection(); const sessionId = await test.handler.connect(client.socket, orgRunId); expect(sessionId).toBeTruthy();
     const command = (rootRunId: string, commandId: string) => JSON.stringify({ type: "SEND_MESSAGE", payload: { root_subject_kind: "agent_org", root_run_id: rootRunId, target_agent_run_id: agent.agentRunId, command_id: commandId, content: "Hello", context_file_paths: ["/tmp/context.txt"], image_urls: [], message_id: "message-1", dedupe_key: "dedupe-1" } });
@@ -186,15 +148,15 @@ describe("AgentOrgStreamHandler", () => {
     expect(JSON.parse(client.sent.at(-1) ?? "{}")).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "accepted", state: "accepted" } });
   });
 
-  it("keeps task-scoped and rejected sends out of Org history summary qualification", async () => {
-    const test = harness(taskBearingPackage()); const client = connection();
+  it("keeps a child's and rejected sends out of Org history summary qualification", async () => {
+    const test = harness(orgPackage()); const client = connection();
     const sessionId = await test.handler.connect(client.socket, orgRunId); expect(sessionId).toBeTruthy();
     const send = (target: string, id: string) => JSON.stringify({ type: "SEND_MESSAGE", payload: {
       root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: target,
       command_id: id, content: "Do not title", context_file_paths: [], image_urls: [],
       message_id: `message-${id}`, dedupe_key: `dedupe-${id}`,
     } });
-    await test.handler.handleMessage(sessionId!, send("agent-worker-task", "task"));
+    await test.handler.handleMessage(sessionId!, send("agent-child-run", "child"));
     test.executeAgentCommandWithExecutionKind.mockResolvedValueOnce({
       result: { accepted: false, code: "NOT_ACCEPTED" }, executionKind: "configured",
     });
