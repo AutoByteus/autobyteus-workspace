@@ -1,5 +1,27 @@
 <template>
+  <!-- The phone viewer (autobyteus-472 DS-002): pinch 1×–4×, pan, double tap Fit ↔ Fill, as the VNC Viewer's picture. -->
   <div
+    v-if="touchZoom"
+    ref="touchLayer"
+    class="image-viewer-touch relative h-full w-full overflow-hidden touch-none select-none"
+    data-testid="image-viewer-touch"
+  >
+    <div class="absolute inset-0 origin-top-left" :style="{ transform: pictureZoom.transform.value }" data-testid="image-viewer-picture">
+      <img
+        v-if="resolvedUrl"
+        :src="resolvedUrl"
+        :alt="$t('tools.components.fileExplorer.viewers.ImageViewer.image_content')"
+        class="h-full w-full object-contain"
+        draggable="false"
+        @load="onTouchImageLoad"
+      />
+    </div>
+    <div v-if="!resolvedUrl" class="error-placeholder absolute inset-0 flex items-center justify-center">
+      <p>{{ resourceError || $t('tools.components.fileExplorer.viewers.ImageViewer.image_url_is_not_available') }}</p>
+    </div>
+  </div>
+  <div
+    v-else
     class="image-viewer-container"
     ref="containerRef"
     @wheel.prevent="handleWheel"
@@ -45,15 +67,36 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
+import { usePictureZoom } from '~/composables/usePictureZoom';
+import type { ViewerZoomMemory } from '~/composables/mobile/useViewerZoomMemory';
 
 const props = defineProps<{
   url: string | null;
   /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
   contentRevision?: number;
+  /** The phone viewer (autobyteus-472): touch zoom instead of the mouse wheel and drag. */
+  touchZoom?: boolean;
+  /** The phone viewer's memory of the zoom and position, kept across a reload of the same file. */
+  zoomMemory?: ViewerZoomMemory | null;
 }>();
 const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 });
 
-// Zoom state
+// Touch zoom (the phone viewer): the image's own size is the picture fitted into the layer.
+const touchLayer = ref<HTMLElement | null>(null);
+const natural = ref<{ width: number; height: number } | null>(null);
+const pictureZoom = usePictureZoom(touchLayer, {
+  picture: () => natural.value,
+  onCommit: (state) => props.zoomMemory?.rememberImage(state),
+});
+const onTouchImageLoad = (event: Event) => {
+  const image = event.target as HTMLImageElement;
+  natural.value = { width: image.naturalWidth, height: image.naturalHeight };
+  // A reload of the same file keeps its zoom and position (autobyteus-472 REQ-006).
+  const remembered = props.zoomMemory?.image;
+  if (remembered) pictureZoom.restore(remembered);
+};
+
+// Zoom state (mouse)
 const scale = ref(1);
 const position = ref({ x: 0, y: 0 });
 const containerRef = ref<HTMLElement | null>(null);

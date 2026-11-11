@@ -1,25 +1,26 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
-import { DOUBLE_TAP_MS, useNodeDesktopZoom } from '../useNodeDesktopZoom';
+import { DOUBLE_TAP_MS, usePictureZoom } from '../usePictureZoom';
 
 const WIDTH = 400;
 const HEIGHT = 300;
 
 const mountZoom = async (picture?: { width: number; height: number }) => {
   const onSingleTap = vi.fn();
+  const onCommit = vi.fn();
   const present = ref(true);
-  let zoom!: ReturnType<typeof useNodeDesktopZoom>;
+  let zoom!: ReturnType<typeof usePictureZoom>;
   const wrapper = mount(defineComponent({
     setup() {
       const layer = ref<HTMLElement | null>(null);
-      zoom = useNodeDesktopZoom(layer, { onSingleTap, picture: picture ? () => picture : undefined });
+      zoom = usePictureZoom(layer, { onSingleTap, onCommit, picture: picture ? () => picture : undefined });
       return () => (present.value ? h('div', { ref: layer, 'data-testid': 'layer' }) : h('span'));
     },
   }), { attachTo: document.body });
   await flushPromises();
   const layer = () => wrapper.get('[data-testid="layer"]').element as HTMLElement;
-  return { zoom, wrapper, layer, onSingleTap, present };
+  return { zoom, wrapper, layer, onSingleTap, onCommit, present };
 };
 
 const pointer = (target: HTMLElement, type: string, id: number, x: number, y: number) => {
@@ -40,7 +41,7 @@ const tap = (target: HTMLElement, x: number, y: number) => {
   pointer(target, 'pointerup', 7, x, y);
 };
 
-describe('useNodeDesktopZoom (View only)', () => {
+describe('usePictureZoom (View only)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(WIDTH);
@@ -199,5 +200,40 @@ describe('useNodeDesktopZoom (View only)', () => {
     present.value = false;
     await flushPromises();
     expect(zoom.scale.value).toBe(1);
+  });
+
+  // autobyteus-472 REQ-006: the phone viewer remembers where a zoomed image is and puts it back after a reload.
+  it('tells where the picture is after a finished pinch, drag or double tap, and not while a finger is still down', async () => {
+    const { zoom, layer, onCommit } = await mountZoom();
+    pointer(layer(), 'pointerdown', 1, 150, 150);
+    pointer(layer(), 'pointerdown', 2, 250, 150);
+    pointer(layer(), 'pointermove', 1, 100, 150);
+    pointer(layer(), 'pointermove', 2, 300, 150);
+    pointer(layer(), 'pointerup', 1, 100, 150);
+    expect(onCommit).not.toHaveBeenCalled();
+    pointer(layer(), 'pointerup', 2, 300, 150);
+    expect(onCommit).toHaveBeenCalledTimes(1);
+    expect(onCommit.mock.calls[0][0]).toEqual({ scale: zoom.scale.value, x: expect.any(Number), y: expect.any(Number) });
+    expect(onCommit.mock.calls[0][0].scale).toBeCloseTo(2);
+
+    tap(layer(), 200, 150);
+    tap(layer(), 200, 150);
+    expect(onCommit).toHaveBeenCalledTimes(2);
+    expect(onCommit.mock.calls[1][0]).toEqual({ scale: 1, x: 0, y: 0 });
+
+    // A tap that moves nothing tells nothing.
+    tap(layer(), 50, 50);
+    vi.advanceTimersByTime(DOUBLE_TAP_MS + 1);
+    expect(onCommit).toHaveBeenCalledTimes(2);
+  });
+
+  it('restores a remembered place, kept inside the layer', async () => {
+    const { zoom } = await mountZoom();
+    zoom.restore({ scale: 2, x: -150, y: -100 });
+    expect(zoom.scale.value).toBe(2);
+    expect(zoom.transform.value).toBe('translate(-150px, -100px) scale(2)');
+    zoom.restore({ scale: 9, x: 500, y: 500 });
+    expect(zoom.scale.value).toBe(4);
+    expect(zoom.transform.value).toBe('translate(0px, 0px) scale(4)');
   });
 });
