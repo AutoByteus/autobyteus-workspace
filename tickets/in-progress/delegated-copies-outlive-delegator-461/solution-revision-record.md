@@ -782,3 +782,19 @@
 - Classification: `Large`, `High`, unchanged
 - Next action: architecture review, round 10 (AR-019 decided by the user; AR-020 answered at SR-034)
 
+### SR-036 — How a delegated team's member learns its new addresses (the Implementation Engineer's Unclear)
+
+- Triggering: the Implementation Engineer (Unclear, 2026-11-11). The requirements' exception (SR-035) and a design test said the members of open delegated teams are "told their new addresses once", but neither the contract nor the model said how, or what is stored for "once". The engineer proposed a one-time marker in the team's own file plus a platform notice, or a sentence always present in the member context.
+- Read: an agent's prompt states no address of its own and tells it to "use only an exact address you were given" (`collaboration-prompt-sections.ts`). After the migration, every source of addresses gives the new ones: `get_handoff_rules`, `list_available_agents` and message headers. The only stale source is the agent's own conversation.
+- Decision (the Solution Designer, on the data model's merits): **correct at the point of use, store nothing.**
+  - When a delegated team's member writes an address under its run's `recipientAddress`, the name the team was delegated to and the prefix its members used before, the refusal names the address to use: "… is no longer an address: your team is addressed from its own root. Use /code_reviewer." For the team's own old address, it names the coordinator.
+  - It is computed from the Task entry, so the team's file gets no migration marker and the prompt no extra text. It also helps whenever an old address is copied from history, also long after the migration, which a "once" notice would not.
+  - The member context is not changed.
+- Done:
+  - `model.py`: `resolve` corrects such addresses. New state S24.
+  - Contract §2.3, A-5 and A-6.
+  - `requirements-doc.md`: the exception says how members learn the addresses.
+  - The design's test line.
+  - `walkthrough.py --check` passes.
+- Approval: within the user's decision of SR-035 (option 1). The way members learn their addresses is less intrusive than the "told once" the user was shown, and the user is informed. The architecture review passed SR-035 in round 10 (ARCH-REV-010); this refinement is sent to the reviewer as a narrow note.
+

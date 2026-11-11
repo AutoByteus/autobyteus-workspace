@@ -99,7 +99,7 @@ The first match wins.
    - A Task an org agent assigned: the org's agents and mounted teams.
 3. **Its own run's standing agents.** This step applies to runs the user started.
 
-Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. Every delegated run is reached by its run ID.
+Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. One exception: a delegated team's member that writes an address under the name its team was delegated to (its `recipientAddress`, the prefix members used before TC-12) gets a correction naming the address to use (S24). Every delegated run is reached by its run ID.
 
 ### 2.4 Which Task a delegation belongs to
 
@@ -441,6 +441,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
+| S24 | An old prefixed address is corrected | A-5, A-6 |
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
@@ -483,8 +484,8 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | A-2 | An org agent (O1, O2) | `"/cto"`; `"/dev_team"`; `"/dev_team/qa"` | An org agent; a mounted team's coordinator; a member | 3 | The sender's address | Same | 42: the same receiver |
 | A-3 | A mounted team's member (O3, O4) | `"/dev_team/qa"`; `"/ceo_agent"` | Its teammate; an org agent | 1; 3 | The sender's address | Same | 472: the same receiver |
 | A-4 | A delegated team's member (S2) | `"/code_reviewer"` | Its teammate | 1 | The sender's address | **Changed:** was `"/software_engineering_team/code_reviewer"` | 3,311: the same receiver, prefix dropped |
-| A-5 | A delegated team's member | Its team as a whole | No address | — | — | **Changed:** the team's prefix reached the coordinator | 0 sends |
-| A-6 | A delegated team's member, from its history | `"/software_engineering_team/code_reviewer"` | Not found, with guidance | — | — | **Changed** | 11 delegated teams with an open Task |
+| A-5 | A delegated team's member (S24) | Its team as a whole, `"/software_engineering_team"` | Refused with a correction naming the coordinator | — | — | **Changed:** the team's prefix reached the coordinator | 0 sends |
+| A-6 | A delegated team's member, from its history (S24) | `"/software_engineering_team/code_reviewer"` | Refused with a correction: "… Use /code_reviewer." The prefix is the run's `recipientAddress`; nothing else is stored | — | — | **Changed** | 11 delegated teams with an open Task |
 | B-1 | A delegated team's member (S3) | `"/project_task_manager"` | Its Task's assigner, a standalone agent | 2 | The run ID only | Same | 412: the same receiver |
 | B-2 | A sub-work run (S7) | `"/project_task_manager"` | Its Task's assigner, not its delegator | 2 | The run ID only | Same | 3: the same receiver |
 | B-3 | A run delegated by a team member (U4) | `"/solution_designer"` | The assigning team's member | 2 | The run ID only | Same | 6: the same receiver |

@@ -160,6 +160,11 @@ def standalone():
           op=lambda: w.delegate(SD, "/research_agent", "2026-11-10T20:00:00.000Z", ("agent", "y", None), task_key="demo-2"),
           found="A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.",
           today="The same.", checked="—"),
+     dict(id="S24", title="An old prefixed address is corrected", cases="A-5, A-6",
+          call='`send_message_to(recipient_address: "/software_engineering_team/code_reviewer", content: "…")`, by `solution_designer_65a9`, copying an address from its conversation before the migration',
+          op=lambda: w.send_by_address(SD, "/software_engineering_team/code_reviewer", "…", "x", "2026-11-10T20:10:00.000Z"),
+          found="Not a member (step 1), and it begins with E's `recipientAddress`, the name E was delegated to. The refusal is a correction: it names the address to use. Nothing is stored for it, so it works whenever an old address is copied, also long after the migration. The team's own address (`\"/software_engineering_team\"`) is corrected the same way, naming the coordinator.",
+          today="Today the prefixed address is the member's address.", checked="11 delegated teams with an open Task; 3,311 stored sends used the prefixed form."),
     ]
     return w, steps
 

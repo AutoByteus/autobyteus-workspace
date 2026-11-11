@@ -34,6 +34,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
+| S24 | An old prefixed address is corrected | A-5, A-6 |
 
 ---
 
@@ -2687,6 +2688,24 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Against today:** The same.
 
 **Checked on the user's data:** —
+
+---
+
+#### S24 — An old prefixed address is corrected [A-5, A-6]
+
+**Call:** `send_message_to(recipient_address: "/software_engineering_team/code_reviewer", content: "…")`, by `solution_designer_65a9`, copying an address from its conversation before the migration
+
+**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_TARGET_NOT_FOUND", "message": "/software_engineering_team/code_reviewer is no longer an address: your team is addressed from its own root. Use /code_reviewer." }`
+
+**How:** Not a member (step 1), and it begins with E's `recipientAddress`, the name E was delegated to. The refusal is a correction: it names the address to use. Nothing is stored for it, so it works whenever an old address is copied, also long after the migration. The team's own address (`"/software_engineering_team"`) is corrected the same way, naming the coordinator.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** Today the prefixed address is the member's address.
+
+**Checked on the user's data:** 11 delegated teams with an open Task; 3,311 stored sends used the prefixed form.
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
