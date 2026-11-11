@@ -575,5 +575,31 @@
     - D3: a delegated team's member that delegates to its own team's definition gets a new copy, as in a team the user started (0 refusals in history).
 - Intended behavior changed: `Yes`, narrowly. The members of a delegated team use team-local addresses, the same as in the team when the user starts it. The UI's names do not change. The Solution Designer decided this within the direction (P1: a delegated run is an ordinary run); the user is informed.
 - Classification: `Large`, `High`, unchanged
-- Next action: the user reads contract §10.7 (requested); then architecture review, round 9 (TC-12 and §10.7)
+- Next action: superseded by SR-026 (the user asked for every case in one file)
+
+### SR-026 — Every collaboration case in one file, checked case by case (contract revision 7)
+
+- Phase and classification: Requirements (behavior-defining supplement) and Design; `Design Impact` resolved
+- Triggering: the user (2026-11-11). The collaboration facts were spread over many sections: records, communication rules, address tables, walk-throughs, data examples. The user asked for one file holding each communication case, delegation included: the address or recipient to use, how it is stored on disk, and a check of each case.
+- Done:
+  - `target-collaboration-contract.md` is rewritten as that file:
+    - §1 principles and words;
+    - §2 addresses and who may talk;
+    - §3 everything on disk, with exact JSON;
+    - §4 the in-memory tree;
+    - §5 every case (DL-0 … DL-11, A-1 … C-4, R-1 … R-10, E-1 … E-4, T-1 … T-7), each with the call, how it is found and admitted, what is on disk, what is in memory, the result and header, what differs from today, and its check;
+    - §6 existing data before and after (E1 … E12);
+    - §7 decisions;
+    - §8 the validation index.
+  - The earlier sections §4, §8, §10, §11, §12 and §13 are folded into it; nothing is dropped.
+  - `evidence/data-model-validation/validate_every_case.py` (`every-case-2026-11-11.txt`) checks every case, with each output line keyed by its case ID.
+- Found by collecting the cases (the Solution Designer's earlier gaps; message storage had not been checked):
+  - **TC-13 (new):** an agent run's message log has two places today: 8 runs the user started log in `agents/<id>/collaboration/`, and 42 delegated runs log in `agents/<id>/`. A delegated run is an ordinary run, so there is one place: the run's own folder, as for team and org runs. The migration moves the 8 logs (DS-10 step 5b). An unconverted JSON log of an unfinished `20261018_…` item is left for that migration's retry.
+  - **Extra copies in former hosts' logs:** 1,011 messages inside delegated teams and 53 between two delegated runs (2026-10) are also in the hosting run's log. Each is in its own run's log or logs too. They are kept (P7), and the view rule shows them no more than the owning log does.
+  - **The work packet:** a new delegated run's work packet is its first input, not a logged message (129 of 129 runs with one Task entry). Another Task for an existing run is a `task_assignment` message stored in both logs (225 of 227).
+- Measured (read-only): 406 of 406 local entries map to DL-1 … DL-7 and can be converted. Within one run, 13,206 of 13,206 messages are in their own run's log; between two runs, 1,604 of 1,604 are in both runs' logs. 6,485 delivered addressed sends reach the same receiver; the 53 older ones are refused, as by today's code. The sender address shown is as in §5.4.
+- Intended behavior changed: `No` beyond SR-025 (TC-13 is a storage location; the user sees nothing)
+- Approval impact: the user's direction; TC-13 is the Solution Designer's decision within it, and the user is informed
+- Classification: `Large`, `High`, unchanged
+- Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's §5)
 
