@@ -65,7 +65,7 @@ def standalone():
      dict(id="S5", title="E's solution designer hands sub-work of T1 to the product team", cases="DL-5",
           call='`delegate_task(recipient_address: "/product_team", description: "Prototype the export screen …")`, by `solution_designer_65a9`',
           op=lambda: w.delegate(SD, "/product_team", "2026-11-10T13:00:00.000Z", ("agent_team", "product_team_e03d", {"product-designer": "product_designer_1a2b", "prototyper": "prototyper_4e11"}), description="Prototype the export screen …"),
-          found="There is no `task_id`, so the work joins the Task E currently works on (its most recently assigned open Task): T1, as a `subWork` entry. P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.",
+          found="There is no `task_id`, so the work joins E's current Task: its newest open entry, T1, as a `subWork` entry. (A run that works on a Task may not use `task_id`: S20.) P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.",
           today="Today the entry names M as `hostRoot` and P runs inside M's process. Now P is one hop under E and runs on its own.",
           checked="30 sub-work entries: all can be computed, and all are nested one hop below today's top run."),
      dict(id="S6", title="E's solution designer hands sub-work of T1 to the image agent", cases="DL-5",
@@ -139,6 +139,11 @@ def standalone():
           op=lambda: w.send_by_address(M, "/software_engineering_team", "…", "x", "2026-11-10T19:50:00.000Z"),
           found="A delegated run's agents have no address in M's space; M reaches E by run ID (S4). The same holds for E writing `\"/product_team\"` (C-3).",
           today="The same as today's code; 53 older sends (2026-08 … 2026-10) reached a delegated run by address before that rule.", checked="53 older sends."),
+     dict(id="S20", title="Refused: a run that works on a Task uses `task_id`", cases="DL-11",
+          call='`delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E works on T6)',
+          op=lambda: w.delegate(SD, "/research_agent", "2026-11-10T20:00:00.000Z", ("agent", "y", None), task_key="demo-2"),
+          found="A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.",
+          today="The same.", checked="—"),
     ]
     return w, steps
 

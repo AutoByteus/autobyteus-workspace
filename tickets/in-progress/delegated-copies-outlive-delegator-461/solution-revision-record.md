@@ -722,3 +722,15 @@
 - Classification: `Large`, `High`, unchanged
 - Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's model and §5)
 
+### SR-032 — Which Task a delegation belongs to: two rules decided by the model
+
+- Triggering: the Implementation Engineer (Unclear, 2026-11-11) found the executable model (SR-031) differing from the base code at two points and asked which wins. The user (2026-11-11): the contract and its model are the authority, and the code may be refactored to them. So the two points were decided on the data model's merits.
+- Decided (contract §2.4, new):
+  1. **Sub-work joins the run's current Task**: its newest open entry, else its newest entry, which must be open. A run with an older open Task and a newer closed Task still works on the open one. The model's first rule (the most recently linked entry, refused when closed) refused legitimate work and was wrong.
+  2. **A run that works on a Task cannot use `task_id`** (`TASK_AGENT_RESOURCE_OWNED_SENDER`). An `assigned` entry gives its assigner the run's continuation, so only an agent that works on no Task assigns Tasks; a Task's runs hand on work as `subWork` of the same Task. The model had allowed it.
+
+  Both equal today's code.
+- Done: `model.py` corrected; a new state S20 (the refusal); the walkthrough and the contract's step lists regenerated. `walkthrough.py --check` passes, and the walkthrough's examples have 0 findings.
+- Intended behavior changed: `No`
+- Next action: the user reads the file; then architecture review, round 9
+

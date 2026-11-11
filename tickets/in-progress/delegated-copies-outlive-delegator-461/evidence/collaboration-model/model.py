@@ -311,14 +311,19 @@ class World:
         def_id = next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
         if def_id is None: raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"No agent or agent team has the address {address}.")
         # which Task
+        if task_key and self.entries_of(snode, srun_key):
+            # a run that works on a Task delegates its own work by description only (base: new-copy-work.ts:49)
+            raise Refused("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.")
         if task_key:
             task = self.task_by_key(snode, task_key); role = "assigned"
             if task["status"] not in ("TODO", "IN_PROGRESS"): raise Refused("TASK_NOT_ASSIGNABLE", f"The Task is {task['status']}.")
         else:
-            mine = sorted(self.entries_of(snode, srun_key), key=lambda te: te[1]["linkedAt"])
+            mine = self.entries_of(snode, srun_key)
             if mine:
-                # sub-work joins the run's current Task: its most recently linked entry, which must be open
-                t, cur = mine[-1]
+                # sub-work joins the run's current entry: its newest open entry, else its newest entry
+                # (by linkedAt; tie: the greater Task ID), which must be open (base: deriveCurrent, linkInherited)
+                pool = [te for te in mine if te[1]["closedAt"] is None] or mine
+                t, cur = max(pool, key=lambda te: (te[1]["linkedAt"], te[0]))
                 if cur["closedAt"] is not None: raise Refused("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.")
                 task = self.tasks(snode)[t][1]; role = "subWork"
             else:

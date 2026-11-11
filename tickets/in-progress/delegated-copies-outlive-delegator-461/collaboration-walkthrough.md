@@ -30,6 +30,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S17 | Refused: runs of different Tasks | R-7 |
 | S18 | Refused: M messages itself | IN-7 |
 | S19 | Refused: addressing a delegated run | C-1, C-3 |
+| S20 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 
 ---
 
@@ -489,7 +490,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Result to the caller:** `{"delegated": true, "target_kind": "team", "target_team_run_id": "product_team_e03d", "target_team_coordinator_agent_run_id": "product_designer_1a2b"}`
 
-**How:** There is no `task_id`, so the work joins the Task E currently works on (its most recently assigned open Task): T1, as a `subWork` entry. P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.
+**How:** There is no `task_id`, so the work joins E's current Task: its newest open entry, T1, as a `subWork` entry. (A run that works on a Task may not use `task_id`: S20.) P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.
 
 **On disk after this step:**
 
@@ -2045,6 +2046,24 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Against today:** The same as today's code; 53 older sends (2026-08 … 2026-10) reached a delegated run by address before that rule.
 
 **Checked on the user's data:** 53 older sends.
+
+---
+
+#### S20 — Refused: a run that works on a Task uses `task_id` [DL-11]
+
+**Call:** `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E works on T6)
+
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_OWNED_SENDER", "message": "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." }`
+
+**How:** A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** The same.
+
+**Checked on the user's data:** —
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 

@@ -101,7 +101,20 @@ The first match wins.
 
 Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. Every delegated run is reached by its run ID.
 
-### 2.4 The sender address a receiver is shown
+### 2.4 Which Task a delegation belongs to
+
+| The delegator's run | `delegate_task` with `task_id` | `delegate_task` with a description only |
+| --- | --- | --- |
+| Works on no Task (a run the user started) | An `assigned` entry in that Task | A Task with no Project is created; an `assigned` entry in it |
+| Works on a Task (it has an entry) | **Refused**, `TASK_AGENT_RESOURCE_OWNED_SENDER`: "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." | A `subWork` entry in the run's **current Task**: its newest open entry (by `linkedAt`; tie: the greater Task ID). When none of its entries is open: refused, "Your Task is DONE or CANCELLED, so you can't start new work." |
+
+Why, for the data model:
+- **An `assigned` entry gives its assigner a run's life and continuation** (P5, R-6). Only an agent that works on no Task assigns Tasks. If a run that itself works for a Task could assign Tasks, assigners would chain under assigners, and a Task's runs would answer to a run that is itself answerable to another. Work a Task's run hands on is part of that Task: `subWork`, under the same assigner.
+- **Sub-work belongs to work in progress.** A run with an older open Task and a newer closed Task still works on the open one, so its sub-work joins that one. It is not refused. With several open Tasks (DEC-012; 0 today) the newest open one is taken.
+
+These two rules are today's code too (`new-copy-work.ts:49`, `deriveCurrent`, `linkInherited`). They are kept because the model needs them, not because the code has them.
+
+### 2.5 The sender address a receiver is shown
 
 The receiver sees the sender's address in the sender's own space only when the receiver can use that address to reach the sender (`reachingAddressOf`). Otherwise it sees the run ID only:
 
@@ -422,6 +435,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S17 | Refused: runs of different Tasks | R-7 |
 | S18 | Refused: M messages itself | IN-7 |
 | S19 | Refused: addressing a delegated run | C-1, C-3 |
+| S20 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
