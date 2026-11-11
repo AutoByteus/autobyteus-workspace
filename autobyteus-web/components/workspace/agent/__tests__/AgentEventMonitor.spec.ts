@@ -185,6 +185,8 @@ describe('setup-bound lazy file activation', () => {
     await flushPromises();
     const options = launcher.create.mock.calls[0][0];
     expect(options.revealTool).toBe(reveal); expect(options.isOriginCurrent()).toBe(true);
+    // The run whose conversation names the path decides where its files are (autobyteus-471 REQ-003).
+    expect(options.originRunId()).toBe('agent-42');
     expect(launcher.open).toHaveBeenCalledWith(action);
     expect(wrapper.get('[data-testid="event-monitor-file-preview-status"]').text()).toBe('ordinary failure');
     wrapper.unmount(); expect(options.isOriginCurrent()).toBe(false);

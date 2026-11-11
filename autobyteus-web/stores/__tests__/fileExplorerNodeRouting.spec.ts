@@ -76,6 +76,40 @@ describe('fileExplorerStore node routing behavior', () => {
     expect(apolloClientMock.query).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ['openFilePreview', (store: any) => store.openFilePreview('/srv/notes.md', 'ws-1')],
+    ['openFile', (store: any) => store.openFile('/srv/notes.md', 'ws-1')],
+  ])('a node file is read-only whoever opens it: %s with no intent (autobyteus-471 REQ-001, CR-003)', async (_name, open) => {
+    determineFileTypeMock.mockResolvedValue('Text');
+    transport.fetch.mockResolvedValue(new Response('node text', { status: 200 }));
+    const store = useFileExplorerStore();
+
+    await open(store);
+
+    const file = store._getOrCreateWorkspaceState('ws-1').openFiles[0];
+    expect(file).toMatchObject({ content: 'node text', mode: 'preview', accessIntent: { source: 'node-file', readOnly: true } });
+    store.setFileMode('/srv/notes.md', 'edit', 'ws-1');
+    expect(file.mode).toBe('preview');
+    store.updateEditorDraft('ws-1', '/srv/notes.md', 'typed');
+    expect(file.editorDraft).toBeUndefined();
+    // Opened again by a caller without an intent: still read-only.
+    await store.openFile('/srv/notes.md', 'ws-1');
+    expect(file).toMatchObject({ mode: 'preview', accessIntent: { source: 'node-file', readOnly: true } });
+  });
+
+  it('a caller\'s own read-only intent is kept for a node file; a workspace file without one stays editable', async () => {
+    determineFileTypeMock.mockResolvedValue('Text');
+    transport.fetch.mockResolvedValue(new Response('node text', { status: 200 }));
+    const store = useFileExplorerStore();
+
+    await store.openFilePreview('/srv/notes.md', 'ws-1', { accessIntent: { source: 'event-monitor', readOnly: true } });
+    await store.openFile('docs/plan.md', 'ws-1');
+
+    const [nodeFile, workspaceFile] = store._getOrCreateWorkspaceState('ws-1').openFiles;
+    expect(nodeFile.accessIntent).toEqual({ source: 'event-monitor', readOnly: true });
+    expect(workspaceFile).toMatchObject({ mode: 'edit', accessIntent: null });
+  });
+
   it('opens an absolute text path in a node window as a node file\'s content; a refusal is the plain reason', async () => {
     determineFileTypeMock.mockResolvedValue('Text');
     transport.fetch.mockResolvedValueOnce(new Response('# Contract', { status: 200 }));

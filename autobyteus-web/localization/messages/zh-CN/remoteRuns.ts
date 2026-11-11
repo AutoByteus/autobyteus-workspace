@@ -18,7 +18,6 @@ const remoteRunsMessages = {
   'remote.panel.artifacts': '此运行写入的文件在 {{node}} 上。请在该节点的窗口中打开它来查看。',
   'remote.panel.vnc': '此运行的屏幕在 {{node}} 上。请在该节点的窗口中打开它来查看。',
   'remote.composer.placeholder': '向 {{node}} 上的 {{agent}} 发消息…',
-  'remote.filePath': '该文件在 {{node}} 上：请在该节点的窗口中打开此运行来查看。',
 } satisfies TranslationCatalog;
 
 export default remoteRunsMessages;

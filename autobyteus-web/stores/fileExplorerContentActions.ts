@@ -62,6 +62,12 @@ const releaseClosedNodeFileUrls = (before: readonly OpenFileState[], after: read
 
 const NODE_FILE_BLOB_TYPES = new Set(['Image', 'Audio', 'Video', 'Excel', 'PDF'])
 
+/** A node file is read-only whoever opens it (autobyteus-471 REQ-001): a caller's own read-only intent, else this one. */
+const NODE_FILE_ACCESS_INTENT: FilePreviewAccessIntent = { source: 'node-file', readOnly: true }
+
+const accessIntentOf = (route: FileLoadRoute, requested: FilePreviewAccessIntent | undefined): FilePreviewAccessIntent | null =>
+  requested ?? (route === 'node-file' ? NODE_FILE_ACCESS_INTENT : null)
+
 const normalizeDeletedPath = (path: string): string =>
   path.trim().replace(/^\/+/, '').replace(/\/+$/, '')
 
@@ -98,6 +104,8 @@ export const fileExplorerContentActions = {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const windowNodeContextStore = useWindowNodeContextStore()
     const existingFile = wsState.openFiles.find((file: OpenFileState) => file.path === filePath)
+    const route = loadRouteOf(filePath, windowNodeContextStore)
+    const accessIntent = accessIntentOf(route, options?.accessIntent)
 
     if (!existingFile) {
       const fileType = await determineFileType(filePath)
@@ -105,8 +113,8 @@ export const fileExplorerContentActions = {
       const newFileState: OpenFileState = {
         path: filePath,
         type: fileType,
-        mode: options?.accessIntent ? 'preview' : mode,
-        accessIntent: options?.accessIntent ?? null,
+        mode: accessIntent ? 'preview' : mode,
+        accessIntent,
         content: null,
         url: null,
         contentRevision: 0,
@@ -117,7 +125,6 @@ export const fileExplorerContentActions = {
       wsState.openFiles.push(newFileState)
       console.log('[FileExplorer] Pushed new initial file state:', JSON.parse(JSON.stringify(newFileState)))
 
-      const route = loadRouteOf(filePath, windowNodeContextStore)
       if (route === 'local') {
         await this._loadLocalFile(newFileState, filePath)
       } else if (route === 'node-file') {
@@ -126,8 +133,8 @@ export const fileExplorerContentActions = {
         this._loadWorkspaceOrExternalFile(newFileState, filePath, workspaceId, windowNodeContextStore)
       }
     } else {
-      existingFile.accessIntent = options?.accessIntent ?? null
-      existingFile.mode = options?.accessIntent ? 'preview' : mode
+      existingFile.accessIntent = accessIntent
+      existingFile.mode = accessIntent ? 'preview' : mode
       // An explicit open shows the file's current content (autobyteus-450 REQ-003); an unsaved draft stays.
       this._reloadOpenFile(existingFile, filePath, workspaceId, windowNodeContextStore)
     }

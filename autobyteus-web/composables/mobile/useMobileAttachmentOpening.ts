@@ -2,6 +2,7 @@ import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useLocalization } from '~/composables/useLocalization';
 import { useToasts } from '~/composables/useToasts';
 import { openMobileFilePath } from '~/composables/mobile/mobileFileOpening';
+import { FILE_ON_OTHER_NODE_MESSAGE_KEY } from '~/composables/remoteRuns/remoteRunFile';
 import type { ContextAttachment } from '~/types/conversation';
 import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttachmentPresentation';
 
@@ -30,7 +31,7 @@ export function useMobileAttachmentOpening() {
     if (attachment.kind === 'workspace_path' && attachment.locator.startsWith('/')) {
       const outcome = await openMobileFilePath({ absolutePath: attachment.locator, mobileNavigation, isOriginCurrent: () => true });
       if (outcome.status === 'unavailable') {
-        addToast(t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node', { node: outcome.nodeName }), 'info');
+        addToast(t(FILE_ON_OTHER_NODE_MESSAGE_KEY, { node: outcome.nodeName }), 'info');
       } else if (outcome.status === 'failed') {
         addToast(t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'), 'error');
       }

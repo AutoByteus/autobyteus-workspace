@@ -101,7 +101,7 @@ const mountShell = (pinia: any, width: number, height: number, realMonitor = fal
   const Consumer = defineComponent({ setup() {
     reveal = useWorkspaceToolReveal()!; // same setup-captured capability as the real monitor
     const activate = async () => {
-      result.value = (await useEventMonitorFilePreview({ revealTool: reveal, mobileNavigation: null, isOriginCurrent: () => true }).openPath({
+      result.value = (await useEventMonitorFilePreview({ revealTool: reveal, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' }).openPath({
         id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
       })).status;
     };

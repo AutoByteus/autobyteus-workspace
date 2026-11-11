@@ -19,7 +19,7 @@ const action = (path: string) => ({ id: path, rawCandidate: path, normalizedCand
   sourceKind: 'prose' as const, displayLabel: path, previewType: 'Text' as const });
 const metadataB = { data: { workspaceMetadata: { workspaceId: 'B', workspaceRootPath: '/owned/B', displayName: 'B', kind: 'filesystem' } } };
 const opener = (isOriginCurrent: () => boolean = () => true) =>
-  useEventMonitorFilePreview({ revealTool: null, mobileNavigation: { openFile: phone.openFile, openNodeFile: phone.openNodeFile }, isOriginCurrent });
+  useEventMonitorFilePreview({ revealTool: null, mobileNavigation: { openFile: phone.openFile, openNodeFile: phone.openNodeFile }, isOriginCurrent, originRunId: () => 'member-B' });
 const targetIn = (workspaceRootPath: string | null) => ({ context: { state: { runId: 'member-B' }, config: {} }, workspaceRootPath });
 
 beforeEach(() => {
@@ -64,7 +64,7 @@ describe('the phone: a conversation file link opens in the open agent\'s folder,
   });
 
   it('without the phone navigation nothing opens (R-2)', async () => {
-    const result = await useEventMonitorFilePreview({ revealTool: null, mobileNavigation: null, isOriginCurrent: () => true }).openPath(action('/elsewhere/notes.md'));
+    const result = await useEventMonitorFilePreview({ revealTool: null, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'member-B' }).openPath(action('/elsewhere/notes.md'));
     expect(result.status).toBe('failed');
     expect(phone.openNodeFile).not.toHaveBeenCalled();
   });

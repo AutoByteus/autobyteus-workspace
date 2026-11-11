@@ -4,7 +4,7 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { FILE_ON_OTHER_NODE_MESSAGE_KEY, remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
@@ -30,6 +30,8 @@ export function useEventMonitorFilePreview(options: {
   /** The phone opens a conversation's file on its Files screen (autobyteus-277 DS-008); null off the phone. */
   mobileNavigation: MobileFileNavigation | null;
   isOriginCurrent: () => boolean;
+  /** The run whose conversation names the path. */
+  originRunId: () => string | null | undefined;
 }) {
   const fileExplorerStore = useFileExplorerStore();
   const { mobileNavigation } = options;
@@ -41,7 +43,7 @@ export function useEventMonitorFilePreview(options: {
   /** A run another node runs: its paths are that node's (autobyteus-471 REQ-003). */
   const onOtherNode = (nodeName: string): EventMonitorFilePreviewResult => ({
     status: 'unavailable',
-    message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node', { node: nodeName }),
+    message: t(FILE_ON_OTHER_NODE_MESSAGE_KEY, { node: nodeName }),
   });
 
   const failed = (): EventMonitorFilePreviewResult => ({
@@ -62,14 +64,14 @@ export function useEventMonitorFilePreview(options: {
   const openPath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
     try {
       if (!options.isOriginCurrent()) return failed();
+      const remoteNode = remoteRunFileNode(options.originRunId());
+      if (remoteNode) return onOtherNode(remoteNode);
       if (isMobileRemoteAccessRuntime()) {
         return await openMobilePath(action);
       }
 
       if (!options.revealTool) return failed();
       const workspaceTarget = activeContextStore.activeWorkspaceTarget;
-      const remoteRun = workspaceTarget ? useRemoteRunsStore().runOfAgentRun(workspaceTarget.context.state.runId) : null;
-      if (remoteRun) return onOtherNode(remoteRun.nodeName);
       const bindingRevision = windowNodeContextStore.bindingRevision;
       const runId = workspaceTarget?.context.state.runId;
       const sourceRoot = normalizeWorkspaceRootPath(workspaceTarget?.workspaceRootPath);

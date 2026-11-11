@@ -1,5 +1,5 @@
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import type { MobileFileNavigation } from '~/composables/mobile/useMobileNavigation';
@@ -26,8 +26,8 @@ export const openMobileFilePath = async (input: Readonly<{
   const activeContextStore = useActiveContextStore();
   const target = activeContextStore.activeWorkspaceTarget;
   const workspaceRootPath = target?.workspaceRootPath;
-  const remoteRun = target ? useRemoteRunsStore().runOfAgentRun(target.context.state.runId) : null;
-  if (remoteRun) return { status: 'unavailable', nodeName: remoteRun.nodeName };
+  const remoteNode = target ? remoteRunFileNode(target.context.state.runId) : null;
+  if (remoteNode) return { status: 'unavailable', nodeName: remoteNode };
   let locator: ReturnType<typeof mapAbsolutePathToWorkspaceRelative> = null;
   if (target && workspaceRootPath) {
     const metadata = await useWorkspaceStore().resolveWorkspaceMetadataByRootPath(workspaceRootPath);
