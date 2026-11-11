@@ -150,6 +150,8 @@ This is the one record of a delegation and its state. Example of a run on this n
 | `nodeId`, `members` | The peer the run is on, and a peer team's members by run ID and by their address in their own team (`/lead`) | A peer's run only |
 | `linkedAt`, `start`, `startError`, `closedAt` | Unchanged | As today |
 
+**Not in a peer's entry: its agents' launches** (runtime, model, launch source). They are the run's own facts on its node, in its own file there. The delegating node shows them on the child row by reading them from the peer while the view is open, as it reads the run's title and statuses (CM-11; SR-038). The delegation result's launch notes are unchanged. Measured: 0 of the 2 stored peer links hold launches.
+
 `delegatedFrom` replaces `hostRoot`, which named the top run that hosted the run (in 31 of 406 entries, not the run that delegated it), and `assignedBy`, which was the delegator on `assigned` entries only.
 
 ### 3.2 A delegated run's own file

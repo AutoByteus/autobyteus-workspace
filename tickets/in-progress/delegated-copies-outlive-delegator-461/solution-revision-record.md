@@ -819,3 +819,15 @@
   - `walkthrough.py --check` passes.
 
 - ARCH-REV-012 (2026-11-11): Pass, no finding. The SR-035 exception only narrows; informing the user is enough. `walkthrough.py --check` re-run by the reviewer: passes.
+
+### SR-038 — A peer child row's launch details are read from the peer (the Implementation Engineer's Unclear)
+
+- Triggering: the Implementation Engineer (Unclear, 2026-11-11). Today a peer run's tree link stores `launches`, each agent's runtime, model and launch source as the peer resolved them (autobyteus-32 REQ-009), and the delegating run's view shows them on the peer child row. The new model's peer entry (§3.1) has no `launches`, so migration E3 would drop them. REQ-009 preserves "the launch notes". The options were (a) store them in the entry, (b) read them from the peer, (c) drop them.
+- Read (read-only): 0 of the 2 stored peer links hold `launches`. The peer's run summary today carries a title and statuses per agent, no launches (`peer-run-view-answers.ts`).
+- Decision (on the data model's merits): **(b)**. An agent's launch is the run's own fact on its node (P4, one owner; CM-10, the node that runs a run owns it). A copy on the delegating node would be a second owner and goes stale when the run's settings change there. Local child rows already read launches from the run's own file. The peer's summary gains `launches` per agent; nothing is stored. This is within REQ-009, since the launch details stay on the row, and nodes run the same release (no version negotiation).
+- Done:
+  - contract §3.1, "Not in a peer's entry";
+  - the design's DS-8, with the reader `remote-task-execution-dto-projection.ts`, the summary's new field and tests.
+
+  The model is unchanged: it stores nothing and does not model views. `walkthrough.py --check` passes.
+
