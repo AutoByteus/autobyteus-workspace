@@ -10,11 +10,13 @@ import { PairedDeviceStore } from "../../../src/remote-access/stores/paired-devi
 import { RemoteAccessSettingsStore } from "../../../src/remote-access/stores/remote-access-settings-store.js";
 
 let tempDir = "";
+let deviceServices: PairedDeviceService[] = [];
 
 const buildServices = () => {
   const config = { getAppDataDir: () => tempDir };
   const settingsService = new RemoteAccessSettingsService(new RemoteAccessSettingsStore(config));
   const deviceService = new PairedDeviceService(new PairedDeviceStore(config));
+  deviceServices.push(deviceService);
   const pairingService = new RemoteAccessPairingService(settingsService, deviceService, 60_000);
   const phoneVerifier = new PhoneCredentialVerifier(deviceService, settingsService);
   return { settingsService, deviceService, pairingService, phoneVerifier };
@@ -25,6 +27,10 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  // A verified phone's last-seen is saved in the background (`markLastSeen`, by design). Removing the folder while that
+  // write runs fails with ENOTEMPTY (seen under the full suite's load), so wait for each service's write queue first.
+  await Promise.all(deviceServices.map((service) => (service as unknown as { writes: Promise<void> }).writes));
+  deviceServices = [];
   await rm(tempDir, { recursive: true, force: true });
 });
 
