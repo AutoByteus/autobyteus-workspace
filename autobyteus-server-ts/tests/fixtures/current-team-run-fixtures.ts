@@ -1,4 +1,3 @@
-import { projectTaskTeamExecution } from "../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import type { TaskAgentExecutionSource, TaskTeamExecutionSource } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
@@ -109,10 +108,6 @@ export const testCatalogTeamSource = (node: TeamRunAgentTeamNode): TaskTeamExecu
   handoffs: [],
   defaultLaunchConfiguration: node.defaultLaunchConfiguration,
 });
-
-/** A Team copy started from the catalog, as the delegation adapters record it (with its source). */
-export const testCatalogTeamCopy = (input: Omit<Parameters<typeof projectTaskTeamExecution>[0], "source">) =>
-  projectTaskTeamExecution({ ...input, source: testCatalogTeamSource(input.node) });
 
 export const testTeamRunConfig = (input: {
   children: readonly TeamRunAgentNode[];
