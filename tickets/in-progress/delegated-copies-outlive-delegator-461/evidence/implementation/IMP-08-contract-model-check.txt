@@ -1,0 +1,9 @@
+# IMP-08
+# command: cd tickets/.../evidence/collaboration-model && python3 -I walkthrough.py --check ../../target-collaboration-contract.md
+# commit: 3c95473e1c
+# environment: macOS (Darwin 25.5), Node 22, pnpm
+# date: 2026-11-11
+
+the contract's §3 … §4 examples are states of the model
+the contract's §5.1 … §5.3 match the model
+collaboration-walkthrough.md matches the model

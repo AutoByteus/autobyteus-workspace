@@ -1,0 +1,14 @@
+# IMP-02
+# command: cd autobyteus-server-ts && node scripts/typecheck.mjs --update-baseline && node scripts/typecheck.mjs
+# commit: 3c95473e1c
+# environment: macOS (Darwin 25.5), Node 22, pnpm
+# date: 2026-11-11
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.1s
+[typecheck] server tests (tsconfig.tests.json): 1016 errors, exit 2, 26.8s
+[typecheck] production errors: 0; test-file errors: 1016 in 320 files (baseline 1017 in 321 files)
+[typecheck] baseline written: 1016 errors in 320 files (was 1017 in 321)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.5s
+[typecheck] server tests (tsconfig.tests.json): 1016 errors, exit 2, 26.0s
+[typecheck] production errors: 0; test-file errors: 1016 in 320 files (baseline 1016 in 320 files)
+[typecheck] PASS

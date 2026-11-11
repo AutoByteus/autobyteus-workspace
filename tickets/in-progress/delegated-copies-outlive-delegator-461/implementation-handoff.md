@@ -116,18 +116,20 @@ macOS (Darwin 25.5), Node 22, pnpm; server tests with vitest 4.1; no provider ke
 
 ## Checks Run
 
-Final results are filled in from the final run on the commit named in each row; evidence files are in `evidence/implementation/`.
+Evidence files are in `evidence/implementation/`. The full runs are on `3c95473e1c`; the later commits are docs, the ticket documents and two test-only changes (IMP-09, IMP-10).
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `node node_modules/typescript/bin/tsc -p tsconfig.build.json --noEmit` (server src) | see IMP-02 | macOS, Node 22 | all server src | all | Pass | `IMP-02-server-typecheck.log` | `server src (tsconfig.build.json): 0 errors` |
-| IMP-02 | `node scripts/typecheck.mjs` (server gate, after `--update-baseline`) | FINAL | macOS, Node 22 | src + tests | all | FINAL | `IMP-02-server-typecheck.log` | `[typecheck] PASS` |
-| IMP-03 | `pnpm test:unit` (server) | FINAL | macOS, Node 22 | `tests/unit`, `tests/app-data-migrations`, `tests/architecture`, `tests/agent-work-journal` | all | FINAL | `IMP-03-server-unit.log` (excerpt) | `Tests  … passed` |
-| IMP-04 | `pnpm test:integration` (server, after `test:integration:prepare`) | FINAL | macOS, Node 22 | `tests/integration`, `*.integration.test.ts` | all | FINAL | `IMP-04-server-integration.log` (excerpt) | `Tests  … passed` |
-| IMP-05 | `pnpm -C autobyteus-web codegen:local` then `git diff --stat generated/graphql.ts` | `dbb688161e` | macOS | server schema → web types | REQ-009 Task page | Pass | `IMP-05-web-codegen.txt` | only `hostRoot` → `delegatingRun` changed |
+| IMP-01 | `node node_modules/typescript/bin/tsc -p tsconfig.build.json --noEmit` (server src) | `3c95473e1c` | macOS, Node 22 | all server src | all | Pass | `IMP-02-server-typecheck.log` | `server src (tsconfig.build.json): 0 errors` |
+| IMP-02 | `node scripts/typecheck.mjs --update-baseline`, then `node scripts/typecheck.mjs` | `3c95473e1c` | macOS, Node 22 | src + tests | all | Pass | `IMP-02-server-typecheck.log` | `[typecheck] PASS`; baseline 1180 → 1016 over the ticket |
+| IMP-03 | `pnpm test:unit` (server) | `3c95473e1c` | macOS, Node 22 | `tests/unit`, `tests/app-data-migrations`, `tests/architecture`, `tests/agent-work-journal` | all | Pass after IMP-10 | `IMP-03-server-unit.log` | `Tests  3 failed \| 7856 passed`: 2 in `root-recovery-command.test.ts` (fakes lacked `localChildren`, fixed in IMP-10), 1 folder-watcher timing flake (passes on rerun; module untouched) |
+| IMP-04 | `pnpm test:integration` (server, after `test:integration:prepare`) | `3c95473e1c` | macOS, Node 22 | `tests/integration`, `*.integration.test.ts` | all | Pass apart from flakes | `IMP-04-server-integration.log` | `Tests  3 failed \| 479 passed`: all three are file-watcher timing tests (`file-explorer`, `agent-package-definitions`; no diff vs base); a different case fails on each rerun |
+| IMP-05 | `pnpm -C autobyteus-web codegen:local`; `git diff --stat generated/graphql.ts` | `dbb688161e` | macOS | server schema → web types | REQ-009 Task page | Pass | `IMP-05-web-codegen.txt` | only `hostRoot` → `delegatingRun` changed |
 | IMP-06 | `pnpm -C autobyteus-web typecheck` | `dbb688161e` | macOS | web app, Electron main, cross-package tests | REQ-009 | Pass | `IMP-06-web-typecheck.log` | `[typecheck] PASS` |
-| IMP-07 | `pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run composables/projects stores/__tests__/{projectRunsStore,projectLiveChanges,taskWorkerTaskStore}.spec.ts utils/projects components/projects` | `dbb688161e` | macOS | Task root readers | REQ-009 | Pass | `IMP-07-web-specs.log` | `Tests  225 passed (225)` |
-| IMP-08 | `python3 -I walkthrough.py --check ../../target-collaboration-contract.md` (in `evidence/collaboration-model/`) | FINAL | macOS, Python 3 | the contract and its model | REQ-011, REQ-012 | Pass | `IMP-08-contract-model-check.txt` | `collaboration-walkthrough.md matches the model` |
+| IMP-07 | web specs: `composables/projects`, `projectRunsStore`, `projectLiveChanges`, `taskWorkerTaskStore`, `utils/projects`, `components/projects` | `dbb688161e` | macOS | Task root readers | REQ-009 | Pass | `IMP-07-web-specs.log` | `Tests  225 passed (225)` |
+| IMP-08 | `python3 -I walkthrough.py --check ../../target-collaboration-contract.md` | `3c95473e1c` | macOS, Python 3 | the contract and its model | REQ-011, REQ-012 | Pass | `IMP-08-contract-model-check.txt` | `collaboration-walkthrough.md matches the model` |
+| IMP-09 | `vitest run tests/unit/agent-collaboration/delegation/task-delegation.test.ts` (CM-6 folder case added) | `053dea1002` | macOS, Node 22 | `task-delegation.ts` | REQ-009 (CM-6) | Pass | (this row) | `Tests  12 passed (12)` |
+| IMP-10 | `vitest run tests/unit/agent-execution/root-recovery-command.test.ts` | `2a5a15d27f` | macOS, Node 22 | team/org stream handlers with `localChildren` | DS-8 | Pass | `IMP-03-server-unit.log` (follow-up line) | `Tests  22 passed (22)` (with the watcher test) |
 
 - Not run, and why: server E2E suites (`pnpm test:e2e`, gated runtime suites), browser probes, the isolated desktop instance, and the contract's stories run against two server instances (design "Validation", the acceptance test) — owned by API/E2E. `tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` needs a rewrite for the new model (Known Risks).
 

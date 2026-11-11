@@ -1,0 +1,15 @@
+# IMP-04
+# command: cd autobyteus-server-ts && pnpm test:integration (after test:integration:prepare)
+# commit: 3c95473e1c
+# environment: macOS (Darwin 25.5), Node 22, pnpm
+# date: 2026-11-11
+
+## excerpt
+      Tests  3 failed | 479 passed | 69 skipped (551)
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-006: a 50-file burst is coalesced into a bounded number of publications
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > captures rapid changes without dropping events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+int exit 1
+
+## the three failures are file-watcher timing tests (file-explorer, agent-package-definitions: no diff vs 827f1e68dc); rerun alone, a different case fails each time
