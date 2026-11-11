@@ -664,5 +664,34 @@
   - A Task folder gets `agent_run_resources.json` at its first delegation (109 Task folders have only `task.json`).
   - Stop sets `terminatedAt` on the run's own row, and restore clears it (`agent-run-history-catalog-service.ts:216-266`, `team-run-history-catalog-service.ts:121`).
   - M's `run_metadata.json` gains `address` at its first delegation, and its row gains `hasCollaboration` (§3.3, §3.5).
+- Next action: superseded by SR-030
+
+### SR-030 — The contract's examples checked against its rules; the peer walked as states
+
+- Phase and classification: Requirements (supplement) and Design; no intended behavior changed
+- Triggering: the user (2026-11-11) asked whether the state walk is consistent, and whether the peer case is written down.
+- Done:
+  - `evidence/data-model-validation/validate_contract_examples.py` reads every JSON example of the contract's §3 … §5 and checks them against the contract's rules:
+    - each Task entry is complete;
+    - each run's own `delegatedFrom` equals its entries';
+    - each team file is rooted at `/`, with its coordinator and handoffs inside the team (outside only for a delegated team);
+    - each entry's coordinator equals the team file's;
+    - each delegator is an agent of its delegating run;
+    - each tree node's parent and Task assigner equal the entries';
+    - each message between two runs is one that rule (a) or (b) allows.
+
+    Result: 0 findings. Three planted errors were each caught, so the check works.
+  - Read against the code, the walk had three errors, all the Solution Designer's:
+    - S10: a closure stops only runs with no other open Task (CM-6). E keeps T6 and is not stopped.
+    - S11: only an `assigned` entry is continued after a reopen, by its assigner (`task-execution-resources.ts:119-134`). `subWork` entries stay closed.
+    - S12: a Task deletion stops only runs with no other open Task.
+
+    All three are corrected, along with the T-1 … T-3 rows.
+  - The peer is now walked as states S13 … S15, with both nodes' files in full: delegating to a team on node B; the team reporting to M by run ID across nodes; M closing the Task and the peer run stopping through the link.
+- Found (the peer case, an inconsistency with P8):
+  - Today node B answers node A with a peer team's members addressed under the delegation address (`/marketing_team/marketing_content_creator`). That is node A's former mounted address space; on node B the team is rooted at `/`. The 2 stored links carry the prefix.
+  - Target: the entry's `members` carry each member's own address (`/marketing_content_creator`). Node B's answer stops mounting them (`remote-team-run-starter.ts`, added to the removal plan), and the migration drops the prefix (DS-10 step 3, 4 addresses).
+  - Node A reaches peer members by run ID only, so nothing resolves these addresses; they are shown by leaf name.
+- Classification: `Large`, `High`, unchanged
 - Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's §5)
 

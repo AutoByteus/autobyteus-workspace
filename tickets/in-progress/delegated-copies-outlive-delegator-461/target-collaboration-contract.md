@@ -130,7 +130,7 @@ This is the one record of a delegation and its state. Example of a run on this n
 | `delegatedFrom.delegatorAgentRunId` | The delegator | Always |
 | `recipientAddress` | The address the run was delegated to, a name in the delegator's space | Every entry (today `assigned` only; the migration fills the rest) |
 | `agentRun` | The run, by kind and ID, with a team's coordinator | Always |
-| `nodeId`, `members` | The peer the run is on, and a peer team's members by address and run ID | A peer's run only |
+| `nodeId`, `members` | The peer the run is on, and a peer team's members by run ID and by their address in their own team (`/lead`) | A peer's run only |
 | `linkedAt`, `start`, `startError`, `closedAt` | Unchanged | As today |
 
 `delegatedFrom` replaces `hostRoot`, which named the top run that hosted the run (in 31 of 406 entries, not the run that delegated it), and `assignedBy`, which was the delegator on `assigned` entries only.
@@ -331,7 +331,10 @@ The Project used here: `projects/project_8f21/` (with `project.json` and `projec
 | S10 | M closes T1 | T-1, R-8 |
 | S11 | M reopens T1 and continues E | T-2, R-6 |
 | S12 | T1 is deleted | T-3, R-9 |
-| — | Every other case of a standalone agent, after the states | DL-6, DL-8, DL-9, DL-10, DL-11, R-7, C-1 … C-3, IN-7, T-5 … T-7 |
+| S13 | M delegates T7 to a team on a peer node: both nodes' files | DL-9, DL-10 |
+| S14 | The peer team reports to M, by run ID across nodes | R-10 |
+| S15 | M closes T7: the peer run is stopped through the link | T-1 |
+| — | Every other case of a standalone agent, after the states | DL-6, DL-8, DL-11, R-7, C-1 … C-3, IN-7, T-5 … T-7 |
 
 ---
 
@@ -683,7 +686,8 @@ Its parent is E (shown under E), and its Task's assigner is M (it may reach M).
 **Changed:**
 - `task.json` of T1: `"status": "DONE"`, with a new `updatedAt`.
 - T1's `agent_run_resources.json`: each of the three entries gets `"closedAt": "2026-11-10T15:00:00.000Z"`.
-- E, P and I are each asked, by their own ID, to stop. Each one that stops gets `terminatedAt` in its run list row. E's T6 is still open, so E keeps working on T6.
+- P and I have no other open Task, so each is asked, by its own ID, to stop. Each gets `terminatedAt` in its run list row.
+- E is not stopped: its T6 is still open, and it keeps working on T6 (a closure stops only runs with no other open Task, CM-6).
 
 **In memory:** T1 is closed on E, P and I. P and I have no open Task left, so they leave E's view. E stays in M's view through T6.
 
@@ -695,7 +699,7 @@ Its parent is E (shown under E), and its Task's assigner is M (it may reach M).
 
 **Calls** (by M): `update_task(task_id: "demo-1", status: "IN_PROGRESS")`, then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more change …")`.
 
-**Changed:** `task.json` status is `IN_PROGRESS`. E's T1 entry gets `"closedAt": null`, because M is the assigner and continues it. The message is stored in both logs, and E is restored if it is stopped. P's and I's entries stay closed until a run of T1 that may continue them does so.
+**Changed:** `task.json` status is `IN_PROGRESS`. E's T1 entry gets `"closedAt": null`, because M is the assigner and continues it. The message is stored in both logs, and E is restored if it is stopped. P's and I's `subWork` entries stay closed: only an `assigned` entry can be continued, and only by its assigner (`task-execution-resources.ts:119-134`). If E's solution designer needs the product team again, it delegates anew. That creates a new run and a new `subWork` entry.
 
 **In memory:** T1 is open on E again.
 
@@ -706,7 +710,7 @@ Its parent is E (shown under E), and its Task's assigner is M (it may reach M).
 **Action:** T1 is deleted from the Project.
 
 **Changed:**
-- Its open runs are stopped first.
+- Its open runs with no other open Task are stopped first. E is not, since it still has T6.
 - `projects/project_8f21/tasks/project_task_440e/` is removed, with `task.json` and `agent_run_resources.json`.
 
 **Unchanged:** the runs' own files. Each keeps its own `delegatedFrom`: E's names M, and P's and I's name E.
@@ -719,14 +723,98 @@ Its parent is E (shown under E), and its Task's assigner is M (it may reach M).
 
 ---
 
+#### S13 — M delegates Task T7 to a team on a peer node [DL-9, DL-10]
+
+Two nodes: **node A** (`node-a-77d2`, where M runs) and **node B** (`node-b-1f0e`, which runs the team). Node B accepts the request only while remote collaboration is on, and only from a paired peer (CM-12).
+
+**Call** (by M on node A): `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`. `/research_team` is the address node B gives in its list for node A (`list_available_agents(node: "node-b")`).
+
+**Result to M:** `{ "delegated": true, "target_kind": "team", "node": "node-b", "target_team_run_id": "research_team_77aa", "target_team_coordinator_agent_run_id": "lead_0c11" }`
+
+**Created on node A:** `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`. This is the only place node A keeps the run:
+```json
+{ "taskId": "project_task_7c7c",
+  "agentRunResources": [
+    { "role": "assigned",
+      "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" },
+      "recipientAddress": "/research_team",
+      "agentRun": { "kind": "team", "teamRunId": "research_team_77aa", "coordinatorAgentRunId": "lead_0c11" },
+      "nodeId": "node-b-1f0e",
+      "members": [ { "address": "/lead", "agentRunId": "lead_0c11" }, { "address": "/analyst", "agentRunId": "analyst_5d20" } ],
+      "linkedAt": "2026-11-10T16:00:00.000Z", "start": "started", "closedAt": null } ] }
+```
+The members' addresses are their addresses in their own team (P8), as node B stores them. Node A never sends to them by address: only by run ID (CM-11).
+
+**Created on node B:**
+- `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, an ordinary team file rooted at `/`, with the peer's `delegatedFrom`:
+  ```json
+  { "schemaVersion": 1, "createdAt": "2026-11-10T16:00:00.000Z", "archivedAt": null, "applicationBinding": null, "handoffs": [],
+    "rootTeam": { "address": "/", "teamDefinitionId": "research-team", "teamDefinitionName": "Research Team",
+                  "teamRunId": "research_team_77aa", "coordinatorAddress": "/lead",
+                  "defaultLaunchConfiguration": { "…": "…" },
+                  "members": [ { "address": "/lead", "agentDefinitionId": "lead", "agentRunId": "lead_0c11", "…": "…" },
+                               { "address": "/analyst", "agentDefinitionId": "analyst", "agentRunId": "analyst_5d20", "…": "…" } ] },
+    "delegatedFrom": { "nodeId": "node-a-77d2",
+                       "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+                       "delegatorAgentRunId": "project_task_manager_7c8d" } }
+  ```
+- Its row in node B's `team_run_history_index.json`, as for any team run there (`TeamRunService.createTeamRun` writes it).
+- The coordinator's memory folder, with the work packet as its first input.
+- Node B has no Task record for it and no tree node: `isPeerStarted` is true, and its own `delegatedFrom` admits messages from its delegator.
+
+**Unchanged on node A:** every file of M, E, P and I. Nothing about the team is written outside T7's record.
+
+**In memory on node A:** a node for the team with `"node": "node-b-1f0e"`, parent M, Task T7, and agents `lead_0c11` and `analyst_5d20` taken from `members`.
+
+**Against today:**
+- Today node A keeps the node and the members in M's `collaboration/collaboration_tree.json` link. Now they are in the Task entry (TC-8).
+- Today node B answers with the members addressed under the delegation address (`/research_team/lead`), as node A's own address space used to mount them. Now it answers with their own addresses (`/lead`), which is what it stores (P8). Node A only shows them, by their leaf name.
+- Today the peer's `delegatedFrom` names `coordinatingRun`; now it names `delegatingRun` (E10).
+
+**Checked:** 2 such links on the user's machine: a team with 4 members, stored as `/marketing_team/<member>`, and an agent. The migration moves both into their Task entries and drops the prefix from the 4 member addresses (E3). 0 runs started by a peer on this node.
+
+---
+
+#### S14 — The peer team reports to M [R-10]
+
+**Call** (by `lead_0c11` on node B): `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`. Any member may send this. Across nodes only run IDs work: `recipient_address: "/project_task_manager"` is not found on node B, because no run there has that address and node B holds no Task record that relates them.
+
+**Admitted:**
+- On node B: the run's own `delegatedFrom` names `project_task_manager_7c8d` as its delegator on `node-a-77d2`.
+- On node A: T7's entry relates M and the team (rule (b)).
+
+**Written:**
+- Node B: one line in `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`.
+- Node A: the same line, with the same `messageId`, in `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`.
+- Each node writes only its own run's log (CM-9).
+
+**M sees:** the sender's run ID and its node (CM-11). The other way, M → `target_agent_run_id: "analyst_5d20"` reaches any member through the link, found by T7's `members`.
+
+**Unchanged:** every record on both nodes.
+
+---
+
+#### S15 — M closes T7 [T-1 across nodes]
+
+**Call** (by M): `update_task(task_id: "demo-7", status: "DONE")`.
+
+**Changed on node A:**
+- `task.json` of T7 is `DONE`.
+- The entry gets `closedAt`.
+- Node A asks node B, through the link, to stop the run, because it has no other open Task.
+
+**Changed on node B:** the team stops, and its row gets `terminatedAt`. Its own file is unchanged.
+
+**Afterwards:** a message between M and the team is refused on node A (R-8). Node B keeps the run as an ordinary run of its own.
+
+---
+
 #### Every other case of a standalone agent
 
 | Case | Call | What happens on disk and in memory |
 | --- | --- | --- |
 | DL-6: I hands part of its work further | I → `delegate_task(recipient_address: "/upscaler", description: "…")` | T1 gains a `subWork` entry with `"delegatingRun": { "kind": "agent", "runId": "image_maker_33f0" }`; the upscaler's own `run_metadata.json` has the same `delegatedFrom`; a node under I. **Checked:** 1 entry |
 | DL-8: description only | M → `delegate_task(recipient_address: "/image_maker", description: "…")` with no `task_id` | A Task with no Project, `ad-hoc-tasks/<t>/task.json` and `agent_run_resources.json`, with an entry as in S1. **Checked:** 16 entries |
-| DL-9, R-10: to a peer | M → `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")` | The entry adds `"nodeId": "node-b-1f0e"` and `"members": [ { "address": "/lead", "agentRunId": "lead_0c11" }, { "address": "/analyst", "agentRunId": "analyst_5d20" } ]`; nothing else on this node. Messages go by run ID across nodes. **Checked:** 2 entries |
-| DL-10: a run a peer started | (on node B) | Its own file has `"delegatedFrom": { "nodeId": "node-a-77d2", "delegatingRun": { … }, "delegatorAgentRunId": "…" }`; no Task entry on node B; `isPeerStarted`. **Checked:** 0 runs |
 | R-7: different Tasks | M gives T2 to `/research_agent` (as S1); then P → `target_agent_run_id: "research_agent_9b10"` | Refused, "it works on a different Task" |
 | DL-11: refused delegations from inside E | `"/solution_designer"` by itself; `"/code_reviewer"` | Refused (`COLLABORATION_SELF_TARGET_REJECTED`; own team) |
 | DL-11: E's own team definition | `delegate_task(recipient_address: "/software_engineering_team")` from inside E | **A new copy**, as in a team the user starts (today refused in a delegated team; 0 refusals in history) |
@@ -934,7 +1022,7 @@ Each receiver sees the sender's address (`"/ceo_agent"`, `"/dev_team/dev_lead"`)
 | R-7 | Runs of different Tasks | Refused: "it works on a different Task" | §5.1, other cases |
 | R-8 | Anyone → a run whose Task is closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6 | S10 … S12 |
 | R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S10 … S12, 5.4.4 |
-| R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | §5.1, other cases |
+| R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S14 |
 
 **Checked** (`task-centered-messaging-2026-11-11.txt`, every stored message between two runs, 1,604):
 - 1,540 are allowed as today: 103 by (a) and 1,437 by (b).
@@ -959,9 +1047,9 @@ Each receiver sees the sender's address (`"/ceo_agent"`, `"/dev_team/dev_lead"`)
 
 | # | Event | On disk | In memory | Afterwards |
 | --- | --- | --- | --- | --- |
-| T-1 | A Task is closed | `closedAt` on each of its entries | The Task closed on each node | Each of its runs is asked, by its own ID, to stop; R-8 |
-| T-2 | A Task is reopened, and its assigner messages a run | `closedAt: null` on that entry | The Task open | R-6; the run is in its delegating run's view again |
-| T-3 | A Task is deleted | Its record removed (open runs stopped first) | Its runs leave the tree | Runs of their own (TC-3), labeled from their own `delegatedFrom`; R-9 |
+| T-1 | A Task is closed | `closedAt` on each of its entries | The Task closed on each node | Each of its runs with no other open Task is asked, by its own ID, to stop; R-8 |
+| T-2 | A Task is reopened, and its assigner messages a run it assigned | `closedAt: null` on that `assigned` entry (a `subWork` entry stays closed) | The Task open | R-6; the run is in its delegating run's view again |
+| T-3 | A Task is deleted | Its record removed (its open runs with no other open Task stopped first) | Its runs leave the tree | Runs of their own (TC-3), labeled from their own `delegatedFrom`; R-9 |
 | T-4 | The user stops a run | Its history row | — | That run only (TC-1); its next message restores it |
 | T-5 | The user archives or deletes a run whose delegated runs work | Refused with the reason (TC-2) | — | — |
 | T-6 | The server restarts | — | The tree rebuilt from the Task entries | No run is running; each is restored by its next message |
@@ -973,7 +1061,7 @@ Each receiver sees the sender's address (`"/ceo_agent"`, `"/dev_team/dev_lead"`)
 | --- | --- | --- | --- | --- |
 | E1 | Task entry, the delegator in the top run | 375 | `hostRoot`, `assignedBy` | `delegatedFrom` (§3.1) |
 | E2 | Task entry of a nested run | 31 | `hostRoot` = the top run | `delegatedFrom.delegatingRun` = the delegator's run, one hop |
-| E3 | Task entry of a peer's run | 2 | The node and members only in M's tree link | `nodeId`, `members` in the entry |
+| E3 | Task entry of a peer's run | 2 | The node and members only in M's tree link, members addressed under the delegation address (`/marketing_team/<member>`) | `nodeId`, `members` in the entry; the members' addresses lose the prefix (4 addresses) |
 | E4 | Role `delegated` | 28 | `"delegated"` | `"subWork"` |
 | E5 | `recipientAddress` on non-assigned entries | 30 | Absent | Filled from the run's `taskAgent.address` (30 of 30 have it) |
 | E6 | A delegated run's `taskAgent` | 196 | `taskAgent { coordinatingRun, delegatorAgentRunId?, address, launchSource?, userLaunchSelection? }` | `delegatedFrom` (one hop: 191 from the delegator's run; 5 from `coordinatingRun`). Agent runs: `address` → `run_metadata.address`, `launchSource` → own field. `userLaunchSelection` (9) → own launch |
@@ -999,9 +1087,9 @@ E2  before: { "role": "delegated", "hostRoot": { "kind": "agent", "runId": "proj
               "recipientAddress": "/product_team", "agentRun": { "…": "…" }, "…": "…" }
 
 E3  before (link in M's collaboration_tree.json):
-              { "address": "/research_team", "teamRunId": "research_team_77aa", "nodeId": "node-b-1f0e", "coordinatorAddress": "/lead",
-                "members": [ { "address": "/lead", "agentRunId": "lead_0c11" }, { "address": "/analyst", "agentRunId": "analyst_5d20" } ], "…": "…" }
-    after (entry): as DL-9. coordinatorAddress is not kept: it is the member whose run ID is coordinatorAgentRunId.
+              { "address": "/research_team", "teamRunId": "research_team_77aa", "nodeId": "node-b-1f0e", "coordinatorAddress": "/research_team/lead",
+                "members": [ { "address": "/research_team/lead", "agentRunId": "lead_0c11" }, { "address": "/research_team/analyst", "agentRunId": "analyst_5d20" } ], "…": "…" }
+    after (entry): as S13, with "members": [ { "address": "/lead", … }, { "address": "/analyst", … } ]. coordinatorAddress is not kept: it is the member whose run ID is coordinatorAgentRunId.
 
 E6  before (agent): { "runId": "image_maker_33f0", "…": "…",
                       "taskAgent": { "coordinatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "solution_designer_65a9",
