@@ -109,6 +109,26 @@ export const testCatalogTeamSource = (node: TeamRunAgentTeamNode): TaskTeamExecu
   defaultLaunchConfiguration: node.defaultLaunchConfiguration,
 });
 
+/**
+ * A hosted Team copy in a team tree's `taskExecutions` (data only). autobyteus-461 hosts nothing; this builds the
+ * stored list for the readers that still read it until the list is removed from the tree (step 9 cleanup).
+ */
+export const testCatalogTeamCopy = (input: { node: import("../../src/agent-team-execution/domain/team-run-config.js").TeamRunAgentTeamNode;
+  delegatorAgentRunId: string; startedAt: string }) => Object.freeze({
+  address: input.node.address,
+  teamRunId: input.node.teamRunId,
+  members: Object.freeze(input.node.children.map((member) => Object.freeze({ address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId }))),
+  taskExecutions: Object.freeze([]),
+  delegatorAgentRunId: input.delegatorAgentRunId,
+  startedAt: input.startedAt,
+  source: testCatalogTeamSource(input.node),
+});
+
+/** A hosted Agent copy in a team tree's `taskExecutions` (data only; see `testCatalogTeamCopy`). */
+export const projectTaskAgentExecution = <T extends Readonly<{ address: string; agentRunId: string; delegatorAgentRunId: string; startedAt: string; source: unknown }>>(input: T) =>
+  Object.freeze({ address: input.address, agentRunId: input.agentRunId, platformAgentRunId: null, delegatorAgentRunId: input.delegatorAgentRunId,
+    startedAt: input.startedAt, source: input.source }) as never;
+
 export const testTeamRunConfig = (input: {
   children: readonly TeamRunAgentNode[];
   coordinatorAddress: string;

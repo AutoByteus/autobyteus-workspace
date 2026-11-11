@@ -14,7 +14,7 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskAgentExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
+import { projectTaskAgentExecution } from "../../fixtures/current-team-run-fixtures.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentCopySource, testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
 import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";

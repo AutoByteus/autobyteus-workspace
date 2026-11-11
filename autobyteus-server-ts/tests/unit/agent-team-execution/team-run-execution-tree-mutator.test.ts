@@ -5,14 +5,12 @@ import {
   adoptAgentPlatformBindingInTree,
   replaceAgentPlatformBindingWithoutConversationInTree,
 } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskAgentExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   address,
   testAgentCopySource,
   testAgentNode,
   testAgentTeamNode,
-  testCatalogTeamCopy,
   testExecutionTree,
 } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -61,47 +59,6 @@ describe("adoptAgentPlatformBindingInTree", () => {
       address: address("/reviewer"),
       agentRunId: "run-reviewer",
       platformAgentRunId: "22222222-2222-4222-8222-222222222222",
-    });
-  });
-
-  it("adopts direct task and nested task-team member identities", () => {
-    let tree = addTaskExecutionToTree({
-      tree: baseTree(),
-      execution: projectTaskAgentExecution({
-        address: address("/coordinator"),
-        agentRunId: "task-worker-run",
-        delegatorAgentRunId: "run-coordinator", startedAt: "2026-08-17T20:00:00.000Z",
-        source: testAgentCopySource("coordinator"),
-      }),
-    });
-    tree = addTaskExecutionToTree({
-      tree,
-      execution: testCatalogTeamCopy({
-        node: testAgentTeamNode({
-          address: "/task-team",
-          coordinatorAddress: "/task-team/reviewer",
-          teamRunId: "task-team-run",
-          children: [testAgentNode("/task-team/reviewer", {
-            agentRunId: "task-team-lead-run",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          })],
-        }),
-        delegatorAgentRunId: "run-coordinator", startedAt: "2026-08-17T20:01:00.000Z",
-      }),
-    });
-
-    tree = adoptAgentPlatformBindingInTree({
-      tree,
-      binding: binding("/coordinator", "task-worker-run", "thread-task"),
-    }).tree;
-    tree = adoptAgentPlatformBindingInTree({
-      tree,
-      binding: binding("/task-team/reviewer", "task-team-lead-run", "thread-task-team"),
-    }).tree;
-
-    expect(tree.rootTeam.taskExecutions[0]).toMatchObject({ platformAgentRunId: "thread-task" });
-    expect(tree.rootTeam.taskExecutions[1]).toMatchObject({
-      members: [expect.objectContaining({ platformAgentRunId: "thread-task-team" })],
     });
   });
 
