@@ -94,8 +94,9 @@ Each new name says what its owner owns.
 
 ### DS-1 Delegate to a new run
 
-`agent: delegate_task(address) → the sender's root, whatever its kind: StandaloneAgentRunRoot, RootTeamRun or AgentOrgRun (its gate) → TaskDelegation.toNewRun → Task side: linkNewTaskExecution (entry: delegatedFrom = {this run, the delegator}, start "starting"; then it notifies DelegationTree) → DelegatedRunStarter: prepare an ordinary standalone run (agent) or create a top-level team run (team), with the same delegatedFrom in the run's own file → the new run's root registered in ActiveCollaborationRootDirectory → the work packet delivered to its entry agent (DS-2's delivery step, which starts it) → Task side: markStarted → tool result, same text as today`
+`agent: delegate_task(address) → the delegate_task tool service → TaskDelegation.toNewRun → the sender's root, whatever its kind (StandaloneAgentRunRoot, RootTeamRun or AgentOrgRun): delegationSource(sender, address) in its gate, which answers only what the root owns (the sender's identity and address, its own catalog address map, the own-address, own-team and own-definition refusals) and nothing else → TaskDelegation continues outside the root → Task side: linkNewTaskExecution (entry: delegatedFrom = {this run, the delegator}, start "starting"; then it notifies DelegationTree) → DelegatedRunStarter: prepare an ordinary standalone run (agent) or create a top-level team run (team), with the same delegatedFrom in the run's own file → the new run's root registered in ActiveCollaborationRootDirectory → the work packet delivered to its entry agent (DS-2's delivery step, which starts it) → Task side: markStarted → tool result, same text as today`
 
+- **A root does not delegate** (SR-049). The tool path orchestrates delegation, and the root answers only for its own run. So no root, and no run service that creates roots, depends on `TaskDelegation`, while `TaskDelegation` depends on the run services (through `DelegatedRunStarter` and the root resolver). Dependencies run one way, and there is no cycle. `delegateThrough(...)` / `bindTaskDelegation` leave `root-team-run.ts`, `standalone-root-message-delivery.ts`, `agent-org-run-message-delivery.ts` and `remote-delegation.ts`.
 - Refusals keep today's texts and order: CM-1 (never inside one's own team), the Project folder, the target, the launch.
 - `delegatedFrom.delegatingRun` is the sender's own run: for a member of a team run, that team run; for an agent of an org run, that org run (contract §3.1, cases DL-1 … DL-6).
 - **Role and refusals, from the `DelegationTree`** (contract §2.4; cases S12 … S15, S23): `runOfAgent(sender)` and `tasksOf(that run)`.
@@ -122,7 +123,7 @@ Each new name says what its owner owns.
 
 ### DS-3 Message by address
 
-`sender's root: resolveMessageRecipient → (1) its own team, unchanged → (2) new, for a delegated run only: the standing agents of the run that assigned its Task: DelegationTree.assignerOf(each open Task of the sender's run) → DelegationTree.standingAgentsOf(that run), by address, read once from that run's own file (no root is restored to resolve an address) → (3) for a run the user started: its own run's standing agents, unchanged → DS-2's delivery step` (contract §2.3; the steps as the contract numbers them; a miss inside the own team never falls through)
+`agent: send_message_to(address) → the send_message_to dispatcher (the tool service) → the sender's root, in its gate: (1) its own team, unchanged (resolveMessageRecipient's own-team step) → (2) new, for a run that works on a Task, asked by the dispatcher of CrossRunAddressResolution, not by the root: the standing agents of the run that assigned its Task: DelegationTree.assignerOf(each open Task of the sender's run) → DelegationTree.standingAgentsOf(that run), by address, read once from that run's own file (no root is restored to resolve an address) → (3) for a run the user started: its own run's standing agents, unchanged → DS-2's delivery step` (contract §2.3; the steps as the contract numbers them; a miss inside the own team never falls through)
 
 ### DS-4 Stop
 
@@ -472,12 +473,14 @@ No other gap was found. Not validated: the code. The implementation verifies the
 
 1. `TaskExecutionResourceService`, loaded.
 2. `DelegationTree(taskExecutionResources, runOwnAgentsReader)`, built; then `taskExecutionResources.setEntriesListener(delegationTree)`. A Task change with no entries listener set fails; it is not skipped.
-3. The run services (agent, team, org), as today, given what they already take.
+3. The run services (agent, team, org), as today, given what they already take. **No root they create needs `TaskDelegation`, `CrossRunMessageDelivery` or `CrossRunAddressResolution`** (SR-049): roots answer only for their own run. A root's `TaskWorkerStatusNotice` receives the Task side (step 1) and calls `tasks.taskExecutionsStatusChanged([run])`, so it needs no `TaskRunControl`, and `TaskRunControl.statusChanged` goes.
 4. `TaskRunControl({ agentRuns, teamRuns, tasks: taskExecutionResources })`.
 5. `ProjectTaskService({ …, runControl })`. Its `requestRelease` and `workerStatus` call `runControl` directly. `composeProjectTaskExecutionResources` is split: the Task records and the tree come at steps 1 and 2, and the service at step 5.
-6. `TaskDelegation`, `CrossRunMessageDelivery` and `CrossRunAddressResolution`, from the tree, the root resolver and the run services.
+6. The root resolver, then `TaskDelegation`, `CrossRunMessageDelivery` and `CrossRunAddressResolution`, from the tree, the root resolver and the run services. Nothing created before them needs them.
 7. `LocalChildPorts({ tree: delegationTree, agents })`, `LocalChildObservation` and `DelegatedRunCommands` (one instance). Then the stream session registry, its own owner. Then `ChildRowsFeed(streamSessions)`, then `childRowsFeed.follow(delegationTree)`. The registry is passed to the feed and to the stream handlers.
-8. Their consumers, each receiving them at construction:
+8. Their consumers, the tool services among them, each receiving them at construction:
+   - the `delegate_task` tool service gets `TaskDelegation`;
+   - `GlobalAgentRunMessageRouter`, an older lazy singleton, is constructed by the composition root at this step with `CrossRunMessageDelivery`, and its existing getter returns that instance. Replacing the getter's callers is FU-011;
    - the `send_message_to` dispatcher gets `CrossRunAddressResolution`;
    - `GlobalAgentRunMessageRouter` gets `CrossRunMessageDelivery`;
    - the three stream handlers get `DelegatedRunCommands`, `ChildRowsFeed` and `LocalChildObservation`;
@@ -489,6 +492,8 @@ No other gap was found. Not validated: the code. The implementation verifies the
 - **A consumer created by an older singleton** (an existing `get…()` this ticket only uses) receives the new owner from the composition root through that singleton's existing initialization call, never by looking it up. Replacing that older singleton itself is FU-011, now limited to the older lookups the change only uses.
 - **Tests build the owners with fakes** through their constructors. No test binds or resets a global for an owner this ticket adds.
 - **The host's close and a startup rollback** release in reverse order. The `unbind…` calls go with the bindings.
+
+**Where the code lives** (SR-049): `build-studio-server.ts` is at its 500-line limit, so the steps live in a dedicated composition file with two calls that `build-studio-server.ts` makes in order. The first call covers steps 1–2, the run services are created between the calls (step 3), and the second call covers steps 4–8. The order stays readable in one place.
 
 Read-only values (configuration, the data directory, the clock) stay process-wide (Principle 16's exception).
 

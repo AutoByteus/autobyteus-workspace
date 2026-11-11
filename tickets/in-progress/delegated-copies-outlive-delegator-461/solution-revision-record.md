@@ -975,3 +975,27 @@
   - Option (c), settling from the snapshot, would settle because an event is missing, which is behavior by absence (Principle 13).
 - Done: the design's DS-8 (the order and its reason; the test that the first message to a stopped team's own member settles). `walkthrough.py --check` passes.
 - ARCH-REV-023 (2026-11-11): Pass, no finding. Its wording note is applied in DS-8: the send settles in the web's send tracker, by identity, on the echo, and a snapshot does not drain the tracker. This supersedes the ARCH-REV-021 residual's wording about the snapshot keeping input state.
+
+### SR-049 — The tool path orchestrates delegation and cross-run messages; roots answer only for their own run (the cycle the Implementation Engineer found)
+
+- Triggering: the Implementation Engineer, implementing SR-047, found a cycle the steps do not resolve.
+  - `TaskDelegation` (step 6) needs the run services: to start runs, to discard, and to deliver the work packet through the root resolver.
+  - The roots those run services create (step 3) call `TaskDelegation` (`delegateThrough`, today's `bindTaskDelegation` lookup) from `root-team-run.ts:271,280`, `standalone-root-message-delivery.ts:158,166`, `agent-org-run-message-delivery.ts:155,163` and `remote-delegation.ts:64`.
+  - `CrossRunMessageDelivery` has the same shape, and its consumer `GlobalAgentRunMessageRouter` is a lazy singleton with no initialization call.
+- The Solution Designer's gap: SR-047 wrote the order without checking the roots' calls into the delegation owners.
+- Decision (option (b), on the merits): **a root does not delegate.** That is the last trace of hosting. Under this design a root holds only its own run (P6; the Ownership Map).
+  - The tool path orchestrates. The `delegate_task` tool service calls `TaskDelegation`, which asks the sender's root, in its gate, only for what it owns: identity and address, its own catalog address map, and the own-address, own-team and own-definition refusals.
+  - The `send_message_to` dispatcher asks the sender's root for step 1 (and step 3 for a run with no Task), and `CrossRunAddressResolution` for step 2.
+  - Dependencies run one way: tool services → delegation and cross-run owners → root resolver → run services. There is no cycle.
+  - Option (a), a narrower launcher, would still cycle through the work-packet delivery's root resolver.
+- Also decided:
+  - **The engineer's (2):** a root's `TaskWorkerStatusNotice` receives the Task side and calls `taskExecutionsStatusChanged` directly. `TaskRunControl.statusChanged` goes.
+  - **The engineer's (3):** the steps live in a dedicated composition file, called twice in order from `build-studio-server.ts`, which is at its 500-line limit, with the run services between the calls.
+  - **`GlobalAgentRunMessageRouter`:** constructed by the composition root with its collaborator. Its existing getter returns that instance, and replacing the getter's callers is FU-011.
+- Done:
+  - DS-1 and DS-3, whose spines now start at the tool service;
+  - "Dependency Rules And The Composition Root" (steps 3, 6, 8, where the code lives).
+
+  `walkthrough.py --check` passes (the model has no roots, and its rules are unchanged).
+- Next action: architecture review (narrow)
+
