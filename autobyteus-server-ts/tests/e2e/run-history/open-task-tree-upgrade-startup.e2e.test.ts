@@ -2,13 +2,13 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
-import { once } from "node:events";
-import { spawn, spawnSync, type ChildProcess } from "node:child_process";
-import WebSocket from "ws";
+import { spawnSync } from "node:child_process";
 import { afterAll, describe, expect, it } from "vitest";
-import { calledResults, segment, taskAgentsIn, toolResult, type Rec } from "../helpers/collaboration-root-harness.js";
-import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
-import { PARTICIPANT_MESSAGES_QUERY } from "../../helpers/collaboration-participant-messages.js";
+import { segment, type Rec } from "../helpers/collaboration-root-harness.js";
+import {
+  PROJECT_TOOLS, createRoot, killBuiltStudios, managerOf, managerTab, restoreRoot, startBuiltStudio, terminateRoot, treeRunIds, until,
+  type BuiltStudio, type Kind, type Root,
+} from "../helpers/built-studio-roots.js";
 
 // autobyteus-469 (a top run's tree is built from its open Tasks; no stored list of local delegated runs) through the BUILT
 // Studio server (`dist/app.js`), real HTTP/GraphQL/WebSocket, scripted MCP tools and real server restarts. Only the external
@@ -41,22 +41,8 @@ const suite = enabled ? describe : describe.skip;
 // The POSIX mode-bit block of OT-2's read check: root ignores it and Windows has none.
 const modeBitsBlock = process.platform !== "win32" && process.getuid?.() !== 0;
 
-type Kind = "agent" | "team" | "org";
 const KINDS: Kind[] = ["agent", "team", "org"];
 const USAGE = { input_tokens: 100, output_tokens: 7, thinking_tokens: 0, cache_read_tokens: 0, total_tokens: 107 };
-const MODEL = "gemini-3.8-flash-low";
-const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", "update_project", "create_task", "update_task"];
-const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const until = async <T>(check: () => Promise<T> | T, label: string, timeout = 60_000): Promise<NonNullable<T>> => {
-  const deadline = Date.now() + timeout;
-  let last: unknown;
-  while (Date.now() < deadline) {
-    try { const value = await check(); if (value) return value as NonNullable<T>; } catch (error) { last = error; }
-    await sleep(150);
-  }
-  throw new Error(`Timed out: ${label}${last ? ` (${String(last)})` : ""}`);
-};
 const sha = async (file: string) => createHash("sha256").update(await fs.readFile(file)).digest("hex");
 const readJson = async (file: string): Promise<Rec> => JSON.parse(await fs.readFile(file, "utf8"));
 const writeJson = (file: string, value: unknown) => fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`);
@@ -71,55 +57,13 @@ const fingerprint = async (dir: string): Promise<Record<string, string>> => {
   return out;
 };
 
-// ---- the built Studio server ----------------------------------------------------------------------------------------------
-type Server = Awaited<ReturnType<typeof startServer>>;
-const children: ChildProcess[] = [];
-const startServer = async (root: string) => {
-  const serverDir = path.resolve(__dirname, "../../..");
-  await fs.access(path.join(serverDir, "dist", "app.js"));
-  const env: NodeJS.ProcessEnv = Object.fromEntries(["PATH", "USER", "LANG", "TMPDIR", "SHELL"].flatMap((key) => process.env[key] === undefined ? [] : [[key, process.env[key]]]));
-  Object.assign(env, { HOME: path.join(root, "home"), DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
-    ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", AGY_FAKE_REPLY_USAGE: JSON.stringify(USAGE), ...builtServerLaunchEnvironment() });
-  const child = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { cwd: serverDir, env, stdio: ["ignore", "pipe", "pipe"] });
-  children.push(child);
-  let output = "";
-  child.stdout!.on("data", (chunk) => { output += String(chunk); });
-  child.stderr!.on("data", (chunk) => { output += String(chunk); });
-  await until(() => {
-    if (child.exitCode !== null || child.signalCode !== null) throw new Error(`server exited: ${output.slice(-2000)}`);
-    return output.includes("Server listening on 127.0.0.1:0");
-  }, "server readiness", 180_000).catch((error) => { throw new Error(`${error}\n${output.slice(-2000)}`); });
-  // The Studio app is the listener that serves GraphQL (the agent-tools MCP host logs its own listening line first).
-  let url = "";
-  for (const [, candidate] of output.matchAll(/Server listening at (http:\/\/127\.0\.0\.1:\d+)/g)) {
-    const probe = await fetch(`${candidate}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "{__typename}" }) });
-    if (probe.ok) { url = candidate!; break; }
-  }
-  if (!url) throw new Error(`no listener serves GraphQL: ${output.slice(-2000)}`);
-  const gql = async <T = any>(query: string, variables: Rec = {}): Promise<T> => {
-    const response = await fetch(`${url}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
-    const body = await response.json() as { data?: T; errors?: unknown[] };
-    if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
-    return body.data;
-  };
-  const sockets: WebSocket[] = [];
-  const stop = async () => {
-    for (const socket of sockets.splice(0)) socket.terminate();
-    if (child.exitCode !== null || child.signalCode !== null) return;
-    const exited = once(child, "exit");
-    child.kill("SIGTERM");
-    const force = setTimeout(() => child.kill("SIGKILL"), 10_000);
-    try { await exited; } finally { clearTimeout(force); }
-  };
-  return { url, gql, sockets, stop, output: () => output };
-};
-
-// ---- roots and their Managers -----------------------------------------------------------------------------------------------
+// ---- the built Studio server and its roots (tests/e2e/helpers/built-studio-roots.ts) ---------------------------------------
+type Server = BuiltStudio;
+const startServer = (root: string) => startBuiltStudio(root, { ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", AGY_FAKE_REPLY_USAGE: JSON.stringify(USAGE) });
+const restore = restoreRoot;
+const terminate = terminateRoot;
 type Defs = { manager: string; worker: string; helper: string; researcher: string; team: string; org: string; names: Record<string, string> };
-type Root = { kind: Kind; rootId: string; managerRunId: string };
 const addressOf = (kind: Kind, member: "worker" | "helper" | "researcher", defs: Defs) => kind === "org" ? `/${member}` : `/${segment(defs.names[member]!)}`;
-const config = (workspace: string) => ({ workspaceRootPath: workspace, llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" });
 
 const createDefinitions = async (s: Server): Promise<Defs> => {
   const tag = randomUUID().slice(0, 6);
@@ -144,82 +88,11 @@ const createDefinitions = async (s: Server): Promise<Defs> => {
       { memberName: "squad", ref: squad, refType: "AGENT_TEAM", refScope: "SHARED" }] } })).createAgentOrgDefinition.id as string;
   return { manager, worker, helper, researcher, team: teamId, org, names };
 };
-const createRoot = async (s: Server, kind: Kind, defs: Defs, workspace: string): Promise<Root> => {
-  if (kind === "agent") {
-    const r = (await s.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`, { input: { agentDefinitionId: defs.manager, ...config(workspace) } })).createAgentRun;
-    expect(r.success, r.message).toBe(true);
-    return { kind, rootId: r.runId, managerRunId: r.runId };
-  }
-  if (kind === "team") {
-    const r = (await s.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
-      { input: { teamDefinitionId: defs.team, teamConfigs: [{ teamAddress: "/", ...config(workspace) }],
-        memberConfigs: [{ memberAddress: "/manager", agentDefinitionId: defs.manager, ...config(workspace) }] } })).createAgentTeamRun;
-    expect(r.success, r.message).toBe(true);
-    const tree = (await s.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: r.teamRunId })).getTeamRunResumeConfig.executionTree;
-    return { kind, rootId: r.teamRunId, managerRunId: tree.root_team.members.find((m: Rec) => m.address === "/manager").agent_run_id };
-  }
-  const r = (await s.gql(`mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}`,
-    { input: { agentOrgDefinitionId: defs.org, rootConfiguration: config(workspace), agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
-  expect(r.success, r.message).toBe(true);
-  const tree = (await s.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: r.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
-  return { kind, rootId: r.agentOrgRunId, managerRunId: tree.rootOrg.members.find((m: Rec) => m.address === "/manager").agentRunId };
-};
-/** The tree the server reports for a root (its composed view). */
-const treeOf = async (s: Server, root: Root) => {
-  if (root.kind === "agent") return (await s.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: root.rootId })).agentRunCollaboration?.root_agent?.execution_tree;
-  if (root.kind === "team") return (await s.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: root.rootId })).getTeamRunResumeConfig.executionTree;
-  return (await s.gql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: root.rootId })).getAgentOrgRootHistory.org;
-};
-const treeRunIds = async (s: Server, root: Root) => taskAgentsIn(await treeOf(s, root)).map((t) => t.agentRunId ?? t.teamRunId!);
-const managerConversation = async (s: Server, root: Root) => {
-  if (root.kind === "agent") return (await s.gql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: root.rootId })).getRunProjection?.conversation;
-  if (root.kind === "team") return (await s.gql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
-    { id: root.rootId, a: root.managerRunId })).getTeamMemberRunProjection?.conversation;
-  return (await s.gql(`query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}`,
-    { id: root.rootId, a: root.managerRunId, m: "/manager" })).getAgentOrgMemberRunProjection?.conversation;
-};
-/** The Manager's input channel (what its composer sends), and one scripted tool call returning its result. */
-const managerOf = async (s: Server, root: Root) => {
-  const route = root.kind === "agent" ? `agent/${root.rootId}` : root.kind === "team" ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
-  const socket = new WebSocket(`${s.url.replace(/^http/, "ws")}/ws/${route}`);
-  s.sockets.push(socket);
-  await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
-  const send = (content: string) => socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: root.kind === "org"
-    ? { root_subject_kind: "agent_org", root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
-      message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }
-    : { agent_run_id: root.managerRunId, message_id: `e2e-${randomUUID()}`, dedupe_key: `agent_run_input:e2e:${randomUUID()}`,
-      content, context_file_paths: [], image_urls: [] } }));
-  const call = async (name: string, args: Rec): Promise<Rec> => {
-    const before = calledResults(await managerConversation(s, root)).length;
-    send(callTool(name, args));
-    const results = await until(async () => { const r = calledResults(await managerConversation(s, root)); return r.length > before ? r : null; },
-      `${root.kind} Manager ${name}`, 90_000);
-    return toolResult(results[before]!);
-  };
-  return { call, close: () => socket.close() };
-};
-const restore = async (s: Server, root: Root) => {
-  const mutation = root.kind === "agent" ? `mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`
-    : root.kind === "team" ? `mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`
-      : `mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`;
-  const restored = Object.values(await s.gql(mutation, { id: root.rootId }))[0] as Rec;
-  expect(restored.success, restored.message).toBe(true);
-};
-const terminate = async (s: Server, root: Root) => {
-  const mutation = root.kind === "agent" ? `mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`
-    : root.kind === "team" ? `mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`
-      : `mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}`;
-  const result = Object.values(await s.gql(mutation, { id: root.rootId }))[0] as Rec;
-  expect(result.success, result.message).toBe(true);
-};
 const runTokens = async (s: Server, runId: string) => (await s.gql(`query($r:String!){getAgentRunTokenUsageSummary(runId:$r){totalTokens}}`, { r: runId })).getAgentRunTokenUsageSummary.totalTokens as number;
 const standaloneTokens = async (s: Server, runId: string) => (await s.gql(`query($r:String!){getStandaloneRunTokenUsageSummary(runId:$r){totalTokens}}`, { r: runId })).getStandaloneRunTokenUsageSummary.totalTokens as number;
-/** The Manager's Team tab (its participant messages and the past participants they name, D-5). */
-const managerTab = async (s: Server, r: Root) => (await s.gql(PARTICIPANT_MESSAGES_QUERY,
-  { rootKind: r.kind === "agent" ? "agent" : r.kind === "team" ? "agent_team" : "agent_org", rootRunId: r.rootId, agentRunId: r.managerRunId }))
-  .collaborationParticipantMessages as { messages: Rec[]; pastParticipants: Rec[] };
 const memoryRunsOf = async (s: Server, agentDefinitionId: string) => ((await s.gql(`query($selector:AgentWithMemorySelectorInput!){listAgentRunsWithMemory(selector:$selector,page:1,pageSize:100){entries{runId}}}`,
   { selector: { attribution: "DEFINITION", agentDefinitionId } })).listAgentRunsWithMemory.entries as Rec[]).map((entry) => entry.runId as string);
+
 
 // ---- files on disk ----------------------------------------------------------------------------------------------------------
 const treeFile = (memory: string, root: Root) => root.kind === "agent" ? path.join(memory, "agents", root.rootId, "collaboration", "collaboration_tree.json")
@@ -272,7 +145,7 @@ suite("A top run's tree is built from its open Tasks: upgrade, start, load, save
 
   afterAll(async () => {
     await server?.stop().catch(() => undefined);
-    for (const child of children) if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+    killBuiltStudios();
     if (memory) await unblock();
     if (root) await fs.rm(root, { recursive: true, force: true });
   }, 60_000);
