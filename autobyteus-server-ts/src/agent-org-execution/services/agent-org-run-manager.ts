@@ -35,9 +35,7 @@ import { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-c
 import type { AgentOrgExecutionScopeBuilder } from "./agent-org-execution-scope-builder.js";
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 export type AgentOrgRunManagerOptions = Readonly<{
@@ -212,10 +210,9 @@ export class AgentOrgRunManager {
   }
 
   /** Closed (Task DONE or CANCELLED) task executions of the given tree of this Org (stored, or the active snapshot's). */
-  closedTaskExecutionsFor(orgRunIdInput: string, tree: AgentOrgRunExecutionTreeFile): readonly TaskExecutionReference[] {
-    const index = new AgentOrgExecutionIndex(tree);
-    return listClosedTaskExecutions({ port: this.taskExecutionResources, root: createAgentOrgRootExecutionIdentity(required(orgRunIdInput, "orgRunId")),
-      contains: (reference) => index.getTaskExecution(reference) !== null });
+  closedTaskExecutionsFor(_orgRunIdInput: string, _tree: AgentOrgRunExecutionTreeFile): readonly TaskExecutionReference[] {
+    // Nothing is hosted (autobyteus-461): a run's children are runs of their own.
+    return [];
   }
 
   getRunConfig(orgRunIdInput: string): Promise<AgentOrgRunConfig> {

@@ -30,9 +30,7 @@ import {
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import { materializeTeamRoot } from "./team-root-materializer.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { TeamExecutionIndex } from "./team-execution-index.js";
 import type { DelegatedLaunchModelOptions } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { planStoppedTeamLaunchSave, teamDelegatedLaunchModelOptions } from "./team-run-delegated-launch-plan.js";
@@ -233,10 +231,9 @@ export class AgentTeamRunManager {
   }
 
   /** Closed (Task DONE or CANCELLED) task executions of the given (stored) tree of this root Team. */
-  closedTaskExecutionsFor(rootTeamRunIdInput: string, tree: TeamRunExecutionTreeSnapshot): readonly TaskExecutionReference[] {
-    const index = new TeamExecutionIndex(tree);
-    return listClosedTaskExecutions({ port: this.taskExecutionResources, root: createTeamRootExecutionIdentity(required(rootTeamRunIdInput, "rootTeamRunId")),
-      contains: (reference) => index.getTaskExecution(reference) !== null });
+  closedTaskExecutionsFor(_rootTeamRunIdInput: string, _tree: TeamRunExecutionTreeSnapshot): readonly TaskExecutionReference[] {
+    // Nothing is hosted (autobyteus-461): a run's children are runs of their own.
+    return [];
   }
 
   listActiveTeamRunIds(): string[] {

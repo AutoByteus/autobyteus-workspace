@@ -18,7 +18,12 @@ import {
 } from "../domain/delegated-launch-selection.js";
 import { delegatedStopSet } from "../domain/delegated-stop-set.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import type { StoppedTaskExecutionsStep, TaskExecutionUserStopResult } from "../execution/task/root-task-execution-lifecycle.js";
+import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
+
+/** The copies a Stop stopped, and the ones already stopped (hosted copies only; see follow-up FU on removing this). */
+type TaskExecutionUserStopResult = Readonly<{ stopped: readonly TaskExecutionReference[]; alreadyStopped: readonly TaskExecutionReference[] }>;
+/** A step that runs only while the listed copies are stopped; otherwise the running ones. */
+type StoppedTaskExecutionsStep<T> = Readonly<{ ran: true; value: T }> | Readonly<{ ran: false; running: readonly TaskExecutionReference[] }>;
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../execution/task/task-delegation-command.js";
 
 /** The outcome vocabulary of model-setting Saves, plus a copy that is running (AR-001). */

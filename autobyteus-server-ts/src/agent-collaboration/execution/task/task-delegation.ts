@@ -14,7 +14,10 @@ import { TaskDelegationError, type AssignToExistingCopyInput, type DelegatedCopy
 import {
   TASK_ASSIGNMENT_MESSAGE_TYPE, buildExistingCopyTaskMessage, requireTaskString, validateTaskReferenceFiles, type DelegatedProjectTask,
 } from "./task-execution-input.js";
-import { notACopyOfThisRun } from "./existing-copy-target.js";
+/** The refusal for an ID that is not a run this sender's run delegated to (unknown, or another run's). */
+const notACopyOfThisRun = (copy: TaskExecutionReference): TaskDelegationError => new TaskDelegationError("TASK_COPY_NOT_ASSIGNABLE",
+  `${"agentRunId" in copy ? copy.agentRunId : copy.teamRunId} is not one of your task agents. Use a run id that delegate_task returned to you, `
+  + "or delegate to a new task agent with recipient_address.");
 
 /** The work packet a new run starts with (its first input), as the delegated run's own root posts it. */
 export type WorkPacket = Readonly<{
