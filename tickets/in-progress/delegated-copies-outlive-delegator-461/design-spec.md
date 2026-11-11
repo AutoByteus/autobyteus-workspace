@@ -184,11 +184,21 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 
       The stream, pending sends, interrupts and approvals are untouched. It never goes through `team_stream_recovery_required`, the manual recovery 469's CR-003 found.
     - **The agent-run and org clients** answer with `checkpoint_required`, as they answer `task_execution_started` today: an automatic re-read that keeps their streams.
+    - **Unsequenced and idempotent** (SR-044, ARCH-REV-018). The event carries no `change_sequence`. Child-row membership is owned by the `DelegationTree`, not by the team run's ordered changes, so it must not need the run's root, which a stopped team does not have loaded. The Team client therefore does not advance or check its `changeSequence` for it, and applies it by membership:
+      - an `added` row the view already holds is skipped;
+      - a `removed` row it does not hold is ignored;
+      - a row in both, which happens when it left and came back between deliveries, ends as the event's `added` says.
+    - **Order against the snapshot, owned by the stream session** (each connection of a view stream, all three kinds). The snapshot (`TEAM_EXECUTION_VIEW_SNAPSHOT`, and the collaboration and org snapshots) is sent on the same connection as the events.
+      - While a session builds a snapshot, a child-row event published to it is held, and sent right after that snapshot. The snapshot reads the tree when it is built.
+      - So a change is either already in the snapshot, and its held event is then a no-op by idempotence, or it is applied after the snapshot.
+      - No change is lost to a snapshot read just before it, and no gap or recovery can arise.
   - **Events that go**, with their producer, the hosting lifecycle: `task_execution_started` / `TASK_EXECUTION_STARTED`, `task_executions_closed` / `TASK_EXECUTIONS_CLOSED`, `task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and `remote_task_execution_started`. They are replaced by the one event, and the web's merge and removal of a closed set goes with `closed_task_executions` (SR-041). `remote_task_execution_summary` stays: peer statuses while the view is open.
   - **Order:** the event is published after the tree is updated, so the re-read sees the new rows. Several changes in one Task change give one event per X.
   - **Tests,** in an open view of each kind (standalone, team, org), with no manual reload:
     - a new delegation appears;
     - **in the Team view, a pending send and a pending tool approval survive a child-row change**, with no `team_stream_recovery_required`; the focused child that is removed hands the focus back;
+    - **Team, the team run stopped:** an open view of a stopped team run gets the change and applies it, with no recovery, and the team run stays stopped;
+    - **Team, a change racing a snapshot:** a change published while the session builds a snapshot is sent after it. If the snapshot already holds the row, the event is a no-op; if not, the event adds it. A duplicate `added` and a `removed` for an unknown row are no-ops. None of these causes a gap or a recovery;
     - a closure removes a child with no other open Task, and keeps one with another open Task without an event;
     - the assigner's reopen-and-continue brings the child back;
     - a Task deletion removes its children;

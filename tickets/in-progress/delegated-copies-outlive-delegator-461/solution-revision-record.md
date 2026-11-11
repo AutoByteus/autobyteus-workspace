@@ -897,3 +897,18 @@
 - Done: the design's DS-8 (payload, Team handling, tests, including pending send and approval surviving). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-022)
 
+### SR-044 — Child-row events are unsequenced and idempotent, ordered by the stream session (answers ARCH-REV-018, AR-022 narrowed)
+
+- Triggering: ARCH-REV-018 accepted SR-043's payload and in-place Team handling. It narrowed AR-022 to the Team stream's sequencing:
+  - the Team client accepts a sequenced event only at `changeSequence + 1`, and a gap goes to manual recovery;
+  - an unsequenced event can race the snapshot;
+  - `insertTaskExecution` throws on a row the view holds.
+
+  DS-8 did not say whether the event is sequenced, who allocates the sequence for a stopped team, or how a duplicate or unknown row is applied.
+- Read: the snapshot (`TEAM_EXECUTION_VIEW_SNAPSHOT`) is sent in-band on the same stream connection as the events (`team-stream-server-message.ts`).
+- Decision (option (b), on the data model's merits): child-row membership is the `DelegationTree`'s, not the team run's ordered change stream. Sequencing it would tie the event back to the run's root, the coupling this ticket removes, and a stopped team has no root loaded.
+  - The event is unsequenced and applied by membership (skip a held `added` row, ignore an unknown `removed` row).
+  - The stream session orders it against the snapshot: an event published while the session builds a snapshot is held and sent right after it, and the snapshot reads the tree when it is built. A change is therefore either in the snapshot (and its event is a no-op) or applied after it. None is lost, and no gap is possible.
+- Done: the design's DS-8 (the rule, the session's order, and the Team tests: a stopped team run, a change racing a snapshot, duplicate and unknown rows). `walkthrough.py --check` passes.
+- Next action: architecture review (AR-022)
+
