@@ -53,15 +53,13 @@ export class TeamRunMessageDelivery {
     communication: RootCommunicationEngine;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
     isLiveAgent(agentRunId: string): boolean;
-    /** Target lease that records the receiver's first accepted message. */
-    withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
     remoteLinks: RemoteRunLinks;
     remoteSend: RemoteMessageSend;
   }>) {}
 
   /**
    * `send_message_to(run ID)` from an agent of this Team: the routing decision only. A remote endpoint goes to
-   * the shared remote send under the sender's live lease (never reactivated, S3); any other run ID through
+   * the shared remote send (never reactivated, S3); any other run ID through
    * today's exact delivery (`local`).
    */
   deliverExact(input: ExactTeamAgentMessageInput, local: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
@@ -69,17 +67,17 @@ export class TeamRunMessageDelivery {
     const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
     if (!endpoint) return local();
     this.options.authorizeIdentity(sender);
-    return this.options.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+    return this.options.remoteSend.send({ sender, endpoint,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
   }
 
   /** DS-2: a message from another run of this node, for a member of this team run; the member is woken or restored first. */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
     if (!receiver) return Promise.resolve(NOT_AN_AGENT_OF_THIS_RUN(input.message.receiverAgentRunId));
-    return this.options.withLiveLease(receiver.agentRunId, () => this.options.communication.acceptFromRun({ ...input,
+    return this.options.communication.acceptFromRun({ ...input,
       receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
-      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId }));
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId });
   }
 
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
@@ -88,13 +86,13 @@ export class TeamRunMessageDelivery {
     // The endpoint admitted the message's target as one of its paired agents (N-301): it is the receiver.
     const receiver = endpoint ? this.options.getIndex().getAgent(input.message.receiverAgentRunId) : null;
     if (!endpoint || !receiver) return Promise.resolve(notLinked);
-    return this.options.withLiveLease(receiver.agentRunId, () => this.options.communication.acceptFromRemote({
+    return this.options.communication.acceptFromRemote({
       message: input.message,
       endpoint,
       receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
       senderNodeName: input.fromNodeName,
-    }));
+    });
   }
 
   /**
@@ -132,12 +130,12 @@ export class TeamRunMessageDelivery {
       senderAgentRunId: sender.agentRunId,
       address: this.recipients.requireNonRootAddress(intent.recipientAddress),
     }).receiver;
-    return this.options.withLiveLease(target.agentRunId, () => this.deliverIntent({
+    return this.deliverIntent({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
       senderAddress: reachingAddressOf(this.options.getIndex(), target.agentRunId, sender),
-    }));
+    });
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
@@ -148,7 +146,7 @@ export class TeamRunMessageDelivery {
       return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.options.rootTeamRunId}'.` };
     }
     const receiver = this.identityFor(execution.address, execution.agentRunId);
-    return this.options.withLiveLease(execution.agentRunId, () => this.deliverIntent({
+    return this.deliverIntent({
       intent: {
         rootTeamRunId: this.options.rootTeamRunId,
         sender: buildDeliveryEndpointForParticipant(input.sender),
@@ -160,7 +158,7 @@ export class TeamRunMessageDelivery {
       receiverIdentity: receiver,
       receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
       senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
-    }));
+    });
   }
 
   /** `delegate_task(address)`: refuses the sender's own Team (CM-1), then a configured Agent, then the catalog. */

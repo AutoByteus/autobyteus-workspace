@@ -58,7 +58,7 @@ export class AgentOrgRunMessageDelivery {
 
   /**
    * `send_message_to(run ID)` from an agent of this Org: the routing decision only. A remote endpoint goes to
-   * the shared remote send under the sender's live lease (never reactivated, S3); any other run ID through
+   * the shared remote send (never reactivated, S3); any other run ID through
    * today's exact delivery.
    */
   deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
@@ -66,17 +66,17 @@ export class AgentOrgRunMessageDelivery {
     const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
     if (!endpoint) return this.deliverToRunId(input);
     this.options.authorizeIdentity(sender);
-    return this.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
-      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+    return this.options.remoteSend.send({ sender, endpoint,
+      content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles });
   }
 
   /** DS-2: a message from another run of this node, for an agent of this org run; it is woken or restored first. */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
     if (!receiver) return Promise.resolve(NOT_AN_AGENT_OF_THIS_RUN(input.message.receiverAgentRunId));
-    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().acceptFromRun({ ...input,
+    return this.options.getCommunication().acceptFromRun({ ...input,
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
-      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId }));
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId });
   }
 
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */
@@ -87,13 +87,13 @@ export class AgentOrgRunMessageDelivery {
     if (!endpoint || !receiver) {
       return Promise.resolve({ accepted: false, code: REMOTE_REFUSAL.TARGET_NOT_PERMITTED, message: "That run is not linked with the sender." });
     }
-    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().acceptFromRemote({
+    return this.options.getCommunication().acceptFromRemote({
       message: input.message,
       endpoint,
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
       senderNodeName: input.fromNodeName,
-    }));
+    });
   }
 
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
@@ -114,7 +114,7 @@ export class AgentOrgRunMessageDelivery {
     this.options.authorizeIdentity(sender);
     const target = this.options.recipients.resolveMessageRecipient(sender, input.recipientAddress).receiver;
     const receiver = this.identityFor(target.agentRunId, target.address);
-    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
+    return this.options.getCommunication().deliver({
       senderIdentity: sender,
       senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
       senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, sender),
@@ -123,7 +123,7 @@ export class AgentOrgRunMessageDelivery {
       content: input.content,
       messageType: input.messageType,
       referenceFiles: input.referenceFiles,
-    }));
+    });
   }
 
   /** `send_message_to(run ID)`: existing executions only; never brings anything in. */
@@ -133,7 +133,7 @@ export class AgentOrgRunMessageDelivery {
     if (!receiver) {
       return Promise.resolve({ accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `AgentRun '${input.targetAgentRunId}' is not in this AgentOrg.` });
     }
-    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().deliver({
+    return this.options.getCommunication().deliver({
       senderIdentity: input.sender.identity,
       senderDisplayName: input.sender.displayName,
       senderAddress: reachingAddressOf(this.options.getIndex(), receiver.agentRunId, input.sender.identity),
@@ -142,7 +142,7 @@ export class AgentOrgRunMessageDelivery {
       content: input.content,
       messageType: input.messageType,
       referenceFiles: input.referenceFiles,
-    }));
+    });
   }
 
   /** `delegate_task(address)`: never to the caller itself, a teammate or its own Team (CM-1, in the shared resolution). */
@@ -214,15 +214,10 @@ export class AgentOrgRunMessageDelivery {
         : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in AgentOrg '${this.options.orgRunId}'.` };
       return Object.freeze({ result, executionKind: agent.executionKind });
     }
-    // Operator input wakes a shut-down child exactly like send_message_to.
-    const result = await this.withLiveLease(agentRunId, execute);
+    const result = await execute();
     return Object.freeze({ result, executionKind: agent.executionKind });
   }
 
-  /** Runs a delivery into an agent of this org (nothing hosted needs holding, autobyteus-461). */
-  withLiveLease(_agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return operation();
-  }
 
   /** Runtime liveness (AR-005): a direct agent is registered; a mounted team's member is live with its team (lazy start). */
   isLiveAgent(agentRunId: string): boolean {

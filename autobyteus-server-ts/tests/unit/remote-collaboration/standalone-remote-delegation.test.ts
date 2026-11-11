@@ -18,6 +18,7 @@ import { TokenUsageCapability } from "../../../src/token-usage/providers/token-u
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { bindTestTaskSide } from "../../helpers/task-side-binding.js";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
 import { PeerGateway } from "../../../src/remote-collaboration/channel/peer-gateway.js";
 import { RemoteDelegationReceiver } from "../../../src/remote-collaboration/inbound/remote-delegation-receiver.js";
@@ -41,8 +42,10 @@ import { projectAgentCollaborationView } from "../../../src/services/agent-strea
  */
 
 const directories: string[] = [];
+const releases: (() => void)[] = [];
 afterEach(async () => {
   vi.restoreAllMocks();
+  releases.splice(0).forEach((release) => release());
   await Promise.all(directories.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
 });
 
@@ -97,6 +100,8 @@ const buildNode = async (input: Readonly<{
   enabled?: () => boolean;
   network: Map<string, PeerGateway>;
   metadata?: Map<string, AgentRunMetadata>;
+  /** The delegating node: its Task side is bound (its Task records kept across a restart). */
+  taskSide?: InMemoryTaskExecutionResources;
 }>) => {
   vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const memoryDir = input.memoryDir ?? await fs.mkdtemp(path.join(os.tmpdir(), "remote-node-"));
@@ -104,7 +109,7 @@ const buildNode = async (input: Readonly<{
   const metadata = input.metadata ?? new Map<string, AgentRunMetadata>();
   const runs = new Map<string, FakeRun>();
   const runOf = (runId: string) => { let run = runs.get(runId); if (!run) { run = fakeRun(runId); runs.set(runId, run); } return run; };
-  const resources = new InMemoryTaskExecutionResources();
+  const resources = input.taskSide ?? new InMemoryTaskExecutionResources();
   const peerDirectory = {
     findByName: async (name: string) => input.peers.find((peer) => peer.name === name) ?? null,
     peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId: string) => input.peers.find((peer) => peer.nodeId === nodeId) ?? null,
@@ -147,6 +152,7 @@ const buildNode = async (input: Readonly<{
       return socket;
     },
   });
+  if (input.taskSide) releases.push(bindTestTaskSide(resources, () => client));
   let allocation = 0;
   const manager = new StandaloneAgentRunRootManager({
     memoryDir,
@@ -212,6 +218,9 @@ const buildNode = async (input: Readonly<{
       pairedAgents: () => manager.pairedAgents,
     } as never, {
       runTitle: async (run) => titles.get(run.runId) ?? null,
+      // SR-038: the run's launches, read from its own file (here the in-memory metadata).
+      runLaunches: async (run) => { const own = metadata.get(run.runId); return own ? [{ address: "/publisher", runtimeKind: own.runtimeKind,
+        llmModelIdentifier: own.llmModelIdentifier, source: { origin: "agent_default" as const, fallbacks: [] } }] : []; },
       agentProjection: async (_run, agentRunId) => ({ agentRunId, conversation: [], activities: [], summary: titles.get(agentRunId) ?? null,
         lastActivityAt: null, hasEarlierActiveTraceEvents: false }),
     }),
@@ -232,7 +241,8 @@ const logLines = async (file: string) => (await fs.readFile(file, "utf8")).split
 
 const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
   const network = new Map<string, PeerGateway>();
-  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
+  const a = await buildNode({ nodeId: A_ID, network, taskSide: new InMemoryTaskExecutionResources(),
+    peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
   const b = await buildNode({ nodeId: B_ID, network, enabled: options.bEnabled,
     peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }] });
   a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: "/work", memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
@@ -261,24 +271,22 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
       `You have a new task from the agent with sender run id "${DELEGATOR}" on node "desktop".`,
       "When you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.",
       "", "Description:", "Publish the video draft."].join("\n")]);
-    // The work packet is not a message-log entry (item 9): B has no collaboration package yet.
-    await expect(fs.access(new AgentMemoryLayout(b.memoryDir).getAgentRunCollaborationDirPath("publisher_r1"))).rejects.toThrow();
+    // The work packet is not a message-log entry (item 9): B's run has no message log yet.
+    await expect(fs.access(path.join(new AgentMemoryLayout(b.memoryDir).getStandaloneRunDirPath("publisher_r1"), "communication_messages_active.jsonl"))).rejects.toThrow();
 
-    // A: the link with `nodeId` in the host's tree (one list on disk), the remote run recorded as a run of the Task.
-    const tree = JSON.parse(await fs.readFile(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"), "utf8"));
-    expect(tree.taskExecutions).toEqual([{ address: "/publisher", agentRunId: "publisher_r1", nodeId: B_ID, delegatorAgentRunId: DELEGATOR, startedAt: expect.any(String),
-      // autobyteus-32 REQ-009: B's launch for it, as B resolved it.
-      launches: [expect.objectContaining({ address: "/publisher", source: { origin: "agent_default", fallbacks: [] } })] }]);
+    // A: the peer's run is recorded in its Task entry, with its node and the address (contract §2.1, E3); A stores no tree.
     expect(a.resources.entry({ agentRunId: "publisher_r1" })).toMatchObject({ taskId: "ad_hoc_task_1", role: "assigned", start: "started", open: true,
-      hostRoot: { rootSubjectKind: "agent", rootRunId: DELEGATOR } });
+      nodeId: B_ID, recipientAddress: "/publisher",
+      delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: DELEGATOR }, delegatorAgentRunId: DELEGATOR } });
+    await expect(fs.access(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"))).rejects.toThrow();
     // autobyteus-278: A's run tree view lists it as a remote child of the delegator, never among the local copies.
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
-    const view = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.remoteTaskExecutions) });
+    const view = projectAgentCollaborationView({ ...inspection, taskExecutions: [], remoteTaskExecutions: await remoteTaskExecutionDtos(createAgentRootExecutionIdentity(DELEGATOR)) });
     if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");
     expect(view.root_agent.execution_tree.taskExecutions).toEqual([]);
-    expect(view.root_agent.remote_task_executions).toEqual([{ kind: "agent", address: "/publisher", agent_run_id: "publisher_r1", node_id: B_ID,
-      node_name: B_ID, delegator_agent_run_id: DELEGATOR, started_at: expect.any(String),
-      launches: [expect.objectContaining({ address: "/publisher", source: { origin: "agent_default", fallbacks: [] } })] }]);
+    // Its launches are read from B while the view is open (SR-038); nothing about them is stored on A.
+    expect(view.root_agent.remote_task_executions).toEqual([expect.objectContaining({ kind: "agent", address: "/publisher", agent_run_id: "publisher_r1", node_id: B_ID,
+      node_name: B_ID, delegator_agent_run_id: DELEGATOR, started_at: expect.any(String) })]);
   });
 
   it("the two runs message each other both ways by run ID; each message is in both logs once, with one ID, and the headers name the node", async () => {
@@ -291,8 +299,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(followUp).toMatchObject({ accepted: true, message: `Delivered message to publisher_r1 on node "docker".` });
     expect(b.runOf("publisher_r1").received).toEqual([`You received a message from the agent with sender run id "${DELEGATOR}" on node "desktop".\nmessage:\nThanks, now add captions.`]);
 
-    const aLog = await logLines(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "communication_messages_active.jsonl"));
-    const bLog = await logLines(path.join(new AgentMemoryLayout(b.memoryDir).getAgentRunCollaborationDirPath("publisher_r1"), "communication_messages_active.jsonl"));
+    // Each run's log is in its own folder (TC-13).
+    const aLog = await logLines(path.join(new AgentMemoryLayout(a.memoryDir).getStandaloneRunDirPath(DELEGATOR), "communication_messages_active.jsonl"));
+    const bLog = await logLines(path.join(new AgentMemoryLayout(b.memoryDir).getStandaloneRunDirPath("publisher_r1"), "communication_messages_active.jsonl"));
     expect(aLog.map((line) => line.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     expect(bLog).toEqual(aLog);
     expect(new Set(aLog.map((line) => line.messageId)).size).toBe(2);
@@ -301,7 +310,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const bRecords = await b.manager.getCollaborationRecordsSnapshot("publisher_r1");
     expect(bRecords.messages.messages.map((message) => message.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     const bInspection = (await b.manager.getInspection("publisher_r1"))!;
-    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, remoteTaskExecutions: [] }))).not.toContain("Published to the channel.");
+    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, taskExecutions: [], remoteTaskExecutions: [] }))).not.toContain("Published to the channel.");
   });
 
   it("keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108)", async () => {
@@ -309,7 +318,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await delegate(a);
     await send(b, { runId: "publisher_r1", address: "/publisher" }, DELEGATOR, "First reply.");
     const network = new Map<string, PeerGateway>();
-    const a2 = await buildNode({ nodeId: A_ID, network, memoryDir: a.memoryDir, metadata: a.metadata,
+    releases.splice(0).forEach((release) => release());
+    const a2 = await buildNode({ nodeId: A_ID, network, memoryDir: a.memoryDir, metadata: a.metadata, taskSide: a.resources,
       peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
     const b2 = await buildNode({ nodeId: B_ID, network, memoryDir: b.memoryDir, metadata: b.metadata,
       peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }] });
@@ -401,7 +411,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     root.remoteChildren.viewerAttached();
     await settle();
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
-      title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle" }] } }]);
+      title: "Publish the video draft.", statuses: [{ agentRunId: "publisher_r1", status: "idle" }],
+      // SR-038: the run's launches, from B's own file.
+      launches: [expect.objectContaining({ address: "/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet" })] } }]);
 
     // B's host reports running: A's root presents it at the stored address, as its own event (DS-002).
     b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE" });
@@ -422,8 +434,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(root.stopDelegatedExecution({ agentRunId: "publisher_r1" })).resolves.toMatchObject({ outcome: "STOPPED" });
     await settle();
     expect(b.runOf("publisher_r1").active).toBe(false);
+    // A stopped run has no live status; its launches are still its own facts (SR-038).
     expect(events).toEqual([{ kind: "remote_task_execution_summary", summary: { nodeId: B_ID, runId: "publisher_r1", reachable: true,
-      title: "Publish the video draft.", statuses: [] } }]);
+      title: "Publish the video draft.", statuses: [], launches: [expect.objectContaining({ address: "/publisher" })] } }]);
     root.remoteChildren.viewerDetached();
   });
 });

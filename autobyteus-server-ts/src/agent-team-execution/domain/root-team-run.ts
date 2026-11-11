@@ -142,7 +142,6 @@ export class RootTeamRun {
       communication: this.communication,
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
-      withLiveLease: (_agentRunId, operation) => operation(),
       remoteLinks: this.remoteLinks,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
     });
