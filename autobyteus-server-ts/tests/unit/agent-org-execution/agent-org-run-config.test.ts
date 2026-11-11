@@ -9,7 +9,7 @@ import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
 import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
 import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { applyAgentOrgRunSelectionPatches, listAgentOrgRunSelectionScopes, resolveAgentOrgRunSelectionTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
 

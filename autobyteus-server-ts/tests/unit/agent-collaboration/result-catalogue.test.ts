@@ -27,7 +27,8 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-13", "send_message_to", "You can't send a message to yourself."],
   ["M-14", "send_message_to", "The agent with that run id is not running here, so the message was not sent. Use an exact run id you were given."],
   ["M-15", "send_message_to", "The agent '<run id>' is not running, so the message was not sent."],
-  ["M-16", "send_message_to", "The task agent '<run id>' has stopped, so the message was not sent."],
+  // M-16 ("The task agent '<run id>' has stopped …") was withdrawn with hosting (autobyteus-461): a delegated run is its own
+  // run, and a message to it when stopped restores it.
   // M-17 ("The user is stopping this task agent.") went with hosted copies (autobyteus-461): a delegated run stops as itself.
   ["M-18", "send_message_to (result)", "<run id> continues with its conversation."],
   ["M-19", "send_message_to (result)", "<run id> continues with its conversation (its Task is open again) but did not receive this message; send it again."],
@@ -78,9 +79,9 @@ const ID_RULE = /(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/;
 const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! id)|your run(?! id)|the run(?! id)|in the run(?! id)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
 
 describe("result and refusal catalogue (wording §7.3, SR-014)", () => {
-  it("lists M-01 to M-45 once each, without the withdrawn M-43 and M-17 (hosted copies, autobyteus-461)", () => {
+  it("lists M-01 to M-45 once each, without the withdrawn M-43, M-16 and M-17 (hosted copies, autobyteus-461)", () => {
     expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 45 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
-      .filter((id) => id !== "M-43" && id !== "M-17"));
+      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17"));
   });
 
   const source = normalizedSource();

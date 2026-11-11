@@ -5,9 +5,8 @@ import {
 } from "../../../src/agent-team-execution/domain/team-run-physical-scope.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { TeamExecutionIndex } from "../../../src/agent-team-execution/services/team-execution-index.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { address, testAgentCopySource, testAgentNode, testAgentTeamNode, testCatalogTeamCopy, testExecutionTree, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { address, testAgentNode, testAgentTeamNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 describe("TeamRunPhysicalScope", () => {
   it("builds immutable root, child, and deep scopes without mutating a parent", () => {

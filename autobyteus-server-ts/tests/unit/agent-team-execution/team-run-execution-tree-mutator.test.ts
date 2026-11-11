@@ -1,18 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import {
-  addTaskExecutionToTree,
-  adoptAgentPlatformBindingInTree,
-  replaceAgentPlatformBindingWithoutConversationInTree,
-} from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
+import { adoptAgentPlatformBindingInTree, replaceAgentPlatformBindingWithoutConversationInTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import {
-  address,
-  testAgentCopySource,
-  testAgentNode,
-  testAgentTeamNode,
-  testExecutionTree,
-} from "../../fixtures/current-team-run-fixtures.js";
+import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const rootTeamRunId = "root-binding-run";
 
