@@ -172,11 +172,23 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
     - `child_runs_changed` on the collaboration and org streams;
     - `CHILD_RUNS_CHANGED` on the team stream.
 
-    The payload is `{ run_id }`. The web answers it as today's `task_execution_started` is answered, with `checkpoint_required`: it reads the view again, which carries every row's record (469 D-8; the Team view needs it).
+    **The payload carries the change itself** (SR-043, ARCH-REV-017): `{ run_id, added: [row records], removed: [run references] }`.
+    - `added` holds each new or reopened child's row record, in the shape today's `TASK_EXECUTION_STARTED` / `task_execution_started` carries (with `parent_team_run_id` on the team stream). `ChildRowsFeed` builds it with **the same projection function as the view**, so applying it equals a re-read.
+    - `removed` holds the run references of children that left `openChildrenOf(X)`: a closure leaving no open Task, or a Task deletion.
+
+    How each client answers:
+    - **The Team client** (`teamExecutionViewState.ts`) applies it **in place**, in its sequenced stream, as it applies `TASK_EXECUTION_STARTED` today:
+      - it inserts each added record (`insertTaskExecution`, context associations, `invalidate_team_member_projection`);
+      - it removes each removed child's subtree, with a new `removeTaskExecution`; if the focus was on a removed child, it moves off it (`reconcile_focused_team_member_projection`, as `leaveClosedFocus` did);
+      - then `reconcile_team_navigation`.
+
+      The stream, pending sends, interrupts and approvals are untouched. It never goes through `team_stream_recovery_required`, the manual recovery 469's CR-003 found.
+    - **The agent-run and org clients** answer with `checkpoint_required`, as they answer `task_execution_started` today: an automatic re-read that keeps their streams.
   - **Events that go**, with their producer, the hosting lifecycle: `task_execution_started` / `TASK_EXECUTION_STARTED`, `task_executions_closed` / `TASK_EXECUTIONS_CLOSED`, `task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and `remote_task_execution_started`. They are replaced by the one event, and the web's merge and removal of a closed set goes with `closed_task_executions` (SR-041). `remote_task_execution_summary` stays: peer statuses while the view is open.
   - **Order:** the event is published after the tree is updated, so the re-read sees the new rows. Several changes in one Task change give one event per X.
   - **Tests,** in an open view of each kind (standalone, team, org), with no manual reload:
     - a new delegation appears;
+    - **in the Team view, a pending send and a pending tool approval survive a child-row change**, with no `team_stream_recovery_required`; the focused child that is removed hands the focus back;
     - a closure removes a child with no other open Task, and keeps one with another open Task without an event;
     - the assigner's reopen-and-continue brings the child back;
     - a Task deletion removes its children;

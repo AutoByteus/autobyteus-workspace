@@ -885,3 +885,15 @@
 - Done: the design's DS-8 ("Live child rows", with tests per view kind) and the removal plan. Views are not in the model. `walkthrough.py --check` passes.
 - Next action: architecture review (AR-022)
 
+### SR-043 — The Team view applies child-row changes in place (answers ARCH-REV-017, AR-022 narrowed)
+
+- Triggering: ARCH-REV-017 accepted SR-042's source, owner and order, and the agent-run and org views. It narrowed AR-022 to the Team view. DS-8 claimed the web answers the new event "as today's `task_execution_started`, with `checkpoint_required`", but at `827f1e68dc` the Team client has no such path:
+  - it inserts `TASK_EXECUTION_STARTED`'s record in place (`teamExecutionViewState.ts:385-402`);
+  - its only re-read is `team_stream_recovery_required`, a manual recovery that drops pending sends, interrupts and approvals (469 CR-003; 469 D-8 avoided it by putting records in the event).
+- The Solution Designer's error: the claim was checked against the agent-run client only.
+- Decision (option (a), uniform on the three streams): `child_runs_changed` / `CHILD_RUNS_CHANGED` carries `{ run_id, added: [row records], removed: [run references] }`. `ChildRowsFeed` builds the records with the view's own projection function, so applying them equals a re-read.
+  - The Team client applies the change in place: it inserts as for `TASK_EXECUTION_STARTED`, removes with a new `removeTaskExecution`, hands back the focus, and reconciles navigation. Its stream and pending work are kept.
+  - The agent-run and org clients keep their automatic `checkpoint_required` re-read.
+- Done: the design's DS-8 (payload, Team handling, tests, including pending send and approval surviving). `walkthrough.py --check` passes.
+- Next action: architecture review (AR-022)
+
