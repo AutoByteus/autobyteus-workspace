@@ -494,19 +494,13 @@ No other gap was found. Not validated: the code. The implementation verifies the
 - **Tests build the owners with fakes** through their constructors. No test binds or resets a global for an owner this ticket adds.
 - **The host's close and a startup rollback** release in reverse order. The `unbind…` calls go with the bindings.
 
-**The second composition root: the application host** (`standalone-application-host/start-standalone-application-host.ts:242-268`; SR-050). It composes the Task side and the run services, but never composed delegation. So today its lookups answer null: `delegate_task` answers `TASKS_UNAVAILABLE_TEXT`, a closed Task stops no run, and messages between runs fall to the live-only path. Application-owned runs are kept out of collaboration ("Agents and Teams cannot be involved from application-owned runs"), and delegated runs are created in the studio process, so the application host holds none. **It keeps today's behavior, stated as rules instead of absence**, composed through the same composition file:
-- steps 1–3: the Task side, the tree and the run services;
-- then explicit collaborators for what the application host does not offer:
-  - `UnavailableTaskDelegation`, which every `delegate_task` call answers with today's `TASKS_UNAVAILABLE_TEXT`;
-  - a run control for `ProjectTaskService` that releases nothing and reports no worker status, because no delegated run lives in this process;
-  - no cross-run delivery: `send_message_to` resolves within the sender's run, and a run ID outside it takes the live-only path, as today;
-  - `LocalChildPorts` with no children.
-
-No lookup answers null anywhere. **The answer stays as today** (ARCH-REV-025's aim, corrected at SR-051). At `827f1e68dc` an application host's `delegate_task` is: the sender's identity check (`authorizeIdentity`) → `delegateThrough` → `TASKS_UNAVAILABLE_TEXT`. That comes before any placement or own-address, own-team or own-definition refusal (`standalone-root-message-delivery.ts:155-161`, `root-team-run.ts:264-275`, `agent-org-run-message-delivery.ts:149-159`, `task-delegation-binding.ts:14-15`). The application-bound rule (`collaborator-admission.ts:112`) lives inside placement, and `UNAVAILABLE_APPLICATION_ROOT` only in the `@` candidate list; neither is a delegation refusal of its own. So in the application host:
-1. the `delegate_task` tool service checks the sender's identity in its root's gate;
-2. then `UnavailableTaskDelegation` answers `TASKS_UNAVAILABLE_TEXT` to every call, without running `delegationSource`'s other refusals.
-
-An agent reads exactly today's text. A test composes the application host and asserts each of these answers, with the exact text.
+**The second composition root: the application host** (`standalone-application-host/start-standalone-application-host.ts:242-268`; SR-052, which replaces SR-050 and SR-051). **It composes the same steps 1–8 as the studio, through the same composition file.**
+- **Why:** at `827f1e68dc` the application host binds the Task records and runs the hosting lifecycle, so delegation runs there through the ordinary path (ARCH-REV-026). An application-owned run is refused at placement: `CollaboratorAdmission.catalogDefinitionAt` returns null for `isApplicationBound` (`collaborator-admission.ts:112`). The answer is base's own text for each case: its own address (self), a teammate (own team), a catalog address (`delegationTargetUnavailableMessage`). A run in the application host that is not application-bound delegates as in the studio.
+- **SR-050's premise was the branch's state, not base's.** The branch had never composed delegation in the application host, so its null lookups answered `TASKS_UNAVAILABLE_TEXT`, a regression of this ticket. With the same composition, the application-bound rule keeps working where it lives, in placement, and no special "unavailable" collaborator is needed.
+- **Tests:**
+  - a characterization test **at `827f1e68dc`** captures the exact answer an application-owned team member's `delegate_task` gets, to its own address, to a teammate, to a catalog address, and with a `task_id`;
+  - the branch test, composing the application host, asserts the same texts;
+  - a run that is not application-bound delegates there, and its Task's closure stops it, as in the studio.
 
 **Where the code lives** (SR-049): `build-studio-server.ts` is at its 500-line limit, so the steps live in a dedicated composition file with two calls that `build-studio-server.ts` makes in order. The first call covers steps 1–2, the run services are created between the calls (step 3), and the second call covers steps 4–8. The order stays readable in one place.
 
