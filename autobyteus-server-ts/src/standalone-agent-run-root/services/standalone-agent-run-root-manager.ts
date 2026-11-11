@@ -84,6 +84,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   private readonly directory: ActiveCollaborationRootDirectory;
   private readonly active = new Map<string, StandaloneAgentRunRoot>();
   private readonly pending = new Map<string, Promise<StandaloneAgentRunRoot>>();
+  /** A stop in progress per run (its root's end and its agent's), which a resolution waits for (CR-461-001). */
+  private readonly ending = new Map<string, Promise<void>>();
   private readonly hostContexts: StandaloneHostMemberContextBuilder;
   private readonly roots: StandaloneRootBuilder;
   private admissionOpen = true;
@@ -134,14 +136,20 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     })));
   }
 
-  /** The root of an eligible run: the registered one, else loaded from its own log and registered. Never starts its agent. */
+  /**
+   * The root of an eligible run: the registered one, else loaded from its own log and registered. Never starts its agent.
+   * A run that is stopping is waited for, then loaded again: a delivery during a stop wakes the run after it, and the
+   * run never has two roots (CR-461-001).
+   */
   async resolveRoot(hostRunIdInput: string): Promise<StandaloneAgentRunRoot | null> {
     const hostRunId = hostRunIdInput.trim();
+    await this.untilEnded(hostRunId);
     const existing = this.getActive(hostRunId);
     if (existing) return existing;
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' was not found.`);
     if (!isCollaborationEligibleStandaloneRun(metadata)) return null;
+    await this.untilEnded(hostRunId);
     const registered = this.getActive(hostRunId);
     if (registered) return registered;
     const inFlight = this.pending.get(hostRunId);
@@ -197,8 +205,12 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /** Stop (DS-4, TC-1): the run's own agent only, then the root unregisters. Null for a run that is not eligible. */
-  async stopRoot(hostRunIdInput: string): Promise<StandaloneRootStopResult | null> {
+  stopRoot(hostRunIdInput: string): Promise<StandaloneRootStopResult | null> {
     const hostRunId = hostRunIdInput.trim();
+    return this.whileEnding(hostRunId, () => this.stopRootNow(hostRunId));
+  }
+
+  private async stopRootNow(hostRunId: string): Promise<StandaloneRootStopResult | null> {
     await this.pending.get(hostRunId)?.catch(() => undefined);
     const root = this.active.get(hostRunId);
     if (!root) {
@@ -215,8 +227,12 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /** A closed Task's stop (CR-461-001): as `stopRoot`, unless the run's Task entry is open again where its gate closes. */
-  async stopRootForTaskClosure(hostRunIdInput: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
+  stopRootForTaskClosure(hostRunIdInput: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
     const hostRunId = hostRunIdInput.trim();
+    return this.whileEnding(hostRunId, () => this.stopRootForTaskClosureNow(hostRunId, stillClosed));
+  }
+
+  private async stopRootForTaskClosureNow(hostRunId: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
     await this.pending.get(hostRunId)?.catch(() => undefined);
     const root = this.active.get(hostRunId);
     if (!root) {
@@ -236,14 +252,39 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /** History delete or archive: ends the run's root as a Stop does. Idempotent. */
-  async endRoot(hostRunIdInput: string): Promise<void> {
+  endRoot(hostRunIdInput: string): Promise<void> {
     const hostRunId = hostRunIdInput.trim();
-    await this.pending.get(hostRunId)?.catch(() => undefined);
-    const root = this.active.get(hostRunId);
-    if (!root) return;
-    await root.stop();
-    this.unregister(root);
-    this.notifyEnded(hostRunId);
+    return this.whileEnding(hostRunId, async () => {
+      await this.pending.get(hostRunId)?.catch(() => undefined);
+      const root = this.active.get(hostRunId);
+      if (!root) return;
+      await root.stop();
+      this.unregister(root);
+      this.notifyEnded(hostRunId);
+    });
+  }
+
+  /** Marks the run as stopping from the call on (before any await), so a resolution meanwhile waits for the stop. */
+  private whileEnding<T>(hostRunId: string, stop: () => Promise<T>): Promise<T> {
+    const previous = this.ending.get(hostRunId);
+    const stopping = (previous ? previous.then(stop) : stop());
+    const marker = stopping.then(() => undefined, () => undefined);
+    this.ending.set(hostRunId, marker);
+    void marker.then(() => { if (this.ending.get(hostRunId) === marker) this.ending.delete(hostRunId); });
+    return stopping;
+  }
+
+  /** Waits while the run is stopping, or while its root ends by itself (a fail-stop); returns at once otherwise. */
+  private async untilEnded(hostRunId: string): Promise<void> {
+    for (;;) {
+      const stopping = this.ending.get(hostRunId);
+      const terminating = this.active.get(hostRunId);
+      if (stopping) await stopping;
+      else if (terminating && !terminating.isActive()) {
+        await terminating.terminate().catch(() => undefined);
+        this.unregister(terminating);
+      } else return;
+    }
   }
 
   /**

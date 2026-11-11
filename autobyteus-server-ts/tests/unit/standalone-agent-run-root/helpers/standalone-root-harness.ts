@@ -100,6 +100,8 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
   });
   const { catalog } = definitions();
   const directory = new ActiveCollaborationRootDirectory();
+  // A test may hold the agent's termination open (a Stop in progress).
+  let heldTermination: Promise<void> | null = null;
   const manager = new StandaloneAgentRunRootManager({
     memoryDir,
     activeRootDirectory: directory,
@@ -108,6 +110,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
       getActiveRun: () => (host.run.isActive() ? host.run as never : null),
       activateHost: restores,
       terminateHost: vi.fn(async () => {
+        await heldTermination;
         const wasActive = host.run.isActive();
         host.crash();
         return { outcome: wasActive ? "terminated" as const : "not_active" as const, runtimeKind: null };
@@ -121,5 +124,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
   });
   return { manager, memoryDir, host, restores, contexts, directory, hostIdentity, store: new StandaloneRootPackageStore(),
-    setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); } };
+    setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); },
+    /** Holds the agent's next termination until the returned release is called. */
+    holdTermination: () => { let release!: () => void; heldTermination = new Promise((resolve) => { release = resolve; }); return () => { heldTermination = null; release(); }; } };
 };

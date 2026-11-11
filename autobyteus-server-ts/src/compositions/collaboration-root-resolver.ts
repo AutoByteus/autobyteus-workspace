@@ -17,7 +17,9 @@ export type ResolvedRoot =
 
 /**
  * One resolution of a root by its identity, through the root managers' public resolve / restore APIs
- * (autobyteus-285 D5), shared by inbound remote messages and restart resume.
+ * (autobyteus-285 D5), shared by deliveries between runs, inbound remote messages and restart resume. A run whose root
+ * is ending is never handed out: the delivery waits for that end, then the run is restored (CR-461-001; the managers'
+ * restore finishes a stopping root first, and the standalone manager waits for a stop in progress). One root per run.
  * - `null`: no such root here (deleted history, a run that cannot be a root, or a manager's not-found);
  * - a throw: the root exists but could not be restored.
  */
@@ -30,9 +32,25 @@ const NOT_FOUND_CODES = ["TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED", "AGENT_ORG_STAT
 const isNotFound = (error: unknown): boolean => error instanceof StandaloneRootUnavailableError
   || (error instanceof Error && NOT_FOUND_CODES.some((code) => error.message.startsWith(`${code}:`)));
 
+/**
+ * The run's active root, else a restore (which first finishes a root that is stopping). A restore that loses to a
+ * concurrent one ("already managed") takes the root that one registered.
+ */
+const activeOrRestored = async <T>(active: () => T | null, restore: () => Promise<T>): Promise<T> => {
+  const current = active();
+  if (current) return current;
+  try {
+    return await restore();
+  } catch (error) {
+    const registered = active();
+    if (registered) return registered;
+    throw error;
+  }
+};
+
 export const createCollaborationRootResolver = (input: Readonly<{
   standaloneRoots: Pick<StandaloneAgentRunRootManager, "resolveRoot">;
-  teamRuns: Pick<TeamRunService, "getManagedTeamRun" | "restoreTeamRun">;
+  teamRuns: Pick<TeamRunService, "getActiveTeamRun" | "restoreTeamRun">;
   orgRuns: Pick<AgentOrgRunService, "getActive" | "restore">;
 }>): CollaborationRootResolver => Object.freeze({
   async resolveOrRestore(root: RootExecutionIdentity): Promise<ResolvedRoot | null> {
@@ -43,11 +61,11 @@ export const createCollaborationRootResolver = (input: Readonly<{
           return resolved ? Object.freeze({ kind: "agent", root: resolved }) : null;
         }
         case "agent_team": {
-          const resolved = input.teamRuns.getManagedTeamRun(root.rootRunId) ?? await input.teamRuns.restoreTeamRun(root.rootRunId);
+          const resolved = await activeOrRestored(() => input.teamRuns.getActiveTeamRun(root.rootRunId), () => input.teamRuns.restoreTeamRun(root.rootRunId));
           return Object.freeze({ kind: "agent_team", root: resolved });
         }
         case "agent_org": {
-          const resolved = input.orgRuns.getActive(root.rootRunId) ?? await input.orgRuns.restore(root.rootRunId);
+          const resolved = await activeOrRestored(() => input.orgRuns.getActive(root.rootRunId), () => input.orgRuns.restore(root.rootRunId));
           return Object.freeze({ kind: "agent_org", root: resolved });
         }
       }
