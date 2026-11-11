@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-461` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("Stopping an agent (e.g. the Project Task Manager) must not stop the task agents and task agent teams it delegated to")
 - Package identifier: `delegated-copies-outlive-delegator-461`
-- Current solution revision: `SR-021` (answers ARCH-REV-004: AR-005 narrowed again; see DS-10 and the design's table "Round 2", last rows)
+- Current solution revision: `SR-022` (contract revision 6, after ARCH-REV-005 passed revision 5)
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-11
 - Classification: `task_size = Large`, `architectural_risk = High`
@@ -45,6 +45,28 @@
 ## Round 2 answers (SR-019)
 
 AR-004 (restart notice), AR-005 (migration: prerequisites, preserved partial states, retry recognition, checklist, fixtures), AR-008 (the stream connect no longer starts the host), AR-011 (`DelegatedRunCommands`: message, interrupt, tool approval and Stop to the child's own root), AR-012 (token totals cover the runs delegated from a run, recursively; results unchanged), AR-013 (each root writes its own log, receiver first, as the peer path), AR-014 (the index maps every agent of every delegating run), AR-015 (requirements corrected), and the residuals are answered in the design spec.
+
+## Revision 6 (SR-022), after your round-5 pass
+
+The user stopped implementation and decided two changes:
+
+**TC-10 revised.** A delegated run carries its own `delegatedFrom` again: its origin, written once at creation, equal by rule to its Task entries' value. Each side reads its own:
+- routing, placement and lifecycle read the Task entries;
+- the "delegated from" label and the Memory page read the run's file.
+
+**TC-11.** The relationships live in an in-memory `DelegationTree`, owned by collaboration (contract §2.6):
+- It is built from the Task records at startup and kept current by the Task side's change notice per Task.
+- It owns the communication rule (`canMessage`) and feeds the views.
+- It replaces the Task-side lookup questions and `TaskRunIndex`.
+- `TaskMessageScope` is now `CrossRunMessageDelivery` (the order of one message only).
+
+Migration step 4 writes the run's `delegatedFrom`.
+
+Validated read-only (`evidence/data-model-validation/contract-revision-6-2026-11-11.txt`):
+- origins computed for 196 of 196 runs;
+- equal to the Task entries for 181 of 181;
+- the tree is a forest (183 nodes, 0 cycles);
+- the rule on the tree equals the rule on the records for 230 of 230 pairs.
 
 ## Points for the reviewer
 
