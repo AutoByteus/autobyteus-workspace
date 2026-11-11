@@ -8,7 +8,7 @@ vi.mock('~/composables/useVncSession', () => ({ useVncSession: () => session.cur
 
 import MobileNodeDesktop from '../MobileNodeDesktop.vue';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
-import { DOUBLE_TAP_MS } from '~/composables/mobile/useNodeDesktopZoom';
+import { DOUBLE_TAP_MS } from '~/composables/usePictureZoom';
 
 const SENTINEL = '_'.repeat(32);
 

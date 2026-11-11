@@ -1,0 +1,439 @@
+{
+  "startedAt": "2026-11-11T18:08:59.120Z",
+  "node": "v22.23.1",
+  "cases": {
+    "PSD-001": {
+      "result": "Pass",
+      "name": "AC-001 real typing, Save held, real Ctrl/Cmd+Z back to original, release, Save again",
+      "details": {
+        "undoSteps": 2,
+        "mid": {
+          "content": "draft-a original",
+          "draft": "draft-a original",
+          "hasDraft": true,
+          "saving": true,
+          "error": null
+        },
+        "after": {
+          "content": "saved checkpoint",
+          "draft": "draft-a original",
+          "hasDraft": true,
+          "saving": false,
+          "error": null
+        },
+        "echoedEventsAfterRelease": 0,
+        "payloads": [
+          "saved checkpoint",
+          "draft-a original"
+        ],
+        "disk": "draft-a original",
+        "final": {
+          "content": "draft-a original",
+          "hasDraft": false,
+          "saving": false,
+          "error": null
+        }
+      }
+    },
+    "PSD-002": {
+      "result": "Pass",
+      "name": "AC-001 variant: revert by retyping the original text",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "draft": "draft-a original",
+          "hasDraft": true,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint",
+          "draft-a original"
+        ]
+      }
+    },
+    "PSD-003": {
+      "result": "Pass",
+      "name": "AC-002 clear-all while Save pending",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "draft": "",
+          "hasDraft": true,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint",
+          ""
+        ]
+      }
+    },
+    "PSD-004": {
+      "result": "Pass",
+      "name": "AC-005 later edit different from both texts",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "draft": "a different later edit",
+          "hasDraft": true,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint",
+          "a different later edit"
+        ]
+      }
+    },
+    "PSD-005": {
+      "result": "Pass",
+      "name": "AC-003 later input ends equal to the saved content",
+      "details": {
+        "after": {
+          "content": "saved checkpoint",
+          "hasDraft": false,
+          "saving": false,
+          "error": null
+        },
+        "payloads": [
+          "saved checkpoint"
+        ]
+      }
+    },
+    "PSD-006": {
+      "result": "Pass",
+      "name": "AC-004a failed Save with a differing later edit keeps draft + error, next Save submits it",
+      "details": {
+        "failed": {
+          "content": "draft-a original",
+          "draft": "saved checkpoint",
+          "hasDraft": true,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "failed-by-probe"
+          ],
+          [
+            "a different later edit",
+            "passed"
+          ]
+        ]
+      }
+    },
+    "PSD-007": {
+      "result": "Pass",
+      "name": "AC-004b failed Save, input reverted to unchanged committed text becomes clean",
+      "details": {
+        "after": {
+          "content": "draft-a original",
+          "hasDraft": false,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "failed-by-probe"
+          ]
+        ]
+      }
+    },
+    "PSD-008": {
+      "result": "Pass",
+      "name": "AC-008 ordinary Save with no later input: clean, no model replacement",
+      "details": {
+        "eventsAfterSave": 0,
+        "payloads": [
+          "saved checkpoint"
+        ]
+      }
+    },
+    "PSD-009": {
+      "result": "Pass",
+      "name": "AC-006 no Save pending: type then undo to committed text is clean",
+      "details": {
+        "after": {
+          "content": "draft-a original",
+          "hasDraft": false,
+          "saving": false,
+          "error": null
+        }
+      }
+    },
+    "PSD-010": {
+      "result": "Pass",
+      "name": "AC-004a Save pending, differing later edit, Save then FAILS: draft + error kept, next Save submits it",
+      "details": {
+        "failed": {
+          "content": "draft-a original",
+          "draft": "a different later edit",
+          "hasDraft": true,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "held-then-failed-by-probe"
+          ],
+          [
+            "a different later edit",
+            "passed"
+          ]
+        ]
+      }
+    },
+    "PSD-011": {
+      "result": "Pass",
+      "name": "AC-004b Save pending, input reverted to unchanged committed text, Save then FAILS: clean, no draft",
+      "details": {
+        "failed": {
+          "content": "draft-a original",
+          "hasDraft": false,
+          "saving": false,
+          "error": "PROBE-INJECTED-SAVE-FAILURE"
+        },
+        "payloads": [
+          [
+            "saved checkpoint",
+            "held-then-failed-by-probe"
+          ]
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 23514
+    },
+    {
+      "label": "frontend",
+      "pid": 25597
+    }
+  ],
+  "writes": [
+    {
+      "case": "PSD-001",
+      "filePath": "psd001.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1794420560627,
+      "heldAt": 1794420560645,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-001",
+      "filePath": "psd001.txt",
+      "content": "draft-a original",
+      "mode": "pass",
+      "at": 1794420561746,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-002",
+      "filePath": "psd002.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1794420562088,
+      "heldAt": 1794420562099,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-002",
+      "filePath": "psd002.txt",
+      "content": "draft-a original",
+      "mode": "pass",
+      "at": 1794420563144,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-003",
+      "filePath": "psd003.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1794420563428,
+      "heldAt": 1794420563431,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-003",
+      "filePath": "psd003.txt",
+      "content": "",
+      "mode": "pass",
+      "at": 1794420564411,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-004",
+      "filePath": "psd004.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1794420564737,
+      "heldAt": 1794420564752,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-004",
+      "filePath": "psd004.txt",
+      "content": "a different later edit",
+      "mode": "pass",
+      "at": 1794420565763,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-005",
+      "filePath": "psd005.txt",
+      "content": "saved checkpoint",
+      "mode": "hold",
+      "at": 1794420565996,
+      "heldAt": 1794420565999,
+      "outcome": "held-then-released"
+    },
+    {
+      "case": "PSD-006",
+      "filePath": "psd006.txt",
+      "content": "saved checkpoint",
+      "mode": "fail",
+      "at": 1794420567137,
+      "outcome": "failed-by-probe"
+    },
+    {
+      "case": "PSD-006",
+      "filePath": "psd006.txt",
+      "content": "a different later edit",
+      "mode": "pass",
+      "at": 1794420567300,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-007",
+      "filePath": "psd007.txt",
+      "content": "saved checkpoint",
+      "mode": "fail",
+      "at": 1794420567512,
+      "outcome": "failed-by-probe"
+    },
+    {
+      "case": "PSD-008",
+      "filePath": "psd008.txt",
+      "content": "saved checkpoint",
+      "mode": "pass",
+      "at": 1794420567798,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-010",
+      "filePath": "psd010.txt",
+      "content": "saved checkpoint",
+      "mode": "holdfail",
+      "at": 1794420569095,
+      "heldAt": 1794420569095,
+      "outcome": "held-then-failed-by-probe"
+    },
+    {
+      "case": "PSD-010",
+      "filePath": "psd010.txt",
+      "content": "a different later edit",
+      "mode": "pass",
+      "at": 1794420569817,
+      "outcome": "passed"
+    },
+    {
+      "case": "PSD-011",
+      "filePath": "psd011.txt",
+      "content": "saved checkpoint",
+      "mode": "holdfail",
+      "at": 1794420570028,
+      "heldAt": 1794420570028,
+      "outcome": "held-then-failed-by-probe"
+    }
+  ],
+  "browserErrors": [],
+  "expectedFailedSaveConsoleErrors": [
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-006"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-006"
+    },
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-007"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-007"
+    },
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-010"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-010"
+    },
+    {
+      "kind": "console",
+      "message": "Core file write operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-011"
+    },
+    {
+      "kind": "console",
+      "message": "Save operation failed: ApolloError: PROBE-INJECTED-SAVE-FAILURE\n    at new ApolloError2 (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:3321:26)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=f69668ab:4876:27\n    at both (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2801:17)\n    at http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2789:16)\n    at Object.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:2803:39)\n    at notifySubscription (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1739:18)\n    at onNotify (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:52147/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=f69668ab:1814:5)",
+      "case": "PSD-011"
+    }
+  ],
+  "monacoCancellations": [
+    {
+      "kind": "pageerror",
+      "message": "Canceled",
+      "case": "PSD-008",
+      "at": 1794420567714
+    }
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "processes": [
+      {
+        "pid": 25597,
+        "exitCode": null,
+        "signal": null,
+        "liveGroupMembers": 0
+      },
+      {
+        "pid": 23514,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      }
+    ],
+    "fixturePageRemoved": true,
+    "ownedRootRemoved": true,
+    "baseClosed": true,
+    "frontClosed": true
+  },
+  "gitHead": "9176e10bb74db46c4d084dc251b51faf9e3c719e",
+  "gitStatusWeb": "",
+  "endpoints": {
+    "base": "http://127.0.0.1:52146",
+    "front": "http://127.0.0.1:52147"
+  },
+  "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/pending-save-draft-c3na0g",
+  "workspaceId": "agent_ws_88e54432353e81cdebab531a0b54c57c881c9a87086ff7e07b26f9fbd88690ef",
+  "browser": "157.0.8103.39",
+  "warmupErrors": [],
+  "finishedAt": "2026-11-11T18:09:34.731Z"
+}

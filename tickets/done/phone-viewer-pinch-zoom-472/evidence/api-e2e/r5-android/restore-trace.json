@@ -1,0 +1,328 @@
+[
+ {
+  "trial": 1,
+  "before": {
+   "top": 3298,
+   "height": 11816
+  },
+  "after": {
+   "top": 3298,
+   "height": 11816
+  },
+  "positionKept": true,
+  "trace": [
+   {
+    "ms": 15,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11617,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 11617,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 11617,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 11617,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 11617,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 11617,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 573,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 11689,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 11689,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 11689,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 11689,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 11689,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 11689,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 645,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 11936,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11936,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11936,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11936,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11936,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11936,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 891,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11939,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11939,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11939,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11939,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11939,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 11939,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 894,
+    "top": 3298,
+    "height": 11816,
+    "canvases": 12
+   }
+  ]
+ },
+ {
+  "trial": 2,
+  "before": {
+   "top": 3595,
+   "height": 11816
+  },
+  "after": {
+   "top": 3595,
+   "height": 11816
+  },
+  "positionKept": true,
+  "trace": [
+   {
+    "ms": 7,
+    "top": 3595,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 570,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 742,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 1051,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 1179,
+    "top": 3595,
+    "height": 11816,
+    "canvases": 12
+   }
+  ]
+ },
+ {
+  "trial": 3,
+  "before": {
+   "top": 4007,
+   "height": 11816
+  },
+  "after": {
+   "top": 4007,
+   "height": 11816
+  },
+  "positionKept": true,
+  "trace": [
+   {
+    "ms": 15,
+    "top": 4007,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 564,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 652,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 973,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 1118,
+    "top": 4007,
+    "height": 11816,
+    "canvases": 12
+   }
+  ]
+ },
+ {
+  "trial": 4,
+  "before": {
+   "top": 4225,
+   "height": 11816
+  },
+  "after": {
+   "top": 4225,
+   "height": 11816
+  },
+  "positionKept": true,
+  "trace": [
+   {
+    "ms": 11,
+    "top": 4225,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 566,
+    "top": 0,
+    "height": 794,
+    "canvases": -1
+   },
+   {
+    "ms": 645,
+    "top": 0,
+    "height": 794,
+    "canvases": 0
+   },
+   {
+    "ms": 850,
+    "top": 0,
+    "height": 9320,
+    "canvases": 12
+   },
+   {
+    "ms": 920,
+    "top": 0,
+    "height": 11816,
+    "canvases": 12
+   },
+   {
+    "ms": 924,
+    "top": 4225,
+    "height": 11816,
+    "canvases": 12
+   }
+  ]
+ }
+]

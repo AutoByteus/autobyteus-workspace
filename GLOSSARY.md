@@ -102,8 +102,8 @@ delegated run, …) are defined in the
   `remote-access/allowed-local-networks.json`.
 - **Shell bridge:** the Android app's `AutoByteusShell` object in its WebView,
   given only to the main frame of the open node's origin: the page tells the
-  app it paired, or asks it to show its node list or its scanner. It carries
-  no credential.
+  app it paired, or asks it to show its node list or its scanner, or to save a
+  PDF or image to the phone's Downloads (`saveFile`). It carries no credential.
 - **Server package:** one release's server for one architecture: a
   self-contained folder with `server-package.json`, `package.json`, `dist/`,
   `prisma/`, `node_modules/` and `mobile-web/`. A release publishes it as

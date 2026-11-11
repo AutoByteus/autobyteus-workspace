@@ -1,0 +1,230 @@
+11-11 18:27:14.755  4003  4003 I tobyteus.mobile: Late-enabling -Xcheck:jni
+11-11 18:27:14.861  4003  4003 I tobyteus.mobile: Using CollectorTypeCMC GC.
+11-11 18:27:14.980  4003  4003 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-11 18:27:15.279  4003  4003 W ziparchive: Unable to open '/data/app/~~gaF6Q2eJnjW11gUFu1_jKw==/org.autobyteus.mobile-mUmNoQOAdW0ZrpwDYMBYHQ==/base.dm': No such file or directory
+11-11 18:27:15.380  4003  4003 D nativeloader: Configuring clns-7 for other apk /data/app/~~gaF6Q2eJnjW11gUFu1_jKw==/org.autobyteus.mobile-mUmNoQOAdW0ZrpwDYMBYHQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~gaF6Q2eJnjW11gUFu1_jKw==/org.autobyteus.mobile-mUmNoQOAdW0ZrpwDYMBYHQ==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/org.autobyteus.mobile
+11-11 18:27:15.381  4003  4003 D CompatChangeReporter: Compat change id reported: 202956589; UID 10207; state: ENABLED
+11-11 18:27:15.439  4003  4003 V GraphicsEnvironment: Currently set values for:
+11-11 18:27:15.440  4003  4003 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+11-11 18:27:15.440  4003  4003 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+11-11 18:27:15.447  4003  4003 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+11-11 18:27:15.448  4003  4003 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+11-11 18:27:16.078  4003  4003 D CompatChangeReporter: Compat change id reported: 279646685; UID 10207; state: ENABLED
+11-11 18:27:16.092  4003  4003 D CompatChangeReporter: Compat change id reported: 63938206; UID 10207; state: ENABLED
+11-11 18:27:16.102  4003  4003 D CompatChangeReporter: Compat change id reported: 309578419; UID 10207; state: ENABLED
+11-11 18:27:16.143  4003  4003 W HWUI    : Unknown dataspace 0
+11-11 18:27:16.164  4003  4050 D TrafficStats: tagSocket(96) with statsTag=0xffffffff, statsUid=-1
+11-11 18:27:16.270  4003  4045 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+11-11 18:27:16.271  4003  4045 I EGL_emulation: Opening libGLESv2_emulation.so
+11-11 18:27:16.301  4003  4045 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-11 18:27:16.302  4003  4045 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-11 18:27:16.367  4003  4045 I Gralloc4: mapper 4.x is not supported
+11-11 18:27:16.735  4003  4003 I WebViewFactory: Loading com.google.android.webview version 124.0.6367.219 (code 636771932)
+11-11 18:27:16.745  4003  4003 V ResourcesManager: The following library key has been added: ResourcesKey{ mHash=d843d044 mResDir=null mSplitDirs=[] mOverlayDirs=[/product/overlay/EmulationPixel6/EmulationPixel6Overlay.apk,/product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk] mLibDirs=[/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk,/data/app/~~XZo-O2L8v0mRs5sYzo7qhg==/com.google.android.trichromelibrary_636771932-1KHeCVMR0sW0ab7yt0cbzg==/TrichromeLibrary.apk,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v35 mCompatInfo={420dpi always-compat} mLoaders=[]}
+11-11 18:27:16.811  4003  4003 W tobyteus.mobile: Entry not found
+11-11 18:27:16.811  4003  4003 W ziparchive: Unable to open '/data/app/~~XZo-O2L8v0mRs5sYzo7qhg==/com.google.android.trichromelibrary_636771932-1KHeCVMR0sW0ab7yt0cbzg==/TrichromeLibrary.dm': No such file or directory
+11-11 18:27:17.004  4003  4003 D nativeloader: Configuring clns-8 for other apk /data/app/~~XZo-O2L8v0mRs5sYzo7qhg==/com.google.android.trichromelibrary_636771932-1KHeCVMR0sW0ab7yt0cbzg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/lib/arm64:/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~XZo-O2L8v0mRs5sYzo7qhg==/com.google.android.trichromelibrary_636771932-1KHeCVMR0sW0ab7yt0cbzg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+11-11 18:27:17.027  4003  4003 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-11 18:27:17.071  4003  4003 D nativeloader: Configuring clns-9 for other apk /data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/lib/arm64:/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk!/lib/arm64-v8a:/data/app/~~XZo-O2L8v0mRs5sYzo7qhg==/com.google.android.trichromelibrary_636771932-1KHeCVMR0sW0ab7yt0cbzg==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+11-11 18:27:17.167  4003  4022 I tobyteus.mobile: Compiler allocated 4206KB to compile void android.widget.TextView.<init>(android.content.Context, android.util.AttributeSet, int, int)
+11-11 18:27:17.306  4003  4003 I cr_WVCFactoryProvider: Loaded version=124.0.6367.219 minSdkVersion=29 isBundle=false multiprocess=true packageId=2
+11-11 18:27:17.342  4003  4003 D nativeloader: Load /data/app/~~XZo-O2L8v0mRs5sYzo7qhg==/com.google.android.trichromelibrary_636771932-1KHeCVMR0sW0ab7yt0cbzg==/TrichromeLibrary.apk!/lib/arm64-v8a/libmonochrome_64.so using ns clns-9 from class loader (caller=/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk): ok
+11-11 18:27:17.416  4003  4003 D nativeloader: Load /system/lib64/libwebviewchromium_plat_support.so using ns clns-9 from class loader (caller=/data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk): ok
+11-11 18:27:17.573  4003  4045 D EGL_emulation: app_time_stats: avg=36.02ms min=3.58ms max=127.53ms count=21
+11-11 18:27:17.632  4003  4065 I chromium: [1111/182717.547986:INFO:variations_seed_loader.cc(66)] Failed to open file for reading.: No such file or directory (2)
+11-11 18:27:17.648  4003  4003 I cr_LibraryLoader: Successfully loaded native library
+11-11 18:27:17.652  4003  4065 I cr_VariationsUtils: Failed reading seed file "/data/user/0/org.autobyteus.mobile/app_webview/variations_seed_new"
+11-11 18:27:17.657  4003  4065 I chromium: [INFO:variations_seed_loader.cc(66)] Failed to open file for reading.: No such file or directory (2)
+11-11 18:27:17.657  4003  4065 I cr_VariationsUtils: Failed reading seed file "/data/user/0/org.autobyteus.mobile/app_webview/variations_seed"
+11-11 18:27:17.670  4003  4003 I cr_CachingUmaRecorder: Flushed 6 samples from 6 histograms, 0 samples were dropped.
+11-11 18:27:17.693  4003  4068 I cr_VariationsUtils: Requesting new seed from IVariationsSeedServer
+11-11 18:27:17.708  4003  4003 I cr_CombinedPProvider: #registerProvider() provider:WV.V7@e16e295 isPolicyCacheEnabled:false policyProvidersSize:0
+11-11 18:27:17.711  4003  4003 I cr_PolicyProvider: #setManagerAndSource() 0
+11-11 18:27:18.100  4003  4003 I cr_CombinedPProvider: #linkNativeInternal() 1
+11-11 18:27:18.131  4003  4003 I cr_AppResProvider: #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+11-11 18:27:18.131  4003  4003 I cr_CombinedPProvider: #flushPolicies()
+11-11 18:27:18.131  4003  4003 I cr_CombinedPProvider: #onSettingsAvailable() 0
+11-11 18:27:18.131  4003  4003 I cr_PolicyProvider: #notifySettingsAvailable() 0
+11-11 18:27:18.188  4003  4022 I tobyteus.mobile: Compiler allocated 5250KB to compile void android.view.ViewRootImpl.performTraversals()
+11-11 18:27:18.586  4003  4045 D EGL_emulation: app_time_stats: avg=17.84ms min=1.83ms max=55.52ms count=38
+11-11 18:27:19.276  4003  4122 W cr_media: BLUETOOTH_CONNECT permission is missing.
+11-11 18:27:19.276  4003  4122 W cr_media: registerBluetoothIntentsIfNeeded: Requires BLUETOOTH permission
+11-11 18:27:19.466  4003  4003 I Choreographer: Skipped 184 frames!  The application may be doing too much work on its main thread.
+11-11 18:27:19.514  4003  4029 I HWUI    : Davey! duration=3121ms; Flags=0, FrameTimelineVsyncId=11896, IntendedVsync=94973057212, Vsync=98039723756, InputEventId=0, HandleInputStart=98053320255, AnimationStart=98053321255, PerformTraversalsStart=98055816880, DrawStart=98055881588, FrameDeadline=98089723754, FrameInterval=98052778088, FrameStartTime=16666666, SyncQueued=98055993463, SyncStart=98056188171, IssueDrawCommandsStart=98074041921, SwapBuffers=98083894296, FrameCompleted=98094668338, DequeueBufferDuration=3000, QueueBufferDuration=2683708, GpuCompleted=98094668338, SwapBuffersCompleted=98087834921, DisplayPresentTime=0, CommandSubmissionCompleted=98083894296, 
+11-11 18:27:19.623  4003  4045 D EGL_emulation: app_time_stats: avg=16.45ms min=2.13ms max=68.83ms count=40
+11-11 18:27:20.630  4003  4045 D EGL_emulation: app_time_stats: avg=24.15ms min=3.83ms max=99.50ms count=35
+11-11 18:27:21.003  4003  4186 D ProfileInstaller: Installing profile for org.autobyteus.mobile
+11-11 18:27:21.652  4003  4045 D EGL_emulation: app_time_stats: avg=20.51ms min=2.59ms max=158.72ms count=34
+11-11 18:27:22.671  4003  4045 D EGL_emulation: app_time_stats: avg=13.97ms min=2.10ms max=36.11ms count=46
+11-11 18:27:23.671  4003  4045 D EGL_emulation: app_time_stats: avg=12.59ms min=1.96ms max=35.45ms count=43
+11-11 18:27:24.684  4003  4045 D EGL_emulation: app_time_stats: avg=12.01ms min=2.05ms max=32.55ms count=49
+11-11 18:27:25.702  4003  4045 D EGL_emulation: app_time_stats: avg=10.61ms min=1.72ms max=25.95ms count=48
+11-11 18:27:26.650  4003  4003 I chromium: [INFO:CONSOLE(655)] "serverStore: Initializing server config", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (655)
+11-11 18:27:26.650  4003  4003 I chromium: [INFO:CONSOLE(655)] "serverStore: Not in Electron environment. Skipping server initialization.", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (655)
+11-11 18:27:26.729  4003  4045 D EGL_emulation: app_time_stats: avg=14.45ms min=2.36ms max=47.00ms count=42
+11-11 18:27:27.726  4003  4003 I chromium: [INFO:CONSOLE(1924)] "Agent WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (1924)
+11-11 18:27:27.824  4003  4045 D EGL_emulation: app_time_stats: avg=181.47ms min=19.72ms max=513.27ms count=6
+11-11 18:27:28.227  4003  4003 I cr_A11yState: Enabled accessibility services list updated.
+11-11 18:27:28.235  4003  4003 D AutofillManager: Fill dialog is enabled:false, hints=[password, passwordAuto, creditCardNumber, creditCardSecurityCode, creditCardExpirationDate]
+11-11 18:27:28.356  4003  4003 I cr_A11yState: Informing listeners of changes.
+11-11 18:27:28.356  4003  4003 I cr_A11yState: New AccessibilityState: State{isScreenReaderEnabled=false, isTouchExplorationEnabled=false, isPerformGesturesEnabled=false, isAnyAccessibilityServiceEnabled=false, isAccessibilityToolPresent=false, isSpokenFeedbackServicePresent=false, isTextShowPasswordEnabled=true, isOnlyPasswordManagersEnabled=false}
+11-11 18:27:35.355  4003  4026 W tobyteus.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~LLgenmUpPTajYBGXZG039Q==/com.google.android.webview-fK79bYcONKatvLLnrZFHLg==/WebViewGoogle.apk' with 2 weak references
+11-11 18:28:07.748  4003  4045 D EGL_emulation: app_time_stats: avg=3065.29ms min=1.64ms max=39015.74ms count=13
+11-11 18:28:27.449  4003  4045 D EGL_emulation: app_time_stats: avg=19700.64ms min=19700.64ms max=19700.64ms count=1
+11-11 18:29:55.405  4003  4045 D EGL_emulation: app_time_stats: avg=14657.75ms min=11.68ms max=87478.82ms count=6
+11-11 18:29:55.486  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:29:55.486  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:29:55.578  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:29:55.581  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: c88d1ee7-4f48-4678-aa7e-71648a29adfb", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:29:55.581  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: c88d1ee7-4f48-4678-aa7e-71648a29adfb", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:29:55.936  4003  4003 I chromium: [INFO:CONSOLE(615)] "Warning: Cannot load system font: Helvetica, installing it could help to improve PDF rendering.", source: http://10.0.2.2:53689/mobile/_nuxt/CCHn46BO.js (615)
+11-11 18:29:57.409  4003  4177 I tobyteus.mobile: Explicit concurrent mark compact GC freed 748KB AllocSpace bytes, 0(0B) LOS objects, 49% free, 2997KB/5994KB, paused 56us,2.595ms total 39.338ms
+11-11 18:30:08.751  4003  4177 I tobyteus.mobile: Explicit concurrent mark compact GC freed 200KB AllocSpace bytes, 1(20KB) LOS objects, 49% free, 2989KB/5978KB, paused 47us,895us total 6.766ms
+11-11 18:30:15.002  4003  4045 D EGL_emulation: app_time_stats: avg=1084.77ms min=1.68ms max=18732.11ms count=18
+11-11 18:30:16.003  4003  4045 D EGL_emulation: app_time_stats: avg=111.18ms min=11.90ms max=253.54ms count=9
+11-11 18:30:17.025  4003  4045 D EGL_emulation: app_time_stats: avg=130.61ms min=10.78ms max=228.63ms count=7
+11-11 18:30:18.243  4003  4045 D EGL_emulation: app_time_stats: avg=113.96ms min=7.94ms max=247.81ms count=10
+11-11 18:30:19.452  4003  4045 D EGL_emulation: app_time_stats: avg=112.32ms min=5.90ms max=228.35ms count=10
+11-11 18:30:37.714  4003  4045 D EGL_emulation: app_time_stats: avg=3042.02ms min=23.50ms max=17554.04ms count=6
+11-11 18:30:38.757  4003  4045 D EGL_emulation: app_time_stats: avg=121.05ms min=7.80ms max=252.72ms count=8
+11-11 18:30:40.032  4003  4045 D EGL_emulation: app_time_stats: avg=151.79ms min=6.25ms max=449.85ms count=8
+11-11 18:30:41.156  4003  4045 D EGL_emulation: app_time_stats: avg=109.05ms min=6.63ms max=242.35ms count=10
+11-11 18:30:44.263  4003  4045 D EGL_emulation: app_time_stats: avg=381.55ms min=4.48ms max=2424.00ms count=8
+11-11 18:30:47.166  4003  4045 D EGL_emulation: app_time_stats: avg=181.65ms min=6.69ms max=2178.34ms count=15
+11-11 18:30:48.388  4003  4045 D EGL_emulation: app_time_stats: avg=119.73ms min=11.21ms max=259.90ms count=10
+11-11 18:30:49.401  4003  4045 D EGL_emulation: app_time_stats: avg=107.40ms min=11.14ms max=245.57ms count=9
+11-11 18:30:50.573  4003  4045 D EGL_emulation: app_time_stats: avg=128.34ms min=14.76ms max=243.08ms count=9
+11-11 18:30:51.759  4003  4045 D EGL_emulation: app_time_stats: avg=115.32ms min=4.38ms max=228.85ms count=10
+11-11 18:31:25.987  4003  4045 D EGL_emulation: app_time_stats: avg=8549.10ms min=19.61ms max=33716.23ms count=4
+11-11 18:31:27.164  4003  4045 D EGL_emulation: app_time_stats: avg=113.01ms min=3.14ms max=229.58ms count=10
+11-11 18:31:28.183  4003  4045 D EGL_emulation: app_time_stats: avg=123.50ms min=15.50ms max=246.07ms count=8
+11-11 18:31:29.391  4003  4045 D EGL_emulation: app_time_stats: avg=115.50ms min=6.85ms max=252.08ms count=10
+11-11 18:31:30.438  4003  4045 D EGL_emulation: app_time_stats: avg=261.53ms min=19.89ms max=767.81ms count=4
+11-11 18:31:51.798  4003  4028 I tobyteus.mobile: Explicit concurrent mark compact GC freed 480KB AllocSpace bytes, 1(20KB) LOS objects, 49% free, 2989KB/5978KB, paused 74us,11.795ms total 60.092ms
+11-11 18:31:52.234  4003  4045 D EGL_emulation: app_time_stats: avg=10888.37ms min=6.29ms max=21770.46ms count=2
+11-11 18:31:53.234  4003  4045 D EGL_emulation: app_time_stats: avg=36.14ms min=3.87ms max=108.38ms count=23
+11-11 18:31:54.326  4003  4045 D EGL_emulation: app_time_stats: avg=27.63ms min=3.86ms max=96.78ms count=29
+11-11 18:31:55.360  4003  4045 D EGL_emulation: app_time_stats: avg=31.22ms min=3.93ms max=142.15ms count=24
+11-11 18:31:56.378  4003  4045 D EGL_emulation: app_time_stats: avg=29.31ms min=3.32ms max=77.83ms count=25
+11-11 18:31:57.386  4003  4045 D EGL_emulation: app_time_stats: avg=22.65ms min=2.89ms max=60.88ms count=25
+11-11 18:31:59.781  4003  4029 I tobyteus.mobile: Explicit concurrent mark compact GC freed 412KB AllocSpace bytes, 1(20KB) LOS objects, 49% free, 2993KB/5986KB, paused 86us,602us total 7.027ms
+11-11 18:32:18.692  4003  4045 D EGL_emulation: app_time_stats: avg=3528.96ms min=4.40ms max=21107.50ms count=6
+11-11 18:32:19.700  4003  4045 D EGL_emulation: app_time_stats: avg=111.96ms min=19.04ms max=236.48ms count=9
+11-11 18:32:20.820  4003  4045 D EGL_emulation: app_time_stats: avg=159.90ms min=16.50ms max=306.83ms count=7
+11-11 18:32:21.832  4003  4045 D EGL_emulation: app_time_stats: avg=123.59ms min=12.33ms max=258.99ms count=8
+11-11 18:32:22.834  4003  4045 D EGL_emulation: app_time_stats: avg=106.15ms min=6.90ms max=229.19ms count=9
+11-11 18:32:23.885  4003  4045 D EGL_emulation: app_time_stats: avg=145.51ms min=14.28ms max=313.87ms count=7
+11-11 18:33:13.837  4003  4045 D EGL_emulation: app_time_stats: avg=24976.29ms min=65.46ms max=49887.11ms count=2
+11-11 18:33:34.533  4003  4045 D EGL_emulation: app_time_stats: avg=10347.90ms min=60.04ms max=20635.77ms count=2
+11-11 18:33:45.607  4003  4045 D EGL_emulation: app_time_stats: avg=5534.33ms min=28.03ms max=11040.63ms count=2
+11-11 18:33:46.607  4003  4045 D EGL_emulation: app_time_stats: avg=107.23ms min=8.11ms max=241.30ms count=9
+11-11 18:33:47.640  4003  4045 D EGL_emulation: app_time_stats: avg=137.32ms min=4.44ms max=249.66ms count=7
+11-11 18:33:48.651  4003  4045 D EGL_emulation: app_time_stats: avg=109.39ms min=7.26ms max=237.76ms count=9
+11-11 18:33:49.879  4003  4045 D EGL_emulation: app_time_stats: avg=128.83ms min=8.05ms max=237.89ms count=9
+11-11 18:33:51.356  4003  4045 D EGL_emulation: app_time_stats: avg=180.60ms min=7.92ms max=579.24ms count=8
+11-11 18:33:51.377  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:51.378  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:53.165  4003  4045 D EGL_emulation: app_time_stats: avg=602.79ms min=33.78ms max=1665.82ms count=3
+11-11 18:33:53.170  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:53.170  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:53.290  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:53.324  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: e9a87dc6-d09f-42b0-8c15-4edcb361e14a", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:53.324  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: e9a87dc6-d09f-42b0-8c15-4edcb361e14a", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:33:53.733  4003  4003 I chromium: [INFO:CONSOLE(615)] "Warning: Cannot load system font: Helvetica, installing it could help to improve PDF rendering.", source: http://10.0.2.2:53689/mobile/_nuxt/CCHn46BO.js (615)
+11-11 18:34:36.867  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Received file system change for agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794: [object Object]", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:34:36.956  4003  4045 D EGL_emulation: app_time_stats: avg=2299.44ms min=2.81ms max=42875.30ms count=19
+11-11 18:34:53.562  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:34:53.562  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:34:53.570  4003  4045 D EGL_emulation: app_time_stats: avg=8307.01ms min=77.20ms max=16536.81ms count=2
+11-11 18:35:38.757  4003  4045 D EGL_emulation: app_time_stats: avg=15047.83ms min=18.11ms max=45013.52ms count=3
+11-11 18:36:25.234  4003  4045 D EGL_emulation: app_time_stats: avg=23238.13ms min=26.33ms max=46449.93ms count=2
+11-11 18:36:25.240  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorer] Opening file: inside-472.pdf", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.241  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.241  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.246  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorer] Determined file type for "inside-472.pdf": PDF", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.246  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorer] Handling as a workspace path.", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.246  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorer] Pushed new initial file state: [object Object]", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.250  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorer] Constructed absolute media URL for "inside-472.pdf": http://10.0.2.2:53689/rest/workspaces/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794/content?path=inside-472.pdf", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.290  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.344  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: 21ffc5ff-8d13-4b5f-9ab3-79fa7fb8b44e", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.344  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: 21ffc5ff-8d13-4b5f-9ab3-79fa7fb8b44e", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:36:25.871  4003  4003 I chromium: [INFO:CONSOLE(615)] "Warning: Cannot load system font: Helvetica, installing it could help to improve PDF rendering.", source: http://10.0.2.2:53689/mobile/_nuxt/CCHn46BO.js (615)
+11-11 18:36:26.274  4003  4045 D EGL_emulation: app_time_stats: avg=33.00ms min=4.43ms max=139.65ms count=25
+11-11 18:36:28.045  4003  4045 D EGL_emulation: app_time_stats: avg=1770.55ms min=1770.55ms max=1770.55ms count=1
+11-11 18:36:29.064  4003  4045 D EGL_emulation: app_time_stats: avg=127.33ms min=30.42ms max=243.97ms count=8
+11-11 18:36:30.107  4003  4045 D EGL_emulation: app_time_stats: avg=126.05ms min=8.98ms max=255.76ms count=8
+11-11 18:36:31.307  4003  4045 D EGL_emulation: app_time_stats: avg=111.08ms min=14.97ms max=240.97ms count=10
+11-11 18:36:32.507  4003  4045 D EGL_emulation: app_time_stats: avg=113.53ms min=8.20ms max=222.74ms count=10
+11-11 18:36:33.758  4003  4045 D EGL_emulation: app_time_stats: avg=205.33ms min=11.42ms max=570.73ms count=6
+11-11 18:36:47.884  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Received file system change for agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794: [object Object]", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:19.400  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:19.401  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:19.410  4003  4045 D EGL_emulation: app_time_stats: avg=1559.78ms min=2.07ms max=44650.43ms count=29
+11-11 18:37:21.258  4003  4045 D EGL_emulation: app_time_stats: avg=615.18ms min=49.30ms max=1685.81ms count=3
+11-11 18:37:21.925  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:21.925  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:21.949  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:22.017  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: 02e16d7d-a1ed-4b4a-8301-e1db0f47c9a1", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:22.020  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: 02e16d7d-a1ed-4b4a-8301-e1db0f47c9a1", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:37:24.047  4003  4045 D EGL_emulation: app_time_stats: avg=554.25ms min=6.98ms max=1902.58ms count=5
+11-11 18:37:25.200  4003  4045 D EGL_emulation: app_time_stats: avg=115.31ms min=22.86ms max=226.09ms count=10
+11-11 18:37:26.458  4003  4045 D EGL_emulation: app_time_stats: avg=119.65ms min=7.59ms max=248.54ms count=10
+11-11 18:37:27.684  4003  4045 D EGL_emulation: app_time_stats: avg=113.32ms min=11.16ms max=229.91ms count=10
+11-11 18:37:28.770  4003  4045 D EGL_emulation: app_time_stats: avg=129.26ms min=11.75ms max=247.12ms count=8
+11-11 18:37:39.489  4003  4045 D EGL_emulation: app_time_stats: avg=5348.74ms min=14.20ms max=10683.27ms count=2
+11-11 18:37:42.358  4003  4045 D EGL_emulation: app_time_stats: avg=233.41ms min=21.42ms max=2215.52ms count=12
+11-11 18:37:43.543  4003  4045 D EGL_emulation: app_time_stats: avg=116.83ms min=9.44ms max=254.26ms count=10
+11-11 18:37:44.772  4003  4045 D EGL_emulation: app_time_stats: avg=120.58ms min=11.13ms max=229.97ms count=10
+11-11 18:37:45.951  4003  4045 D EGL_emulation: app_time_stats: avg=113.23ms min=11.70ms max=217.28ms count=10
+11-11 18:37:48.195  4003  4045 D EGL_emulation: app_time_stats: avg=1121.62ms min=24.57ms max=2218.66ms count=2
+11-11 18:37:49.858  4003  4045 D EGL_emulation: app_time_stats: avg=831.57ms min=30.32ms max=1632.82ms count=2
+11-11 18:38:13.599  4003  4045 D EGL_emulation: app_time_stats: avg=11870.63ms min=29.07ms max=23712.20ms count=2
+11-11 18:38:13.663  1486  1510 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023493-photo-472.png. Uid: 10207
+11-11 18:38:13.668  1486  1510 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023493-photo-472.png to /storage/emulated/0/Download/photo-472.png
+11-11 18:39:33.771  1486  1519 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023573-photo-472.png. Uid: 10207
+11-11 18:39:33.782  4003  4045 D EGL_emulation: app_time_stats: avg=40084.27ms min=11.91ms max=80156.62ms count=2
+11-11 18:39:33.791  1486  1519 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023573-photo-472.png to /storage/emulated/0/Download/photo-472.png
+11-11 18:39:44.466  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:44.466  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:44.492  4003  4045 D EGL_emulation: app_time_stats: avg=5352.56ms min=46.47ms max=10658.66ms count=2
+11-11 18:39:46.321  4003  4045 D EGL_emulation: app_time_stats: avg=454.32ms min=10.13ms max=1710.04ms count=4
+11-11 18:39:46.946  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:46.946  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:46.965  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:47.174  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: aa3d0963-11ed-4881-b714-dcea0c9233c2", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:47.174  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: aa3d0963-11ed-4881-b714-dcea0c9233c2", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:47.327  4003  4045 D EGL_emulation: app_time_stats: avg=164.23ms min=8.40ms max=678.46ms count=6
+11-11 18:39:47.554  4003  4003 I chromium: [INFO:CONSOLE(615)] "Warning: Cannot load system font: Helvetica, installing it could help to improve PDF rendering.", source: http://10.0.2.2:53689/mobile/_nuxt/CCHn46BO.js (615)
+11-11 18:39:52.394  1486  1519 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023592-resume-472.pdf. Uid: 10207
+11-11 18:39:52.396  1486  1519 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023592-resume-472.pdf to /storage/emulated/0/Download/resume-472.pdf
+11-11 18:39:52.412  4003  4045 D EGL_emulation: app_time_stats: avg=360.54ms min=11.23ms max=4265.72ms count=14
+11-11 18:39:55.401  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:55.401  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:55.416  4003  4045 D EGL_emulation: app_time_stats: avg=973.62ms min=15.51ms max=2881.54ms count=3
+11-11 18:39:57.384  4003  4045 D EGL_emulation: app_time_stats: avg=655.79ms min=39.03ms max=1836.51ms count=3
+11-11 18:39:58.046  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:58.046  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:58.054  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:58.158  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: b91f4d00-efb2-4d54-bc0e-701b9f7f32b7", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:39:58.158  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: b91f4d00-efb2-4d54-bc0e-701b9f7f32b7", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:40:02.114  4003  4045 D EGL_emulation: app_time_stats: avg=1178.69ms min=6.93ms max=3936.66ms count=4
+11-11 18:40:03.119  4003  4045 D EGL_emulation: app_time_stats: avg=13.04ms min=2.51ms max=29.82ms count=40
+11-11 18:40:03.512  4003  4003 I chromium: [INFO:CONSOLE(615)] "Warning: Cannot load system font: Helvetica, installing it could help to improve PDF rendering.", source: http://10.0.2.2:53689/mobile/_nuxt/CCHn46BO.js (615)
+11-11 18:40:04.884  4003  4029 I tobyteus.mobile: Explicit concurrent mark compact GC freed 568KB AllocSpace bytes, 8(1168KB) LOS objects, 49% free, 3013KB/6027KB, paused 50us,4.571ms total 12.344ms
+11-11 18:40:13.788  4003  4045 D EGL_emulation: app_time_stats: avg=1764.51ms min=2.00ms max=10097.96ms count=6
+11-11 18:40:15.799  4003  4045 D EGL_emulation: app_time_stats: avg=1005.53ms min=42.15ms max=1968.91ms count=2
+11-11 18:40:16.050  1486  1519 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023616-big-472.pdf. Uid: 10207
+11-11 18:40:16.073  1486  1519 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023616-big-472.pdf to /storage/emulated/0/Download/big-472.pdf
+11-11 18:40:18.255  4003  4188 I tobyteus.mobile: Explicit concurrent mark compact GC freed 148KB AllocSpace bytes, 3(88MB) LOS objects, 49% free, 3013KB/6027KB, paused 52us,1.051ms total 10.795ms
+11-11 18:41:15.382  1486  1508 I MediaProvider: Open with lower FS for /storage/emulated/0/Download/.pending-1795023675-control-472.pdf. Uid: 10207
+11-11 18:41:15.391  1486  1508 D MediaProvider: Moving /storage/emulated/0/Download/.pending-1795023675-control-472.pdf to /storage/emulated/0/Download/control-472.pdf
+11-11 18:41:28.464  4003  4045 D EGL_emulation: app_time_stats: avg=72664.52ms min=72664.52ms max=72664.52ms count=1
+11-11 18:41:28.531  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:28.531  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:30.293  4003  4045 D EGL_emulation: app_time_stats: avg=609.47ms min=44.29ms max=1609.68ms count=3
+11-11 18:41:30.946  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connecting to file system changes for workspace: agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:30.947  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:53689/ws/file-explorer/agent_ws_a90ab0c10109b49f635bd1e1ce0b530354b0c83e02ed96963b9ddb577fcf4794?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:30.962  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:31.057  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[FileExplorerStreaming] Session established: 7fb2ca32-069e-4c79-82dc-9a79403438f3", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:31.059  4003  4003 I chromium: [INFO:CONSOLE(2037)] "[Workspace] Connected to file system changes: 7fb2ca32-069e-4c79-82dc-9a79403438f3", source: http://10.0.2.2:53689/mobile/_nuxt/B2txL9nz.js (2037)
+11-11 18:41:32.029  4003  4045 D EGL_emulation: app_time_stats: avg=428.80ms min=11.05ms max=941.81ms count=4

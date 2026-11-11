@@ -1,0 +1,181 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53689
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53689
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/db/test.db"
+
+SQLite database test.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:6763) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 106 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/memory/agents/reader_f94411360c834c72a90769139c7cd513/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418043070,"pid":6763,"hostname":"MacBookPro","reqId":"req-1d","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6283329999969283,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418046791,"pid":6763,"hostname":"MacBookPro","reqId":"req-1f","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.36275000000023283,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418046856,"pid":6763,"hostname":"MacBookPro","reqId":"req-1h","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.37108299999817973,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418046859,"pid":6763,"hostname":"MacBookPro","reqId":"req-1i","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.27416599999924074,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418047403,"pid":6763,"hostname":"MacBookPro","reqId":"req-1r","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.37233300000298186,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/memory/agents/reader_f94411360c834c72a90769139c7cd513/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418099262,"pid":6763,"hostname":"MacBookPro","reqId":"req-2x","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.835332999995444,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418107487,"pid":6763,"hostname":"MacBookPro","reqId":"req-31","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.5120840000017779,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest472-node-VAynck/data/memory/agents/reader_f94411360c834c72a90769139c7cd513/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418107531,"pid":6763,"hostname":"MacBookPro","reqId":"req-35","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.2367910000029951,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418107538,"pid":6763,"hostname":"MacBookPro","reqId":"req-36","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3210839999956079,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418195477,"pid":6763,"hostname":"MacBookPro","reqId":"req-3b","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6279999999969732,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418195486,"pid":6763,"hostname":"MacBookPro","reqId":"req-3d","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.27920799999265,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418431383,"pid":6763,"hostname":"MacBookPro","reqId":"req-3g","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":2.926666999992449,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418433277,"pid":6763,"hostname":"MacBookPro","reqId":"req-3k","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.29920800001127645,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418433301,"pid":6763,"hostname":"MacBookPro","reqId":"req-3l","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.31958399998256937,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418493565,"pid":6763,"hostname":"MacBookPro","reqId":"req-3n","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.8594579999917187,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418585326,"pid":6763,"hostname":"MacBookPro","reqId":"req-3r","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.880583000020124,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418585339,"pid":6763,"hostname":"MacBookPro","reqId":"req-3s","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.31791700003668666,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418639427,"pid":6763,"hostname":"MacBookPro","reqId":"req-3t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.723666000063531,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418641970,"pid":6763,"hostname":"MacBookPro","reqId":"req-3x","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2829999999376014,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418641989,"pid":6763,"hostname":"MacBookPro","reqId":"req-3y","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.39279099996201694,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418784554,"pid":6763,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.9109579999931157,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418786984,"pid":6763,"hostname":"MacBookPro","reqId":"req-43","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.24479200004134327,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418786993,"pid":6763,"hostname":"MacBookPro","reqId":"req-44","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":3.4322079999838024,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418795408,"pid":6763,"hostname":"MacBookPro","reqId":"req-45","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.4264999999431893,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418798079,"pid":6763,"hostname":"MacBookPro","reqId":"req-49","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2232920000096783,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418798091,"pid":6763,"hostname":"MacBookPro","reqId":"req-4a","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3533339999848977,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418888670,"pid":6763,"hostname":"MacBookPro","reqId":"req-4b","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.5638339999131858,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418891003,"pid":6763,"hostname":"MacBookPro","reqId":"req-4f","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.27654200000688434,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418891028,"pid":6763,"hostname":"MacBookPro","reqId":"req-4g","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.39395800000056624,"msg":"http request completed"}

@@ -1,0 +1,31 @@
+# IMP-09 web-zoom-spec
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts
+# Environment mode: shell
+# Commit: d2b9f99603 (branch codex/phone-viewer-pinch-zoom-472)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T17:15:03Z
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts (3 tests) 215ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  18:15:06
+   Duration  6.98s (transform 3.58s, setup 6.05s, collect 90ms, tests 215ms, environment 208ms, prepare 159ms)
+
+# Exit status: 0

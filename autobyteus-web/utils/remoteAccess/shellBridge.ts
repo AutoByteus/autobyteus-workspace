@@ -1,9 +1,9 @@
 /**
  * The Android app's shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object the app gives only
  * to the main frame of the open node's origin. The page tells the app it is ready or paired, asks it to show its node
- * list or its scanner, or turns the VNC Viewer's desktop full screen (landscape, hidden system bars) on or off; the
- * app's `hello` reply tells the page about this phone and the open node. It carries no credential. In a browser there
- * is no bridge.
+ * list or its scanner, turns the VNC Viewer's desktop full screen (landscape, hidden system bars) on or off, or hands it
+ * a PDF or image to save to the phone's Downloads (autobyteus-472); the app's `hello` reply tells the page about this
+ * phone and the open node. It carries no credential. In a browser there is no bridge.
  */
 export type ShellHello = {
   /** Saved nodes on this phone, for "N nodes on this phone". */
@@ -25,7 +25,16 @@ export type ShellBridge = {
   showNodeList(): void;
   startScan(): void;
   desktopFullScreen(on: boolean): void;
+  /**
+   * Saves a file's bytes to the phone's Downloads under `fileName` (autobyteus-472 DS-003): a PDF or an image only,
+   * a plain name whose extension matches `mimeType`. The app shows the result ("Saved to Downloads: <name>" or
+   * "Couldn't save the file."); there is no reply. An app older than this ignores the message.
+   */
+  saveFile(file: ShellSaveFile): void;
 };
+
+/** A file the page hands the app to save: its bytes as base64, never a URL or a credential. */
+export type ShellSaveFile = { fileName: string; mimeType: string; base64: string };
 
 type ShellMessageEvent = { data: unknown };
 type ShellWebMessageObject = {
@@ -84,5 +93,6 @@ export const getShellBridge = (): ShellBridge | null => {
     showNodeList: () => post({ type: 'showNodeList' }),
     startScan: () => post({ type: 'startScan' }),
     desktopFullScreen: (on) => post({ type: 'desktopFullScreen', on }),
+    saveFile: ({ fileName, mimeType, base64 }) => post({ type: 'saveFile', fileName, mimeType, base64 }),
   };
 };
