@@ -494,6 +494,16 @@ No other gap was found. Not validated: the code. The implementation verifies the
 - **Tests build the owners with fakes** through their constructors. No test binds or resets a global for an owner this ticket adds.
 - **The host's close and a startup rollback** release in reverse order. The `unbind…` calls go with the bindings.
 
+**The second composition root: the application host** (`standalone-application-host/start-standalone-application-host.ts:242-268`; SR-050). It composes the Task side and the run services, but never composed delegation. So today its lookups answer null: `delegate_task` answers `TASKS_UNAVAILABLE_TEXT`, a closed Task stops no run, and messages between runs fall to the live-only path. Application-owned runs are kept out of collaboration ("Agents and Teams cannot be involved from application-owned runs"), and delegated runs are created in the studio process, so the application host holds none. **It keeps today's behavior, stated as rules instead of absence**, composed through the same composition file:
+- steps 1–3: the Task side, the tree and the run services;
+- then explicit collaborators for what the application host does not offer:
+  - `UnavailableTaskDelegation`, which every `delegate_task` call answers with today's `TASKS_UNAVAILABLE_TEXT`;
+  - a run control for `ProjectTaskService` that releases nothing and reports no worker status, because no delegated run lives in this process;
+  - no cross-run delivery: `send_message_to` resolves within the sender's run, and a run ID outside it takes the live-only path, as today;
+  - `LocalChildPorts` with no children.
+
+No lookup answers null anywhere. A test composes the application host and asserts each of these answers.
+
 **Where the code lives** (SR-049): `build-studio-server.ts` is at its 500-line limit, so the steps live in a dedicated composition file with two calls that `build-studio-server.ts` makes in order. The first call covers steps 1–2, the run services are created between the calls (step 3), and the second call covers steps 4–8. The order stays readable in one place.
 
 Read-only values (configuration, the data directory, the clock) stay process-wide (Principle 16's exception).

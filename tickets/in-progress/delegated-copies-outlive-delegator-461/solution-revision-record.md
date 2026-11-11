@@ -999,3 +999,18 @@
   `walkthrough.py --check` passes (the model has no roots, and its rules are unchanged).
 - Next action: architecture review (narrow)
 - ARCH-REV-024 (2026-11-11): Pass, no finding. Its two notes are applied in the composition section: the tool path is stated (framework registry → the existing dispatcher and router initializers, installed at step 8), and the duplicate `GlobalAgentRunMessageRouter` bullet goes.
+
+### SR-050 — The application host keeps today's behavior, stated as rules (the Implementation Engineer's question)
+
+- Triggering: the Implementation Engineer, implementing SR-047 and SR-049, found a second composition root, the application host (`start-standalone-application-host.ts:242-268`), that the design did not cover. It composes the Task side and the run services but not delegation, so today's lookups answer null there:
+  - `delegate_task` answers `TASKS_UNAVAILABLE_TEXT`;
+  - a closed Task stops no run;
+  - worker status is null;
+  - messages between runs take the live-only path.
+- The Solution Designer's gap: the composition section named only the studio's root.
+- Decision (option (b), on the merits):
+  - The application host offers no delegation. Application-owned runs are kept out of collaboration, and delegated runs live in the studio process, so it holds none.
+  - It keeps today's behavior, now explicit: `UnavailableTaskDelegation` (today's text), a run control that releases nothing and reports no status, no cross-run delivery, and no local children. It is composed through the same file, steps 1–3, plus these collaborators.
+  - Option (a), composing delegation there, would add a capability nothing asks for.
+- Done: the design's composition section, with a test that composes the application host and asserts each answer. `walkthrough.py --check` passes.
+
