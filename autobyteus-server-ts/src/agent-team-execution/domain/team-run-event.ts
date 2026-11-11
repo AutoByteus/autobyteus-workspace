@@ -47,5 +47,3 @@ export type TeamRunEvent =
 export const isTeamRunMessageEvent = (event: TeamRunEvent): boolean =>
   event.eventSourceType === TeamRunEventSourceType.COMMUNICATION;
 
-export type TeamRunEventListener = (event: TeamRunEvent) => void;
-export type TeamRunEventUnsubscribe = () => void;

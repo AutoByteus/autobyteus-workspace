@@ -56,7 +56,6 @@ export type TeamRunAgentTeamNode = Readonly<{
   children: readonly TeamRunAgentNode[];
 }>;
 
-export type TeamRunNode = TeamRunAgentNode | TeamRunAgentTeamNode;
 
 export type TeamAgentLaunchSettings = AgentLaunchConfiguration & Readonly<{
   memberAddress: AgentTeamAddress;

@@ -290,7 +290,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.localChildren.dispose();
     this.communication.closeAdmission();
     void this.operationGate.closeAndDrain();
-    // Shutdown of delegated children is runtime-only, so a fail-stopped attempt drains the same way.
+    // Stopping the org's own agents and mounted teams is runtime-only (the runs it delegated to are runs of their own),
+    // so a fail-stopped attempt drains the same way.
     const attempt = this.terminateOnce();
     this.termination = attempt;
     // A failed or unaccepted attempt must not block a later Terminate or restore self-heal.

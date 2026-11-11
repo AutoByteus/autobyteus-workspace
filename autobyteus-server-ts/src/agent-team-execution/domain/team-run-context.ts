@@ -81,12 +81,3 @@ export const getRuntimeMemberContexts = (
   runtimeContext: RuntimeTeamRunContext | null | undefined,
 ): TeamMemberRuntimeContext[] => runtimeContext ? [...runtimeContext.memberContexts] : [];
 
-export const resolveRuntimeAgentContext = (
-  teamContext: TeamRunContext<unknown> | null | undefined,
-  agentRunId: string,
-): TeamAgentMemberRuntimeContext | null => {
-  if (!teamContext) return null;
-  return getRuntimeMemberContexts(teamContext.runtimeContext as RuntimeTeamRunContext).find(
-    (context): context is TeamAgentMemberRuntimeContext => context.kind === "agent" && context.agentRunId === agentRunId,
-  ) ?? null;
-};

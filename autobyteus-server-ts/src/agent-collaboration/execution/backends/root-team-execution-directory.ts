@@ -6,11 +6,6 @@ import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../../agent-team-ex
 import type { ConfiguredMemberActivationMode } from "../../../agent-team-execution/local/flat-team-execution-context.js";
 import type { FrozenTeamRunTerminationScope } from "../../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
 
-export type RootTeamRegistrationReservation = Readonly<{
-  commit(): void;
-  cancel(): void;
-}>;
-
 /** An organization run's mounted Teams (autobyteus-461: a team run its agents delegated to is its own run). */
 export class RootTeamExecutionDirectory {
   private readonly active = new Map<string, TeamRun>();

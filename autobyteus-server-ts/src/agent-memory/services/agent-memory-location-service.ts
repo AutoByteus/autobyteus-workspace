@@ -118,5 +118,3 @@ const toOrgMemoryLocation = (located: LocatedAgentOrgAgentExecution): AgentOrgMe
   memoryDir: located.memoryDir,
 });
 
-let cached: AgentMemoryLocationService | null = null;
-export const getAgentMemoryLocationService = (): AgentMemoryLocationService => cached ??= new AgentMemoryLocationService();

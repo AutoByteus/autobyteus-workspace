@@ -459,4 +459,3 @@ export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependenc
 export const releaseProjectTaskServiceProcessInstance = (instance: TaskExecutionResourcePort): void => {
   if (singleton === instance) singleton = null;
 };
-export const resetProjectTaskServiceForTests = (): void => { singleton = null; };

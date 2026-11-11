@@ -1,6 +1,6 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
-import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
+import type { RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 
 /**
  * A delegator's Settings and Stop on the runs it delegated to (design DS-8, SR-039). Each command goes to the child's
@@ -26,12 +26,6 @@ export type DelegatedLaunchChange = Readonly<{
 
 /** The outcome vocabulary of model-setting Saves, plus a delegated run that is running (AR-001). */
 export type DelegatedLaunchUpdateOutcome = RunModelConfigUpdateOutcome | "COPY_RUNNING";
-
-export type DelegatedLaunchUpdateResult = Readonly<{
-  outcome: DelegatedLaunchUpdateOutcome;
-  message: string;
-  fieldErrors: readonly RunModelConfigFieldError[];
-}>;
 
 export type DelegatedStopOutcome = "STOPPED" | "ALREADY_STOPPED" | "NOT_FOUND" | "ROOT_NOT_ACTIVE";
 

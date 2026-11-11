@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../../src/config/app-config-provider.js";
 import { getProjectService, resetProjectServiceForTests } from "../../../../src/projects/services/project-service.js";
-import { getProjectTaskService, resetProjectTaskServiceForTests } from "../../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../../src/projects/context/project-task-context-store.js";
 import { initializeProjectTaskSearchService, releaseProjectTaskSearchService } from "../../../../src/projects/search/project-task-search-service.js";
@@ -23,7 +23,7 @@ const mcp = async (args: Record<string, unknown>) => {
 };
 const native = (args: Record<string, unknown>) => new SearchProjectTasksTool().execute(null, args as never)
   .then((text) => JSON.parse(text as string), (error: Error) => ({ thrown: JSON.parse(error.message) }));
-const reset = () => { resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 
 describe("search_project_tasks tool", () => {
   let root: string, projectId: string, fake: Awaited<ReturnType<typeof createFakeEmbeddingIndex>>;

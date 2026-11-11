@@ -130,7 +130,3 @@ export class ActiveCollaborationRootDirectory {
 let processDirectory: ActiveCollaborationRootDirectory | null = null;
 export const getActiveCollaborationRootDirectory = (): ActiveCollaborationRootDirectory =>
   processDirectory ??= new ActiveCollaborationRootDirectory();
-export const resetActiveCollaborationRootDirectory = (): void => {
-  processDirectory?.clear();
-  processDirectory = null;
-};

@@ -1,7 +1,6 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentOrgRunExecutionTreeFile } from "./agent-org-run-execution-tree.js";
 import type { RunModelConfigEditability, RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
-import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 
 export type AgentOrgRunSelectionScopeKind =
   | "CONFIGURED_ORG"
@@ -22,11 +21,6 @@ export type AgentOrgRunConfig = Readonly<{
   executionTree: AgentOrgRunExecutionTreeFile;
   isActive: boolean;
   editability: RunModelConfigEditability;
-}>;
-
-export type AgentOrgRunModelOption = RunModelOptions & Readonly<{
-  scopeKind: AgentOrgRunSelectionScopeKind;
-  scopeAddress: string;
 }>;
 
 export type AgentOrgRunConfigResult = RunModelConfigUpdateResult<AgentOrgRunExecutionTreeFile | null>;

@@ -31,9 +31,3 @@ export const parseDelegatedFrom = (value: unknown, label = "delegatedFrom"): Del
   };
 };
 
-/** The exact stored shape. */
-export const serializeDelegatedFrom = (value: DelegatedFrom) => ({
-  delegatingRun: { kind: value.delegatingRun.kind, runId: value.delegatingRun.runId },
-  ...(value.delegatorAgentRunId !== undefined ? { delegatorAgentRunId: value.delegatorAgentRunId } : {}),
-  ...(value.nodeId !== undefined ? { nodeId: value.nodeId } : {}),
-});
