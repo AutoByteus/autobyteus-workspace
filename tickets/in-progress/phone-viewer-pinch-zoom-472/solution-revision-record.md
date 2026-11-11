@@ -30,3 +30,9 @@
 ### Review note — ARCH-REV-002 Pass (informational)
 
 - Architecture review round 2: Pass, no open findings (`design-review-report.md`). The reviewer sent the package to `/software_engineering_team/implementation_engineer`; no Solution Designer handoff.
+
+### SR-004 — REQ-006 wording clarified (code review U-1)
+
+- Trigger: code reviewer U-1 (API-06 (1)): reopening after Back starts at 1×; is that intended?
+- Classification: evidence-only clarification (Solution Designer within the approved behavior): REQ-006 always meant reloads while the file stays open (the 452 live refresh, the motive for REQ-006); the 450 "explicit open again" example referred to the same file opened again while it is shown. After Back the viewer is closed and the next open starts fresh, as the reviewed design (AR-001: memory owned by `MobileFileViewer`) and the implementation do.
+- REQ-006 reworded; no behavior, design or test change; no renewed approval needed

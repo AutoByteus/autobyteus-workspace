@@ -31,7 +31,7 @@
 | REQ-003 | The app page outside the viewer never zooms; the back arrow and the bar stay in place at every zoom. | — |
 | REQ-004 | A PDF or image open in the phone viewer has a Download button in the viewer's bar. In the Android app it saves the file under its own name to the phone's Downloads (Android 10 and newer directly; Android 8–9 through the system's Save dialog) and shows "Saved to Downloads: <name>" or "Couldn't save the file."; in a phone browser it uses the browser's download. | DEC-002 |
 | REQ-005 | The node's credential never goes into a URL, a file name, a bridge message or a log; the download uses the bytes the page already fetched with the phone's credential. Only PDFs and images can be saved, under a plain file name (no folders). | — |
-| REQ-006 | When the open file is reloaded for the same path (a live refresh, autobyteus-452, or an explicit open again, 450), the zoom and position stay; only opening another file starts at 1×. | — |
+| REQ-006 | While a file stays open in the phone viewer, a reload of the same path (a live refresh, autobyteus-452, or the same file opened again while it is shown) keeps its zoom and position. Closing the viewer (Back) ends it: opening the file again later starts at 1× and the top, like any newly opened file. | — |
 
 ## Acceptance Criteria
 
