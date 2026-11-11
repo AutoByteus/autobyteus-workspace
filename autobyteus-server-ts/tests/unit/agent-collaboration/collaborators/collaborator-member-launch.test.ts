@@ -29,7 +29,7 @@ describe("configured placement snapshot (D-1, D-4, D-5, D-6)", () => {
   it("a Team placement records every member's complete launch, followers by the configured rule, and its members' handoffs", () => {
     const team: ConfiguredTeamExecutionNode = {
       address: "/group" as never, teamDefinitionId: "group", role: null, description: null, teamRunId: "group-run",
-      coordinatorAddress: "/group/one" as never, defaultLaunchConfiguration: claude, taskExecutions: [],
+      coordinatorAddress: "/group/one" as never, defaultLaunchConfiguration: claude,
       members: [
         slotAgent("/group/one", claude),
         // Its own auto-approve and workspace, the Team's model: still a follower (AC-011 a).

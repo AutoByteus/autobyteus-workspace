@@ -6,7 +6,8 @@
  * for the released app-data migrations (frozen strict classifiers) need the released
  * shapes instead: Team tree V2 / Org tree V1, where each task execution has
  * `settledAt` and no delegator, and each launch configuration carries the since-removed
- * run-level `skillAccessMode`. Released roots also had no `collaborators` list. These
+ * run-level `skillAccessMode`. Released roots also had no `collaborators` list, and every root and team node had a
+ * `taskExecutions` list, empty when the run hosted nothing (current trees have none since autobyteus-461). These
  * helpers perform only that shape change.
  */
 type Json = Record<string, unknown>;
@@ -35,6 +36,7 @@ const releasedMember = (member: Json, settledAt: string | null): Json => {
   const next: Json = withReleasedLaunchConfigurations(member);
   if (Array.isArray(member.members)) next.members = member.members.map((child) => releasedMember(child as Json, settledAt));
   if (Array.isArray(member.taskExecutions)) next.taskExecutions = member.taskExecutions.map((task) => releasedTask(task as Json, settledAt));
+  else if (Array.isArray(member.members)) next.taskExecutions = [];
   return next;
 };
 

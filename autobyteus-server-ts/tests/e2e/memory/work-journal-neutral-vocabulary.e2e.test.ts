@@ -80,14 +80,13 @@ describe("Work Journal neutral vocabulary through the real memory pipeline (auto
   const create = () => new MemorySearch({
     appDataDir, memoryDir, journals: new WorkJournalService(), embeddings: () => fake.index, activeModelId: () => "fake-model-a", quietMs: 30,
     discovery: new MemoryRunDiscovery(memoryDir, {
-      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
       agentCatalog: { listCatalogRows: async () => [] as never },
       agentMetadata: {
         readMetadata: async (runId: string) => {
           const runtime = RUNTIMES.find((name) => `${name}_run` === runId);
           return runtime ? { agentDefinitionId: runtime, runtimeKind: RUNTIME_OF[runtime], workspaceRootPath: "/work/shipping" } as never : null;
         },
-        readTaskAgentMetadata: async () => null,
       },
     }),
   });

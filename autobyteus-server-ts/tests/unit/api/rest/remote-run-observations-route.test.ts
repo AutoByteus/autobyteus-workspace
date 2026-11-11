@@ -50,7 +50,7 @@ const startNodeB = async () => {
     pairedAgentStatuses: () => [],
   };
   const roots = { storedLinkCheck: async () => "proceed" as const, pairedAgents: () => access } as unknown as RemoteRootDirectory;
-  const provider = new RemoteRunViewProvider(roots, { runTitle: async () => null, agentProjection: async () => { throw new Error("unused"); } });
+  const provider = new RemoteRunViewProvider(roots, { runTitle: async () => null, runLaunches: async () => [], agentProjection: async () => { throw new Error("unused"); } });
   services.current = { gateway: new PeerGateway({
     ownNodeId: async () => SELF, capability: { isEnabled: () => true },
     peers: { findByNodeId: async (nodeId) => (nodeId === ALPHA.nodeId ? ALPHA : null) },

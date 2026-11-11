@@ -157,8 +157,10 @@ it("runs the complete production registry on a fresh pre-ticket data root, prese
   expect(JSON.parse(await fs.readFile(path.join(runtimeTarget, "director", "raw_traces_active.jsonl"), "utf8"))).toEqual({ ...savedTrace,
     media: { images: ["/rest/agent-org-runs/runtime-org/agent-runs/worker/context-files/ctx_saved__image.png"] } });
   expect(await fs.readFile(path.join(runtimeTarget, "mounted", "worker", "context_files", "ctx_saved__image.png"))).toEqual(imageBytes);
-  // No startup rewrite: the released tree and records file keep their bytes; current readers read the tree as it is.
-  expect(await fs.readFile(path.join(nativeDir, "team_run_execution_tree.json"), "utf8")).toBe(nativeTree);
+  // No family rewrite: the released tree keeps every field but its empty `taskExecutions` list, which
+  // `20261111_delegated_runs_own_runs_v1` removes from every tree (autobyteus-461, E9); the records file keeps its bytes.
+  const { taskExecutions: _hosted, ...nativeRoot } = JSON.parse(nativeTree).rootTeam;
+  expect(JSON.parse(await fs.readFile(path.join(nativeDir, "team_run_execution_tree.json"), "utf8"))).toEqual({ ...JSON.parse(nativeTree), rootTeam: nativeRoot });
   expect(JSON.parse(await fs.readFile(path.join(nativeDir, "task_delegation_records.json"), "utf8"))).toEqual({ schemaVersion: 1, rootTeamRunId: "native-flat", records: [] });
   await expect(fs.access(runtimeSource)).rejects.toMatchObject({ code: "ENOENT" });
   expect(await snapshot(env.teams)).toEqual(authoredBefore);

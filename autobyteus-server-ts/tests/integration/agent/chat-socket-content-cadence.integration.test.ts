@@ -37,14 +37,13 @@ import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/st
 import { validateCollaborationCommunicationMessageArray } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
-import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 type AgentKey = "A" | "B";
 type Frame = Readonly<{ at: number; label: string; first: number | null; through: number | null; texts: readonly string[] }>;
-type Boundary = "segment_end" | "tool" | "error" | "terminal_status" | "token_usage" | "task_event";
+type Boundary = "segment_end" | "tool" | "error" | "terminal_status" | "token_usage" | "root_event";
 
 /** One socket under test: how to open it, publish root events and read its frames. */
 type Scenario = Readonly<{
@@ -97,7 +96,7 @@ const teamAgentEvent = (agentRunId: string, kind: "status" | "start" | "content"
     case "tool": return { eventType: "TOOL_EXECUTION_STARTED", statusHint: "running", details: { invocationId: `tool-${agentRunId}`, toolName: "run_bash", turnId, arguments: {} } };
     case "error": return { eventType: "ERROR", statusHint: "running", details: { code: "TOOL_DIAGNOSTIC", message: "diagnostic", errorScope: "turn", errorEffect: "diagnostic", turnId } } as TeamAgentEvent;
     case "token_usage": return { eventType: "TOKEN_USAGE_UPDATED", statusHint: "running", details: tokenUsageDetails(agentRunId) };
-    case "task_event": throw new Error("A task event is a root event, not an agent event.");
+    case "root_event": throw new Error("A root event is not an agent event.");
   }
 };
 
@@ -140,8 +139,8 @@ const teamScenario: Scenario = {
         status: (agent, status = "running") => agentEvent(agent, "status", "", status),
         start: (agent) => agentEvent(agent, "start"),
         content: (agent, delta) => agentEvent(agent, "content", delta),
-        boundary: (agent, boundary) => boundary === "task_event"
-          ? publisher.publish({ eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED, taskExecutions: [{ agentRunId: "task-run-1" }] })
+        boundary: (agent, boundary) => boundary === "root_event"
+          ? publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event: { kind: "remote_task_execution_summary", summary: { nodeId: "node-b", runId: "peer-run-1", reachable: true, title: null, statuses: [], launches: [] } } } as never)
           : agentEvent(agent, boundary),
         currentSequence: () => publisher.getCurrentChangeSequence(),
         subscribeRoot: (listener) => publisher.subscribe(listener),
@@ -194,9 +193,8 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
         executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };
       handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never) };
     } else {
-      const tree = emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: rootRunId, agentDefinitionId: "assistant" }, createdAt: "2026-10-18T00:00:00.000Z" });
-      const snapshot = { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(rootRunId), statuses: [], inputStates: [] };
-      const root = { ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, getExecutionTreeSnapshot: () => tree, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
+      const snapshot = { host: { address: "/assistant" as never, agentRunId: rootRunId, agentDefinitionId: "assistant" }, createdAt: "2026-10-18T00:00:00.000Z", statuses: [] };
+      const root = { ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
         openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot as never) };
       handlers = { collaborationHandler: new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never }) };
     }
@@ -208,8 +206,8 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
         status: (agent, status = "running") => agentEvent(agent, "status", "", status),
         start: (agent) => agentEvent(agent, "start"),
         content: (agent, delta) => agentEvent(agent, "content", delta),
-        boundary: (agent, boundary) => boundary === "task_event"
-          ? publisher.publish({ kind: "task_executions_closed", taskExecutions: [{ agentRunId: "task-run-1" }] } as never)
+        boundary: (agent, boundary) => boundary === "root_event"
+          ? publisher.publish({ kind: "remote_task_execution_summary", summary: { nodeId: "node-b", runId: "peer-run-1", reachable: true, title: null, statuses: [], launches: [] } } as never)
           : agentEvent(agent, boundary),
         currentSequence: () => publisher.getCurrentChangeSequence(),
         subscribeRoot: (listener) => publisher.subscribe(listener),
@@ -331,7 +329,7 @@ describe.each(scenarios)("content cadence on $name", (scenario) => {
 
   it("delivers pending text before every boundary, immediately and contiguously (AC-004)", async () => {
     const test = await connect(scenario);
-    const boundaries: Boundary[] = ["tool", "error", "token_usage", "task_event", "terminal_status", "segment_end"];
+    const boundaries: Boundary[] = ["tool", "error", "token_usage", "root_event", "terminal_status", "segment_end"];
     test.publish.start("A");
     const openedAt = Date.now();
     boundaries.forEach((boundary, index) => {
@@ -342,7 +340,7 @@ describe.each(scenarios)("content cadence on $name", (scenario) => {
     const live = test.live().slice(1);
     expect(live.map((frame) => frame.label)).toEqual(boundaries.flatMap((boundary) => ["BATCH", ({
       tool: "TOOL_EXECUTION_STARTED", error: "ERROR", token_usage: "TOKEN_USAGE_UPDATED",
-      task_event: scenario === teamScenario ? "TASK_EXECUTIONS_CLOSED" : "task_executions_closed",
+      root_event: scenario === teamScenario ? "REMOTE_TASK_EXECUTION_SUMMARY" : "remote_task_execution_summary",
       terminal_status: "AGENT_STATUS:idle", segment_end: "SEGMENT_END",
     } as const)[boundary]]));
     expect(live.filter((frame) => frame.label === "BATCH").map((frame) => frame.texts)).toEqual(boundaries.map((_, index) => [`A:t${index}`]));

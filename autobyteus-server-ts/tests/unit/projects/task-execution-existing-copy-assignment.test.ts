@@ -18,7 +18,6 @@ import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/tas
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "manager-root" });
 const team: TaskExecutionReference = { teamRunId: "review-team" };

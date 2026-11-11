@@ -11,12 +11,17 @@ import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-sto
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { testExecutionTree as currentTestExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import {
-  testAgentOrgExecutionTree,
+  testAgentOrgExecutionTree as currentTestAgentOrgExecutionTree,
   testOrgAgentNode,
   testOrgTeamNode,
 } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { toTreeBefore461 } from "../../fixtures/before-461-tree-fixtures.js";
+
+/** The released migrations read the tree shape before autobyteus-461 (`taskExecutions` lists). */
+const testExecutionTree = (...args: Parameters<typeof currentTestExecutionTree>): ReturnType<typeof currentTestExecutionTree> => toTreeBefore461(currentTestExecutionTree(...args));
+const testAgentOrgExecutionTree = (...args: Parameters<typeof currentTestAgentOrgExecutionTree>): ReturnType<typeof currentTestAgentOrgExecutionTree> => toTreeBefore461(currentTestAgentOrgExecutionTree(...args));
 
 let memoryDir: string;
 

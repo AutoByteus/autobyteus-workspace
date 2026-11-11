@@ -18,10 +18,15 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentNode, testExecutionTree as currentTestExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentOrgExecutionTree as currentTestAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { TeamContextFileExecutionLocatorsV1AppDataMigration, TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as ID } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AtomicRunPackageFileCommitWriter } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { toTreeBefore461 } from "../../fixtures/before-461-tree-fixtures.js";
+
+/** The released migrations read the tree shape before autobyteus-461 (`taskExecutions` lists). */
+const testExecutionTree = (...args: Parameters<typeof currentTestExecutionTree>): ReturnType<typeof currentTestExecutionTree> => toTreeBefore461(currentTestExecutionTree(...args));
+const testAgentOrgExecutionTree = (...args: Parameters<typeof currentTestAgentOrgExecutionTree>): ReturnType<typeof currentTestAgentOrgExecutionTree> => toTreeBefore461(currentTestAgentOrgExecutionTree(...args));
 
 const roots: string[] = [];
 const filename = "ctx_file__image.png";

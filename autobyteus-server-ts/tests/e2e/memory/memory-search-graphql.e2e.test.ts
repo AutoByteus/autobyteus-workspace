@@ -38,9 +38,9 @@ describe("Memory search GraphQL e2e", () => {
     memory = new MemorySearch({
       appDataDir: root, memoryDir, journals: new WorkJournalService(), embeddings: () => fake.index, activeModelId: () => "fake-model-a",
       discovery: new MemoryRunDiscovery(memoryDir, {
-        teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+        teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
         agentCatalog: { listCatalogRows: async () => [{ runId: "codex_ddns", agentName: "Codex" }] as never },
-        agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
+        agentMetadata: { readMetadata: async () => null },
       }),
     });
     resetMemorySearchForTests(memory);

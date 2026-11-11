@@ -121,7 +121,7 @@ describe("MemoryRunDiscovery", () => {
     const runs = await new MemoryRunDiscovery(memoryDir, {
       teamLocations: { listAgents: async () => { throw new Error("tree unreadable"); } },
       orgLocations: { listAgents: async () => [] },
-      agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
+      agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null },
     }).findRuns();
     expect(runs.map((run) => run.subject)).toEqual([{ kind: "RUN_FOLDER", runKey: "agent_teams/team_1/member_1" }]);
     expect(warn).toHaveBeenCalledWith("MEMORY_SEARCH_DISCOVERY_SOURCE_FAILED", { source: "team runs", error: "tree unreadable" });
@@ -134,7 +134,7 @@ describe("MemoryRunDiscovery", () => {
     writeRun(memoryDir, "imports/docker-node-1/agent_teams/team_9/member_9", turn);
     const runs = await new MemoryRunDiscovery(memoryDir, {
       teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
-      agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
+      agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null },
     }).findRuns();
     expect(runs.map((run) => run.runKey)).toEqual(["agents/local_run_1"]);
   });

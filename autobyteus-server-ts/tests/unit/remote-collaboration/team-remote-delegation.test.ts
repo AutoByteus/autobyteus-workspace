@@ -112,16 +112,10 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
       activateHost: vi.fn(async () => { hostActive = true; return { run: host as never, metadata: metadata.get(DELEGATOR)! }; }),
       terminateHost: vi.fn(async () => { hostActive = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
-      recordCollaborationPackageCreated: async () => undefined,
     },
     taskExecutionResources: resources,
     rootDependencies: {
       taskExecutionResources: resources,
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new AgentRunMemoryLocator({ memoryDir: dir }) }),
-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run` }),
-      teamDefinitions: { getDefinitionById: async () => null },
-      memoryLocator: new AgentRunMemoryLocator({ memoryDir: dir }),
-      activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
       remoteRunChannel: () => client,
     },
   });

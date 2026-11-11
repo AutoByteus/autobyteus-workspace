@@ -68,24 +68,9 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
     createdAt,
     children: [writer],
   });
-  return {
-    ...base,
-    rootTeam: {
-      ...base.rootTeam,
-      taskExecutions: [{
-        address: address("/writer"),
-        agentRunId: `${rootTeamRunId}-task-writer`,
-        platformAgentRunId: null,
-        delegatorAgentRunId: `${rootTeamRunId}-writer`,
-        startedAt: createdAt,
-        source: {
-          kind: "agent",
-          agentDefinitionId: writer.agentDefinitionId,
-          launchConfiguration: base.rootTeam.defaultLaunchConfiguration,
-        },
-      }],
-    },
-  };
+  // autobyteus-461: a team tree holds its own members only; its delegated runs are runs of their own. The cases below
+  // that expect a hosted `TASK_AGENT` here are for the API/E2E round to rewrite.
+  return base;
 };
 
 /**

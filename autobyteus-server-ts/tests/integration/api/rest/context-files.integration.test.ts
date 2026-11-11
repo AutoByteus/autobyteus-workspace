@@ -41,12 +41,7 @@ vi.mock("../../../../src/agent-team-execution/services/agent-team-run-manager.js
 import { registerContextFileRoutes } from "../../../../src/api/rest/context-files.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { ContextFileReadService } from "../../../../src/context-files/services/context-file-read-service.js";
-import {
-  testAgentCopySource,
-  testAgentNode,
-  testCopyLaunch,
-  testExecutionTree,
-} from "../../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
 type MultipartPart =
   | { name: string; value: string }
@@ -129,43 +124,32 @@ const finalizeAttachment = async (
   return (response.json() as { attachments: FinalizedAttachment[] }).attachments[0]!;
 };
 
-/** Writes a team run as the app writes it: task agents' own files at L1 and their links in the tree (D-1). */
+/**
+ * Writes a team run as the app writes it (autobyteus-461): its tree holds its own members only. A run it delegated to is
+ * a run of its own: an agent run at `agents/<id>/`, a team run with its own tree rooted at `/` (`nested`).
+ */
 const writeExecutionTree = async (input: {
   memoryDir: string;
   rootTeamRunId: string;
   rootAgentRunId?: string;
   rootAgents?: Array<{ address: string; agentRunId: string }>;
-  tasks?: Array<{ address: string; agentRunId: string }>;
-  nested?: Array<{ address: string; teamRunId: string; agentAddress: string; agentRunId: string }>;
+  nested?: Array<{ teamRunId: string; agentAddress: string; agentRunId: string }>;
 }): Promise<void> => {
-  const rootAgents = input.rootAgents?.map((entry) => testAgentNode(entry.address, { agentRunId: entry.agentRunId }))
-    ?? [testAgentNode("/A", { agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}` })];
-  const tree = testExecutionTree({
-    rootTeamRunId: input.rootTeamRunId,
-    rootTeamDefinitionId: "context-file-team",
-    teamDefinitionName: "Context File Team",
-    coordinatorAddress: "/A",
-    children: rootAgents,
-  });
-  const delegatorAgentRunId = rootAgents[0]!.agentRunId;
-  const taskExecutions = [
-    ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null, delegatorAgentRunId,
-      startedAt: "2026-09-01T00:00:00.000Z", source: testAgentCopySource("member") })),
-    // A Team copy of a flat team run is a catalog copy with its recorded source.
-    ...(input.nested ?? []).map(entry => ({ address: entry.address, teamRunId: entry.teamRunId,
-      members: [{ address: entry.agentAddress, agentRunId: entry.agentRunId, platformAgentRunId: null }],
-      taskExecutions: [], delegatorAgentRunId, startedAt: "2026-09-01T00:00:00.000Z",
-      source: { kind: "agent_team", teamDefinitionId: `team-${entry.teamRunId}`, coordinatorAddress: entry.agentAddress,
-        members: [{ address: entry.agentAddress, agentDefinitionId: "member", launchConfiguration: testCopyLaunch(), followsTeam: true }], handoffs: [],
-        defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration } })),
-  ];
-  const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({
-    rootTeamRunId: input.rootTeamRunId,
-    ancestorTeamRunIds: [],
-  });
-  await new TeamRunExecutionTreeStore().write(teamDir,
-    validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions } }, input.rootTeamRunId));
-  writeAttachmentSidecars(teamDir, "team");
+  const writeTeam = async (teamRunId: string, agents: Array<{ address: string; agentRunId: string }>) => {
+    const tree = testExecutionTree({
+      rootTeamRunId: teamRunId,
+      rootTeamDefinitionId: "context-file-team",
+      teamDefinitionName: "Context File Team",
+      coordinatorAddress: agents[0]!.address,
+      children: agents.map((entry) => testAgentNode(entry.address, { agentRunId: entry.agentRunId })),
+    });
+    const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(teamDir, validateTeamRunExecutionTreePayload(tree, teamRunId));
+    writeAttachmentSidecars(teamDir, "team");
+  };
+  await writeTeam(input.rootTeamRunId, input.rootAgents
+    ?? [{ address: "/A", agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}` }]);
+  for (const entry of input.nested ?? []) await writeTeam(entry.teamRunId, [{ address: entry.agentAddress, agentRunId: entry.agentRunId }]);
 };
 
 
@@ -331,7 +315,7 @@ describe("REST context-files routes", () => {
     await writeExecutionTree({
       memoryDir,
       rootTeamRunId,
-      nested: [{ address: "/C", teamRunId: childTeamRunId, agentAddress: "/C/D", agentRunId }],
+      nested: [{ teamRunId: childTeamRunId, agentAddress: "/D", agentRunId }],
     });
     const draftOwner = { kind: "team_member_draft", teamDraftId: "draft-C-D", memberAddress: "/C/D" };
     const uploaded = await uploadDraftAttachment(app, draftOwner, "nested.md", "nested notes");
@@ -343,7 +327,7 @@ describe("REST context-files routes", () => {
     );
 
     expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("nested notes");
-    // A task agent team's member keeps its memory in the team's own folder (contract L1).
+    // A delegated team run is a team run of its own: its member's memory is in that team's folder (contract L1).
     const finalDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
       { rootTeamRunId: childTeamRunId, ancestorTeamRunIds: [] },
       agentRunId,
@@ -358,8 +342,8 @@ describe("REST context-files routes", () => {
       memoryDir,
       rootTeamRunId,
       nested: [
-        { address: "/C", teamRunId: "child-C", agentAddress: "/C/D", agentRunId: "agent-C-D" },
-        { address: "/E", teamRunId: "child-E", agentAddress: "/E/D", agentRunId: "agent-E-D" },
+        { teamRunId: "child-C", agentAddress: "/D", agentRunId: "agent-C-D" },
+        { teamRunId: "child-E", agentAddress: "/D", agentRunId: "agent-E-D" },
       ],
     });
 
@@ -409,8 +393,8 @@ describe("REST context-files routes", () => {
   });
 
   it("isolates image and file bytes for duplicate-address executions even with repeated stored filenames", async () => {
-    await writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured",
-      tasks: [{ address: "/A", agentRunId: "task" }] });
+    // A run the team delegated to at the same address is a run of its own, outside the team (autobyteus-461).
+    await writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured" });
     const draftOwner = { kind: "team_member_draft", teamDraftId: "duplicate", memberAddress: "/A" };
     for (const input of [
       { name: "image.png", type: "image/png", bytes: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aS1sAAAAASUVORK5CYII=", "base64") },
@@ -427,8 +411,8 @@ describe("REST context-files routes", () => {
       expect(read.statusCode).toBe(200);
       expect(read.headers["content-type"]).toContain(input.type);
       expect(read.rawPayload).toEqual(input.bytes);
-      const taskRead = await app.inject({ method: "GET", url: final.locator.replace("/configured/", "/task/") });
-      expect(taskRead.body).toBe("retained task bytes");
+      expect((await app.inject({ method: "GET", url: final.locator.replace("/configured/", "/task/") })).statusCode).toBe(404);
+      expect(fs.readFileSync(path.join(otherDir, uploaded.storedFilename), "utf8")).toBe("retained task bytes");
     }
   });
 

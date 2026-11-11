@@ -26,7 +26,7 @@ const harness = () => {
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating });
-  const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement = agentPlacement) => delegation.toNewRun({
+  const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
     senderRun, delegatorAddress: null, spawn: spawn as never, resolvePlacement: async () => placement });
   return { tasks, tree, starter, deliverWorkPacket, discard, recordCollaborating, delegate };

@@ -47,8 +47,8 @@ export const teamMemberPresentationOf = (event: TeamRunEvent): Readonly<{ agentR
 
 /**
  * autobyteus-278 (AR-401): a remote Team, as its node serves the peer's owner. Its own agents are the root's members:
- * their output is on the root publisher, filtered to the members (a copy a member delegated on this node is not
- * sent). A quiet idle shutdown unregisters the root and a restore creates a new one, so the observation follows
+ * their output is on the root publisher, filtered to the members (a run a member delegated to is a run of its own
+ * and is not sent). A quiet idle shutdown unregisters the root and a restore creates a new one, so the observation follows
  * the root through the manager's lifecycle notifications (published at the directory's commit and unregister). A
  * stop of any kind (the lifecycle's `ending: "stopped"`) ends the observation.
  */

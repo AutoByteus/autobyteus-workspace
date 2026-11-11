@@ -14,15 +14,12 @@ import {
   COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID,
   CollaboratorsToDelegatedRunsV1AppDataMigration,
 } from "../../../src/app-data-migrations/migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { AgentMemoryLayout } from "../../../src/app-data-migrations/frozen/server/agent-memory/store/agent-memory-layout.js";
 import { AtomicRunPackageFileCommitWriter } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
-import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
-import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
+import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
+import { emptyStandaloneRootTree, toTreeBefore461, writeReleasedTreeFile } from "../../fixtures/before-461-tree-fixtures.js";
+import { getTeamRunExecutionTreePath } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-path.js";
+import { getAgentOrgRunExecutionTreePath } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, teamCollaborator, type Json } from "./released-collaborator-fixtures.js";
@@ -82,7 +79,7 @@ const seedAllFamilies = async (f: Fixture) => {
   // Agent root (host run `agent-host`): collaborator Agent + a sourceless copy of it; a collaborator Team that never started.
   const agentDir = getStandaloneRootDirPath(f.memory, "agent-host");
   const agentTree = emptyStandaloneRootTree({ host: { address: "/host" as never, agentRunId: "agent-host", agentDefinitionId: "host-definition" }, createdAt: T1 });
-  expect((await new StandaloneRootPackageStore().writeTree(agentDir, agentTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getStandaloneRootTreePath(agentDir), agentTree)).outcome).toBe("committed");
   await withCollaborators(getStandaloneRootTreePath(agentDir), null, [
     agentCollaborator({ address: "/code_reviewer", runId: "agent-reviewer", definitionId: "reviewer", viaRunId: "agent-host" }),
     teamCollaborator({ address: "/product_team", teamRunId: "agent-product", definitionId: "product", viaRunId: "agent-host" }),
@@ -95,7 +92,7 @@ const seedAllFamilies = async (f: Fixture) => {
   const teamDir = f.layout.getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
   const teamTree = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/lead", createdAt: T1,
     children: [testAgentNode("/lead", { agentRunId: "team-lead" })] });
-  expect((await new TeamRunExecutionTreeStore().write(teamDir, teamTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getTeamRunExecutionTreePath(teamDir), toTreeBefore461(teamTree))).outcome).toBe("committed");
   await withCollaborators(getTeamRunExecutionTreePath(teamDir), "rootTeam", [
     teamCollaborator({ address: "/qa_team", teamRunId: "team-qa", definitionId: "qa", viaRunId: "team-lead" }),
   ]);
@@ -105,7 +102,7 @@ const seedAllFamilies = async (f: Fixture) => {
   // Org root.
   const orgDir = f.layout.getOrgDirPath("org-root");
   const orgTree = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "org-director")] });
-  expect((await new AgentOrgRunExecutionTreeStore().write(orgDir, orgTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getAgentOrgRunExecutionTreePath(orgDir), toTreeBefore461(orgTree))).outcome).toBe("committed");
   await withCollaborators(getAgentOrgRunExecutionTreePath(orgDir), "rootOrg", [
     agentCollaborator({ address: "/designer", runId: "org-designer", definitionId: "designer", viaRunId: "org-director", addedAt: T1 }),
   ], [sourcelessCopy("/designer", "org-designer-copy", "org-director")]);
@@ -133,8 +130,10 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
     // Improvement feature's data (it deletes whole helper runs and their history rows), and the stored-name renames of
     // autobyteus-290 (SM-1 touches only `remote-access/`; SM-2 … SM-5 only Memory Sync's files), and the raw-trace
     // manifest runtime names (autobyteus-343: it rewrites one value in each manifest, not a run tree or a message log).
+    // The one later step that writes run trees and logs, `20261111_delegated_runs_own_runs_v1` (autobyteus-461), reads
+    // this migration's result: the converted collaborators are delegated runs it makes runs of their own.
     expect(definitions.slice(index + 3).map((definition) => definition.id))
-      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
+      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1", "20261111_delegated_runs_own_runs_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
     expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
     expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });
@@ -193,7 +192,7 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
     const f = await fixture();
     expect((await f.migration.execute()).summary).toMatchObject({ scannedCount: 0, migratedCount: 0, failedCount: 0 });
     const agentDir = getStandaloneRootDirPath(f.memory, "plain-host");
-    await new StandaloneRootPackageStore().writeTree(agentDir, emptyStandaloneRootTree({ host: { address: "/host" as never, agentRunId: "plain-host", agentDefinitionId: "h" }, createdAt: T1 }));
+    await writeReleasedTreeFile(getStandaloneRootTreePath(agentDir), emptyStandaloneRootTree({ host: { address: "/host" as never, agentRunId: "plain-host", agentDefinitionId: "h" }, createdAt: T1 }));
     const bytes = await sha(getStandaloneRootTreePath(agentDir));
     const result = await f.migration.execute();
     expect(result.summary).toMatchObject({ scannedCount: 1, migratedCount: 0, skippedCount: 1 });

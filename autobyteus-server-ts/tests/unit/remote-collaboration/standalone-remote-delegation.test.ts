@@ -8,11 +8,8 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { AgentRunMemoryLocator } from "../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
@@ -153,7 +150,6 @@ const buildNode = async (input: Readonly<{
     },
   });
   if (input.taskSide) releases.push(bindTestTaskSide(resources, () => client));
-  let allocation = 0;
   const manager = new StandaloneAgentRunRootManager({
     memoryDir,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
@@ -168,16 +164,10 @@ const buildNode = async (input: Readonly<{
       }),
       terminateHost: vi.fn(async (runId: string) => { runOf(runId).active = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
-      recordCollaborationPackageCreated: async () => undefined,
     },
     taskExecutionResources: resources,
     rootDependencies: {
       taskExecutionResources: resources,
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new AgentRunMemoryLocator({ memoryDir }) }),
-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
-      teamDefinitions: { getDefinitionById: async () => null },
-      memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
-      activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
       remoteRunChannel: () => client,
     },
   });

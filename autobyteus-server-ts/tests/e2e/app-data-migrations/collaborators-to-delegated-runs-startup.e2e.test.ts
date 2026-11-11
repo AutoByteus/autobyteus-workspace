@@ -6,14 +6,14 @@ import { once } from "node:events";
 import { createHash } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
-import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
+import { AgentMemoryLayout } from "../../../src/app-data-migrations/frozen/server/agent-memory/store/agent-memory-layout.js";
+import { StandaloneRootPackageStore } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
+import { emptyStandaloneRootTree, toTreeBefore461, writeReleasedTreeFile } from "../../fixtures/before-461-tree-fixtures.js";
+import { TeamRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-store.js";
+import { AgentOrgRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-store.js";
+import { getTeamRunExecutionTreePath } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-path.js";
+import { getAgentOrgRunExecutionTreePath } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
@@ -120,7 +120,7 @@ const seed = async (root: string) => {
   // Agent root `agent-host`: oldest Agent entry + oldest Team entry (never started: no memory folder) + newest Agent entry + a sourceless copy.
   const agentDir = getStandaloneRootDirPath(memory, "agent-host");
   const agentTree = emptyStandaloneRootTree({ host: { address: "/host" as never, agentRunId: "agent-host", agentDefinitionId: "host-definition" }, createdAt: T1 });
-  expect((await new StandaloneRootPackageStore().writeTree(agentDir, agentTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getStandaloneRootTreePath(agentDir), agentTree)).outcome).toBe("committed");
   await withCollaborators(getStandaloneRootTreePath(agentDir), null, [
     oldestAgentEntry("/writer", "agent-writer", "agent-host", workspace),
     oldestTeamEntry("/squad", "agent-squad", "agent-host", workspace),
@@ -134,7 +134,7 @@ const seed = async (root: string) => {
   // Team root: a collaborator Team (oldest shape) added by the coordinator.
   const teamDir = layout.getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
   const teamTree = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/lead", createdAt: T1, children: [testAgentNode("/lead", { agentRunId: "team-lead" })] });
-  expect((await new TeamRunExecutionTreeStore().write(teamDir, teamTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getTeamRunExecutionTreePath(teamDir), toTreeBefore461(teamTree))).outcome).toBe("committed");
   await withCollaborators(getTeamRunExecutionTreePath(teamDir), "rootTeam", [oldestTeamEntry("/qa_team", "team-qa", "team-lead", workspace)]);
   await put(path.join(teamDir, "team-qa-lead", "raw_traces_active.jsonl"), "qa lead memory\n");
   await put(path.join(teamDir, "team_communication_messages.json"), { schemaVersion: 1, rootTeamRunId: "team-root", messages: [] });
@@ -142,7 +142,7 @@ const seed = async (root: string) => {
   // Org root: a collaborator Agent (oldest shape) added by a director, plus a sourceless copy at its address.
   const orgDir = layout.getOrgDirPath("org-root");
   const orgTree = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "org-director")] });
-  expect((await new AgentOrgRunExecutionTreeStore().write(orgDir, orgTree)).outcome).toBe("committed");
+  expect((await writeReleasedTreeFile(getAgentOrgRunExecutionTreePath(orgDir), toTreeBefore461(orgTree))).outcome).toBe("committed");
   await withCollaborators(getAgentOrgRunExecutionTreePath(orgDir), "rootOrg", [oldestAgentEntry("/designer", "org-designer", "org-director", workspace)],
     [sourcelessCopy("/designer", "org-designer-copy", "org-director")]);
   await put(path.join(orgDir, "org-designer", "raw_traces_active.jsonl"), "designer memory\n");

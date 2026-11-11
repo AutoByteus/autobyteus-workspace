@@ -11,7 +11,7 @@ type Located = Readonly<{ memoryDir: string }>;
 
 export type RunLastActivityReaderDependencies = Readonly<{
   memoryDir: string;
-  /** A Team root's agents (configured members, task agents, task-team members). */
+  /** A Team run's own agents (its members). */
   teamLocations?: Pick<TeamRunExecutionTreeLocationService, "listAgents">;
   /** An Org root's agents. */
   orgLocations?: Pick<AgentOrgExecutionTreeLocationService, "listAgents">;

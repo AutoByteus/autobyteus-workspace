@@ -14,7 +14,7 @@ const running = { type: "AGENT_STATUS", payload: { status: "running", trigger: n
 const frame: RemoteRunRootEvent = { kind: "remote_agent_presentation", nodeId: "srv_docker", agentRunId: "lead-run", memberAddress: "/marketing/lead", message: running };
 const started: RemoteRunRootEvent = { kind: "remote_task_execution_started", execution: {
   kind: "agent", address: "/researcher" as never, agentRunId: "researcher-run", nodeId: "srv_docker", nodeName: "docker",
-  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:00:00.000Z" } };
+  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:00:00.000Z", open: true } };
 const summary: RemoteRunRootEvent = { kind: "remote_task_execution_summary", summary: { nodeId: "srv_docker", runId: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } };
 
 describe("remote children in the root streams", () => {

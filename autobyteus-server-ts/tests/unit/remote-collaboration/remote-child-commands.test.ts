@@ -79,7 +79,7 @@ describe("remote child commands", () => {
 
 describe("RemoteRunLinks.admitsOwner (the running node's link rule for a peer's owner)", () => {
   const back = new RemoteRunLinks({ peerRuns: () => [], backLink: { pairedAgentRunIds: () => ["lead-run", "writer-run"],
-    delegatedFrom: { nodeId: "srv_alpha", coordinatingRun: { kind: "agent", runId: "manager-run" }, delegatorAgentRunId: "manager-run" } } });
+    delegatedFrom: { nodeId: "srv_alpha", delegatingRun: { kind: "agent", runId: "manager-run" }, delegatorAgentRunId: "manager-run" } } });
   it("admits only the node whose delegation started the run, about its paired agents or the whole run", () => {
     expect(back.admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: null })).toBe(true);
     expect(back.admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: "writer-run" })).toBe(true);

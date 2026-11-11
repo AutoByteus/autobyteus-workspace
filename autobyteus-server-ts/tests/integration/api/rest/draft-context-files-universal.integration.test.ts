@@ -1,6 +1,4 @@
 import fs from "node:fs/promises";
-import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { validateStandaloneRootTreePayload } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
@@ -28,8 +26,9 @@ import { writeAttachmentAgentMetadata, writeAttachmentSidecars } from "../../../
 import {
   testAgentOrgExecutionTree,
   testOrgAgentNode,
-  testOrgLaunchConfiguration,
 } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { bindTestTaskSide } from "../../../helpers/task-side-binding.js";
 
 type DraftOwnerKind = ContextFileDraftOwnerDescriptor["kind"];
 
@@ -69,6 +68,7 @@ const INVALID_LOCATORS = [
 
 let app: FastifyInstance;
 let layout: ContextFileLayout;
+let releaseTaskSide: () => void;
 
 const put = async (file: string, value: unknown) => {
   await fs.mkdir(path.dirname(file), { recursive: true });
@@ -83,22 +83,22 @@ const writeOrgFixture = async (memoryDir: string) => {
   writeAttachmentSidecars(dir, "org");
 };
 
-/** A standalone host run with one delegated Agent copy (the 19.png owner kind). */
-const writeAgentCollaborationFixture = async (memoryDir: string) => {
-  const hostDir = path.join(memoryDir, "agents", "host");
-  await put(path.join(hostDir, "run_metadata.json"), {
-    runId: "host", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir: hostDir,
-    llmModelIdentifier: "model", runtimeKind: "autobyteus",
-  });
-  // Written as the app writes it: the copy's own file at `agents/child/`, its link in the host's tree (D-1).
-  await new StandaloneRootPackageStore().writeTree(path.join(hostDir, "collaboration"), validateStandaloneRootTreePayload({
-    subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
-    host: { address: "/assistant", agentRunId: "host", agentDefinitionId: "def" },
-    taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null,
-      delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z",
-      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration() } }],
-  }, "host"));
-  await fs.writeFile(path.join(hostDir, "collaboration", "communication_messages_active.jsonl"), "");
+/**
+ * A standalone run and an Agent run it delegated to (the 19.png owner kind). Written as the app writes it
+ * (autobyteus-461): each its own run, the delegation a Task entry.
+ */
+const writeAgentCollaborationFixture = async (memoryDir: string, tasks: InMemoryTaskExecutionResources) => {
+  const run = (runId: string, agentDefinitionId: string, extra: Record<string, unknown>) => {
+    const dir = path.join(memoryDir, "agents", runId);
+    return put(path.join(dir, "run_metadata.json"), { runId, agentDefinitionId, workspaceRootPath: "/workspace", memoryDir: dir,
+      llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: false, runtimeKind: "autobyteus", platformAgentRunId: null, ...extra });
+  };
+  const delegatedFrom = { delegatingRun: { rootSubjectKind: "agent" as const, rootRunId: "host" }, delegatorAgentRunId: "host" };
+  await run("host", "def", { address: "/assistant" });
+  await run("child", "reviewer", { address: "/code_reviewer", startedAt: "2026-09-30T00:00:01.000Z",
+    delegatedFrom: { delegatingRun: { kind: "agent", runId: "host" }, delegatorAgentRunId: "host" } });
+  tasks.addTask("T1");
+  await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/code_reviewer", delegatedFrom, execution: { agentRunId: "child" } });
 };
 
 const postUpload = (owner: unknown, content: string) => {
@@ -156,7 +156,9 @@ beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), "draft-context-files-universal-"));
   const memoryDir = path.join(config.root, "memory");
   await writeOrgFixture(memoryDir);
-  await writeAgentCollaborationFixture(memoryDir);
+  const tasks = new InMemoryTaskExecutionResources();
+  releaseTaskSide = bindTestTaskSide(tasks);
+  await writeAgentCollaborationFixture(memoryDir, tasks);
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });
   app = fastify();
   await app.register(multipart);
@@ -164,6 +166,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  releaseTaskSide();
   await app.close();
   await fs.rm(config.root, { recursive: true, force: true });
 });

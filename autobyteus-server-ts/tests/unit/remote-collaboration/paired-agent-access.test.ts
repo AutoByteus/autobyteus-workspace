@@ -193,6 +193,7 @@ describe("TeamPairedAgentAccess (a remote Team)", () => {
       message_id: "m1", dedupe_key: "d1", content: "status?", input_origin: "user_message", received_at: "2026-10-23T08:00:00.000Z",
       context_file_paths: [], sender_agent_run_id: null, parent_communication_message_id: null,
     } } });
-    expect(teamMemberPresentationOf({ eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED, taskExecutions: [] })).toBeNull();
+    expect(teamMemberPresentationOf({ eventSourceType: TeamRunEventSourceType.REMOTE, event: { kind: "remote_task_execution_summary",
+      summary: { nodeId: "n", runId: "r", reachable: true, title: null, statuses: [], launches: [] } } })).toBeNull();
   });
 });

@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
-import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
+import type { CollaborationCommunicationMessage } from "../../../src/app-data-migrations/frozen/server/agent-collaboration/execution/communication/collaboration-communication-message.js";
+import type { TaskExecution } from "../../../src/app-data-migrations/frozen/server/run-history/domain/run-execution-tree-shared-records.js";
 import type { AppDataMigrationDefinition, AppDataMigrationRecordSnapshot } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import {
   validateAgentOrgCommunicationMessages,
@@ -20,15 +20,12 @@ import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "../../../src/app
 import { TeamRunMigrationStateClassifier } from "../../../src/app-data-migrations/frozen/team-run-migration-state-classifier.js";
 import { TEAM_RUN_EXECUTION_TREE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
-import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { AGENT_ORG_RUN_TREE_SHAPE, STANDALONE_ROOT_TREE_SHAPE, TEAM_RUN_TREE_SHAPE } from "../../../src/run-history/store/coordinating-tree-shapes.js";
-import { MESSAGE_LOG_ROTATION_LIMIT_BYTES, MessageLog, type MessageLogBaseName } from "../../../src/run-history/store/message-log.js";
-import { MessageLog as FrozenMessageLog } from "../../../src/app-data-migrations/frozen/server/run-history/store/message-log.js";
-import { composeMessageLogs, taskAgentLogOwners } from "../../../src/run-history/store/task-agent-message-logs.js";
-import { messageViewOfTree } from "../../../src/run-history/store/task-execution-tree-split.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
-import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
-import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
+import { AgentOrgRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/agent-org-run-execution-tree-store.js";
+import { AGENT_ORG_RUN_TREE_SHAPE, STANDALONE_ROOT_TREE_SHAPE, TEAM_RUN_TREE_SHAPE } from "../../../src/app-data-migrations/frozen/server/run-history/store/coordinating-tree-shapes.js";
+import { MESSAGE_LOG_ROTATION_LIMIT_BYTES, MessageLog, type MessageLogBaseName } from "../../../src/app-data-migrations/frozen/server/run-history/store/message-log.js";
+import { composeMessageLogs, messageViewOfTree, taskAgentLogOwners } from "../../fixtures/app-data-migrations/released-message-log-views.js";
+import { TeamRunExecutionTreeStore } from "../../../src/app-data-migrations/frozen/server/run-history/store/team-run-execution-tree-store.js";
+import { StandaloneRootPackageStore } from "../../../src/app-data-migrations/frozen/server/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { T0, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { InMemoryMigrationLedger, runStart } from "../../helpers/migration-start-harness.js";
 
@@ -131,23 +128,32 @@ const composedViews = async (memory: string, source: "json" | "current") => {
         : await readJson(file, (value) => validateTeamCommunicationMessagesPayload(value, owner.teamRunId));
     } catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
   };
+  // After the conversion each log is append-only: the run's own log and its task agents' logs, composed as the
+  // released app composed them.
+  const taskLog = async (owner: ReturnType<typeof taskAgentLogOwners>[number]) => (owner.kind === "task_agent"
+    ? await new MessageLog(path.join(memory, "agents", owner.agentRunId), "communication_messages").read()
+    : await new MessageLog(path.join(memory, "agent_teams", owner.teamRunId), "team_communication_messages").read()) ?? [];
+  const currentView = async (dir: string, baseName: MessageLogBaseName, lists: Iterable<readonly TaskExecution[]>, inView: (message: CollaborationCommunicationMessage) => boolean) => {
+    const own = await new MessageLog(dir, baseName).read();
+    return own === null ? null : composeMessageLogs([own, ...await Promise.all(taskAgentLogOwners(lists).map(taskLog))], inView);
+  };
   const views: Record<string, readonly CollaborationCommunicationMessage[] | null> = {};
   const hubDir = path.join(memory, "agents", "hub", "collaboration");
   const hubTree = (await new StandaloneRootPackageStore().readTree(hubDir, "hub"))!;
-  views.hub = source === "current" ? (await new StandaloneRootPackageStore().readMessages(hubDir, hubTree))?.messages ?? null
+  views.hub = source === "current" ? await currentView(hubDir, "communication_messages", STANDALONE_ROOT_TREE_SHAPE.taskLists(hubTree).values(), messageViewOfTree(STANDALONE_ROOT_TREE_SHAPE, hubTree))
     : composeMessageLogs([await readJson(path.join(hubDir, "communication_messages.json"), (value) => validateStandaloneRootMessages(value, "hub")),
       ...await Promise.all(taskAgentLogOwners(STANDALONE_ROOT_TREE_SHAPE.taskLists(hubTree).values()).map(taskLogJson))], messageViewOfTree(STANDALONE_ROOT_TREE_SHAPE, hubTree));
   for (const id of ["team-r", "team-empty"]) {
     const dir = path.join(memory, "agent_teams", id);
     const tree = (await new TeamRunExecutionTreeStore().read(dir, id))!;
-    views[id] = source === "current" ? (await new TeamCommunicationStore().read(dir, tree))?.messages ?? null
+    views[id] = source === "current" ? await currentView(dir, "team_communication_messages", TEAM_RUN_TREE_SHAPE.taskLists(tree).values(), messageViewOfTree(TEAM_RUN_TREE_SHAPE, tree))
       : composeMessageLogs([await readJson(path.join(dir, "team_communication_messages.json"), (value) => validateTeamCommunicationMessagesPayload(value, id)),
         ...await Promise.all(taskAgentLogOwners(TEAM_RUN_TREE_SHAPE.taskLists(tree).values()).map(taskLogJson))], messageViewOfTree(TEAM_RUN_TREE_SHAPE, tree));
   }
   for (const id of ["org-o", "org-empty", "org-unordered"]) {
     const dir = path.join(memory, "agent_orgs", id);
     const tree = (await new AgentOrgRunExecutionTreeStore().read(dir, id))!;
-    views[id] = source === "current" ? (await new AgentOrgCommunicationMessagesStore().read(dir, tree))?.messages ?? null
+    views[id] = source === "current" ? await currentView(dir, "agent_org_communication_messages", AGENT_ORG_RUN_TREE_SHAPE.taskLists(tree).values(), messageViewOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree))
       : composeMessageLogs([await readJson(path.join(dir, "agent_org_communication_messages.json"), (value) => validateAgentOrgCommunicationMessages(value, id)),
         ...await Promise.all(taskAgentLogOwners(AGENT_ORG_RUN_TREE_SHAPE.taskLists(tree).values()).map(taskLogJson))], messageViewOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree));
   }
@@ -332,9 +338,9 @@ describe("20261018_append_only_message_logs_v1", () => {
     it("after the append (step 3), before the read-back", async () => {
       const expected = await clean();
       const f = await fixture();
-      const read = FrozenMessageLog.prototype.read;
+      const read = MessageLog.prototype.read;
       let calls = 0;
-      vi.spyOn(FrozenMessageLog.prototype, "read").mockImplementation(async function (this: FrozenMessageLog) {
+      vi.spyOn(MessageLog.prototype, "read").mockImplementation(async function (this: MessageLog) {
         if (++calls === 2) throw new Error("stopped before the read-back");
         return read.call(this);
       });
@@ -370,7 +376,8 @@ describe("20261018_append_only_message_logs_v1", () => {
     const { memory } = await dataRoot();
     const dir = await writeTeamRun(memory, "team-x", [message("x2", "lead-team-x", "writer-team-x", 20)]);
     expect((await convert(memory)).status).toBe("SUCCEEDED");
-    await new TeamCommunicationStore().appendMessage(dir, "team-x", message("x3", "lead-team-x", "writer-team-x", 30), [{ kind: "coordinating" }]);
+    // The app appends a line to the converted log.
+    await new MessageLog(dir, "team_communication_messages").appendBatch([message("x3", "lead-team-x", "writer-team-x", 30)]);
     await put(path.join(dir, "team_communication_messages.json"), { schemaVersion: 1, rootTeamRunId: "team-x",
       messages: [message("x1", "writer-team-x", "lead-team-x", 10), message("x2", "lead-team-x", "writer-team-x", 20)] });
     expect(await convert(memory)).toMatchObject({ status: "SUCCEEDED", summary: { migratedCount: 1 } });
