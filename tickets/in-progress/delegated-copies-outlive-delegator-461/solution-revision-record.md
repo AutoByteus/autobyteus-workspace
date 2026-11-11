@@ -974,4 +974,4 @@
   - Option (b), acknowledging `SEND_MESSAGE` on the team stream, would change a contract for an ordering problem.
   - Option (c), settling from the snapshot, would settle because an event is missing, which is behavior by absence (Principle 13).
 - Done: the design's DS-8 (the order and its reason; the test that the first message to a stopped team's own member settles). `walkthrough.py --check` passes.
-
+- ARCH-REV-023 (2026-11-11): Pass, no finding. Its wording note is applied in DS-8: the send settles in the web's send tracker, by identity, on the echo, and a snapshot does not drain the tracker. This supersedes the ARCH-REV-021 residual's wording about the snapshot keeping input state.
