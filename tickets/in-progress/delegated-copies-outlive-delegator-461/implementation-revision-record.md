@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | Solution Designer, `design-spec.md` (DS-1 … DS-11), contract revision 8; initial implementation | N/A | `Initial Baseline` | SR-018 … SR-039, ARCH-REV-005 … ARCH-REV-014 | Implemented; handed to Code Review |
 | IR-002 | Code Reviewer CRR-002/003 (`code-review-report.md`), Solution Designer SR-040 … SR-044; round 2 | CR-461-001, CR-461-002 (as SR-040), CR-461-003, CR-461-004, CR-461-005 | `Local Fix` (001, 003, 004, 005); `Design Impact` answered by SR-040 … SR-044 (002) | SR-040 … SR-044, ARCH-REV-015 … ARCH-REV-019, CRR-002 … CRR-004 | Implemented; targeted re-review by Code Review |
 | IR-003 | Code Reviewer CRR-005 (`code-review-report.md`, round 2 Full Re-Audit), Solution Designer SR-045 … SR-053; round 3 | CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007; FU-011 narrowed into this ticket (SR-047) | `Local Fix` (001 residual, 005 residual, 007); `Design Impact` answered by SR-045 … SR-053 (006, Principle 16) | SR-045 … SR-053 (SR-050/051 replaced by SR-052), ARCH-REV-020 … ARCH-REV-028, CRR-005 | Implemented; targeted re-review by Code Review |
+| IR-004 | Code Reviewer CRR-006 (`code-review-report.md` "Round 3", Full Re-Audit of IR-003); round 4 | CR-461-008 | `Local Fix` | CRR-006 | Implemented; targeted re-review by Code Review |
 
 ## Revision Entries
 
@@ -102,3 +103,24 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: see the handoff's Checks Run (IMP-18 …).
 - Next recipient or routing: Code Reviewer (Large / High), targeted re-review.
 - Remaining limitations or risks: FU-011's remainder (older getters listed in the handoff); the views' stream lifetime and live child rows are not checked in a real browser; e2e suites not rewritten (API/E2E).
+
+### IR-004 — Code this change replaced removed (CR-461-008)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` "Round 3" (CRR-006, Full Re-Audit of IR-003 at `e5e0884e45`). Round 4.
+- Triggering finding IDs: CR-461-008.
+- Classification: `Local Fix`; Large / High unchanged, so it returns to Code Review.
+- Prior authoritative result: IR-003 at `e5e0884e45`.
+- Current authoritative result: commit `a54e78ccb7`, and the handoff commit.
+- Related solution / architecture-review revision IDs: N/A (no design change).
+- Related code-review revision IDs: CRR-006.
+- Approved behavior or requirement IDs affected: none changed; SR-045/046 (a stopped run is restored by a message on its view's stream) is now the only restore path for a team or org run.
+- Implementation delta:
+  - `agent-communication/services/global-agent-run-message-router.ts`: `static instance`, `setProcessInstance`, `getInstance` and `getGlobalAgentRunMessageRouter` removed (never read).
+  - `compositions/collaboration-composition.ts`: the router is created for the dispatcher (`SendMessageToDispatcher({ globalRouter: new GlobalAgentRunMessageRouter({ crossRun }), … })`); its process slot is no longer set.
+  - `api/graphql/types/agent-team-run.ts`: `restoreAgentTeamRun` and `RestoreAgentTeamRunResult` removed; `api/graphql/types/agent-org-run.ts`: `restoreAgentOrgRun` removed (`AgentOrgRunMutationResult` stays: create and terminate use it).
+  - `tests/unit/api/graphql/types/agent-team-run.test.ts`: the restore test and its mock removed.
+  - `autobyteus-web/generated/graphql.ts` regenerated (19 lines removed); `docs/modules/agent_orgs.md` says how a stopped Org is restored.
+  - `follow-ups.md`: FU-014 withdrawn.
+- Local validation and result: IMP-26 (server and web type gates, generated types match the schema, no remaining references outside the e2e suites, the server unit suite).
+- Next recipient or routing: Code Reviewer, targeted re-review of CR-461-008.
+- Remaining limitations or risks: 32 server E2E files (105 references) restore a run with the removed mutations; they need the stream-message path (API/E2E, with the e2e rewrite already listed).
