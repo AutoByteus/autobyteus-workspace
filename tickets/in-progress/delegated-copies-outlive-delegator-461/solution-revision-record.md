@@ -19,6 +19,7 @@
 | SR-013 | Requirements | The user's ordering decision: fix the growing collaboration tree first, as its own Task | N/A | Contract revision 4 proposed; design Needs Revision | Blocked: Waiting For Prerequisite PRE-001 | PRE-001 (new); every REQ waits | The prerequisite is sent to the Project Task Manager |
 | SR-014 | Requirements (supplement) | PRE-001 delivered (`autobyteus-469`, verified Terminal 2026-11-11); the user: resume on the latest base and re-validate the contract | N/A | Blocked: Waiting For Prerequisite | Ready for Approval (contract revision 5 proposed; design Needs Revision) | Contract §1 … §12; TC-7 … TC-9; DEC-011 | Presented to the user |
 | SR-015 | Design | Contract revision 5 with TC-7, TC-8, DEC-011 decided; the user: redesign and show it to him before any review | N/A | Design Needs Revision (SR-010) | Design Draft, for the user's review | DS-1 … DS-10 | Presented to the user; not sent to review |
+| SR-016 | Design | The user: names by ownership; finish the open items, then stop for his review | N/A | Design Draft (SR-015) | Design Draft, for the user's review | DS-1 … DS-10; V-10, V-11, V-14, U-A, U-B | Presented to the user; not sent to review |
 
 ## Revision Entries
 
@@ -370,3 +371,31 @@
 - Next action: the user's review
 - Update 2026-11-11 (same round): the user decided TC-9: "if they are not associated with task yes i think they are just normal runs". The 15 delegated runs without a Task record become ordinary runs in the run list. All contract decisions are now taken; the user's review of the design draft is pending.
 - Update 2026-11-11 (same round): the user decided TC-10 (contract §9) and agreed to an in-memory delegation index. The Task entry's field is renamed `delegatedFrom` (`{ delegatingRun, delegatorAgentRunId }`), the same name and shape as a peer-started run's own record; a local delegated run's own file carries no copy, because the copy would disagree with the Task once the Task is deleted, and a run whose Task is deleted is an ordinary run. Principle P6 now states that a run's life is bound to its Task, never to the run that delegated it (the user: "you are not deciding the life circle of the other person … The life circle is bound to tasks, not bound by the manager"). Design: `DelegationIndex` added (in memory, built from the Task records at startup, owns no run); `TaskCommunicationScope` asks it. Contract §6 gains "Delete a Task".
+
+### SR-016 — Design draft completed for the user's review
+
+- Phase and classification: Design, `Design Rebuilt` (draft, completed)
+- Triggering user feedback: 2026-11-11, "naming is extremely important … we create a naming based on ownership … the bigger direction is okay … After you finish your work, then tell me stop there and then I will review myself as well"; on the index, "who is the owner of this delegation index? … or it's just simply a global one"
+- Triggering finding IDs: the open items of SR-015 (V-10, V-11, V-14, U-A, U-B)
+- Prior authoritative requirements/design status: requirements with every contract decision taken; design draft SR-015
+- Current authoritative requirements/design status: requirements unchanged (DEC-011 row updated to the decision); design `Draft — for the user's review`
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: DEC-011 row in the requirements (record only)
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: names follow their owners. `DelegationIndex` is replaced by four questions on the Task side's port, with a private `TaskRunIndex` if the service needs the split. `TaskCommunicationScope` became `TaskMessageScope` (the existing "Task-linked message scope"); `StandaloneTaskDelegation` became `TaskDelegation` (root-neutral); `IndependentRunStarter` became `DelegatedRunStarter`; the two idle shutdowns are renamed for what they serve. The open items are settled in the design:
+  - ordering without the shared queue: the Task side orders the record, each run's gate orders the run, with a re-check at the gate head;
+  - every reader of the removed or renamed fields, with a decision per area;
+  - V-11, from `delegated-copy-model-change`'s design;
+  - V-14;
+  - the web: a local delegated run is shown like a remote child.
+- Canonical requirements, investigation and design sections changed: `design-spec.md` rewritten; `requirements-doc.md` DEC-011 row
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact: the user reviews the draft; no handoff before his answer
+- Behavior-defining supplement versions and approval references: contract revision 5, all decisions taken by the user
+- Affected design/review basis invalidated or rebuilt: SR-015's draft
+- Post-design task-size/risk classification and rationale changes: `Large`, `High`
+- Applied handoff-rule outcome / result-file reference: none, at the user's request
+- Downstream and architecture-review impact: architecture review after the user's review
+- Remaining gaps, assumptions or blocked decisions: none open in the requirements; the user's review
+- Next action: the user's review
