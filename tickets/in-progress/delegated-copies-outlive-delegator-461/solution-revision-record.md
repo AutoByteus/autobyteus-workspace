@@ -962,3 +962,16 @@
 - Applying the updated skill: the template's "Dependency Rules" requirement is answered by that section, and the Structural Trigger "Hidden dependency" is recorded as fired, with its evidence and resolution.
 - Next action: architecture review (narrow); then implementation, in IR-003
 - ARCH-REV-022 (2026-11-11): Pass. Its two spec corrections are applied in "Dependency Rules And The Composition Root": `childRowsFeed.follow` moves to step 7, after the feed's creation, with the stream session registry as its own owner passed to the feed and the handlers; and a Task change with no entries listener set fails instead of skipping.
+
+### SR-048 — Restoring a stopped team for a member's message: restore, switch to live, then post (the Implementation Engineer's question)
+
+- Triggering: the Implementation Engineer (IR-003). With SR-046 and the ARCH-REV-021 residual, a team send that starts a stopped team can hang in the web.
+  - The web settles a team send only on the `MEMBER_INPUT_MESSAGE` echo (`teamSendAdmission.ts`; `TeamStreamingService.ts:358`). The team stream sends no acknowledgement and has no timeout.
+  - The server emits the echo when the agent takes the input, after the post (`team-flat-execution-callbacks.ts:50`).
+  - The session switched to live after posting (`whileRestoring`, `agent-team-stream-handler.ts:122`), with the snapshot's base at the current sequence. The echo could therefore fall before the base and never be delivered, and the snapshot cannot settle the send.
+- Decision (option (a), on the merits): the view session restores the run, switches to live (an in-band snapshot, then a subscription to the live events), and only then posts the message. The echo is then an ordinary live event after the snapshot.
+  - The web keeps the local message, the draft and the pending send through the snapshot, so the residual (input state kept) still holds, and the echo settles the send.
+  - Option (b), acknowledging `SEND_MESSAGE` on the team stream, would change a contract for an ordering problem.
+  - Option (c), settling from the snapshot, would settle because an event is missing, which is behavior by absence (Principle 13).
+- Done: the design's DS-8 (the order and its reason; the test that the first message to a stopped team's own member settles). `walkthrough.py --check` passes.
+
