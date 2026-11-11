@@ -173,13 +173,24 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
     - org: `agentOrgContextsStore` attaches the open org run whether or not it is active (no `retireStream` for an inactive one);
     - team: `agentTeamRunStore.connectToTeamStream` keeps the stream of the open team run when it stops (`TEAM_RUN_LIFECYCLE` stopped updates the view; it does not close the stream);
     - phone: the same stores, so the same rule holds while the run screen is on screen and in front.
-  - **Server:** a view stream's connect never starts or restores the run (DS-8, `readyRoot` without `ensureHostReady`). An open stream of a stopped run carries `child_runs_changed`, the children's live output and their commands.
+  - **Server: the view session serves a stopped run without restoring it** (SR-046, ARCH-REV-020 AR-023). Restoring would make a stopped team "managed", which reads as active, refuses its stopped-run Settings (`RUN_ACTIVE`) and archive, and breaks REQ-004, REQ-006 / AC-010 and REQ-007. So no stream kind restores or starts its run to serve a view, and "active" keeps meaning "running":
+    - **Standalone:** as it is now. `readyRoot` loads the root without starting the host, and the stopped-run gates ask the host (`standalone-stopped-run-selection-updater.ts:59`, `standalone-run-liveness.ts`), so a loaded root does not look active.
+    - **Team and org: each view session has two modes**, owned by the session (`agent-team-stream-handler.ts`, `agent-org-stream-handler.ts`):
+      - **Stored mode, while the run is not managed:** the session neither calls `resolveActiveTeamRun` / `restoreTeamRun` nor refuses a stopped org (`service.getActive`).
+        - Its snapshot is built from the run's own stored file through **the same view projection** (members and units, each stopped), with the child rows from `DelegationTree.openChildrenOf(X)`.
+        - It carries `ChildRowsFeed` events (held through the snapshot, SR-044) and the children's live output (`LocalChildObservation`, as for a remote child).
+        - A child command goes to the child's own root (`DelegatedRunCommands`).
+        - A message to one of the run's own members restores the run through its ordinary service, on that first input. An interrupt or a tool approval for a stopped member is refused, as for any stopped run.
+      - **Live mode, while the run is managed:** today's session on the live root. Child rows and children's output come as in stored mode.
+      - **Switching modes:** the session follows the run's lifecycle by run ID (the run's registration in `ActiveCollaborationRootDirectory`, and its stop). When the run becomes managed (restored by a message, or started by the user), the session sends a fresh snapshot from the live root on the same connection: a new base for the team stream's `change_sequence`, as on connect, so no gap or recovery can arise. When the run stops, it sends a stored-mode snapshot and continues. The client takes each in-band snapshot as it takes one today.
+    - So, for every kind, an open view of a stopped run shows live child rows and output and routes child commands, and the run stays stopped and unmanaged.
   - **Tests,** per client (agent-run, org, team) and in the phone layout:
     - a stopped delegator's open view shows a working child's live status and output;
     - a message to the child from that view wakes only the child, and the delegator stays stopped;
     - a new delegation by the child appears live;
     - selecting another run and back keeps one stream, with no stream left behind;
-    - a message to the delegator itself starts it, on the same stream.
+    - a message to the delegator itself starts it, on the same stream;
+    - **a stopped team's and a stopped org's view open while a child works:** the run stays stopped and unmanaged; its child rows and child output are live; its stopped-run Settings save succeeds; its archive gate answers as for a stopped run; a message to one of its own members restores it, and the view continues live after one in-band snapshot, with no recovery.
 - **Live child rows in an open view** (REQ-002, REQ-005 / AC-005, AC-007, 469's reopened row listed again without a reload; SR-042, ARCH-REV-016 AR-022). The view is the projection of `DelegationTree.openChildrenOf(X)`, so when that changes, an open view of X is told and reads itself again. One path serves all three view kinds:
   - **Source:** `DelegationTree`, inside each Task change (`entriesChanged(taskId)`, synchronously, contract §4). For every run X whose `openChildrenOf(X)` differs before and after the change, it reports `childRowsChanged(X)` to its listeners after updating itself. That covers a new delegated run, a child whose last open Task closed, a reopened child, a child of a deleted Task, and a delegation to a peer. A child that keeps another open Task is no change.
   - **Owner of the publication:** `ChildRowsFeed` (`agent-collaboration/delegation/child-rows-feed.ts`), the one listener. For each X with an open view stream (the standalone collaboration stream, the team stream, the org stream, found by X's run ID in the stream registry), it publishes one event on that stream, **whether or not X's own run is active**. Opening or following a view never starts or restores a run (REQ-004).

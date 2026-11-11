@@ -930,3 +930,18 @@
 - The Local Fixes of CRR-005 (CR-461-001 residual, CR-461-005 residual, CR-461-007) are the Implementation Engineer's, as the code review states them.
 - Next action: architecture review (narrow); then implementation
 
+### SR-046 — A stopped team or org run's view is served from its stored file (answers ARCH-REV-020 AR-023)
+
+- Triggering: ARCH-REV-020 accepted SR-045's web rule and the standalone server. It failed on AR-023 (High): DS-8 said "a view stream's connect never starts or restores the run", which at `827f1e68dc` holds for the standalone stream only.
+  - The team connect restores a stopped team (`agent-team-stream-handler.ts:64, 240` → `resolveActiveTeamRun` → `restoreTeamRun`). A managed team reads as active, refuses its stopped-run Settings (`RUN_ACTIVE`) and its archive.
+  - The org connect refuses a stopped org (`agent-org-stream-handler.ts:53`).
+- The Solution Designer's error: the statement was checked against the standalone stream only.
+- Decision (the reviewer's first option, on the data model's merits): no stream kind restores its run to serve a view, so "active" keeps meaning "running" and no reader of activity changes.
+  - A team or org view session has a **stored mode**, while the run is not managed: a snapshot from the run's own stored file through the same projection, child rows from the tree, `ChildRowsFeed` events, the children's output, and child commands to the child's own root.
+  - It has a **live mode**, while the run is managed: today's session.
+  - It switches on the run's lifecycle with a fresh in-band snapshot, a new sequence base, so there is no gap or recovery.
+  - A message to one of the run's own members restores the run on that first input.
+  - The other option, separating "active" from "managed" across every reader, is the larger change U-001 sized, and is not taken.
+- Done: the design's DS-8 (the server per stream kind, the modes and the switch, the tests). `walkthrough.py --check` passes.
+- Next action: architecture review (AR-023)
+
