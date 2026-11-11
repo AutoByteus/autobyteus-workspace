@@ -6,25 +6,16 @@ import { AgentDefinition } from "../../../../src/agent-definition/domain/models.
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { ActiveCollaborationRootDirectory } from "../../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { AgentRunMemoryLocator } from "../../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { StandaloneAgentRunRootManager } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
-import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { bindTestOpenDelegatedRuns } from "../../../fixtures/open-delegated-run-sources.js";
 
-/**
- * A standalone run's Agent root with real persistence: the host run is a double that records reservations
- * and restores; collaborator and copy handles are observed doubles. Shared by the standalone root suites.
- */
+/** A standalone run's root with real persistence: its agent is a double that records reservations and restores. */
 export const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
 export const runnable = {
   validate: vi.fn(),
@@ -95,15 +86,11 @@ export const hostRun = () => {
   return { run, reserved, published, crash: () => { active = false; }, restore: () => { active = true; } };
 };
 
-/** Production always binds the Task side; every delegated copy belongs to a Task. */
+/** A standalone run's root (autobyteus-461: its own agent only) with real persistence of its own log. */
 export const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources()) => {
-  vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
-  const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
-  // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
-  bindTestOpenDelegatedRuns(taskExecutionResources);
   const host = hostRun();
-  // The host's activation backend (the standalone lifecycle): records the root-built member context.
+  // The run's activation backend (the standalone lifecycle): records the root-built member context.
   const contexts: MemberExecutionContext[] = [];
   let currentMetadata = metadata(memoryDir);
   const restores = vi.fn(async (_hostRunId: string, input: { memberExecutionContext: MemberExecutionContext | null }) => {
@@ -111,8 +98,6 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     host.restore();
     return { run: host.run as never, metadata: currentMetadata };
   });
-  const catalogFlag = vi.fn(async () => undefined);
-  let allocation = 0;
   const { catalog } = definitions();
   const directory = new ActiveCollaborationRootDirectory();
   const manager = new StandaloneAgentRunRootManager({
@@ -128,23 +113,13 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
         return { outcome: wasActive ? "terminated" as const : "not_active" as const, runtimeKind: null };
       }),
       readMetadata: async () => currentMetadata,
-      recordCollaborationPackageCreated: catalogFlag,
     },
     taskExecutionResources,
-    rootDependencies: {
-      taskExecutionResources,
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new AgentRunMemoryLocator({ memoryDir }) }),
-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
-      teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
-      memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
-      activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
-      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable),
-    },
+    rootDependencies: { taskExecutionResources, collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
   const hostIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
   });
-  return { manager, memoryDir, host, restores, contexts, catalogFlag, handles, directory, hostIdentity, store: new StandaloneRootPackageStore(),
+  return { manager, memoryDir, host, restores, contexts, directory, hostIdentity, store: new StandaloneRootPackageStore(),
     setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); } };
 };
-
