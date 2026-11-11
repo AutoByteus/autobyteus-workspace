@@ -1024,3 +1024,19 @@
 - Decision: **the application host composes the same steps 1–8 as the studio**, through the same composition file (the Implementation Engineer's option (a)). Base's behavior then holds by construction: the application-bound rule refuses where it lives, in placement, with base's texts, and a non-application run delegates as at base. `UnavailableTaskDelegation` and the null collaborators of SR-050 are withdrawn.
 - Done: the design's composition section, with tests: a characterization test at `827f1e68dc` of the exact texts, the same texts asserted in the branch, and a non-application run's delegation and closure in the application host.
 - ARCH-REV-027 (2026-11-11): Pass, no finding. Its note is applied in the composition section: where the application host lacks a studio piece, its real equivalent is passed explicitly (an empty stream session registry, or the peer channel absent as at base), never a lookup.
+
+### SR-053 — The run services take a narrow Task port; the cycle through `ProjectTaskService` is split (the Implementation Engineer's finding)
+
+- Triggering: the Implementation Engineer found a second cycle in SR-047's order.
+  - The run services (step 3) take `TaskExecutionResourcePort`, whose only implementation is `ProjectTaskService` (step 5).
+  - `ProjectTaskService` takes the closure stop and the worker status, which are `TaskRunControl` (step 4), which needs the run services.
+  - The engineer proposed (a) a `TaskClosureListener` set at step 4 that fails when unset, or (b) `setRunControl`.
+- Decision (on the merits; Principle 16 and Example 9, "split out what both need"): neither. Both are late bindings that hide the cycle.
+  - Since SR-049 a root does not delegate. Linking, `markStarted`, the Project folder, `resolveAssignment` and `describeTask` are `TaskDelegation`'s, at step 6.
+  - So a root needs only `isOpen(run)`, for the gate-head and work-packet checks, and `statusChanged(run)`, for the worker status notice.
+  - The run services receive a **narrow `RunTaskRecords` port**, implemented by step 1's records and the Task change marks, both created before them.
+  - The full port, `ProjectTaskService`, is created at step 5 with `TaskRunControl` passed in directly, and serves `TaskDelegation` and the cross-run owners at step 6.
+
+  Every dependency points to an earlier step.
+- Done: the design's composition steps 3, 5 and 6, with the reason. If a root use of the full port remains beyond `isOpen` and `statusChanged`, the Implementation Engineer reports it, and it either moves to the delegation owners or joins the narrow port, if it is a records read.
+

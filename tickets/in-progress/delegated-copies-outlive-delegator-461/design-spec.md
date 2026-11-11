@@ -473,10 +473,21 @@ No other gap was found. Not validated: the code. The implementation verifies the
 
 1. `TaskExecutionResourceService`, loaded.
 2. `DelegationTree(taskExecutionResources, runOwnAgentsReader)`, built; then `taskExecutionResources.setEntriesListener(delegationTree)`. A Task change with no entries listener set fails; it is not skipped.
-3. The run services (agent, team, org), as today, given what they already take. **No root they create needs `TaskDelegation`, `CrossRunMessageDelivery` or `CrossRunAddressResolution`** (SR-049): roots answer only for their own run. A root's `TaskWorkerStatusNotice` receives the Task side (step 1) and calls `tasks.taskExecutionsStatusChanged([run])`, so it needs no `TaskRunControl`, and `TaskRunControl.statusChanged` goes.
+3. The run services (agent, team, org) **with the narrow `RunTaskRecords` port, not the full Task port** (SR-053). Since SR-049 a root does not delegate, so it needs only two things from the Task side:
+   - `isOpen(run)`, for the Task-rule check at the head of its gate and the work-packet check;
+   - `statusChanged(run)`, for `TaskWorkerStatusNotice`.
+
+   `RunTaskRecords` implements them from step 1's records (`TaskExecutionResourceService.isOpen`) and the Task change marks (`taskChangeMarks`), both created before this step. No root they create needs `TaskDelegation`, `CrossRunMessageDelivery`, `CrossRunAddressResolution` or `ProjectTaskService` (SR-049, SR-053), and `TaskRunControl.statusChanged` goes.
 4. `TaskRunControl({ agentRuns, teamRuns, tasks: taskExecutionResources })`.
-5. `ProjectTaskService({ …, runControl })`. Its `requestRelease` and `workerStatus` call `runControl` directly. `composeProjectTaskExecutionResources` is split: the Task records and the tree come at steps 1 and 2, and the service at step 5.
-6. The root resolver, then `TaskDelegation`, `CrossRunMessageDelivery` and `CrossRunAddressResolution`, from the tree, the root resolver and the run services. Nothing created before them needs them.
+5. `ProjectTaskService({ …, runControl })`, the full `TaskExecutionResourcePort`. Its `requestRelease` and `workerStatus` call `runControl` directly, with no listener and no setter. `composeProjectTaskExecutionResources` is split: the Task records and the tree come at steps 1 and 2, and the service at step 5.
+6. The root resolver, then `TaskDelegation`, `CrossRunMessageDelivery` and `CrossRunAddressResolution`, from the tree, the root resolver, the run services and **the full Task port, `ProjectTaskService` (step 5)**: linking, `markStarted`, `projectFolderForNewCopy`, `resolveAssignment`, `describeTask`, and the assigner's continuation. Nothing created before them needs them.
+
+   **Why there is no cycle** (SR-053; Example 9, "split out what both need"):
+   - the run services need only `RunTaskRecords` (step 1);
+   - `ProjectTaskService` needs `TaskRunControl` (step 4), which needs the run services (step 3);
+   - the delegation owners need `ProjectTaskService` (step 5).
+
+   Every arrow points back to an earlier step.
 7. `LocalChildPorts({ tree: delegationTree, agents })`, `LocalChildObservation` and `DelegatedRunCommands` (one instance). Then the stream session registry, its own owner. Then `ChildRowsFeed(streamSessions)`, then `childRowsFeed.follow(delegationTree)`. The registry is passed to the feed and to the stream handlers.
 8. Their consumers, the tool services among them, each receiving them at construction:
    - the `delegate_task` tool service gets `TaskDelegation`;
