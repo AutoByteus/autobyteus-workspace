@@ -3,8 +3,7 @@ import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-met
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import type { TaskExecutionStopResult } from "../task/task-execution-resource-port.js";
-import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT, remoteRunClosureText } from "./remote-refusal-codes.js";
+import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import type { RemoteMessageTransmission, RemoteTargetRoot } from "./remote-run-channel.js";
 import type { RemoteRunReference } from "./remote-run-reference.js";
 
@@ -38,8 +37,6 @@ type RemoteEndpointCore = Readonly<{
 export type DelegatedRunEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegated_run";
   link: PeerAgentRunLink;
-  /** AR-007: the Task closed. Nothing is released here; the run stops on its node when it goes idle (S3 stops it). */
-  closureFence(execution: TaskExecutionReference, peerName: string): TaskExecutionStopResult;
 }>;
 
 /**
@@ -50,8 +47,6 @@ export type DelegatedRunEndpoint = RemoteEndpointCore & Readonly<{
 export type DelegatedTeamEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegated_team";
   link: PeerTeamRunLink;
-  /** AR-007 for the Team: the same fence and text as for a remote Agent. */
-  closureFence(execution: TaskExecutionReference, peerName: string): TaskExecutionStopResult;
 }>;
 
 /**
@@ -92,9 +87,6 @@ const messageRequest = (nodeId: string, targetRoot: RemoteTargetRoot, message: C
   createdAt: message.createdAt,
 });
 
-const closureFenceFor = (address: string) => (execution: TaskExecutionReference, peerName: string): TaskExecutionStopResult => Object.freeze({
-  execution, outcome: "fenced_remote" as const, stopped: false as const, message: remoteRunClosureText(address, peerName),
-});
 
 export const delegatedRunEndpoint = (link: PeerAgentRunLink): DelegatedRunEndpoint => {
   const targetRoot: RemoteTargetRoot = Object.freeze({ kind: "agent", runId: link.agentRunId });
@@ -107,7 +99,6 @@ export const delegatedRunEndpoint = (link: PeerAgentRunLink): DelegatedRunEndpoi
     refusals: pairRefusals,
     ownershipChain: () => Object.freeze([Object.freeze({ agentRunId: link.agentRunId })]),
     transmission: (message: CollaborationCommunicationMessage) => messageRequest(link.nodeId, targetRoot, message),
-    closureFence: closureFenceFor(link.address),
   });
 };
 
@@ -124,7 +115,6 @@ export const delegatedTeamEndpoints = (link: PeerTeamRunLink): readonly Delegate
     refusals: pairRefusals,
     ownershipChain: () => Object.freeze([Object.freeze({ teamRunId: link.teamRunId })]),
     transmission: (message: CollaborationCommunicationMessage) => messageRequest(link.nodeId, targetRoot, message),
-    closureFence: closureFenceFor(link.address),
   })));
 };
 

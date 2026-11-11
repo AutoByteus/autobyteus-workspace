@@ -12,13 +12,15 @@ import { projectDelegatedAgentRun, projectDelegatedTeamRun } from "./collaborati
  * (`DelegationTree.openChildrenOf`), each read from its own file. A run on a peer node is a remote row; a run whose own
  * file cannot be read is left out with a warning naming it (DESIGN.md rule 7). Opening a view starts nothing.
  */
-export const delegatedChildrenDtos = async (run: RootExecutionIdentity, memoryDir = appConfigProvider.config.getMemoryDir()): Promise<CollaborationTaskExecutionDto[]> => {
+export const delegatedChildrenDtos = async (run: RootExecutionIdentity, memoryDirInput?: string): Promise<CollaborationTaskExecutionDto[]> => {
+  const children = (findDelegationTree()?.openChildrenOf(run) ?? []).filter((child) => child.nodeId === undefined);
+  if (!children.length) return [];
+  const memoryDir = memoryDirInput ?? appConfigProvider.config.getMemoryDir();
   const layout = new AgentMemoryLayout(memoryDir);
   const agents = new AgentRunMetadataStore(memoryDir);
   const teams = new TeamRunExecutionTreeStore();
   const rows: CollaborationTaskExecutionDto[] = [];
-  for (const child of findDelegationTree()?.openChildrenOf(run) ?? []) {
-    if (child.nodeId !== undefined) continue;
+  for (const child of children) {
     try {
       if ("agentRunId" in child.run) {
         const metadata = await agents.readMetadata(child.run.agentRunId);

@@ -36,6 +36,3 @@ export const REMOTE_ROOT_REFUSAL_TEXT = Object.freeze({
 export const remoteDeliveredText = (agentRunId: string, peerName: string): string =>
   `Delivered message to ${agentRunId} on node "${peerName}".`;
 
-/** AR-007: DONE or CANCELLED fences a remote run; it is not stopped from this node (S3). */
-export const remoteRunClosureText = (address: string, peerName: string): string =>
-  `${address} runs on node "${peerName}". This Task sends it no more messages; it stops there when it goes idle.`;

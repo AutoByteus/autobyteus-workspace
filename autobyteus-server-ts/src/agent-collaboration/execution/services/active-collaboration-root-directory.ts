@@ -1,15 +1,5 @@
-import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import type { TaskExecutionStopResult } from "../task/task-execution-resource-port.js";
-import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import {
-  cloneCollaborationMemberExecutionIdentity,
-  cloneRootExecutionIdentity,
-  rootExecutionIdentityKey,
-  sameRootExecutionIdentity,
-  type CollaborationMemberExecutionIdentity,
-  type RootExecutionIdentity,
-} from "../domain/root-execution-identity.js";
+import { cloneRootExecutionIdentity, rootExecutionIdentityKey, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 
 export type ActiveRootMessageSender = Readonly<{
   kind: "agent";
@@ -26,12 +16,8 @@ export type ExactAgentMessageInput = Readonly<{
 }>;
 
 export interface ActiveRootMessageBoundary {
-  /** Same-root membership, including shut-down delegated children that delivery can wake. */
+  /** Whether the agent is one of this run's own agents. */
   hasAgentExecution(agentRunId: string): boolean;
-  /** A task execution's own live status (Agent status, or folded Team status); wakes nothing. */
-  taskExecutionStatus?(reference: TaskExecutionReference): AgentExecutionStatus;
-  /** Stops exactly these closed Task agent runs hosted in this root. */
-  releaseTaskExecutions?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]>;
   /** DS-2: this root as the sender of a message to another run (its own log only). */
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;

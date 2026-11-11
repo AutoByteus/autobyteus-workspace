@@ -169,8 +169,6 @@ export type TaskExecutionReleaseResult = Readonly<{
   execution: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;
 }>;
 /** A run on a peer node (AR-007): fenced by the closed Task, not stopped; `message` says where it keeps running. */
-export type TaskExecutionRemoteFence = Readonly<{ execution: TaskExecutionReference; outcome: "fenced_remote"; stopped: false; message: string }>;
-export type TaskExecutionStopResult = TaskExecutionReleaseResult | TaskExecutionRemoteFence;
 
 /** Coded port rejections; implementations throw errors carrying one of these `code`s. */
 export const TASK_EXECUTION_RESOURCE_REJECTION_CODES = ["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT", "TASK_AGENT_RESOURCES_UNAVAILABLE", "TASK_AGENT_RESOURCE_OWNED_SENDER", "TASK_PROJECT_FOLDER_UNAVAILABLE"] as const;

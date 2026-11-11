@@ -53,10 +53,10 @@ const commandAck = (
 });
 
 /**
- * Agent-root stream `/ws/agent-collaboration/:hostRunId`: snapshot, events and commands for
- * the run's delegated copies. Connecting resolves the run's root and makes its host ready
- * (restoring it when needed). Child commands use the active root as is: a crashed host is not
- * restarted for them. Commands for the host itself stay on `/ws/agent/:runId`.
+ * Agent-run stream `/ws/agent-collaboration/:hostRunId` (design DS-8): the snapshot and events of the run's view and the
+ * commands of its child rows. Connecting resolves the run's root and never starts its agent. A local child's command
+ * goes to the child's own run (`DelegatedRunCommands`), a peer child's through the root to its node. Commands for the
+ * run's own agent stay on `/ws/agent/:runId`.
  */
 export class AgentCollaborationStreamHandler {
   private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; hostRunId: string; close(): void }>();

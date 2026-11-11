@@ -10,14 +10,13 @@ import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint } from 
 import { RemoteMessageSend } from "../../../src/agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type { PeerAgentRunLink, PeerTeamRunLink } from "../../../src/agent-collaboration/execution/remote/peer-run-link.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
 /**
  * Design § Remote Messaging: Owners And Order (AR-005 … AR-008) and § Task Closure Of A Remote Run (AR-007):
- * the two endpoint kinds and their rules, the one shared owner of the outbound sequence, the existing-copy
- * refusal in the shared lifecycle, and the closure fence.
+ * the two endpoint kinds and their rules, and the one shared owner of the outbound sequence. (A peer run's Task closure
+ * fence is the Task side's: `task-execution-resource-release.ts`.)
  */
 
 const DELEGATOR = "agent_delegator";
@@ -28,7 +27,7 @@ const link: PeerAgentRunLink = Object.freeze({ kind: "agent", address: "/publish
 const teamLink: PeerTeamRunLink = Object.freeze({ kind: "agent_team", address: "/studio", teamRunId: "team_b", nodeId: PEER_NODE,
   coordinatorAddress: "/studio/lead" as never, members: [{ address: "/studio/lead" as never, agentRunId: "lead_b" }, { address: "/studio/writer" as never, agentRunId: "writer_b" }],
   delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z", open: true });
-const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", coordinatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: DELEGATOR });
+const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", delegatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: DELEGATOR });
 const message = (sender: string, receiver: string): CollaborationCommunicationMessage => Object.freeze({
   messageId: "collabmsg_1", senderAgentRunId: sender, receiverAgentRunId: receiver, content: "hello", messageType: "agent_message",
   referenceFiles: Object.freeze([]), createdAt: "2026-10-20T10:01:00.000Z",
@@ -55,7 +54,6 @@ describe("remote endpoint kinds (AR-006)", () => {
       expect([...endpoint.pairedAgentRunIds]).toEqual([DELEGATOR]);
       expect([endpoint.allowsSender(DELEGATOR), endpoint.allowsSender("other"), endpoint.allowsTarget(DELEGATOR), endpoint.allowsTarget("other")]).toEqual([true, false, true, false]);
       expect(endpoint.ownershipChain()).toEqual([{ teamRunId: "team_b" }]);
-      expect(endpoint.closureFence({ teamRunId: "team_b" }, "docker")).toMatchObject({ outcome: "fenced_remote", stopped: false });
     }
     expect(endpoints[1]!.transmission(message(DELEGATOR, "writer_b"))).toMatchObject({ nodeId: PEER_NODE,
       targetRoot: { kind: "agent_team", runId: "team_b" }, targetAgentRunId: "writer_b" });
@@ -148,78 +146,5 @@ describe("RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-
     const h = harness({ receipt: { accepted: false, code: "PEER_UNREACHABLE", message: "Node \"docker\" could not be reached." } });
     await expect(h.send.send({ sender, endpoint, content: "hello" })).resolves.toMatchObject({ accepted: false, code: "PEER_UNREACHABLE" });
     expect(h.calls).toEqual(["prepare", "deliver"]);
-  });
-});
-
-describe("the existing-copy refusal, once in the shared lifecycle (AR-003, AR-008)", () => {
-  const root = createTeamRootExecutionIdentity("team_a");
-  const manager = { identity: createCollaborationMemberExecutionIdentity({ root, memberAddress: "/manager" as never, agentRunId: "manager_run" }) } as never;
-  const setup = () => {
-    const resources = new InMemoryTaskExecutionResources();
-    resources.addTask("task-1");
-    const adapter = {
-      root, isOpen: () => true, authorize: () => undefined, assertCurrentSchemaReady: () => undefined,
-      ownershipChainFor: () => [], taskExecutionChainFor: () => [], taskExecutionTargetOf: vi.fn(() => null), taskExecutionWithIngress: vi.fn(() => null),
-    };
-    const lifecycle = new RootTaskExecutionLifecycle(adapter as never, {
-      taskExecutionResources: resources, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => agentRunId === REMOTE },
-    });
-    const assignSpy = vi.spyOn(resources, "assignExistingTaskExecution");
-    const assignableSpy = vi.spyOn(resources, "assertAssignable");
-    return { lifecycle, adapter, assignSpy, assignableSpy };
-  };
-
-  it("refuses a run on a peer node after the named Task resolves, before the copy is resolved or any Task change", async () => {
-    const s = setup();
-    const deliver = vi.fn();
-    await expect(s.lifecycle.assignToExistingCopy(manager, { copy: { agentRunId: REMOTE }, taskId: "task-1" }, deliver))
-      .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
-    expect(s.adapter.taskExecutionTargetOf).not.toHaveBeenCalled();
-    expect(s.assignableSpy).not.toHaveBeenCalled();
-    expect(s.assignSpy).not.toHaveBeenCalled();
-    expect(deliver).not.toHaveBeenCalled();
-  });
-
-  it("lets the named Task's own refusal come first", async () => {
-    const s = setup();
-    await expect(s.lifecycle.assignToExistingCopy(manager, { copy: { agentRunId: REMOTE }, taskId: "no-such-task" }, vi.fn()))
-      .resolves.toEqual({ delegated: false, message: "Task 'no-such-task' was not found." });
-  });
-
-  it("leaves a local copy to today's path", async () => {
-    const s = setup();
-    await s.lifecycle.assignToExistingCopy(manager, { copy: { agentRunId: "local_copy" }, taskId: "task-1" }, vi.fn());
-    expect(s.adapter.taskExecutionTargetOf).toHaveBeenCalledWith({ agentRunId: "local_copy" });
-  });
-});
-
-describe("Task closure of a remote run (AR-007)", () => {
-  it("fences it with an explicit result and invokes no release; a hosted run is still released", async () => {
-    const root = createAgentRootExecutionIdentity(DELEGATOR);
-    const resources = new InMemoryTaskExecutionResources();
-    resources.addTask("task-1");
-    for (const agentRunId of [REMOTE, "local_copy"]) {
-      await resources.linkNewTaskExecution({ hostRoot: root, execution: { agentRunId }, role: "assigned", assignedBy: DELEGATOR, recipientAddress: "/publisher", taskId: "task-1" } as never);
-    }
-    const adapter = {
-      root, containsTaskExecution: () => false, publishTaskExecutionsClosed: vi.fn(), registrationFor: vi.fn(() => null),
-      cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: true })),
-    };
-    const channel = { peerName: async () => "docker" } as unknown as RemoteRunChannel;
-    // The root's lifecycle orders the closure release: the remote fence outside its queue, the hosted release in it.
-    const lifecycle = new RootTaskExecutionLifecycle(adapter as never, { taskExecutionResources: resources,
-      remoteRunLinks: new RemoteRunLinks({ peerRuns: () => [link], channel: () => channel }) });
-    const closed = resources.close("task-1");
-
-    const results = await lifecycle.releaseTaskExecutions(closed);
-
-    expect(results).toEqual([
-      { execution: { agentRunId: REMOTE }, outcome: "fenced_remote", stopped: false,
-        message: `/publisher runs on node "docker". This Task sends it no more messages; it stops there when it goes idle.` },
-      { execution: { agentRunId: "local_copy" }, stopped: true },
-    ]);
-    expect(adapter.releaseOwnedExecution).toHaveBeenCalledTimes(1);
-    expect(adapter.releaseOwnedExecution).toHaveBeenCalledWith({ agentRunId: "local_copy" });
-    expect(adapter.cancelOwnedExecution).not.toHaveBeenCalledWith({ agentRunId: REMOTE });
   });
 });
