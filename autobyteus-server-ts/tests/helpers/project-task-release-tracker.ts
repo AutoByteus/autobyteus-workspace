@@ -1,7 +1,7 @@
 import type { TaskExecutionReleaseRequest } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
-/** Every root stops every run it is asked to stop. */
-export const stopEveryRun: TaskExecutionReleaseRequest = async (_hostRoot, executions) => executions.map((execution) => ({ execution, stopped: true }));
+/** Every run stops when it is asked to. */
+export const stopEveryRun: TaskExecutionReleaseRequest = async (execution) => ({ execution, stopped: true });
 
 export type ReleaseTracker = Readonly<{ request: TaskExecutionReleaseRequest; settled(): Promise<void> }>;
 
@@ -12,8 +12,8 @@ export type ReleaseTracker = Readonly<{ request: TaskExecutionReleaseRequest; se
  */
 export const trackReleases = (inner: TaskExecutionReleaseRequest = stopEveryRun): ReleaseTracker => {
   const pending: Promise<unknown>[] = [];
-  const request: TaskExecutionReleaseRequest = (hostRoot, executions) => {
-    const answer = inner(hostRoot, executions);
+  const request: TaskExecutionReleaseRequest = (execution) => {
+    const answer = inner(execution);
     if (answer) pending.push(answer.catch(() => undefined));
     return answer;
   };

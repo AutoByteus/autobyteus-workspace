@@ -3,7 +3,7 @@ import type {
   RemoteTaskExecution,
   RemoteTaskTeamExecution,
 } from "../../../run-history/domain/run-execution-tree-shared-records.js";
-import type { DelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
+import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import { delegatedRunEndpoint, delegatedTeamEndpoints, delegatorEndpoint, type RemoteEndpoint } from "./remote-endpoint.js";
@@ -74,7 +74,7 @@ export type RemoteRunLinksOptions = Readonly<{
    * Receiving node: the back-link of a root a peer delegated to (`delegatedFrom`) and the local agents it pairs
    * with (a standalone root's host; every member of a Team root); `null` otherwise.
    */
-  backLink?: Readonly<{ pairedAgentRunIds(): readonly string[]; delegatedFrom: DelegatedFrom }> | null;
+  backLink?: Readonly<{ pairedAgentRunIds(): readonly string[]; delegatedFrom: PeerDelegatedFrom }> | null;
   channel?(): RemoteRunChannel | null;
 }>;
 

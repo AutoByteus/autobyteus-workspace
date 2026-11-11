@@ -1,6 +1,8 @@
+import { openChildrenOf } from "../../helpers/delegation-tree-of.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { runIdentityOf } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
@@ -37,9 +39,9 @@ describe("Task agent run resource reactivation", () => {
   /** A started assignment of `agentRun` by `manager`, with a started helper under it. */
   const assignedWithHelper = async () => {
     const task = await tasks.createTask({ projectId, title: "Design the feature", description: "Design the feature" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: worker });
     await tasks.markStarted(worker);
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: worker, hostRoot, execution: helper });
+    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: runIdentityOf(worker), delegatorAgentRunId: "lead" }, execution: helper });
     await tasks.markStarted(helper);
     return task.taskId;
   };
@@ -77,7 +79,7 @@ describe("Task agent run resource reactivation", () => {
     expect(await tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })).toEqual({ taskId, reopened: true });
     expect(tasks.isOpen(worker)).toBe(true);
     expect(tasks.isOpen(helper)).toBe(false);
-    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([helper]);
+    expect(openChildrenOf(tasks, hostRoot).map((open) => open.run)).toEqual([worker]);
     expect((await tasks.assignments([taskId])).get(taskId)).toEqual({ closed: [],
       open: [{ kind: "agent", agentRunId: "worker", assignedBy: "manager", outcome: "accepted" }] });
     // The status is exactly what the agent set; task.json is not written.
@@ -91,7 +93,7 @@ describe("Task agent run resource reactivation", () => {
     // After restart the view is rebuilt from the same file.
     const restarted = await boot();
     expect(restarted.isOpen(worker)).toBe(true);
-    expect(restarted.closedTaskExecutionsIn(hostRoot)).toEqual([helper]);
+    expect(openChildrenOf(restarted, hostRoot).map((open) => open.run)).toEqual([worker]);
   });
 
   it("a later DONE closes the reactivated entry again, and the cycle repeats (AC-010, REQ-009)", async () => {
@@ -99,7 +101,7 @@ describe("Task agent run resource reactivation", () => {
     for (let round = 0; round < 2; round += 1) {
       await setStatus(taskId, "DONE");
       expect(tasks.isOpen(worker)).toBe(false);
-      expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([worker, helper]);
+      expect(openChildrenOf(tasks, hostRoot)).toEqual([]);
       await setStatus(taskId, "TODO");
       expect((await tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })).reopened).toBe(true);
     }
@@ -108,7 +110,7 @@ describe("Task agent run resource reactivation", () => {
 
   it("refuses other senders, helpers, never-started assignments and deleted Tasks with a clear reason; nothing changes (AC-005/006/008/009)", async () => {
     const taskId = await assignedWithHelper();
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot, execution: team, teamCoordinatorAgentRunId: "lead" });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead" });
     await tasks.markFailed(team, { code: "TASK_DISPATCH_FAILED", message: "no start" });
     await setStatus(taskId, "DONE");
     await setStatus(taskId, "TODO");
@@ -129,7 +131,7 @@ describe("Task agent run resource reactivation", () => {
   });
 
   it("reactivates the assignment of a Task with no Project after the agent reopens it by task_id (AC-003)", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot, execution: team, teamCoordinatorAgentRunId: "lead",
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead",
       adHocTask: { description: "Review the plan", referenceFiles: [] } });
     await tasks.markStarted(team);
     await setStatus(taskId, "DONE");
@@ -158,7 +160,7 @@ describe("Task agent run resource reactivation", () => {
 
   it("the pure transition opens exactly one started assignment of its assigner and returns the same file when already open", () => {
     const file: TaskExecutionResourceFile = { taskId: "t", executionResources: [
-      { role: "assigned", assignedBy: "m", hostRoot, execution: worker, linkedAt: "a", start: "started", closedAt: "x" },
+      { role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "m" }, execution: worker, linkedAt: "a", start: "started", closedAt: "x" },
       { role: "delegated", hostRoot, execution: helper, linkedAt: "b", start: "started", closedAt: "x" },
     ] };
     const reopened = reopenTaskExecution(file, worker, "m");

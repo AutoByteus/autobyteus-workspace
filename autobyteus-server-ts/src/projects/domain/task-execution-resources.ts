@@ -1,23 +1,23 @@
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
-import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type NewTaskExecutionLinkInput, type TaskExecutionRole } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import {
+  ASSIGNER_ONLY_REACTIVATION_MESSAGE, runReferenceOf, type NewTaskExecutionLinkInput, type PeerRunMember, type RunDelegatedFrom, type TaskExecutionRole,
+} from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ProjectError } from "./project-errors.js";
 
 /**
- * One Task's record of one task execution (a delegated Agent or Team copy). Never stores liveness,
- * shutdown state, lineage or descriptions. Persisted names differ (only the schema module knows them).
+ * One Task's record of one delegated run (contract §2.1): the one record of the delegation on this node. Never stores
+ * liveness, shutdown state or descriptions. Persisted names differ (only the schema module knows them).
  */
 export type TaskExecutionResource = Readonly<{
   role: TaskExecutionRole;
-  /** Only on `assigned`: the run that made the assignment. */
-  assignedBy?: string;
+  /** Which run and which agent delegated the run (one hop). The same on every entry of one run. */
+  delegatedFrom: RunDelegatedFrom;
   /**
-   * Only on `assigned`: the address the assigner delegated to (e.g. `/product_team`), the root's
-   * display name. Absent on assignments recorded before it was kept.
+   * The address the run was delegated to (e.g. `/product_team`), its display name: on `assigned` (absent on
+   * assignments recorded before it was kept), and on every entry of a peer's run.
    */
   recipientAddress?: string;
-  hostRoot: RootExecutionIdentity;
   execution: TaskExecutionReference;
   /** Only for a Team copy: its coordinator agent run (the Team's ingress). */
   teamCoordinatorAgentRunId?: string;
@@ -26,7 +26,13 @@ export type TaskExecutionResource = Readonly<{
   /** Only when `start` is `failed`. */
   startError?: Readonly<{ code: string; message: string }>;
   closedAt: string | null;
+  /** Only for a run on a peer node: the node (absent means this node); this node cannot read that run. */
+  nodeId?: string;
+  /** Only for a team run on a peer node: its members. */
+  members?: readonly PeerRunMember[];
 }>;
+/** The delegator of an entry: who may continue it after a reopen and give it a follow-up Task (on `assigned`). */
+export const assignerOf = (entry: TaskExecutionResource): string => entry.delegatedFrom.delegatorAgentRunId;
 /** `<projectId>/tasks/<taskId>/agent_run_resources.json`. */
 export type TaskExecutionResourceFile = Readonly<{ taskId: string; executionResources: readonly TaskExecutionResource[] }>;
 
@@ -65,29 +71,33 @@ export const boundedError = (error: { code: string; message: string }) => ({
 });
 
 const entryOf = (input: Readonly<{
-  role: TaskExecutionRole; assignedBy?: string; recipientAddress?: string; hostRoot: RootExecutionIdentity;
-  execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
+  role: TaskExecutionRole; recipientAddress?: string; delegatedFrom: RunDelegatedFrom;
+  execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string; nodeId?: string; members?: readonly PeerRunMember[];
 }>, now: string): TaskExecutionResource => {
   const team = "teamRunId" in input.execution;
   if (team && !input.teamCoordinatorAgentRunId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "A Team agent run needs its coordinator.");
+  const { delegatingRun, delegatorAgentRunId } = input.delegatedFrom;
+  const addressed = input.role === "assigned" || input.nodeId !== undefined;
   return {
     role: input.role,
-    ...(input.role === "assigned" ? { assignedBy: input.assignedBy, ...(input.recipientAddress ? { recipientAddress: input.recipientAddress } : {}) } : {}),
-    hostRoot: { rootSubjectKind: input.hostRoot.rootSubjectKind, rootRunId: input.hostRoot.rootRunId },
+    delegatedFrom: { delegatingRun: { rootSubjectKind: delegatingRun.rootSubjectKind, rootRunId: delegatingRun.rootRunId } as typeof delegatingRun, delegatorAgentRunId },
+    ...(addressed && input.recipientAddress ? { recipientAddress: input.recipientAddress } : {}),
     execution: "agentRunId" in input.execution ? { agentRunId: input.execution.agentRunId } : { teamRunId: input.execution.teamRunId },
     ...(team ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
     linkedAt: now, start: "starting", closedAt: null,
+    ...(input.nodeId !== undefined ? { nodeId: input.nodeId, ...(input.members ? { members: input.members.map((member) => ({ ...member })) } : {}) } : {}),
   };
 };
 
 /**
- * Adds a `starting` entry for a new copy. Preconditions are evaluated against the file content read
- * under its lock: the copy is absent from the file, and an inherited entry's creator is present and open.
+ * Adds a `starting` entry for a new run. Preconditions are evaluated against the file content read under its lock: the
+ * run is absent from the file, and sub-work's delegating run is present and open in it.
  */
 export const linkNewTaskExecution = (file: TaskExecutionResourceFile, link: NewTaskExecutionLinkInput, now: string): TaskExecutionResourceFile => {
   if (latestEntryOf(file, link.execution)) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is already linked to this Task.");
   if (link.role !== "assigned") {
-    const creator = latestEntryOf(file, link.creator);
+    const creatorRun = runReferenceOf(link.delegatedFrom.delegatingRun);
+    const creator = creatorRun ? latestEntryOf(file, creatorRun) : undefined;
     if (!creator || creator.closedAt !== null) throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The creating Task agent run is closed (its Task is DONE or CANCELLED).");
   }
   return { taskId: file.taskId, executionResources: [...file.executionResources, entryOf(link, now)] };
@@ -99,7 +109,7 @@ export const linkNewTaskExecution = (file: TaskExecutionResourceFile, link: NewT
  * this file is closed. Earlier entries of the copy are kept exactly as they are.
  */
 export const linkExistingTaskExecution = (file: TaskExecutionResourceFile, link: Readonly<{
-  assignedBy: string; recipientAddress?: string; hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
+  delegatedFrom: RunDelegatedFrom; recipientAddress?: string; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
 }>, now: string): TaskExecutionResourceFile => {
   if (latestEntryOf(file, link.execution)?.closedAt === null) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "This task agent already works on this Task.");
@@ -130,7 +140,7 @@ export const closeTaskExecutionResources = (file: TaskExecutionResourceFile, now
 export const assertTaskExecutionReopenable = (file: TaskExecutionResourceFile, execution: TaskExecutionReference, requestedBy: string): TaskExecutionResource => {
   const entry = latestEntryOf(file, execution);
   if (!entry) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is not linked to this Task.");
-  if (entry.role !== "assigned" || entry.assignedBy !== requestedBy) {
+  if (entry.role !== "assigned" || assignerOf(entry) !== requestedBy) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
   }
   if (entry.start !== "started") {
@@ -166,7 +176,7 @@ export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | nu
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task. "
       + `Delegate Task ${requested} to a new task agent with recipient_address.`);
   }
-  if (current.assignedBy !== input.requestedBy) {
+  if (assignerOf(current) !== input.requestedBy) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one. "
       + `Delegate Task ${requested} to a new task agent with recipient_address instead.`);
   }
@@ -185,8 +195,8 @@ export const notCurrentTaskMessage = (execution: TaskExecutionReference, current
 
 const outcomes: Record<TaskExecutionResource["start"], TaskAssignmentOutcome> = { started: "accepted", starting: "not_confirmed", failed: "failed" };
 const assignmentView = (r: TaskExecutionResource): TaskAssignmentView => "agentRunId" in r.execution
-  ? { kind: "agent", agentRunId: r.execution.agentRunId, assignedBy: r.assignedBy!, outcome: outcomes[r.start] }
-  : { kind: "team", teamRunId: r.execution.teamRunId, teamCoordinatorAgentRunId: r.teamCoordinatorAgentRunId!, assignedBy: r.assignedBy!, outcome: outcomes[r.start] };
+  ? { kind: "agent", agentRunId: r.execution.agentRunId, assignedBy: assignerOf(r), outcome: outcomes[r.start] }
+  : { kind: "team", teamRunId: r.execution.teamRunId, teamCoordinatorAgentRunId: r.teamCoordinatorAgentRunId!, assignedBy: assignerOf(r), outcome: outcomes[r.start] };
 /** The Manager's read of open assignments (`assigned` entries not closed). */
 export const openAssignments = (file: TaskExecutionResourceFile): TaskAssignmentView[] =>
   file.executionResources.filter(r => r.role === "assigned" && r.closedAt === null).map(assignmentView);

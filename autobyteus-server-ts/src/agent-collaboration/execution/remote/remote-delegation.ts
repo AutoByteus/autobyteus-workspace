@@ -1,6 +1,6 @@
 import type { RemoteTaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
 import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
 import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
@@ -117,7 +117,7 @@ export class RemoteDelegation {
       nodeId: placement.peer.nodeId,
       address: placement.address,
       delegatorAgentRunId: input.identity.agentRunId,
-      coordinatingRun: this.coordinatingRun(),
+      delegatingRun: this.delegatingRun(),
       work: placement.work,
     });
     if (!started.accepted) throw new RemoteDelegationRefusedError(started.code, started.message);
@@ -177,8 +177,8 @@ export class RemoteDelegation {
     });
   }
 
-  /** This root as the coordinating run a peer names on its side of a link (CM-7). */
-  private coordinatingRun(): TaskAgentCoordinatingRun {
+  /** This run, the delegating run the peer's run records in its own `delegatedFrom` (contract §2.4, one hop). */
+  private delegatingRun(): DelegatingRunRef {
     return Object.freeze({ kind: this.options.root.rootSubjectKind, runId: this.options.root.rootRunId });
   }
 

@@ -59,7 +59,7 @@ export class AgentOrgRunService {
     modelSelectionOptions: Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
     history: Pick<AgentOrgRunHistoryCatalogService, "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
-    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
   }>) {}
 
   /**
@@ -204,7 +204,7 @@ export class AgentOrgRunService {
     const result = await this.dependencies.history.deleteStored(normalized);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));
+      .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));
     return result;
   }
 

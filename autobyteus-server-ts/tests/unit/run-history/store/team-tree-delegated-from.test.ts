@@ -24,7 +24,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => { resetRootRunPackageReadinessIndex(root); return fs.rm(root, { recursive: true, force: true }); }));
 });
 const T0 = "2026-10-21T10:00:00.000Z";
-const delegatedFrom = { nodeId: "srv_node_a", coordinatingRun: { kind: "agent_team" as const, runId: "team_a" }, delegatorAgentRunId: "lead_a" };
+const delegatedFrom = { delegatingRun: { kind: "agent_team" as const, runId: "team_a" }, delegatorAgentRunId: "lead_a", nodeId: "srv_node_a" };
 const base = () => testExecutionTree({ rootTeamRunId: "team-b", coordinatorAddress: "/lead",
   children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] });
 const teamDir = async () => {
@@ -41,7 +41,7 @@ describe("delegatedFrom on a Team run tree", () => {
     expect((await store.write(dir, tree)).outcome).toBe("committed");
     const raw = JSON.parse(await fs.readFile(path.join(dir, "team_run_execution_tree.json"), "utf8"));
     expect(raw.delegatedFrom).toEqual(delegatedFrom);
-    expect(Object.keys(raw.delegatedFrom)).toEqual(["nodeId", "coordinatingRun", "delegatorAgentRunId"]);
+    expect(Object.keys(raw.delegatedFrom)).toEqual(["delegatingRun", "delegatorAgentRunId", "nodeId"]);
     expect((await store.read(dir, "team-b"))?.delegatedFrom).toEqual(delegatedFrom);
 
     const plain = validateTeamRunExecutionTreePayload(base(), "team-b");
@@ -51,7 +51,11 @@ describe("delegatedFrom on a Team run tree", () => {
   });
 
   it("refuses a malformed section (the tree is unreadable, as a malformed run_metadata.json is)", () => {
-    expect(() => validateTeamRunExecutionTreePayload({ ...base(), delegatedFrom: { nodeId: "srv_node_a" } }, "team-b")).toThrow(/coordinatingRun/);
+    expect(() => validateTeamRunExecutionTreePayload({ ...base(), delegatedFrom: { nodeId: "srv_node_a" } }, "team-b")).toThrow(/delegatingRun/);
+    // The shape before this release (`coordinatingRun`) is converted by the migration and not read here.
+    expect(() => validateTeamRunExecutionTreePayload({ ...base(), delegatedFrom: { nodeId: "n", coordinatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d" } }, "team-b")).toThrow(/delegatingRun/);
+    // A peer-started run always records its delegator.
+    expect(() => validateTeamRunExecutionTreePayload({ ...base(), delegatedFrom: { nodeId: "n", delegatingRun: { kind: "agent", runId: "r" } } }, "team-b")).toThrow(/delegatorAgentRunId/);
   });
 });
 
@@ -69,6 +73,6 @@ describe("agentRunIdsOfTree: the one message-endpoint rule", () => {
   it("takes a standalone run's back-link as given (it is stored in run_metadata.json, not in the tree)", () => {
     const tree = emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "host", agentDefinitionId: "assistant" }, createdAt: T0 });
     expect([...agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree)]).toEqual(["host"]);
-    expect([...agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, { ...delegatedFrom, coordinatingRun: { kind: "agent", runId: "lead_a" } })].sort()).toEqual(["host", "lead_a"]);
+    expect([...agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, { ...delegatedFrom, delegatingRun: { kind: "agent", runId: "lead_a" } })].sort()).toEqual(["host", "lead_a"]);
   });
 });

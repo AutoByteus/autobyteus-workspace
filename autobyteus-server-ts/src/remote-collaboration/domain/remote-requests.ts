@@ -6,7 +6,7 @@ import type {
   RemoteRunSummary,
   RemoteStartedRunRef,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 
 /**
  * The inter-node contract (design § Contract Between Nodes; CM-12). Every request carries the envelope; every
@@ -45,7 +45,7 @@ export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;
 export type StartDelegatedRunRequest = RemoteEnvelope & Readonly<{
   address: string;
   delegator: Readonly<{ agentRunId: string }>;
-  coordinatingRun: TaskAgentCoordinatingRun;
+  delegatingRun: DelegatingRunRef;
   /**
    * The work and its Task (autobyteus-32 DS-002): the called node's Model Router is told the text; its decision records
    * name the Task. `taskId` is null when the caller creates the Task only after the start.
@@ -63,7 +63,7 @@ export type DeliverRemoteMessageRequest = RemoteEnvelope & Readonly<{
   kind: "work_packet" | "message";
   messageId?: string;
   sender: Readonly<{ agentRunId: string }>;
-  targetRoot: TaskAgentCoordinatingRun;
+  targetRoot: DelegatingRunRef;
   target: Readonly<{ agentRunId: string }>;
   content: string;
   messageType: string;
@@ -113,15 +113,15 @@ export type RunSummariesRequest = RemoteEnvelope & Readonly<{ runs: readonly Rem
 export type RunSummariesAnswer = Readonly<{ accepted: true; nodeId: string; runs: readonly RemoteRunSummary[] }> | RemoteRefusalAnswer;
 
 /** autobyteus-278: `targetRoot` is the run the caller's delegation started; `agentRunId` one of its own agents. */
-export type AgentProjectionRequest = RemoteEnvelope & Readonly<{ targetRoot: TaskAgentCoordinatingRun; agentRunId: string }>;
+export type AgentProjectionRequest = RemoteEnvelope & Readonly<{ targetRoot: DelegatingRunRef; agentRunId: string }>;
 export type AgentProjectionAnswer = Readonly<{ accepted: true; nodeId: string; projection: RemoteAgentProjection }> | RemoteRefusalAnswer;
 
 export type OwnerCommandRequest = RemoteEnvelope & Readonly<{
-  targetRoot: TaskAgentCoordinatingRun;
+  targetRoot: DelegatingRunRef;
   agentRunId: string;
   command: RemoteOwnerCommand;
 }>;
 export type OwnerCommandAnswer = Readonly<{ accepted: true; nodeId: string }> | RemoteRefusalAnswer;
 
 /** The first frame of an observation stream from the caller. */
-export type RunObservationOpening = RemoteEnvelope & Readonly<{ targetRoot: TaskAgentCoordinatingRun }>;
+export type RunObservationOpening = RemoteEnvelope & Readonly<{ targetRoot: DelegatingRunRef }>;

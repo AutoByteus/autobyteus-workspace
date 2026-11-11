@@ -78,7 +78,7 @@ describe("keys as the agent-facing Task ID (REQ-018, REQ-019; AC-020, AC-022)", 
   });
 
   it("a Temp task keeps its ID in update_task and gets no dependsOn; depends_on on it is refused", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     // A Task with no Project: no projectId, title, dependsOn or partOf (absent = none).
     expect((await tool("update_task", { task_id: taskId, description: "Temp revised" })).task).toEqual({ taskId, status: "TODO" });
@@ -91,7 +91,7 @@ describe("keys as the agent-facing Task ID (REQ-018, REQ-019; AC-020, AC-022)", 
     const id = await idOfKey(a.taskId);
     expect(await tasks.resolveAssignment("AutoByteus-1")).toEqual({ taskId: id, taskReference: "autobyteus-1", projectId, title: expect.any(String), description: "A", comments: [], referenceFiles: [] });
     expect((await tasks.resolveAssignment(id)).taskId).toBe(id);
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     await expect(tasks.resolveAssignment(temp)).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
     await expect(tasks.resolveAssignment("autobyteus-7")).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
@@ -128,7 +128,7 @@ describe("depends_on through the tools (REQ-020, AC-024, REC-008)", () => {
     const b = await create("B", { depends_on: [a.taskId] });
     const other = (await projects.createProject({ name: "Marketing" })).projectId;
     const foreign = (await tool("create_task", { project_id: other, title: "Foreign", description: "Foreign" })).task;
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     const before = await files();
     for (const depends_on of [[b.taskId], [foreign.taskId], [temp], ["autobyteus-77"], [a.taskId.toUpperCase().replace("AUTOBYTEUS", "nope")]]) {
@@ -152,7 +152,7 @@ describe("depends_on through the tools (REQ-020, AC-024, REC-008)", () => {
     const b = await create("B", { depends_on: [a.taskId] });
     expect((await tool("update_task", { task_id: b.taskId, status: "IN_PROGRESS" })).task.status).toBe("IN_PROGRESS");
     const saved = await tasks.resolveAssignment(b.taskId);
-    await expect(tasks.linkNewTaskExecution({ role: "assigned", taskId: saved.taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    await expect(tasks.linkNewTaskExecution({ role: "assigned", taskId: saved.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "worker" } })).resolves.toEqual({ taskId: saved.taskId });
   });
 });

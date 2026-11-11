@@ -1,6 +1,9 @@
 import path from "node:path";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { runIdentityOf, type TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
+import { bindDelegationTree, unbindDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
+import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { TaskExecutionResourceService } from "../projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../projects/stores/task-execution-resource-store.js";
 import { ProjectsLayout } from "../projects/stores/projects-layout.js";
@@ -21,13 +24,12 @@ import {
 } from "../projects/search/project-task-search-service.js";
 import { getEmbeddingIndex, shutdownEmbeddingIndex } from "../embeddings/embedding-index.js";
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
-import { bindOpenDelegatedRunSource, unbindOpenDelegatedRunSource } from "../run-history/store/open-delegated-run-source.js";
 import { bindClosedDelegatedRuns, unbindClosedDelegatedRuns } from "../run-history/services/closed-delegated-run-reader.js";
 
 /** The run links binding of the composed Task resources, released with them. */
 let projectRunLinks: Readonly<{ close(): void }> | null = null;
-/** The loaded Task records, bound as the tree stores' source of delegated runs (design D-1), released with them. */
-let openDelegatedRuns: TaskExecutionResourceService | null = null;
+/** The process `DelegationTree` (contract §2.6), built from the loaded Task records and released with them. */
+let delegationTree: DelegationTree | null = null;
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -51,27 +53,28 @@ const taskChangeMarks: ProjectChangeMarks = {
 export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   activeRootDirectory: ActiveCollaborationRootDirectory;
   appDataDir: string;
+  memoryDir: string;
 }>): Promise<TaskExecutionResourcePort> => {
   const adHocTasksLayout = new AdHocTasksLayout(path.join(deps.appDataDir, "ad-hoc-tasks"));
   const projectsLayout = new ProjectsLayout(path.join(deps.appDataDir, "projects"));
   const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasksLayout));
   await taskExecutionResources.load();
-  // Every composed tree read happens after this point; startup admission reads only a run's own parts (D-11).
-  if (openDelegatedRuns) unbindOpenDelegatedRunSource(openDelegatedRuns);
-  openDelegatedRuns = taskExecutionResources;
-  bindOpenDelegatedRunSource(taskExecutionResources);
+  // The relationships between runs, from the Task records (TC-11); kept current inside each Task's ordered change (AR-017).
+  // A run's agents are read from its own parts on the first need, never at startup (469 D-11).
+  if (delegationTree) unbindDelegationTree(delegationTree);
+  delegationTree = new DelegationTree(() => taskExecutionResources, () => new RunOwnAgentsReader(deps.memoryDir));
+  delegationTree.build();
+  taskExecutionResources.setEntriesListener(delegationTree);
+  bindDelegationTree(delegationTree);
   projectRunLinks?.close();
   projectRunLinks = await composeProjectRunLinks({ projectsLayout });
   const service = initializeProjectTaskServiceProcessInstance({
     taskExecutionResources,
     adHocTasks: new AdHocTaskStore(adHocTasksLayout),
-    requestRelease: (hostRoot, executions) =>
-      deps.activeRootDirectory.resolve(hostRoot)?.releaseTaskExecutions?.(executions) ?? null,
-    // A Task root's live status comes only from its hosting root; an inactive root answers offline.
-    workerStatus: (hostRoot, execution) => {
-      const root = deps.activeRootDirectory.resolve(hostRoot);
-      return root ? root.taskExecutionStatus?.(execution) ?? "offline" : null;
-    },
+    // DS-5: a closed Task's run stops in its own root, by its own identity; a run that is not active has nothing to stop.
+    requestRelease: (run) => deps.activeRootDirectory.resolve(runIdentityOf(run))?.stopForTaskClosure?.() ?? null,
+    // A Task root's live status comes from its own root; a run that is not active answers null (offline).
+    workerStatus: (run) => deps.activeRootDirectory.resolve(runIdentityOf(run))?.ownStatus?.() ?? null,
     searchCleanup: processProjectTaskSearchCleanup,
     changes: taskChangeMarks,
   });
@@ -83,7 +86,7 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   });
   // The `/ws/projects` feed: views are built from the services' committed state, after `load()`.
   // Readers of closed delegated runs (Team tab names, token totals) ask the same Task side (D-5, D-7).
-  bindClosedDelegatedRuns(service);
+  bindClosedDelegatedRuns(delegationTree);
   getProjectChangePublisher().bind({
     readProject: (projectId) => getProjectService().getProject(projectId),
     readTask: (location) => service.readTaskChangeView(location),
@@ -96,9 +99,8 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
 export const releaseProjectTaskExecutionResources = (port: TaskExecutionResourcePort): void => {
   projectRunLinks?.close();
   projectRunLinks = null;
-  if (openDelegatedRuns) unbindOpenDelegatedRunSource(openDelegatedRuns);
-  openDelegatedRuns = null;
-  unbindClosedDelegatedRuns(port);
+  if (delegationTree) { unbindDelegationTree(delegationTree); unbindClosedDelegatedRuns(delegationTree); }
+  delegationTree = null;
   getProjectChangePublisher().unbind();
   releaseProjectTaskSearchService();
   void shutdownEmbeddingIndex().catch((error: unknown) => console.warn("EMBEDDING_INDEX_SHUTDOWN_FAILED", error));

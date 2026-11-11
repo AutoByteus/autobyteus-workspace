@@ -1,6 +1,7 @@
 import type { RemoteRunLinksOptions } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteTeamMember } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
+import { peerDelegatedFromOf } from "../../run-history/store/agent-run-metadata-types.js";
 
 /**
  * The members of a Team run a peer started (autobyteus-247): every configured agent of its (flat) layout.
@@ -16,7 +17,8 @@ export const peerStartedTeamMembers = (tree: TeamRunExecutionTreeSnapshot): read
  * the stored-link check before a restore (N-303) build them the same way.
  */
 export const teamRunRemoteLinks = (getTree: () => TeamRunExecutionTreeSnapshot): Omit<RemoteRunLinksOptions, "channel"> => {
-  const delegatedFrom = getTree().delegatedFrom;
+  // Only a team run a peer started has a delegator endpoint on a peer (AR-016, `isPeerStarted`).
+  const delegatedFrom = peerDelegatedFromOf(getTree());
   return Object.freeze({
     remoteRuns: () => getTree().rootTeam.remoteTaskExecutions ?? [],
     backLink: delegatedFrom

@@ -2,7 +2,7 @@ import type {
   RemoteTaskAgentExecution,
   RemoteTaskTeamExecution,
 } from "../../../run-history/domain/run-execution-tree-shared-records.js";
-import type { DelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
+import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
@@ -64,7 +64,7 @@ export type DelegatedTeamEndpoint = RemoteEndpointCore & Readonly<{
  */
 export type DelegatorEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegator";
-  delegatedFrom: DelegatedFrom;
+  delegatedFrom: PeerDelegatedFrom;
   /** N-6: the work packet comes from the delegator on its node, for a paired agent (the host, or the coordinator). */
   admitsWorkPacket(fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string): boolean;
 }>;
@@ -131,7 +131,7 @@ export const delegatedTeamEndpoints = (link: RemoteTaskTeamExecution): readonly 
   })));
 };
 
-export const delegatorEndpoint = (pairedAgentRunIds: readonly string[], delegatedFrom: DelegatedFrom): DelegatorEndpoint => {
+export const delegatorEndpoint = (pairedAgentRunIds: readonly string[], delegatedFrom: PeerDelegatedFrom): DelegatorEndpoint => {
   const rule = pairRule(pairedAgentRunIds);
   return Object.freeze({
     kind: "delegator" as const,
@@ -141,8 +141,8 @@ export const delegatorEndpoint = (pairedAgentRunIds: readonly string[], delegate
     displayName: delegatedFrom.delegatorAgentRunId,
     refusals: pairRefusals,
     ownershipChain: () => Object.freeze([]),
-    // The delegating node receives it in the coordinating run it named at start.
-    transmission: (message: CollaborationCommunicationMessage) => messageRequest(delegatedFrom.nodeId, delegatedFrom.coordinatingRun, message),
+    // The delegating node receives it in the delegating run it named at start.
+    transmission: (message: CollaborationCommunicationMessage) => messageRequest(delegatedFrom.nodeId, delegatedFrom.delegatingRun, message),
     admitsWorkPacket: (fromNodeId: string, senderAgentRunId: string, targetAgentRunId: string) =>
       fromNodeId === delegatedFrom.nodeId && senderAgentRunId === delegatedFrom.delegatorAgentRunId && rule.allowsTarget(targetAgentRunId),
   });

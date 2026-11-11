@@ -101,7 +101,7 @@ export type TaskRootStatus = "running" | "initializing" | "idle" | "error" | "of
 /**
  * A Task's root: its latest `assigned` entry, i.e. the one agent or team the Task was handed to.
  * `status` is the worker's own live status; it is `offline` when the assignment is closed (Task DONE or CANCELLED),
- * failed to start, or its hosting run is not active.
+ * failed to start, or its own run is not active.
  */
 export interface TaskRootView {
   kind: "agent" | "team";
@@ -110,7 +110,8 @@ export interface TaskRootView {
   /** The agent run, or the team's coordinator: the run that opens it. */
   ingressAgentRunId: string;
   teamRunId: string | null;
-  hostRoot: { kind: "agent" | "agent_team" | "agent_org"; runId: string };
+  /** The run that delegated it (one hop): the Task page opens this run's view with the worker's row selected. */
+  delegatingRun: { kind: "agent" | "agent_team" | "agent_org"; runId: string };
   start: "starting" | "started" | "failed";
   startError: { code: string; message: string } | null;
   closed: boolean;

@@ -1,5 +1,5 @@
 import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
-import type { TaskAgentCoordinatingRun } from "../../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteAgentLaunch } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
 
@@ -10,7 +10,7 @@ export type PeerNodeRef = Readonly<{ nodeId: string; name: string }>;
 export type RemoteChannelRefusal = Readonly<{ accepted: false; code: string; message: string }>;
 
 /** The root that receives a message on the other node: a standalone, Team or Org run, by its run ID. */
-export type RemoteTargetRoot = TaskAgentCoordinatingRun;
+export type RemoteTargetRoot = DelegatingRunRef;
 
 /** A member of a Team run the peer started: its address and the run ID the peer allocated. */
 export type RemoteStartedTeamMember = Readonly<{ address: string; agentRunId: string }>;
@@ -93,7 +93,7 @@ export interface RemoteRunChannel {
     /** The target's catalog address on that node. */
     address: string;
     delegatorAgentRunId: string;
-    coordinatingRun: TaskAgentCoordinatingRun;
+    delegatingRun: DelegatingRunRef;
     /** The work and its Task: the peer's Model Router is told it (DS-002). */
     work: DelegationWork;
   }>): Promise<RemoteStartedRun>;

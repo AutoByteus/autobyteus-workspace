@@ -1,5 +1,5 @@
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import type { TaskExecutionStopResult } from "../task/task-execution-resource-port.js";
+import type { TaskExecutionReleaseResult, TaskExecutionStopResult } from "../task/task-execution-resource-port.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
@@ -32,6 +32,13 @@ export interface ActiveRootMessageBoundary {
   taskExecutionStatus?(reference: TaskExecutionReference): AgentExecutionStatus;
   /** Stops exactly these closed Task agent runs hosted in this root. */
   releaseTaskExecutions?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]>;
+  /**
+   * DS-5: this run's Task closed and it holds no other open Task: it stops its own parts in its own gate, as for a
+   * Stop, and stays restorable. `stopped` false with the reason when it could not.
+   */
+  stopForTaskClosure?(): Promise<TaskExecutionReleaseResult>;
+  /** This run's own live status (an agent run's agent; a team run's folded members), for the Task page; wakes nothing. */
+  ownStatus?(): AgentExecutionStatus;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
   /** The coordinator agent run of this root's Team copy with that team run ID; `null` when it hosts none. Reads only. */
   teamCoordinatorOf?(teamRunId: string): string | null;

@@ -1,3 +1,4 @@
+import { isDelegated, isPeerStarted, peerDelegatedFromOf } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -159,20 +160,37 @@ describe("AgentRunMetadataStore", () => {
     expect(await fs.readFile(metadataPath)).toEqual(beforeRead);
   });
 
-  it("reads and writes a remote run's delegatedFrom back-link exactly; a malformed one makes the file unreadable", async () => {
+  it("reads and writes a delegated run's own delegatedFrom, address and launchSource exactly; a malformed delegatedFrom makes the file unreadable (contract §2.2)", async () => {
     const store = new AgentRunMetadataStore(memoryDir);
-    const delegatedFrom = { nodeId: "srv_peer_a", coordinatingRun: { kind: "agent_team" as const, runId: "team_a" }, delegatorAgentRunId: "agent_a1" };
-    await store.writeMetadata("run-1", buildMetadata({ memoryDir: path.join(memoryDir, "agents", "run-1"),
-      delegatedFrom: { ...delegatedFrom, extra: "ignored" } as never }));
+    // A local delegated run (D2): no nodeId.
+    const local = { delegatingRun: { kind: "agent_team" as const, runId: "marketing_team_5a00" }, delegatorAgentRunId: "copywriter_77c1" };
+    await store.writeMetadata("run-1", buildMetadata({ memoryDir: path.join(memoryDir, "agents", "run-1"), address: "/image_maker" as never,
+      launchSource: { origin: "agent_default", fallbacks: [] } as never, delegatedFrom: { ...local, extra: "ignored" } as never }));
     const raw = JSON.parse(await fs.readFile(store.getMetadataPath("run-1"), "utf-8")) as Record<string, unknown>;
-    expect(raw.delegatedFrom).toEqual(delegatedFrom);
-    expect((await store.readMetadata("run-1"))?.delegatedFrom).toEqual(delegatedFrom);
-    // A standalone run without the section reads without it.
+    expect(raw).toMatchObject({ address: "/image_maker", launchSource: { origin: "agent_default", fallbacks: [] }, delegatedFrom: local });
+    const read = (await store.readMetadata("run-1"))!;
+    expect(read.delegatedFrom).toEqual(local);
+    expect([isDelegated(read), isPeerStarted(read), peerDelegatedFromOf(read)]).toEqual([true, false, null]);
+    // A run a peer started (D7): nodeId present.
+    const peer = { delegatingRun: { kind: "agent" as const, runId: "manager" }, delegatorAgentRunId: "manager", nodeId: "srv_peer_a" };
+    await store.writeMetadata("run-3", buildMetadata({ runId: "run-3", memoryDir: path.join(memoryDir, "agents", "run-3"), delegatedFrom: peer }));
+    const peerRun = (await store.readMetadata("run-3"))!;
+    expect([isDelegated(peerRun), isPeerStarted(peerRun), peerDelegatedFromOf(peerRun)]).toEqual([true, true, peer]);
+    // An old run without a recorded delegator (contract E6): only delegatingRun.
+    await store.writeMetadata("run-4", buildMetadata({ runId: "run-4", memoryDir: path.join(memoryDir, "agents", "run-4"),
+      delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager" } } }));
+    expect((await store.readMetadata("run-4"))?.delegatedFrom).toEqual({ delegatingRun: { kind: "agent", runId: "manager" } });
+    // A run the user started reads without the section, and without an address (derived: "not fixed yet").
     await store.writeMetadata("run-2", buildMetadata({ runId: "run-2", memoryDir: path.join(memoryDir, "agents", "run-2") }));
-    expect(await store.readMetadata("run-2")).not.toHaveProperty("delegatedFrom");
+    const plain = (await store.readMetadata("run-2"))!;
+    expect(plain).not.toHaveProperty("delegatedFrom");
+    expect(plain).not.toHaveProperty("address");
+    expect([isDelegated(plain), isPeerStarted(plain)]).toEqual([false, false]);
 
-    await fs.writeFile(store.getMetadataPath("run-1"), JSON.stringify({ ...raw, delegatedFrom: { nodeId: "srv_peer_a" } }));
-    const state = await store.readMetadataState("run-1");
-    expect(state.kind).toBe("unreadable");
+    for (const malformed of [{ nodeId: "srv_peer_a" }, { delegatingRun: { kind: "agent", runId: "m" }, nodeId: "n" },
+      { nodeId: "n", coordinatingRun: { kind: "agent", runId: "m" }, delegatorAgentRunId: "d" }]) {
+      await fs.writeFile(store.getMetadataPath("run-1"), JSON.stringify({ ...raw, delegatedFrom: malformed }));
+      expect((await store.readMetadataState("run-1")).kind).toBe("unreadable");
+    }
   });
 });

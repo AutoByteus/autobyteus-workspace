@@ -46,7 +46,7 @@ describe("Project Task local context files", () => {
     layout = new ProjectsLayout(path.join(appData, "projects"));
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     tasks = new ProjectTaskService({ store, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
       adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) });
     await tasks.load();
@@ -187,18 +187,18 @@ describe("Project Task local context files", () => {
     const notes = await source("notes.md");
     await tasks.updateTaskById({ taskId: task.taskId, description: "Revised", status: "IN_PROGRESS", localContextFiles: [notes] });
     expect(await taskJson(task.taskId)).toMatchObject({ description: "Revised", status: "IN_PROGRESS", contextFiles: [expect.anything(), expect.objectContaining({ displayName: "notes.md" })] });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
     const done = await tasks.updateTaskById({ taskId: task.taskId, status: "DONE", localContextFiles: [await source("result.txt")] });
     expect(done).toMatchObject({ status: "DONE", attachedContextFiles: [expect.objectContaining({ displayName: "result.txt" })] });
     await releases.settled();
     expect((await taskJson(task.taskId)).contextFiles).toHaveLength(3);
     expect(tasks.isOpen({ agentRunId: "worker" })).toBe(false);
-    expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker" }]);
+    expect(release).toHaveBeenCalledWith({ agentRunId: "worker" });
   });
 
   it("changes nothing, including no DONE closure, when a patch names an invalid file (AC-005)", async () => {
     const task = await uiTask();
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
     const before = await taskJson(task.taskId), entries = await contextEntries(task.taskId);
     const missing = path.join(sources, "gone.png");
     await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Never", status: "DONE", localContextFiles: [await source("ok.md"), missing] }))
@@ -216,7 +216,7 @@ describe("Project Task local context files", () => {
   });
 
   it("rejects files on a Task with no Project before any write; its text/status patch still works (AC-007)", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot, execution: { agentRunId: "copy" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "delegator" }, execution: { agentRunId: "copy" },
       adHocTask: { description: "Ad-hoc", referenceFiles: [] } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE", localContextFiles: [await source("notes.md")] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: "Context files can be attached only to Project Tasks; this Task has no Project." });

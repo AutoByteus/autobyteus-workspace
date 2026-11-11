@@ -41,7 +41,7 @@ export class TeamRunHistoryService {
   private readonly manager: AgentTeamRunManager;
   private readonly live: TeamRunLiveProjectionService;
   private readonly layout: AgentMemoryLayout;
-  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
 
   constructor(memoryDir: string, options: {
@@ -50,7 +50,7 @@ export class TeamRunHistoryService {
     teamRunManager?: AgentTeamRunManager;
     liveProjectionService?: TeamRunLiveProjectionService;
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
-    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
     /** A run's last activity over its agents. */
     lastActivity?: Pick<RunLastActivityReader, "forTeamRun">;
   } = {}) {
@@ -109,7 +109,7 @@ export class TeamRunHistoryService {
     const result = await this.catalog.deleteTeamRun(teamRunId);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.adHocTasks ?? getProjectTaskService())
-      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }));
+      .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }));
     return result;
   }
 

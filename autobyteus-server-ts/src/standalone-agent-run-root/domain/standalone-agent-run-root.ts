@@ -73,7 +73,7 @@ import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/re
 import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
-import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
+import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { StandaloneHostIdleShutdown } from "../services/standalone-host-idle-shutdown.js";
@@ -144,8 +144,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       throw new Error("Agent root authorities do not correlate to one exact host run.");
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
+    const peerDelegatedFrom = peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom });
     this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
-      backLink: options.delegatedFrom ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: options.delegatedFrom } : null,
+      // Only a run a peer started has a delegator endpoint on a peer (AR-016, `isPeerStarted`).
+      backLink: peerDelegatedFrom ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peerDelegatedFrom } : null,
       channel: options.remoteRunChannel });
     const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel });
     this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.remoteTaskExecutions ?? [],

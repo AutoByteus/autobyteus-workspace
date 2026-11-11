@@ -61,20 +61,20 @@ describe("Projects change publication (Publication Contract, services)", () => {
     expect(emitted).toEqual([expect.objectContaining({ type: "project_upserted", project: expect.objectContaining({ projectId, taskCount: 0 }) })]);
     emitted.length = 0;
     const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/release_writer", hostRoot, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/release_writer", execution: worker });
     await tasks.markStarted(worker);
     await publisher.idle();
     const upserts = emitted.filter((m) => m.type === "task_upserted");
     expect(upserts.at(-1)).toMatchObject({ scope: { kind: "project", projectId }, task: { taskId, status: "TODO", root: {
       kind: "agent", recipientAddress: "/release_writer", ingressAgentRunId: "worker", teamRunId: null,
-      hostRoot: { kind: "agent", runId: "manager-root" }, start: "started", startError: null, closed: false, status: "idle" } } });
+      delegatingRun: { kind: "agent", runId: "manager-root" }, start: "started", startError: null, closed: false, status: "idle" } } });
     expect(emitted.filter((m) => m.type === "project_upserted").at(-1)).toMatchObject({ project: { taskCount: 1, openTaskCount: 1 } });
   });
 
   it("DONE emits views in commit order, ending with the DONE view, an Offline root and fresh counts (P-002)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
     const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w", execution: worker });
     await tasks.markStarted(worker);
     await publisher.idle(); emitted.length = 0;
     await tasks.updateTaskById({ taskId, status: "DONE" });
@@ -90,40 +90,40 @@ describe("Projects change publication (Publication Contract, services)", () => {
   it("the first status after a wake is read after the dispatch: Running, not the transient Initializing (P-001)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
     const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w", execution: worker });
     await tasks.markStarted(worker);
     await publisher.idle(); emitted.length = 0;
     // Mirrors the handle: the run's first AGENT_STATUS is dispatched (synchronously reaching the
     // Task side) while the "initializing" overlay is still set; the overlay clears right after.
     liveStatus = "initializing";
-    tasks.taskExecutionsStatusChanged(hostRoot, [worker]);
+    tasks.taskExecutionsStatusChanged([worker]);
     liveStatus = "running";
     await publisher.idle();
     expect(emitted).toEqual([{ type: "task_worker_status", scope: { kind: "project", projectId }, taskId, status: "running" }]);
   });
 
   it("status changes are published only for a Task's root (its latest assignment), never for helpers or older roots", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/a", hostRoot, execution: { agentRunId: "first" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/a", execution: { agentRunId: "first" },
       adHocTask: { description: "Review it", referenceFiles: [] } });
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "first" }, hostRoot, execution: { agentRunId: "helper" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "first" }, delegatorAgentRunId: "first" }, execution: { agentRunId: "helper" } });
     await publisher.idle(); emitted.length = 0;
-    tasks.taskExecutionsStatusChanged(hostRoot, [{ agentRunId: "helper" }, { agentRunId: "unknown" }]);
+    tasks.taskExecutionsStatusChanged([{ agentRunId: "helper" }, { agentRunId: "unknown" }]);
     await publisher.idle();
     expect(emitted).toEqual([]);
-    tasks.taskExecutionsStatusChanged(hostRoot, [{ agentRunId: "first" }]);
+    tasks.taskExecutionsStatusChanged([{ agentRunId: "first" }]);
     await publisher.idle();
     expect(emitted).toEqual([{ type: "task_worker_status", scope: { kind: "no_project" }, taskId, status: "idle" }]);
   });
 
   it("Temp tasks: creation, DONE and deletion with their chat are published in the no-project scope (AC-019..021)", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/a", hostRoot, execution: worker,
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/a", execution: worker,
       adHocTask: { description: "Review it", referenceFiles: ["/tmp/plan.md"] } });
     await publisher.idle();
     expect(emitted.at(-1)).toMatchObject({ type: "task_upserted", scope: { kind: "no_project" }, task: { taskId, status: "TODO", referenceFiles: ["/tmp/plan.md"] } });
     await tasks.updateTaskById({ taskId, status: "DONE" });
     await publisher.idle();
     expect(emitted.at(-1)).toMatchObject({ type: "task_upserted", task: { status: "DONE", root: { closed: true, status: "offline" } } });
-    await tasks.deleteAdHocTasksHostedBy(hostRoot);
+    await tasks.deleteAdHocTasksDelegatedFrom(hostRoot);
     await publisher.idle();
     expect(emitted.at(-1)).toEqual({ type: "task_removed", scope: { kind: "no_project" }, taskId });
     expect(types()).not.toContain("project_upserted");
@@ -132,7 +132,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
   it("load() publishes nothing; only committed writes after it do (AR-003)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });
     const { taskId } = await tasks.createTask({ projectId, title: "Draft notes", description: "Draft notes" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w", execution: worker });
     await publisher.idle(); emitted.length = 0;
     tasks = await boot();
     await publisher.idle();

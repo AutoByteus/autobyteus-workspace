@@ -45,7 +45,7 @@ export class ProjectTaskContextChangesInput {
 }
 
 @ObjectType()
-export class TaskRootHost {
+export class TaskRootDelegatingRun {
   @Field(() => String) kind!: string;
   @Field(() => String) runId!: string;
 }
@@ -61,7 +61,7 @@ export class TaskRoot {
   @Field(() => String, { nullable: true }) recipientAddress!: string | null;
   @Field(() => String) ingressAgentRunId!: string;
   @Field(() => String, { nullable: true }) teamRunId!: string | null;
-  @Field(() => TaskRootHost) hostRoot!: TaskRootHost;
+  @Field(() => TaskRootDelegatingRun) delegatingRun!: TaskRootDelegatingRun;
   @Field(() => String) start!: string;
   @Field(() => TaskRootStartError, { nullable: true }) startError!: TaskRootStartError | null;
   @Field(() => Boolean) closed!: boolean;

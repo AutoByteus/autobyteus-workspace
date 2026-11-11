@@ -27,7 +27,9 @@ describe("which stopped runs may switch their agent runtime (REQ-013)", () => {
   it("a started standalone Agent run may; a prepared run, a delegated copy, an application-owned and a system-owned run may not", () => {
     expect(canSwitchRuntime(stopped())).toBe(true);
     expect(canSwitchRuntime(stopped({ startedAt: null, preparedAt: "2026-10-29T08:00:00.000Z" }))).toBe(false);
-    expect(canSwitchRuntime(stopped({ delegatedFrom: { nodeId: "n", coordinatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d" } }))).toBe(false);
+    // AR-016: only a run a peer started keeps its runtime; a local delegated run switches like any run (REQ-006, TC-5).
+    expect(canSwitchRuntime(stopped({ delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d", nodeId: "n" } }))).toBe(false);
+    expect(canSwitchRuntime(stopped({ delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d" } }))).toBe(true);
     expect(canSwitchRuntime(stopped({ applicationExecutionContext: { applicationId: "app" } as never }))).toBe(false);
     expect(canSwitchRuntime(stopped({ systemRunOwner: "model_router" }))).toBe(false);
   });
@@ -83,7 +85,7 @@ describe("StandaloneStoppedRunSelectionUpdater (AC-001)", () => {
 
   it.each([
     ["a prepared run", stopped({ startedAt: null, preparedAt: "2026-10-29T08:00:00.000Z" })],
-    ["a delegated copy", stopped({ delegatedFrom: { nodeId: "n", coordinatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d" } })],
+    ["a run a peer started", stopped({ delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d", nodeId: "n" } })],
     ["an application-owned run", stopped({ applicationExecutionContext: { applicationId: "app" } as never })],
     ["a system-owned run", stopped({ systemRunOwner: "model_router" })],
   ])("rejects a switch for %s, changes nothing and says why", async (_name, metadata) => {

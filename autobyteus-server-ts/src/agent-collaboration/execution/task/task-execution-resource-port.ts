@@ -9,31 +9,69 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
 /** Refusal text when someone other than the assigner tries to continue a closed task agent (wording §7.3). */
 export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This task agent's Task is closed. Only the agent that assigned the Task can continue it: "
   + "set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).";
-export type TaskExecutionRole = "assigned" | "delegated" | "broughtIn";
+/**
+ * `assigned`: the run was given this Task as its own work by an agent that works on no Task. `subWork`: a run working on
+ * this Task handed part of it to this run. `broughtIn`: older records only, never written (contract §2.1).
+ */
+export type TaskExecutionRole = "assigned" | "subWork" | "broughtIn";
+/**
+ * The one record of a delegation on this node (contract §2.1, P2, P3): the run the delegator is a part of, one hop, and
+ * the delegator. Stored in the delegated run's Task entry; the same on every entry of one run.
+ */
+export type RunDelegatedFrom = Readonly<{ delegatingRun: RootExecutionIdentity; delegatorAgentRunId: string }>;
+/** The Task an agent works on: its run's current Task entry (get_project_task's read scope, CM-6). */
 export type TaskExecutionOwner = Readonly<{ taskId: string; execution: TaskExecutionReference; open: boolean }>;
-/** A closed copy of a host root and the agent run a message enters it through (the Agent, or a Team's coordinator). */
-export type ClosedTaskExecution = Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }>;
+/** A member of a team run on a peer node, as the peer answered at the delegation (only a peer's run). */
+export type PeerRunMember = Readonly<{ address: string; agentRunId: string }>;
+/**
+ * What this node keeps of a run on a peer node (contract §2.1), under the stored names (DESIGN.md rule 10): the node,
+ * and for a team its members. Absent `nodeId` means this node.
+ */
+export type PeerRunFields = Readonly<{ nodeId?: string; members?: readonly PeerRunMember[] }>;
 /** The text of a Task with no Project that an assignment creates (description-only delegation by an unowned sender). */
 export type AdHocTaskContent = Readonly<{ description: string; referenceFiles: readonly string[] }>;
 /** What an assignment joins: an existing Task, or a new Task with no Project created by the link itself. */
 export type TaskExecutionAssignmentTarget =
   | Readonly<{ taskId: string; adHocTask?: never }>
   | Readonly<{ adHocTask: AdHocTaskContent; taskId?: never }>;
+/**
+ * A new delegated run's first entry. `subWork` joins the newest open Task of the delegating run (CM-6). A peer's run
+ * carries its node (and members), and its address on every role.
+ */
 export type NewTaskExecutionLinkInput = Readonly<{
-  hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
-}> & (
-  | (Readonly<{ role: "assigned"; assignedBy: string; /** The address delegated to (the root's display name). */ recipientAddress: string }>
+  delegatedFrom: RunDelegatedFrom; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
+}> & PeerRunFields & (
+  | (Readonly<{ role: "assigned"; /** The address delegated to (the run's display name). */ recipientAddress: string }>
     & TaskExecutionAssignmentTarget)
-  | Readonly<{ role: "delegated"; creator: TaskExecutionReference }>
+  | Readonly<{ role: "subWork"; recipientAddress?: string }>
 );
 
-/**
- * Assigning a Task to an existing copy (DS-002): the copy found in the sender's root, with its host
- * root and (for a Team) its coordinator, and the run asking for it.
- */
+/** A follow-up Task for a run (DS-6): the run, (for a team) its coordinator, the Task and who gives it. */
 export type ExistingTaskExecutionAssignInput = Readonly<{
-  hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string; taskId: string; assignedBy: string;
+  delegatedFrom: RunDelegatedFrom; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string; taskId: string;
 }>;
+
+/**
+ * One run's last entry in one Task, as the Task side holds it in memory: what `DelegationTree` is built from (contract
+ * §2.6). A run has at most one open entry per Task, and only its last entry can be open.
+ */
+export type TaskRunEntry = Readonly<{
+  taskId: string;
+  role: TaskExecutionRole;
+  delegatedFrom: RunDelegatedFrom;
+  run: TaskExecutionReference;
+  /** The run's agent a message enters it through: the agent run itself, or a team's coordinator. */
+  entryAgentRunId: string;
+  open: boolean;
+  start: "starting" | "started" | "failed";
+  linkedAt: string;
+  recipientAddress?: string;
+  nodeId?: string;
+  members?: readonly PeerRunMember[];
+}>;
+
+/** Told synchronously after each committed change of a Task's entries, inside that Task's ordered change (AR-017). */
+export interface TaskEntriesListener { entriesChanged(taskId: string): void }
 
 export interface TaskExecutionResourcePort {
   /**
@@ -59,22 +97,12 @@ export interface TaskExecutionResourcePort {
   projectFolderForNewCopy(projectId: string): Promise<string | null>;
   markStarted(execution: TaskExecutionReference): Promise<void>;
   markFailed(execution: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;
-  /**
-   * Owner of a containment chain (innermost first): the innermost element that belongs to a Task
-   * decides, by its current Task (the copy's open entry, else its latest one). `null` when no element
-   * belongs to a Task and all Task resource data is readable; an unknown chain while any Task's data is
-   * unreadable rejects TASK_AGENT_RESOURCES_UNAVAILABLE.
-   */
-  ownerOf(chain: readonly TaskExecutionReference[]): TaskExecutionOwner | null;
-  /** The copy's current Task entry is open. */
+  /** Every readable Task that has entries (a damaged Task is left out; `load()` reported it). Throws before the records are loaded. */
+  taskIdsWithEntries(): readonly string[];
+  /** The Task's entries, each run's last one, in link order; `[]` when the Task has none, was deleted, or cannot be read. */
+  entriesOf(taskId: string): readonly TaskRunEntry[];
+  /** The authority for the gate-head re-check (AR-017): the run's current Task entry is open. */
   isOpen(execution: TaskExecutionReference): boolean;
-  /** Every copy hosted by this root whose current Task entry is closed; an unreadable Task contributes none. Never throws. */
-  closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
-  /**
-   * The closed copy of this root named by its ingress agent run (the Agent, or a Team's coordinator) or by its reference,
-   * from the Task records; `null` when the root has no such closed copy. Synchronous; never throws.
-   */
-  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference): ClosedTaskExecution | null;
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */
   assertResourceDataReadable(): void;
   /**
@@ -107,11 +135,20 @@ export interface TaskExecutionResourcePort {
    */
   assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void>;
   /**
-   * The live status of these task executions of a root may have changed (an agent in them changed
-   * status, or the root stopped admitting). Synchronous; never throws and never reads files.
+   * The live status of these delegated runs may have changed (an agent in them changed status, or the run stopped).
+   * Synchronous; never throws and never reads files.
    */
-  taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void;
+  taskExecutionsStatusChanged(references: readonly TaskExecutionReference[]): void;
 }
+
+/** The run of a Task entry as the run's own identity (an agent run, or a team run). */
+export const runIdentityOf = (run: TaskExecutionReference): RootExecutionIdentity => "agentRunId" in run
+  ? Object.freeze({ rootSubjectKind: "agent" as const, rootRunId: run.agentRunId })
+  : Object.freeze({ rootSubjectKind: "agent_team" as const, rootRunId: run.teamRunId });
+/** A run identity as a Task entry's run; `null` for an org run, which is never delegated to. */
+export const runReferenceOf = (run: RootExecutionIdentity): TaskExecutionReference | null =>
+  run.rootSubjectKind === "agent" ? Object.freeze({ agentRunId: run.rootRunId })
+    : run.rootSubjectKind === "agent_team" ? Object.freeze({ teamRunId: run.rootRunId }) : null;
 
 /** A Task's key and Project (both null for a Task with no Project) and its title (else its description's first line). */
 export type DelegatedTaskIdentityView = Readonly<{ taskKey: string | null; projectId: string | null; title: string }>;
@@ -120,10 +157,12 @@ export type DelegatedTaskIdentityView = Readonly<{ taskKey: string | null; proje
 export type TaskExecutionReopenInput = Readonly<{ execution: TaskExecutionReference; requestedBy: string }>;
 export type TaskExecutionReopenResult = Readonly<{ taskId: string; reopened: boolean }>;
 
-/** Task → runtime: stop exactly these closed agent runs in one host root. `null`: the root is not active. */
-export type TaskExecutionReleaseRequest = (hostRoot: RootExecutionIdentity, executions: readonly TaskExecutionReference[])
-  => Promise<readonly TaskExecutionStopResult[]> | null;
-/** The release of a run this root hosts: `stopped`, or why not. */
+/**
+ * Task → runtime (DS-5): stop this run of a closed Task, by the run's own identity, in its own root. `null`: the run is
+ * not active, so there is nothing to stop.
+ */
+export type TaskExecutionReleaseRequest = (run: TaskExecutionReference) => Promise<TaskExecutionReleaseResult> | null;
+/** The closure stop of a run: `stopped`, or why not. */
 export type TaskExecutionReleaseResult = Readonly<{
   execution: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;
 }>;

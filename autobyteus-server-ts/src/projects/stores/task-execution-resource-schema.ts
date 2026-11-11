@@ -3,14 +3,16 @@ import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-cont
 import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain/task-execution-resources.js";
 
 /**
- * Physical shape of `agent_run_resources.json`. This module is the only one that knows the
- * persisted names: `agentRunResources` (in memory `executionResources`), `agentRun` (in memory
- * `execution`) and `coordinatorAgentRunId` (in memory `teamCoordinatorAgentRunId`).
+ * Physical shape of `agent_run_resources.json` (contract §2.1). This module is the only one that knows the persisted
+ * names: `agentRunResources` (in memory `executionResources`), `agentRun` (in memory `execution`),
+ * `coordinatorAgentRunId` (in memory `teamCoordinatorAgentRunId`). The fields this release adds (`delegatedFrom`,
+ * `nodeId`, `members`) have the same names in memory (DESIGN.md rule 10; the older mappings are FU-007).
  */
-type StoredHostRoot = { kind: RootSubjectKind; runId: string };
+type StoredRun = { kind: RootSubjectKind; runId: string };
+type StoredDelegatedFrom = { delegatingRun: StoredRun; delegatorAgentRunId: string };
 type StoredAgentRun = { kind: "agent"; agentRunId: string } | { kind: "team"; teamRunId: string; coordinatorAgentRunId: string };
 
-const ROLES = new Set(["assigned", "delegated", "broughtIn"]);
+const ROLES = new Set(["assigned", "subWork", "broughtIn"]);
 const STARTS = new Set(["starting", "started", "failed"]);
 const ROOT_KINDS = new Set(["agent", "agent_team", "agent_org"]);
 const text = (value: unknown): value is string => typeof value === "string" && value.length > 0;
@@ -22,20 +24,31 @@ const parseEntry = (value: unknown, index: number): TaskExecutionResource => {
   if (!v || typeof v !== "object") invalid(`${at} is not an object`);
   const role = v!.role;
   if (typeof role !== "string" || !ROLES.has(role)) invalid(`${at}.role is invalid`);
-  const assigned = role === "assigned";
-  if (assigned !== text(v!.assignedBy) || (!assigned && v!.assignedBy !== undefined)) invalid(`${at}.assignedBy must exist only for assigned`);
-  // Optional (absent before it was recorded); nonblank and only on assigned when present.
-  if (v!.recipientAddress !== undefined && (!assigned || !text(v!.recipientAddress) || !v!.recipientAddress.trim())) {
-    invalid(`${at}.recipientAddress must be a nonblank address on assigned only`);
+  const from = v!.delegatedFrom as Partial<StoredDelegatedFrom> | null;
+  const delegating = from?.delegatingRun as Partial<StoredRun> | undefined;
+  if (!from || typeof from !== "object" || !delegating || !ROOT_KINDS.has(delegating.kind as string) || !text(delegating.runId)
+    || !text(from.delegatorAgentRunId) || Object.keys(from).length !== 2 || Object.keys(delegating).length !== 2) invalid(`${at}.delegatedFrom is invalid`);
+  const peer = v!.nodeId !== undefined;
+  if (peer && !text(v!.nodeId)) invalid(`${at}.nodeId is invalid`);
+  // Optional (absent before it was recorded); nonblank, on assigned and on a peer's run.
+  if (v!.recipientAddress !== undefined && ((role !== "assigned" && !peer) || !text(v!.recipientAddress) || !v!.recipientAddress.trim())) {
+    invalid(`${at}.recipientAddress must be a nonblank address on assigned or a peer's run only`);
   }
-  const host = v!.hostRoot as Partial<StoredHostRoot> | null;
-  if (!host || !ROOT_KINDS.has(host.kind as string) || !text(host.runId)) invalid(`${at}.hostRoot is invalid`);
   const run = v!.agentRun as Record<string, unknown> | null;
   let execution: TaskExecutionResource["execution"], teamCoordinatorAgentRunId: string | undefined;
   if (run?.kind === "agent" && text(run.agentRunId)) execution = { agentRunId: run.agentRunId };
   else if (run?.kind === "team" && text(run.teamRunId) && text(run.coordinatorAgentRunId)) {
     execution = { teamRunId: run.teamRunId }; teamCoordinatorAgentRunId = run.coordinatorAgentRunId;
   } else return invalid(`${at}.agentRun is invalid`);
+  let members: { address: string; agentRunId: string }[] | undefined;
+  if (v!.members !== undefined) {
+    if (!peer || !teamCoordinatorAgentRunId || !Array.isArray(v!.members)) invalid(`${at}.members must be a list on a peer's team run only`);
+    members = (v!.members as unknown[]).map((member, index) => {
+      const m = member as Record<string, unknown> | null;
+      if (!m || !text(m.address) || !text(m.agentRunId) || Object.keys(m).length !== 2) invalid(`${at}.members[${index}] is invalid`);
+      return { address: m!.address as string, agentRunId: m!.agentRunId as string };
+    });
+  }
   if (!text(v!.linkedAt)) invalid(`${at}.linkedAt is invalid`);
   const start = v!.start;
   if (typeof start !== "string" || !STARTS.has(start)) invalid(`${at}.start is invalid`);
@@ -45,15 +58,18 @@ const parseEntry = (value: unknown, index: number): TaskExecutionResource => {
   if (v!.closedAt !== null && !text(v!.closedAt)) invalid(`${at}.closedAt is invalid`);
   return {
     role: role as TaskExecutionResource["role"],
-    ...(assigned ? { assignedBy: v!.assignedBy as string } : {}),
+    delegatedFrom: {
+      delegatingRun: createRootExecutionIdentity({ rootSubjectKind: delegating!.kind as RootSubjectKind, rootRunId: delegating!.runId as string }),
+      delegatorAgentRunId: from!.delegatorAgentRunId as string,
+    },
     ...(v!.recipientAddress !== undefined ? { recipientAddress: v!.recipientAddress as string } : {}),
-    hostRoot: createRootExecutionIdentity({ rootSubjectKind: host!.kind as RootSubjectKind, rootRunId: host!.runId as string }),
     execution,
     ...(teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId } : {}),
     linkedAt: v!.linkedAt as string,
     start: start as TaskExecutionResource["start"],
     ...(error !== undefined ? { startError: { code: error.code as string, message: error.message as string } } : {}),
     closedAt: v!.closedAt as string | null,
+    ...(peer ? { nodeId: v!.nodeId as string, ...(members ? { members } : {}) } : {}),
   };
 };
 
@@ -81,11 +97,14 @@ export const serializeTaskExecutionResourceFile = (file: TaskExecutionResourceFi
   taskId: file.taskId,
   agentRunResources: file.executionResources.map(r => ({
     role: r.role,
-    ...(r.role === "assigned" ? { assignedBy: r.assignedBy } : {}),
-    ...(r.role === "assigned" && r.recipientAddress ? { recipientAddress: r.recipientAddress } : {}),
-    hostRoot: { kind: r.hostRoot.rootSubjectKind, runId: r.hostRoot.rootRunId } satisfies StoredHostRoot,
+    delegatedFrom: {
+      delegatingRun: { kind: r.delegatedFrom.delegatingRun.rootSubjectKind, runId: r.delegatedFrom.delegatingRun.rootRunId },
+      delegatorAgentRunId: r.delegatedFrom.delegatorAgentRunId,
+    } satisfies StoredDelegatedFrom,
+    ...((r.role === "assigned" || r.nodeId !== undefined) && r.recipientAddress ? { recipientAddress: r.recipientAddress } : {}),
     agentRun: ("agentRunId" in r.execution ? { kind: "agent", agentRunId: r.execution.agentRunId }
       : { kind: "team", teamRunId: r.execution.teamRunId, coordinatorAgentRunId: r.teamCoordinatorAgentRunId! }) satisfies StoredAgentRun,
+    ...(r.nodeId !== undefined ? { nodeId: r.nodeId, ...(r.members ? { members: r.members.map((m) => ({ address: m.address, agentRunId: m.agentRunId })) } : {}) } : {}),
     linkedAt: r.linkedAt,
     start: r.start,
     ...(r.startError ? { startError: { code: r.startError.code, message: r.startError.message } } : {}),

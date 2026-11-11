@@ -193,13 +193,13 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return this.views.projectTask(command.projectId, task);
   }
   /**
-   * Permanent run delete: removes the ad-hoc Tasks whose agent runs that root hosted (from the view,
-   * no scan). Best effort: failures are logged and never fail the run delete.
+   * Permanent run delete: removes the ad-hoc Tasks an agent of that run assigned (from the view, no scan). Best effort:
+   * failures are logged and never fail the run delete.
    */
-  async deleteAdHocTasksHostedBy(hostRoot: RootExecutionIdentity): Promise<void> {
+  async deleteAdHocTasksDelegatedFrom(run: RootExecutionIdentity): Promise<void> {
     try {
       await this.resources.load();
-      for (const taskId of this.resources.adHocTaskIdsHostedBy(hostRoot)) {
+      for (const taskId of this.resources.adHocTaskIdsDelegatedFrom(run)) {
         try {
           await this.resources.serialize(taskId, async () => {
             await this.adHocTasks.delete(taskId);
@@ -207,11 +207,11 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
             this.changes.taskRemoved({ projectId: null, taskId });
           });
         } catch (error) {
-          console.warn("AD_HOC_TASK_DELETE_FAILED", { taskId, hostRoot, error: error instanceof Error ? error.message : String(error) });
+          console.warn("AD_HOC_TASK_DELETE_FAILED", { taskId, run, error: error instanceof Error ? error.message : String(error) });
         }
       }
     } catch (error) {
-      console.warn("AD_HOC_TASK_DELETE_FAILED", { hostRoot, error: error instanceof Error ? error.message : String(error) });
+      console.warn("AD_HOC_TASK_DELETE_FAILED", { run, error: error instanceof Error ? error.message : String(error) });
     }
   }
   /** Removes metadata and context, then drops the Task from its dependents and its parts; its agent run resources stay, so closed work stays closed. */
@@ -282,13 +282,12 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   }
   markStarted(execution: TaskExecutionReference): Promise<void> { return this.resources.markStarted(execution); }
   markFailed(execution: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(execution, error); }
-  ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
+  taskIdsWithEntries(): readonly string[] { return this.resources.taskIdsWithEntries(); }
+  entriesOf(taskId: string) { return this.resources.entriesOf(taskId); }
   isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
-  closedTaskExecutionsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedTaskExecutionsIn(hostRoot); }
-  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference) { return this.resources.closedTaskExecutionOf(hostRoot, by); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
-  /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */
-  taskExecutionsStatusChanged(_hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
+  /** Marks the Tasks whose root is one of these runs; the status is read later. Never throws. */
+  taskExecutionsStatusChanged(references: readonly TaskExecutionReference[]): void {
     try {
       for (const reference of references) {
         const location = this.resources.rootTaskLocationOf(reference);
@@ -331,7 +330,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
       this.resources.assertAllReadable();
       const task = await this.eligibility.assertAssignableTask(projectId, input.taskId);
-      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.assignedBy, taskId: input.taskId }, task);
+      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId }, task);
       await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
     });
   }
@@ -355,7 +354,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
         written = await write();
       });
     } finally {
-      if (closed) this.release.release(location.taskId, this.resources.releasableByHostRoot(location.taskId));
+      if (closed) this.release.release(location.taskId, this.resources.releasable(location.taskId));
     }
     return written!;
   }

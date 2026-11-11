@@ -40,7 +40,7 @@ describe("Project Task comments (services)", () => {
     store = new ProjectStore(layout);
     publisher = new ProjectChangePublisher();
     emitted = [];
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
       requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
@@ -83,7 +83,7 @@ describe("Project Task comments (services)", () => {
 
     it("status and a comment in one call are one write; a blank comment, a Temp task or an unknown Task writes nothing, not even the status (AC-001)", async () => {
       const task = await create("A");
-      await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+      await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
       const writes = vi.spyOn(store, "updateTask");
       const bytes = await fs.readFile(taskFile(task.taskId), "utf8");
       await expect(tasks.updateTaskById({ taskId: task.taskId, status: "DONE", addComment: " \n " })).rejects.toMatchObject({ code: "TASK_COMMENT_INVALID" });
@@ -91,7 +91,7 @@ describe("Project Task comments (services)", () => {
       expect(writes).not.toHaveBeenCalled();
       expect(await fs.readFile(taskFile(task.taskId), "utf8")).toBe(bytes);
       expect(tasks.isOpen({ agentRunId: "worker" })).toBe(true);
-      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot,
+      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" },
         execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
       await expect(tasks.updateTaskById({ taskId: temp, status: "DONE", addComment: "x" })).rejects.toMatchObject({ code: "TASK_COMMENT_INVALID" });
       expect(tasks.isOpen({ agentRunId: "temp-worker" })).toBe(true);

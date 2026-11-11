@@ -1,3 +1,4 @@
+import { currentTaskOf, openChildrenOf } from "../../helpers/delegation-tree-of.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -32,7 +33,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     return service;
   };
   const delegate = (agentRunId: string, input: { description?: string; referenceFiles?: string[]; root?: typeof hostRoot } = {}) =>
-    tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot: input.root ?? hostRoot, execution: { agentRunId },
+    tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: input.root ?? hostRoot, delegatorAgentRunId: "delegator" }, execution: { agentRunId },
       adHocTask: { description: input.description ?? "Review the plan", referenceFiles: input.referenceFiles ?? [] } });
   const taskFile = (taskId: string) => fs.readFile(adHocLayout.taskFile(taskId), "utf8").then(JSON.parse);
   const exists = (file: string) => fs.access(file).then(() => true, () => false);
@@ -43,7 +44,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     tasks = await boot();
   });
   afterEach(async () => {
@@ -62,14 +63,14 @@ describe("ad-hoc Tasks (no Project)", () => {
     // Text only: the folder holds exactly the Task record and its run resources; no file is copied.
     expect((await fs.readdir(adHocLayout.taskDir(taskId))).sort()).toEqual(["agent_run_resources.json", "task.json"]);
     expect(await fs.readFile(adHocLayout.taskFile(taskId), "utf8")).not.toContain("secret bytes");
-    expect(tasks.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, execution: { agentRunId: "copy-1" }, open: true });
+    expect(currentTaskOf(tasks, { agentRunId: "copy-1" })).toMatchObject({ taskId, open: true });
     expect(await tasks.assignments([taskId])).toEqual(new Map([[taskId, { closed: [],
       open: [{ kind: "agent", agentRunId: "copy-1", assignedBy: "delegator", outcome: "not_confirmed" }] }]]));
     // Not Project work: it is not listed under any Project, and the Projects root holds no trace of it.
     expect(await tasks.listTasks(projectId)).toEqual([]);
     expect(await store.findTask(taskId)).toEqual([]);
     // Sub-work of the copy stays that Task's (REQ-010).
-    await expect(tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "sub-1" } }))
+    await expect(tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "copy-1" }, delegatorAgentRunId: "copy-1" }, execution: { agentRunId: "sub-1" } }))
       .resolves.toEqual({ taskId });
   });
 
@@ -77,27 +78,28 @@ describe("ad-hoc Tasks (no Project)", () => {
     const first = await delegate("copy-1");
     const second = await delegate("copy-2");
     expect(first.taskId).not.toBe(second.taskId);
-    expect(tasks.ownerOf([{ agentRunId: "copy-2" }])?.taskId).toBe(second.taskId);
+    expect(currentTaskOf(tasks, { agentRunId: "copy-2" })?.taskId).toBe(second.taskId);
   });
 
   it("DONE by task_id alone closes the copy and its sub-work, writes the status and asks its root to stop them (AC-004, AC-007)", async () => {
     const { taskId } = await delegate("copy-1");
     await tasks.markStarted({ agentRunId: "copy-1" });
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "copy-1" }, delegatorAgentRunId: "copy-1" }, execution: { agentRunId: "helper-1" } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "DONE" });
     await releases.settled();
     expect((await taskFile(taskId)).status).toBe("DONE");
     expect(tasks.isOpen({ agentRunId: "copy-1" })).toBe(false);
     expect(tasks.isOpen({ agentRunId: "helper-1" })).toBe(false);
-    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
-    expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
+    expect(openChildrenOf(tasks, hostRoot)).toEqual([]);
+    expect(release).toHaveBeenCalledWith({ agentRunId: "copy-1" }); expect(release).toHaveBeenCalledWith({ agentRunId: "helper-1" });
     // A closed copy takes no new sub-work (only its assigner's reactivation reopens it). Repeating DONE re-requests the stop and changes nothing else.
-    await expect(tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "late" } }))
+    await expect(tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "copy-1" }, delegatorAgentRunId: "copy-1" }, execution: { agentRunId: "late" } }))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     const before = await taskFile(taskId);
     await tasks.updateTaskById({ taskId, status: "DONE" });
     await releases.settled();
-    expect(release).toHaveBeenCalledTimes(2);
+    // One stop request per run, each by its own identity (DS-5).
+    expect(release).toHaveBeenCalledTimes(4);
     expect(await taskFile(taskId)).toEqual(before);
   });
 
@@ -107,8 +109,8 @@ describe("ad-hoc Tasks (no Project)", () => {
     await releases.settled();
     const restarted = await boot();
     expect(restarted.isOpen({ agentRunId: "copy-1" })).toBe(false);
-    expect(restarted.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, execution: { agentRunId: "copy-1" }, open: false });
-    expect(restarted.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }]);
+    expect(currentTaskOf(restarted, { agentRunId: "copy-1" })).toMatchObject({ taskId, open: false });
+    expect(openChildrenOf(restarted, hostRoot)).toEqual([]);
   });
 
   it("patches an ad-hoc description and a Project Task by task_id alone (AC-005); unknown IDs fail TASK_NOT_FOUND (AC-004)", async () => {
@@ -127,17 +129,17 @@ describe("ad-hoc Tasks (no Project)", () => {
 
   it("DONE on a Project Task by task_id alone behaves exactly like the Project-scoped update (AC-014)", async () => {
     const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot: otherRoot, execution: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, delegatedFrom: { delegatingRun: otherRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
     await tasks.updateTaskById({ taskId: projectTask.taskId, status: "DONE" });
     await releases.settled();
     expect((await store.readTask(projectId, projectTask.taskId))!.status).toBe("DONE");
-    expect(release).toHaveBeenCalledWith(otherRoot, [{ agentRunId: "worker" }]);
+    expect(release).toHaveBeenCalledWith({ agentRunId: "worker" });
   });
 
   it("linked delegation stays Project-only: an ad-hoc ID is TASK_NOT_FOUND for resolveAssignment and a linked assignment", async () => {
     const { taskId } = await delegate("copy-1");
     await expect(tasks.resolveAssignment(taskId)).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
-    const linked: NewTaskExecutionLinkInput = { role: "assigned", taskId, assignedBy: "manager", hostRoot: otherRoot, execution: { agentRunId: "other" } };
+    const linked: NewTaskExecutionLinkInput = { role: "assigned", taskId, delegatedFrom: { delegatingRun: otherRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "other" } };
     await expect(tasks.linkNewTaskExecution(linked)).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
   });
 
@@ -152,38 +154,38 @@ describe("ad-hoc Tasks (no Project)", () => {
 
   it("a permanent run delete removes only that root's ad-hoc Tasks, from the view and from disk (AC-010)", async () => {
     const mine = await delegate("copy-1");
-    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "sub-1" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "copy-1" }, delegatorAgentRunId: "copy-1" }, execution: { agentRunId: "sub-1" } });
     const closed = await delegate("copy-2");
     await tasks.updateTaskById({ taskId: closed.taskId, status: "DONE" });
     const theirs = await delegate("copy-3", { root: otherRoot });
     const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
 
-    await tasks.deleteAdHocTasksHostedBy(hostRoot);
+    await tasks.deleteAdHocTasksDelegatedFrom(hostRoot);
     expect(await exists(adHocLayout.taskDir(mine.taskId))).toBe(false);
     expect(await exists(adHocLayout.taskDir(closed.taskId))).toBe(false);
-    expect(tasks.ownerOf([{ agentRunId: "copy-1" }])).toBeNull();
-    expect(tasks.ownerOf([{ agentRunId: "sub-1" }])).toBeNull();
-    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([]);
+    expect(currentTaskOf(tasks, { agentRunId: "copy-1" })).toBeNull();
+    expect(currentTaskOf(tasks, { agentRunId: "sub-1" })).toBeNull();
+    expect(openChildrenOf(tasks, hostRoot).map((open) => open.run)).toEqual([{ agentRunId: "worker" }]);
     // Other roots' ad-hoc Tasks and every Project Task are untouched.
     expect(await exists(adHocLayout.taskFile(theirs.taskId))).toBe(true);
-    expect(tasks.ownerOf([{ agentRunId: "copy-3" }])?.taskId).toBe(theirs.taskId);
-    expect(tasks.ownerOf([{ agentRunId: "worker" }])?.taskId).toBe(projectTask.taskId);
+    expect(currentTaskOf(tasks, { agentRunId: "copy-3" })?.taskId).toBe(theirs.taskId);
+    expect(currentTaskOf(tasks, { agentRunId: "worker" })?.taskId).toBe(projectTask.taskId);
     expect(await store.readTask(projectId, projectTask.taskId)).not.toBeNull();
     await expect(tasks.updateTaskById({ taskId: mine.taskId, status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
     // A restart agrees with the view.
     const restarted = await boot();
-    expect(restarted.ownerOf([{ agentRunId: "copy-1" }])).toBeNull();
-    expect(restarted.ownerOf([{ agentRunId: "copy-3" }])?.taskId).toBe(theirs.taskId);
+    expect(currentTaskOf(restarted, { agentRunId: "copy-1" })).toBeNull();
+    expect(currentTaskOf(restarted, { agentRunId: "copy-3" })?.taskId).toBe(theirs.taskId);
   });
 
   it("a delete cleanup failure is logged and never thrown to the run delete", async () => {
     const { taskId } = await delegate("copy-1");
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     vi.spyOn(AdHocTaskStore.prototype, "delete").mockRejectedValueOnce(new Error("EBUSY"));
-    await expect(tasks.deleteAdHocTasksHostedBy(hostRoot)).resolves.toBeUndefined();
+    await expect(tasks.deleteAdHocTasksDelegatedFrom(hostRoot)).resolves.toBeUndefined();
     expect(warn).toHaveBeenCalledWith("AD_HOC_TASK_DELETE_FAILED", expect.objectContaining({ taskId }));
     // Nothing was forgotten while its files remain.
-    expect(tasks.ownerOf([{ agentRunId: "copy-1" }])?.taskId).toBe(taskId);
+    expect(currentTaskOf(tasks, { agentRunId: "copy-1" })?.taskId).toBe(taskId);
   });
 });

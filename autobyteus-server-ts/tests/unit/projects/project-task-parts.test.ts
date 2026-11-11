@@ -38,7 +38,7 @@ describe("Project Task parts (services)", () => {
   const stored = async (taskId: string) => (await store.readTask(projectId, taskId))!;
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
   const assign = (taskId: string, agentRunId: string) =>
-    tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot, execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
 
   beforeEach(async () => {
     appData = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-parts-"));
@@ -47,7 +47,7 @@ describe("Project Task parts (services)", () => {
     store = new ProjectStore(layout);
     publisher = new ProjectChangePublisher();
     emitted = [];
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
       requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
@@ -162,7 +162,7 @@ describe("Project Task parts (services)", () => {
 
     it("a Temp task has no parent: part_of on it, or naming it, is refused (AC-003)", async () => {
       const a = await create("A");
-      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", hostRoot,
+      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" },
         execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
       await expect(tasks.updateTaskById({ taskId: temp, partOf: "autobyteus-1" })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
       await expect(tasks.updateTaskById({ taskId: a.taskId, partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
@@ -205,7 +205,7 @@ describe("Project Task parts (services)", () => {
         expect((await stored(outsider.taskId)).status).toBe("TODO");
         expect(tasks.isOpen({ agentRunId: "running-worker" })).toBe(false);
         await releases.settled();
-        expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "running-worker" }]);
+        expect(release).toHaveBeenCalledWith({ agentRunId: "running-worker" });
         await publisher.idle();
         expect(upserts().map((t) => [t.taskId, t.status])).toEqual(expect.arrayContaining([[parent.taskId, status], [todo.taskId, status], [running.taskId, status]]));
       });

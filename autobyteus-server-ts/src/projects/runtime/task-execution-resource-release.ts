@@ -1,32 +1,31 @@
 import type { TaskExecutionReleaseRequest } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { TaskExecutionGroup } from "../services/task-execution-resource-service.js";
+import type { ReleasableRun } from "../services/task-execution-resource-service.js";
 
 /**
- * The runtime side effect of DONE or CANCELLED: asks each host root to stop exactly the Task's closed agent runs.
- * Nothing is persisted (Q-1): failures are logged and repeating DONE or CANCELLED requests the stop again.
+ * The runtime side effect of DONE or CANCELLED (DS-5): asks each closed run, by its own identity, to stop in its own
+ * root. A run on a peer node is fenced by its closed Task, not stopped (its node owns it, CM-10). Nothing is
+ * persisted: failures are logged and repeating DONE or CANCELLED requests the stop again.
  */
 export class TaskExecutionResourceRelease {
   constructor(private readonly request?: TaskExecutionReleaseRequest) {}
 
-  release(taskId: string, groups: readonly TaskExecutionGroup[]): void {
-    for (const group of groups) void this.stop(taskId, group);
+  release(taskId: string, runs: readonly ReleasableRun[]): void {
+    for (const run of runs) void this.stop(taskId, run);
   }
 
-  private async stop(taskId: string, { hostRoot, executions }: TaskExecutionGroup): Promise<void> {
+  private async stop(taskId: string, { run, nodeId }: ReleasableRun): Promise<void> {
+    if (nodeId !== undefined) {
+      console.info("TASK_AGENT_RESOURCE_FENCED_REMOTE", { taskId, execution: run, nodeId });
+      return;
+    }
     try {
-      const pending = this.request?.(hostRoot, executions) ?? null;
-      if (!pending) {
-        // No active root holds any authority in this process (none survives a restart).
-        console.debug("TASK_AGENT_RESOURCE_ROOT_NOT_ACTIVE", { taskId, hostRoot });
-        return;
-      }
-      for (const result of await pending) {
-        // A run on a peer node is fenced, not stopped (AR-007): its message says where it keeps running.
-        if ("outcome" in result) console.info("TASK_AGENT_RESOURCE_FENCED_REMOTE", { taskId, hostRoot, execution: result.execution, message: result.message });
-        else if (!result.stopped) console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, hostRoot, execution: result.execution, error: result.error });
-      }
+      const pending = this.request?.(run) ?? null;
+      // Not active: nothing runs, and its next message is refused by the closed Task.
+      if (!pending) return;
+      const result = await pending;
+      if (!result.stopped) console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, execution: run, error: result.error });
     } catch (error) {
-      console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, hostRoot, executions, error: error instanceof Error ? error.message : String(error) });
+      console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, execution: run, error: error instanceof Error ? error.message : String(error) });
     }
   }
 }

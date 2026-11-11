@@ -63,7 +63,7 @@ describe("update_task add_comment (AC-001, REQ-005)", () => {
     const bytes = await fs.readFile(layout.taskFile(projectId, await idOfKey(task.taskId)), "utf8");
     expect(await tool("update_task", { task_id: task.taskId, status: "DONE", add_comment: "   " })).toMatchObject({ error: { code: "TASK_COMMENT_INVALID" } });
     expect(await tool("update_task", { task_id: "autobyteus-9", add_comment: "x" })).toMatchObject({ error: { code: "TASK_NOT_FOUND" } });
-    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
+    const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/w",
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     expect(await tool("update_task", { task_id: temp, add_comment: "x" })).toMatchObject({ error: { code: "TASK_COMMENT_INVALID" } });
     expect(await fs.readFile(layout.taskFile(projectId, await idOfKey(task.taskId)), "utf8")).toBe(bytes);

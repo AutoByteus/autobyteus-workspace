@@ -29,7 +29,7 @@ import type {
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import { peerDelegatedFromOf, type AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneAgentRunRoot, StandaloneRootPackageSnapshot } from "../domain/standalone-agent-run-root.js";
 import { StandaloneHostAgentHandle, type StandaloneHostActivationBackend } from "../domain/standalone-host-agent-handle.js";
@@ -205,7 +205,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
     const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
-    const delegatedFrom = metadata.delegatedFrom ?? null;
+    // Only a run a peer started has a delegator endpoint on a peer (AR-016, `isPeerStarted`).
+    const delegatedFrom = peerDelegatedFromOf(metadata);
     return storedRemoteLinkCheck({
       remoteRuns: () => tree?.remoteTaskExecutions ?? [],
       backLink: delegatedFrom ? { pairedAgentRunIds: () => [hostRunId], delegatedFrom } : null,

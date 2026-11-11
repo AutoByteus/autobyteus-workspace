@@ -1,3 +1,4 @@
+import { currentTaskOf, openChildrenOf } from "../../helpers/delegation-tree-of.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -9,7 +10,7 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 
 const host = { kind: "agent_team", runId: "manager-root" };
 const entry = (agentRun: Record<string, string>, linkedAt: string, closedAt: string | null, extra: Record<string, unknown> = {}) => ({
-  role: "assigned", assignedBy: "manager", hostRoot: host, agentRun, linkedAt, start: "started", closedAt, ...extra });
+  role: "assigned", delegatedFrom: { delegatingRun: host, delegatorAgentRunId: "manager" }, agentRun, linkedAt, start: "started", closedAt, ...extra });
 const team = { kind: "team", teamRunId: "review-team", coordinatorAgentRunId: "lead" };
 
 /** The one owner of the current-entry rule: open entry, else the latest `linkedAt` (tie: greater Task ID). */
@@ -32,17 +33,18 @@ describe("TaskExecutionResourceService current entry", () => {
   });
   afterEach(async () => { vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
-  it("a reused copy's closed sub-work from its earlier Task is decided by the innermost element, never a cross-Task conflict", async () => {
+  it("a reused run's closed sub-work from its earlier Task is its own run's Task work, never a cross-Task conflict", async () => {
     await write("task_A", [entry(team, "2026-10-09T10:00:00.000Z", "2026-10-09T11:00:00.000Z"),
-      { role: "delegated", hostRoot: host, agentRun: { kind: "agent", agentRunId: "sub-work" }, linkedAt: "2026-10-09T10:30:00.000Z", start: "started", closedAt: "2026-10-09T11:00:00.000Z" }]);
+      { role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "review-team" }, delegatorAgentRunId: "lead" },
+        agentRun: { kind: "agent", agentRunId: "sub-work" }, linkedAt: "2026-10-09T10:30:00.000Z", start: "started", closedAt: "2026-10-09T11:00:00.000Z" }]);
     await write("task_B", [entry(team, "2026-10-09T12:00:00.000Z", null)]);
     await boot();
-    // An agent of the sub-work copy hosted inside the Team copy: chain innermost first.
-    expect(service.ownerOf([{ agentRunId: "sub-work" }, { teamRunId: "review-team" }])).toEqual({ taskId: "task_A", execution: { agentRunId: "sub-work" }, open: false });
-    expect(service.ownerOf([{ teamRunId: "review-team" }])).toEqual({ taskId: "task_B", execution: { teamRunId: "review-team" }, open: true });
-    expect(service.closedTaskExecutionsIn({ rootSubjectKind: "agent_team", rootRunId: "manager-root" })).toEqual([{ agentRunId: "sub-work" }]);
-    expect(service.releasableByHostRoot("task_A")).toEqual([{ hostRoot: { rootSubjectKind: "agent_team", rootRunId: "manager-root" }, executions: [{ agentRunId: "sub-work" }] }]);
-    expect(service.releasableByHostRoot("task_B")).toEqual([]);
+    // The sub-work run is its own run: its own Task work decides.
+    expect(currentTaskOf(service, { agentRunId: "sub-work" })).toMatchObject({ taskId: "task_A", role: "subWork", open: false });
+    expect(currentTaskOf(service, { teamRunId: "review-team" })).toMatchObject({ taskId: "task_B", open: true });
+    expect(openChildrenOf(service, { rootSubjectKind: "agent_team", rootRunId: "review-team" })).toEqual([]);
+    expect(service.releasable("task_A")).toEqual([{ run: { agentRunId: "sub-work" } }]);
+    expect(service.releasable("task_B")).toEqual([]);
     expect(service.rootTaskLocationOf({ teamRunId: "review-team" })).toEqual({ projectId: "project_P", taskId: "task_B" });
   });
 
@@ -54,8 +56,8 @@ describe("TaskExecutionResourceService current entry", () => {
     await boot();
     expect(service.locationOf({ teamRunId: "review-team" })).toEqual({ projectId: "project_P", taskId: "task_B" });
     // With no open entry left, a (repeated) close of any of its Tasks asks to stop it.
-    expect(service.releasableByHostRoot("task_A")).toEqual([expect.objectContaining({ executions: [{ teamRunId: "review-team" }] })]);
-    expect(service.releasableByHostRoot("task_B")).toEqual([expect.objectContaining({ executions: [{ teamRunId: "review-team" }] })]);
+    expect(service.releasable("task_A")).toEqual([{ run: { teamRunId: "review-team" } }]);
+    expect(service.releasable("task_B")).toEqual([{ run: { teamRunId: "review-team" } }]);
     expect(service.locationOf({ agentRunId: "twin" })).toEqual({ projectId: "project_P", taskId: "task_D" });
     expect(service.earlierTaskLocationsOf({ teamRunId: "review-team" })).toEqual([{ projectId: "project_P", taskId: "task_A" }]);
   });
@@ -69,7 +71,7 @@ describe("TaskExecutionResourceService current entry", () => {
     expect(service.locationOf({ teamRunId: "review-team" })).toEqual({ projectId: "project_P", taskId: "task_B" });
     expect(service.isOpen({ teamRunId: "review-team" })).toBe(true);
     expect(service.openTaskIdsOf({ teamRunId: "review-team" })).toEqual(["task_A", "task_B"]);
-    for (const taskId of ["task_A", "task_B", "task_C"]) expect(service.releasableByHostRoot(taskId)).toEqual([]);
+    for (const taskId of ["task_A", "task_B", "task_C"]) expect(service.releasable(taskId)).toEqual([]);
     expect(error).not.toHaveBeenCalled();
   });
 

@@ -1,13 +1,14 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { TaskAgentOwnFiles } from "../store/task-agent-own-files.js";
 
 /** An agent of a top run's closed delegated run: its run ID and the address it had in the tree. */
 export type ClosedRunAgent = Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 
-type ClosedRuns = Pick<TaskExecutionResourcePort, "closedTaskExecutionsIn" | "closedTaskExecutionOf">;
+/** The runs a run delegated to, one hop, open or closed: the `DelegationTree` (contract §2.6). */
+type ClosedRuns = Pick<DelegationTree, "childrenOf">;
 
 let boundClosedRuns: ClosedRuns | null = null;
 /** The composition binds the loaded Task side once (`project-task-execution-resource-composition.ts`). */
@@ -43,22 +44,19 @@ export class ClosedDelegatedRunReader {
       read.add(key);
       for (const agent of await this.agentsOf(root, run)) if (wanted.has(agent.agentRunId)) found.set(agent.agentRunId, agent);
     };
-    for (const agentRunId of wanted) {
-      const closed = port.closedTaskExecutionOf(root, { ingressAgentRunId: agentRunId });
-      if (closed) await take(closed.execution);
-    }
-    if (found.size < wanted.size) {
-      for (const run of port.closedTaskExecutionsIn(root)) {
-        if ("teamRunId" in run) await take(run);
-        if (found.size === wanted.size) break;
-      }
+    const children = port.childrenOf(root);
+    // An agent run is found by its run ID; a team's members by reading the team's own file.
+    for (const run of children) if ("agentRunId" in run && wanted.has(run.agentRunId)) await take(run);
+    for (const run of children) {
+      if (found.size === wanted.size) break;
+      if ("teamRunId" in run) await take(run);
     }
     return [...found.values()];
   }
 
   /** Every agent run ID of this top run's closed delegated runs. */
   async agentRunIds(root: RootExecutionIdentity): Promise<string[]> {
-    const runs = this.closedRuns()?.closedTaskExecutionsIn(root) ?? [];
+    const runs = this.closedRuns()?.childrenOf(root) ?? [];
     return (await Promise.all(runs.map((run) => "agentRunId" in run ? [run.agentRunId]
       : this.agentsOf(root, run).then((agents) => agents.map((agent) => agent.agentRunId))))).flat();
   }

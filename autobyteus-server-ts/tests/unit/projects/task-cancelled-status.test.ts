@@ -72,7 +72,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   let releases: ReleaseTracker;
   const resourcesFile = (taskId: string) => fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8");
   const assign = (taskId: string, agentRunId: string, root = hostRoot) =>
-    tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root, execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: root, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
   const setStatus = (taskId: string, status: ProjectTaskStatus) => tasks.updateTaskById({ taskId, status });
   const settle = () => releases.settled();
 
@@ -82,7 +82,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
-    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
       requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
@@ -94,9 +94,9 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     const b = await tasks.createTask({ projectId, title: "B", description: "B" });
     await assign(a.taskId, "worker-a"); await assign(a.taskId, "worker-a2", otherRoot); await assign(b.taskId, "worker-b");
     const observed: string[] = [];
-    release.mockImplementation(async (root, agentRuns) => {
-      observed.push(`${root.rootRunId}:${(await store.readTask(projectId, a.taskId))!.status}:${tasks.isOpen({ agentRunId: "worker-a" })}`);
-      return agentRuns.map(execution => ({ execution, stopped: true }));
+    release.mockImplementation(async (execution) => {
+      observed.push(`${"agentRunId" in execution ? execution.agentRunId : "?"}:${(await store.readTask(projectId, a.taskId))!.status}:${tasks.isOpen({ agentRunId: "worker-a" })}`);
+      return { execution, stopped: true };
     });
     const writes = vi.spyOn(store, "updateTask");
     writes.mockImplementationOnce(async (...args) => {
@@ -105,9 +105,9 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     });
     expect(await setStatus(a.taskId, "CANCELLED")).toEqual({ projectId, taskId: a.taskId, taskReference: a.taskKey, title: a.title, status: "CANCELLED", dependsOnTaskIds: [], partOfTaskId: null });
     await settle();
-    expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker-a" }]);
-    expect(release).toHaveBeenCalledWith(otherRoot, [{ agentRunId: "worker-a2" }]);
-    expect(observed.sort()).toEqual(["manager-root:CANCELLED:false", "team-root:CANCELLED:false"]);
+    expect(release).toHaveBeenCalledWith({ agentRunId: "worker-a" });
+    expect(release).toHaveBeenCalledWith({ agentRunId: "worker-a2" });
+    expect(observed.sort()).toEqual(["worker-a2:CANCELLED:false", "worker-a:CANCELLED:false"]);
     expect(tasks.isOpen({ agentRunId: "worker-b" })).toBe(true);
     // Repeated CANCELLED: no file change, the stop is requested again.
     const bytes = await resourcesFile(a.taskId);
@@ -126,7 +126,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
       release.mockClear();
       expect((await setStatus(a.taskId, status)).status).toBe(status);
       await settle();
-      expect(release).toHaveBeenCalledExactlyOnceWith(hostRoot, [{ agentRunId: "worker-a" }]);
+      expect(release).toHaveBeenCalledExactlyOnceWith({ agentRunId: "worker-a" });
       expect(await resourcesFile(a.taskId)).toBe(bytes);
     }
   });
@@ -150,7 +150,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
 
   it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {
     const task = await tasks.createTask({ projectId, title: "A", description: "A" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: worker });
     await tasks.markStarted(worker);
     await setStatus(task.taskId, "CANCELLED");
     const closedFile = await resourcesFile(task.taskId);
@@ -168,11 +168,11 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   });
 
   it("a Task with no Project: CANCELLED closes and stops its copy like DONE; delegation by its ID stays refused (AC-004)", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot, execution: { agentRunId: "copy-1" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "delegator" }, execution: { agentRunId: "copy-1" },
       adHocTask: { description: "Review the plan", referenceFiles: [] } });
     expect(await setStatus(taskId, "CANCELLED")).toEqual({ projectId: null, taskId, taskReference: taskId, status: "CANCELLED" });
     await settle();
-    expect(release).toHaveBeenCalledExactlyOnceWith(hostRoot, [{ agentRunId: "copy-1" }]);
+    expect(release).toHaveBeenCalledExactlyOnceWith({ agentRunId: "copy-1" });
     expect(tasks.isOpen({ agentRunId: "copy-1" })).toBe(false);
     expect((await tasks.listTasksWithoutProject()).map((t) => t.status)).toEqual(["CANCELLED"]);
     release.mockClear();

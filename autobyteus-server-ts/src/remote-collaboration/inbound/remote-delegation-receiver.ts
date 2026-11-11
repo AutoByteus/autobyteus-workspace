@@ -74,7 +74,7 @@ export class RemoteDelegationReceiver implements DelegatedRunHandler {
     const source = resolved.source;
     const delegatedFrom = {
       nodeId: from.nodeId,
-      coordinatingRun: { kind: request.coordinatingRun.kind, runId: request.coordinatingRun.runId },
+      delegatingRun: { kind: request.delegatingRun.kind, runId: request.delegatingRun.runId },
       delegatorAgentRunId: request.delegator.agentRunId,
     };
     const launches = launchesOf(request.address, source);

@@ -21,7 +21,7 @@ const rootSchema = z.strictObject({
   recipientAddress: text.nullable(),
   ingressAgentRunId: text,
   teamRunId: text.nullable(),
-  hostRoot: z.strictObject({ kind: z.enum(["agent", "agent_team", "agent_org"]), runId: text }),
+  delegatingRun: z.strictObject({ kind: z.enum(["agent", "agent_team", "agent_org"]), runId: text }),
   start: z.enum(["starting", "started", "failed"]),
   startError: z.strictObject({ code: text, message: z.string() }).nullable(),
   closed: z.boolean(),
@@ -68,7 +68,7 @@ export const serializeProjectChangeMessage = (message: ProjectChangeMessage): st
 
 const rootWire = (root: TaskRootView | null) => root && {
   kind: root.kind, recipientAddress: root.recipientAddress, ingressAgentRunId: root.ingressAgentRunId, teamRunId: root.teamRunId,
-  hostRoot: { kind: root.hostRoot.kind, runId: root.hostRoot.runId }, start: root.start,
+  delegatingRun: { kind: root.delegatingRun.kind, runId: root.delegatingRun.runId }, start: root.start,
   startError: root.startError && { code: root.startError.code, message: root.startError.message }, closed: root.closed, status: root.status,
 };
 /** GraphQL `ProjectTask` fields only (no server paths). */

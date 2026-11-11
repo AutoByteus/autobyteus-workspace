@@ -4,6 +4,8 @@ import fs from "node:fs/promises";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
+import { canonicalNonRootAddress } from "./run-execution-tree-shared-record-schemas.js";
+import { parseLaunchConfigurationSource } from "./launch-configuration-source-schema.js";
 import { parsePendingRuntimeSwitch } from "./agent-run-pending-runtime-switch.js";
 import {
   getAtomicRunPackageFileCommitWriter,
@@ -61,6 +63,8 @@ const normalizeMetadata = (
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
+  ...(metadata.address === undefined || metadata.address === null ? {} : { address: canonicalNonRootAddress(metadata.address, "address") }),
+  ...(metadata.launchSource === undefined || metadata.launchSource === null ? {} : { launchSource: parseLaunchConfigurationSource(metadata.launchSource, "launchSource") }),
   ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
   ...(metadata.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: parsePendingRuntimeSwitch(metadata.pendingRuntimeSwitch) }),
   ...optionalMarker("systemRunOwner", metadata.systemRunOwner, ["model_router"] as const),

@@ -316,7 +316,7 @@ export const agentRunIdsOfTree = <TTree>(
     if (link.kind === "agent") ids.add(link.agentRunId);
     else link.members.forEach((member) => ids.add(member.agentRunId));
   }
-  if (backLink) ids.add(backLink.delegatorAgentRunId);
+  if (backLink?.delegatorAgentRunId) ids.add(backLink.delegatorAgentRunId);
   for (const tasks of shape.taskLists(tree).values()) {
     for (const task of tasks) {
       if ("agentRunId" in task) ids.add(task.agentRunId);

@@ -16,7 +16,7 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import { remoteAgentProjectionOf, remoteRunSummariesOf } from "./peer-run-view-answers.js";
 import { openPeerRunObservation, type OpenWebSocket } from "./peer-run-observation-client.js";
-import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
+import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
@@ -170,13 +170,13 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
   }
 
   async startDelegatedRun(input: Readonly<{
-    nodeId: string; address: string; delegatorAgentRunId: string; coordinatingRun: TaskAgentCoordinatingRun; work: DelegationWork;
+    nodeId: string; address: string; delegatorAgentRunId: string; delegatingRun: DelegatingRunRef; work: DelegationWork;
   }>): Promise<RemoteStartedRun> {
     return this.call(input.nodeId, REMOTE_DELEGATED_RUNS_PATH, (envelope): StartDelegatedRunRequest => ({
       ...envelope,
       address: input.address,
       delegator: { agentRunId: input.delegatorAgentRunId },
-      coordinatingRun: { kind: input.coordinatingRun.kind, runId: input.coordinatingRun.runId },
+      delegatingRun: { kind: input.delegatingRun.kind, runId: input.delegatingRun.runId },
       task: { text: input.work.text, title: input.work.task.title, taskKey: input.work.task.taskKey,
         projectId: input.work.task.projectId, taskId: input.work.task.taskId },
     }), "did not answer in time", (answer, peer) => startedRunOf(answer)
