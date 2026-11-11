@@ -24,6 +24,7 @@ import { buildWorkspaceContentUrl } from '~/utils/fileExplorer/workspaceResource
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability'
 import { localFilePreviewError } from '~/utils/fileExplorer/localFileError'
 import { buildLocalFileUrl } from '~/shared/localFileUrl'
+import { loadNodeFile, nodeFilePreviewError } from '~/utils/fileExplorer/nodeFileContent'
 
 function isAbsoluteLocalPath(path: string): boolean {
   if (path.startsWith('/')) {
@@ -31,6 +32,35 @@ function isAbsoluteLocalPath(path: string): boolean {
   }
   return /^[a-zA-Z]:[\\/]/.test(path)
 }
+
+/**
+ * How an open file is read, decided once from its form and the window (autobyteus-471): an absolute path is a local
+ * file in the embedded window that can read local files, and a node file (read-only, through the node-file route, as
+ * the phone reads it) in every other window; a relative path is a workspace file; an `http(s)` URL is external.
+ */
+type FileLoadRoute = 'local' | 'node-file' | 'workspace-or-external'
+
+const loadRouteOf = (
+  filePath: string,
+  windowNodeContextStore: ReturnType<typeof useWindowNodeContextStore>,
+): FileLoadRoute => {
+  if (!isAbsoluteLocalPath(filePath)) return 'workspace-or-external'
+  return windowNodeContextStore.isEmbeddedWindow && hasTrustedElectronLocalFileCapability() ? 'local' : 'node-file'
+}
+
+/** The object URLs this store made for node files; each is revoked when its file closes or is read again. */
+const nodeFileObjectUrls = new Set<string>()
+
+const releaseNodeFileUrl = (file: Pick<OpenFileState, 'url'>): void => {
+  if (file.url && nodeFileObjectUrls.delete(file.url)) URL.revokeObjectURL(file.url)
+}
+
+const releaseClosedNodeFileUrls = (before: readonly OpenFileState[], after: readonly OpenFileState[]): void => {
+  const kept = new Set(after)
+  before.filter((file) => !kept.has(file)).forEach(releaseNodeFileUrl)
+}
+
+const NODE_FILE_BLOB_TYPES = new Set(['Image', 'Audio', 'Video', 'Excel', 'PDF'])
 
 const normalizeDeletedPath = (path: string): string =>
   path.trim().replace(/^\/+/, '').replace(/\/+$/, '')
@@ -87,12 +117,11 @@ export const fileExplorerContentActions = {
       wsState.openFiles.push(newFileState)
       console.log('[FileExplorer] Pushed new initial file state:', JSON.parse(JSON.stringify(newFileState)))
 
-      if (
-        windowNodeContextStore.isEmbeddedWindow
-        && isAbsoluteLocalPath(filePath)
-        && hasTrustedElectronLocalFileCapability()
-      ) {
+      const route = loadRouteOf(filePath, windowNodeContextStore)
+      if (route === 'local') {
         await this._loadLocalFile(newFileState, filePath)
+      } else if (route === 'node-file') {
+        await this._loadNodeFile(filePath, workspaceId, windowNodeContextStore)
       } else {
         this._loadWorkspaceOrExternalFile(newFileState, filePath, workspaceId, windowNodeContextStore)
       }
@@ -114,15 +143,17 @@ export const fileExplorerContentActions = {
     workspaceId: string,
     windowNodeContextStore: ReturnType<typeof useWindowNodeContextStore>,
   ) {
+    const route = loadRouteOf(filePath, windowNodeContextStore)
+    // A node file is fetched again whatever its type: its object URL is the only copy (autobyteus-471).
+    if (route === 'node-file') {
+      void this._loadNodeFile(filePath, workspaceId, windowNodeContextStore)
+      return
+    }
     if (fileState.type !== 'Text') {
       fileState.contentRevision += 1
       return
     }
-    if (
-      windowNodeContextStore.isEmbeddedWindow
-      && isAbsoluteLocalPath(filePath)
-      && hasTrustedElectronLocalFileCapability()
-    ) {
+    if (route === 'local') {
       void this._loadLocalFile(fileState, filePath)
       return
     }
@@ -151,6 +182,49 @@ export const fileExplorerContentActions = {
       fileState.error = localFilePreviewError('unsupported-type')
     }
     fileState.isLoading = false
+  },
+
+  /**
+   * Reads a node file once through the shared node-file loader (autobyteus-471 DS-001), with the window's owner
+   * credential the desktop app attaches: text becomes content, a viewable type an object URL (revoked when the file
+   * closes or is read again), a refusal the plain reason (`nodeFilePreviewError`, worded by the Files panel).
+   */
+  async _loadNodeFile(
+    this: any,
+    filePath: string,
+    workspaceId: string,
+    windowNodeContextStore: ReturnType<typeof useWindowNodeContextStore>,
+  ) {
+    const openFileState = (): OpenFileState | undefined =>
+      this._getOrCreateWorkspaceState(workspaceId).openFiles.find((file: OpenFileState) => file.path === filePath)
+    const fileState = openFileState()
+    if (!fileState) return
+    if (fileState.type !== 'Text' && !NODE_FILE_BLOB_TYPES.has(fileState.type)) {
+      fileState.isLoading = false
+      return
+    }
+    fileState.isLoading = true
+    const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest
+    const loaded = await loadNodeFile(restBaseUrl, filePath, fileState.type === 'Text')
+    // Closed while it was read: nothing is kept (no object URL is made for it).
+    const current = openFileState()
+    if (!current) return
+    releaseNodeFileUrl(current)
+    current.url = null
+    if (loaded.kind === 'refused') {
+      current.content = null
+      current.error = nodeFilePreviewError(loaded.refusal)
+    } else if (loaded.kind === 'text') {
+      current.content = loaded.content
+      current.error = null
+    } else {
+      const url = URL.createObjectURL(loaded.blob)
+      nodeFileObjectUrls.add(url)
+      current.url = url
+      current.error = null
+      current.contentRevision += 1
+    }
+    current.isLoading = false
   },
 
   _loadWorkspaceOrExternalFile(
@@ -204,7 +278,9 @@ export const fileExplorerContentActions = {
 
   closeFile(this: any, filePath: string, workspaceId: string) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
+    const before = wsState.openFiles
     wsState.openFiles = wsState.openFiles.filter((file: OpenFileState) => file.path !== filePath)
+    releaseClosedNodeFileUrls(before, wsState.openFiles)
     if (wsState.activeFile === filePath) {
       const lastOpenFile = wsState.openFiles[wsState.openFiles.length - 1]
       wsState.activeFile = lastOpenFile ? lastOpenFile.path : null
@@ -217,9 +293,11 @@ export const fileExplorerContentActions = {
       wsState.activeFile && isPathInDeletedScope(wsState.activeFile, deletedPath),
     )
 
+    const before = wsState.openFiles
     wsState.openFiles = wsState.openFiles.filter((file: OpenFileState) => {
       return !isPathInDeletedScope(file.path, deletedPath)
     })
+    releaseClosedNodeFileUrls(before, wsState.openFiles)
 
     const activeFileStillOpen = Boolean(
       wsState.activeFile && wsState.openFiles.some((file: OpenFileState) => file.path === wsState.activeFile),
@@ -240,13 +318,16 @@ export const fileExplorerContentActions = {
 
   closeAllFiles(this: any, workspaceId: string) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
+    releaseClosedNodeFileUrls(wsState.openFiles, [])
     wsState.openFiles = []
     wsState.activeFile = null
   },
 
   closeOtherFiles(this: any, exceptFilePath: string, workspaceId: string) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
+    const before = wsState.openFiles
     wsState.openFiles = wsState.openFiles.filter((file: OpenFileState) => file.path === exceptFilePath)
+    releaseClosedNodeFileUrls(before, wsState.openFiles)
     wsState.activeFile = wsState.openFiles.length > 0 ? exceptFilePath : null
   },
 
