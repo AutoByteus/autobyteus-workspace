@@ -101,7 +101,7 @@ Each new name says what its owner owns.
 - **Role and refusals, from the `DelegationTree`:** `runOfAgent(sender)` and `tasksOf(that run)`. If the sender's run has an open entry, the new run is `subWork` of the sender's newest open Task (CM-6), and `task_id` is refused with today's `TASK_AGENT_RESOURCE_OWNED_SENDER` text. Otherwise the new run is `assigned`: to the saved Task named by `task_id`, or to a new Task with no Project for described work.
 - **History row:** `DelegatedRunStarter` writes the new run's history row when it creates the run, as for any new run (DS-11).
 - A failure after the entry was written: `markFailed`, and the new run is terminated before the answer. That is today's order.
-- The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §5.1.13, T-3).
+- The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §5.1, S12, T-3).
 
 ### DS-2 Message by run ID
 
@@ -134,7 +134,7 @@ Nothing else stops (TC-1). A delegated run's later report wakes its stopped dele
 
 - A peer's run is fenced, as today.
 - Views drop the run (469).
-- Deleting a Task: its open runs are stopped first, then the record goes, and the runs are ordinary runs (contract §5.1.13, T-3).
+- Deleting a Task: its open runs are stopped first, then the record goes, and the runs are ordinary runs (contract §5.1, S12, T-3).
 
 ### DS-6 Reopen and follow-up
 

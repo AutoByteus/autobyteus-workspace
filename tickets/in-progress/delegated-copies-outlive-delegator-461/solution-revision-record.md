@@ -637,5 +637,32 @@
   - The case IDs are kept, so the validation script and the design's test list still match.
   - The examples in §3.2 and §6 (E6) now use the image agent as sub-work of T1, one hop under the engineering team, so every example belongs to one of the three stories.
 - Classification: `Large`, `High`, unchanged
+- Next action: superseded by SR-029
+
+### SR-029 — §5.1 as a sequence of states: the disk after each call
+
+- Phase and classification: Requirements (supplement); no intended behavior changed
+- Triggering: the user (2026-11-11) asked to see the transitions. Start with the Project Task Manager alone and its JSON; then the exact call with its address; then, underneath, every file that changed (including whether M's own `run_metadata.json` changes) and every new file in full, the team's execution tree included; and so on, step by step.
+- Done: the contract's §5.1 is states S0 … S12, each with the call, the result to the caller, every changed or created file in full, the files that do not change, the in-memory tree, and what the receiver sees:
+  - S0: the start;
+  - S1: delegate T1;
+  - S2: inside the team;
+  - S3: report to M by address;
+  - S4: M answers by run ID;
+  - S5: another Task;
+  - S6, S7: sub-work to P and I;
+  - S8: P talks;
+  - S9: stop and restore;
+  - S10: close;
+  - S11: reopen;
+  - S12: delete.
+
+  The remaining standalone-agent cases are in a table after the states. The case IDs are unchanged.
+- Measured or read for the states (read-only):
+  - A delegation does not touch the Task's own `task.json`. Only `update_task` sets its status (no code sets `IN_PROGRESS` on delegation; the 10 Tasks with an open entry are `IN_PROGRESS`).
+  - `project_runs.json` lists only runs the user starts from the Project (57 entries, 0 delegated).
+  - A Task folder gets `agent_run_resources.json` at its first delegation (109 Task folders have only `task.json`).
+  - Stop sets `terminatedAt` on the run's own row, and restore clears it (`agent-run-history-catalog-service.ts:216-266`, `team-run-history-catalog-service.ts:121`).
+  - M's `run_metadata.json` gains `address` at its first delegation, and its row gains `hasCollaboration` (§3.3, §3.5).
 - Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's §5)
 
