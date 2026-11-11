@@ -1,0 +1,13 @@
+IMP-04 server-build exit=0
+IMP-05 mobile-web-build exit=0
+IMP-06a mobile-shell-probe exit=1 (e342386a47: MSP-16 Pass; MSP-39 zoom checks pass, its download check read the CDP folder that Playwright bypasses; fixed in 5073d38a56)
+IMP-06 mobile-shell-probe exit=0
+IMP-01a web-typecheck exit=1 (one new test-file error in MobileFileViewer.zoom.spec.ts; fixed)
+IMP-02 web-nuxt-tests exit=0
+IMP-03 web-guards exit=0
+IMP-07 android-unit-build exit=0
+IMP-08a android-connected-api35 exit=1 (16/17; WebShellWindowInsetsTest keyboard case failed once; passes alone x2 on base and head, and after DownloadsSaverTest; rerun as IMP-08)
+IMP-01 web-typecheck exit=0
+IMP-09 web-zoom-spec exit=0
+IMP-08 android-connected-api35 exit=0
+IMP-10 android-saver-api29 exit=0
