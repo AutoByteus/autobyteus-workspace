@@ -146,7 +146,7 @@ An agent run, `memory/agents/image_maker_33f0/run_metadata.json`:
   "llmModelIdentifier": "gpt-image", "llmConfig": null, "autoExecuteTools": true, "runtimeKind": "autobyteus",
   "platformAgentRunId": "…", "startedAt": "2026-11-11T08:00:00.000Z",
   "launchSource": { "origin": "agent_default", "fallbacks": [] },
-  "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "marketing_team_5a00" }, "delegatorAgentRunId": "copywriter_77c1" } }
+  "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" } }
 ```
 
 A team run, `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`. It has the ordinary team shape, rooted at `/` (TC-12):
@@ -283,29 +283,51 @@ A node, as held in memory:
   "agents": [ "product_designer_1a2b", "prototyper_4e11" ] }
 ```
 
-## 5. Every case
+## 5. Every case, by the run you start
+
+Read this section from the run you start. Each subsection opens with **its list of cases, in the order they happen**, then walks each one with the exact call, the JSON written, the change in memory, what the receiver sees, what differs from today, and the check on the user's data. The case IDs in brackets (DL-1, B-1, …) are the IDs the validation script and the design's tests use. §5.4 holds the reference tables that every run shares.
 
 ### 5.0 The runs in the examples
 
 | Run | Kind | Address space | Started by |
 | --- | --- | --- | --- |
-| `project_task_manager_7c8d` (the manager, M) | Standalone agent | `/project_task_manager` | The user |
-| `software_engineering_team_0218` (E) | Team, coordinator `solution_designer_65a9`, member `code_reviewer_m_3b10` | `/solution_designer`, `/code_reviewer` | M, Task T1, delegated at `/software_engineering_team` |
-| `product_team_e03d` (P) | Team, coordinator `product_designer_1a2b` | `/product_designer`, `/prototyper` | E's `solution_designer`, sub-work of T1, at `/product_team` |
-| `image_maker_33f0` (I) | Agent | `/image_maker` | E's `solution_designer`, sub-work of T1 (in DL-2 also by marketing's `copywriter`) |
+| `project_task_manager_7c8d` (M) | Standalone agent | `/project_task_manager` | The user (§5.1) |
+| `software_engineering_team_0218` (E) | Team, coordinator `solution_designer_65a9`, member `code_reviewer_m_3b10` | `/solution_designer`, `/code_reviewer` | M, Task T1, at `/software_engineering_team` |
+| `product_team_e03d` (P) | Team, coordinator `product_designer_1a2b`, member `prototyper_4e11` | `/product_designer`, `/prototyper` | E's `solution_designer`, sub-work of T1, at `/product_team` |
+| `image_maker_33f0` (I) | Agent | `/image_maker` | E's `solution_designer`, sub-work of T1 |
 | `research_agent_9b10` (R) | Agent | `/research_agent` | M, Task T2 |
-| `marketing_team_5a00` | Team, members `marketing_coordinator_0c0c`, `copywriter_77c1` | `/marketing_coordinator`, `/copywriter` | The user |
-| `company_org_9d00` | Org: `ceo_agent_1f2e`, `cto_2a3b`, `Teacher_5c6d`; mounted team `/dev_team` with `dev_lead_4c3d`, `qa_8e9f` | `/ceo_agent`, `/cto`, `/Teacher`, `/dev_team`, `/dev_team/dev_lead`, `/dev_team/qa` | The user |
-| `study_group_7a7a` (S) | Team, delegated by `ceo_agent_1f2e`, Task T4; handoff `to: "/Teacher"` | `/student`, `/tutor` | The org |
+| `software_engineering_team_73d7` (U) | Team, coordinator `solution_designer_7a33`, members `architecture_reviewer_cd34`, `implementation_engineer_864a`, `code_reviewer_2e4f` | `/solution_designer`, `/architecture_reviewer`, … | The user (§5.2) |
+| `image_maker_44a1` (I2) | Agent | `/image_maker` | U's `solution_designer`, Task T3 |
+| `company_org_9d00` (O) | Org: `ceo_agent_1f2e`, `cto_2a3b`, `Teacher_5c6d`; mounted team `/dev_team` with `dev_lead_4c3d`, `qa_8e9f` | `/ceo_agent`, `/cto`, `/Teacher`, `/dev_team`, `/dev_team/dev_lead`, `/dev_team/qa` | The user (§5.3) |
+| `study_group_7a7a` (S) | Team, members `student_31aa` (coordinator), `tutor_31bb`; handoff `to: "/Teacher"` | `/student`, `/tutor` | O's `ceo_agent`, Task T4, at `/study_group` |
 | `node-b-1f0e` | A peer node | — | — |
 
-Each case lists: **Call**, **Found and admitted**, **On disk**, **In memory**, **Result** (sender, then receiver), **Against today**, and **Checked**.
+Two rules hold in every case below:
+- **A message inside one run** is stored once, in that run's log. **A message between two runs** is stored in both runs' logs with one `messageId` (§3.4).
+- **A delivered message** returns `{ "accepted": true, "code": "DELIVERED", "message": "Delivered message to <address or run ID>.", "target_agent_run_id": "<receiver>" }` to the sender, and wakes the receiver once (restoring it if it is stopped).
 
-### 5.1 Runs you start
+---
 
-The user starts three kinds of run. Each is its own address space (§2.1) and has its own folder, its own log and its own row in the run list. None of them carries `delegatedFrom`.
+### 5.1 You start a standalone agent: the Project Task Manager (M)
 
-**RUN-1 — A standalone agent run (for example the Project Task Manager).**
+**Cases in this section:**
+1. [RUN-1] The run itself
+2. [DL-1] M delegates Task T1 to the Software Engineering Team (E)
+3. [IN-8, A-4 … A-6, DL-11] E's members talk inside E
+4. [B-1] E's member reports to M by address, `"/project_task_manager"`
+5. [R-1, R-5, E-2, E-3] M and E talk by run ID
+6. [DL-7] M gives E another Task, T6
+7. [DL-5] E's solution designer hands sub-work of T1 to the product team (P) and to the image agent (I)
+8. [B-2, R-2 … R-4, C-2, C-3] P and I talk with M and with E
+9. [DL-6] I hands part of its work further, to an upscaler
+10. [R-7] M gives Task T2 to a research agent (R): runs of different Tasks cannot talk
+11. [DL-8] M delegates with a description only (a Task with no Project)
+12. [DL-9, DL-10, R-10] M delegates to a peer node
+13. [T-1, T-2, R-6, R-8, T-3] T1 is closed, reopened, deleted
+14. [T-4 … T-7] Stop, archive or delete, restart, idle
+15. [IN-7, C-1] What M cannot do
+
+**5.1.1 [RUN-1] The run itself.**
 - **Started by:** the user, from the agent's page.
 - **On disk:**
   - `memory/agents/project_task_manager_7c8d/run_metadata.json`:
@@ -315,7 +337,7 @@ The user starts three kinds of run. Each is its own address space (§2.1) and ha
       "llmModelIdentifier": "opus", "llmConfig": { "…": "…" }, "autoExecuteTools": true, "runtimeKind": "claude_agent_sdk",
       "platformAgentRunId": "…", "startedAt": "2026-11-01T08:00:00.000Z" }
     ```
-    `address` is written when the run first collaborates (§3.3). Before that it is derived from the definition.
+    `address` is written when the run first collaborates (§3.3). Before that it is derived from the definition. There is no `delegatedFrom`: the user started it.
   - The rest of the folder: `raw_traces_*.jsonl`, `work_journal/`, `context_files/`, `file_changes.json`, and, once it has sent or received a message, `communication_messages_active.jsonl` (TC-13).
   - Its row in `memory/run_history_index.json`:
     ```json
@@ -324,14 +346,182 @@ The user starts three kinds of run. Each is its own address space (§2.1) and ha
       "archivedAt": null, "terminatedAt": null, "hasCollaboration": true }
     ```
 - **Its address space:** `/project_task_manager` only.
-- **What it can do:**
-  - `send_message_to(recipient_address: "/project_task_manager")` is refused: `{ "accepted": false, "code": "COLLABORATION_SELF_TARGET_REJECTED", "message": "You can't send a message to yourself." }`. It has no other agent to reach by address.
-  - It reaches the runs it delegated to by run ID (§5.5).
-  - It delegates with `delegate_task` to the catalog addresses that `list_available_agents` gives: `{ "agents": [ { "name": "Software Engineering Team", "kind": "agent_team", "address": "/software_engineering_team", "description": "…" }, … ] }` (§5.3).
+- **What it sees in `list_available_agents`:** the catalog, `{ "agents": [ { "name": "Software Engineering Team", "kind": "agent_team", "address": "/software_engineering_team", "description": "…" }, … ] }`. These are addresses for `delegate_task`; they never reach a run that exists.
 - **Against today:** the same, except that `address` moves from `collaboration/collaboration_tree.json` into `run_metadata.json` (TC-8) and the log moves up from `collaboration/` (TC-13).
 - **Checked:** 485 agent runs the user started have a `run_metadata.json`; 8 of them have `collaboration_tree.json` and a log in `collaboration/` (E8, E11).
 
-**RUN-2 — A team run (for example the Software Engineering Team, run on its own).**
+**5.1.2 [DL-1] M delegates Task T1 to the Software Engineering Team.**
+- **Call:** `delegate_task(recipient_address: "/software_engineering_team", task_id: "T1")`.
+- **Found:** `/software_engineering_team` in M's catalog. A new team run is created, rooted at `/`.
+- **On disk:**
+  - T1's `agent_run_resources.json` gains:
+    ```json
+    { "role": "assigned",
+      "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" },
+      "recipientAddress": "/software_engineering_team",
+      "agentRun": { "kind": "team", "teamRunId": "software_engineering_team_0218", "coordinatorAgentRunId": "solution_designer_65a9" },
+      "linkedAt": "2026-11-10T09:39:18.439Z", "start": "started", "closedAt": null }
+    ```
+  - E's own `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, an ordinary team file with every member:
+    ```json
+    { "schemaVersion": 1, "createdAt": "2026-11-10T09:39:18.439Z", "archivedAt": null, "applicationBinding": null,
+      "handoffs": [ { "from": "/solution_designer", "to": "/code_reviewer", "rules": [ "…" ] } ],
+      "rootTeam": { "address": "/", "teamDefinitionId": "software-engineering-team", "teamDefinitionName": "Software Engineering Team",
+                    "teamRunId": "software_engineering_team_0218", "coordinatorAddress": "/solution_designer",
+                    "defaultLaunchConfiguration": { "…": "…" },
+                    "members": [
+                      { "address": "/solution_designer", "agentDefinitionId": "solution-designer", "role": "…", "description": "…",
+                        "agentRunId": "solution_designer_65a9", "platformAgentRunId": "…", "launchConfiguration": { "…": "…" } },
+                      { "address": "/code_reviewer", "agentDefinitionId": "code-reviewer", "role": "…", "description": "…",
+                        "agentRunId": "code_reviewer_m_3b10", "platformAgentRunId": "…", "launchConfiguration": { "…": "…" } } ] },
+      "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" } }
+    ```
+    The members' memory goes in `memory/agent_teams/software_engineering_team_0218/<member run ID>/`, and E's log in `team_communication_messages_active.jsonl` there.
+  - E's row in `memory/team_run_history_index.json`, like any team's (`teamRunId`, `teamDefinitionId`, `teamDefinitionName`, `workspaceRootPath`, `summary`, `createdAt`, `archivedAt`, `terminatedAt`).
+  - No message log line: the work packet is the coordinator's first input, kept in its own memory.
+  - **Nothing is written in M's folder.**
+- **In memory:**
+  ```json
+  { "run": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
+    "parent": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d",
+    "tasks": [ { "taskId": "T1", "role": "assigned", "open": true, "assigner": { "kind": "agent", "runId": "project_task_manager_7c8d" } } ],
+    "agents": [ "solution_designer_65a9", "code_reviewer_m_3b10" ] }
+  ```
+- **Result:**
+  - M gets `{ "delegated": true, "target_kind": "team", "target_team_run_id": "software_engineering_team_0218", "target_team_coordinator_agent_run_id": "solution_designer_65a9" }`.
+  - E's coordinator starts with the work packet. It names the delegator by run ID and by `"/project_task_manager"`, which reaches M (§2.3 step 2).
+- **Against today:** the same call and result. E's file is rooted at `/` instead of `/software_engineering_team`, it has `delegatedFrom` instead of `taskAgent`, and M's folder gets nothing.
+- **Checked:** 141 entries delegated by a standalone agent (138 for Project Tasks, 3 for Tasks with no Project). For all 141, `delegatedFrom` can be computed, `recipientAddress` is present or fillable, and one hop equals today's top run.
+
+**5.1.3 [IN-8, A-4 … A-6, DL-11] E's members talk inside E.** E is an ordinary team (P1), so it works like the team you start yourself (§5.2.2).
+- `solution_designer_65a9` → `send_message_to(recipient_address: "/code_reviewer", content: "…")`. One line in E's log:
+  ```json
+  { "messageId": "collabmsg_…", "senderAgentRunId": "solution_designer_65a9", "receiverAgentRunId": "code_reviewer_m_3b10",
+    "content": "…", "messageType": "agent_message", "referenceFiles": [], "createdAt": "…" }
+  ```
+  The code reviewer sees `You received a message from the agent with sender address "/solution_designer" and sender run id "solution_designer_65a9".`
+- `get_handoff_rules()` returns `{ "handoffs": [ { "when": "…", "recipient_address": "/code_reviewer" } ] }`.
+- **What changes** (A-4 … A-6):
+  - Today a delegated team's members write `"/software_engineering_team/code_reviewer"`. They now write `"/code_reviewer"`, as in a team you start (3,311 sends replayed: all reach the same receiver).
+  - `"/software_engineering_team"` no longer reaches the coordinator from inside E: `/` is never an address (0 sends used it).
+  - An old prefixed address from an agent's history is not found, with today's guidance. Its member context gives the new addresses. Members of 11 delegated teams with an open Task are concerned.
+- **Delegations refused from inside E** (DL-11):
+  - `delegate_task(recipient_address: "/solution_designer")` by `solution_designer` itself: `COLLABORATION_SELF_TARGET_REJECTED`, "you can't delegate to yourself …" (as today).
+  - `delegate_task(recipient_address: "/code_reviewer")`: refused, its own team (as today).
+  - `delegate_task(recipient_address: "/software_engineering_team")`: **a new copy** of the team, as in a team you start. Today a delegated team refuses it; 0 such refusals in history.
+
+**5.1.4 [B-1] E's member reports to M by address.**
+- **Call** (by `solution_designer_65a9` or `code_reviewer_m_3b10`): `send_message_to(recipient_address: "/project_task_manager", content: "…")`.
+- **Found and admitted:** `/project_task_manager` is not in E (step 1). E works on T1, whose assigner is M, so step 2 finds M's own agent. Rule (b) admits it.
+- **On disk:** the same line in both logs, `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl` and `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`:
+  ```json
+  { "messageId": "collabmsg_…", "senderAgentRunId": "solution_designer_65a9", "receiverAgentRunId": "project_task_manager_7c8d",
+    "content": "…", "messageType": "agent_message", "referenceFiles": [], "createdAt": "…" }
+  ```
+- **M sees:** `You received a message from the agent with sender run id "solution_designer_65a9".` There is no address: M cannot address E (E-3).
+- **Against today:** the same.
+- **Checked:** 412 such sends replayed; all reach the same receiver.
+
+**5.1.5 [R-1, R-5, E-2, E-3] M and E talk by run ID.**
+- M → E: `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "…")`, or any member of E by its run ID (R-1). Admitted by rule (b), since M assigned T1. If E is stopped, it is restored and woken once.
+- E sees: `You received a message from the agent with sender address "/project_task_manager" and sender run id "project_task_manager_7c8d".` (E-2: the address reaches M from E.)
+- E → M by run ID: `target_agent_run_id: "project_task_manager_7c8d"` (R-5), the same as 5.1.4.
+- **On disk:** one line in both logs, as in 5.1.4.
+- **Checked:** 690 messages from an assigner show an address; 747 to an assigner show the run ID only.
+
+**5.1.6 [DL-7] M gives E another Task, T6.**
+- **Call:** `delegate_task(target_team_run_id: "software_engineering_team_0218", task_id: "T6")`. Only M, which made E's most recent assignment, may do this.
+- **On disk:**
+  - T6's record gains an `assigned` entry with the same `delegatedFrom` and `recipientAddress` as E's T1 entry;
+  - a `task_assignment` message from M to E's coordinator, in M's log and E's log:
+    ```json
+    { "messageId": "collabmsg_…", "senderAgentRunId": "project_task_manager_7c8d", "receiverAgentRunId": "solution_designer_65a9",
+      "content": "New Task assigned to you: T6. …", "messageType": "task_assignment", "referenceFiles": [], "createdAt": "…" }
+    ```
+- **In memory:** E's node gains T6.
+- **Against today:** the same.
+- **Checked:** 225 entries for a run that already existed; for all of them `delegatedFrom` equals today's top run, and `recipientAddress` is present or fillable. 225 of 227 `task_assignment` messages are in both logs.
+
+**5.1.7 [DL-5] E's solution designer hands sub-work of T1 to P and to I.**
+- **Call** (by `solution_designer_65a9`): `delegate_task(recipient_address: "/product_team", description: "…")`. There is no `task_id`: the work joins the delegator's own open Task, T1.
+- **On disk:** T1's record gains:
+  ```json
+  { "role": "subWork",
+    "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" },
+    "recipientAddress": "/product_team",
+    "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
+    "linkedAt": "…", "start": "started", "closedAt": null }
+  ```
+  P's own file is an ordinary team file rooted at `/` (`/product_designer`, `/prototyper`), with the same `delegatedFrom`: one hop, so it names E, not M. Nothing is written in E's files or in M's.
+  For I, the same with `"recipientAddress": "/image_maker"` and `"agentRun": { "kind": "agent", "agentRunId": "image_maker_33f0" }`. I's `run_metadata.json` is the example in §3.2.
+- **In memory:** P and I under E. Their Task is T1, whose assigner is M (the node in §4).
+- **Against today:** today the entry names M as `hostRoot`, and P and I run inside M's process. Now they are one hop under E and run on their own.
+- **Checked:** 30 such entries (27 `delegated` → `subWork`, 2 `broughtIn`, 1 for a Task with no Project). All can be computed, and all are nested one hop below today's top run.
+
+**5.1.8 [B-2, R-2 … R-4, C-2, C-3] P and I talk with M and with E.**
+
+| Who | Writes | Reaches | Why |
+| --- | --- | --- | --- |
+| P's `product_designer` | `recipient_address: "/project_task_manager"` | M | Step 2: T1's assigner is M, not P's delegator (B-2; 3 sends replayed) |
+| P's member | `target_agent_run_id: "solution_designer_65a9"` | E's solution designer, its delegator | (a): both on T1 (R-3) |
+| P's member | `recipient_address: "/solution_designer"` | P's own member of that name if it has one, else not found | Step 1 never falls through; E is reached by run ID (C-2) |
+| E's member | `recipient_address: "/product_team"` | Not found | Delegated runs are reached by run ID (C-3) |
+| E, P and I, among themselves | `target_agent_run_id: …` | Each other, both directions | (a): all on T1 (R-2) |
+| M | `target_agent_run_id: "product_designer_1a2b"` | P, at depth 2 | (b): M assigned T1 (R-4) |
+
+Each message is one line in the sender's and the receiver's run logs. P, I and E see each other by run ID only (E-4). P sees M's address (E-2).
+
+**5.1.9 [DL-6] I hands part of its work further.** I → `delegate_task(recipient_address: "/upscaler", description: "…")`. A `subWork` entry in T1 with `"delegatingRun": { "kind": "agent", "runId": "image_maker_33f0" }, "delegatorAgentRunId": "image_maker_33f0"`, and the same `delegatedFrom` in the upscaler's own file. The upscaler is one hop under I. **Checked:** 1 entry.
+
+**5.1.10 [R-7] Runs of different Tasks.** M → `delegate_task(recipient_address: "/research_agent", task_id: "T2")` creates R, as in 5.1.2. Then P → `target_agent_run_id: "research_agent_9b10"` is refused, "it works on a different Task", as today.
+
+**5.1.11 [DL-8] A description-only delegation.** M → `delegate_task(recipient_address: "/image_maker", description: "…")` with no `task_id` creates a Task with no Project, under `ad-hoc-tasks/<t>/agent_run_resources.json`. Its entry is as in 5.1.2. **Checked:** 16 such entries (3 by a standalone agent, 9 by a member of a team the user started, 2 by an org's mounted-team member, 1 sub-work of a delegated team, 1 by a delegated agent).
+
+**5.1.12 [DL-9, DL-10, R-10] M delegates to a peer node.**
+- **Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "T7")`.
+- **On disk (this node):** T7's entry also holds what a message needs:
+  ```json
+  { "role": "assigned", "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" },
+    "recipientAddress": "/research_team", "agentRun": { "kind": "team", "teamRunId": "research_team_77aa", "coordinatorAgentRunId": "lead_0c11" },
+    "nodeId": "node-b-1f0e",
+    "members": [ { "address": "/lead", "agentRunId": "lead_0c11" }, { "address": "/analyst", "agentRunId": "analyst_5d20" } ],
+    "linkedAt": "…", "start": "started", "closedAt": null }
+  ```
+- **On disk (the peer, DL-10):** the team's own file, rooted at `/`, with `"delegatedFrom": { "nodeId": "node-a-77d2", "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" }`. `isPeerStarted` is true. It has no Task entry on that node and is not in that node's tree. Its own `delegatedFrom` admits messages from its delegator.
+- **In memory (this node):** a node for the team with `"node": "node-b-1f0e"`, whose agents come from `members`.
+- **Talking (R-10):** by run ID only, in both directions (CM-11). Each side stores the message in its own run's log.
+- **Against today:** today the node and members are in M's `collaboration_tree.json` link.
+- **Checked:** 2 such entries (their facts come from that link, E3); 0 runs started by a peer on this node.
+
+**5.1.13 [T-1, T-2, R-6, R-8, T-3] T1 is closed, reopened, deleted.**
+- **Closed** (`update_task(task_id: "T1", status: "DONE")`): each T1 entry gets `"closedAt": "…"`. E, P and I are each asked, by their own ID, to stop. A message to any of them is now refused (`TASK_AGENT_RESOURCE_CLOSED`, R-8). They leave M's view.
+- **Reopened** (`update_task(task_id: "T1", status: "IN_PROGRESS")`, then M → `target_agent_run_id: "solution_designer_65a9"`): E's entry gets `"closedAt": null`. M, as the assigner, continues E (R-6), and E is in M's view again.
+- **Deleted:** T1's record is removed; open runs are stopped first. E, P and I leave the tree and become runs of their own (TC-3). Each keeps its own `delegatedFrom` as its "delegated from" label. No Task relates them any more, so they cannot message each other (R-9).
+
+**5.1.14 [T-4 … T-7] Stop, archive or delete, restart, idle.**
+- **The user stops M:** only M stops (TC-1). E keeps working. E's next report to M restores M.
+- **The user stops E:** only E stops. P keeps working. P's next message to E restores E.
+- **The user archives or deletes M while E works:** refused, with the reason (TC-2).
+- **The server restarts:** no run is running. The tree is rebuilt from the Task entries. Each run is restored by its next message.
+- **E goes quiet:** its own idle shutdown stops it (P6), and its next message wakes it.
+
+**5.1.15 [IN-7, C-1] What M cannot do.**
+- `send_message_to(recipient_address: "/project_task_manager")` returns `{ "accepted": false, "code": "COLLABORATION_SELF_TARGET_REJECTED", "message": "You can't send a message to yourself." }`.
+- `send_message_to(recipient_address: "/software_engineering_team")` is not found: M reaches E by run ID (5.1.5). This is today's code. 53 older sends (2026-08 … 2026-10) reached a delegated run by address before that rule.
+
+---
+
+### 5.2 You start a team: the Software Engineering Team on its own (U)
+
+**Cases in this section:**
+1. [RUN-2] The run itself
+2. [IN-1 … IN-4] Members talk, follow handoffs, and receive the user's messages
+3. [DL-2] U's solution designer delegates Task T3 to an image agent (I2)
+4. [B-3, R-5] I2 reports back to U
+5. [DL-6] I2 hands part of its work further
+6. [DL-11] Delegations refused inside U
+
+**5.2.1 [RUN-2] The run itself.**
 - **Started by:** the user, from the team's page.
 - **On disk:**
   - `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`:
@@ -349,7 +539,7 @@ The user starts three kinds of run. Each is its own address space (§2.1) and ha
                       { "address": "/implementation_engineer", "agentRunId": "implementation_engineer_864a", "…": "…" },
                       { "address": "/code_reviewer", "agentRunId": "code_reviewer_2e4f", "…": "…" } ] } }
     ```
-    `taskExecutions` is removed (E9).
+    `taskExecutions` is removed (E9). There is no `delegatedFrom`: the user started it.
   - Each member's memory is in `memory/agent_teams/software_engineering_team_73d7/<member run ID>/` (raw traces, work journal, …).
   - The team's log is `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`.
   - Its row in `memory/team_run_history_index.json`:
@@ -364,7 +554,59 @@ The user starts three kinds of run. Each is its own address space (§2.1) and ha
   - 133 of them have handoffs. In all 601, every handoff `from` and `to` is a member.
   - 0 teams have a nested sub-team.
 
-**RUN-3 — An org run (for example the AutoByteus Org).**
+**5.2.2 [IN-1 … IN-4] Members talk.**
+- **By address (IN-1):** `solution_designer_7a33` → `send_message_to(recipient_address: "/architecture_reviewer", message_type: "architecture_review_request", content: "…")`. Step 1, its own team. One line in U's log:
+  ```json
+  { "messageId": "collabmsg_…", "senderAgentRunId": "solution_designer_7a33", "receiverAgentRunId": "architecture_reviewer_cd34",
+    "content": "…", "messageType": "architecture_review_request", "referenceFiles": [], "createdAt": "…" }
+  ```
+  The reviewer sees `You received a message from the agent with sender address "/solution_designer" and sender run id "solution_designer_7a33".`
+- **Handoffs (IN-2):** `get_handoff_rules()` returns `{ "handoffs": [ { "when": "When the design is ready for review …", "recipient_address": "/architecture_reviewer" } ] }`: the team file's `handoffs` whose `from` is the caller. The agent then sends as above.
+- **By run ID (IN-3):** `send_message_to(target_agent_run_id: "architecture_reviewer_cd34", content: "…")`, stored and shown as above. Inside one run, the Task is not asked.
+- **The user writes (IN-4):** the composer sends to the coordinator, or to the member the user selected. That is the agent's own input, kept in its memory. It is not a line in the team's log.
+- **`list_available_agents`** gives the teammates (`/architecture_reviewer`, …) and the catalog for `delegate_task`.
+- **Against today:** the same.
+- **Checked:** 2,237 member-to-teammate sends by address replayed in teams the user started (A-1), all reaching the same receiver. 8,715 messages in these teams, each stored once in the team's log.
+
+**5.2.3 [DL-2] U's solution designer delegates Task T3 to an image agent.**
+- **Call:** `delegate_task(recipient_address: "/image_maker", task_id: "T3")`.
+- **On disk:** T3's entry:
+  ```json
+  { "role": "assigned",
+    "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_73d7" }, "delegatorAgentRunId": "solution_designer_7a33" },
+    "recipientAddress": "/image_maker", "agentRun": { "kind": "agent", "agentRunId": "image_maker_44a1" },
+    "linkedAt": "…", "start": "started", "closedAt": null }
+  ```
+  I2's `run_metadata.json` is like I's in §3.2, with this `delegatedFrom`. Nothing is written in U's file.
+- **In memory:** I2 under U. T3's assigner is U.
+- **Against today:** the same, except that I2 runs on its own instead of inside U.
+- **Checked:** 9 entries delegated by a member of a team the user started; all can be computed.
+
+**5.2.4 [B-3, R-5] I2 reports back to U.**
+- `send_message_to(recipient_address: "/solution_designer", content: "…")`. Step 2: T3's assigner is U, whose standing agents are its members. `"/architecture_reviewer"` reaches that member the same way.
+- Or by run ID: `target_agent_run_id: "solution_designer_7a33"`, rule (b).
+- **On disk:** one line in I2's log, `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, and the same line in U's log.
+- U's member sees the run ID only (E-3).
+- **Checked:** 6 such sends replayed (B-3); all reach the same receiver.
+
+**5.2.5 [DL-6] I2 hands part of its work further.** As in 5.1.9: a `subWork` entry in T3 that names I2 as the delegating run.
+
+**5.2.6 [DL-11] Delegations refused inside U.**
+- `delegate_task(recipient_address: "/architecture_reviewer")` is refused: it is its own team.
+- `delegate_task(recipient_address: "/software_engineering_team")` creates a new copy of the team definition, as today.
+
+---
+
+### 5.3 You start an org (O)
+
+**Cases in this section:**
+1. [RUN-3] The run itself
+2. [IN-5, IN-6] Its agents and mounted teams talk
+3. [DL-3] O's CEO agent delegates Task T4 to a study group team (S)
+4. [B-4, B-5] S talks to O, and follows its handoff to `/Teacher`
+5. [DL-4] A mounted team's member delegates
+
+**5.3.1 [RUN-3] The run itself.**
 - **Started by:** the user, from the org's page.
 - **On disk:**
   - `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`:
@@ -382,204 +624,90 @@ The user starts three kinds of run. Each is its own address space (§2.1) and ha
                                     { "address": "/dev_team/qa", "agentRunId": "qa_8e9f", "…": "…" } ] } ] } }
     ```
     `taskExecutions` is removed (E9). An empty `collaborators: []` left by an earlier migration is not read.
-  - A direct agent's memory is in `memory/agent_orgs/company_org_9d00/<agent run ID>/`. A mounted team's member's memory is in `memory/agent_orgs/company_org_9d00/<team run ID>/<member run ID>/`. Both appear once the agent has run.
+  - A direct agent's memory is in `memory/agent_orgs/company_org_9d00/<agent run ID>/`. A mounted team member's memory is in `memory/agent_orgs/company_org_9d00/<team run ID>/<member run ID>/`. Both appear once the agent has run.
   - The org's log is `memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl`.
   - Its row is in `memory/agent_org_run_history_index.json` (`orgRunId`, `orgDefinitionId`, `orgDefinitionName`, `workspaceRootPath`, `summary`, `createdAt`, `archivedAt`, `terminatedAt`).
 - **Its address space:** `/ceo_agent`, `/cto`, `/Teacher`, `/dev_team` (its coordinator), `/dev_team/dev_lead`, `/dev_team/qa`.
 - **Against today:** the same.
 - **Checked:** 24 org runs, all rooted at `/`, with 26 direct agents and 74 mounted teams. 625 of 625 handoffs have `from` and `to` inside the org.
 
-**RUN-4 — Retired files that stay.**
-- `task_delegation_records.json` in 545 team folders and `agent_org_task_delegation_records.json` in 18 org folders hold 4 records in all, from the old submission model (2026-08 … 2026-09).
-- Only released migrations read them. Nothing writes them, and nothing reads them at runtime. They stay as they are (P7).
+**5.3.2 [IN-5, IN-6] Its agents and mounted teams talk.** Every message is one line in the org's log.
 
-### 5.2 Inside one run
+| Who | Writes | Reaches | Step | Replayed |
+| --- | --- | --- | --- | --- |
+| `ceo_agent` | `"/cto"` | The CTO | 3 | IN-5 (A-2): 42 sends, the same receiver |
+| `ceo_agent` | `"/dev_team"` | `/dev_team/dev_lead`, its coordinator | 3 | In A-2 |
+| `ceo_agent` | `"/dev_team/qa"` | That member | 3 | In A-2 |
+| `dev_lead` | `"/dev_team/qa"` | Its teammate | 1 | IN-6 (A-3): 472 sends, the same receiver |
+| `dev_lead` | `"/ceo_agent"`, or by its handoff to `/ceo_agent` | The CEO agent | 3 | In A-3 |
+| `dev_lead` | `"/dev_team/designer"` (not a member) | Not found; it never falls through to the org | 1 | — |
 
-Every message in this section is stored **once**, in the run's own log (§3.4, M-1). The sender gets `{ "accepted": true, "code": "DELIVERED", "message": "Delivered message to <address>.", "target_agent_run_id": "<receiver>" }`. The receiver is woken once and sees its teammate's address in the header (§2.4, E-1).
+Each receiver sees the sender's address (`"/ceo_agent"`, `"/dev_team/dev_lead"`). **Checked:** 1,015 messages inside orgs, each stored once in the org's log.
 
-**IN-1 — The software engineering team you started: a member messages a teammate by address.**
-- **Call** (by `solution_designer_7a33`): `send_message_to(recipient_address: "/architecture_reviewer", message_type: "architecture_review_request", content: "…")`.
-- **Found:** §2.3 step 1, its own team: the member at `/architecture_reviewer`.
-- **On disk:** one line in `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`:
-  ```json
-  { "messageId": "collabmsg_…", "senderAgentRunId": "solution_designer_7a33", "receiverAgentRunId": "architecture_reviewer_cd34",
-    "content": "…", "messageType": "architecture_review_request", "referenceFiles": [], "createdAt": "…" }
-  ```
-- **Receiver sees:** `You received a message from the agent with sender address "/solution_designer" and sender run id "solution_designer_7a33".`
-- **Checked:** A-1 (2,237 such sends, the same receiver). Within-run storage: 8,715 messages in teams the user started, each once in the team's log.
-
-**IN-2 — The same team: a member follows its handoff rules.**
-- **Call:** `get_handoff_rules()` returns `{ "handoffs": [ { "when": "When the design is ready for review …", "recipient_address": "/architecture_reviewer" } ] }`. That is the team file's `handoffs` entries whose `from` is the caller. The agent then sends as in IN-1.
-- **Checked:** every handoff of the 601 teams has its `to` inside the team.
-
-**IN-3 — The same team: a member messages a teammate by run ID.** `send_message_to(target_agent_run_id: "architecture_reviewer_cd34", content: "…")`. Storage and header are as in IN-1. Inside one run, the Task is not asked.
-
-**IN-4 — The user writes to the team.** The composer sends to the coordinator, or to the member the user selected. This is the agent's own input, kept in its memory (raw traces). It is not a line in the team's log, as today.
-
-**IN-5 — An org: an agent messages another org agent, a mounted team, or a member of it.**
-- **Call** (by `ceo_agent_1f2e`): `send_message_to(recipient_address: "/cto")`, `"/dev_team"` (it reaches `/dev_team/dev_lead`, the coordinator), or `"/dev_team/qa"`.
-- **Found:** §2.3 step 3, its own run's standing agents.
-- **On disk:** one line in the org's log.
-- **Checked:** A-2. 1,015 messages within orgs, each once in the org's log.
-
-**IN-6 — An org: a member of a mounted team messages its teammate or an org agent.**
-- **Call** (by `dev_lead_4c3d`): `"/dev_team/qa"` (step 1, its own team), or `"/ceo_agent"` (step 3). A miss under `/dev_team/` is not found and never falls through.
-- **Handoffs between units are ordinary:** `{ "from": "/dev_team/dev_lead", "to": "/ceo_agent" }`.
-- **Checked:** A-3.
-
-**IN-7 — A standalone agent:** it has no teammates. Its own address is refused (RUN-1).
-
-**IN-8 — A delegated team, inside.** A delegated team is an ordinary team run (P1), so IN-1 … IN-3 hold for it unchanged. Example, E's `solution_designer` → `"/code_reviewer"`. `get_handoff_rules` returns team-local addresses: `{ "recipient_address": "/ui_baseline_bootstrapper" }`, where today it returns `"/product_team/ui_baseline_bootstrapper"`. 
-
-Every address case inside one run, replayed: A-1 is IN-1, A-2 is IN-5, A-3 is IN-6, and A-4 … A-6 are what changes for a delegated team.
-
-| # | Sender | Writes | Reaches | Step | Header the receiver sees | Against today | Replayed |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| A-1 | Marketing's `copywriter` | `"/marketing_coordinator"` | Its teammate | 1 | `"/copywriter"` | Same | 2,237: the same receiver |
-| A-2 | The org's `ceo_agent` | `"/cto"`; `"/dev_team"`; `"/dev_team/dev_lead"` | An org agent; the mounted team's coordinator; a member | 3 | `"/ceo_agent"` | Same | 42: the same receiver |
-| A-3 | The mounted team's `dev_lead` | `"/dev_team/qa"`; `"/ceo_agent"`. A miss under `/dev_team/` is not found | Its teammate; an org agent | 1; 3 | `"/dev_team/dev_lead"` | Same | 472: the same receiver |
-| A-4 | E's `solution_designer` | `"/code_reviewer"` | Its teammate | 1 | `"/solution_designer"` | **Changed:** was `"/software_engineering_team/code_reviewer"` | 3,311: every one reaches the same receiver with the prefix dropped |
-| A-5 | E's member | E as a whole: no address, because `/` never is. The coordinator is `"/solution_designer"` | — | — | — | **Changed:** `"/software_engineering_team"` reached the coordinator | 0 sends |
-| A-6 | E's member, from its history | `"/software_engineering_team/code_reviewer"` | Not found, with today's guidance; its member context gives its addresses | — | — | **Changed** | 11 delegated teams with an open Task |
-
-### 5.3 Delegation
-
-**DL-1 — A standalone agent the user started delegates a Project Task (M → E, T1).**
-- **Call:** `delegate_task(recipient_address: "/software_engineering_team", task_id: "T1")`.
-- **Found:** `/software_engineering_team` in M's own list (its catalog). A new team run is created, rooted at `/`.
-- **On disk:**
-  - T1's entry, as in §3.1 (`role: "assigned"`, `delegatedFrom` = M, `recipientAddress: "/software_engineering_team"`);
-  - E's own file, as in §3.2, with the same `delegatedFrom`;
-  - a history row for E;
-  - no message log line: the work packet is the coordinator's first input.
-  - Nothing is written in M's folder.
-- **In memory:** a node for E with parent M and Task T1 (assigned, open, assigner M).
-- **Result:**
-  - M gets `{ "delegated": true, "target_kind": "team", "target_team_run_id": "software_engineering_team_0218", "target_team_coordinator_agent_run_id": "solution_designer_65a9" }`.
-  - E's coordinator's first input is the work packet. It names the delegator by run ID and by `"/project_task_manager"`, which reaches it by §2.3 step 2.
-- **Against today:** the same call and result. E's file is rooted at `/` instead of `/software_engineering_team` and has no `taskAgent`, and M's folder gets nothing.
-- **Checked:** 141 entries (138 Project Tasks, 3 with no Project). For all 141, `delegatedFrom` can be computed, `recipientAddress` is present or fillable, and one hop equals today's top run.
-
-**DL-2 — A member of a team the user started delegates (marketing's `copywriter` → I, T3).**
-- **Call:** `delegate_task(recipient_address: "/image_maker", task_id: "T3")`.
-- **On disk:** T3's entry:
-  ```json
-  { "role": "assigned", "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "marketing_team_5a00" }, "delegatorAgentRunId": "copywriter_77c1" },
-    "recipientAddress": "/image_maker", "agentRun": { "kind": "agent", "agentRunId": "image_maker_33f0" }, "linkedAt": "…", "start": "started", "closedAt": null }
-  ```
-  I's `run_metadata.json` is as in §3.2. Nothing is written in the marketing team's file.
-- **In memory:** I under `marketing_team_5a00`.
-- **Against today:** the same.
-- **Checked:** 9 entries, all computable.
-
-**DL-3 — An org's direct agent delegates (`ceo_agent` → S, T4).**
+**5.3.3 [DL-3] O's CEO agent delegates Task T4 to a study group team.**
 - **Call:** `delegate_task(recipient_address: "/study_group", task_id: "T4")`.
-- **On disk:** T4's entry with `"delegatingRun": { "kind": "agent_org", "runId": "company_org_9d00" }, "delegatorAgentRunId": "ceo_agent_1f2e"`, and `recipientAddress: "/study_group"`. S's file is rooted at `/`, with handoff `{ "from": "/student", "to": "/Teacher" }` kept as written. The org's file keeps only its own units.
-- **Against today:** S is no longer mounted in the org's space.
+- **On disk:**
+  - T4's entry:
+    ```json
+    { "role": "assigned",
+      "delegatedFrom": { "delegatingRun": { "kind": "agent_org", "runId": "company_org_9d00" }, "delegatorAgentRunId": "ceo_agent_1f2e" },
+      "recipientAddress": "/study_group", "agentRun": { "kind": "team", "teamRunId": "study_group_7a7a", "coordinatorAgentRunId": "student_31aa" },
+      "linkedAt": "…", "start": "started", "closedAt": null }
+    ```
+  - S's own file, rooted at `/` with members `/student` and `/tutor`. Its handoff `{ "from": "/student", "to": "/Teacher" }` is kept as written: an external target (§3.2).
+  - The org's file keeps only its own units.
+- **In memory:** S under O. T4's assigner is O.
+- **Against today:** S is no longer mounted in the org's address space.
 - **Checked:** 0 such entries in the data.
 
-**DL-4 — A member of an org's mounted team delegates (`dev_lead` → an agent, T5).** This is DL-3 with `delegatorAgentRunId: "dev_lead_4c3d"` and the same `delegatingRun` (the org run). **Checked:** 2 entries, both computable.
+**5.3.4 [B-4, B-5] S talks to O.**
+- S's `student` → `"/ceo_agent"`, `"/dev_team"` or `"/dev_team/dev_lead"`: step 2, the org's standing agents (B-4; 2 sends replayed, the same receiver).
+- **Following its handoff (B-5):** `get_handoff_rules()` returns `{ "handoffs": [ { "when": "…", "recipient_address": "/Teacher" } ] }`. Then `send_message_to(recipient_address: "/Teacher")` → step 2 reaches the org's `Teacher`, because O assigned S's Task.
+- Each message is one line in S's log and in O's log. The org's agents see S by run ID only.
+- **Checked:** B-5 has 0 sends. The 2 legacy teams with a `/Teacher` rule have no Task record, so for them it is not found.
 
-**DL-5 — A member of a delegated team delegates sub-work (E's `solution_designer` → P, part of T1).**
-- **Call:** `delegate_task(recipient_address: "/product_team")`. No `task_id`: the work joins the delegator's own open Task.
-- **On disk:** an entry in T1:
-  ```json
-  { "role": "subWork", "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" },
-    "recipientAddress": "/product_team", "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
-    "linkedAt": "…", "start": "started", "closedAt": null }
-  ```
-  P's own file carries the same `delegatedFrom`: one hop, so it names E, not M.
-- **In memory:** P under E. P's Task is T1, whose assigner is M (the node in §4).
-- **Against today:** today the entry names M as `hostRoot` and P runs inside M's process. Now P is one hop under E and runs on its own.
-- **Checked:** 30 entries (27 `delegated` → `subWork`, 2 `broughtIn`, 1 with no Project). All are computable, and none equals today's top run: all are nested, one hop below it.
+**5.3.5 [DL-4] A mounted team's member delegates.** `dev_lead` → `delegate_task(recipient_address: "/release_agent", task_id: "T5")`. The entry is as in 5.3.3, with `"delegatorAgentRunId": "dev_lead_4c3d"` and the same `delegatingRun`, the org run: a mounted team is a part of the org run. **Checked:** 2 entries; both can be computed.
 
-**DL-6 — A delegated agent delegates sub-work (I → an upscaler, part of T3).** A `subWork` entry in T3 with `"delegatingRun": { "kind": "agent", "runId": "image_maker_33f0" }`, and the same `delegatedFrom` in the upscaler's own file. **Checked:** 1 entry.
+---
 
-**DL-7 — Another Task for a run that already exists (M gives E the Task T6).**
-- **Call:** `delegate_task(target_team_run_id: "software_engineering_team_0218", task_id: "T6")`. For an agent run: `target_agent_run_id`.
-- **Admitted:** only M, which made E's most recent assignment, may do this.
-- **On disk:**
-  - a new `assigned` entry in T6 with the same `delegatedFrom` and `recipientAddress` as E's T1 entry;
-  - a `task_assignment` message from M to E's coordinator, stored in M's log and E's log.
-- **In memory:** E's node gains T6.
-- **Against today:** the same.
-- **Checked:** 225 later entries; for all of them `delegatedFrom` equals today's top run, and `recipientAddress` is present or fillable. 225 `task_assignment` messages are in both logs; 2 are not (in history).
+### 5.4 Reference for every run
 
-**DL-8 — A description-only delegation.** This is any of DL-1 … DL-6 with `delegate_task(recipient_address: "…", description: "…")` and no `task_id`. A Task with no Project is created under `ad-hoc-tasks/<t>/`, and its entry is as above. **Checked:** 16 entries (3 DL-1, 9 DL-2, 2 DL-4, 1 DL-5, 1 DL-6).
-
-**DL-9 — Delegation to a peer (M → a research team on `node-b-1f0e`).**
-- **Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "T7")`.
-- **On disk (this node):** T7's entry also holds what a message needs:
-  ```json
-  { "role": "assigned", "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" },
-    "recipientAddress": "/research_team", "agentRun": { "kind": "team", "teamRunId": "research_team_77aa", "coordinatorAgentRunId": "lead_0c11" },
-    "nodeId": "node-b-1f0e",
-    "members": [ { "address": "/lead", "agentRunId": "lead_0c11" }, { "address": "/analyst", "agentRunId": "analyst_5d20" } ],
-    "linkedAt": "…", "start": "started", "closedAt": null }
-  ```
-- **On disk (the peer):** the run's own file, as in DL-10.
-- **In memory:** a node for the team with `node: "node-b-1f0e"`, whose agents come from `members`.
-- **Against today:** today the node and members are in M's `collaboration_tree.json` link. The members' addresses are as the peer stores them; a peer-started team is rooted at `/` today already.
-- **Checked:** 2 entries (in the DL-1 count); the facts come from their link (E3).
-
-**DL-10 — A run a peer started on this node.**
-- **On disk:** its own file has `"delegatedFrom": { "nodeId": "node-a-77d2", "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "project_task_manager_7c8d" }`. It has no Task entry on this node and is not in this node's tree.
-- `isPeerStarted` is true. Its own `delegatedFrom` admits messages from its delegator.
-- **Checked:** 0 such runs.
-
-**DL-11 — Refused delegations.**
-
-| Call by E's member | Result | Against today |
-| --- | --- | --- |
-| `delegate_task(recipient_address: "/solution_designer")` by `solution_designer` itself | Refused: `COLLABORATION_SELF_TARGET_REJECTED`, "you can't delegate to yourself …" | Same |
-| `delegate_task(recipient_address: "/code_reviewer")` | Refused: its own team | Same |
-| `delegate_task(recipient_address: "/software_engineering_team")` | **A new copy of the team**, as in a team the user started | **Changed:** today a delegated team refuses it as its own team. History: 0 refusals |
-
-**DL-0 — A delegated run with no Task record (legacy).**
-- No entry names it, so it is not in the tree. It is an ordinary run in the run list (TC-9), labeled from its own `delegatedFrom`.
-- It reaches only its own run's agents by address (§2.3 step 3).
-- **Checked:** 15 runs.
-
-### 5.4 Messages by address, between runs
-
-Every row is `send_message_to(recipient_address: "<the address>", content: "…")`.
-
-**On disk** for every delivered row: one line in each of the two runs' logs, with one `messageId` (§3.4, M-2).
-
-**Result** for every delivered row: the sender gets `{ "accepted": true, "code": "DELIVERED", "message": "Delivered message to <address>.", "target_agent_run_id": "<receiver>" }`. The receiver is woken once (restored if stopped) and sees the header of §2.4.
-
-"Replayed" means every such send stored in the agents' traces, run under these rules and compared with the receiver that actually got it.
+**5.4.1 Every address, replayed** (the agents' stored `send_message_to` calls by address, run under the rules of §2.3 and compared with the receiver that got each one).
 
 | # | Sender | Writes | Reaches | Step | Header the receiver sees | Against today | Replayed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| B-1 | E's `solution_designer` | `"/project_task_manager"` | M (T1's assigner) | 2 | M sees the run ID only (E-3) | Same | 412: the same receiver |
-| B-2 | P's `product_designer` (sub-work of T1) | `"/project_task_manager"` | M: T1's assigner, not P's delegator | 2 | Run ID only | Same | 3: the same receiver |
-| B-3 | I (delegated by `copywriter`, DL-2) | `"/copywriter"`, `"/marketing_coordinator"` | The marketing team's members | 2 | Run ID only | Same | 6: the same receiver |
-| B-4 | S's member | `"/ceo_agent"`, `"/dev_team"`, `"/dev_team/dev_lead"` | The org's agents and mounted team | 2 | Run ID only | Same | 2: the same receiver |
-| B-5 | S's member, following its handoff rule | `get_handoff_rules` names `"/Teacher"`; it writes `"/Teacher"` | The org's `Teacher` | 2 | Run ID only | Same | 0 sends. The 2 legacy teams with such a rule have no Task record: not found |
-| C-1 | M | `"/software_engineering_team"` | Not found: delegated runs are reached by run ID (R-1) | — | — | Same as today's code | 53 older sends (2 in 2026-08, 51 in 2026-10) reached a delegated run by address before that rule. 51 of them involve a run with no Task record |
-| C-2 | P's member | `"/solution_designer"` | P's own member of that name if it has one, else not found. E's designer is reached by run ID (R-3) | 1 or — | — | Same | — |
-| C-3 | E's member | `"/product_team"` | Not found: P by run ID (R-2) | — | — | Same | In C-1's 53 |
-| C-4 | Anyone | An address no step finds | `COLLABORATION_TARGET_NOT_FOUND` | — | — | Same | The 10 refused today as not found are still not found |
+| A-1 | A member of a team the user started (5.2.2) | `"/architecture_reviewer"` | Its teammate | 1 | The sender's address | Same | 2,237: the same receiver |
+| A-2 | An org agent (5.3.2) | `"/cto"`; `"/dev_team"`; `"/dev_team/qa"` | An org agent; a mounted team's coordinator; a member | 3 | The sender's address | Same | 42: the same receiver |
+| A-3 | A mounted team's member (5.3.2) | `"/dev_team/qa"`; `"/ceo_agent"` | Its teammate; an org agent | 1; 3 | The sender's address | Same | 472: the same receiver |
+| A-4 | A delegated team's member (5.1.3) | `"/code_reviewer"` | Its teammate | 1 | The sender's address | **Changed:** was `"/software_engineering_team/code_reviewer"` | 3,311: the same receiver, prefix dropped |
+| A-5 | A delegated team's member | Its team as a whole | No address | — | — | **Changed:** the team's prefix reached the coordinator | 0 sends |
+| A-6 | A delegated team's member, from its history | `"/software_engineering_team/code_reviewer"` | Not found, with guidance | — | — | **Changed** | 11 delegated teams with an open Task |
+| B-1 | A delegated team's member (5.1.4) | `"/project_task_manager"` | Its Task's assigner, a standalone agent | 2 | The run ID only | Same | 412: the same receiver |
+| B-2 | A sub-work run (5.1.8) | `"/project_task_manager"` | Its Task's assigner, not its delegator | 2 | The run ID only | Same | 3: the same receiver |
+| B-3 | A run delegated by a team member (5.2.4) | `"/solution_designer"` | The assigning team's member | 2 | The run ID only | Same | 6: the same receiver |
+| B-4 | A run delegated by an org (5.3.4) | `"/ceo_agent"`, `"/dev_team/dev_lead"` | The org's agents | 2 | The run ID only | Same | 2: the same receiver |
+| B-5 | The same, by its handoff rule (5.3.4) | `"/Teacher"` | The org's agent | 2 | The run ID only | Same | 0 sends |
+| C-1 | An assigner (5.1.15) | `"/software_engineering_team"` | Not found: run ID only | — | — | Same as today's code | 53 older sends (2026-08 … 2026-10), before that rule |
+| C-2 | A sub-work run (5.1.8) | `"/solution_designer"` | Its own member of that name, else not found | 1 or — | — | Same | — |
+| C-3 | A delegated run (5.1.8) | `"/product_team"` | Not found: run ID only | — | — | Same | In C-1's 53 |
+| C-4 | Anyone | An address no step finds | `COLLABORATION_TARGET_NOT_FOUND` | — | — | Same | The 10 refused today stay refused |
 
 `list_available_agents` gives exactly the addresses of steps 1 to 3, plus the catalog addresses for `delegate_task`.
 
-### 5.5 Messages by run ID, between runs
+**5.4.2 Every message by run ID** (`send_message_to(target_agent_run_id: …)` between runs).
 
-Every row is `send_message_to(target_agent_run_id: "<run ID>", content: "…")`. The receiver is found in the tree by its agent run ID. A stopped receiver is restored and woken once. Storage, result and header are as in §5.4.
-
-| # | Sender → receiver | Admitted by | Against today |
+| # | Sender → receiver | Admitted by | Where |
 | --- | --- | --- | --- |
-| R-1 | M → `"solution_designer_65a9"` (E's coordinator), or any member of E | (b): M assigned T1 | Same |
-| R-2 | E ↔ P ↔ I, any agents, both directions | (a): all on T1 | Same |
-| R-3 | P's member → `"solution_designer_65a9"` (its delegator) | (a) | Same |
-| R-4 | M → `"product_designer_1a2b"` (P, at depth 2) | (b): M assigned T1 | Same |
-| R-5 | E's member → `"project_task_manager_7c8d"` | (b) | Same |
-| R-6 | M → E after T1 closed and was reopened | (b): the assigner continues it; E's T1 entry gets `closedAt: null` | Same |
-| R-7 | P ↔ R (T1 and T2) | Refused: "it works on a different Task" | Same |
-| R-8 | Anyone → a run whose Task is closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6 | Same |
-| R-9 | A legacy run (DL-0) ↔ any other run | Refused: no Task relates them (TC-9) | Changed for legacy runs only |
-| R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11). This node finds it by its entry's `nodeId` and `members`; the peer finds its delegator by its own `delegatedFrom` | Same |
+| R-1 | The assigner → any agent of a run of its Task | (b) | 5.1.5 |
+| R-2 | Runs of one Task, both directions | (a) | 5.1.8 |
+| R-3 | A sub-work run → its delegator | (a) | 5.1.8 |
+| R-4 | The assigner → a run at depth 2 | (b) | 5.1.8 |
+| R-5 | A run → its Task's assigner | (b) | 5.1.5, 5.2.4 |
+| R-6 | The assigner → a run of its reopened Task | (b), the assigner continues it | 5.1.13 |
+| R-7 | Runs of different Tasks | Refused: "it works on a different Task" | 5.1.10 |
+| R-8 | Anyone → a run whose Task is closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6 | 5.1.13 |
+| R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | 5.1.13, 5.4.4 |
+| R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | 5.1.12 |
 
 **Checked** (`task-centered-messaging-2026-11-11.txt`, every stored message between two runs, 1,604):
 - 1,540 are allowed as today: 103 by (a) and 1,437 by (b).
@@ -587,25 +715,29 @@ Every row is `send_message_to(target_agent_run_id: "<run ID>", content: "…")`.
 - 0 are newly allowed.
 - Rule (a)/(b) computed on the tree equals the rule on the records for 230 of 230 run pairs.
 
-### 5.6 The sender address shown (every stored message)
+**5.4.3 The sender address shown** (every stored message).
 
 | # | Sender → receiver | Shown | Checked |
 | --- | --- | --- | --- |
 | E-1 | Within one run | The sender's address (`"/code_reviewer"`) | 13,206: the address |
-| E-2 | Assigner → a run of its Task (M → E) | `"/project_task_manager"` (it reaches back by step 2) | 690: the address |
-| E-3 | A run → its Task's assigner (E → M) | The run ID only: M cannot address E | 747: the run ID only |
-| E-4 | Runs of one Task, or legacy | The run ID only | 167: the run ID only |
+| E-2 | The assigner → a run of its Task | `"/project_task_manager"` (it reaches back by step 2) | 690: the address |
+| E-3 | A run → its Task's assigner | The run ID only: the assigner cannot address the run | 747: the run ID only |
+| E-4 | Runs of one Task, or legacy runs | The run ID only | 167: the run ID only |
 
-### 5.7 Task and run changes that change who can talk
+**5.4.4 Old data that is not a case of its own.**
+- **[DL-0] A delegated run with no Task record (15 runs, 2026-08 … 2026-10).** No entry names it, so it is not in the tree. It is an ordinary run in the run list (TC-9), labeled from its own `delegatedFrom`. It reaches only its own run's agents by address (step 3). By run ID, R-9 applies.
+- **[RUN-4] Retired delegation record files.** `task_delegation_records.json` in 545 team folders and `agent_org_task_delegation_records.json` in 18 org folders hold 4 records in all, from the old submission model (2026-08 … 2026-09). Only released migrations read them; nothing writes them and nothing reads them at runtime. They stay as they are (P7).
 
-| # | Event | On disk | In memory | Communication after |
+**5.4.5 Events, for every run.**
+
+| # | Event | On disk | In memory | Afterwards |
 | --- | --- | --- | --- | --- |
-| T-1 | T1 is closed (`update_task(status: "DONE")`) | `closedAt` on each T1 entry | T1 closed on each node | Each run of T1 is asked, by its own ID, to stop. R-8 applies |
-| T-2 | T1 is reopened, and M messages E | `closedAt: null` on E's entry | T1 open | R-6; E is in M's view again |
-| T-3 | T1 is deleted | Its record is removed (open runs are stopped first) | Its runs leave the tree | They are ordinary runs (TC-3), labeled from their own `delegatedFrom`; R-9 |
-| T-4 | The user stops any run | Its history row | — | That run only (TC-1). The next message to it restores it |
-| T-5 | The user archives or deletes M while E works | Refused with the reason (TC-2) | — | — |
-| T-6 | The server restarts | — | The tree is rebuilt from the Task entries | No run is running; each is restored by its next message |
+| T-1 | A Task is closed | `closedAt` on each of its entries | The Task closed on each node | Each of its runs is asked, by its own ID, to stop; R-8 |
+| T-2 | A Task is reopened, and its assigner messages a run | `closedAt: null` on that entry | The Task open | R-6; the run is in its delegating run's view again |
+| T-3 | A Task is deleted | Its record removed (open runs stopped first) | Its runs leave the tree | Runs of their own (TC-3), labeled from their own `delegatedFrom`; R-9 |
+| T-4 | The user stops a run | Its history row | — | That run only (TC-1); its next message restores it |
+| T-5 | The user archives or deletes a run whose delegated runs work | Refused with the reason (TC-2) | — | — |
+| T-6 | The server restarts | — | The tree rebuilt from the Task entries | No run is running; each is restored by its next message |
 | T-7 | A delegated run goes quiet | — | — | Its own idle shutdown (P6); woken by its next message |
 
 ## 6. Existing data: before → after the migration
@@ -645,10 +777,10 @@ E3  before (link in M's collaboration_tree.json):
     after (entry): as DL-9. coordinatorAddress is not kept: it is the member whose run ID is coordinatorAgentRunId.
 
 E6  before (agent): { "runId": "image_maker_33f0", "…": "…",
-                      "taskAgent": { "coordinatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "copywriter_77c1",
+                      "taskAgent": { "coordinatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" }, "delegatorAgentRunId": "solution_designer_65a9",
                                      "address": "/image_maker", "launchSource": { "origin": "agent_default", "fallbacks": [] } } }
     after (agent):  { "runId": "image_maker_33f0", "…": "…", "address": "/image_maker", "launchSource": { "origin": "agent_default", "fallbacks": [] },
-                      "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "marketing_team_5a00" }, "delegatorAgentRunId": "copywriter_77c1" } }
+                      "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" } }
 
 E6t before: { "rootTeam": { "address": "/product_team", "teamDefinitionId": "product-team", "teamRunId": "product_team_e03d", "coordinatorAddress": "/product_team/product_designer",
                             "members": [ { "address": "/product_team/product_designer", "followsTeam": true, "…": "…" } ], "taskExecutions": [] },
@@ -697,7 +829,7 @@ Every case and the check behind it. The scripts are in `evidence/data-model-vali
 | --- | --- | --- | --- |
 | RUN-1 … RUN-3 | The runs the user starts have the stated shape | 485 agent runs; 601 of 601 teams rooted at `/`, every handoff inside the team, 0 nested sub-teams; 24 orgs rooted at `/`, 625 of 625 handoffs inside the org | `every-case-2026-11-11.txt` |
 | RUN-4 | Retired delegation record files | 545 team and 18 org files, 4 records, no runtime reader | `every-case-2026-11-11.txt`; `git grep` at `827f1e68dc` |
-| IN-1 … IN-8 | Inside one run: once in its log; the address replay | 13,206 of 13,206 in their own run's log; A-1 2,237, A-2 42, A-3 472, A-4 3,311 reach the same receiver | `every-case-2026-11-11.txt` |
+| IN-1 … IN-8 (5.1.3, 5.2.2, 5.3.2) | Inside one run: once in its log; the address replay | 13,206 of 13,206 in their own run's log; A-1 2,237, A-2 42, A-3 472, A-4 3,311 reach the same receiver | `every-case-2026-11-11.txt` |
 | DL-1 … DL-8 | `delegatedFrom` can be computed (one hop); `recipientAddress` present or fillable; one hop vs today's top run | 406 of 406 local entries (DL-1 141, DL-2 9, DL-4 2, DL-5 30, DL-6 1, DL-7 225; 16 of them DL-8); nested exactly in DL-5 and DL-6 (31) | `every-case-2026-11-11.txt` |
 | DL-7 | All entries of one run agree | 54 runs with more than one entry: the same delegating run and the same assigner, 54 of 54 | `contract-after-469-2026-11-11.txt` |
 | DL-9, E3 | The peer facts exist | 2 entries, node and members in M's link | `contract-after-469-2026-11-11.txt` |

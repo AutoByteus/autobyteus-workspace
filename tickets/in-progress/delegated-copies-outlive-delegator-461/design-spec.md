@@ -101,7 +101,7 @@ Each new name says what its owner owns.
 - **Role and refusals, from the `DelegationTree`:** `runOfAgent(sender)` and `tasksOf(that run)`. If the sender's run has an open entry, the new run is `subWork` of the sender's newest open Task (CM-6), and `task_id` is refused with today's `TASK_AGENT_RESOURCE_OWNED_SENDER` text. Otherwise the new run is `assigned`: to the saved Task named by `task_id`, or to a new Task with no Project for described work.
 - **History row:** `DelegatedRunStarter` writes the new run's history row when it creates the run, as for any new run (DS-11).
 - A failure after the entry was written: `markFailed`, and the new run is terminated before the answer. That is today's order.
-- The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §5.5, T-3).
+- The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §5.1.13, T-3).
 
 ### DS-2 Message by run ID
 
@@ -134,7 +134,7 @@ Nothing else stops (TC-1). A delegated run's later report wakes its stopped dele
 
 - A peer's run is fenced, as today.
 - Views drop the run (469).
-- Deleting a Task: its open runs are stopped first, then the record goes, and the runs are ordinary runs (contract §5.5, T-3).
+- Deleting a Task: its open runs are stopped first, then the record goes, and the runs are ordinary runs (contract §5.1.13, T-3).
 
 ### DS-6 Reopen and follow-up
 
@@ -232,7 +232,7 @@ This migration is terminal by then and does not run again. The residue is inert,
    - **a migrated delegated team** loads, plans, and saves team-level and member Settings while stopped, rooted at `/`; its web Settings show its name; a member resumed after the migration is told its new address and reaches its teammates by their new addresses; a stale old address gets today's guidance; a member with its own launch keeps it after the team Settings save (TC-12 revised);
    - **a delegated team with a handoff outside the team** (a team copied from an org) loads and plans; `get_handoff_rules` names the external target; `send_message_to` to it reaches the org's agent through the contract's §2.3 step 2 when the org assigned the team's Task, and gets today's guidance when no Task relates them;
    - **a new delegated team**, local and on the peer path, is rooted at `/`, and its Task entry carries `recipientAddress`;
-   - **every case of the contract's §5**, one test per case ID (RUN-1 … RUN-4, IN-1 … IN-8, DL-0 … DL-11, A-1 … C-4, R-1 … R-10, E-1 … E-4, T-1 … T-7): the exact call and address or run ID, the records written (Task entry, the run's own file, which message logs), the tree change, the result and the header the receiver sees. DL-11's third row changes: a delegated team's member that delegates to its own team's definition gets a new copy, as in a team the user started (its team is rooted at `/`, so the address is a catalog address, not its own team). `evidence/data-model-validation/validate_every_case.py` is the data check of the same cases, line by line by case ID;
+   - **every case of the contract's §5**, walked run by run (§5.1 a standalone agent, §5.2 a team, §5.3 an org), one test per case ID (RUN-1 … RUN-4, IN-1 … IN-8, DL-0 … DL-11, A-1 … C-4, R-1 … R-10, E-1 … E-4, T-1 … T-7): the exact call and address or run ID, the records written (Task entry, the run's own file, which message logs), the tree change, the result and the header the receiver sees. DL-11's third row changes: a delegated team's member that delegates to its own team's definition gets a new copy, as in a team the user started (its team is rooted at `/`, so the address is a catalog address, not its own team). `evidence/data-model-validation/validate_every_case.py` is the data check of the same cases, line by line by case ID;
    - **TC-13:** a delegated and a user-started agent run both write and read their log at `agents/<id>/communication_messages_*`; a migrated user-started run's moved log reads back whole;
    - a closure and the assigner's reopen-and-message, interleaved in both orders (AR-017).
 
@@ -333,7 +333,7 @@ The user asked for the data model and the design to be validated before review. 
 | DS-7 Idle | The run's own status | Its root | Holds |
 | DS-8 View | Open runs delegated from X; their address, delegator, members, status | Entries by `delegatingRun`; own files; live roots | Holds |
 | DS-9 Restart | Busy runs and their delegating runs | Busy-run record; entries | Holds after migration step 7 |
-| DS-10 Migration | Every source shape | Contract §5, E1 … E10 | Holds |
+| DS-10 Migration | Every source shape | Contract §6, E1 … E12 | Holds |
 | DS-11 Run list | A row per run; whether an entry names a stored delegating run | History rows (step 8); entries | **Was missing**; added |
 
 ### What the walk changed
@@ -384,7 +384,7 @@ Nothing of the hosting machinery is kept.
 | Finding | Answer |
 | --- | --- |
 | AR-001 Task membership of an independent run | The Task entry is the membership and the relationship; DS-1, DS-5 |
-| AR-002 Message routes beyond the pair | Contract §2 and §5.3, validated on 1,604 messages; DS-2, DS-3 |
+| AR-002 Message routes beyond the pair | Contract §2 and §5.4.2, validated on 1,604 messages; DS-2, DS-3 |
 | AR-003 Derived consumers of the composed tree | "Readers Of Removed Or Renamed Fields" |
 | AR-004 Restart resume | DS-9; migration step 7 |
 | AR-005 Migration shapes | DS-10 |

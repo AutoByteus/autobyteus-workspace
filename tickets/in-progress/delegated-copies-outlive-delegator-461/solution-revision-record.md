@@ -622,5 +622,20 @@
   - 601 of 601 teams rooted at `/`, with every handoff inside the team (133 have handoffs) and 0 nested sub-teams;
   - 24 orgs rooted at `/`, with 26 direct agents, 74 mounted teams and 625 of 625 handoffs inside the org.
 - Classification: `Large`, `High`, unchanged
+- Next action: superseded by SR-028
+
+### SR-028 — Every case, walked from the run the user starts
+
+- Phase and classification: Requirements (supplement) and Design; no intended behavior changed
+- Triggering: the user (2026-11-11). The cases were grouped by mechanism (delegation, messages by address, by run ID, events). Following one story, such as the Project Task Manager delegating to the Software Engineering Team and the team reporting back, meant jumping between five sections, and RUN-1 listed none of its cases.
+- Done: the contract's §5 is reorganized by the run the user starts.
+  - Each subsection opens with its list of cases, in the order they happen, and walks each with its JSON:
+    - §5.1, a standalone agent (the Project Task Manager), 15 steps: the run; delegating to the team; the team inside; reporting back by address; talking by run ID; another Task; sub-work; sub-work runs talking; further sub-work; different Tasks; description-only; a peer; close, reopen and delete; stop and restart; what it cannot do;
+    - §5.2, a team the user starts, run on its own: its members, handoffs, a member delegating, and the delegated agent reporting back;
+    - §5.3, an org: its agents and mounted teams, the CEO agent delegating a team, and that team reaching `/ceo_agent` and `/Teacher`;
+    - §5.4, the reference tables every run shares: the address replay A-1 … C-4, the run-ID rule R-1 … R-10, the sender address E-1 … E-4, old data (DL-0, RUN-4), and events T-1 … T-7.
+  - The case IDs are kept, so the validation script and the design's test list still match.
+  - The examples in §3.2 and §6 (E6) now use the image agent as sub-work of T1, one hop under the engineering team, so every example belongs to one of the three stories.
+- Classification: `Large`, `High`, unchanged
 - Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's §5)
 
