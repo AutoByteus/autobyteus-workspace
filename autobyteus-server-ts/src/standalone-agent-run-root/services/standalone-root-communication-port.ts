@@ -5,7 +5,7 @@ import {
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
-import type { StandaloneRootMessagesFile } from "../domain/standalone-root-tree.js";
+import type { StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 
 /** The Agent root's facts and effects for RootCommunicationEngine (messages with subjectKind `agent`). */

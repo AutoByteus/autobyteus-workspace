@@ -1,24 +1,10 @@
-import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
-import { isDeepStrictEqual } from "node:util";
-import { closedTaskExecutionsDigest, taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
+import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import {
-  interpretDelegatedLaunchValidation,
-  listDelegatedLaunchModelOptions,
-  planDelegatedLaunchValidation,
-  type DelegatedLaunchModelOptions,
-  type DelegatedLaunchUpdateResult,
-} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import { delegatedLaunchSelections, type DelegatedLaunchSelectionValue, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
-import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
   ActiveCollaborationRootDirectory,
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { isCollaborationEligibleStandaloneRun } from "../../agent-execution/services/standalone-agent-run-eligibility.js";
-import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { StandaloneAgentRunActivationResult } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type {
   StandaloneRootStopResult,
@@ -34,22 +20,12 @@ import { peerDelegatedFromOf, type AgentRunMetadata } from "../../run-history/st
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneAgentRunRoot, StandaloneRootPackageSnapshot } from "../domain/standalone-agent-run-root.js";
 import { StandaloneHostAgentHandle, type StandaloneHostActivationBackend } from "../domain/standalone-host-agent-handle.js";
-import {
-  emptyStandaloneRootMessages,
-  emptyStandaloneRootTree,
-  type StandaloneRootMessagesFile,
-  type StandaloneRootTreeSnapshot,
-} from "../domain/standalone-root-tree.js";
+import { emptyStandaloneRootMessages, type StandaloneRootHost, type StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
 import { StandaloneHostMemberContextBuilder } from "./standalone-host-member-context-builder.js";
-import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import {
-  StandaloneRootBuilder,
-  type StandaloneRootBuilderDependencies,
-} from "./standalone-root-builder.js";
+import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
+import { StandaloneRootBuilder, type StandaloneRootBuilderDependencies } from "./standalone-root-builder.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
 import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
@@ -57,7 +33,6 @@ import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration
 /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
 export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
   readMetadata(hostRunId: string): Promise<AgentRunMetadata | null>;
-  recordCollaborationPackageCreated(hostRunId: string): Promise<void>;
 }>;
 
 export class StandaloneRootUnavailableError extends Error {
@@ -69,7 +44,7 @@ export class StandaloneRootUnavailableError extends Error {
 }
 
 export type StandaloneRootCollaborationRecordsSnapshot = Readonly<{
-  tree: StandaloneRootTreeSnapshot;
+  host: StandaloneRootHost;
   messages: StandaloneRootMessagesFile;
 }>;
 
@@ -78,10 +53,19 @@ export type StandaloneRootInspection = Readonly<{
   isActive: boolean;
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
-  /** The live sequence `baseChangeSequence` counts in; null for a stored package. */
+  /** The live sequence `baseChangeSequence` counts in; null for a stopped run. */
   liveSequenceId: string | null;
-  /** The sequence of the root's latest message through `baseChangeSequence`; null for a stored package. */
+  /** The sequence of the root's latest message through `baseChangeSequence`; null for a stopped run. */
   lastMessageChangeSequence: number | null;
+}>;
+
+/** One run's answer to the history poll's status read. */
+export type StandaloneRootAgentStatuses = Readonly<{
+  runId: string;
+  isActive: boolean;
+  statuses: readonly CollaborationAgentStatusSnapshot[];
+  /** A digest of the run's closed children (its Task entries), so a list sees a Task close or reopen. */
+  closedTaskExecutionsDigest: string;
 }>;
 
 const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfiguration => Object.freeze({
@@ -93,29 +77,17 @@ const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfigura
 });
 
 /**
- * The registry of `StandaloneAgentRunRoot`s, one per collaboration-eligible standalone run in
- * use. A root is created on first use (from its stored package, else empty) without starting
- * its host; it ends on an explicit Stop, a history delete or archive, or server shutdown. It is
- * also the process's `StandaloneRunCommandPort` and `StandaloneRunLifecyclePort`, through which
- * `agent-execution` reaches the roots without importing them.
+ * The registry of `StandaloneAgentRunRoot`s, one per collaboration-eligible standalone run in use (autobyteus-461: a
+ * run delegated from another run is one too). A root is created on first use, from its own log, without starting its
+ * agent; it ends on a Stop, a history delete or archive, or server shutdown. It is also the process's
+ * `StandaloneRunCommandPort` and `StandaloneRunLifecyclePort`.
  */
-/** One run's answer to the history poll's status read. */
-export type StandaloneRootAgentStatuses = Readonly<{
-  runId: string;
-  isActive: boolean;
-  statuses: readonly CollaborationAgentStatusSnapshot[];
-  /** Closed-set digest, so a list sees a Task close or reopen. Active: the root's closed set, as its live view. Inactive: the Task index's closed executions hosted by this run, not filtered by its stored tree (autobyteus-435). */
-  closedTaskExecutionsDigest: string;
-}>;
-
 export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, StandaloneRunLifecyclePort {
   private readonly layout: AgentMemoryLayout;
   private readonly store: StandaloneRootPackageStore;
   private readonly directory: ActiveCollaborationRootDirectory;
   private readonly active = new Map<string, StandaloneAgentRunRoot>();
   private readonly pending = new Map<string, Promise<StandaloneAgentRunRoot>>();
-  /** A stopped root's stored-tree edit; a root load for the same run waits for it. */
-  private readonly storedEdits = new Map<string, Promise<unknown>>();
   private readonly hostContexts: StandaloneHostMemberContextBuilder;
   private readonly roots: StandaloneRootBuilder;
   private admissionOpen = true;
@@ -129,7 +101,6 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     host: StandaloneRootHostServices;
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     rootDependencies: Omit<StandaloneRootBuilderDependencies, "packageStore">;
-    /** The Task side's neutral port; the manager reads closure for stored inspections. */
     taskExecutionResources?: TaskExecutionResourcePort;
     packageStore?: StandaloneRootPackageStore;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -150,33 +121,23 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     return root?.isActive() ? root : null;
   }
 
-  /** A root is registered (or loading) for the run, whether or not its host is running. */
+  /** A root is registered (or loading) for the run, whether or not its agent is running. */
   hasRoot(hostRunIdInput: string): boolean {
     const hostRunId = hostRunIdInput.trim();
     return this.active.has(hostRunId) || this.pending.has(hostRunId);
   }
 
-  getActiveTree(hostRunId: string): StandaloneRootTreeSnapshot | null {
-    return this.getActive(hostRunId)?.getExecutionTreeSnapshot() ?? null;
-  }
-
-  /**
-   * The children's states of each listed run, as the history poll asks for them (autobyteus-426 REQ-009): an active root
-   * answers its live snapshots; any other run inactive with none and the in-memory Task index's digest. No tree or log read.
-   */
+  /** Each listed run's live state for the history poll, and the digest of its closed children (no file read). */
   getAgentStatuses(hostRunIds: readonly string[]): StandaloneRootAgentStatuses[] {
     return hostRunIds.map((runId) => {
       const root = this.getActive(runId);
-      return { runId, isActive: root !== null, statuses: root?.getAgentStatusSnapshots() ?? [],
-        closedTaskExecutionsDigest: closedTaskExecutionsDigest(root?.closedTaskExecutions()
-          ?? this.options.taskExecutionResources?.closedTaskExecutionsIn(createAgentRootExecutionIdentity(runId)) ?? []) };
+      const closed = (findDelegationTree()?.childrenOf(createAgentRootExecutionIdentity(runId)) ?? [])
+        .filter((child) => this.options.taskExecutionResources?.isOpen(child) === false);
+      return { runId, isActive: root !== null, statuses: [], closedTaskExecutionsDigest: closedTaskExecutionsDigest(closed) };
     });
   }
 
-  /**
-   * The root of an eligible run: the registered one, else loaded from its package (or empty)
-   * and registered. It never starts the host. Null for a run that cannot host delegated copies.
-   */
+  /** The root of an eligible run: the registered one, else loaded from its own log and registered. Never starts its agent. */
   async resolveRoot(hostRunIdInput: string): Promise<StandaloneAgentRunRoot | null> {
     const hostRunId = hostRunIdInput.trim();
     const existing = this.getActive(hostRunId);
@@ -198,20 +159,19 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     }
   }
 
-  /** N-303 / N-304: a peer's request checked against a run's stored links (back-link included); it loads nothing. */
+  /** N-303 / N-304: a peer's request checked against the run's links (back-link included); it loads nothing. */
   async storedRemoteLinkCheck(hostRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
     const hostRunId = hostRunIdInput.trim();
     if (query.kind !== "owner" && this.hasRoot(hostRunId)) return "proceed";
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
     const delegatedFrom = peerDelegatedFromOf(metadata); // AR-016: only a run a peer started has a peer delegator
-    return storedRemoteLinkCheck({
-      peerRuns: () => peerRunLinksOf({ rootSubjectKind: "agent", rootRunId: hostRunId }),
-      backLink: delegatedFrom ? { pairedAgentRunIds: () => [hostRunId], delegatedFrom } : null,
-    }, query);
+    return storedRemoteLinkCheck(delegatedFrom
+      ? { peerRuns: () => [], backLink: { pairedAgentRunIds: () => [hostRunId], delegatedFrom } }
+      : { run: createAgentRootExecutionIdentity(hostRunId) }, query);
   }
 
-  /** `StandaloneRunCommandPort`: the root executes the host command in its gate. */
+  /** `StandaloneRunCommandPort`: the root executes the command in its gate. */
   async postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null> {
     const root = await this.resolveRoot(input.runId);
     if (!root) return null;
@@ -230,7 +190,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     return Object.freeze({ run, metadata });
   }
 
-  /** `StandaloneRunLifecyclePort`: a saved edit of the stopped host reaches the registered root's inherited launch. */
+  /** `StandaloneRunLifecyclePort`: a saved edit of the stopped run reaches the registered root's inherited launch. */
   async refreshInheritedLaunch(hostRunIdInput: string): Promise<void> {
     const hostRunId = hostRunIdInput.trim();
     const root = await this.pending.get(hostRunId)?.catch(() => undefined) ?? this.active.get(hostRunId);
@@ -239,10 +199,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (metadata && isCollaborationEligibleStandaloneRun(metadata)) root.setInheritedLaunch(launchConfigurationOf(metadata));
   }
 
-  /**
-   * Explicit Stop: the root fences and stops every child, then its host, then unregisters.
-   * Without a registered root only the host is stopped. Null for a run that is not eligible.
-   */
+  /** Stop (DS-4, TC-1): the run's own agent only, then the root unregisters. Null for a run that is not eligible. */
   async stopRoot(hostRunIdInput: string): Promise<StandaloneRootStopResult | null> {
     const hostRunId = hostRunIdInput.trim();
     await this.pending.get(hostRunId)?.catch(() => undefined);
@@ -260,7 +217,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     return Object.freeze({ rootEnded: true, host });
   }
 
-  /** History delete or archive: ends the run's root as a Stop does. Idempotent; throws when it cannot finish. */
+  /** History delete or archive: ends the run's root as a Stop does. Idempotent. */
   async endRoot(hostRunIdInput: string): Promise<void> {
     const hostRunId = hostRunIdInput.trim();
     await this.pending.get(hostRunId)?.catch(() => undefined);
@@ -272,8 +229,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /**
-   * autobyteus-278: `listener` runs once the run has ended by Stop, terminate or history delete/archive, after its host
-   * stopped (so a final read finds it offline). Idle shutdown does not end a run: its root stays and the host returns.
+   * autobyteus-278: `listener` runs once the run has ended by Stop, terminate or history delete/archive, after its agent
+   * stopped. Idle shutdown does not end a run: its root stays and its agent returns.
    */
   onRunEnded(hostRunIdInput: string, listener: () => void): () => void {
     const hostRunId = hostRunIdInput.trim();
@@ -292,7 +249,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     }
   }
 
-  /** Server shutdown: every root's children stop before the standalone runs (the hosts) stop. */
+  /** Server shutdown: every root closes before the standalone runs (their agents) stop. */
   async stopAll(): Promise<void> {
     this.admissionOpen = false;
     const errors: unknown[] = [];
@@ -308,7 +265,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (errors.length) throw new AggregateError(errors, "Failed to stop all Agent roots.");
   }
 
-  /** Live snapshot of an active root, else the stored package with every child offline; null when none. Never restores. */
+  /** The live root's view snapshot, else the stopped run's own agent; null for a run that is not eligible. Never restores. */
   async getInspection(hostRunIdInput: string): Promise<StandaloneRootInspection | null> {
     const hostRunId = hostRunIdInput.trim();
     const active = this.getActive(hostRunId);
@@ -320,149 +277,38 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
           lastMessageChangeSequence: connection.lastMessageChangeSequence });
       } finally { connection.close(); }
     }
-    // The view reads the tree only; the message log is read where it is shown (getCollaborationRecordsSnapshot).
-    const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
-    if (!tree) return null;
-    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null, snapshot: Object.freeze({
-      tree, closedTaskExecutions: this.closedTaskExecutionsFor(hostRunId, tree),
-      statuses: Object.freeze([]), inputStates: Object.freeze([]),
-    }) });
+    const metadata = await this.options.host.readMetadata(hostRunId);
+    if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
+    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
+      snapshot: Object.freeze({ host: await this.hostOf(metadata), createdAt: metadata.startedAt ?? new Date(0).toISOString(), statuses: Object.freeze([]) }) });
   }
 
-  /**
-   * The root's messages (autobyteus-358: the one log reader): the live root's, else the stored host log
-   * composed with its task agents' logs for the stored tree (D-4). A run without a package has none; a damaged
-   * log fails this read with the reason, and the run's view does not read it (DESIGN.md rule 7).
-   */
+  /** The run's messages (autobyteus-358: the one log reader): the live root's, else its own stored log. */
   async getCollaborationRecordsSnapshot(hostRunIdInput: string): Promise<StandaloneRootCollaborationRecordsSnapshot> {
     const hostRunId = hostRunIdInput.trim();
     const active = this.getActive(hostRunId);
-    if (active) return Object.freeze({ tree: active.getExecutionTreeSnapshot(), messages: active.getCommunicationSnapshot() });
-    const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
-    const tree = await this.store.readTree(dir, hostRunId);
-    if (!tree) throw new StandaloneRootUnavailableError(`Agent root '${hostRunId}' has no collaboration package.`);
-    const backLink = (await this.options.host.readMetadata(hostRunId))?.delegatedFrom ?? null;
-    const messages = await this.store.readMessages(dir, tree, backLink) ?? emptyStandaloneRootMessages(hostRunId);
-    return Object.freeze({ tree, messages });
-  }
-
-  /**
-   * DS-001 / AR-004 on a stopped Agent root (no registered root): validates the user model choices
-   * of its delegated copies, and the host's own new model when given, in one
-   * catalog read, then writes the stored collaboration tree once. All or nothing for the tree; the
-   * host's model is written by its own run service afterwards (a separate file).
-   */
-  async updateStoppedDelegatedLaunchSelections(input: Readonly<{
-    hostRunId: string;
-    changes: readonly DelegatedLaunchChange[];
-    hostSelection?: DelegatedLaunchSelectionValue | null;
-    validator: RunModelSelectionValidator;
-  }>): Promise<Readonly<{ result: DelegatedLaunchUpdateResult; tree: StandaloneRootTreeSnapshot | null }>> {
-    const hostRunId = input.hostRunId.trim();
-    const previous = this.storedEdits.get(hostRunId) ?? Promise.resolve();
-    const edit = previous.catch(() => undefined).then(() => this.updateStoredTree(hostRunId, input));
-    this.storedEdits.set(hostRunId, edit);
-    try { return await edit; }
-    finally { if (this.storedEdits.get(hostRunId) === edit) this.storedEdits.delete(hostRunId); }
-  }
-
-  private async updateStoredTree(
-    hostRunId: string,
-    input: Parameters<StandaloneAgentRunRootManager["updateStoppedDelegatedLaunchSelections"]>[0],
-  ): Promise<Readonly<{ result: DelegatedLaunchUpdateResult; tree: StandaloneRootTreeSnapshot | null }>> {
-    const outcome = (result: DelegatedLaunchUpdateResult["outcome"], message: string, tree: StandaloneRootTreeSnapshot | null,
-      fieldErrors: DelegatedLaunchUpdateResult["fieldErrors"] = []) =>
-      Object.freeze({ result: Object.freeze({ outcome: result, message, fieldErrors: Object.freeze([...fieldErrors]) }), tree });
-    if (this.hasRoot(hostRunId)) return outcome("RUN_ACTIVE", "This run became active. Reopen Settings and try again.", null);
     const metadata = await this.options.host.readMetadata(hostRunId);
-    if (!metadata) return outcome("NOT_FOUND", `Agent run '${hostRunId}' was not found.`, null);
-    const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
-    const tree = await this.store.readTree(dir, hostRunId);
-    if (!tree) return outcome("NOT_FOUND", "This run has no delegated copies.", null);
-    const plan = planDelegatedLaunchValidation({ ...this.delegatedLaunchReader(hostRunId, tree), changes: input.changes });
-    if (plan.kind === "refused") return outcome(plan.result.outcome, plan.result.message, tree, plan.result.fieldErrors);
-    const host = input.hostSelection ? [{
-      // The host's own selection carries its agent runtime: another one is a fresh selection of that runtime.
-      context: selectionContextFor({ ...metadata, workspaceRootPath: metadata.workspaceRootPath ?? process.cwd() }, input.hostSelection),
-      selection: input.hostSelection,
-    }] : [];
-    const results = await input.validator.validateMany([...plan.inputs, ...host]);
-    const hostResult = input.hostSelection ? results.at(-1)! : null;
-    if (hostResult && hostResult.kind !== "valid") {
-      if (!isUnavailableModelSelection(hostResult)) {
-        return outcome("VALIDATION_FAILED", "The agent's own model settings are invalid.", tree,
-          hostResult.errors.map((error) => ({ path: `hostPatch.${error.path}`, message: error.message })));
-      }
-      const refusal = runModelSelectionRefusal({ result: hostResult, llmModelIdentifier: input.hostSelection!.llmModelIdentifier,
-        runtimeKind: input.hostSelection!.runtimeKind, savedSettingsUnchanged: true });
-      return outcome(refusal.outcome, refusal.message, tree);
-    }
-    const validation = interpretDelegatedLaunchValidation(plan.targets, results.slice(0, plan.targets.length));
-    if (validation.kind === "refused") return outcome(validation.result.outcome, validation.result.message, tree, validation.result.fieldErrors);
-    const nextTree = applyStandaloneDelegatedLaunchSelections(tree, delegatedLaunchSelections(validation.targets, new Date().toISOString()));
-    if (isDeepStrictEqual(nextTree, tree)) return outcome("UNCHANGED", "These model settings are already saved.", tree);
-    if (this.hasRoot(hostRunId)) return outcome("RUN_ACTIVE", "This run became active. Reopen Settings and try again.", tree);
-    const written = await this.store.writeTree(dir, nextTree).catch(() => null);
-    const readback = await this.store.readTree(dir, hostRunId).catch(() => null);
-    if (written?.outcome === "not_committed") return outcome("PERSISTENCE_FAILED", "The model choices were not saved.", readback ?? tree);
-    if (written?.outcome !== "committed" || !readback || !isDeepStrictEqual(readback, nextTree)) {
-      return outcome("PERSISTENCE_INDETERMINATE", "The save outcome is being verified. Refresh Settings before saving again.", readback);
-    }
-    return outcome("UPDATED", "Saved. The new model is used when the copy resumes.", readback);
+    if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' was not found.`);
+    if (active) return Object.freeze({ host: await this.hostOf(metadata), messages: active.getCommunicationSnapshot() });
+    const messages = await this.store.readMessagesLog(this.layout.getStandaloneRunDirPath(hostRunId), hostRunId);
+    return Object.freeze({ host: await this.hostOf(metadata), messages: messages ?? emptyStandaloneRootMessages(hostRunId) });
   }
 
-  /** Model options of every editable delegated copy of the run (live or stored tree). */
-  async delegatedLaunchModelOptions(
-    hostRunIdInput: string,
-    modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,
-  ): Promise<readonly DelegatedLaunchModelOptions[]> {
-    const hostRunId = hostRunIdInput.trim();
-    const tree = this.getActiveTree(hostRunId)
-      ?? await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
-    if (!tree) return Object.freeze([]);
-    return listDelegatedLaunchModelOptions({ ...this.delegatedLaunchReader(hostRunId, tree), modelOptions });
-  }
-
-  private delegatedLaunchReader(hostRunId: string, tree: StandaloneRootTreeSnapshot) {
-    const closed = new Set(this.closedTaskExecutionsFor(hostRunId, tree).map(taskExecutionReferenceKey));
-    return {
-      forest: standaloneDelegatedLaunchForest(tree),
-      isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
-    };
-  }
-
-  /** Closed (Task DONE or CANCELLED) task executions of a stored tree of this root. */
-  private closedTaskExecutionsFor(hostRunId: string, tree: StandaloneRootTreeSnapshot): readonly TaskExecutionReference[] {
-    const index = new StandaloneRootExecutionIndex(tree);
-    return listClosedTaskExecutions({ port: this.options.taskExecutionResources, root: createAgentRootExecutionIdentity(hostRunId),
-      contains: (reference) => index.getTaskExecution(reference) !== null });
+  private async hostOf(metadata: AgentRunMetadata): Promise<StandaloneRootHost> {
+    return Object.freeze({ address: await this.hostContexts.resolveHostAddress(metadata), agentRunId: metadata.runId, agentDefinitionId: metadata.agentDefinitionId });
   }
 
   private async load(metadata: AgentRunMetadata): Promise<StandaloneAgentRunRoot> {
     const hostRunId = metadata.runId;
-    await this.storedEdits.get(hostRunId)?.catch(() => undefined);
-    const collaborationDir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
-    const storedTree = await this.store.readTree(collaborationDir, hostRunId);
-    const delegatedFrom = metadata.delegatedFrom ?? null;
-    const storedMessages = storedTree
-      ? await this.store.readMessages(collaborationDir, storedTree, delegatedFrom) : null;
-    if (storedTree && !storedMessages) throw new Error(`Agent root '${hostRunId}' package has no communication messages.`);
-    const tree = storedTree ?? emptyStandaloneRootTree({
-      host: {
-        address: await this.hostContexts.resolveHostAddress(metadata),
-        agentRunId: hostRunId,
-        agentDefinitionId: metadata.agentDefinitionId,
-      },
-      createdAt: new Date().toISOString(),
-    });
-    const root = await this.roots.build({
-      tree,
-      messages: storedMessages ?? emptyStandaloneRootMessages(hostRunId),
-      packageExists: Boolean(storedTree),
-      collaborationDir,
+    const runDir = this.layout.getStandaloneRunDirPath(hostRunId);
+    const root = this.roots.build({
+      host: await this.hostOf(metadata),
+      createdAt: metadata.startedAt ?? new Date().toISOString(),
+      messages: await this.store.readMessagesLog(runDir, hostRunId) ?? emptyStandaloneRootMessages(hostRunId),
+      runDir,
       rootLaunchConfiguration: launchConfigurationOf(metadata),
-      delegatedFrom,
-      host: new StandaloneHostAgentHandle({
+      delegatedFrom: metadata.delegatedFrom ?? null,
+      hostHandle: new StandaloneHostAgentHandle({
         hostRunId,
         backend: this.options.host,
         // Built per activation from the current metadata: a reopened run keeps its stable address.
@@ -472,7 +318,6 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
           return this.hostContexts.build(current);
         },
       }),
-      onPackageCreated: () => this.options.host.recordCollaborationPackageCreated(hostRunId),
       onTerminated: (terminated) => this.unregister(terminated),
     });
     const reservation = this.directory.reserve(root.rootIdentity, root);

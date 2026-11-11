@@ -56,11 +56,13 @@ const errorMessage = (error: unknown): string => error instanceof Error ? error.
  * stopped root's manager saves the stored tree, together with the root's own settings (AR-004).
  * It never mutates a tree or touches a handle.
  */
+const NO_COPIES = "A delegated run is configured as itself: open its own Settings.";
+
 export class DelegatedLaunchSelectionService {
   constructor(private readonly dependencies: Readonly<{
     teams: Pick<AgentTeamRunManager, "getManagedTeamRun" | "updateStoppedRunLaunchChanges" | "delegatedLaunchModelOptions">;
     orgs: Pick<AgentOrgRunManager, "getActive" | "updateStoppedRunConfig" | "delegatedLaunchModelOptions">;
-    agents: Pick<StandaloneAgentRunRootManager, "getActive" | "hasRoot" | "updateStoppedDelegatedLaunchSelections" | "delegatedLaunchModelOptions">;
+    agents: Pick<StandaloneAgentRunRootManager, "getActive">;
     agentRuns: Pick<AgentRunService, "updateStoppedSelection">;
     validator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptionsMany">;
   }>) {}
@@ -88,6 +90,7 @@ export class DelegatedLaunchSelectionService {
         if (hasConfiguredPatches(input.configured)) {
           return updateResult("RUN_ACTIVE", "The run is running: only its stopped copies' models can change. Stop the run to change its own settings.");
         }
+        if (!("updateDelegatedLaunchSelections" in root)) return updateResult(input.changes.length ? "NOT_FOUND" : "UNCHANGED", NO_COPIES);
         const result = await root.updateDelegatedLaunchSelections(input.changes, this.dependencies.validator);
         return updateResult(result.outcome, result.message, result.fieldErrors);
       }
@@ -102,7 +105,7 @@ export class DelegatedLaunchSelectionService {
     switch (rootKind) {
       case "AGENT_TEAM": return this.dependencies.teams.delegatedLaunchModelOptions(rootRunId, options);
       case "AGENT_ORG": return this.dependencies.orgs.delegatedLaunchModelOptions(rootRunId, options);
-      case "AGENT": return this.dependencies.agents.delegatedLaunchModelOptions(rootRunId, options);
+      case "AGENT": return Promise.resolve(Object.freeze([]));
     }
   }
 
@@ -139,27 +142,20 @@ export class DelegatedLaunchSelectionService {
         return updateResult(result.outcome, result.message, result.fieldErrors);
       }
       case "AGENT": {
+        // A standalone run's delegated runs are configured as themselves (autobyteus-461); only its own agent is here.
+        if (input.changes.length) return updateResult("NOT_FOUND", NO_COPIES);
         const hostSelection = configured?.kind === "agent" ? configured.selection : null;
-        const { result } = await this.dependencies.agents.updateStoppedDelegatedLaunchSelections({
-          hostRunId: input.rootRunId, changes: input.changes, hostSelection, validator: this.dependencies.validator,
-        });
-        if (!hostSelection || (result.outcome !== "UPDATED" && result.outcome !== "UNCHANGED")) {
-          return updateResult(result.outcome, result.message, result.fieldErrors);
-        }
-        // The host's selection (agent runtime, model) is in its own run metadata (a separate file), saved after the validated tree.
+        if (!hostSelection) return updateResult("UNCHANGED", "These model settings are already saved.");
         const host = await this.dependencies.agentRuns.updateStoppedSelection({
           agentRunId: input.rootRunId,
           runtimeKind: hostSelection.runtimeKind,
           llmModelIdentifier: hostSelection.llmModelIdentifier,
           llmConfig: hostSelection.llmConfig,
         });
-        if (host.success) {
-          const outcome = result.outcome === "UNCHANGED" && host.outcome === "UNCHANGED" ? "UNCHANGED" : "UPDATED";
-          return updateResult(outcome, outcome === "UNCHANGED" ? "These model settings are already saved." : "Saved. The new models are used when the run resumes.");
-        }
-        return updateResult(host.outcome, result.outcome === "UPDATED"
-          ? `The copies' models were saved, but the agent's own model was not: ${host.message}`
-          : host.message, host.fieldErrors);
+        return host.success
+          ? updateResult(host.outcome === "UNCHANGED" ? "UNCHANGED" : "UPDATED",
+            host.outcome === "UNCHANGED" ? "These model settings are already saved." : "Saved. The new models are used when the run resumes.")
+          : updateResult(host.outcome, host.message, host.fieldErrors);
       }
     }
   }

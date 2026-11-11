@@ -1,6 +1,6 @@
 import type { TeamRunExecutionTreeLocationService, LocatedTeamAgentExecution } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import type { AgentOrgExecutionTreeLocationService, LocatedAgentOrgAgentExecution } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import type { StandaloneRootLocationService, LocatedStandaloneRootAgentExecution } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { DelegatedChildLocations, type LocatedStandaloneRootAgentExecution } from "../delegation/delegated-child-locations.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
 import type { TaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
@@ -11,7 +11,6 @@ import {
 } from "../../collaborators/collaborator-source-projector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentOrgExecutionTreeLocationService as StoredAgentOrgExecutionTreeLocationService } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import { StandaloneRootLocationService as StoredStandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
 
 /** A team-family location tagged with its root TeamRun. */
 export type LocatedTeamCollaborationAgentExecution = Readonly<LocatedTeamAgentExecution & { rootSubjectKind: "agent_team"; rootRunId: string }>;
@@ -39,7 +38,7 @@ const taskExecutionListsOfLocatedTree = (location: LocatedCollaborationAgentExec
         teams: location.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member] : []),
       });
     case "agent":
-      return taskExecutionListsOf(location.tree);
+      return [];
   }
 };
 
@@ -49,9 +48,10 @@ const taskExecutionListsOfLocatedTree = (location: LocatedCollaborationAgentExec
  * address). Reads only the located tree; null when the execution has neither.
  */
 export const locatedExecutionSource = (location: LocatedCollaborationAgentExecution): CollaboratorExecutionSource | null =>
-  location.executionKind === "configured"
-    ? location.configuredPlacement
-    : copyExecutionSource(taskExecutionListsOfLocatedTree(location), location.agentRunId);
+  location.rootSubjectKind === "agent" ? location.source
+    : location.executionKind === "configured"
+      ? location.configuredPlacement
+      : copyExecutionSource(taskExecutionListsOfLocatedTree(location), location.agentRunId);
 
 /** The launch settings a located execution runs with (see `locatedExecutionSource`). */
 export const locatedLaunchConfiguration = (location: LocatedCollaborationAgentExecution): AgentLaunchConfiguration | null =>
@@ -62,7 +62,7 @@ export class CollaborationExecutionLocationService {
   constructor(private readonly input: Readonly<{
     teams: Pick<TeamRunExecutionTreeLocationService, Family>;
     orgs: Pick<AgentOrgExecutionTreeLocationService, Family>;
-    agents: Pick<StandaloneRootLocationService, Family>;
+    agents: Pick<DelegatedChildLocations, Family>;
   }>) {}
   async findAgent(input: Input): Promise<LocatedCollaborationAgentExecution | null> {
     switch (input.rootSubjectKind) {
@@ -119,5 +119,5 @@ export const createStoredCollaborationExecutionLocationService = (
 ): CollaborationExecutionLocationService => new CollaborationExecutionLocationService({
   teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
   orgs: new StoredAgentOrgExecutionTreeLocationService({ memoryDir }),
-  agents: new StoredStandaloneRootLocationService({ memoryDir }),
+  agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
 });

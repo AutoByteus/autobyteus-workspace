@@ -1,3 +1,11 @@
+import { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
+import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
+import { getProcessStandaloneRunCommandPort } from "../../agent-execution/services/standalone-run-ports.js";
+import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import { getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
+import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -53,13 +61,24 @@ const commandAck = (
 export class AgentCollaborationStreamHandler {
   private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; hostRunId: string; close(): void }>();
 
-  constructor(private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">) {}
+  constructor(
+    private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">,
+    private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
+      tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
+      activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
+      teamRun: (teamRunId, restore) => restore ? getTeamRunService().resolveManagedTeamRun(teamRunId) : Promise.resolve(getTeamRunService().getActiveTeamRun(teamRunId)),
+    }),
+  ) {}
 
-  /** The run's root with its host ready, as the stream's connect needs it. */
+  /** A child row's command: a peer child's goes to its node through the root; a local child's to its own root (AR-011). */
+  private async childCommand(root: StandaloneAgentRunRoot, target: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+    return await this.children.execute(root.rootIdentity, target, command) ?? root.executeAgentCommand(target, command);
+  }
+
+  /** The run's root; opening a view never starts its agent (DS-8, REQ-004): it starts on its first input. */
   private async readyRoot(hostRunId: string): Promise<StandaloneAgentRunRoot> {
     const root = await this.roots.resolveRoot(hostRunId);
-    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' cannot host delegated copies.`);
-    await root.ensureHostReady();
+    if (!root) throw new StandaloneRootUnavailableError(`Agent run '${hostRunId}' is not a collaboration run.`);
     return root;
   }
 
@@ -79,6 +98,7 @@ export class AgentCollaborationStreamHandler {
     }
     const sessionId = randomUUID();
     const remoteTaskExecutions = await remoteTaskExecutionDtos(root.rootIdentity);
+    const taskExecutions = await delegatedChildrenDtos(root.rootIdentity);
     const barrier = await root.openPackageSnapshotConnection();
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({
@@ -88,11 +108,11 @@ export class AgentCollaborationStreamHandler {
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
         payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot,
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
-          lastMessageChangeSequence: barrier.lastMessageChangeSequence, remoteTaskExecutions }),
+          lastMessageChangeSequence: barrier.lastMessageChangeSequence, remoteTaskExecutions, taskExecutions }),
       }));
       const unsubscribe = barrier.subscribe((event) => {
         try {
-          const projected = projectAgentCollaborationEvent(hostRunId, root.getExecutionTreeSnapshot(), event);
+          const projected = projectAgentCollaborationEvent(hostRunId, null, event);
           if (projected) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
         } catch (cause) {
           egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
@@ -166,7 +186,7 @@ export class AgentCollaborationStreamHandler {
           ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
           ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
         ];
-        const result = await root.executeAgentCommand(target, {
+        const result = await this.childCommand(root, target, {
           kind: "post_message",
           message: AgentInputUserMessage.fromDict({
             content,
@@ -178,7 +198,7 @@ export class AgentCollaborationStreamHandler {
           result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
         return;
       }
-      const result = await root.executeAgentCommand(target, message.type === "INTERRUPT_GENERATION"
+      const result = await this.childCommand(root, target, message.type === "INTERRUPT_GENERATION"
         ? { kind: "interrupt" }
         : { kind: "approve_tool", invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason });
       session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",

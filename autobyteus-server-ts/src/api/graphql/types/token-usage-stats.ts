@@ -10,8 +10,6 @@ import type {
 import { TokenUsageRunStore } from "../../../token-usage/providers/token-usage-run-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
 import { StandaloneRunTokenUsageSummaryService } from "../../../token-usage/services/standalone-run-token-usage-summary-service.js";
-import { StandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
-import { findStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { ClosedDelegatedRunReader } from "../../../run-history/services/closed-delegated-run-reader.js";
 import { createAgentRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -328,19 +326,10 @@ export class TokenUsageStatisticsResolver {
   async getStandaloneRunTokenUsageSummary(
     @Arg("runId", () => String) runId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const locations = new StandaloneRootLocationService({
-      memoryDir: appConfigProvider.config.getMemoryDir(),
-      roots: { getActiveTree: (hostRunId) => findStandaloneAgentRunRootManager()?.getActiveTree(hostRunId) ?? null },
-    });
-    // D-7: the tree's agents and the agents of this run's delegated runs whose Task closed (they left the tree).
-    const closedRuns = new ClosedDelegatedRunReader(appConfigProvider.config.getMemoryDir());
+    // REQ-009: every run delegated from it, one hop at a time and recursively, open and closed (the Task entries).
+    const delegated = new ClosedDelegatedRunReader(appConfigProvider.config.getMemoryDir());
     const service = new StandaloneRunTokenUsageSummaryService({
-      tree: {
-        listChildAgentRunIds: async (hostRunId) => [...new Set([
-          ...(await locations.listAgents({ rootRunId: hostRunId })).map((agent) => agent.agentRunId),
-          ...await closedRuns.agentRunIds(createAgentRootExecutionIdentity(hostRunId)),
-        ])],
-      },
+      tree: { listChildAgentRunIds: async (hostRunId) => [...new Set(await delegated.agentRunIds(createAgentRootExecutionIdentity(hostRunId)))] },
       store: new TokenUsageRunStore(),
     });
     return toTokenUsageRunSummaryGraphql(await service.getSummary(runId));

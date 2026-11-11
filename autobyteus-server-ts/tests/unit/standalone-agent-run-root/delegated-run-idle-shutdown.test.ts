@@ -34,7 +34,7 @@ const fakeRun = () => {
   };
 };
 
-const setup = (options: { quiet?: boolean; openChildWork?: boolean } = {}) => {
+const setup = (options: { quiet?: boolean } = {}) => {
   const clock = fakeTimers();
   const host = fakeRun();
   const finish = vi.fn(async () => ({ accepted: true }));
@@ -43,7 +43,6 @@ const setup = (options: { quiet?: boolean; openChildWork?: boolean } = {}) => {
     hostRunId: "host-run",
     agentRunManager: { tryPrepareAgentRunTerminationIfQuiescent: tryPrepare } as never,
     runInGate: (operation) => operation(),
-    hasOpenChildWork: () => options.openChildWork === true,
     gracePeriodMs: () => 1_000,
     timers: clock.timers,
   });
@@ -80,10 +79,6 @@ describe("DelegatedRunIdleShutdown", () => {
     await settle();
     expect(notQuiet.finish).not.toHaveBeenCalled();
 
-    const busy = setup({ openChildWork: true });
-    busy.clock.fireAll();
-    await settle();
-    expect(busy.tryPrepare).not.toHaveBeenCalled();
   });
 
   it("stops watching and clears its timer when disposed", () => {

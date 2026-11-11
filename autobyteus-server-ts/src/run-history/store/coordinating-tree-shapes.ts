@@ -1,6 +1,5 @@
 import type { AgentOrgRunExecutionTreeFile } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { TeamRunExecutionTreeFile } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import type { StandaloneRootTreeFile } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import type { RemoteTaskExecution, TaskExecution } from "../domain/run-execution-tree-shared-records.js";
 import { objectRecord, requiredArray, requiredString } from "./run-execution-tree-shared-record-schemas.js";
 import type { CoordinatingTreeShape } from "./task-execution-tree-split.js";
@@ -74,19 +73,5 @@ export const AGENT_ORG_RUN_TREE_SHAPE: CoordinatingTreeShape<AgentOrgRunExecutio
   }),
   remoteLinks: (tree) => tree.rootOrg.remoteTaskExecutions ?? [],
   withRemoteLinks: (raw, links) => ({ ...raw, rootOrg: withRemote(field(raw, "rootOrg"), links) }),
-  storedBackLink: () => null,
-});
-
-/** An Agent root has no configured places: every task agent of a standalone run is a catalog copy. */
-export const STANDALONE_ROOT_TREE_SHAPE: CoordinatingTreeShape<StandaloneRootTreeFile> = Object.freeze({
-  coordinatingRun: (tree) => ({ kind: "agent", runId: tree.host.agentRunId }),
-  coordinatingRunOfRaw: (raw) => ({ kind: "agent", runId: requiredString(field(raw, "host").agentRunId, "host.agentRunId") }),
-  taskLists: (tree) => new Map([[ROOT, tree.taskExecutions]]),
-  rawTaskLists: (raw) => new Map([[ROOT, list(raw.taskExecutions, "taskExecutions")]]),
-  withRawTaskLists: (raw, lists) => ({ ...raw, taskExecutions: lists.get(ROOT) ?? [] }),
-  ownAgentRunIdsOfRaw: (raw) => [requiredString(field(raw, "host").agentRunId, "host.agentRunId")],
-  remoteLinks: (tree) => tree.remoteTaskExecutions ?? [],
-  withRemoteLinks: (raw, links) => withRemote(raw, links),
-  // A standalone run's back-link is in its `run_metadata.json`, not in its tree; its store passes it.
   storedBackLink: () => null,
 });

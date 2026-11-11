@@ -13,7 +13,6 @@ import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-
 import { isPublicMessage } from "../../../services/agent-streaming/public-message-scope.js";
 import { getTeamCommunicationProjectionService } from "../../../services/team-communication/team-communication-projection-service.js";
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { StandaloneRootExecutionIndex } from "../../../standalone-agent-run-root/services/standalone-root-execution-index.js";
 import { ClosedDelegatedRunReader } from "../../../run-history/services/closed-delegated-run-reader.js";
 import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
@@ -27,9 +26,9 @@ type RootRecords = Readonly<{
 const readRootRecords = async (rootKind: CollaborationRootKind, rootRunId: string): Promise<RootRecords> => {
   switch (rootKind) {
     case "agent": {
+      // A standalone run's one agent is the run itself; every other agent of its messages is of another run.
       const records = await getStandaloneAgentRunRootManager().getCollaborationRecordsSnapshot(rootRunId);
-      const index = new StandaloneRootExecutionIndex(records.tree);
-      return { messages: records.messages.messages, isAgentOfTree: (id) => index.getAgent(id) !== null };
+      return { messages: records.messages.messages, isAgentOfTree: (id) => id === records.host.agentRunId };
     }
     case "agent_team": {
       const records = await getTeamCommunicationProjectionService().getCollaborationRecordsSnapshot(rootRunId);

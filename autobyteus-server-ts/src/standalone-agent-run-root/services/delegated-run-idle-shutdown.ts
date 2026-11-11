@@ -27,7 +27,6 @@ export class DelegatedRunIdleShutdown {
     agentRunManager: Pick<AgentRunManager, "tryPrepareAgentRunTerminationIfQuiescent">;
     /** Runs the fire-time check in the root's gate (no root-mediated input interleaves). */
     runInGate(operation: () => Promise<void>): Promise<void>;
-    hasOpenChildWork(): boolean;
     gracePeriodMs?: () => number;
     timers?: TaskExecutionIdleTimers;
   }>) {
@@ -68,7 +67,7 @@ export class DelegatedRunIdleShutdown {
 
   private async shutDownIfQuiet(): Promise<void> {
     const run = this.watched;
-    if (this.disposed || !run?.isActive() || this.options.hasOpenChildWork()) return;
+    if (this.disposed || !run?.isActive()) return;
     const prepared = await this.options.agentRunManager.tryPrepareAgentRunTerminationIfQuiescent(run);
     // Not quiet: a later idle, offline or error status re-arms the schedule.
     if (!prepared) return;

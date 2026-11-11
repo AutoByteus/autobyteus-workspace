@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { emptyStandaloneRootTree } from "../../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { STANDALONE_ROOT_TREE_SHAPE, TEAM_RUN_TREE_SHAPE } from "../../../../src/run-history/store/coordinating-tree-shapes.js";
 import { agentRunIdsOfTree } from "../../../../src/run-history/store/task-execution-tree-split.js";
@@ -70,9 +69,4 @@ describe("agentRunIdsOfTree: the one message-endpoint rule", () => {
     expect(agentRunIdsOfTree(TEAM_RUN_TREE_SHAPE, validateTeamRunExecutionTreePayload(base(), "team-b")).has("lead_a")).toBe(false);
   });
 
-  it("takes a standalone run's back-link as given (it is stored in run_metadata.json, not in the tree)", () => {
-    const tree = emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "host", agentDefinitionId: "assistant" }, createdAt: T0 });
-    expect([...agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree)]).toEqual(["host"]);
-    expect([...agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, { ...delegatedFrom, delegatingRun: { kind: "agent", runId: "lead_a" } })].sort()).toEqual(["host", "lead_a"]);
-  });
 });

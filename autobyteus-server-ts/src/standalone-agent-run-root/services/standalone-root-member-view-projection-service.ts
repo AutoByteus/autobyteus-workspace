@@ -3,7 +3,6 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../../run-history/projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../../run-history/projection/run-projection-types.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
 import { locatedExecutionSource } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
@@ -15,11 +14,8 @@ import {
   type ResolvedRunFileChangeEntry,
 } from "../../run-history/services/run-file-change-projection-service.js";
 import type { RunFileChangeEntry } from "../../services/run-file-changes/run-file-change-types.js";
-import {
-  StandaloneRootLocationService,
-  type LocatedStandaloneRootAgentExecution,
-} from "./standalone-root-location-service.js";
-import { getStandaloneAgentRunRootManager } from "./standalone-agent-run-root-manager.js";
+import { DelegatedChildLocations, type LocatedStandaloneRootAgentExecution } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -38,28 +34,24 @@ export interface StandaloneRootMemberRunProjection {
 }
 
 /**
- * Views of one Agent-root child (task Agent or task-Team member) by its exact identity inside one
- * hub: stored conversation projection, event-monitor pages, artifact list and artifact content. Only the named hub's
- * tree is read.
+ * Views of one child row of a standalone run (DS-8): an agent of a run it delegated to, read from that run's own folder
+ * (stored conversation projection, event-monitor pages, artifact list and content); a peer child from its node.
  */
 export class StandaloneRootMemberViewProjectionService {
   private readonly agentViews: AgentRunViewProjectionService;
-  private readonly locations: StandaloneRootLocationService;
+  private readonly locations: DelegatedChildLocations;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
-    locations?: StandaloneRootLocationService;
+    locations?: DelegatedChildLocations;
     runFileChangeProjectionService?: RunFileChangeProjectionService;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
     this.injectedFileChanges = options.runFileChangeProjectionService ?? null;
-    this.locations = options.locations ?? new StandaloneRootLocationService({
-      memoryDir,
-      roots: { getActiveTree: (hostRunId) => getStandaloneAgentRunRootManager().getActiveTree(hostRunId) },
-    });
+    this.locations = options.locations ?? new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir) });
   }
 
   async getProjection(hostRunId: string, memberAddress: string, agentRunId: string): Promise<StandaloneRootMemberRunProjection> {
@@ -71,8 +63,8 @@ export class StandaloneRootMemberViewProjectionService {
     return {
       agentRunId: projection.runId,
       memberAddress: location.memberAddress,
-      conversation: resolveInterAgentSenderAddresses(projection.conversation, (runId) =>
-        new StandaloneRootExecutionIndex(location.tree).getAgent(runId)?.address ?? null),
+      // A sender of another run is named by its run ID (its address belongs to its own run).
+      conversation: resolveInterAgentSenderAddresses(projection.conversation, () => null),
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
@@ -88,8 +80,7 @@ export class StandaloneRootMemberViewProjectionService {
       beforeCursor,
       canonicalSubject: `agent:${location.rootRunId}:member:${location.memberAddress}:agent:${location.agentRunId}`,
     });
-    const index = new StandaloneRootExecutionIndex(location.tree);
-    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
+    return resolveActiveTracePageSenderAddresses(page, () => null);
   }
 
   /** The child's artifacts: live while the hub is active, else its stored file changes. */
@@ -120,14 +111,14 @@ export class StandaloneRootMemberViewProjectionService {
     const location = await this.locations.findAgent({ rootRunId: root, memberAddress: address, agentRunId: run });
     if (!location || location.rootRunId !== root || location.memberAddress !== address
       || !locatedExecutionSource(location)) {
-      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' at '${address}' was not found among the delegated copies of Agent run '${root}'.`);
+      throw new CollaborationMemberNotFoundError(`AgentRun '${run}' at '${address}' was not found among the runs delegated from Agent run '${root}'.`);
     }
     return location;
   }
 }
 
 const metadataFor = (location: LocatedStandaloneRootAgentExecution): AgentRunMetadata => {
-  // A delegated copy's definition and launch come from its recorded source.
+  // The run's own definition and launch.
   const source = locatedExecutionSource(location)!;
   const launch = source.launchConfiguration;
   return {

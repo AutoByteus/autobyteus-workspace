@@ -127,7 +127,7 @@ export class TokenUsageDisplayFieldCapturer {
       run_summary: compactOptional(payload.run_summary),
       run_created_at: normalizeDateString(payload.run_created_at)
         ?? normalizeDateString(located.startedAt)
-        ?? normalizeDateString(located.tree.createdAt),
+        ?? normalizeDateString(hostRow?.createdAt),
       member_display_name: compactOptional(payload.member_display_name)
         ?? compactOptional(located.memberAddress),
     };

@@ -62,7 +62,7 @@ import {
   bindProcessStandaloneRunCommandPort,
   releaseProcessStandaloneRunCommandPort,
 } from "../services/standalone-run-ports.js";
-import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { DelegatedChildLocations } from "../../agent-collaboration/execution/delegation/delegated-child-locations.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import {
@@ -105,10 +105,7 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
-      agents: new StandaloneRootLocationService({
-        memoryDir,
-        roots: { getActiveTree: (hostRunId) => standaloneRootManager?.getActiveTree(hostRunId) ?? null },
-      }),
+      agents: new DelegatedChildLocations({ memoryDir, teams: storedTeamLocations }),
     });
     let agentRunManager: AgentRunManager | null = null;
     let standaloneRootManager: StandaloneAgentRunRootManager | null = null;
@@ -266,18 +263,11 @@ export class GeneralProcessRunSupervisor {
           activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),
           terminateHost: (hostRunId) => lifecycleService.terminateHost(hostRunId),
           readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
-          recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
         },
         taskExecutionResources: input.taskExecutionResources,
         rootDependencies: {
-          flatTeamExecutionFactory,
-          taskExecutionIdentity,
           taskExecutionResources: input.taskExecutionResources,
-          teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
-          memoryLocator,
-          activityInspector,
-          workspaceManager,
           collaboratorAdmission,
         },
       });

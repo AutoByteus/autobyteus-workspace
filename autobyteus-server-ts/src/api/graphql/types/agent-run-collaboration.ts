@@ -1,3 +1,4 @@
+import { delegatedChildrenDtos } from "../../../services/agent-streaming/delegated-children-dtos.js";
 import { GraphQLError } from "graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
@@ -94,8 +95,9 @@ export class AgentRunCollaborationResolver {
   @Query(() => GraphQLJSON, { nullable: true })
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
-    return inspection ? projectAgentCollaborationView({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent", rootRunId: inspection.snapshot.tree.host.agentRunId }) }) : null;
+    if (!inspection) return null;
+    const run = { rootSubjectKind: "agent" as const, rootRunId: inspection.hostRunId };
+    return projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: await remoteTaskExecutionDtos(run), taskExecutions: await delegatedChildrenDtos(run) });
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)

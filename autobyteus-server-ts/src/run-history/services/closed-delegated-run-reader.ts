@@ -1,77 +1,54 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { runIdentityOf } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
-import { TaskAgentOwnFiles } from "../store/task-agent-own-files.js";
+import { RunOwnAgentsReader } from "../store/run-own-agents-reader.js";
 
-/** An agent of a top run's closed delegated run: its run ID and the address it had in the tree. */
+/** An agent of a run delegated from a run: its run ID and its own address in its run. */
 export type ClosedRunAgent = Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 
-/** The runs a run delegated to, one hop, open or closed: the `DelegationTree` (contract §2.6). */
-type ClosedRuns = Pick<DelegationTree, "childrenOf">;
+/** The runs delegated from a run on this node, open or closed: the `DelegationTree` (contract §4). */
+type DelegatedRuns = Pick<DelegationTree, "childrenOf" | "subtreeOf">;
 
-let boundClosedRuns: ClosedRuns | null = null;
-/** The composition binds the loaded Task side once (`project-task-execution-resource-composition.ts`). */
-export const bindClosedDelegatedRuns = (port: ClosedRuns): void => { boundClosedRuns = port; };
-export const unbindClosedDelegatedRuns = (port: ClosedRuns): void => { if (boundClosedRuns === port) boundClosedRuns = null; };
+let boundDelegatedRuns: DelegatedRuns | null = null;
+/** The composition binds the loaded tree once (`project-task-execution-resource-composition.ts`). */
+export const bindClosedDelegatedRuns = (port: DelegatedRuns): void => { boundDelegatedRuns = port; };
+export const unbindClosedDelegatedRuns = (port: DelegatedRuns): void => { if (boundDelegatedRuns === port) boundDelegatedRuns = null; };
 
 /**
- * The agents of a top run's closed delegated runs (design D-5, D-7): the runs are the Task records' closed copies of
- * this top run, their agents and addresses come from each run's own file. A run whose own file cannot be read is left
- * out with one warning naming it (DESIGN.md rule 7). Reads only what is asked.
+ * The agents of the runs delegated from a run (REQ-009's token roll-up; the Team tab's past participants): the runs come
+ * from the Task entries, open and closed; each run's agents and addresses from its own file. A run whose own file cannot
+ * be read gives none of its members (an agent run still gives its own ID). Reads only what is asked.
  */
 export class ClosedDelegatedRunReader {
-  private readonly files: TaskAgentOwnFiles;
+  private readonly own: RunOwnAgentsReader;
 
-  /** `closedRuns`: the Task side; by default the bound one (none before the Task records are loaded: no closed run). */
-  constructor(memoryDir: string, private readonly closedRuns: () => ClosedRuns | null = () => boundClosedRuns) {
-    this.files = new TaskAgentOwnFiles(memoryDir);
+  /** `delegatedRuns`: the tree; by default the bound one (none before the Task records are loaded: no delegated run). */
+  constructor(memoryDir: string, private readonly delegatedRuns: () => DelegatedRuns | null = () => boundDelegatedRuns) {
+    this.own = new RunOwnAgentsReader(memoryDir);
   }
 
-  /**
-   * The given agent run IDs that are agents of a closed delegated run of this top run, with their addresses. An agent
-   * run or a Team's coordinator is found by the Task record; another Team member by reading the closed Teams' files.
-   */
+  /** The given agent run IDs that are agents of a run delegated from this run (one hop), with their own addresses. */
   async forAgentRunIds(root: RootExecutionIdentity, agentRunIds: Iterable<string>): Promise<ClosedRunAgent[]> {
-    const port = this.closedRuns();
     const wanted = new Set(agentRunIds);
-    if (!port || !wanted.size) return [];
-    const found = new Map<string, ClosedRunAgent>();
-    const read = new Set<string>();
-    const take = async (run: TaskExecutionReference) => {
-      const key = "agentRunId" in run ? `agent:${run.agentRunId}` : `team:${run.teamRunId}`;
-      if (read.has(key)) return;
-      read.add(key);
-      for (const agent of await this.agentsOf(root, run)) if (wanted.has(agent.agentRunId)) found.set(agent.agentRunId, agent);
-    };
-    const children = port.childrenOf(root);
-    // An agent run is found by its run ID; a team's members by reading the team's own file.
-    for (const run of children) if ("agentRunId" in run && wanted.has(run.agentRunId)) await take(run);
-    for (const run of children) {
-      if (found.size === wanted.size) break;
-      if ("teamRunId" in run) await take(run);
+    if (!wanted.size) return [];
+    const found: ClosedRunAgent[] = [];
+    for (const run of this.delegatedRuns()?.childrenOf(root) ?? []) {
+      for (const agent of await this.agentsOf(run)) if (wanted.has(agent.agentRunId)) found.push(agent);
     }
-    return [...found.values()];
+    return found;
   }
 
-  /** Every agent run ID of this top run's closed delegated runs. */
+  /** Every agent run ID of every run delegated from this run, one hop at a time and recursively (token totals). */
   async agentRunIds(root: RootExecutionIdentity): Promise<string[]> {
-    const runs = this.closedRuns()?.childrenOf(root) ?? [];
-    return (await Promise.all(runs.map((run) => "agentRunId" in run ? [run.agentRunId]
-      : this.agentsOf(root, run).then((agents) => agents.map((agent) => agent.agentRunId))))).flat();
+    const runs = this.delegatedRuns()?.subtreeOf(root) ?? [];
+    return (await Promise.all(runs.map((run) => this.agentsOf(run)))).flat().map((agent) => agent.agentRunId);
   }
 
-  private async agentsOf(root: RootExecutionIdentity, run: TaskExecutionReference): Promise<ClosedRunAgent[]> {
-    const runId = "agentRunId" in run ? run.agentRunId : run.teamRunId;
-    const state = "agentRunId" in run ? await this.files.readAgent(run.agentRunId) : await this.files.readTeam(run.teamRunId);
-    if (state.kind !== "present") {
-      if (state.kind === "unreadable") {
-        console.warn(`Closed delegated run '${runId}' of ${root.rootSubjectKind} run '${root.rootRunId}' cannot be read: ${state.error.message}`);
-      }
-      return [];
-    }
-    return "metadata" in state
-      ? [{ agentRunId: state.metadata.runId, address: state.metadata.taskAgent.address }]
-      : state.tree.rootTeam.members.map((member) => ({ agentRunId: member.agentRunId, address: member.address }));
+  private async agentsOf(run: TaskExecutionReference): Promise<ClosedRunAgent[]> {
+    const standing = await this.own.standingOf(runIdentityOf(run)).catch(() => null);
+    if (standing?.agents.size) return [...standing.agents].map(([address, agentRunId]) => ({ agentRunId, address: address as AgentTeamAddress }));
+    return "agentRunId" in run ? [{ agentRunId: run.agentRunId, address: "/" as AgentTeamAddress }] : [];
   }
 }
