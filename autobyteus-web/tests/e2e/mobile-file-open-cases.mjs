@@ -83,12 +83,15 @@ export const runFileOpenCases = async (probe) => {
   const { runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact } = probe;
   const wants = id => !selected || selected.has(id);
   const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) }).catch(() => undefined);
-  const watchBrowser = (page, label, origin, caseOf) => {
+  /** `expected`: a case's own deliberate failures, `{ test(line, sourceUrl), cause }` (MSP-37's refused node files). */
+  const watchBrowser = (page, label, origin, caseOf, expected = null) => {
     const record = (text, sourceUrl = '') => {
       const line = redact(`${label} console: ${text}`);
       // The browser's own favicon request at the origin root carries no credential (401, autobyteus-437) or is absent (404).
       const favicon = /: Failed to load resource: the server responded with a status of 40[14] \((Unauthorized|Not Found)\)$/.test(line) && sourceUrl.startsWith(origin) && new URL(sourceUrl).pathname === '/favicon.ico';
-      evidence.browserErrors.push({ case: caseOf(), line, known: favicon, ...(favicon ? { cause: 'the browser\'s favicon request at the origin root (/favicon.ico)' } : {}) });
+      const deliberate = !favicon && Boolean(expected?.test(line, sourceUrl));
+      const cause = favicon ? 'the browser\'s favicon request at the origin root (/favicon.ico)' : deliberate ? expected.cause : null;
+      evidence.browserErrors.push({ case: caseOf(), line, known: favicon || deliberate, ...(cause ? { cause } : {}) });
     };
     page.on('console', message => { if (message.type() === 'error') record(message.text(), message.location()?.url ?? ''); });
     page.on('pageerror', error => record(`pageerror ${error.message}`));
@@ -436,7 +439,12 @@ export const runFileOpenCases = async (probe) => {
       await attachToBrowserContext(context);
       await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
       const page = await context.newPage();
-      watchBrowser(page, 'desktop', stack.frontendUrl, () => 'MSP-37');
+      // The missing path (404 NODE_FILE_NOT_FOUND) and the folder (400 NODE_FILE_IS_FOLDER) are refused on purpose.
+      watchBrowser(page, 'desktop', stack.frontendUrl, () => 'MSP-37', {
+        test: (line, sourceUrl) => /: Failed to load resource: the server responded with a status of 40[04] \((Not Found|Bad Request)\)$/.test(line)
+          && /\/rest\/node-files\/content\?path=.*(gone-471|reports-471)\.md$/.test(decodeURIComponent(sourceUrl)),
+        cause: 'the refused node files of AC-002 (the missing path and the folder)',
+      });
       const nodeFileRequests = [];
       page.on('response', response => {
         const url = new URL(response.url());
@@ -484,8 +492,9 @@ export const runFileOpenCases = async (probe) => {
         const readOnly = facts => facts.editControls === 0 && !facts.typedChanges && facts.status === '';
         assert(markdown.text.includes('NODE-FILE-ON-DESKTOP-471') && readOnly(markdown), 'AC-001 a Markdown file outside the run folder opens read-only in the Files panel', details);
         assert(image.image === 1 && readOnly(image), 'AC-001 a PNG outside the run folder shows in the Files panel', details);
-        assert(missing.alert === 'This file was not found on the computer.', 'AC-002 a missing path says so', details);
-        assert(folder.alert === 'This path is a folder, not a file.', 'AC-002 a folder says so', details);
+        // The Files panel's alert is its "Error!" heading and the reason.
+        assert(missing.alert.endsWith('This file was not found on the computer.'), 'AC-002 a missing path says so', details);
+        assert(folder.alert.endsWith('This path is a folder, not a file.'), 'AC-002 a folder says so', details);
         assert(['notes-471.md', 'chart-471.png', 'gone-471.md', 'reports-471.md'].every(file => details.nodeFileRequests.some(r => r.file === file)), 'each opens through the node-file route', details);
         assert(!details.hostWorkspaceText && details.unchanged, 'no "host workspace" text; the file is unchanged', details);
         return details;
