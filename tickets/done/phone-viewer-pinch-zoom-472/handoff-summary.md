@@ -11,12 +11,13 @@
 
 ## Integrated State
 
-- Branch `codex/phone-viewer-pinch-zoom-472`, already current with `origin/personal` `ed481ae4ca` at delivery: no integration, no rerun needed.
+- Branch `codex/phone-viewer-pinch-zoom-472`: current with `ed481ae4ca` at DR-001; `origin/personal` then moved to `8641bc393a` (autobyteus-452), merged as `965a6b43c4`. The duplicate phone case MSP-39 was renumbered MSP-43; two Local Fixes (CR-002, CR-003) made a live refresh keep a zoomed PDF's position; API-REV-005 Pass 95% on the merged state; CRR-009 Pass.
 
 ## Verification
 
-- From the evidence: AC-001…AC-005 proven in the Android 15 app with real MotionEvents (API-REV-002, 94%).
-- Open for the user's decision: the Android 8–9 Save dialog on a real 8–9 system (tested only by forcing that path on Android 10 and 15; installing an 8–9 image changes the user's SDK), and RSK-001, memory at 3× on a real low-end phone (emulator measured: no crash, app memory 106 → 108 MB).
+- From the evidence: AC-001…AC-005 proven in the Android 15 app with real MotionEvents; AC-005 now live across 452's refresh (10/10 exact PDF restores; the image keeps its zoom); 43/43 phone cases on the merged state, MSP-43 11/11 after the last fix (API-REV-005, 95%). The desktop PDF viewer's path is untouched by CR-002/003 (every changed line is in the touch-zoom section), so the round-2 desktop PDF probe still holds.
+- Accepted by the user: the Android 8–9 Save dialog on a real 8–9 system (tested by forcing that path on Android 10 and 15) and RSK-001, memory at 3× on a real low-end phone (emulator: no crash, 106 → 108 MB).
+- For the Solution Designer (non-blocking, CRR-009): AR-001 assumes viewers are remounted on reload; media viewers are redrawn in place (452).
 
 ## Residual Risks And Follow-ups
 

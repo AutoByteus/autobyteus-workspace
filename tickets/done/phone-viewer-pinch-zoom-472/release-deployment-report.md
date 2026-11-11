@@ -55,4 +55,16 @@
 - Post-integration check: `node tests/e2e/mobile-shell-probe.mjs --cases=MSP-39` → `mobile-shell probe: duplicate case IDs MSP-39 (mobile-file-zoom-cases.mjs, mobile-live-file-refresh-cases.mjs)`, exit 1 (`evidence/delivery/DR1-probe-duplicate-id.log`). The probe's guard stops every run, so no phone probe case can run on the merged state.
 - Classification: this ticket's test code, after the base merge (this ticket's MSP-39 and 452's MSP-39); the owner is API/E2E. Also, 452's live refresh now makes AC-005 / REQ-006 (zoom kept when the open file reloads) reproducible live; API-06 could not before.
 - Recommended recipient: API/E2E engineer: renumber this ticket's zoom case to a free ID, rerun the phone probe on the merged state, and prove AC-005 live with 452's refresh.
-- Status: `Blocked`; nothing merged into `personal`.
+- Status (DR-001): `Blocked`; nothing merged into `personal`.
+
+## DR-002 — Re-entry after API-REV-005 and CRR-009
+
+- Trigger: code reviewer CRR-009 Pass. Since DR-001: `3eebc0b7a4` renumbered this ticket's case MSP-39 → MSP-43; API-REV-003 (merged state) failed F-2 → CR-002 (`43ef1748da`, IR-003): a live refresh lost a zoomed PDF's position; API-REV-004 failed F-3 → CR-003 (`bb9b300c4a`, IR-004): the position was put back against a partial layout; API-REV-005 Pass at 95%. Checkpoint `176048dbbc` (the reviewer's CRR-005…009 records).
+- `origin/personal` at DR-002's fetch: `8641bc393a`, unchanged since the merge `965a6b43c4`; no further integration.
+- Verification from the evidence (re-judged):
+  - AC-005 (API-06 r5, `evidence/api-e2e/r5-android/`): 10/10 refreshes of a zoomed 12-page PDF restore against the whole layout (`height 11816, 12 canvases, 12 sized`), positions exact; partial-layout frames were waited out; the image kept `translate(-430.359px, -595.373px) scale(2.49968)` across two refreshes with new blob URLs.
+  - REQ-001 anchor on a lower page (API-01 r5): the point under the fingers moved ≤ 5 px, `allBitmapsMatch: true`.
+  - AC-004 (API-08): 43/43 phone cases on the merged state (this ticket's MSP-43; 452's MSP-39…42; the baseline-fixed MSP-22, 24/34/35, 32), then MSP-43 11/11 after each fix.
+  - The desktop PDF viewer (PSD-001…011, round 2): CR-002/CR-003 change `PdfViewer.vue` only in the touch-zoom section (`git diff -U0`: hunks from line 97; the desktop's `onLoaded` at lines 86–88 and its template branch `@loaded="onLoaded"` unchanged; the new `watch` returns unless `props.touchZoom`), and the full web suite passes on `bb9b300c4a` (IMP-32: 757 files, 5709 tests). The round-2 desktop evidence therefore still holds.
+  - Judgement: `Sufficient`. The user's two accepted gaps are unchanged.
+- Docs: `autobyteus-web/docs/remote_access.md` aligned with SR-004 (see `docs-sync-report.md`, DR-002).

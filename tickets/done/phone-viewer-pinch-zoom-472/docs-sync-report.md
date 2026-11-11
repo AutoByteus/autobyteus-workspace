@@ -18,6 +18,7 @@
 | Doc Path | Why It Was Reviewed | Result | Notes |
 | --- | --- | --- | --- |
 | `GLOSSARY.md`, `autobyteus-web/docs/remote_access.md`, `autobyteus-android/README.md` | zoom, the `saveFile` bridge message, `DownloadsSaver` | No change | updated in the ticket; `saveFile` named in all three |
+| `autobyteus-web/docs/remote_access.md` | the phone viewer's reload rule (DR-002) | **Updated** | aligned with SR-004: a reload while open keeps zoom and position (452's in-place refresh; a PDF's place only against the whole layout, CR-003); Back ends it |
 | `docs/android_mobile_access.md` | the Android app's guide | **Updated** | Download in the app's ownership list; a paragraph on how it saves, Android 10+ vs 8–9, and that an older app ignores it |
 | `DESIGN.md` | project design | No change | no new convention |
 | `TESTING.md` | testing guideline | No change | the new instrumented test (`DownloadsSaverTest`) is listed in `autobyteus-android/README.md`, where instrumented tests are listed |
@@ -33,3 +34,8 @@
 
 - Result: `Pass`
 - Next delivery action: the user's decisions on the two open validation gaps, then finalization (no release unless the user asks).
+
+## DR-002 (after the merge with autobyteus-452)
+
+- Integrated base: `origin/personal` `8641bc393a` (merged as `965a6b43c4`; unchanged at DR-002's fetch).
+- `autobyteus-web/docs/remote_access.md`: "The zoom and position stay while the same file reloads (a live refresh, an explicit open again …); another file starts at 1×" → while a file stays open, a reload keeps zoom and position (452's live refresh redraws in place; opening the same file again while shown); a PDF's place is put back only once every page is laid out; closing the viewer (Back) ends it, so a later open or another file starts at 1× and the top (SR-004).
