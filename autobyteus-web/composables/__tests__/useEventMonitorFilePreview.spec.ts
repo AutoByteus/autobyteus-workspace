@@ -34,7 +34,8 @@ const {
 }));
 
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => activeContextStoreMock }));
-vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => ({ runOfAgentRun: () => null }) }));
+const remoteRunsMock = vi.hoisted(() => ({ runOfAgentRun: vi.fn((): { nodeName: string } | null => null) }));
+vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => remoteRunsMock }));
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
@@ -194,13 +195,23 @@ describe('selected execution preview identity', () => {
   });
 
   for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
-    it(`refuses outside-workspace in ${runtime} without native fallback`, async () => {
+    it(`opens a path outside the run's folder in ${runtime} as a node file, read-only, by its absolute path (autobyteus-471)`, async () => {
       windowNodeContextStoreMock.isEmbeddedWindow = runtime !== 'remote-electron';
       hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(runtime !== 'embedded-no-bridge');
-      expect((await useEventMonitorFilePreview(options()).openPath(action)).status).toBe('unavailable');
-      expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+      expect((await useEventMonitorFilePreview(options()).openPath(action)).status).toBe('opened');
+      expect(fileExplorerStoreMock.openFilePreview).toHaveBeenCalledWith(action.normalizedCandidate, 'B',
+        { accessIntent: { source: 'event-monitor', readOnly: true } });
     });
   }
+
+  it('says where a run another node runs keeps its file, and opens nothing (autobyteus-471 REQ-003)', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = false;
+    remoteRunsMock.runOfAgentRun.mockReturnValueOnce({ nodeName: 'studio' });
+    expect(await useEventMonitorFilePreview(options()).openPath(action)).toEqual({
+      status: 'unavailable', message: 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node' });
+    expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+    expect(revealToolMock).not.toHaveBeenCalled();
+  });
 
   it('maps selected source root in a remote window without metadata', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow = false;

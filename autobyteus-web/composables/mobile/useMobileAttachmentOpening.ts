@@ -30,7 +30,7 @@ export function useMobileAttachmentOpening() {
     if (attachment.kind === 'workspace_path' && attachment.locator.startsWith('/')) {
       const outcome = await openMobileFilePath({ absolutePath: attachment.locator, mobileNavigation, isOriginCurrent: () => true });
       if (outcome.status === 'unavailable') {
-        addToast(t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host'), 'info');
+        addToast(t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node', { node: outcome.nodeName }), 'info');
       } else if (outcome.status === 'failed') {
         addToast(t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'), 'error');
       }

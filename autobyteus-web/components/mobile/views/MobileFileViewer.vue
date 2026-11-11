@@ -6,7 +6,6 @@
       <p v-if="viewerError" class="px-4 py-10 text-center text-sm text-red-700" role="alert" data-testid="mobile-file-preview-error">{{ errorMessage || 'Couldn’t open this file.' }}</p>
       <p v-else-if="isLoading" class="px-4 py-10 text-center text-sm text-slate-400" role="status" data-testid="mobile-file-preview-loading">Opening…</p>
       <p v-else-if="isUnsupported" class="px-4 py-10 text-center text-sm text-slate-500" data-testid="mobile-file-preview-unsupported">This file can’t be shown on the phone.</p>
-      <p v-else-if="isTooLarge" class="px-4 py-10 text-center text-sm text-slate-500" data-testid="mobile-file-preview-large">This file is too large to show on the phone.</p>
       <FileViewer
         v-else
         :file="viewerFile"
@@ -27,8 +26,6 @@ import FileViewer from '~/components/fileExplorer/FileViewer.vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import type { FileDataType, FileOpenMode, OpenFileState } from '~/stores/fileExplorerState';
 
-const MOBILE_FILE_VIEW_MAX_CHARS = 120_000;
-
 const props = withDefaults(defineProps<{
   path: string;
   fileState: OpenFileState | null;
@@ -43,7 +40,6 @@ const viewerError = computed(() => props.openError || props.fileState?.error || 
 const isLoading = computed(() => !props.fileState || Boolean(props.fileState.isLoading));
 const fileType = computed<FileDataType>(() => props.fileState?.type ?? 'Text');
 const isUnsupported = computed(() => fileType.value === 'Unsupported');
-const isTooLarge = computed(() => fileType.value === 'Text' && (props.fileState?.content ?? '').length > MOBILE_FILE_VIEW_MAX_CHARS);
 const viewerMode = computed<FileOpenMode>(() => {
   const lowerPath = props.path.toLowerCase();
   return fileType.value === 'Text' && (lowerPath.endsWith('.md') || lowerPath.endsWith('.markdown')) ? 'preview' : 'edit';

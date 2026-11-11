@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 // Build-mode detection, external Apollo and the open target are doubled, and the phone's navigation is passed as a double;
 // the path mapper, the workspace store and the launcher are production implementations.
 vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({ isMobileRemoteAccessRuntime: () => true }));
-vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string) => key }) }));
+vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string, params?: Record<string, string>) => (params?.node ? `${key}:${params.node}` : key) }) }));
 const io = vi.hoisted(() => ({ query: vi.fn() }));
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }));
 const phone = vi.hoisted(() => ({ target: null as unknown, openFile: vi.fn(async () => undefined), openNodeFile: vi.fn(async () => undefined), remoteRunIds: new Set<string>() }));
@@ -48,11 +48,11 @@ describe('the phone: a conversation file link opens in the open agent\'s folder,
     });
   }
 
-  it('a run another node runs keeps today\'s answer: its paths are that node\'s', async () => {
+  it('a run another node runs says the file is on that node (autobyteus-471 REQ-003) and opens nothing', async () => {
     phone.target = targetIn(null);
     phone.remoteRunIds.add('member-B');
     const result = await opener().openPath(action('/owned/B/brief.md'));
-    expect(result.status).toBe('unavailable');
+    expect(result).toEqual({ status: 'unavailable', message: 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node:peer' });
     expect(io.query).not.toHaveBeenCalled(); expect(phone.openFile).not.toHaveBeenCalled(); expect(phone.openNodeFile).not.toHaveBeenCalled();
   });
 
@@ -65,7 +65,7 @@ describe('the phone: a conversation file link opens in the open agent\'s folder,
 
   it('without the phone navigation nothing opens (R-2)', async () => {
     const result = await useEventMonitorFilePreview({ revealTool: null, mobileNavigation: null, isOriginCurrent: () => true }).openPath(action('/elsewhere/notes.md'));
-    expect(result.status).toBe('unavailable');
+    expect(result.status).toBe('failed');
     expect(phone.openNodeFile).not.toHaveBeenCalled();
   });
 
