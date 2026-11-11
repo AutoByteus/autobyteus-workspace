@@ -1,0 +1,10 @@
+# API-04 round 2 search-pdf-preview; commit a044b6652c (code b0f3d1c42b); 2026-11-11T15:32:35Z
+
+> autobyteus@1.5.13-beta.4 test:e2e:search-pdf-preview /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-04-desktop-file-probes/r2-search-pdf-preview
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":21721,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":19757,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

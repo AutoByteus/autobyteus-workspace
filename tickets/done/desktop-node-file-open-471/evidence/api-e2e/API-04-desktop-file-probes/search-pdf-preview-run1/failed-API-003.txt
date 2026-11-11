@@ -1,0 +1,8 @@
+Files — synthetic workspace PDF validation
+applications
+resume-notes.md
+resume sample.pdf
+resume-notes.md
+SYNTHETIC RESUME NOTES
+
+Same workspace-relative text reader.

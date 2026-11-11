@@ -1,0 +1,7 @@
+# API-03 round 2: event-monitor-file-preview (packaged app, --build); commit a044b6652c (code b0f3d1c42b); 2026-11-11T15:16:16Z
+# pnpm -C autobyteus-web test:e2e:event-monitor-file-preview --output-dir <API-03-packaged/r2-event-monitor-file-preview> (AUTOBYTEUS_* unset)
+
+> autobyteus@1.5.13-beta.4 test:e2e:event-monitor-file-preview /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/event-monitor-file-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-03-packaged/r2-event-monitor-file-preview
+
+{"ok":true,"evidence":"/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-03-packaged/r2-event-monitor-file-preview/evidence.json","cases":{"N-001":"Pass","N-002":"Pass","N-003":"Pass","N-004":"Pass","N-005":"Pass","N-009":"Pass","N-006":"Pass","N-007":"Pass","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-63841-ca1a","wasRunning":true,"forced":true,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-39Xz5J","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"fixtureRemoved":true,"instances":{"instances":[]}}}

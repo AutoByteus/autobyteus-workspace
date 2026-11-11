@@ -1,0 +1,11 @@
+# API-04 search-pdf-preview run 2; commit b49b5c539f; 2026-11-11T14:08:16Z; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:e2e:search-pdf-preview --output-dir <API-04-desktop-file-probes/search-pdf-preview>
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:search-pdf-preview /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-04-desktop-file-probes/search-pdf-preview
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":21550,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":19178,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

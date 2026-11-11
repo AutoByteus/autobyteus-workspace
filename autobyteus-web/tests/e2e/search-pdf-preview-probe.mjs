@@ -209,6 +209,8 @@ AUTOBYTEUS_SERVER_HOST=${base}
     await page.locator('.file-explorer input').fill('');
     await until('search cleared', async () => !(await state()).searchLoading);
     await page.locator('.file-explorer .file-header').filter({ hasText: 'resume-notes.md' }).click();
+    // An explicit open of an open file reads it again (autobyteus-450): its content is null until the read returns.
+    await until('the tree open re-read the text', async () => (await state()).preview?.content === text);
     const treeText = await state(); assert.equal(treeText.preview.path, searchedText.preview.path); assert.equal(treeText.preview.content, text);
     await page.locator('.file-explorer .file-header').filter({ hasText: /^applications$/ }).click();
     await page.locator('.file-explorer .file-header').filter({ hasText: /^nested$/ }).click();

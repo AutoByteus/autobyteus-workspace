@@ -101,7 +101,7 @@ const mountShell = (pinia: any, width: number, height: number, realMonitor = fal
   const Consumer = defineComponent({ setup() {
     reveal = useWorkspaceToolReveal()!; // same setup-captured capability as the real monitor
     const activate = async () => {
-      result.value = (await useEventMonitorFilePreview({ revealTool: reveal, mobileNavigation: null, isOriginCurrent: () => true }).openPath({
+      result.value = (await useEventMonitorFilePreview({ revealTool: reveal, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' }).openPath({
         id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
       })).status;
     };
@@ -238,7 +238,7 @@ for (const invalidation of ['run-switch', 'monitor-unmount'] as const) {
 
 for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
   for (const inside of [true, false]) {
-    it(`actual selected mapper/Files boundary ${runtime}, inside ${inside}`, async () => {
+    it(`actual selected mapper/Files boundary ${runtime}, inside ${inside} (outside: a node file, autobyteus-471)`, async () => {
       const selected = await setupSelectedB();
       selected.target.context.config.workspaceId = 'B';
       if (runtime === 'remote-electron') useWindowNodeContextStore().bindNodeContext('remote', 'http://127.0.0.1:9999');
@@ -250,6 +250,8 @@ for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
         expect(variables).toMatchObject({ workspaceId: 'B', filePath: 'brief.md' });
         return { data: { fileContent: 'authorized B relative bytes' } };
       });
+      // autobyteus-471: outside the run's folder, the path opens as a node file through the node-file route.
+      const nodeFetch = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response('node A file bytes', { status: 200 }));
       const shell = mountShell(selected.pinia, 992, 700, true); await flush();
       if (!inside) shell.setPath('/workspace/A/private.md');
       await shell.wrapper.get('[data-test="file-origin"]').trigger('click'); await flush();
@@ -261,11 +263,16 @@ for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
         expect(selected.files.getActiveFile('B')).toBe('brief.md');
         expect(selected.files.getActiveFileData('B')?.accessIntent?.readOnly).toBe(true);
         expect(contentReads).toHaveLength(1);
+        expect(nodeFetch).not.toHaveBeenCalled();
       } else {
-        expect(contentReads).toHaveLength(0); expect(selected.files.getOpenFiles('B')).toHaveLength(0);
-        expect(shell.wrapper.find('#contentViewer').exists()).toBe(false);
-        expect(shell.wrapper.get('[data-testid="event-monitor-file-preview-status"]').text()).toContain('host workspace');
+        expect(contentReads).toHaveLength(0);
+        expect(String(nodeFetch.mock.calls[0]?.[0])).toContain(`/node-files/content?path=${encodeURIComponent('/workspace/A/private.md')}`);
+        expect(shell.wrapper.get('[data-test="rendered-file"]').text()).toBe('node A file bytes');
+        expect(selected.files.getActiveFile('B')).toBe('/workspace/A/private.md');
+        expect(selected.files.getActiveFileData('B')?.accessIntent?.readOnly).toBe(true);
+        expect(shell.wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
       }
+      nodeFetch.mockRestore();
       expect(shell.errors).toEqual([]);
     });
   }

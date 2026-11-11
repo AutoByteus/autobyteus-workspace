@@ -1,0 +1,26 @@
+# IMP-06b mobile-shell-probe
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.NYh7Do8Z6x/mobile-shell --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37
+# Environment mode: clean
+# Commit: 2e2b9ed436 (branch codex/desktop-node-file-open-471)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T13:07:06Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.NYh7Do8Z6x/mobile-shell --cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37
+
+[mobile-shell] MSP-16 …
+[mobile-shell] MSP-16 Pass
+[mobile-shell] MSP-28 …
+[mobile-shell] MSP-28 Pass
+[mobile-shell] MSP-29 …
+[mobile-shell] MSP-29 Pass
+[mobile-shell] MSP-30 …
+[mobile-shell] MSP-30 Pass
+[mobile-shell] MSP-31 …
+[mobile-shell] MSP-31 Pass
+[mobile-shell] MSP-37 …
+[mobile-shell] MSP-37 Pass
+mobile-shell probe: Pass
+# Exit status: 0

@@ -1,0 +1,77 @@
+{
+  "fileState": {
+    "file": "notes-471.md",
+    "type": "Text",
+    "mode": "preview",
+    "accessIntent": {
+      "source": "node-file",
+      "readOnly": true
+    },
+    "error": null,
+    "hasContent": true
+  },
+  "before": {
+    "text": "notes-471.md Notes 471 NOTES-MARKER-471: the release notes an agent wrote. one two",
+    "editModeControl": 0,
+    "monaco": 0
+  },
+  "typedShown": false,
+  "writes": [],
+  "requests": [
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "GetRunProjection"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "GetRunFileChanges"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "GetAgentRunResumeConfig"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "ListWorkspaceRunHistory"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "ListCollaborationRootHistory"
+    },
+    {
+      "method": "GET",
+      "route": "/rest/node-files/content",
+      "op": null
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "ListWorkspaceRunHistory"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "ListCollaborationRootHistory"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "GetFolderChildren"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "ListWorkspaceRunHistory"
+    },
+    {
+      "method": "POST",
+      "route": "/graphql",
+      "op": "ListCollaborationRootHistory"
+    }
+  ]
+}

@@ -9,7 +9,8 @@ export type { FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
 export type FileOpenMode = 'edit' | 'preview'
 
 export type FilePreviewAccessIntent = {
-  source: 'event-monitor'
+  /** Who made it read-only: a conversation's file link, or the node-file route itself (autobyteus-471). */
+  source: 'event-monitor' | 'node-file'
   readOnly: true
 }
 

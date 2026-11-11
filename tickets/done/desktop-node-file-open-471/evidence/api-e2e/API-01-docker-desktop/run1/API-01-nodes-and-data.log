@@ -1,0 +1,34 @@
+# API-01 nodes and data; commit 32dccf58fa; 2026-11-11T13:37:20.423Z
+node A: container abtest471-node-a, published 127.0.0.1:58783, shared /tmp/abtest471/shared -> /home/autobyteus/shared
+node B: dist/app.js on 127.0.0.1:58784, data root /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-Y6Djb3
+server user in A: root; files in A:
+/home/autobyteus/shared:
+total 16
+drwxr-xr-x 4 root root  128 Nov 11 13:37 .
+drwxr-xr-x 1 root root 4096 Nov 11 13:37 ..
+-rw-r--r-- 1 root root   78 Nov 11 13:37 notes-471.md
+-rw-r--r-- 1 root root  255 Nov 11 13:37 picture-471.png
+
+/home/autobyteus/workspace/ws-471:
+total 12
+drwxr-xr-x 2 root root 4096 Nov 11 13:37 .
+drwxr-xr-x 1 root root 4096 Nov 11 13:37 ..
+-rw-r--r-- 1 root root   59 Nov 11 13:37 inside-471.md
+
+/srv/abtest471:
+total 36
+drwxr-xr-x 3 root root  4096 Nov 11 13:37 .
+drwxr-xr-x 1 root root  4096 Nov 11 13:37 ..
+---------- 1 root root    18 Nov 11 13:37 locked-471.txt
+-rw-r--r-- 1 root root   589 Nov 11 13:37 plan-471.pdf
+drwxr-xr-x 2 root root  4096 Nov 11 13:37 reports-471.md
+-rw-r--r-- 1 root root 16044 Nov 11 13:37 tone-471.wav
+server user reads the locked file: yes (unexpected)
+A paired with B: {"nodeId":"srv_Z2ZyI9Epoi56VoIHsujY8JVKa6nQGTQB","name":"host-b-471","baseUrl":"http://host.docker.internal:58784","paired":true}
+run on A: reporter_6a35598512b94084bd1bc898e90157aa in /home/autobyteus/workspace/ws-471
+A's run: its own message links the eight paths
+ERROR Error: timed out: the delegation
+    at waitConv (file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-01-docker-desktop/API-01-nodes-and-data.mjs:78:167)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-01-docker-desktop/API-01-nodes-and-data.mjs:84:22
+container abtest471-node-a removed
+nodes-and-data FAILED
