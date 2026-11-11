@@ -1,6 +1,6 @@
 # Delegation Contract — A Delegated Run Is An Ordinary Run
 
-Status: **revision 5, proposed** (2026-11-11, SR-014). Rebased on `origin/personal` `827f1e68dc`, which contains autobyteus-469. Task `autobyteus-461`.
+Status: **revision 5, approved by the user** (2026-11-11, SR-018; proposed at SR-014). Rebased on `origin/personal` `827f1e68dc`, which contains autobyteus-469. Task `autobyteus-461`.
 
 History:
 - Revision 1 gave the words and rules; revision 2 added the data level, and the user approved it (2026-11-10, SR-007; TC-1 … TC-6).

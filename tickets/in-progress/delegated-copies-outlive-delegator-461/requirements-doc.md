@@ -2,16 +2,16 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-017, 2026-11-11). The user widened the scope (TC-4 revised): delegations made from team runs and org runs are in this ticket too. Every contract decision is taken; the user's approval of the whole package follows his review of the design. `Ready for Approval` (SR-014, 2026-11-11). PRE-001 (`autobyteus-469`) is delivered and verified (`prerequisite-469-delivery-receipt-verification.md`); this ticket resumed on `origin/personal` `827f1e68dc`. The behavior-defining supplement is re-validated and rewritten on that base as contract revision 5, which changes the approved revision 2 in the points of its §9.1. It needs the user's decisions TC-7, TC-8, TC-9 and DEC-011 before it governs the design. The approval of SR-007 applies to revision 2 only. Earlier: **waiting for prerequisite PRE-001** (the user's decision of 2026-11-10: the growing collaboration tree is fixed first, as its own Task; this ticket continues afterwards). Before that: `Approved` at SR-007, with one open delta at SR-010: DEC-011 (which message routes exist between runs), raised by the architecture review, `Ready for Approval` and waiting for the user. Nothing else changed.
-- Current solution revision ID: `SR-017`
+- Status: `Approved` (SR-018, 2026-11-11). The user approved the package for architecture review after the Solution Designer's own validation: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me." The scope covers standalone, team and org runs (TC-4 revised, SR-017).
+- Current solution revision ID: `SR-018`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), with the user's decisions of 2026-11-10 in the Solution Designer's conversation
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
 - Approved by and reference: `User` for the direction and every decision that needed him, all on 2026-11-10 in the Solution Designer's conversation: the structure is corrected in this ticket ("we should start to refactor in this ticket … put the data model correct"), contract first ("we always start with the contract"), the contract after its data validation ("after you validate it if it works … we're definitely go for this approach"; then "I agree with your decision one and three", "I like your recommendation" on the second, and `subWork`). The remaining details: `Solution Designer within the direction (user informed)`.
-- Exact approved requirements baseline / solution revision: this document at `SR-007` with the contract below
-- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md`, revision 2 with TC-1 … TC-6 decided (as committed at SR-007) Revision 5 (SR-014) is proposed and not approved.
+- Exact approved requirements baseline / solution revision: this document at `SR-018` with `target-collaboration-contract.md` revision 5
+- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md` revision 5 (every decision taken by the user on 2026-11-11: TC-4 revised, TC-7, TC-8, TC-9, TC-10, DEC-011), approved at SR-018
 - History: SR-001 … SR-003 were a smaller baseline (change only what Stop covers) and its design; the user replaced that direction at SR-004. Their IDs are kept below where the meaning is kept; `solution-revision-record.md` indexes the rounds.
 
 ## Problem And Desired Outcome
@@ -251,11 +251,11 @@ BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-008, REQ-00
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
 - Content ready for approval: `Yes`
-- Remaining content blocker: none. TC-7, TC-8, TC-9 and DEC-011 were decided by the user on 2026-11-11; the user's approval of the whole package follows his review of the design draft
+- Remaining content blocker: none
 
 ### Approved Basis Ready For Design
 
-- Approval recorded (the user's, or yours within the direction with the user informed): `No` for revision 5 (revision 2 was approved at SR-007)
+- Approval recorded (the user's, or yours within the direction with the user informed): `Yes` (the user, SR-018)
 - Exact requirements and supplement approval basis recorded: `Yes`
 - Approved requirements package ready for architecture design: `Yes`
-- Remaining blocker: the user's decisions on contract revision 5
+- Remaining blocker: none

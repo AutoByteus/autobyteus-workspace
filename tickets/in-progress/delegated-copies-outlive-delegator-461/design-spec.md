@@ -2,11 +2,11 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-017` (scope widened by the user to team and org runs, TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Current solution revision ID: `SR-018` (self-validated; approved by the user for architecture review). SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
 - Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
-- User approval of the design: **`Pending`**. The user (2026-11-11): "after you finish your work, then tell me stop there and then I will review myself as well". Not sent to architecture review.
-- Design status: `Draft — for the user's review`.
+- User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
+- Design status: `Ready`.
 - Canonical investigation notes: `investigation-notes.md`.
 - Authorities read (2026-11-10, 2026-11-11): the skill's `references/architecture-design.md`, `references/design-principles.md`; `DESIGN.md`; `collaboration_model.md`; `data_migration_guideline.md`; the 469 design.
 - Base: `origin/personal` `827f1e68dc`.
@@ -89,6 +89,7 @@ Each new name says what its owner owns.
 | DS-8 | Primary | The user opens a run → its rows (one hop) with status and live output | The run's view projection |
 | DS-9 | Operational | Update restart → busy runs resumed | `RestartResumer` |
 | DS-10 | Operational | First start after the update → stored data converted | One app-data migration |
+| DS-11 | Primary | The run list → each run once, at its right place | The history list projection with the Task side |
 
 ### DS-1 Delegate to a new run
 
@@ -163,6 +164,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 | 5 | Standalone `collaboration_tree.json` (8) | `host.address` → `run_metadata.json` `address`; the file removed; the message log stays |
 | 6 | Team and org `taskExecutions` and `remoteTaskExecutions` lists | Removed |
 | 7 | Busy-run record left by an interrupted update | Each entry under its own run's root |
+| 8 | No history row for a delegated run (196 runs: 0 of 43 agent runs are in `run_history_index.json`, 0 of 153 team runs in `team_run_history_index.json`) | A history row for each, built from its own file (title from its first message, as for any run) |
 
 Rules:
 - Task records are converted before the run files they name. Each file is written atomically.
@@ -170,6 +172,17 @@ Rules:
 - Frozen copies of every source shape live in `frozen/`.
 - Fixtures cover each contract case E1 … E10 and each partial state of a released migration (469's AR-002 and SR-007).
 - Admission at startup reads own files only (469 D-11). The migration runs before it.
+
+### DS-11 The run list
+
+`run list request → the history list projection reads the rows (every run has one) → for each row it asks the Task side delegationOf(run): a run with an entry whose delegatingRun is stored is not a top-level row (it is a child row of that run while an entry is open, and it is on its Task's page afterwards) → every other run is a top-level row`
+
+- **Every run has a history row**, delegated or not. It is an ordinary run, and the ordinary run services need its row: the stopped-run Settings save refuses a run without one (`agent-execution/services/standalone-stopped-run-selection-updater.ts:67-69`, TC-5).
+- **Where a run shows:**
+  - A run with no Task entry is a top-level row (the 15 legacy runs, TC-9; the runs of a deleted Task).
+  - A run whose delegating run was deleted is a top-level row (TC-3).
+  - A run whose entries are all closed is not a top-level row, as after 469: its Task's page lists it, and the Memory page lists it like any run.
+- **Measured:** 11 delegated runs would show under their delegating run, 170 only on their Task's page, 15 as top-level rows (`evidence/data-model-validation/spines-on-data-2026-11-11.txt`).
 
 ## Ordering Without A Shared Queue (was U-A)
 
@@ -193,7 +206,7 @@ Counts are files outside migrations, by area (grep at `827f1e68dc`).
 
 | Field | Readers | Decision |
 | --- | --- | --- |
-| `hostRoot` (Task entry) | `projects/` (domain, stores, services, runtime, changes), `agent-collaboration/execution/task/` (3), `compositions/project-task-execution-resource-composition.ts`, `remote-collaboration/inbound/remote-message-receiver.ts`; web: `types`, `utils`, `graphql` (the Task page's locator) | Each asks for `delegatedFrom.delegatingRun` (one hop) or for the run's own identity. Closure release and run status go by the run's own identity (DS-5). The Task page's locator opens the run itself; its row sits under `delegatingRun` |
+| `hostRoot` (Task entry) | `projects/` (domain, stores, services, runtime, changes), `agent-collaboration/execution/task/` (3), `compositions/project-task-execution-resource-composition.ts`, `remote-collaboration/inbound/remote-message-receiver.ts`; web: `types`, `utils`, `graphql`, `composables/projects/useTaskRootNavigation.ts` (the Task page's locator) | Each asks for `delegatedFrom.delegatingRun` (one hop) or for the run's own identity. Closure release and run status go by the run's own identity (DS-5). The Task page's locator opens the delegating run's view with the run's row selected, as today with the hosting run (`useTaskRootNavigation.ts:25-50`); for a nested run that is the delegated run one hop up |
 | `assignedBy` (Task entry) | `projects/` (4), `agent-collaboration/execution/` (4), `agent-tools/project-tasks` | `delegatedFrom.delegatorAgentRunId` on `assigned` entries; the same checks |
 | `taskAgent` | `run-history/store` (8), `agent-memory/services` (2), `memory-search/runs`, `agent-team-execution/domain` (2), `services/team-communication`, `run-history/services`, `standalone-agent-run-root/persistence`; web (2 components, localization); contracts (team stream, collaboration stream) | A delegated run is an ordinary run: the readers that told it apart (Memory page, memory search, history admission) treat it as any run. Address and launch are read from the run's own fields. Contracts drop the field |
 | `coordinatingRun` | `run-history/store` (8), `agent-memory/services` (3), `agent-collaboration/execution` (3), `remote-collaboration/*` (4), `projects/services` | Removed with `taskAgent`. On a peer-started run, renamed `delegatingRun` inside `delegatedFrom` (contract §2.4) |
@@ -209,6 +222,48 @@ The implementation records the decision per file in its handoff. A reader not in
 - **V-11 (why a Settings edit was kept beside the started launch):** the earlier ticket (`delegated-copy-model-change`, design lines 240, 336) kept it so that later copies, which projected from the started values, would not inherit an edit, and so that the origin text could still be shown. Neither holds for an ordinary run: every delegation resolves its own launch, and an edited agent shows no origin text. The edit becomes the run's own launch (DS-10 step 4).
 - **V-14 (a non-coordinator member of a stopped team):** the Task side's index reads that team's own file once and keeps its members.
 - **U-B (the web):** a local delegated run is shown the way a remote child already is (DS-8). The rows, selection and Stop buttons stay. The view's children are built from the Task entries.
+
+## Self-Validation (2026-11-11, before review)
+
+The user asked for the data model and the design to be validated before review. The data checks are read-only on the user's data and count only. The walk is by hand against the contract and the code at `827f1e68dc`.
+
+### The data model against the stored data
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Every Task entry of a run on this node gets a one-hop `delegatedFrom` | 406 of 406 (375 equal `hostRoot`, 31 nested) | `contract-after-469-2026-11-11.txt` |
+| Entries of one run agree | 54 of 54 runs with several entries | `relationship-in-task-record-2026-11-11.txt` |
+| The run that assigned a Task is today's top run | 375 of 376; the exception has no Task record | Contract §10.2 |
+| Every Task with a `subWork` or `broughtIn` entry has an `assigned` entry (DS-3 needs the assigning run) | 26 of 26; no Task has two assigners | `spines-on-data-2026-11-11.txt` |
+| The message rule against every stored message between two runs | 1,540 of 1,604 as today; 64 refused, all with a legacy run; 0 newly allowed | `task-centered-messaging-2026-11-11.txt` |
+| A delegated agent run's file is an ordinary run file once `taskAgent` goes (DS-10 step 4) | 43 of 43 have every field all ordinary run files have | `spines-on-data-2026-11-11.txt` |
+| Every run named by an entry has an address in its own file (DS-8 rows) | 181 of 181 | same |
+| Every delegated team run's own file lists its members with run IDs (DS-2, V-14) | 153 of 153 | same |
+| The peer runs' node and members are available to move into their entries (DS-10 step 3) | 2 of 2 | `relationship-in-task-record-2026-11-11.txt` |
+| Delegated runs have history rows (DS-11) | 0 of 196: a migration step and a listing rule were missing | same; **added: DS-11, migration step 8** |
+
+### The spines walked against the model
+
+| Spine | The data it needs | Where it is in revision 5 | Result |
+| --- | --- | --- | --- |
+| DS-1 Delegate | The sender's run; the target; the Task | The sender's root; the entry is written first | Holds |
+| DS-2 By run ID | The run of an agent run ID; the two runs' Tasks; the Task's assigning run | Entries (entry agents); a team's own file (members); `assigned` entries | Holds |
+| DS-3 By address | The assigning run of the sender's Task | The Task's `assigned` entry | Holds |
+| DS-4 Stop | The run itself | Its root | Holds: no other data is read |
+| DS-5 Closure | The runs of the Task; each run's identity | The entries | Holds; `hostRoot` is not needed |
+| DS-6 Reopen | The closed entry and its assigner | The entry | Holds |
+| DS-7 Idle | The run's own status | Its root | Holds |
+| DS-8 View | Open runs delegated from X; their address, delegator, members, status | Entries by `delegatingRun`; own files; live roots | Holds |
+| DS-9 Restart | Busy runs and their delegating runs | Busy-run record; entries | Holds after migration step 7 |
+| DS-10 Migration | Every source shape | Contract §5, E1 … E10 | Holds |
+| DS-11 Run list | A row per run; whether an entry names a stored delegating run | History rows (step 8); entries | **Was missing**; added |
+
+### What the walk changed
+
+- **DS-11 and migration step 8:** a delegated run is an ordinary run, so it needs the ordinary history row. The list decides from the Task side where it shows.
+- **The Task page's locator:** it opens the delegating run with the run's row selected, as today with the hosting run.
+
+No other gap was found. Not validated: the code. The implementation verifies the readers table file by file.
 
 ## Ownership Map
 

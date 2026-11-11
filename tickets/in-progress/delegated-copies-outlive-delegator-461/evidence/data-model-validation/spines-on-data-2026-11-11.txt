@@ -1,0 +1,17 @@
+    26    ... that also have an assigned entry
+     0    of them delegated agent runs
+     0    of them delegated team runs
+    26    with a subWork/broughtIn entry
+   181    with an address in their own file
+     0    with more than one assigned entry (several assigning runs?)
+    43  DS-10 delegated agent runs
+    43  DS-10 delegated agent runs whose file, without taskAgent, has every field all ordinary runs have
+   153  DS-2 delegated team runs
+   153  DS-2 delegated team runs whose own file lists members with run ids
+   181  DS-8 runs named by entries, on this node
+   362  Task records with entries
+    11  listing: delegated runs with an open entry (shown under their delegating run)
+   170  listing: delegated runs with closed entries only (Task page and Memory page, as after 469)
+    15  listing: delegated runs with no Task entry (shown as runs of their own, TC-9)
+   438  run history index rows (agent runs)
+   390  team history index rows

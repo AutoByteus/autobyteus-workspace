@@ -21,6 +21,7 @@
 | SR-015 | Design | Contract revision 5 with TC-7, TC-8, DEC-011 decided; the user: redesign and show it to him before any review | N/A | Design Needs Revision (SR-010) | Design Draft, for the user's review | DS-1 … DS-10 | Presented to the user; not sent to review |
 | SR-016 | Design | The user: names by ownership; finish the open items, then stop for his review | N/A | Design Draft (SR-015) | Design Draft, for the user's review | DS-1 … DS-10; V-10, V-11, V-14, U-A, U-B | Presented to the user; not sent to review |
 | SR-017 | Requirements and design | The user widens the scope: team and org runs in this ticket (TC-4 revised) | N/A | Design Draft (SR-016) | Requirements Ready for Approval; design Draft, for the user's review | REQ-001, REQ-002, REQ-010, REQ-011, BEH-002, BEH-004, AC-006, AC-012, SCN-002; TC-4 | Presented to the user; not sent to review |
+| SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | To architecture review |
 
 ## Revision Entries
 
@@ -413,3 +414,17 @@
 - Approval impact: the user decided TC-4; his approval of the package follows his review
 - Applied handoff-rule outcome: none, at the user's request
 - Next action: the user's review
+
+### SR-018 — Self-validated, approved by the user, to architecture review
+
+- Phase and classification: Requirements approval and Design (self-validation)
+- Triggering user feedback: 2026-11-11, "please validate by yourself and whether the design specification works, validate by yourself and whether the data model is very very important because data model somehow decides how clean your upper layer implementation will be … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
+- Prior status: requirements Ready for Approval; design Draft (SR-017)
+- Current status: requirements `Approved` with contract revision 5; design `Ready`
+- What the validation did: read-only checks of the data model against every spine (`evidence/data-model-validation/validate_spines_on_data.py`, `spines-on-data-2026-11-11.txt`) and a walk of every spine against the model (design spec "Self-Validation").
+- What it found and changed: delegated runs have no history rows (0 of 196), while an ordinary run needs one (the stopped-run Settings save refuses a run without one). Added DS-11 (the run list, decided with the Task side) and migration step 8 (a history row per delegated run). The Task page's locator wording is corrected (it opens the delegating run with the row selected). No other gap.
+- Intended behavior changed: `No`
+- Approval: the user, as quoted; recorded in `requirements-doc.md`, the contract status and the design's approval basis
+- Classification: `Large`, `High`
+- Applied handoff-rule outcome: see `handoff-architecture-design-complete.md`
+- Next action: architecture review
