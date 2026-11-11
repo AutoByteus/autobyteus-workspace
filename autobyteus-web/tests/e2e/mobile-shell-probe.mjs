@@ -512,6 +512,7 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
   const phoneHost = new URL(phoneOrigin()).host;
   await context.route(`${phoneOrigin()}/**`, async (route) => {
     const request = route.request();
+    const sentAt = Date.now();
     let op = null; let windowVar; let runIds = null;
     if (request.url().includes('/graphql') && request.method() === 'POST') {
       try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; runIds = body.variables?.runIds ?? null; } catch { op = 'unparsed'; }
@@ -523,7 +524,7 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
       if (/has been closed/.test(String(error?.message))) return;
       await route.abort('connectionrefused').catch(() => undefined); return;
     }
-    if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, runIds, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
+    if (op) phoneNet.push({ sentAt, at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, runIds, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
     if (response.status() === 401 || response.status() === 403) phoneRefused.push({ at: Date.now(), label, case: currentCase, op, path: new URL(request.url()).pathname, status: response.status() });
     await route.fulfill({ response }).catch(() => undefined);
   });
@@ -1973,17 +1974,19 @@ const runCases = async () => {
     // (2) The phone list hidden (a run screen) and the page in the background: no status read (AC-009c).
     await showOlder(page);
     const otherKey = (await rowsOf(page)).find(row => row.depth === 0 && !row.key.includes(hub))?.key;
-    const hiddenFrom = Date.now();
+    // The list is hidden once the run screen shows; a read counts by when it was sent: a poll sent while the row's click
+    // opens the run screen, or answered after it, was sent with the list on screen.
     await openRow(page, otherKey);
+    const hiddenFrom = Date.now();
     await sleep(11_000);
-    const onRunScreen = count(phoneOps(hiddenFrom), STATUS_OP);
+    const onRunScreen = phoneOps(hiddenFrom - 20_000).filter(entry => entry.op === STATUS_OP && entry.sentAt >= hiddenFrom).length;
     await page.locator(sel('mobile-run-back')).first().click();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor();
     await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); document.dispatchEvent(new Event('visibilitychange')); });
     await sleep(500);
     const backgroundFrom = Date.now();
     await sleep(11_000);
-    const inBackground = count(phoneOps(backgroundFrom), STATUS_OP);
+    const inBackground = phoneOps(backgroundFrom - 20_000).filter(entry => entry.op === STATUS_OP && entry.sentAt >= backgroundFrom).length;
     const shownAt = Date.now();
     await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' }); document.dispatchEvent(new Event('visibilitychange')); });
     await waitFor('a status read once the list shows again', async () => count(phoneOps(shownAt), STATUS_OP) > 0, 8_000).catch(() => undefined);
