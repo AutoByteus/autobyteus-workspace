@@ -30,7 +30,6 @@ describe("AgentOrgRun command execution kind", () => {
       callbacks: {} as never,
       persistence: {} as never,
       publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
-      taskExecutionIdentity: {} as never,
     });
     run.activate();
     const command = { kind: "interrupt" as const };

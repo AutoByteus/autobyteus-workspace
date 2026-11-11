@@ -70,7 +70,6 @@ describe("AgentOrgRun termination stabilization", () => {
       callbacks: {} as never,
       persistence: persistence as never,
       publisher,
-      taskExecutionIdentity: {} as never,
     });
     run.activate();
 
@@ -110,7 +109,6 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       callbacks: {} as never,
       persistence: persistence as never,
       publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
-      taskExecutionIdentity: {} as never,
       onTerminated,
     });
     run.activate();

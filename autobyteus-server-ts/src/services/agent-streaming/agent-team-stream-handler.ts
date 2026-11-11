@@ -166,7 +166,8 @@ export class AgentTeamStreamHandler {
         egress.send(parseTeamStreamServerMessage({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: snapshot.isActive } })));
       // autobyteus-278: a viewer of the Team observes its remote children while bound to this root.
       root.remoteChildren.viewerAttached();
-      this.eventUnsubscribers.set(sessionId, () => { unsubscribeEvents(); root.remoteChildren.viewerDetached(); });
+      root.localChildren.viewerAttached();
+      this.eventUnsubscribers.set(sessionId, () => { unsubscribeEvents(); root.remoteChildren.viewerDetached(); root.localChildren.viewerDetached(); });
       this.lifecycleUnsubscribers.set(sessionId, unsubscribeLifecycle);
       this.subscribedRunsBySessionId.set(sessionId, root);
     } catch (error) {

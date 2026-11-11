@@ -119,7 +119,8 @@ export class AgentOrgStreamHandler {
       }));
       // autobyteus-278: a viewer of the Org observes its remote children while connected.
       run.remoteChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); run.remoteChildren.viewerDetached(); egress.dispose(); } });
+      run.localChildren.viewerAttached();
+      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); run.remoteChildren.viewerDetached(); run.localChildren.viewerDetached(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();

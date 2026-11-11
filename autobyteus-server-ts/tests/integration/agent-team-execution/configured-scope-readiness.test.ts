@@ -17,7 +17,6 @@ import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execu
 import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
 import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
 import { TeamCommunicationStore } from '../../../src/services/team-communication/team-communication-store.js';
-import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-run-fixtures.js';
 import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
@@ -82,7 +81,6 @@ const fixture = () => {
     release() { release?.(); }, fail(id: string) { fail = id; },
   };
 };
-const tasks = createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'new-task-run' });
 const org = async (f: ReturnType<typeof fixture>) => {
   const direct = (address: string, id: string) => { const n = testOrgAgentNode(address, id); return { ...n,
     launchConfiguration: { ...n.launchConfiguration, runtimeKind: RuntimeKind.CODEX_APP_SERVER } }; };
@@ -94,8 +92,7 @@ const org = async (f: ReturnType<typeof fixture>) => {
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
     executionTreeStore: new AgentOrgRunExecutionTreeStore(),
     communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
-  return new AgentOrgExecutionScopeBuilder({ ...f.dependencies, flatTeamExecutionFactory: f.factory,
-    taskExecutionIdentity: tasks, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
+  return new AgentOrgExecutionScopeBuilder({ ...f.dependencies, flatTeamExecutionFactory: f.factory, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
   }).build({ state, persistence, activationMode: 'fresh', persistInitialPackage: true });
 };
 const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') => {
@@ -105,8 +102,7 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
   return materializeTeamRoot({ config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
     messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
-    memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
-    taskExecutionIdentity: tasks, executionTreeStore: new TeamRunExecutionTreeStore(),
+    memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never), executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationStore(), onTerminated: vi.fn(),
   });
 };

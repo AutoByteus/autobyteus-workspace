@@ -14,7 +14,7 @@ const fakeRoot = (hostLive = true) => ({
   rootIdentity: createAgentRootExecutionIdentity(HOST),
   ensureHostReady: vi.fn(async () => ({ runId: HOST })),
   isHostLive: () => hostLive,
-  remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
+  localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
   openPackageSnapshotConnection: vi.fn(async () => ({
     snapshot: { host, createdAt: "2026-09-30T00:00:00.000Z", statuses: [] },
     baseChangeSequence: 0, liveSequenceId: "live-hub-1", lastMessageChangeSequence: 0,

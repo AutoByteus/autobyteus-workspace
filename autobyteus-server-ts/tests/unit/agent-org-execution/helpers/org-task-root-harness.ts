@@ -4,7 +4,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, vi } from "vitest";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
-import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentOrgRun } from "../../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { RootTeamExecutionDirectory } from "../../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -87,14 +86,6 @@ export const buildOrg = async (kind: "agent" | "team") => {
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocation = 0;
   run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
-    taskExecutionIdentity: {
-      agentRuns: { allocateForAgentDefinition: async () => `task-agent-${++allocation}` },
-      taskTeams: { create: async ({ source }: { source: TeamRunAgentTeamNode }) => {
-        const id = `task-team-${++allocation}`;
-        return { teamNode: { ...source, teamRunId: id,
-          children: source.children.map((child) => ({ ...child, agentRunId: `${id}-lead`, platformAgentRunId: null })) } };
-      } },
-    } as never,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
     taskExecutionResources: new InMemoryTaskExecutionResources(),

@@ -14,7 +14,6 @@ import { buildInitialTeamRunExecutionTree } from "../../../../src/agent-team-exe
 import { MemberExecutionContextBuilder } from "../../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { materializeTeamRoot } from "../../../../src/agent-team-execution/services/team-root-materializer.js";
 import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
@@ -65,7 +64,6 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({
       getDefinitionById: async (id: string) => (id === "product-team" ? { instructions: "Ship the product UI." } : { instructions: "Root team rules." }),
     } as never),
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
     executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),

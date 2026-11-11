@@ -24,7 +24,6 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
 import { PeerGateway } from "../../../src/remote-collaboration/channel/peer-gateway.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
@@ -204,7 +203,6 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       identity: createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity(teamContext.teamRunId), memberAddress: agentNode.address, agentRunId: agentNode.agentRunId }),
       teamScoped: true, collaborationRole: "team_member",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCapability }) } as never,
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-copy` }),
     taskExecutionResources: new InMemoryTaskExecutionResources(),
     modelSelectionValidator: { validate: async ({ selection }: any) => ({ kind: "valid", selection }), validateMany: async () => [] } as never,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),

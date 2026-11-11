@@ -14,7 +14,6 @@ import { AgentRunService } from "../../agent-execution/services/agent-run-servic
 import { StandaloneAgentRunLifecycleService } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
@@ -158,9 +157,6 @@ export const buildApplicationExecutionScopeKernel = (
     const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
       agentDefinitionService: input.agentDefinitionService,
     });
-    const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-      agentRunIdentityAllocator,
-    );
     const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
     );
@@ -168,7 +164,6 @@ export const buildApplicationExecutionScopeKernel = (
     const activityInspector = new AgentConversationActivityInspector();
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
-      taskExecutionIdentity,
       modelSelectionValidator: input.modelSelectionValidator,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
         agentRunManager,

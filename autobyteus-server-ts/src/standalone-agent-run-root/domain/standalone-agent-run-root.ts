@@ -42,6 +42,7 @@ import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
+import { LocalChildObservation } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 /** What a view of the run opens with: its own agent; its children are the runs it delegated to (the view adds them). */
@@ -68,6 +69,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this run delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
+  readonly localChildren: LocalChildObservation;
   private readonly delegatedIdle: DelegatedRunIdleShutdown | null;
   private readonly workerStatus: TaskWorkerStatusNotice | null;
   private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
@@ -107,6 +109,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
     this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(root).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event), channel: options.remoteRunChannel });
+    this.localChildren = new LocalChildObservation({ run: root, publish: (event) => options.publisher.publish(event) });
     // DS-7: a delegated run shuts down when quiet; its next message restores it.
     this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
@@ -253,6 +256,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.lifecycle = "terminating";
     this.delegatedIdle?.dispose();
     this.remoteChildren.dispose();
+    this.localChildren.dispose();
     this.communication.closeAdmission();
     this.termination = (async () => {
       await this.operationGate.closeAndDrain();

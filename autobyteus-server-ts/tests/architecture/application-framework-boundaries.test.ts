@@ -418,7 +418,7 @@ const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
     symbol: "AgentTeamRunManager",
     moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
     kind: "new",
-    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "taskExecutionIdentity", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
+    requiredInputs: ["memoryDir", "flatTeamExecutionFactory", "modelSelectionValidator", "memberExecutionContextBuilder"].map((path) => ({
       kind: "object-property" as const,
       argumentIndex: 0,
       path,
@@ -3046,6 +3046,10 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/compositions/model-routing-composition.ts:getAgentRunService",
       // Process startup root (autobyteus-349): one stage removes empty never-started runs through the run service bound in buildStudioServer.
       "autobyteus-server-ts/src/server-runtime.ts:getAgentRunService",
+      // autobyteus-461 DS-8: a child row's command to a team run the viewed run delegated to goes to that team run's own
+      // root, through the process team run service (as the Team stream's own commands do).
+      "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts:getTeamRunService",
+      "autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts:getTeamRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
     ].sort());

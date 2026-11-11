@@ -1,4 +1,5 @@
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { LocalChildObservation } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
@@ -65,6 +66,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this Org delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
+  readonly localChildren: LocalChildObservation;
   private readonly collaborators: AgentOrgRunCollaborators;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
@@ -87,6 +89,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     const remoteDelegation = new RemoteDelegation({ root: options.root, onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
     this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event) });
+    this.localChildren = new LocalChildObservation({ run: options.root, publish: (event) => options.publisher.publish(event) });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
@@ -284,6 +287,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
     this.remoteChildren.dispose();
+    this.localChildren.dispose();
     this.communication.closeAdmission();
     void this.operationGate.closeAndDrain();
     // Shutdown of delegated children is runtime-only, so a fail-stopped attempt drains the same way.

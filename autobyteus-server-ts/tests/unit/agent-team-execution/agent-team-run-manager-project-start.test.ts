@@ -9,7 +9,6 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { configureRunProjects } from "../../../src/agent-execution/domain/run-project-context.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -17,7 +16,6 @@ const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManag
   memoryDir: "/tmp/agent-team-run-manager-project-start",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
-  taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "task-agent-run" }),
   modelSelectionValidator: { validateMany: async () => [], validate: async ({ selection }: never) => ({ kind: "valid" as const, selection }) } as never,
   activeRootDirectory: new ActiveCollaborationRootDirectory(),
   executionTreeStore: { write, read: vi.fn(async () => null) } as never,

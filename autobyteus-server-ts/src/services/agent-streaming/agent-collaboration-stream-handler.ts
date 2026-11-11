@@ -131,7 +131,8 @@ export class AgentCollaborationStreamHandler {
       }));
       // autobyteus-278: a viewer of the root observes its remote children while connected.
       root.remoteChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); root.remoteChildren.viewerDetached(); egress.dispose(); } });
+      root.localChildren.viewerAttached();
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); root.remoteChildren.viewerDetached(); root.localChildren.viewerDetached(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();

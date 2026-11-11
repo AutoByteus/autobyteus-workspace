@@ -94,7 +94,6 @@ export const configuredRootFixture = async (placement: Placement, options: {
   const factory = new FlatTeamExecutionFactory(dependencies);
   const materialize = vi.spyOn(factory, "beginMaterialization");
   const definitions = { getDefinitionById: vi.fn(async () => null) };
-  const taskExecutionIdentity = { agentRuns: { allocateForAgentDefinition: vi.fn() }, taskTeams: { create: vi.fn() } };
   const prefix = placement === "mounted_team" ? "/Team" : "";
   const addresses = ["Coordinator", "Worker", "Unused"].map((name) => `${prefix}/${name}`) as [string, string, string];
   const ids = ["agent-coordinator", "agent-worker", "agent-unused"] as const;
@@ -127,8 +126,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
-      memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never),
-      taskExecutionIdentity: taskExecutionIdentity as never, executionTreeStore: { write } as never,
+      memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never), executionTreeStore: { write } as never,
       communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never,
       onTerminated: vi.fn(),
     });
@@ -156,8 +154,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     executionTreeStore: { write } as never,
     communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never, enterPersistenceFailStop: failStop,
   });
-  const root = await new AgentOrgExecutionScopeBuilder({ flatTeamExecutionFactory: factory,
-    taskExecutionIdentity: taskExecutionIdentity as never, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
+  const root = await new AgentOrgExecutionScopeBuilder({ flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
     ...dependencies,
   }).build({ state, persistence, activationMode: mode, persistInitialPackage: false });
   const flatten = (tree: typeof state.executionTree) => tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member] : [...member.members]);

@@ -8,7 +8,6 @@ import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-defi
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
-import type { TeamRunAgentTeamNode } from "../../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentOrgRun } from "../../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { RootTeamExecutionDirectory } from "../../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -100,14 +99,6 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
   run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
-    taskExecutionIdentity: {
-      agentRuns: { allocateForAgentDefinition: async () => `task-agent-${++allocation}` },
-      taskTeams: { create: async ({ source }: { source: TeamRunAgentTeamNode }) => {
-        const id = `task-team-${++allocation}`;
-        return { teamNode: { ...source, teamRunId: id,
-          children: source.children.map((child) => ({ ...child, agentRunId: `${id}-${child.address.split("/").at(-1)}`, platformAgentRunId: null })) } };
-      } },
-    } as never,
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.

@@ -62,9 +62,16 @@ export const projectAgentCollaborationEvent = (
     case "agent_presentation":
       event = { kind: "agent_presentation" as const, member_address: source.execution.memberAddress, agent_run_id: source.execution.agentRunId, message: source.message };
       break;
-    // N-402: the one place a remote child's output becomes the stream's `agent_presentation`.
+    // N-402: the one place a child's output (on a peer, or local, DS-8) becomes the stream's `agent_presentation`.
     case "remote_agent_presentation":
+    case "local_child_presentation":
       event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
+      break;
+    case "local_child_started":
+      event = { kind: "task_execution_started" as const, host_kind: "root" as const, host_run_id: hostRunId, execution: source.row };
+      break;
+    case "local_children_closed":
+      event = { kind: "task_executions_closed" as const, task_executions: source.runs.map((run) => ("agentRunId" in run ? { agentRunId: run.agentRunId } : { teamRunId: run.teamRunId })) };
       break;
     case "remote_task_execution_summary":
       event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };

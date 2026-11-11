@@ -4,11 +4,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 
-const taskExecutionIdentity = createTaskExecutionIdentityCapabilities({
-  allocateForAgentDefinition: async () => "task-agent-run",
-});
 const modelSelectionValidator = Object.freeze({
   validateMany: async () => [],
   validate: async ({ selection }: { selection: { llmModelIdentifier: string; llmConfig: Record<string, unknown> | null } }) => ({
@@ -26,7 +22,6 @@ const createManager = () => new AgentTeamRunManager({
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,
-  taskExecutionIdentity,
   modelSelectionValidator,
   activeRootDirectory: new ActiveCollaborationRootDirectory(),
 });
@@ -59,7 +54,6 @@ describe("AgentTeamRunManager root lifecycle", () => {
         memoryDir: "/tmp/api-e2e-agent-team-run-manager",
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
-        taskExecutionIdentity,
         modelSelectionValidator,
       };
       if (value === "omitted") delete options.flatTeamExecutionFactory;
@@ -74,7 +68,6 @@ describe("AgentTeamRunManager root lifecycle", () => {
         memoryDir: "/tmp/api-e2e-agent-team-run-manager",
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
-        taskExecutionIdentity,
         modelSelectionValidator,
       };
       if (value === "omitted") delete options.modelSelectionValidator;

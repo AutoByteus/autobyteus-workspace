@@ -51,6 +51,7 @@ import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platfo
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
 import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { LocalChildObservation } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
@@ -85,6 +86,7 @@ export class RootTeamRun {
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this Team delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
+  readonly localChildren: LocalChildObservation;
   private readonly remoteDelegation: RemoteDelegation;
   private readonly delegatedIdle: DelegatedTeamIdleShutdown | null; // DS-7: on every delegated team run (`isDelegated`: its tree has `delegatedFrom`)
   private readonly workerStatus: TaskWorkerStatusNotice | null; // its Tasks' worker status on the Task side
@@ -115,6 +117,8 @@ export class RootTeamRun {
     });
     this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree));
     this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(createTeamRootExecutionIdentity(this.teamRunId)).filter((link) => link.open),
+      publish: (event) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event }) });
+    this.localChildren = new LocalChildObservation({ run: createTeamRootExecutionIdentity(this.teamRunId),
       publish: (event) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event }) });
     const remoteDelegation = new RemoteDelegation({ root: createTeamRootExecutionIdentity(this.teamRunId), onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
     this.remoteDelegation = remoteDelegation;
@@ -379,6 +383,7 @@ export class RootTeamRun {
     if (this.termination) { quiet?.cancel(); return this.termination; }
     this.delegatedIdle?.dispose();
     this.remoteChildren.dispose();
+    this.localChildren.dispose();
     this.lifecycle = "terminating";
     this.communication.closeAdmission();
     void this.materializationGate.closeAndDrain();

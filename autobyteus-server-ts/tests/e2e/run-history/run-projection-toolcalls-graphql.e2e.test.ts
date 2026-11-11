@@ -13,7 +13,6 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
-import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import {
@@ -198,10 +197,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,
-        taskExecutionIdentity: {
-          agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
-          taskTeams: { create: () => "unused-task-team" },
-        } as never,
         modelSelectionValidator: { validate: () => undefined } as never,
       });
     }

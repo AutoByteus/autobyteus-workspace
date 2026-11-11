@@ -63,7 +63,7 @@ const harness = (snapshot = { tree, closedTaskExecutions: [], messages, statuses
     orgRunId,
     isActive: () => true,
     getExecutionTreeSnapshot: () => snapshot.tree,
-    remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
+    localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
     openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
     executeAgentCommand,
     executeAgentCommandWithExecutionKind,

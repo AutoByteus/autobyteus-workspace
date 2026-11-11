@@ -62,6 +62,7 @@ export class DelegationTree implements TaskEntriesListener {
   private readonly memberAgents = new Map<string, RootExecutionIdentity>();
   private readonly membersRead = new Set<string>();
   private reading: Promise<void> | null = null;
+  private readonly listeners = new Set<() => void>();
 
   constructor(private readonly source: () => Source, private readonly reader: () => RunAgentsReader | null = () => null) {}
 
@@ -70,6 +71,13 @@ export class DelegationTree implements TaskEntriesListener {
     for (const taskId of [...this.byTask.keys()]) this.forgetTask(taskId);
     for (const taskId of this.source().taskIdsWithEntries()) this.indexTask(taskId);
     this.rebuildEntryAgents();
+    this.notify();
+  }
+
+  /** Told after every change (a build, a Task's change), inside the Task's ordered change: a listener must not wait. */
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => { this.listeners.delete(listener); };
   }
 
   /** The Task side's change notice: that Task's entries are read again from its memory (no file read). */
@@ -77,6 +85,13 @@ export class DelegationTree implements TaskEntriesListener {
     this.forgetTask(taskId);
     this.indexTask(taskId);
     this.rebuildEntryAgents();
+    this.notify();
+  }
+
+  private notify(): void {
+    for (const listener of [...this.listeners]) {
+      try { listener(); } catch (error) { console.warn("A delegation tree listener failed:", error); }
+    }
   }
 
   /** Who delegated this run (one hop): the newest entry's `delegatedFrom`; null for a run no Task names. */

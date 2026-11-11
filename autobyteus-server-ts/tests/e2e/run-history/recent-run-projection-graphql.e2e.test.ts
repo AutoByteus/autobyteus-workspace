@@ -288,10 +288,6 @@ describe("recent run projection GraphQL e2e", () => {
       memoryDir,
       flatTeamExecutionFactory: unusedExecutionBoundary(),
       memberExecutionContextBuilder: unusedExecutionBoundary(),
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: unavailableExecution },
-        taskTeams: { create: unavailableExecution },
-      },
       modelSelectionValidator: { validate: unavailableExecution },
     });
     closeStudioServices = configureE2eStudioApplicationApiServices().close;

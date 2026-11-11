@@ -38,7 +38,6 @@ const buildCallbacks = async () => {
   const lookup = { getDefinitionById: async (id: string) => ({ instructions: instructions[id] ?? null }) };
   await new AgentOrgExecutionScopeBuilder({
     flatTeamExecutionFactory: { beginMaterialization: (input) => ({ prepare: () => materialize(input), cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) }) } as never,
-    taskExecutionIdentity: {} as never,
     agentRunManager: testActivationManager({ newPreparation: vi.fn() }) as never,
     orgDefinitions: lookup as never,
     teamDefinitions: lookup as never,

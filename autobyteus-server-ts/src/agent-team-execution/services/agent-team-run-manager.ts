@@ -27,7 +27,6 @@ import {
   ActiveCollaborationRootDirectory,
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import { materializeTeamRoot } from "./team-root-materializer.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { planStoppedTeamLaunchSave } from "./team-run-delegated-launch-plan.js";
@@ -45,7 +44,6 @@ export type AgentTeamRunManagerOptions = Readonly<{
   memoryDir: string;
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
-  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   taskExecutionResources?: TaskExecutionResourcePort;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationStore;
@@ -62,7 +60,6 @@ export class AgentTeamRunManager {
   private readonly executionTreeStore: TeamRunExecutionTreeStore;
   private readonly communicationStore: TeamCommunicationStore;
   private readonly packageCatalog: TeamRunPackageCatalog;
-  private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   private readonly taskExecutionResources?: TaskExecutionResourcePort;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
@@ -97,11 +94,6 @@ export class AgentTeamRunManager {
     if (!options.memberExecutionContextBuilder) {
       throw new Error("memberExecutionContextBuilder is required.");
     }
-    if (!options.taskExecutionIdentity ||
-        typeof options.taskExecutionIdentity.agentRuns?.allocateForAgentDefinition !== "function" ||
-        typeof options.taskExecutionIdentity.taskTeams?.create !== "function") {
-      throw new Error("taskExecutionIdentity is required.");
-    }
     if (!options.modelSelectionValidator ||
         typeof options.modelSelectionValidator.validate !== "function") {
       throw new Error("modelSelectionValidator is required.");
@@ -111,7 +103,6 @@ export class AgentTeamRunManager {
     this.packageCatalog = new TeamRunPackageCatalog(memoryDir);
     this.factory = options.flatTeamExecutionFactory;
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
-    this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.taskExecutionResources = options.taskExecutionResources;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
@@ -364,7 +355,6 @@ export class AgentTeamRunManager {
     return {
       factory: this.factory,
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
-      taskExecutionIdentity: this.taskExecutionIdentity,
       taskExecutionResources: this.taskExecutionResources,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,

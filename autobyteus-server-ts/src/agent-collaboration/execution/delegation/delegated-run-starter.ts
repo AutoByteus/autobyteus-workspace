@@ -5,7 +5,7 @@ import {
   type AgentTeamAddress,
 } from "../../domain/agent-team-address.js";
 import { peerStartedTeamMembers } from "../../../agent-team-execution/domain/team-run-remote-links.js";
-import type { RootTeamRun } from "../../../agent-team-execution/domain/root-team-run.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamLayoutMismatchError } from "../../../agent-team-execution/services/flat-team-topology-planner.js";
 import type { CreateTeamRunInput, TeamRunMemberConfigInput, TeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
@@ -96,7 +96,8 @@ export class DelegatedRunStarter {
       memberConfigs,
       delegatedFrom: input.delegatedFrom,
     };
-    let root: RootTeamRun;
+    // The created team run (its own root): only its ID and tree are read here.
+    let root: Readonly<{ teamRunId: string; getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot }>;
     try {
       root = await this.dependencies.teamRuns.createTeamRun(request);
     } catch (error) {

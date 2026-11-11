@@ -161,10 +161,6 @@ describe("Run file changes API integration", () => {
     ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
       memoryDir: getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
-        taskTeams: { create: () => "unused-task-team" },
-      } as never,
       modelSelectionValidator: { validate: () => undefined } as never,
     });
 

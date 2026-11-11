@@ -75,6 +75,11 @@ export const projectSequencedTeamRunEvent = (
         parent_communication_message_id: event.payload.parentCommunicationMessageId,
       } });
     case TeamRunEventSourceType.REMOTE:
+      // DS-8: a local child's new row and rows that left, as the hosted children's were; its output as a remote child's.
+      if (event.event.kind === "local_child_started") return parseTeamStreamServerMessage({ type: "TASK_EXECUTION_STARTED", payload: {
+        change_sequence: changeSequence, parent_team_run_id: root.teamRunId, execution: teamTaskExecutionOf(event.event.row) } });
+      if (event.event.kind === "local_children_closed") return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_CLOSED", payload: {
+        change_sequence: changeSequence, task_executions: event.event.runs.map(projectTaskExecutionReference) } });
       return projectTeamRemoteEvent(event.event, changeSequence);
   }
 };

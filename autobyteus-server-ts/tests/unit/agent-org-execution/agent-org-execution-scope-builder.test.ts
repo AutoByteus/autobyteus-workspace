@@ -81,10 +81,6 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     const enclosingDefinitionLookup = vi.fn(() => { throw new Error("Restore must not read fresh enclosing instructions"); });
     const builder = new AgentOrgExecutionScopeBuilder({
       flatTeamExecutionFactory: {} as never,
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: vi.fn() },
-        taskTeams: { create: vi.fn() },
-      } as never,
       orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       agentRunManager: testActivationManager({ newPreparation: prepareNewAgentRun }) as never,

@@ -1,6 +1,7 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 
 /**
@@ -20,10 +21,11 @@ const teamAgentMessageOf = (agentRunId: string, message: AgentPresentationMessag
   return parseTeamStreamServerMessage({ type: message.type, payload: { ...message.payload, change_sequence: changeSequence, agent_run_id: agentRunId } });
 };
 
-/** A Team root's remote-children event (N-402: the one place a remote child's output becomes a Team agent message). */
-export const projectTeamRemoteEvent = (event: RemoteRunRootEvent, changeSequence: number): TeamStreamServerMessage => {
+/** A Team root's children event (N-402: the one place a child's output, on a peer or local, becomes a Team agent message). */
+export const projectTeamRemoteEvent = (event: RemoteRunRootEvent | Extract<LocalChildRootEvent, { kind: "local_child_presentation" }>, changeSequence: number): TeamStreamServerMessage => {
   switch (event.kind) {
     case "remote_agent_presentation":
+    case "local_child_presentation":
       return teamAgentMessageOf(event.agentRunId, event.message, changeSequence);
     case "remote_task_execution_summary":
       return parseTeamStreamServerMessage({ type: "REMOTE_TASK_EXECUTION_SUMMARY", payload: {

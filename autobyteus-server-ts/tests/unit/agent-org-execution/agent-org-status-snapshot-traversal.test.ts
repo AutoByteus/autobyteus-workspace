@@ -76,7 +76,6 @@ const buildRun = () => {
     callbacks: {} as never,
     persistence: persistence as never,
     publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
-    taskExecutionIdentity: {} as never,
   });
   run.activate();
   return { run, runs, rootAgents, teams, frozenScopes, persistence };

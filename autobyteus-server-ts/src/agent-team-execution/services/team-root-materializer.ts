@@ -15,7 +15,6 @@ import { TeamRunContext } from "../domain/team-run-context.js";
 import { isTeamRunMessageEvent, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import type { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
 import { createTeamFlatExecutionCallbacks } from "./team-flat-execution-callbacks.js";
 import { TeamRunEventPublisher } from "./team-run-event-publisher.js";
@@ -30,7 +29,6 @@ export type TeamRootMaterializationInput = Readonly<{
   persistInitialPackage: boolean;
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
-  taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   taskExecutionResources?: TaskExecutionResourcePort;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;

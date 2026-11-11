@@ -1,7 +1,7 @@
 import { TaskDelegation } from "../agent-collaboration/execution/task/task-delegation.js";
 import { bindTaskDelegation, unbindTaskDelegation } from "../agent-collaboration/execution/task/task-delegation-binding.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
-import { getDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
+import { findDelegationTree, getDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
@@ -11,6 +11,9 @@ import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/ex
 import { bindCrossRunAddressResolution, CrossRunAddressResolution, unbindCrossRunAddressResolution } from "../agent-collaboration/communication/cross-run-address-resolution.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { bindTaskRunControl, TaskRunControl, unbindTaskRunControl } from "../agent-collaboration/execution/task/task-run-control.js";
+import { bindLocalChildPorts, unbindLocalChildPorts, type LocalChildPorts } from "../agent-collaboration/execution/delegation/local-child-observation.js";
+import { delegatedChildDto } from "../services/agent-streaming/delegated-children-dtos.js";
+import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 /**
  * The process `TaskDelegation` (autobyteus-461 DS-1): every root delegates through it. A new run is created by
@@ -20,7 +23,7 @@ import { bindTaskRunControl, TaskRunControl, unbindTaskRunControl } from "../age
 export const composeTaskDelegation = (deps: Readonly<{
   tasks: TaskExecutionResourcePort;
   agentRuns: Pick<AgentRunService, "prepareAgentRun" | "cancelPreparedAgentRun" | "recordCollaborating" | "stopForTaskClosure" | "getAgentRun">;
-  teamRuns: Pick<TeamRunService, "createTeamRun" | "terminateTeamRun" | "stopForTaskClosure" | "getActiveTeamRun">;
+  teamRuns: Pick<TeamRunService, "createTeamRun" | "terminateTeamRun" | "stopForTaskClosure" | "getActiveTeamRun" | "pairedAgents">;
   rootResolver: CollaborationRootResolver;
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve">;
   memoryDir: string;
@@ -61,7 +64,16 @@ export const composeTaskDelegation = (deps: Readonly<{
   // DS-5: what the Task side asks of a run by its own identity (its closure stop, its own status).
   const control = new TaskRunControl({ agentRuns: deps.agentRuns, teamRuns: deps.teamRuns, tasks: () => deps.tasks });
   bindTaskRunControl(control);
+  // DS-8: a view's local children (rows from their own files; their agents' output and statuses by each run's identity).
+  const localChildren: LocalChildPorts = {
+    // Before the Task records are loaded no run has children.
+    tree: () => findDelegationTree(),
+    rowOf: (child) => delegatedChildDto(child, deps.memoryDir),
+    agents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().pairedAgents : deps.teamRuns.pairedAgents,
+  };
+  bindLocalChildPorts(localChildren);
   return Object.freeze({ release: () => {
     unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); unbindCrossRunAddressResolution(addresses); unbindTaskRunControl(control);
+    unbindLocalChildPorts(localChildren);
   } });
 };

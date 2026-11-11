@@ -91,7 +91,6 @@ const createSubject = (options: Readonly<{
       commitMessageAppend: vi.fn(runAppendDurably),
     } as never,
     publisher,
-    taskExecutionIdentity: {} as never,
   });
   run.activate();
   const sender = (agentRunId: string, memberAddress: string) => ({

@@ -7,7 +7,6 @@ import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/loca
 import type { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
-import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -23,7 +22,6 @@ export type AgentOrgRunOptions = Readonly<{
     callbacks: FlatTeamExecutionCallbacks;
     persistence: AgentOrgRunPersistenceCoordinator;
     publisher: RootEventPublisher<AgentOrgRunEvent>;
-    taskExecutionIdentity: TaskExecutionIdentityCapabilities;
     taskExecutionResources?: TaskExecutionResourcePort;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;

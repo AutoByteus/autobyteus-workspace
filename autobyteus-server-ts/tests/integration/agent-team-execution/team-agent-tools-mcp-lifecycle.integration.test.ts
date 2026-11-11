@@ -8,13 +8,11 @@ import type { AgentRunBackend } from "../../../src/agent-execution/backends/agen
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
-import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { TeamRunAgentNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { AgentRunMemoryLocator } from "../../../src/agent-collaboration/execution/services/agent-run-memory-locator.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
@@ -185,13 +183,6 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             : { kind: "none" as const }),
         },
       });
-      const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
-        new AgentRunIdentityAllocator({
-          agentDefinitionService: {
-            getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never,
-          },
-        }),
-      );
       const teamRunManager = new AgentTeamRunManager({
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
@@ -203,7 +194,6 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             taskCapability,
           })),
         } as never,
-        taskExecutionIdentity,
         activeRootDirectory: new ActiveCollaborationRootDirectory(),
         modelSelectionValidator: {
           validateMany: vi.fn(),

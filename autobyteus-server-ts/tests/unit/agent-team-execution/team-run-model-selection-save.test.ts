@@ -8,7 +8,6 @@ import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/loca
 import { MemberExecutionContextBuilder } from '../../../src/agent-team-execution/services/member-team-context-builder.js';
 import { AgentTeamRunManager } from '../../../src/agent-team-execution/services/agent-team-run-manager.js';
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
-import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
 import { StudioRunModelConfigService } from '../../../src/run-history/services/studio-run-model-config-service.js';
 import { AgentTeamRunResolver } from '../../../src/api/graphql/types/agent-team-run.js';
@@ -58,7 +57,6 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   await new TeamRunExecutionTreeStore().write(packageDir, saved);
   writeAttachmentSidecars(packageDir, 'team');
   const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
-    taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => 'task' }),
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
   return { manager, read, write, capacity, saved: () => saved };
 };

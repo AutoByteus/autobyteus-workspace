@@ -14,7 +14,6 @@ import type { AgentOrgDefinitionService } from "../../agent-org-definition/servi
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
-import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { AgentOrgRun } from "../domain/agent-org-run.js";
 import { isAgentOrgMessageEvent, type AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { ValidatedAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
@@ -35,7 +34,6 @@ import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persiste
 export class AgentOrgExecutionScopeBuilder {
   constructor(private readonly dependencies: Readonly<{
     flatTeamExecutionFactory: FlatTeamExecutionFactory;
-    taskExecutionIdentity: TaskExecutionIdentityCapabilities;
     taskExecutionResources?: TaskExecutionResourcePort;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
@@ -187,7 +185,6 @@ export class AgentOrgExecutionScopeBuilder {
         callbacks,
         persistence: input.persistence,
         publisher,
-        taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
         taskExecutionResources: this.dependencies.taskExecutionResources,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,

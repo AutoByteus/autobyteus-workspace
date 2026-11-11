@@ -145,10 +145,6 @@ describe("Team communication API integration", () => {
     const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
       memoryDir: appConfigProvider.config.getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
-      taskExecutionIdentity: {
-        agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
-        taskTeams: { create: () => "unused-task-team" },
-      } as never,
       modelSelectionValidator: { validate: () => undefined } as never,
     });
     releaseOwnedRunManagers = () => {

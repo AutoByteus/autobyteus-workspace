@@ -92,7 +92,6 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     scopeBuilder: new AgentOrgExecutionScopeBuilder({ ...dependencies,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(dependencies),
       orgDefinitions: { getDefinitionById: unavailable }, teamDefinitions: { getDefinitionById: unavailable },
-      taskExecutionIdentity: { agentRuns: { allocateForAgentDefinition: unavailable }, taskTeams: { create: unavailable } } as never,
     }),
   });
   return { manager, agentManager, recorder, received, restored, failures, restoreBackend };
