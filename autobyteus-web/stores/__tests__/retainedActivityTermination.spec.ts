@@ -40,7 +40,7 @@ const setup = () => {
   const service = store.connectToTeamStream(ROOT)!
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
   /** A snapshot of the Team's view: on connect, or in-band when the Team starts or stops (autobyteus-461 SR-046). */
-  const snapshotOf = (liveSequenceId: string, status: string) => {
+  const snapshotOf = (liveSequenceId: string, status: 'idle' | 'offline') => {
     const snapshot: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>['payload'] = {
       root_team_run_id: ROOT,
       base_change_sequence: 0, live_sequence_id: liveSequenceId, last_message_change_sequence: 0,
