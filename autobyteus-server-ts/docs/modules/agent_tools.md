@@ -191,7 +191,7 @@ a sender whose member context can list (a run that can delegate).
   (`listAvailableAgents(sender)` on the Team, Org and Agent roots), which answers
   from `CollaboratorCandidatePolicy.listEligible` and `CatalogAddressMap`. The
   handler adds no logic and nothing is written (see
-  [Agent Communication](./agent_communication.md#delegated-catalog-copies)).
+  [Agent Communication](./agent_communication.md#delegated-catalog-runs)).
 - AutoByteus binds a local tool instance to the member context
   (`createBoundListAvailableAgentsTool`); Codex, Claude, AGY and the other MCP
   runtimes receive it through the Agent Tools MCP adapter
@@ -315,7 +315,7 @@ the current member identity. Each root resolves the required canonical absolute
 non-root `recipient_address` with `resolveDelegationPlacement`: configured
 placements, then an eligible **catalog** Agent or Agent Team at its listed address
 (`CatalogAddressMap`; see `list_available_agents`), after the CM-1 refusal described below.
-See [Agent Communication](./agent_communication.md#delegated-catalog-copies).
+See [Agent Communication](./agent_communication.md#delegated-catalog-runs).
 Every call starts a fresh copy: an ordinary delegated child with the system task
 notice and its own run IDs. Parallel copies are allowed, and there is no limit.
 - Delegating to a catalog address adds **only the copy**. The copy records its
@@ -379,7 +379,7 @@ The result is a strict union, also published as the MCP output schema
 
 A catalog copy runs each of its agents on its own configured default, then its
 Team's, then the run root's (see
-[Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies)).
+[Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-a-delegated-run)).
 `launch_notes` is present, and non-empty, only when this call started a catalog
 copy and a configured default of one of its agents could not be used. Each line
 names the agent, the skipped default, the reason and what it runs on instead.
@@ -412,7 +412,7 @@ finished, which stops the copy and hides it. After delegation, parent and child 
 `send_message_to` with run IDs, in both directions. A child that stays quiet is
 shut down after the grace period, but not while it has a running background
 task, and a same-root message to its run ID restores it with its conversation (see
-[Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle)).
+[Delegated Child Lifecycle](./agent_team_execution.md#delegated-run-lifecycle)).
 
 `reference_files` on `delegate_task` must be normalized absolute local paths of
 existing files. Callers should pass full paths returned by file-writing tools or

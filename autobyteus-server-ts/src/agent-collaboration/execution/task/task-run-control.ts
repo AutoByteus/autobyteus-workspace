@@ -3,18 +3,25 @@ import { normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-s
 import type { AgentRunService } from "../../../agent-execution/services/agent-run-service.js";
 import type { TeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
-import type { TaskExecutionReleaseResult } from "./task-execution-resource-port.js";
+import type { TaskExecutionReleaseResult, TaskExecutionResourcePort } from "./task-execution-resource-port.js";
 
 /**
  * What the Task side asks of a run by its own identity (design DS-5): a closed Task's run stops through its ordinary
  * Stop (`model.py` `stop`: the run's own parts only, its history row records it, it stays restorable), and the Task
- * page reads the run's own live status (an agent run's agent; a team run's members, folded), waking nothing.
+ * page reads the run's own live status (an agent run's agent; a team run's members, folded), waking nothing. A run
+ * tells it when that status may have changed (`statusChanged`, from `TaskWorkerStatusNotice`).
  */
 export class TaskRunControl {
   constructor(private readonly runs: Readonly<{
     agentRuns: Pick<AgentRunService, "stopForTaskClosure" | "getAgentRun">;
     teamRuns: Pick<TeamRunService, "stopForTaskClosure" | "getActiveTeamRun">;
+    tasks?: () => Pick<TaskExecutionResourcePort, "taskExecutionsStatusChanged"> | null;
   }>) {}
+
+  /** The run's own status may have changed: the Task side announces its Tasks' worker status (it re-reads `ownStatus`). */
+  statusChanged(execution: TaskExecutionReference): void {
+    this.runs.tasks?.()?.taskExecutionsStatusChanged([execution]);
+  }
 
   async stopForTaskClosure(execution: TaskExecutionReference): Promise<TaskExecutionReleaseResult> {
     const stopped = "agentRunId" in execution

@@ -28,8 +28,8 @@ Org persists its configured tree without eagerly opening every member's
 provider conversation.
 
 An AgentTeam contains Agents only. AgentOrg cannot contain another AgentOrg, and
-configured Team-within-Team nesting is rejected. Task-scoped delegation to a
-flat Team remains supported and is not configured membership.
+configured Team-within-Team nesting is rejected. Delegation to a flat Team
+starts a team run of its own; it is not configured membership.
 
 ## Definition Contract
 
@@ -155,18 +155,18 @@ rejects invalid/self-resolving endpoints and duplicate effective pairs.
 Runtime collaboration tools operate only inside the active root scope.
 `get_handoff_rules` exposes the current Agent's eligible rules,
 `send_message_to` reaches the one instance at an address in the run (it never
-creates one; an outside address is not found), and `delegate_task` always spawns
-a new copy (a task Agent or task Team) and returns its run ID. It refuses the
+creates one; an outside address is not found), and `delegate_task` always starts
+a new run of its own (an agent run or a team run) and returns its run ID. It refuses the
 sender's own team at any depth (CM-1); a mounted Team the sender does not belong
 to and Org-level agents are valid targets. Logical addresses never discover
 unrelated roots.
 
-**Team copies are one unit (REQ-007, behavior change).** A message from inside a
-Team instance to an address inside that Team resolves within that same instance.
-A delegated copy of a mounted Team therefore reaches its own members, no longer
-the mounted Team's. Configured Org handoffs between configured placements are
-unchanged (the sender's instance is the mounted Team itself). Reaching another
-instance of the same Team is possible only by run ID.
+**A Team instance is one unit (REQ-007).** A message from inside a Team instance
+to an address inside that Team resolves within that same instance. A delegated
+team run is rooted at `/` and its members reach each other by their own
+addresses; a member reaches the org's standing agents (the run that assigned its
+Task) by their org addresses (contract §2.3 step 2). Reaching another run is
+possible only by run ID.
 
 ## Launch Configuration And Admission
 
@@ -184,9 +184,9 @@ The web Org launch page seeds the form instead: the root from the Org default,
 each placed Team row from its Team default, and each Agent row from its agent
 default, when that default is usable. The user sees and can change or reset
 every seeded row. The launch payload then carries them as ordinary placement
-overrides. Catalog copies started by Org agents resolve their
+overrides. Runs started by Org agents' delegations resolve their
 own launch per agent; see
-[Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies).
+[Launch configuration of a delegated run](./agent_communication.md#launch-configuration-of-a-delegated-run).
 
 All exact root, Team, and Agent scopes must have resolved valid runtime/model
 schema state before launch. Pending, invalid, or unavailable catalog/schema
@@ -247,8 +247,7 @@ The AgentOrg communication sidecar remains the single root message authority.
 After an inter-Agent append is durable, the root stream publishes that message.
 For every admitted ordinary endpoint pair, the same commit also presents exactly
 one `MEMBER_INPUT_MESSAGE` to the receiving Agent before releasing its reserved
-input. Configured direct/mounted Agents, task Agents, and task-Team Agents all
-use this path. Presentation correlates retained exact identities; it does not
+input. Configured direct and mounted Agents use this path. Presentation correlates retained exact identities; it does not
 re-admit a committed message against later liveness or a configured-only gate.
 The presentation preserves canonical sender address, content, reference context,
 parent message id, origin, and committed time.
@@ -268,62 +267,44 @@ The rules are defined in the [Collaboration Model](../design/collaboration_model
 
 - Direct Org Agents and mounted-Team Agents can message and delegate through
   canonical addresses.
-- Task Agents and task Teams are delegated children recorded in the execution
-  tree (with `delegatorAgentRunId` for children created since the resource
-  lifecycle); they do not alter configured topology or create a separate
-  delegation task-record subsystem. The Org tree carries no Task information.
-  Project Task ownership is recorded only in each Task's
-  `agent_run_resources.json` (see the
-  [Task agent run resources contract](projects.md#saved-id-delegation-and-agent-run-resources)).
-  A delegated Team copy starts only its coordinator; its other members stay
-  Offline, with no AgentRun and a `null` saved binding, until work reaches them
-  (see [Root And Agent Lifecycle](./agent_team_execution.md#root-and-agent-lifecycle)).
-- Delegated catalog copies (see [Agent Communication](./agent_communication.md#delegated-catalog-copies)):
+- A run an Org agent delegated to is a run of its own (autobyteus-461): an agent run
+  or a team run rooted at `/`, with its own root, idle shutdown, Stop and restart
+  resume. The Org records nothing of it: the delegation is its Task entry
+  (`delegatedFrom` naming the org run and the delegating agent, `recipientAddress`),
+  see the [Task agent run resources contract](projects.md#saved-id-delegation-and-agent-run-resources).
+  The Org's view shows it as a child row from its Task entry. A delegated team run
+  starts only its coordinator; its other members stay Offline until work reaches
+  them (see [Root And Agent Lifecycle](./agent_team_execution.md#root-and-agent-lifecycle)).
+- Delegation (see [Agent Communication](./agent_communication.md#delegated-catalog-runs)):
   an Org agent reaches a shared Agent or Agent Team that is not in the run only with
-  `delegate_task(address)`. The copy is recorded in `rootOrg.taskExecutions` at the Org
-  top level with its `delegatorAgentRunId` and its catalog `source`; there is no
-  separate hosted-collaborator concept (earlier collaborators were converted into
-  these unowned copies at startup, keeping their run IDs and memory). The Org, its
-  members and its mounted Teams are never offered with `@`. Member contexts follow the
-  shared member-scope owner (see [Agent Team Execution](./agent_team_execution.md)): a
-  mounted Team member keeps the Org handoffs its TeamRun carries and its Team instruction;
-  a configured direct Agent gets the Org's; a member of any copy (including a catalog
-  Team copy) gets that instance's; a catalog Agent copy gets none.
-- Copy placement (CM-1, REQ-012): every new copy is recorded in `rootOrg.taskExecutions`.
-  `AgentOrgExecutionIndex.isOwnTeamAddress` (DEC-008) answers the own-team test: the
-  sender's address, or any address inside a Team instance containing the sender (a mounted
-  Team or a delegated Team copy) at any depth. A configured member of a mounted Team may
+  `delegate_task(address)`. The Org, its members and its mounted Teams are never
+  offered with `@`. Member contexts follow the shared member-scope owner (see
+  [Agent Team Execution](./agent_team_execution.md)): a mounted Team member keeps the
+  Org handoffs its TeamRun carries and its Team instruction; a configured direct Agent
+  gets the Org's.
+- Own team (CM-1, REQ-012): `AgentOrgExecutionIndex.isOwnTeamAddress` (DEC-008)
+  answers the own-team test: the sender's address, or any address inside a mounted
+  Team containing the sender at any depth. A configured member of a mounted Team may
   delegate to an Org-level agent (`/director`) or to a sibling mounted Team; it may not
-  delegate to its own Team's members. Copies already stored under a mounted Team keep
-  their recorded host on restore (DEC-006).
-- Catalog copies: `AgentOrgRecipientResolver` resolves `send_message_to(address)` with the
-  shared `MessageRecipientResolution` (sender instance, then run-wide placements; see
+  delegate to its own Team's members.
+- `AgentOrgRecipientResolver` resolves `send_message_to(address)` with the shared
+  `MessageRecipientResolution` (sender instance, then run-wide placements; see
   [Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution))
-  and `delegate_task(address)` with the shared `resolveDelegationPlacement` (CM-1 refusal,
-  configured placement, then catalog). Every placement carries the snapshot its copy starts
-  from (a configured placement's as it is now); the copy records it as its `source`, and
-  `AgentOrgTaskExecutionAdapter` projects only that `source` on activation and restore.
+  and `delegate_task(address)` with the shared `resolveDelegationPlacement` (CM-1
+  refusal, configured placement, then catalog), then `TaskDelegation`. A delegation to
+  a configured placement starts the run from the placement's launch as it is now.
   `AgentOrgRun.listAvailableAgents(sender)` serves `list_available_agents`.
-- Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
-  through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
-  same-root wake-on-message in `restore` mode, one liveness predicate
-  (`RootAgentExecutionRegistry.isTaskLive` or the hosting Team
-  registry), and open work counting only `initializing`/`running` children. See
-  [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
-- For Task-owned workers, address resolution is the same as for any sender: the own Team
-  instance first, then run-wide placements. Delegations (`delegated`) belong to the same
-  Task, even when hosted at the Org top level. Explicit DONE closes and stops only that
-  Task's runs. Closed copies cannot wake after restore, and history is retained. See
+- The lifecycle of a delegated run is its own (see
+  [Delegated Run Lifecycle](./agent_team_execution.md#delegated-run-lifecycle)).
+  Explicit DONE stops the Task's runs that have no other open Task, each through its
+  own Stop; history is retained. See
   [Task-linked message scope](agent_communication.md#task-linked-message-scope).
 - Each Agent owns its exact five-state runtime status.
 - Status snapshots start only from structural Org execution roots: direct Org
-  Agent handles, directly mounted configured TeamRuns, and live root-hosted
-  task TeamRuns. Shut-down task Agents report `offline`. Each TeamRun recursively projects its own descendants. The flat
-  Team execution directory remains an exact lookup/lifecycle index and is not
-  walked as a second set of recursive roots, preventing duplicate Agent status
-  identities for nested task Teams.
+  Agent handles and directly mounted configured TeamRuns. Each TeamRun projects its
+  own members.
 - The web shows a presentation-only universal Team status on every Team row
-  (mounted and task Teams). It is derived on the client from these Agent
+  (mounted Teams). It is derived on the client from these Agent
   statuses: busy (running or initializing) > error > idle > offline, and offline
   when the Org is not live. The server sends no Team status, and the Team status
   is not a persisted Team status or lifecycle authority.
@@ -355,29 +336,21 @@ memory/agent_orgs/<org-run-id>/
   agent_org_communication_messages_active.jsonl   # the org's message log (append-only JSON Lines)
   agent_org_communication_messages_000001.jsonl   # sealed files once the log has rotated
   <rooted member memory...>        # direct agents and mounted teams' members
-memory/agents/<task-agent-run-id>/       # a task agent of the org: a run of its own (own run_metadata.json with taskAgent, own log)
-memory/agent_teams/<task-team-run-id>/   # a task agent team of the org: its own tree (with taskAgent), log and members
+memory/agents/<run-id>/                  # a run the org delegated to: a run of its own (run_metadata.json with delegatedFrom, own log)
+memory/agent_teams/<team-run-id>/        # a team run the org delegated to: its own tree rooted at / (with delegatedFrom), log and members
 ```
 
-Task agents are not part of the org's folder, and the org tree stores nothing of them
-(autobyteus-469, CM-8): `AgentOrgRunExecutionTreeStore` asks the Task records for the org's task
-agents with an open Task entry and composes their records from their own files into
-`rootOrg.taskExecutions`; a configured team's `taskExecutions` stays empty (older entries there and
-in the root list are ignored and left out at the next save; FU-003 of autobyteus-469). Only links to
-runs on another node are stored. `readOwnParts` reads the org's own parts only (startup admission,
-history-index repair). A task agent whose Task closed leaves the loaded tree once stopped and comes
-back from its own file when continued. A task agent created from a configured place records the place's definition and launch as
-they were when it started (a Team copy also its members' handoff rules in the Org), and restores
-from its own file like any copy: a later edit of the place does not change it. Messages with a task
-agent are stored in both logs.
+The runs the org delegated to are not part of the org's folder, and the org tree
+stores nothing of them, local or on a peer (autobyteus-461, CM-8): they are read from
+their Task entries. An older file's `taskExecutions` lists are read as unknown fields
+and never written. A message between the org and another run is stored in both runs'
+logs.
 
 `AgentOrgRunExecutionTreeFile` has `subjectKind: "agent_org"` and a
 coordinator-free `rootOrg`. It stores direct Agent placements, direct
 mounted-Team placements with their Agent members, compiled handoffs, effective
 launch configurations, concrete local and provider identities, application
-binding, timestamps and delegated child executions (`rootOrg.taskExecutions`; a
-`collaborators` list written by earlier releases is converted into it by a startup
-migration, not read). Like the Team tree it is
+binding and timestamps. Like the Team tree it is
 read tolerantly (known required fields and invariants checked, `schemaVersion`,
 `settledAt`, and unknown keys ignored) and written exactly with no
 `schemaVersion`. Older packages may still hold an
@@ -409,13 +382,12 @@ An AgentOrg history row starts with an empty `summary`, displayed by clients as
 `SEND_MESSAGE` whose compacted content is non-empty and whose exact target is a
 configured direct Org Agent or an Agent inside a directly mounted Team becomes
 the durable summary. Whitespace sequences collapse to one space; values longer
-than 100 characters use the first 97 characters plus `...`. Task-scoped
-recipients, rejected or failed sends, later user messages, inter-Agent traffic,
+than 100 characters use the first 97 characters plus `...`. Rejected or failed sends, later user messages, inter-Agent traffic,
 task/system input, and approval or interrupt commands never set or replace the
 summary.
 
-The command boundary identifies configured versus task-scoped execution from
-the strict execution tree. After configured Agent admission succeeds, the
+The command boundary identifies the configured execution from the strict
+execution tree. After configured Agent admission succeeds, the
 AgentOrg history catalog serializes summary attempts, commits the first
 non-empty value through the shared atomic JSON writer, strictly rereads the
 index, and only then returns the truthful accepted command acknowledgement.
@@ -436,8 +408,7 @@ of becoming empty history. Inactive views have no live statuses; retained client
 contexts initialize offline.
 
 Inspection does not activate providers, Restore, rewrite packages, migrate, or
-repair data. Exact retained task Agent/Team identity survives idle shutdown and
-distinguishes repeated runs at one logical address. Member projections use the
+repair data. Member projections use the
 actual retained physical execution/provider binding, not the configured source's
 memory directory or an Org-root fallback. Configuration derives from captured
 launch data rather than current mutable definitions. The existing tree and

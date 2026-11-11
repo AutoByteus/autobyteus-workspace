@@ -321,7 +321,7 @@ export class TokenUsageStatisticsResolver {
     return toTokenUsageRunSummaryGraphql(await store.getAgentRunSummary(runId));
   }
 
-  /** A standalone run's usage including its delegated copies (REQ-006). */
+  /** A standalone run's usage including the runs delegated from it (REQ-006). */
   @Query(() => TokenUsageRunSummaryGraphql)
   async getStandaloneRunTokenUsageSummary(
     @Arg("runId", () => String) runId: string,

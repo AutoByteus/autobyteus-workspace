@@ -140,8 +140,7 @@ delegated run, …) are defined in the
   viewer's full screen (route `full=1`); in the Android app it also means
   landscape and hidden system bars (shell-bridge message `desktopFullScreen`).
 - **Sibling:** a run shown at the same level as another run in the run tree
-  (for example a task agent's run lifted beside its parent's other children).
-  It is not a peer.
+  (for example two runs one run delegated to). It is not a peer.
 
 ## Run Section
 
@@ -155,8 +154,8 @@ delegated run, …) are defined in the
   draft, nor an internal agent's run. The Workspaces and Projects views list a
   folder or Project only while it has a listed run.
 - **Last activity** (`lastActivityAt`): when a run was last active, its
-  delegated work included: the newest memory file of the run and of every agent
-  its tree locates; its creation time before any.
+  delegated work included: the newest memory file of the run's own agents and
+  of every run delegated from it; its creation time before any.
 - **Remove** (a folder): unregister it in the chat's folder chooser; it leaves
   every chooser and every view. Files, memories and run history stay.
 
@@ -169,7 +168,7 @@ delegated run, …) are defined in the
 - **Semantic memory** (of an agent): an agent's own folder of documents with
   the reusable knowledge it learns, `<memory>/semantic/<encoded agent
   definition ID>/` on the node. Every run of that agent definition (standalone,
-  team member, delegated copy, in any Project) is told its path and shares it;
+  team member, delegated run, in any Project) is told its path and shares it;
   the agent and its skills write and organize it, and the system never deletes
   it. An agent has one when `semanticMemoryEnabled` is on in its definition.
   It is not the memory of a run, and not the `semantic.jsonl` rows of old run
@@ -336,12 +335,12 @@ delegated run, …) are defined in the
 - **Agent runtime switch:** replacing the agent runtime, model and model settings
   of a stopped Agent, keeping its run (same run ID, chat, history row, workspace).
   It applies to a standalone Agent run, a Team member, an Org member (a direct Agent
-  or an Agent of a mounted Team) and a delegated copy (a task Agent, or a member of a
-  task Team); a Team's or an Org's own default launch is not switched. It is made real
+  or an Agent of a mounted Team) and a delegated run (a task Agent, or a member of a
+  task Team, each switched as the run of its own it is); a Team's or an Org's own default launch is not switched. It is made real
   at the Agent's next input.
 - **Pending agent runtime switch:** the user's saved choice of another agent
   runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
-  a member's node in the run's execution tree, a copy's own record) until that input.
+  a member's node in the run's execution tree) until that input.
 - **Hand-over notice:** the system notice the new agent receives with that input:
   where the Work Journals are and how they are laid out. It names no agent runtime.
 - **Switch marker:** the notice record that starts the new raw-trace file; the chat
@@ -410,7 +409,7 @@ delegated run, …) are defined in the
 ## Model Routing
 
 - **Model Routing:** a node's switch (off by default; Settings → Model Routing) under which its Model Router chooses
-  a runtime and model for the agents of a fresh delegated copy that no usable default covers. Off, delegation behaves
+  a runtime and model for the agents of a new delegated run that no usable default covers. Off, delegation behaves
   as before.
 - **Model Router:** the built-in, internal agent definition `autobyteus-model-router` that makes those choices. Never
   "router" alone in code.
@@ -428,6 +427,6 @@ delegated run, …) are defined in the
   with its file tools; every routing request carries its current text.
 - **Task kind:** the Model Router's short free-text label for a choice (1–40 characters, grouped ignoring letter case),
   such as "implementation"; nothing for the user to manage.
-- **Decision record:** one line of a node's decision log per agent of a fresh delegated copy resolved on that node
+- **Decision record:** one line of a node's decision log per agent of a new delegated run resolved on that node
   while Model Routing was on: the Task it serves, the delegation, the launch, its source, task kind, reason, router
   failure and skipped defaults.

@@ -59,7 +59,7 @@ export const composeTaskDelegation = (deps: Readonly<{
   bindCrossRunMessageDelivery(crossRun);
   bindCrossRunAddressResolution(addresses);
   // DS-5: what the Task side asks of a run by its own identity (its closure stop, its own status).
-  const control = new TaskRunControl({ agentRuns: deps.agentRuns, teamRuns: deps.teamRuns });
+  const control = new TaskRunControl({ agentRuns: deps.agentRuns, teamRuns: deps.teamRuns, tasks: () => deps.tasks });
   bindTaskRunControl(control);
   return Object.freeze({ release: () => {
     unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); unbindCrossRunAddressResolution(addresses); unbindTaskRunControl(control);

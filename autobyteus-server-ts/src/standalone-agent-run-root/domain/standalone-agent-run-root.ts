@@ -42,6 +42,7 @@ import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
+import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 /** What a view of the run opens with: its own agent; its children are the runs it delegated to (the view adds them). */
 export type StandaloneRootPackageSnapshot = Readonly<{
@@ -68,6 +69,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   /** autobyteus-278: the live facts of the runs this run delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
   private readonly delegatedIdle: DelegatedRunIdleShutdown | null;
+  private readonly workerStatus: TaskWorkerStatusNotice | null;
   private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
   private termination: Promise<AgentOperationResult> | null = null;
   private inheritedLaunch: AgentLaunchConfiguration;
@@ -110,13 +112,14 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
       runInGate: (operation) => this.operationGate.run(operation), ...options.taskExecutionIdleShutdown,
     }) : null;
+    this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.hostRunId }) : null;
     this.collaborators = new StandaloneRootCollaborators({ admission: options.collaboratorAdmission, inheritedLaunch: () => this.inheritedLaunch, host });
     this.delivery = new StandaloneRootMessageDelivery({
       hostRunId: this.hostRunId, root, getIndex: () => this.index,
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
       collaborators: this.collaborators, getCommunication: () => this.communication, host: options.hostHandle,
       remoteLinks: this.remoteLinks, remoteDelegation, remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
-      onHostReady: (run) => { this.delegatedIdle?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
+      onHostReady: (run) => { this.delegatedIdle?.watch(run); this.workerStatus?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(createStandaloneRootCommunicationPort({
@@ -240,7 +243,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   async stop(): Promise<StandaloneHostTerminationResult> {
     const ended = await this.terminate();
     if (!ended.accepted) throw new Error(ended.message ?? `Agent root '${this.hostRunId}' did not finish stopping.`);
-    return this.options.hostHandle.terminate();
+    try { return await this.options.hostHandle.terminate(); } finally { this.workerStatus?.stopped(); }
   }
 
   /** Closes the gate and the log, then unregisters (server shutdown and fail-stop end here; the agent is untouched). */

@@ -162,15 +162,15 @@ Entry forms, all through the engine:
 
 | Entry form | Used by | Root-view publish | Recipient |
 | --- | --- | --- | --- |
-| `deliver` | `send_message_to` by address or by run ID, handoffs, and the work of an existing-copy Task assignment | Yes | Its slot is held, then committed, presented and released |
+| `deliver` | `send_message_to` by address or by run ID within the run, and handoffs | Yes | Its slot is held, then committed, presented and released |
 | `acceptFromRemote` | A message from a linked run on a peer node | No (the view shows the root's own agents) | As for `deliver` |
 | `commitSentToRemote` | The sender's record after the peer accepted a message | No | None (the peer stores its side) |
 
 1. The root's message delivery resolves the recipient and takes the live lease.
-   Address resolution stays root-specific. An existing-copy Task assignment
-   (`delegate_task` naming a copy) goes the same way:
-   `RootTaskExecutionLifecycle.assignToExistingCopy` hands the Task's work
-   message to the root's `deliverToRunId`.
+   Address resolution stays root-specific. A message to another run, and a saved
+   Task given to an existing run (`TaskDelegation.toExistingRun`, a
+   `task_assignment` message), go root to root through `CrossRunMessageDelivery`
+   (above), each root writing its own log.
 2. The engine checks the message: the root accepts messages, sender and receiver
    are exact live executions of this root, the target is not the sender, the
    Task scope allows the pair, and the content is not empty. It builds the
@@ -217,30 +217,39 @@ engine's list.
 
 ## `target_agent_run_id` Global Direct Route
 
-`target_agent_run_id` has two paths, chosen by `GlobalAgentRunMessageRouter`.
+`target_agent_run_id` has three paths, chosen in order by `GlobalAgentRunMessageRouter`.
 
 **Same-root path.** When the sender has a member collaboration context and the
-target AgentRun is recorded in the sender's own active root
-(`hasAgentExecution`), delivery goes through that root's
-`deliverExactAgentMessage`. The root takes a live lease on the target's chain,
-wakes a shut-down delegated child in `restore` mode (rejecting with
-`TASK_EXECUTION_CONTEXT_UNAVAILABLE` or `TASK_EXECUTION_RESTORE_FAILED` when
-that is impossible), and delivers as ordinary root communication. An unknown
-run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never
-use this path. When the target belongs to closed Task work, the root first
-reactivates it if the sender is the run that assigned it, the target is the
-copy's agent run ID (a Team copy's coordinator) and the copy's current Task is
-not DONE or CANCELLED;
-the accepted `message` then ends with "<run id> continues with its conversation." Otherwise it
-refuses with `TASK_AGENT_RESOURCE_CLOSED` and guidance. See
-[Reactivation](projects.md#reactivation).
+target AgentRun is one of the sender's own run's agents (`hasAgentExecution`),
+delivery goes through that root's `deliverExactAgentMessage` as ordinary root
+communication. A delegated run is never an agent of the run that delegated to it
+(autobyteus-461): it is reached by the next path.
+
+**Cross-run path** (`CrossRunMessageDelivery`, design DS-2). A target in another
+run that a Task relates to the sender's run goes from root to root:
+
+1. the receiver's run is found from the Task entries (`DelegationTree.runOfAgent`),
+   in memory, also after a restart;
+2. admission: both runs work on one open Task, or one is the assigner of an open
+   Task the other works on (contract §2.2). Otherwise the sender's message may be
+   the assigner's continuation of the receiver's closed `assigned` entry (its Task
+   not DONE or CANCELLED: the Task side reopens it, and the accepted `message`
+   ends with "<run id> continues with its conversation.", see
+   [Reactivation](projects.md#reactivation)); else it is refused with
+   `TASK_AGENT_RESOURCE_CLOSED` (the runs are related by a closed Task) or the
+   different-Task refusal;
+3. the sender's root prepares the message, the receiver's root accepts it in its
+   gate (re-checking "open" from the Task side, writing its own log, waking a
+   stopped run with its conversation and delivering), then the sender's root
+   writes its own log with the same message ID. A refusal writes nothing (CM-9).
+
+The receiver sees the sender's address only when it can use that address to reach
+the sender (contract §2.5); otherwise the run ID only.
 
 **Team run IDs.** `send_message_to` reaches agents only. Before the live-only
-path, the router asks every active root (`ActiveCollaborationRootDirectory.findTeamCoordinator`,
-each root's `teamCoordinatorOf`) whether the ID is one of its Team copies' team
-run IDs; if so it refuses with `TARGET_IS_TEAM_RUN` and the coordinator's agent
-run ID to use, for same-root and cross-root senders alike. A team run in no
-active root gets the ordinary not-active refusal, like an agent run ID there.
+path, the router asks every active root (`ActiveCollaborationRootDirectory.findTeamCoordinator`)
+whether the ID is one of its team run IDs; if so it refuses with `TARGET_IS_TEAM_RUN`
+and the coordinator's agent run ID to use.
 
 **Global live-only path.** Every other target must be the canonical
 server-side `AgentRun.runId` of a run that is active at delivery time.
@@ -279,7 +288,7 @@ runs require explicit configuration; every valid team member context receives
 automatically (a member with no Team scope, such as a standalone host, gets all
 but `get_handoff_rules`), with duplicates removed. No task tool is automatic: an
 agent that should close the Task its delegation created lists `update_task` in its
-definition (see [Delegated catalog copies](#delegated-catalog-copies)). The root topology resolver and active delivery binding
+definition (see [Delegated catalog runs](#delegated-catalog-runs)). The root topology resolver and active delivery binding
 still authorize each team-route call:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
@@ -318,43 +327,34 @@ context.
 The rules are defined in the [Collaboration Model](../design/collaboration_model.md) (CM-1 … CM-9); this document describes the mechanics.
 
 `send_message_to(recipient_address)` reaches **the one instance at that
-address in the sender's run**: a configured member, an agent already hosted by
-the run, or a teammate inside the sender's own team instance. It never creates a
-run (CM-4): an address that is not in the run is `COLLABORATION_TARGET_NOT_FOUND`
+address in the sender's run** (a configured member, a teammate inside the
+sender's own team instance, a standalone run's own agent), or, for a delegated
+run, a standing agent of the run that assigned its Task (contract §2.3 step 2). It
+never creates a run (CM-4): any other address is `COLLABORATION_TARGET_NOT_FOUND`
 with guidance to use `delegate_task`. `send_message_to(target_agent_run_id)`
-reaches existing executions only. `delegate_task` always spawns one new task copy
-(an Agent or AgentTeam) and delivers the complete work packet during that same
-call, and it refuses the sender's own team (CM-1, below). The `recipient_address`
-identifies what to copy; it is not an alias for the spawned copy, and callers must
-not repeat one assignment through both operations. The shared prompt and both tool
-descriptions state this identically on every runtime (REQ-009).
+reaches existing runs only. `delegate_task` always starts one new run (an Agent or
+AgentTeam), or gives a saved Task to an existing one by its run ID, and delivers
+the complete work packet during that same call; it refuses the sender's own team
+(CM-1, below). The `recipient_address` names what to start; it is kept as the
+Task entry's `recipientAddress`, a name in the delegator's space, never an address
+of the new run.
 
 ### Task-linked message scope
 
-Unowned agents (configured members, hosts, converted runs) are never checked
-against Task data. Every delegated copy is Task-owned: a linked copy by its
-Project Task, sub-work by its creator's Task, and a description-only copy of an
-unowned sender by the Task with no Project that its delegation created. So two
-copies owned by different Tasks cannot message each other by run ID; messages to
-and from their delegators and configured members work. The refusal (a different
-Task, or a closed Task) is returned to the sender as `{accepted: false, code, message}`
-by `RootCommunicationEngine.deliver`, so the agent reads the next step. The same refusal is
-returned when the Task closes later, while the message waits for the root's history lock or after its
-log line is written (DEC-005; see [Teammate Delivery Path](#teammate-delivery-path)).
+Runs the user started are never checked against Task data among their own agents.
+Every delegated run is Task-owned: an `assigned` entry (a Project Task, or a Task
+with no Project its description-only delegation created) or `subWork` of its
+delegator's current Task. Two runs may message each other by run ID only when they
+share an open Task or one is the other's assigner (contract §2.2); the refusal (a
+different Task, or a closed Task) is returned to the sender as
+`{accepted: false, code, message}` so the agent reads the next step. The receiver's
+root re-checks the Task side in its gate, so a Task closed while the message waits
+refuses it too.
 
-A Task-owned sender resolves an address exactly like any other sender (below).
-There is no per-Task helper bring-in any more: `broughtIn` records already stored
-in a Task's `agent_run_resources.json` stay readable and keep their open or closed
-state, but nothing writes new ones. Follow-up by exact run ID never creates a
-copy.
-
-Before any wake or acceptance, both sender and recipient input, and deferred
-publication, consult the Task record. A closed sender or recipient fails with
-`TASK_AGENT_RESOURCE_CLOSED`, including after restart, unless the exact run-ID
-message is the assigner's [reactivation](projects.md#reactivation). While any Task's file
-is damaged, waking or messaging a copy that is not in the Task view fails up
-front with `TASK_AGENT_RESOURCES_UNAVAILABLE`. See
-[Project Task agent run resources](projects.md#saved-id-delegation-and-agent-run-resources).
+There is no per-Task helper bring-in: `broughtIn` records already stored in a
+Task's `agent_run_resources.json` stay readable and keep their open or closed
+state, but nothing writes new ones. Follow-up by exact run ID never creates a run.
+See [Project Task agent run resources](projects.md#saved-id-delegation-and-agent-run-resources).
 
 ### Address resolution order (`MessageRecipientResolution`)
 
@@ -366,33 +366,37 @@ operation gate. The function only resolves:
    is not one): the instance's own address reaches its coordinator; an address
    under the instance's prefix reaches that instance's member. There is **no
    fall-through** inside the prefix (AR-003): a miss is
-   `COLLABORATION_TARGET_NOT_FOUND`, never run-wide, so two parallel copies of a
-   team never cross. This is how a delegated Team copy and a mounted Org Team
-   each work as one unit (REQ-007).
+   `COLLABORATION_TARGET_NOT_FOUND`, never run-wide. This is how a mounted Org
+   Team works as one unit (REQ-007); a delegated team is a team run of its own,
+   rooted at `/`.
 2. **Run-wide standing placements**: a configured placement, or the run's own
    agent (an Agent root's host).
+
+When both miss and the sender's run works on a Task, `CrossRunAddressResolution`
+continues with the standing agents of the runs that assigned its Tasks (contract
+§2.3 step 2), then, for a delegated team, the correction of an address written
+under the name the team was delegated to (refused with the address to use).
 
 Any other address is `COLLABORATION_TARGET_NOT_FOUND` ("No agent or agent team
 you can talk with has the address <address>. To answer a message or report your
 task result, use send_message_to with target_agent_run_id set to the sender run
-id. To have a task done by a new agent, use delegate_task."). Nothing is allocated, hosted or written, so a message
+id. To have a task done by a new agent, use delegate_task."). Nothing is allocated or written, so a message
 can never start an agent; the first message to an existing but Offline agent
 starts it (`fresh` on first activation, `restore` after the run is reopened).
 
-After delegation, parent and child communicate only through `send_message_to`
-with exact run IDs, in both directions. There is no task submission, review, or
-acceptance. A run-ID target in the sender's own collaboration root is routed
-through that root, which wakes a shut-down delegated child (restoring its
-conversation) before delivery; a target outside the sender's root must be
-active. See
-[Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
+After delegation, parent and child communicate through `send_message_to`
+with exact run IDs, in both directions (the cross-run path above, which wakes a
+stopped run with its conversation). There is no task submission, review, or
+acceptance.
 
-## Delegated catalog copies
+## Delegated catalog runs
 
 A listed shared Agent or Agent Team definition that is not in the run is reached
-only by `delegate_task` (CM-5). Each call spawns one new, independent copy at the
-root of the run, with its delegator recorded and a `source` snapshot of the
-definition (below). The user's `@` steers the focused agent to the same tool (see
+only by `delegate_task` (CM-5). Each call starts one new, independent run of its
+own (`DelegatedRunStarter`: an agent run, or a team run rooted at `/`), recorded in
+its Task entry (`delegatedFrom`, `recipientAddress`); the new run's own file holds
+its launch and `launchSource` (below). Nothing is recorded in the delegating run
+(autobyteus-461). The user's `@` steers the focused agent to the same tool (see
 `@` below). Runs recorded by earlier releases as *collaborators* are converted at
 startup into ordinary, unowned delegated runs of the same root (migration
 `20261015_collaborators_to_delegated_runs_v1`; their memory never moves, see
@@ -409,12 +413,12 @@ startup into ordinary, unowned delegated runs of the same root (migration
   every configured root placement for a configured member. Then
   `COLLABORATION_SELF_TARGET_REJECTED` is raised, with `send_message_to` guidance,
   before any placement, preparation, Task link or run allocation. Siblings,
-  parents and outside units are allowed: a delegated copy that is not a
-  configured member may delegate to a configured placement; an Org agent may
+  parents and outside units are allowed: a delegated run's agent may delegate to
+  a catalog Agent or Team; an Org agent may
   delegate to a mounted Team it does not belong to.
-- **Hosting.** A new copy is always hosted at the root (the former "teammate copy"
-  placement under the delegator's Team instance is gone). Copies already stored
-  under a Team instance keep their recorded host on restore (DEC-006).
+- **Runs of their own.** A delegated run is never hosted by the run that
+  delegated to it: it has its own root, idle shutdown, Stop and restart resume,
+  and its life is bound to its Task (CM-7).
 - **Catalog addresses (REQ-003).** `CatalogAddressMap`
   (`catalog-address-map.ts`) is the only allocator. It is a pure function of the
   eligible catalog and the run's addresses in use: a definition already in the
@@ -424,11 +428,11 @@ startup into ordinary, unowned delegated runs of the same root (migration
   every colliding definition. Listing twice with an unchanged catalog gives the
   same addresses; an address that maps to nothing is the normal not found.
 - **Placement order for `delegate_task(address)`.** CM-1 refusal, then the root's
-  in-run configured placement, then a listed catalog definition (a fresh copy with
+  in-run configured placement, then a listed catalog definition (a new run with
   a source snapshot built by `CollaboratorEntryBuilder` and resolved per agent by
-  `CollaboratorLaunchResolver`; the task record persists it as the optional
-  `source`). Activation and restore use the record's `source` first. Each call is
-  a new copy, so parallel copies are allowed. A catalog definition that cannot run
+  `CollaboratorLaunchResolver`; the new run's own file records the launch and its
+  `launchSource`). The run restores as the run it is. Each call is a new run, so
+  parallel runs of one definition are allowed. A catalog definition that cannot run
   returns `delegated: false` with "<name> cannot be delegated to: <reason>".
 - **`@` (mention resolution).** A user message with `mentions`
   (`{kind, definition_id}[]`, at most 8) is resolved by the root
@@ -469,27 +473,16 @@ startup into ordinary, unowned delegated runs of the same root (migration
   is owned by `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`),
   which composes the current form and still parses every earlier form (the saved
   `[Mentioned collaborators]` notes), so stored history displays unchanged.
-- **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
-  stored read) carries `closed_task_executions` beside the unfiltered tree: the
-  task executions whose current Task is DONE or CANCELLED and that the tree still holds,
-  read through the Task port (`closedTaskExecutionsIn`) and the shared
-  `listClosedTaskExecutions`, which keeps only references the tree contains. Since
-  autobyteus-469 a run leaves the tree once its last open Task closed and it is stopped,
-  so such a run is not in this list; a run whose stop is not confirmed yet is. When DONE or
-  CANCELLED asks an active root to stop a Task's runs, `RootTaskExecutionResourceScope` first
-  publishes the released runs that are closed and in the tree as the sequenced
-  `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE or
-  CANCELLED re-publishes them. The Workspaces tree leaves those executions and their
-  subtrees out; messages and contexts keep them. A reactivation publishes the
-  reopened execution as `task_executions_reopened` after its Task-side commit (Team:
-  `TASK_EXECUTIONS_REOPENED`, with each execution's record and host Team run, autobyteus-469
-  D-8); clients remove it from their closed set, so it is listed again while its
-  still-closed helpers stay hidden. A view that no longer holds the execution (it left the
-  tree when its Task closed) reloads itself (Agent run, Org) or inserts it from the record
-  (Team). The same holds for a Task with
-  no Project: a description-only `delegate_task` by an unowned sender returns
-  its `task_id`, and `update_task({task_id, status: "DONE"})` (for an agent that
-  selected `update_task`) closes, stops and hides that copy and its sub-work (see
+- **Task closure (DONE or CANCELLED).** Closing a Task stops its runs that have no
+  other open Task, each through its own ordinary Stop (`TaskRunControl`); a peer's
+  run is fenced, not stopped. A delegating run's view lists its children with an
+  open Task entry (`DelegationTree.openChildrenOf`), so a closed run leaves the view
+  and comes back when its assigner continues it. No root publishes a closed set any
+  more: `closed_task_executions` stays in the views' API, always empty
+  (follow-up). The same holds for a Task with no Project: a description-only
+  `delegate_task` by an unowned sender returns its `task_id`, and
+  `update_task({task_id, status: "DONE"})` (for an agent that selected
+  `update_task`) closes it and stops its runs (see
   [Projects](projects.md#tasks-with-no-project-ad-hoc)).
 - **Discovery (REQ-001/002).** The opt-in tool `list_available_agents` (see
   [Agent Tools](./agent_tools.md)) asks the sender's root
@@ -503,17 +496,15 @@ startup into ordinary, unowned delegated runs of the same root (migration
   written to an agent package is listed once the change is detected, without
   Reload. A Team or Org whose ID exists in more than one registered package is not
   listed, because it is unavailable to every reader. In a standalone Agent run the
-  sender is the viewer: a copy member's list holds the host at its host address plus
-  exactly the host's own list, and the host's list never holds itself. Listing
-  never writes, so a standalone run that only lists gets no `collaboration/`
-  package. With `node`, the tool lists a peer node's offer instead (a *peer* is a
+  sender is the viewer, and the host's list never holds itself. Listing never
+  writes, so a standalone run that only lists is not marked as collaborating. With `node`, the tool lists a peer node's offer instead (a *peer* is a
   remote node registered with this node; see the [Glossary](../../../GLOSSARY.md#nodes)),
   and the opt-in `list_peer_nodes` lists the peers with their status (autobyteus-261; see
   [Remote Collaboration](./remote_collaboration.md#discovery)); neither goes through
   the sender's root.
 - **In the run.** Configured placements and a standalone run's host count as in the
   run: `@` addresses that instance, and `send_message_to` reaches it. Delegated
-  copies are not "in the run" by address: they are reached by their run ID.
+  runs are not in the run: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
   policy: shared Agents (minus the Model Router, a built-in marked
@@ -526,18 +517,18 @@ startup into ordinary, unowned delegated runs of the same root (migration
   membership-checked (an unknown ID gets the non-host view of the menu; the
   send-time re-check verifies). Application-owned runs list none.
 
-### Launch configuration of catalog copies
+### Launch configuration of a delegated run
 
-A catalog copy is started by an agent, not by a user launch form, so nobody picks
+A delegated run is started by an agent, not by a user launch form, so nobody picks
 its runtime and model. `CollaboratorLaunchResolver`
 (`collaborator-launch-resolver.ts`; the "collaborator" file names are a cosmetic
-leftover of FU-1) is the single owner of that choice for a catalog copy. For each
+leftover of FU-1) is the single owner of that choice for a delegated run. For each
 agent it takes runtime, model and model settings **together** from the first
 usable layer:
 
 ```text
-Agent copy:                         agent default -> inherited from the run root
-Team copy:
+Agent run:                          agent default -> inherited from the run root
+Team run:
   the Team itself:                  team default  -> inherited from the run root
   each member:                      agent default -> the Team's resolved launch
 ```
@@ -556,7 +547,7 @@ Team copy:
 - **Fallback.** An unusable configured layer is skipped, and the next layer is
   used. The skip is recorded with a reason: `incomplete`,
   `runtime_unavailable`, `model_unavailable` or `model_settings_invalid`. The
-  agent still starts. When no layer is usable for some agent, the copy fails with
+  agent still starts. When no layer is usable for some agent, the delegation fails with
   `delegated: false` and "<name> cannot be delegated to: <reason>", and nothing is
   added.
 - **Notes.** `launch-configuration-notes.ts` renders each skip as one line, for
@@ -564,7 +555,7 @@ Team copy:
   used (<reason>); it runs on claude_agent_sdk / sonnet (inherited from the
   run).` A Team-level skip is written once, as "its members without their own
   default run on …". `delegate_task` returns these lines as `launch_notes` (see
-  [Agent Tools](./agent_tools.md)). Only the call that started the copy carries
+  [Agent Tools](./agent_tools.md)). Only the call that started the run carries
   notes.
 - **A run started for a peer node.** A peer's `delegate_task` resolves its target through the same admission
   and resolver, with a launch base of `defaults_only` instead of `inherited`
@@ -576,71 +567,48 @@ Team copy:
   or "… the target agent team <name>" for an agent of a Team);
   with a configured layer that can't be used, `CollaboratorAddError` with that layer's reason. See
   [Remote Collaboration](./remote_collaboration.md).
-- **Recorded, not re-read.** The resolved values and their source
-  (`launchSource` / `defaultLaunchSource`: the origin and the skipped layers) are
-  written into the copy's `source` when it starts. Every member records its complete
-  `launchConfiguration` (its own default, else the Team's) and `followsTeam` (true iff it
-  does not run on its own default; see [Run History](./run_history.md)). Restore uses
-  these recorded values only. Editing a definition default later changes only copies
-  started afterwards.
-- **Configured placements.** Delegation to a configured placement starts the copy from
-  that placement's launch configuration as it is now and records it as the copy's
-  `source` with origin `configured` ("As configured in this run"); a Team copy's members
-  follow the Team iff their runtime, model and model settings equal the Team's. Editing
-  the placement later changes only copies started afterwards. Single-agent starts and
+- **Recorded, not re-read.** The resolved values and their source (the origin and
+  the skipped layers) are written into the new run's own file when it starts: an
+  agent run's `run_metadata.json` (`launchSource`), a team run's tree (each member's
+  complete `launchConfiguration` and `launchSource`, the team's
+  `rootTeam.defaultLaunchSource`). Restore uses these recorded values only. Editing a
+  definition default later changes only runs started afterwards.
+- **Configured placements.** Delegation to a configured placement starts the run from
+  that placement's launch configuration as it is now and records origin `configured`
+  ("As configured in this run") in its own file. Editing the placement later changes
+  only runs started afterwards. Single-agent starts and
   application launch baselines have their own rules. An installed but unauthenticated runtime passes these
   checks and fails at its first turn as a run error, not as a fallback.
 
-### User Model Choice And Stop Of Copies
+### User Model Choice And Stop Of A Delegated Run
 
-The user can stop one delegated copy of a running run and change its model while
-it is stopped (`run-history/services/delegated-launch-selection-service.ts`,
-GraphQL `stopDelegatedExecution`, `updateDelegatedLaunchSelections`,
-`delegatedLaunchModelOptions`).
+A delegated run is an ordinary run: the user stops it and changes its model as for
+any run, in its own view. From the delegating run's view, a child row offers the
+same (`run-history/services/delegated-launch-selection-service.ts`, GraphQL
+`stopDelegatedExecution`, `updateDelegatedLaunchSelections`,
+`delegatedLaunchModelOptions`; design DS-8, SR-039):
 
-- **Stop.** `stopDelegatedExecution({rootKind, rootRunId, agentRunId | teamRunId})`
-  stops the copy and the copies it started (`delegatedStopSet`: by recorded
-  delegator, including Task helpers, and the copies a stopped Team copy hosts),
-  innermost first. It interrupts the turn and releases the runtime into the same
-  state as idle shutdown: the copy stays indexed and offline, its Task stays open,
-  and its next message restores it with its conversation. Copies are stopped
-  through the root's task lifecycle (`RootTaskExecutionLifecycle.stopForUser`):
-  while a copy is being stopped, a live lease on it is refused with
-  `TASK_EXECUTION_STOPPING` (a `send_message_to` or `delegate_task` into, from or by
-  it returns `accepted: false`), leases already held are drained outside the queue,
-  and the `stop` steps never wait at the queue head. Copies recorded before
-  delegators were stored cannot be attributed and keep running
-  (`notStoppedUnattributed`).
-- **Choice.** `updateDelegatedLaunchSelections` records a choice per agent
-  (`agentRunId`) or per Team (`teamRunId`): its agent runtime, model and model settings; tool approval and workspace
-  stay. Each choice names its `runtimeKind`; another agent runtime than the copy's effective one is an **agent runtime
-  switch** of the copy, which keeps its run and chat (the pending switch sits on the copy record and the copy switches when
-  it is next activated, like a configured member: see
-  [Agent runtime switch of a member](./agent_team_execution.md#agent-runtime-switch-of-a-member)). A Team copy's choice
-  reaches the members that follow it, each as its own switch. The launch rule exists three times because the contract
-  packages cannot import the server (`effectiveCopyAgentLaunch`, `collaborationCopyAgentLaunch`, `teamCopyAgentLaunch`); a
-  server test keeps them equal. It is validated like stopped-run model
-  switching (`RunModelSelectionValidator.validateMany`, the copy's current model for
-  the capacity rule), all or nothing. On a running run, it is saved only while every
-  named copy is stopped: the root re-checks this at one serialization point (the task
-  queue's `reconfigure` step), commits the tree, then publishes the committed
-  choices to the root's live views like its other tree mutations (Team
-  `DELEGATED_LAUNCH_SELECTIONS_CHANGED`, Org and Agent
-  `delegated_launch_selections_changed`; each names a record by run ID with its
-  choice as now recorded). A copy woken meanwhile refuses the whole Save with
-  `COPY_RUNNING`. On a stopped run, the run's own changed settings and the copies'
-  choices are saved in one write (`updateStoppedRunLaunchChanges` /
-  `updateStoppedRunConfig`; an Agent run's own model is in its metadata and is
-  written after the collaboration tree).
-- **Per instance.** The choice belongs to that instance only: extra copies at the
-  same address and teammates started inside a copy start on the recorded started
-  values (`projectTaskSourceMember`).
+- **Stop.** A child row's Stop is the child's own ordinary Stop
+  (`AgentRunService.terminateAgentRun` / `TeamRunService.terminateTeamRun`); the runs
+  it delegated to keep working. A peer child's Stop goes through the delegating
+  run's live root to its node.
+- **Choice.** A change on a child row is that child's own stopped-run save: an agent
+  child through `AgentRunService.updateStoppedSelection`; a team child's team row as
+  a `CONFIGURED_TEAM` patch at `/` and a member row as a `CONFIGURED_AGENT` patch at
+  its address, through the child team's own stopped save. Another runtime than the
+  run's current one is an agent runtime switch, as for any run. The Save checks
+  everything first (a named child that is running refuses the whole Save with
+  `COPY_RUNNING`; every patch is validated), then writes the delegating run's own
+  settings, then each child in row order. A failure after an earlier write returns
+  `PERSISTENCE_FAILED` with a message naming the runs saved and the one not saved
+  ("Saved: …. Not saved: <name> (<reason>)"); nothing is rolled back. A peer
+  child keeps no launch on this node and is not editable here.
 
 The shared policy, admission (`@` and eligibility), launch resolver, identity
 allocator, entry builder, catalog address map, message-recipient resolution,
 catalog delegation and source projection live in
 `src/agent-collaboration/collaborators/`; each root implements
-`CollaboratorRootPort` and delegates through its existing backends (see
+`CollaboratorRootPort` and delegates through `TaskDelegation` (see
 [Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
 and [Standalone Agent Run Root](./standalone_agent_run_root.md)).
 
@@ -648,17 +616,12 @@ Known limits:
 
 - Renaming, unsharing or deleting a listed definition mid-run and reusing its
   name is unsupported (design principle 6); stored addresses never move.
-- A delegated run's run ID follows the existing
-  [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route): a sender
-  in another root reaches it only through the global live-only path (while it is
-  active, without a Team/Org tab row). An Offline run is never woken from another
-  root (`TARGET_AGENT_RUN_NOT_ACTIVE`).
-- A build older than this release cannot read execution trees converted by the
-  startup migration (their collaborators now sit in `taskExecutions`). Downgrade is
-  unsupported.
-- A converted collaborator Team that never started has no conversation; waking it
-  by run ID reports `TASK_EXECUTION_CONTEXT_UNAVAILABLE`, like any copy without a
-  saved conversation. Nothing is lost.
+- A delegated run's run ID follows the
+  [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route): a run a
+  Task relates to the sender's run is reached through the cross-run path (woken
+  when stopped); any other target only through the global live-only path.
+- A build older than autobyteus-461 cannot read the converted data (startup
+  migration `20261111_delegated_runs_own_runs_v1`). Downgrade is unsupported.
 - Own-team delegation: every root refuses it with
   `COLLABORATION_SELF_TARGET_REJECTED` (CM-1, DEC-008), including a standalone
   run's root; use `send_message_to` for a teammate. Its own address is refused with the
@@ -678,8 +641,8 @@ message:
 <body>
 ```
 
-or, when the address would not reach the sender (a task agent, a member of a task
-agent team writing from outside its team, a sender in another run):
+or, when the address would not reach the sender (a sender in another run whose
+address the receiver cannot use):
 
 ```text
 You received a message from the agent with sender run id "<runId>".

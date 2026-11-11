@@ -51,6 +51,7 @@ import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platfo
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
 import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
@@ -86,6 +87,7 @@ export class RootTeamRun {
   readonly remoteChildren: RemoteRunObservation;
   private readonly remoteDelegation: RemoteDelegation;
   private readonly delegatedIdle: DelegatedTeamIdleShutdown | null; // DS-7: on every delegated team run (`isDelegated`: its tree has `delegatedFrom`)
+  private readonly workerStatus: TaskWorkerStatusNotice | null; // its Tasks' worker status on the Task side
   private readonly unsubscribeIdleEvents: () => void;
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
@@ -154,7 +156,8 @@ export class RootTeamRun {
     });
     this.delegatedIdle = this.tree.delegatedFrom ? new DelegatedTeamIdleShutdown({ teamRunId: this.teamRunId,
       shutDownIfQuiet: () => this.shutDownIfQuiet(), ...options.taskExecutionIdleShutdown }) : null;
-    this.unsubscribeIdleEvents = options.publisher.subscribe(({ event }) => { this.delegatedIdle?.onRootEvent(event); });
+    this.workerStatus = this.tree.delegatedFrom ? new TaskWorkerStatusNotice({ teamRunId: this.teamRunId }) : null;
+    this.unsubscribeIdleEvents = options.publisher.subscribe(({ event }) => { this.delegatedIdle?.onRootEvent(event); this.workerStatus?.onTeamEvent(event); });
     this.assertRootCorrelation();
   }
 
@@ -382,6 +385,7 @@ export class RootTeamRun {
     const termination = this.runTermination(quiet);
     this.termination = termination;
     void termination.then((result) => {
+      if (result.accepted) this.workerStatus?.stopped();
       if (!result.accepted && this.termination === termination) this.termination = null;
     }, () => {
       if (this.termination === termination) this.termination = null;

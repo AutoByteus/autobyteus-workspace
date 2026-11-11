@@ -24,15 +24,15 @@ for the scoped primary-key rule used to join new saved and live presentation.
 
 ## Storage Layout
 
-Every run keeps its memory in its own folder, including a task agent (a delegated run): see the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape) and the memory-layout contract of task-agent-own-run (L1).
+Every run keeps its memory in its own folder; a task agent (a delegated run) is an ordinary run (since autobyteus-461): see the [Collaboration Model](../design/collaboration_model.md#3-run-storage-shape) and the memory-layout contract of task-agent-own-run (L1).
 
 Memory files live under the configured memory root:
 
 - Standalone runs: `memory/agents/<runId>/...`
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
-- Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own message log (`communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files; see [Run History](./run_history.md), Message logs)
-- Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and its own message log (`team_communication_messages_*.jsonl`); their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
+- Task agents and task agent teams are standalone runs and team runs like the above, with `delegatedFrom` in their own `run_metadata.json` or `team_run_execution_tree.json`.
+- An agent run's message log, user-started or delegated, is in its own folder: `memory/agents/<runId>/communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files (see [Run History](./run_history.md), Message logs); a team run's is `team_communication_messages_*.jsonl` in its folder.
 - Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
   `memory/imports/<memorySyncSourceId>/agent_teams/...`, with source metadata in
   `memory-sync-source.json` and sync state in `sync-manifest.json`.
@@ -40,13 +40,11 @@ Memory files live under the configured memory root:
   [Semantic Memory](#semantic-memory)); not a run folder.
 
 One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
-a part of a run (`run_part`, by its physical scope), a task agent (`task_agent`) or a task agent team's
-member (`task_agent_team_member`). Writers decide it when they build an agent; readers derive it from the
-execution index (`getMemoryPlacementForAgent`); both resolve the path through
-`AgentMemoryLayout.getAgentRunMemoryDirPath`. A task agent's folder is not a run the user started: the
-standalone metadata reader and the team-tree reader treat its own file as absent (G1, G2).
+a part of its run (`run_part`, by its physical scope). Writers decide it when they build an agent; readers derive
+it from the execution index (`getMemoryPlacementForAgent`); both resolve the path through
+`AgentMemoryLayout.getAgentRunMemoryDirPath`.
 
-The `runId`, `memberRunId`, `taskAgentRunId`, `teamRunId`, and `ancestorTeamRunIds`
+The `runId`, `memberRunId`, `teamRunId`, and `ancestorTeamRunIds`
 segments are opaque stored identifiers. Readers must not parse generated id
 shapes or derive nested member storage from a flattened member list; they should
 use the resolved `memoryDir` or `AgentMemoryLocationService`.
@@ -134,7 +132,7 @@ The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/w
 An agent definition with `semanticMemoryEnabled` (in `agent-config.json`, or a personal setting for package and
 built-in agents) has a semantic memory: one folder of documents with the reusable knowledge the agent learns, shared
 by every run of that definition on this node, standalone, as a team member (`refScope: shared` resolves to the same
-definition ID) or as a delegated copy, in any Project. Team-local, Org-owned and application-owned agents are their
+definition ID) or as a delegated run, in any Project. Team-local, Org-owned and application-owned agents are their
 own definitions with their own folders.
 
 - **Folder:** `AgentMemoryLayout.getAgentSemanticMemoryDirPath(agentDefinitionId)` =
@@ -192,20 +190,8 @@ member with `present` activity but no persisted provider binding fails closed.
 create a replacement run; the member-activation error
 (`COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE`) includes the reason.
 
-Waking a shut-down delegated Agent or Team whose ingress member is not
-`present` is refused with `TASK_EXECUTION_CONTEXT_UNAVAILABLE` by
-`taskExecutionConversationUnavailable`
-(`src/agent-collaboration/execution/task/task-execution-conversation-availability.ts`),
-used by the Team, AgentOrg and standalone task-execution adapters. The message
-names the Agent or Team, its coordinator for a Team, and what to do:
-
-- `none`: "The delegated Agent at '/x' cannot be restored: it has no saved
-  conversation to continue. Start a new delegation for this work."
-- `indeterminate`: "The delegated Team at '/t' cannot be restored: the saved
-  conversation of its coordinator '/t/lead' cannot be read (line 3 of
-  raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a
-  new delegation for this work, or restore its saved conversation from a
-  backup."
+A delegated Agent or Team is woken like any run of its kind (since
+autobyteus-461): its own root restores it, with the same continuation checks.
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
@@ -391,7 +377,6 @@ Team and org explorers share one catalog policy owner,
 - `TeamRootMemorySource` — lists stored root team runs and reads each admitted
   V2 Team execution tree through `TeamRunExecutionTreeLocationService`; display
   metadata comes from the Team catalog owner.
-- `TaskTeamRootMemorySource` — lists task agent teams (`memory/agent_teams/<taskTeamRunId>/` with a `taskAgent` section) whose coordinating run still exists (`CoordinatingRunPresence`: its `run_metadata.json` or tree file), and reads each one's own files (`TaskAgentOwnFiles.readTeam`). Detached task teams (their coordinating run deleted) are not listed; one whose Task closed and that left its coordinating run's tree is (autobyteus-469 D-6). Memory search uses the same source to find task-team members.
 - `AgentOrgRootMemorySource` — lists stored root org runs and reads each org
   execution tree through `AgentOrgExecutionTreeLocationService`; display
   metadata comes from `AgentOrgRunHistoryCatalogService.listCatalogRows()`,
@@ -399,11 +384,9 @@ Team and org explorers share one catalog policy owner,
   stored-only history manager and never manages live runs.
 
 `TeamMemoryExplorerService` and `AgentOrgMemoryExplorerService` are thin
-family facades over that catalog. The team explorer merges the configured
-teams' catalog with the task teams' catalog before paging: a task team's
-summary has `isTaskTeam: true` and `startedByAgentName` (the agent that
-delegated it: the catalog's agent name for a standalone run, the member
-address basename inside a team or org). The catalog owns: iteration with **exactly
+family facades over that catalog. A delegated team run is listed as the team
+run it is (since autobyteus-461); every summary has `isTaskTeam: false` and
+`startedByAgentName: null` (fields kept in the API, follow-up). The catalog owns: iteration with **exactly
 one execution-tree read per root per list request** (linear in stored root
 runs; this replaced an O(N²) per-root all-root rescan), the skip-invalid-root
 rule (a corrupt tree is skipped with a warning while other roots still list),
@@ -419,9 +402,9 @@ timestamp, and merged availability.
 Member targets are built by `buildCollaborationMemberMemoryTargets`
 (`collaboration-member-memory-targets.ts`) from the same tree snapshot. Every
 agent execution located in the tree that has memory on disk becomes a target:
-configured agents (`CONFIGURED`), delegated task agents (`TASK_AGENT`, with
-`startedAt`), and members of delegated task teams at any nesting depth
-(`TASK_TEAM_MEMBER`). Each target carries its own `agentRunId` and a
+the run's own agents (`CONFIGURED`). A Team or Org tree holds its own parts only
+(since autobyteus-461), so the `TASK_AGENT` and `TASK_TEAM_MEMBER` kinds stay in
+the API but no catalog produces them (follow-up). Each target carries its own `agentRunId` and a
 `groupPath` of enclosing `CONFIGURED_TEAM` / `TASK_TEAM` groups so clients can
 render the run's execution structure. Groups have no memory of their own.
 Memory folders not referenced by the execution tree are not listed. Team

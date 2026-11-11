@@ -76,7 +76,7 @@ describe('projectRunsStore', () => {
 
     // Task changes do not change which runs are started under a Project.
     store.applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'Q' }, task: {} } as ProjectChangeMessage)
-    store.applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { root: { hostRoot: { kind: 'agent', runId: 'P-run' } } } } as ProjectChangeMessage)
+    store.applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { root: { delegatingRun: { kind: 'agent', runId: 'P-run' } } } } as ProjectChangeMessage)
     store.applyChange({ type: 'task_removed', scope: { kind: 'project', projectId: 'P' }, taskId: 't' } as ProjectChangeMessage)
     await flush()
     expect(projectReads()).toEqual([])

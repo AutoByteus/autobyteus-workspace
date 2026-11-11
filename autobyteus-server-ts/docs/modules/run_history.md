@@ -114,8 +114,8 @@ Every Agent history item (`RunHistoryItem`), the workspace Team run item and the
 desktop's Runs view orders by it. `RunLastActivityReader` (`src/run-history/services/run-last-activity-reader.ts`)
 derives it at read time and stores nothing:
 
-- an Agent run: the newest memory file of its own folder (`MemoryRunSummaryBuilder`), and, when it has a collaboration
-  package, of every delegated copy its root locates (`StandaloneRootLocationService.listAgents`);
+- an Agent run: the newest memory file of its own folder (`MemoryRunSummaryBuilder`), and, when it collaborates, of
+  every run delegated from it (`DelegationTree.subtreeOf`, each run's own folders);
 - a Team or Org run: the newest over every agent its execution tree locates (`TeamRunExecutionTreeLocationService`,
   `AgentOrgExecutionTreeLocationService`), merged with `mergeMemoryAvailability`;
 - no memory file anywhere: its `createdAt`.
@@ -184,12 +184,12 @@ it never produces a false editable state or a General write.
 `updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
 carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
 switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The Team family
-(`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and the delegated copies
-(`updateDelegatedLaunchSelections`) edit the same selection with the same rule for their members and copies
+(`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and a delegator's child rows
+(`updateDelegatedLaunchSelections`, each child through its own stopped save) edit the same selection with the same rule
 (`applyRuntimeSelection`, `run-history/domain/runtime-selection-rule.ts`); see
 [Agent Team Execution](./agent_team_execution.md#agent-runtime-switch-of-a-member) and
-[User Model Choice And Stop Of Copies](./agent_communication.md#user-model-choice-and-stop-of-copies).
-A saved edit of a standalone Agent run also reaches the registered root of that run, so catalog copies delegated
+[User Model Choice And Stop Of A Delegated Run](./agent_communication.md#user-model-choice-and-stop-of-a-delegated-run).
+A saved edit of a standalone Agent run also reaches the registered root of that run, so runs it delegates to
 afterwards inherit the saved selection ([Standalone Agent Run Root](./standalone_agent_run_root.md#ownership)).
 
 When no Application lease exists, stopped updates delegate to the existing
@@ -199,8 +199,8 @@ General lifecycle owners:
   per-run transition lane with restore/activation and commits the validated
   pair to `run_metadata.json` through `AgentRunHistoryCatalogService`.
 - `StandaloneStoppedRunSelectionUpdater` (inside that lane) decides model-only edit, switch or undo. A switch is
-  allowed only for a started standalone Agent run that is not application-owned, system-owned or a delegated copy
-  (`canSwitchRuntime`), and validates the pair as a fresh selection of the new agent runtime
+  allowed only for a started standalone Agent run that is not application-owned, system-owned or started by a peer
+  node (`canSwitchRuntime`; a local delegated run switches like any run), and validates the pair as a fresh selection of the new agent runtime
   (`selectionContextFor`: the stored model counts as the current one only on the run's own agent runtime and while no
   switch is pending). It commits through `AgentRunHistoryCatalogService.commitRunRuntimeSwitch`: the new binding,
   `platformAgentRunId: null` and `pendingRuntimeSwitch { switchId, from }` in `run_metadata.json` (`switchId` is a UUID
@@ -560,38 +560,30 @@ Standalone agent persisted files:
 - V2 catalog index: `memory/run_history_index.json`, with rows containing only
   `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`,
   `createdAt`, `archivedAt`, `terminatedAt`, and the optional
-  `hasCollaboration: true` (written when the run's collaboration package is
-  first created; `RunHistoryItem.hasCollaboration` in GraphQL)
+  `hasCollaboration: true` (written by the run's first delegation;
+  `RunHistoryItem.hasCollaboration` in GraphQL)
 - metadata: `memory/agents/<runId>/run_metadata.json`, containing resume/config
   and prepared/start facts such as `runId`, `agentDefinitionId`,
   `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
   `llmConfig`, `autoExecuteTools`, `platformAgentRunId`,
-  `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
-  `applicationExecutionContext` (an application-owned run never hosts delegated
-  copies)
-- optional collaboration package (created lazily with the first delegated copy):
-  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity and
-  a link per task agent) and the host's own message log (`communication_messages_*.jsonl`,
-  see Message logs below).
-  Each task agent is a run of its own: an agent at `memory/agents/<childRunId>/`
-  (its `run_metadata.json` carries a `taskAgent` section, its definition and the launch it started with,
-  plus its own `communication_messages` log), a task Team at
-  `memory/agent_teams/<taskTeamRunId>/` (its own tree and log, members inside).
-  The standalone metadata reader treats a task agent's `run_metadata.json` as
-  absent (G1), so task agents never appear as their own history rows. See
+  `preparedAt`, `preparedExpiresAt`, `startedAt`, optional `address` and
+  `launchSource` (written when it first collaborates, or by its delegation),
+  optional `delegatedFrom` `{delegatingRun, delegatorAgentRunId, nodeId?}` (a
+  delegated run, written once), and optional `applicationExecutionContext` (an
+  application-owned run never delegates)
+- the run's own message log `memory/agents/<runId>/communication_messages_*.jsonl`
+  (see Message logs below). A delegated run is a run of its own with the same
+  files, listed in history as its own row (autobyteus-461); there is no
+  `collaboration/` folder and no tree file. See
   [Standalone Agent Run Root](./standalone_agent_run_root.md).
-- deleting a run from history removes only its own folder: its task agents'
-  folders are kept (they become detached: not listed, not restored, not reported).
-- startup migration `20261019_delegated_copy_own_file_complete_v1` converts own files written
-  with `taskAgent.origin` once: a copy of a configured place takes its definition and launch (a
-  Team copy: its team facts, each member's complete launch and `followsTeam` by the configured
-  rule, and its members' handoff rules) from its slot in the coordinating tree as it is at upgrade
-  (each launch projected to its five current keys); every Team copy's members get their complete
-  launch and `followsTeam`; `origin` is removed from every own file. One atomic write per file, read
-  back with the current reader; a file already in the current shape is not rewritten. A copy whose
-  slot is gone, or whose file cannot be read or converted, is left unchanged and reported, and the
-  current reader leaves it out (not loaded). The result stays non-terminal while
-  `20261017_task_agent_own_run_v1` has not succeeded.
+- deleting a run from history removes only its own folder: the runs it delegated
+  to keep theirs and stay runs of their own.
+- startup migration `20261111_delegated_runs_own_runs_v1` (autobyteus-461) converted
+  the earlier shapes once: `taskAgent` became `delegatedFrom` (with `address` and
+  `launchSource` moved up), the standalone `collaboration_tree.json` and the trees'
+  `taskExecutions` lists were removed (peer links moved to their Task entries), a
+  delegated team was rebased to `/`, and a user-started run's log moved up out of
+  `collaboration/`. A run it cannot convert is left intact and reported.
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
@@ -604,69 +596,30 @@ Team persisted files:
 - current execution tree:
   `memory/agent_teams/<rootTeamRunId>/team_run_execution_tree.json`, containing
   creation/archive facts, application binding, handoffs, one flat configured
-  root with direct Agents, and delegated child executions (with
-  `delegatorAgentRunId` for children created since the resource lifecycle). The
-  root carries a complete `defaultLaunchConfiguration`; every direct configured
-  Agent carries a complete `launchConfiguration`. The tree has no `collaborators`
-  list: earlier releases recorded shared Agents and Agent Teams brought in with `@`
-  or by an agent's first message there, and the startup migration
-  `20261015_collaborators_to_delegated_runs_v1` converted each into a delegated run
-  (below). Every delegated child (a **copy**, started from the catalog or from a
-  configured placement of the run) carries a required `source`, the snapshot it runs
-  with (`store/task-execution-source-schema.ts`):
-  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration, launchSource?}`;
-  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration, defaultLaunchSource?}`.
-    `handoffs` are the handoff rules of its members: each starts at a member and may
-    lead to the coordinating run (a copy of a mounted Org Team keeps its members' rules
-    to the Org).
-
-  A copy of a configured placement records the placement's definition and launch as
-  they were when it started. Activation records it, and restore reads only it, never the
-  placement at the copy's address: editing a configured member of a stopped run changes
-  only that member and the copies started after the edit. The same field is used in the
-  Org and Agent-root trees.
+  root with direct Agents. It holds nothing of the runs the team delegated to
+  (autobyteus-461): an older file's `taskExecutions` list is read as an unknown
+  field and never written. The root carries a complete
+  `defaultLaunchConfiguration` (and `defaultLaunchSource` when the team was
+  started by a delegation); every direct configured Agent carries a complete
+  `launchConfiguration` (and its own `launchSource`). A delegated team run's tree
+  is rooted at `/` and carries `delegatedFrom`. The tree has no `collaborators`
+  list (startup migration `20261015_collaborators_to_delegated_runs_v1`).
 
   Per-agent launch records (see
-  [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies)):
+  [Launch configuration of a delegated run](./agent_communication.md#launch-configuration-of-a-delegated-run)):
   - `launchSource` (an Agent, or a Team member) and `defaultLaunchSource` (a
     Team) are `{origin, fallbacks}`. `origin` is `agent_default`,
-    `team_default`, `inherited`, or `configured` (a copy of a configured placement:
-    "As configured in this run"). Each fallback is `{layer, runtimeKind,
-    llmModelIdentifier, reason, detail}` for a configured layer that was skipped.
-    Note text is rendered from it and never stored.
-  - A Team member (`members[]` of a Team-copy source) carries its complete
-    `launchConfiguration` and `followsTeam` (whether a Team-level user choice reaches
-    it). A catalog copy's member follows iff it does not run on its own agent default;
-    a configured-placement copy's member follows iff its runtime, model and model
-    settings equal the Team's. A member carries a `launchSource` only when its agent
-    definition had a default (used or skipped); otherwise it shares the Team's
-    (`effectiveMemberLaunchSource`). The source is provenance only: it never decides
-    the launch or the following.
-  - The user's model choice for one copy instance (see
-    [User model choice of copies](./agent_communication.md#user-model-choice-and-stop-of-copies))
-    is `userLaunchSelection: {runtimeKind?, llmModelIdentifier, llmConfig, selectedAt}` on an
-    agent-level record (a task Agent, a task Team's member Agent) and
-    `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces the model, its
-    settings and, when it carries one, the agent runtime, beside the started values, which are never changed;
-    `runtimeKind` is recorded only when it differs from the started one. The copy's pending agent runtime switch
-    (`pendingRuntimeSwitch`) and `platformAgentRunId` sit on the copy record (a task Agent's own file, a task Team's member
-    node), never on the wire. The
-    run-history domain function `effectiveCopyAgentLaunch` (with the member's
-    `followsTeam`) is the single rule: the agent's own choice, else the Team's
-    when the member follows its Team, else the started launch.
-  - `launchSource`, `defaultLaunchSource` and the user choices are optional, with
-    truthful absence: a source written before sources existed reads as not recorded.
-    Own files written before a copy recorded its complete snapshot (with
-    `taskAgent.origin`) are converted once by the startup migration
-    `20261019_delegated_copy_own_file_complete_v1` (below).
+    `team_default`, `inherited`, or `configured` ("As configured in this run").
+    Each fallback is `{layer, runtimeKind, llmModelIdentifier, reason, detail}`
+    for a configured layer that was skipped. Note text is rendered from it and
+    never stored. A member without its own `launchSource` shares the Team's.
+    The source is provenance only: it never decides the launch.
 
   The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use
-  `memory/agent_teams/<rootTeamRunId>/<agentRunId>/...`; Agents in delegated task
-  Teams use the same root followed by concrete task-TeamRun IDs in physical
-  `ancestorTeamRunIds` order and then the AgentRun ID. Every supported runtime
+  `memory/agent_teams/<rootTeamRunId>/<agentRunId>/...`. Every supported runtime
   can persist `raw_traces_active.jsonl`; only native AutoByteus continuation
   owns new `working_context_snapshot.json` writes.
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical Team/Agent directory, for example `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<agentRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
@@ -685,16 +638,16 @@ AgentOrg persisted files:
   `memory/agent_orgs/<orgRunId>/agent_org_run_execution_tree.json`, containing
   `subjectKind: "agent_org"`, a coordinator-free `rootOrg`, direct Org Agents,
   direct mounted Teams with their direct Agents, handoffs, effective launch
-  configurations, concrete identities, application binding, and delegated child
-  executions; read tolerantly and written exactly like the Team tree
+  configurations, concrete identities and application binding (nothing of the runs
+  the org delegated to); read tolerantly and written exactly like the Team tree
 - message log: `memory/agent_orgs/<orgRunId>/agent_org_communication_messages_active.jsonl`
   plus sealed `agent_org_communication_messages_<6 digits>.jsonl` files
 
 Message logs (append-only, since `append-only-message-logs`):
 
 - Each run's message log is a set of JSON Lines files in the run's folder, named by family:
-  `communication_messages` (a standalone host's log in `collaboration/`, or a task agent's
-  own log in `agents/<id>/`), `team_communication_messages` (a team run or a task agent team),
+  `communication_messages` (an agent run's log in `agents/<id>/`, user-started or
+  delegated, TC-13), `team_communication_messages` (a team run),
   `agent_org_communication_messages` (an org run). `MessageLog`
   (`src/run-history/store/message-log.ts`) is the only owner of these files.
 - A message is appended to `<base>_active.jsonl` as one line (exactly the seven message fields,
@@ -1230,9 +1183,9 @@ For AgentOrg runs:
 
 ### Task-linked history and public projection
 
-Execution trees (Team, Org and standalone) carry **no Task information**. They
-record runs, nesting, creator (`delegatorAgentRunId`) and source only. Which
-runs belong to a Project Task is recorded only in that Task's
+Execution trees (Team and Org) carry **no Task information** and nothing of the
+runs they delegated to (autobyteus-461). Which runs belong to a Project Task, and
+which run delegated each, is recorded only in that Task's
 `<appData>/projects/<projectId>/tasks/<taskId>/agent_run_resources.json`. That
 file survives Task and Project Delete. See
 [Projects](projects.md#agent-run-resources).
@@ -1241,11 +1194,11 @@ Neither Delete nor DONE removes conversations, concrete child identities or
 retained execution history. Reading inactive history does not authorize waking
 closed work.
 
-Agent-root and Org public tree facades use the shared recursive
+Agent-root and Org public tree facades use the shared
 `services/agent-streaming/collaboration-execution-tree-dto-projection.ts` mapper.
-Live, inspection and resume views, and mixed list/scoped Org history, must
-project every concrete Agent/Team copy, nested Team member, collaborator and
-task descendant through the strict public DTO. They must not pass private
+Live, inspection and resume views project the run's own parts and its children
+(the runs it delegated to, from their Task entries, each read from its own file)
+through the strict public DTO. They must not pass private
 fields through, and must not drop children to make schema parsing succeed. Run
 IDs, source/configuration and delegator identities are kept. This is a
 visibility/projection contract, not a standalone privacy certification.

@@ -96,7 +96,7 @@ These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
 - direct agent launch preparation,
-- delegated catalog copies that an agent starts with `delegate_task`. The agent, or each Team member, runs on its own usable default first, then its Team's default, then the run root's settings. See [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-catalog-copies),
+- delegated catalog copies that an agent starts with `delegate_task`. The agent, or each Team member, runs on its own usable default first, then its Team's default, then the run root's settings. See [Launch configuration of catalog copies](./agent_communication.md#launch-configuration-of-a-delegated-run),
 - the web Team and Org launch forms, which seed each member row from its usable default (see [Agent Team Definition](./agent_team_definition.md#default-launch-preferences)), and
 - application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.agentExecution.startAgent(...)`.
 
