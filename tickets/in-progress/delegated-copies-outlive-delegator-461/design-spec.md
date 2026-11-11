@@ -502,11 +502,11 @@ No other gap was found. Not validated: the code. The implementation verifies the
   - no cross-run delivery: `send_message_to` resolves within the sender's run, and a run ID outside it takes the live-only path, as today;
   - `LocalChildPorts` with no children.
 
-No lookup answers null anywhere. **The order of refusals stays as today** (ARCH-REV-025):
-- an application-owned run's `delegate_task` is first refused by the sender's root, through `delegationSource`'s application-root rule (`UNAVAILABLE_APPLICATION_ROOT`; `collaborator-admission.ts:112`), with today's text;
-- `UnavailableTaskDelegation`'s `TASKS_UNAVAILABLE_TEXT` answers only what passes that rule.
+No lookup answers null anywhere. **The answer stays as today** (ARCH-REV-025's aim, corrected at SR-051). At `827f1e68dc` an application host's `delegate_task` is: the sender's identity check (`authorizeIdentity`) → `delegateThrough` → `TASKS_UNAVAILABLE_TEXT`. That comes before any placement or own-address, own-team or own-definition refusal (`standalone-root-message-delivery.ts:155-161`, `root-team-run.ts:264-275`, `agent-org-run-message-delivery.ts:149-159`, `task-delegation-binding.ts:14-15`). The application-bound rule (`collaborator-admission.ts:112`) lives inside placement, and `UNAVAILABLE_APPLICATION_ROOT` only in the `@` candidate list; neither is a delegation refusal of its own. So in the application host:
+1. the `delegate_task` tool service checks the sender's identity in its root's gate;
+2. then `UnavailableTaskDelegation` answers `TASKS_UNAVAILABLE_TEXT` to every call, without running `delegationSource`'s other refusals.
 
-So an agent reads no new text. A test composes the application host and asserts each of these answers, with the exact text.
+An agent reads exactly today's text. A test composes the application host and asserts each of these answers, with the exact text.
 
 **Where the code lives** (SR-049): `build-studio-server.ts` is at its 500-line limit, so the steps live in a dedicated composition file with two calls that `build-studio-server.ts` makes in order. The first call covers steps 1–2, the run services are created between the calls (step 3), and the second call covers steps 4–8. The order stays readable in one place.
 
