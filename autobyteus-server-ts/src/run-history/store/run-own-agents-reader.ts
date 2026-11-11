@@ -1,5 +1,5 @@
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import type { RunAgentsReader } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { RunAgent, RunAgentsReader } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgRunExecutionTreeStore } from "./agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "./team-run-execution-tree-store.js";
@@ -9,8 +9,8 @@ import { AgentRunMetadataStore } from "./agent-run-metadata-store.js";
 export type RunStanding = Readonly<{ agents: ReadonlyMap<string, string>; coordinatorAddress: string | null }>;
 
 type MemberNode = Readonly<{ address?: string; agentRunId?: string; coordinatorAddress?: string; members?: readonly MemberNode[] }>;
-const agentRunIdsOfMembers = (members: readonly MemberNode[]): string[] =>
-  members.flatMap((member) => member.agentRunId ? [member.agentRunId] : agentRunIdsOfMembers(member.members ?? []));
+const agentsOfMembers = (members: readonly MemberNode[]): RunAgent[] =>
+  members.flatMap((member) => member.agentRunId ? [{ agentRunId: member.agentRunId, address: member.address ?? null }] : agentsOfMembers(member.members ?? []));
 
 /**
  * The agents of a team or org run, read from the run's own parts only (469 D-11): a team run's members; an org run's
@@ -26,16 +26,20 @@ export class RunOwnAgentsReader implements RunAgentsReader {
     this.layout = new AgentMemoryLayout(memoryRoot);
   }
 
-  async agentRunIdsOf(run: RootExecutionIdentity): Promise<readonly string[] | null> {
+  /** A run's agents with their own addresses (`model.py` `agents_with_addresses`); an agent run's address once stored. */
+  async agentsOf(run: RootExecutionIdentity): Promise<readonly RunAgent[] | null> {
     switch (run.rootSubjectKind) {
-      case "agent": return [run.rootRunId];
+      case "agent": {
+        const metadata = await this.stores.agents.readMetadata(run.rootRunId);
+        return [{ agentRunId: run.rootRunId, address: metadata?.address ?? null }];
+      }
       case "agent_team": {
         const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
-        return tree ? agentRunIdsOfMembers(tree.rootTeam.members as readonly MemberNode[]) : null;
+        return tree ? agentsOfMembers(tree.rootTeam.members as readonly MemberNode[]) : null;
       }
       case "agent_org": {
         const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
-        return tree ? agentRunIdsOfMembers(tree.rootOrg.members as readonly MemberNode[]) : null;
+        return tree ? agentsOfMembers(tree.rootOrg.members as readonly MemberNode[]) : null;
       }
     }
   }

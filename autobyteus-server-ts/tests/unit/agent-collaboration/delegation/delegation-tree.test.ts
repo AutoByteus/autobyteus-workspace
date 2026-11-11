@@ -1,3 +1,4 @@
+import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -133,13 +134,13 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
         agentRun: agent("image_maker_d2"), linkedAt: at(50), start: "started", closedAt: null }],
       T4: [{ role: "assigned", delegatedFrom: from("agent_org", ORG.rootRunId, "ceo_agent_1f2e"), recipientAddress: "/product_team",
         agentRun: team("product_team_d3", "pd_d3"), linkedAt: at(51), start: "started", closedAt: null }],
-    }, { async agentRunIdsOf(target) {
+    }, readerOfAgentRunIds(async (target) => {
       reads.push(`${target.rootSubjectKind}:${target.rootRunId}`);
       if (target.rootRunId === E.rootRunId) return ["solution_designer_65a9", "code_reviewer_m_3b10"];
       if (target.rootRunId === MARKETING.rootRunId) return ["copywriter_77c1"];
       if (target.rootSubjectKind === "agent_org") return [...orgAgents];
       return [];
-    } });
+    }));
     expect(await tree.runOfAgent("solution_designer_65a9")).toEqual(E);
     expect(await tree.runOfAgent(M.rootRunId)).toEqual(M);
     expect(await tree.runOfAgent(I.rootRunId)).toEqual(I);
@@ -163,7 +164,7 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
   });
 
   it("D8: a peer's run is a node with its members from its entry, never read from a file, and never in the local subtree", async () => {
-    const reader = { agentRunIdsOf: vi.fn(async () => null) };
+    const reader = { agentsOf: vi.fn(async () => null) };
     await boot({ T1: [{ role: "assigned", delegatedFrom: from("agent", M.rootRunId, M.rootRunId), recipientAddress: "/research_team",
       agentRun: team("research_team_77aa", "lead_0c11"), nodeId: "node-b-1f0e",
       members: [{ address: "/research_team/lead", agentRunId: "lead_0c11" }, { address: "/research_team/analyst", agentRunId: "analyst_5d20" }],
@@ -172,7 +173,7 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
     expect(tree.openChildrenOf(M)).toEqual([expect.objectContaining({ nodeId: "node-b-1f0e", members: expect.any(Array) })]);
     expect(tree.subtreeOf(M)).toEqual([]);
     expect(await tree.runOfAgent("nobody")).toBeNull();
-    expect(reader.agentRunIdsOf).not.toHaveBeenCalledWith(run("agent_team", "research_team_77aa"));
+    expect(reader.agentsOf).not.toHaveBeenCalledWith(run("agent_team", "research_team_77aa"));
   });
 
   it("S16: a deleted Task drops its runs from the tree; a run still named by another Task stays", async () => {

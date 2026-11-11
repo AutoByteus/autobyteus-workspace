@@ -18,7 +18,7 @@ export type LocalChildRootEvent =
 
 /** What a view needs of its local children; bound once by the composition (`composeTaskDelegation`). */
 export type LocalChildPorts = Readonly<{
-  tree(): Pick<DelegationTree, "openChildrenOf" | "subscribe"> | null;
+  tree(): Pick<DelegationTree, "openChildrenOf" | "subscribe" | "agentsOf"> | null;
   /** A child's row, from its own file; `null` when its file cannot be read. */
   rowOf(child: DelegatedChild): Promise<CollaborationTaskExecutionDto | null>;
   /** A run's own agents' output and live statuses (an agent run's agent; a team run's members). */
@@ -33,21 +33,22 @@ export const bindLocalChildPorts = (ports: LocalChildPorts): void => { bound = p
 export const unbindLocalChildPorts = (ports: LocalChildPorts): void => { if (bound === ports) bound = null; };
 
 /**
- * Every agent of a run's open local children with its live status, `offline` when not running (CR-461-002: the
- * history poll's answer, which names exactly the agents of the run's view rows). Reads each child's own file; starts
- * nothing.
+ * Every agent of a run's open local children with its live status, `offline` when not running (SR-040: the history
+ * poll's answer, the same projection as the view's rows). Addresses come from the `DelegationTree`'s per-run agents
+ * (read once from each run's own file), statuses from each child's own root; nothing is started or restored.
  */
 export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts | null = bound): Promise<LocalChildAgentStatus[]> => {
-  if (!ports) return [];
+  const tree = ports?.tree();
+  if (!ports || !tree) return [];
   const statuses: LocalChildAgentStatus[] = [];
-  for (const child of (ports.tree()?.openChildrenOf(run) ?? []).filter((candidate) => candidate.nodeId === undefined)) {
-    const row = await ports.rowOf(child).catch(() => null);
-    if (!row) continue;
+  for (const child of tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
     const kind = "agentRunId" in child.run ? "agent" : "agent_team";
-    const live = new Map(ports.agents(kind).pairedAgentStatuses("agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId)
-      .map((entry) => [entry.agentRunId, entry.status as string]));
-    const agents = "agentRunId" in row ? [{ agentRunId: row.agentRunId, address: row.address }] : row.members;
-    for (const agent of agents) statuses.push({ agentRunId: agent.agentRunId, memberAddress: agent.address, status: live.get(agent.agentRunId) ?? "offline" });
+    const childRun = "agentRunId" in child.run ? { rootSubjectKind: "agent" as const, rootRunId: child.run.agentRunId }
+      : { rootSubjectKind: "agent_team" as const, rootRunId: child.run.teamRunId };
+    const live = new Map(ports.agents(kind).pairedAgentStatuses(childRun.rootRunId).map((entry) => [entry.agentRunId, entry.status as string]));
+    for (const agent of await tree.agentsOf(childRun)) {
+      if (agent.address) statuses.push({ agentRunId: agent.agentRunId, memberAddress: agent.address, status: live.get(agent.agentRunId) ?? "offline" });
+    }
   }
   return statuses;
 };

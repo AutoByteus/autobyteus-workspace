@@ -1,3 +1,4 @@
+import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it } from "vitest";
 import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
@@ -31,7 +32,7 @@ const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: 
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, () => ({ agentRunIdsOf: async (r) => [...(STANDING[r.rootRunId]?.agents.values() ?? [])] }));
+  const tree = new DelegationTree(() => tasks, () => readerOfAgentRunIds(async (r) => [...(STANDING[r.rootRunId]?.agents.values() ?? [])]));
   tree.build();
   tasks.setEntriesListener(tree);
   for (const taskId of ["T1", "T3", "T4", "T5"]) tasks.addTask(taskId);

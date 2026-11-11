@@ -1,3 +1,4 @@
+import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it, vi } from "vitest";
 import { CrossRunMessageDelivery, OTHER_TASK_REFUSAL, type CrossRunReceiverRoot } from "../../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
@@ -18,7 +19,7 @@ const agent = (root: RootExecutionIdentity, agentRunId: string) => createCollabo
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, () => ({ agentRunIdsOf: async (r) => r.rootRunId === "eng" ? ["designer", "coder"] : r.rootRunId === "product" ? ["pd", "pm"] : null }));
+  const tree = new DelegationTree(() => tasks, () => readerOfAgentRunIds(async (r) => r.rootRunId === "eng" ? ["designer", "coder"] : r.rootRunId === "product" ? ["pd", "pm"] : null));
   tree.build();
   tasks.setEntriesListener(tree);
   tasks.addTask("T1"); tasks.addTask("T2");

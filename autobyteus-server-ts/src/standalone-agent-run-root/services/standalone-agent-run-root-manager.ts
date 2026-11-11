@@ -1,5 +1,4 @@
 import { localChildStatuses, type LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
-import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -25,7 +24,6 @@ import { emptyStandaloneRootMessages, type StandaloneRootHost, type StandaloneRo
 import { StandaloneHostMemberContextBuilder } from "./standalone-host-member-context-builder.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
 import { StandaloneRootBuilder, type StandaloneRootBuilderDependencies } from "./standalone-root-builder.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
@@ -64,8 +62,6 @@ export type StandaloneRootAgentStatuses = Readonly<{
   runId: string;
   isActive: boolean;
   statuses: readonly LocalChildAgentStatus[];
-  /** Active: the digest of the closed set its view lists (none). Stopped: of its closed children (the Task entries). */
-  closedTaskExecutionsDigest: string;
 }>;
 
 const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfiguration => Object.freeze({
@@ -128,18 +124,14 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /**
-   * Each listed run's live state for the history poll (autobyteus-426 REQ-009; CR-461-002). An active run answers its
-   * view's children: every agent of its open local children with its status, and the digest of the closed set its view
-   * lists (none). A stopped run answers no statuses and the digest of its closed children (the Task entries), so a list
-   * re-reads its view once when a child's Task closes or reopens.
+   * Each listed run's state for the history poll (autobyteus-426 REQ-009; SR-040), from the same projection as its view,
+   * active or stopped, never restoring: whether it is active, and every agent of its open local children with its
+   * status from the child's own root (else `offline`).
    */
   async getAgentStatuses(hostRunIds: readonly string[]): Promise<StandaloneRootAgentStatuses[]> {
-    return Promise.all(hostRunIds.map(async (runId) => {
-      const run = createAgentRootExecutionIdentity(runId);
-      if (this.getActive(runId)) return { runId, isActive: true, statuses: await localChildStatuses(run), closedTaskExecutionsDigest: closedTaskExecutionsDigest([]) };
-      const closed = (findDelegationTree()?.childrenOf(run) ?? []).filter((child) => this.options.taskExecutionResources?.isOpen(child) === false);
-      return { runId, isActive: false, statuses: [], closedTaskExecutionsDigest: closedTaskExecutionsDigest(closed) };
-    }));
+    return Promise.all(hostRunIds.map(async (runId) => ({
+      runId, isActive: this.getActive(runId) !== null, statuses: await localChildStatuses(createAgentRootExecutionIdentity(runId)),
+    })));
   }
 
   /** The root of an eligible run: the registered one, else loaded from its own log and registered. Never starts its agent. */

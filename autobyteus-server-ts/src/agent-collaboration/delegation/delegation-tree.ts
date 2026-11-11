@@ -5,12 +5,16 @@ import {
 } from "../execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
 
+/** One agent of a run: its run ID and its own address in its run's space (`null`: an agent run not yet collaborating). */
+export type RunAgent = Readonly<{ agentRunId: string; address: string | null }>;
+
 /**
- * The agents of a run, read from the run's own file: a team run's members; an org run's direct agents and its mounted
- * teams' members. `null` when the file is absent or unreadable. Bound by the composition (run-history owns the files).
+ * The agents of a run, read from the run's own file (contract §4, `model.py` `agents_with_addresses`): an agent run's
+ * own agent; a team run's members; an org run's direct agents and its mounted teams' members. `null` when the file is
+ * absent or unreadable. Bound by the composition (run-history owns the files).
  */
 export interface RunAgentsReader {
-  agentRunIdsOf(run: RootExecutionIdentity): Promise<readonly string[] | null>;
+  agentsOf(run: RootExecutionIdentity): Promise<readonly RunAgent[] | null>;
 }
 
 /** A run that a run delegated to, whose Task work is open (one hop, DS-8). */
@@ -60,6 +64,8 @@ export class DelegationTree implements TaskEntriesListener {
   /** Entry agents and a peer team's members → their run. */
   private readonly entryAgents = new Map<string, RootExecutionIdentity>();
   private readonly memberAgents = new Map<string, RootExecutionIdentity>();
+  /** Per run key: its agents with their addresses, read once from its own file (an org run again on a miss). */
+  private readonly agentsByRun = new Map<string, readonly RunAgent[]>();
   private readonly membersRead = new Set<string>();
   private reading: Promise<void> | null = null;
   private readonly listeners = new Set<() => void>();
@@ -217,6 +223,29 @@ export class DelegationTree implements TaskEntriesListener {
     return this.lookup(id);
   }
 
+  /**
+   * A run's agents by run ID and address (contract §4): read once from its own file and kept; a peer's run from its
+   * entry's `members`. An agent run with no stored address shows the address it was delegated to (its entry's
+   * `recipientAddress`, as its view row does). Empty for a run whose file cannot be read.
+   */
+  async agentsOf(run: RootExecutionIdentity): Promise<readonly RunAgent[]> {
+    const key = keyOf(run);
+    const latest = newest([...this.byRun.get(key)?.values() ?? []]);
+    if (latest?.nodeId !== undefined) {
+      return latest.members?.map((member) => ({ agentRunId: member.agentRunId, address: member.address }))
+        ?? ("agentRunId" in latest.run ? [{ agentRunId: latest.run.agentRunId, address: latest.recipientAddress }] : []);
+    }
+    let agents = this.agentsByRun.get(key);
+    if (!agents) {
+      const read = await this.reader()?.agentsOf(run).catch(() => null) ?? null;
+      if (!read) return [];
+      agents = Object.freeze(read.map((agent) => Object.freeze({ agentRunId: agent.agentRunId,
+        address: agent.address ?? (run.rootSubjectKind === "agent" ? latest?.recipientAddress ?? null : null) })));
+      if (this.nodes.has(key)) this.agentsByRun.set(key, agents);
+    }
+    return agents;
+  }
+
   /** Whether the tree names this run (as a delegated run or as a delegating run). */
   hasNode(run: RootExecutionIdentity): boolean { return this.nodes.has(keyOf(run)); }
 
@@ -236,10 +265,11 @@ export class DelegationTree implements TaskEntriesListener {
       for (const [key, run] of this.nodes) {
         if (run.rootSubjectKind === "agent" || this.isPeerRun(key)) continue;
         if (this.membersRead.has(key) && run.rootSubjectKind !== "agent_org") continue;
-        const agents = await reader.agentRunIdsOf(run).catch(() => null);
+        const agents = await reader.agentsOf(run).catch(() => null);
         if (agents === null) continue;
         this.membersRead.add(key);
-        for (const agentRunId of agents) this.memberAgents.set(agentRunId, run);
+        this.agentsByRun.set(key, Object.freeze(agents.map((agent) => Object.freeze({ ...agent }))));
+        for (const { agentRunId } of agents) this.memberAgents.set(agentRunId, run);
       }
     })().finally(() => { this.reading = null; });
     return this.reading;
@@ -295,6 +325,7 @@ export class DelegationTree implements TaskEntriesListener {
       if (!this.byRun.has(key) && !this.childrenOfRun.has(key)) {
         this.nodes.delete(key);
         this.membersRead.delete(key);
+        this.agentsByRun.delete(key);
         for (const [agentRunId, run] of [...this.memberAgents]) if (keyOf(run) === key) this.memberAgents.delete(agentRunId);
       }
     }

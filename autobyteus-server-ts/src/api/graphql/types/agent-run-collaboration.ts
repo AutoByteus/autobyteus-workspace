@@ -56,17 +56,14 @@ export class AgentRunCollaborationStatusesObject {
   @Field(() => String) runId!: string;
   @Field(() => Boolean) isActive!: boolean;
   @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
-  /** The run's closed-set digest (autobyteus-446, -435); the description gives its meaning per state. */
-  @Field(() => String, { nullable: true, description: "The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed set its view lists (none, autobyteus-461). Inactive run: the runs it delegated to whose Task is closed (the Task entries)." })
-  closedTaskExecutionsDigest!: string | null;
 }
 
 @Resolver()
 export class AgentRunCollaborationResolver {
   /**
-   * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states and the
-   * closed-set digest (autobyteus-446), never the collaboration view. A run without an active root answers inactive with
-   * no states and no digest. Never restores.
+   * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009; SR-040): whether each
+   * is active, and every agent of its open local children with its status, from the same projection as its view, active
+   * or stopped. Never the collaboration view; never restores.
    */
   @Query(() => [AgentRunCollaborationStatusesObject])
   async agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): Promise<AgentRunCollaborationStatusesObject[]> {
@@ -78,7 +75,6 @@ export class AgentRunCollaborationResolver {
     return (await getStandaloneAgentRunRootManager().getAgentStatuses(runIds)).map((answer) => ({
       runId: answer.runId,
       isActive: answer.isActive,
-      closedTaskExecutionsDigest: answer.closedTaskExecutionsDigest,
       statuses: answer.statuses.map((status) => ({
         agentRunId: status.agentRunId,
         memberAddress: status.memberAddress,

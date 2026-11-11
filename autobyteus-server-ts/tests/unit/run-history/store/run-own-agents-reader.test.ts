@@ -27,10 +27,12 @@ describe("RunOwnAgentsReader", () => {
     await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "team-b", coordinatorAddress: "/lead",
       children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] }), "team-b"));
     const reader = new RunOwnAgentsReader(memory);
-    expect(await reader.agentRunIdsOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" })).toEqual(["lead-b", "writer-b"]);
-    expect(await reader.agentRunIdsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual(["manager"]);
-    expect(await reader.agentRunIdsOf({ rootSubjectKind: "agent_team", rootRunId: "gone" })).toBeNull();
-    expect(await reader.agentRunIdsOf({ rootSubjectKind: "agent_org", rootRunId: "gone" })).toBeNull();
+    expect(await reader.agentsOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" }))
+      .toEqual([{ agentRunId: "lead-b", address: "/lead" }, { agentRunId: "writer-b", address: "/writer" }]);
+    // An agent run with no stored address (not collaborating yet): its one agent, with no address.
+    expect(await reader.agentsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual([{ agentRunId: "manager", address: null }]);
+    expect(await reader.agentsOf({ rootSubjectKind: "agent_team", rootRunId: "gone" })).toBeNull();
+    expect(await reader.agentsOf({ rootSubjectKind: "agent_org", rootRunId: "gone" })).toBeNull();
   });
 
   it("standingOf (contract §2.3, model.py standing): a team's members and coordinator; an agent run's stored address; an org's agents, mounted members and mounted team addresses", async () => {
