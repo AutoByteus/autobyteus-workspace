@@ -5,7 +5,8 @@
 //          600×400 PNG outside the run's folder; each opens in the phone viewer (production phone bundle, headless
 //          Chrome with touch, 390×844). Touches go through Chrome's own input path (CDP `Input.dispatchTouchEvent`).
 //          PDF: a two-finger pinch out draws the pages at twice the width (canvas bitmaps at the new width × the device
-//          pixel ratio: sharp), the pinched point stays under the fingers, one finger then scrolls down through the
+//          pixel ratio: sharp), the pinched point stays under the fingers, two fingers moving together pan by their move
+//          at the same zoom (CRR-002 CR-001), one finger then scrolls down through the
 //          pages, a double tap returns to page width and another goes to 2×. Image: a pinch zooms the picture, a double
 //          tap returns to fit. Throughout: the page itself never zooms (`visualViewport.scale` 1) and the back arrow
 //          stays where it is. Download in the bar saves each file through the browser's download, with the file's
@@ -157,6 +158,10 @@ export const runFileZoomCases = async (probe) => {
     const pinched = await pageState();
     await shot(page, 'MSP-39-pdf-2x');
     const anchorNow = { x: pinched.pagesRect.left + anchor.x * (pinched.pagesWidth / base), y: pinched.pagesRect.top + anchor.y * (pinched.pagesWidth / base) };
+    // Two fingers moving together at 2× pan (CRR-002 CR-001): the pages stay where the fingers left them.
+    await gesture([[145, 600], [245, 600]], [[145, 450], [245, 450]]);
+    await sleep(600);
+    const panned2 = await pageState();
     // One finger: the pages scroll on, at 2×.
     await gesture([[195, 700]], [[195, 300]]);
     await sleep(800);
@@ -188,13 +193,15 @@ export const runFileZoomCases = async (probe) => {
     await closeViewer();
     await cdp.detach().catch(() => undefined);
 
-    const details = { base, pdfStart, pinched, anchor, anchorNow, centre, scrolled, backToFit, doubleTapped, pdfDownloaded, imageStart, imagePinched, imageFit, pngDownloaded };
-    const all = [pdfStart, pinched, scrolled, backToFit, doubleTapped, imageStart, imagePinched, imageFit];
+    const details = { base, pdfStart, pinched, anchor, anchorNow, centre, panned2, scrolled, backToFit, doubleTapped, pdfDownloaded, imageStart, imagePinched, imageFit, pngDownloaded };
+    const all = [pdfStart, pinched, panned2, scrolled, backToFit, doubleTapped, imageStart, imagePinched, imageFit];
     assert(base > 300 && pdfStart.download, 'the PDF opens at page width with Download in the bar', details);
     assert(Math.abs(pinched.pagesWidth - base * 2) <= 2, 'AC-001 a pinch out draws the PDF at twice the width', details);
     assert(pinched.canvases.every(c => c.bitmapWidth >= c.cssWidth * pinched.dpr * 0.95), 'AC-001 the zoomed pages are drawn at the new width (sharp)', details);
     assert(Math.abs(anchorNow.x - centre[0]) <= 4 && Math.abs(anchorNow.y - centre[1]) <= 4, 'AC-001 the pinched point stays under the fingers', details);
-    assert(scrolled.scrollTop > pinched.scrollTop + 200, 'AC-001 one finger scrolls through the zoomed pages', details);
+    assert(Math.abs(panned2.pagesWidth - base * 2) <= 2 && panned2.pagesTransform === '' && Math.abs(panned2.scrollTop - pinched.scrollTop - 150) <= 4
+      && Math.abs(panned2.scrollLeft - pinched.scrollLeft) <= 4, 'AC-001 a two-finger drag at 2× pans by the fingers\' move and keeps the zoom', details);
+    assert(scrolled.scrollTop > panned2.scrollTop + 200, 'AC-001 one finger scrolls through the zoomed pages', details);
     assert(Math.abs(backToFit.pagesWidth - base) <= 1 && Math.abs(doubleTapped.pagesWidth - base * 2) <= 2, 'AC-001 a double tap switches between page width and 2×', details);
     assert(/scale\((1\.9|2(\.0)?)/.test(imagePinched.pictureTransform ?? '') && imageFit.pictureTransform === 'translate(0px, 0px) scale(1)', 'AC-002 the image pinches to 2× and a double tap returns to fit', details);
     assert(all.every(s => s.zoomScale === 1), 'REQ-003 the page itself never zooms', details);

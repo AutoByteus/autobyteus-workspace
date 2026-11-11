@@ -99,6 +99,45 @@ describe('usePdfPinchZoom (the phone viewer\'s PDF)', () => {
     expect(live.transform.value).toBe('translate(50px, 60px) scale(2)');
   });
 
+  // CRR-002 CR-001: a two-finger move that ends at the same zoom keeps where the fingers took the pages.
+  it('a two-finger drag at a fixed zoom pans: the move becomes scroll when the fingers lift, with no zoom', async () => {
+    const { scroller, live, setZoom, onCommit, scroll } = await mountPinch(2);
+    scroll.left = 200; scroll.top = 300;
+    const gesture = pinch(scroller, [[100, 200], [200, 200]], [[130, 240], [230, 240]]);
+    expect(live.transform.value).toBe('translate(30px, 40px) scale(1)');
+    gesture.end();
+    await flushPromises();
+    expect(setZoom).not.toHaveBeenCalled();
+    expect(live.transform.value).toBe('');
+    // The pages stay where the fingers left them: scrolled back by the move.
+    expect(scroll).toEqual({ left: 170, top: 260 });
+    expect(onCommit).toHaveBeenCalledTimes(1);
+  });
+
+  it('a moving pinch held at the 3× cap pans with the fingers instead of snapping back', async () => {
+    const { scroller, live, setZoom, onCommit, scroll } = await mountPinch(3);
+    scroll.left = 500; scroll.top = 900;
+    const gesture = pinch(scroller, [[150, 300], [250, 300]], [[70, 290], [370, 290]]);
+    // Past the cap the pages do not grow; they follow the pinch centre (200, 300) → (220, 290).
+    expect(live.transform.value).toBe('translate(20px, -10px) scale(1)');
+    gesture.end();
+    await flushPromises();
+    expect(setZoom).not.toHaveBeenCalled();
+    expect(live.transform.value).toBe('');
+    expect(scroll).toEqual({ left: 480, top: 910 });
+    expect(onCommit).toHaveBeenCalledTimes(1);
+  });
+
+  it('two fingers that rest without moving change nothing', async () => {
+    const { scroller, setZoom, onCommit, scroll } = await mountPinch(2);
+    scroll.left = 50; scroll.top = 60;
+    pinch(scroller, [[100, 200], [200, 200]], [[100, 200], [200, 200]]).end();
+    await flushPromises();
+    expect(setZoom).not.toHaveBeenCalled();
+    expect(onCommit).not.toHaveBeenCalled();
+    expect(scroll).toEqual({ left: 50, top: 60 });
+  });
+
   it('leaves one finger to the browser: no default taken, no zoom', async () => {
     const { scroller, live, setZoom } = await mountPinch();
     const start = touch(scroller, 'touchstart', [[100, 300]]);

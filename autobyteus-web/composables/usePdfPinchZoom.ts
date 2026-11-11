@@ -69,7 +69,18 @@ export function usePdfPinchZoom(
     const next = clamp(current * scale, 1, PDF_MAX_ZOOM);
     const factor = next / current;
     if (Math.abs(factor - 1) < 0.01) {
+      // The same zoom (a two-finger drag, or a pinch held at 1× or 3×): the live view only moved the pages with the
+      // fingers, so that move becomes scroll, measured without the transform, before the next paint.
       transform.value = '';
+      const moved = { x: screen.x - from.x, y: screen.y - from.y };
+      if (moved.x === 0 && moved.y === 0) return;
+      await nextTick();
+      const box = scroller.value;
+      if (box) {
+        box.scrollLeft -= moved.x;
+        box.scrollTop -= moved.y;
+      }
+      options.onCommit?.();
       return;
     }
     committing = true;
