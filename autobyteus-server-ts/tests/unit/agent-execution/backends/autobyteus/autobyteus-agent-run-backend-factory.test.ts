@@ -1,7 +1,11 @@
+import { SendMessageToDispatcher } from "../../../../../src/agent-communication/services/send-message-to-dispatcher.js";
+import { GlobalAgentRunMessageRouter } from "../../../../../src/agent-communication/services/global-agent-run-message-router.js";
+import { setProcessTaskDelegationToolService, TaskDelegationToolService } from "../../../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
 import { NativeCommandProcessScope } from "autobyteus-ts";
-import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { onTestFinished } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -80,8 +84,8 @@ const createMemberExecutionContext = (
 ) => {
   const taskCapability = Object.freeze({
     root: createTeamRootExecutionIdentity("team-1"),
-    delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" }, taskId: "task_0008" })),
-    ownedTaskOf: () => null, assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+    delegationSource: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+    ownedTaskOf: () => null,
     submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
     reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
   });
@@ -540,6 +544,10 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   it("routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery", async () => {
+    // SR-047: the composition root creates the process dispatcher; here, one with no Task relations.
+    const releaseDispatcher = SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun: { route: async () => null } }), crossRunAddresses: { resolve: async () => null } }));
+    onTestFinished(releaseDispatcher);
     const deliverInterAgentMessage = vi.fn().mockResolvedValue({
       accepted: false,
       code: "TARGET_MEMBER_NOT_FOUND",
@@ -691,9 +699,13 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     };
     const taskCapability = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
-      delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })),
-      ownedTaskOf: () => null, assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
+      // SR-049: the root answers for its own run; the tool path delegates.
+      delegationSource: vi.fn(async (caller: CollaborationMemberExecutionIdentity) => ({ sender: caller, senderRun: createTeamRootExecutionIdentity("team-1"), delegatorAddress: null,
+        resolvePlacement: vi.fn(), peerRunLinked: vi.fn() })),
+      ownedTaskOf: () => null,
     });
+    const delegation = { toNewRun: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })), toExistingRun: vi.fn() };
+    const releaseToolService = setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation: delegation as never, remote: { delegate: vi.fn() } as never }));
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
       memberAddress: "/professor",
@@ -775,18 +787,13 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       recipient_address: "/reviewer",
       description: "Review the exact task result.",
     });
-    expect(taskCapability.delegateToNewCopy).toHaveBeenCalledWith(
-      {
-        root: createTeamRootExecutionIdentity("team-1"),
-        memberAddress: "/professor",
-        agentRunId: "team-1__professor__task_0007",
-      },
-      {
-        recipient_address: "/reviewer",
-        description: "Review the exact task result.",
-        reference_files: [],
-      },
-    );
+    const sender = { root: createTeamRootExecutionIdentity("team-1"), memberAddress: "/professor", agentRunId: "team-1__professor__task_0007" };
+    expect(taskCapability.delegationSource).toHaveBeenCalledWith(sender);
+    expect(delegation.toNewRun).toHaveBeenCalledWith(expect.objectContaining({
+      sender, senderRun: createTeamRootExecutionIdentity("team-1"),
+      spawn: { recipient_address: "/reviewer", description: "Review the exact task result.", reference_files: [] },
+    }));
+    releaseToolService();
   });
 
   it("enables policy-only compaction: the core summarizer always uses the agent's own model", async () => {

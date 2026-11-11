@@ -1,3 +1,4 @@
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { AgentOrgRunIndexRowRecord } from "../store/agent-org-run-history-index-record-types.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
@@ -20,6 +21,8 @@ export class CollaborationRootHistoryService {
   private readonly lastActivity: Pick<RunLastActivityReader, "forOrgRun">;
   constructor(private readonly dependencies: Readonly<{
     memoryDir: string;
+    /** The relationships between runs, from the Task entries (SR-047). */
+    tree: Pick<DelegationTree, "subtreeOf">;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
     orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows" | "getCatalogRow">;
     orgRuns: Pick<AgentOrgRunManager, "getActive">;
@@ -27,7 +30,7 @@ export class CollaborationRootHistoryService {
     /** An Org run's last activity over its agents. */
     lastActivity?: Pick<RunLastActivityReader, "forOrgRun">;
   }>) {
-    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir: dependencies.memoryDir });
+    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir: dependencies.memoryDir, tree: dependencies.tree });
     this.layout = new AgentMemoryLayout(dependencies.memoryDir);
     this.orgTrees = dependencies.orgTrees ?? new AgentOrgRunExecutionTreeStore();
   }

@@ -184,13 +184,9 @@ export const testMemberTaskCapability = (
   root: RootTeamRun | null = null,
 ): MemberTaskCapability => Object.freeze({
   root: createTeamRootExecutionIdentity(rootTeamRunId),
-  delegateToNewCopy: async (caller, input) => {
+  delegationSource: async (caller) => {
     if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.delegateToNewCopy({ identity: caller }, input);
-  },
-  assignToExistingCopy: async (caller, input) => {
-    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.assignToExistingCopy({ identity: caller }, input);
+    return root.delegationSource({ identity: caller });
   },
   ownedTaskOf: (caller) => (root ? root.ownedTaskOf({ identity: caller }) : null),
 });

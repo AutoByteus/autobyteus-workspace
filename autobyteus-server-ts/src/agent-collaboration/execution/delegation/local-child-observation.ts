@@ -12,9 +12,9 @@ import type { TaskExecutionReference } from "../task/task-execution-reference.js
 export type LocalChildRootEvent =
   Readonly<{ kind: "local_child_presentation"; agentRunId: string; memberAddress: string; message: AgentPresentationMessage }>;
 
-/** What a view needs of its local children; bound once by the composition (`composeTaskDelegation`). */
+/** What a view needs of its local children; created by the composition root (SR-047 step 7). */
 export type LocalChildPorts = Readonly<{
-  tree(): Pick<DelegationTree, "openChildrenOf" | "subscribe" | "agentsOf"> | null;
+  tree: Pick<DelegationTree, "openChildrenOf" | "subscribe" | "agentsOf">;
   /** A run's own agents' output and live statuses (an agent run's agent; a team run's members). */
   agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
 }>;
@@ -22,18 +22,13 @@ export type LocalChildPorts = Readonly<{
 /** One agent of a run's local child, as the history poll names it: its address in the view, and its live status. */
 export type LocalChildAgentStatus = Readonly<{ agentRunId: string; memberAddress: string; status: string }>;
 
-let bound: LocalChildPorts | null = null;
-export const bindLocalChildPorts = (ports: LocalChildPorts): void => { bound = ports; };
-export const unbindLocalChildPorts = (ports: LocalChildPorts): void => { if (bound === ports) bound = null; };
-
 /**
  * Every agent of a run's open local children with its live status, `offline` when not running (SR-040: the history
  * poll's answer, the same projection as the view's rows). Addresses come from the `DelegationTree`'s per-run agents
  * (read once from each run's own file), statuses from each child's own root; nothing is started or restored.
  */
-export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts | null = bound): Promise<LocalChildAgentStatus[]> => {
-  const tree = ports?.tree();
-  if (!ports || !tree) return [];
+export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts): Promise<LocalChildAgentStatus[]> => {
+  const tree = ports.tree;
   const statuses: LocalChildAgentStatus[] = [];
   for (const child of tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
     const kind = "agentRunId" in child.run ? "agent" : "agent_team";
@@ -71,12 +66,12 @@ export class LocalChildObservation {
   constructor(private readonly options: Readonly<{
     run: RootExecutionIdentity;
     publish(event: LocalChildRootEvent): void;
-    ports?: () => LocalChildPorts | null;
+    ports: LocalChildPorts;
   }>) {}
 
   viewerAttached(): void {
     if (this.disposed || ++this.viewers > 1) return;
-    this.unsubscribeTree = this.ports()?.tree()?.subscribe(() => { queueMicrotask(() => { void this.refresh(); }); }) ?? null;
+    this.unsubscribeTree = this.options.ports.tree.subscribe(() => { queueMicrotask(() => { void this.refresh(); }); });
     void this.refresh();
   }
 
@@ -93,9 +88,9 @@ export class LocalChildObservation {
 
   /** Follows the run's open local children: a new one is followed, a gone one left. */
   private async refresh(): Promise<void> {
-    const ports = this.ports();
-    const tree = ports?.tree();
-    if (!ports || !tree || this.disposed || this.viewers === 0) return;
+    const ports = this.options.ports;
+    const tree = ports.tree;
+    if (this.disposed || this.viewers === 0) return;
     const current = tree.openChildrenOf(this.options.run).filter((child) => child.nodeId === undefined);
     const keys = new Set(current.map((child) => keyOf(child.run)));
     for (const [key, entry] of [...this.followed.entries()].filter(([candidate]) => !keys.has(candidate))) { this.close(entry); this.followed.delete(key); }
@@ -108,7 +103,7 @@ export class LocalChildObservation {
     }
   }
 
-  private async follow(ports: LocalChildPorts, tree: NonNullable<ReturnType<LocalChildPorts["tree"]>>, entry: Followed): Promise<void> {
+  private async follow(ports: LocalChildPorts, tree: LocalChildPorts["tree"], entry: Followed): Promise<void> {
     const childRun = childRunOf(entry.child.run);
     // Each agent's address as the view's row has it (SR-041: the tree's per-run agents, read once).
     const addresses = new Map((await tree.agentsOf(childRun)).flatMap((agent) => agent.address ? [[agent.agentRunId, agent.address] as [string, string]] : []));
@@ -141,9 +136,5 @@ export class LocalChildObservation {
     this.unsubscribeTree = null;
     for (const entry of this.followed.values()) this.close(entry);
     this.followed.clear();
-  }
-
-  private ports(): LocalChildPorts | null {
-    return this.options.ports ? this.options.ports() : bound;
   }
 }

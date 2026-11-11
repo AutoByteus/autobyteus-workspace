@@ -98,8 +98,8 @@ describe("collaboration public result contracts", () => {
     "advertises legal operation-owned output schemas for MCP %s",
     (protocolVersion) => {
       const adapters = [
-        ...new SendMessageToMcpAdapterProvider({} as never).getAdapters(),
-        ...new TaskDelegationToolsMcpAdapterProvider({} as never).getAdapters(),
+        ...new SendMessageToMcpAdapterProvider(() => ({} as never)).getAdapters(),
+        ...new TaskDelegationToolsMcpAdapterProvider(() => ({} as never)).getAdapters(),
       ].filter((adapter) =>
         adapter.definition.name === SEND_MESSAGE_TO_TOOL_NAME ||
         adapter.definition.name === DELEGATE_TASK_TOOL_NAME,
@@ -168,8 +168,8 @@ describe("collaboration public result contracts", () => {
 
   it("omits post-2025-03 output schemas for MCP 2025-03-26", () => {
     const adapters = [
-      ...new SendMessageToMcpAdapterProvider({} as never).getAdapters(),
-      ...new TaskDelegationToolsMcpAdapterProvider({} as never).getAdapters(),
+      ...new SendMessageToMcpAdapterProvider(() => ({} as never)).getAdapters(),
+      ...new TaskDelegationToolsMcpAdapterProvider(() => ({} as never)).getAdapters(),
     ].filter((adapter) =>
       adapter.definition.name === SEND_MESSAGE_TO_TOOL_NAME ||
       adapter.definition.name === DELEGATE_TASK_TOOL_NAME,

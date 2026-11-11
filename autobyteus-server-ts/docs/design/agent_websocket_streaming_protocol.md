@@ -128,7 +128,9 @@ is no closed set in the views or the stored reads.
   reports each run X whose open children changed. `ChildRowsFeed`
   (`agent-collaboration/delegation/child-rows-feed.ts`), the one listener, builds
   the added rows with the view's own projection and publishes one event on every
-  open view stream of X, whether or not X is active; nothing is started.
+  open view stream of X (`ChildRowsStreams`, where the stream handlers open and close
+  them), whether or not X is active; nothing is started. The composition root
+  creates the streams registry, then the feed, then has the feed follow the tree.
 - **The event.** `CHILD_RUNS_CHANGED {run_id, added, removed}` on the Team stream:
   `added` holds each new or reopened child's row (`{parent_team_run_id,
   execution}` for a run on this node, a `RemoteTaskExecutionDto` for a peer's run),
@@ -146,6 +148,37 @@ is no closed set in the views or the stored reads.
   reads the tree for its snapshot; events published while the snapshot is built
   are held and sent right after it, in published order. A change is then either in
   the snapshot (its event is a no-op) or applied after it.
+
+### A view's stream lives with the open view (autobyteus-461 SR-045, SR-046, SR-048)
+
+An open view keeps its stream whether its run is active or stopped: a stopped
+delegator's children are runs of their own, so their rows and output stay live,
+and a child row's command goes to the child's own run. No stream restores or starts
+its run to serve a view.
+
+- **Agent run (collaboration stream).** The snapshot's `is_active` and the
+  `ROOT_LIFECYCLE` frame say whether the run's own agent runs; a stopped one is an
+  ordinary snapshot. The run's agent starts on its first input (its own stream).
+- **Team and Org runs: two modes, per connection.** While the run is not managed,
+  the session serves **stored mode**: a snapshot from the run's own stored file
+  through the same projection (its own members offline; a stopped Org carries no
+  statuses), its child rows and its children's output, numbered by the session from
+  the snapshot's base (`live_sequence_id: stored-…`). While the run is managed, it
+  serves **live mode**: the live root's snapshot and events. The session follows the
+  run's registration; each switch sends a fresh snapshot in-band (a new
+  `change_sequence` base), then the lifecycle frame (`TEAM_RUN_LIFECYCLE` /
+  `ROOT_LIFECYCLE`). Clients take an in-band snapshot as they take the first one.
+- **Commands to a stopped run.** A child row's command goes to the child's own run
+  and leaves the delegator stopped. A message to one of the run's own agents starts
+  the run on that first input: a team is restored, its view brought live (snapshot
+  sent, live root followed), and only then is the message posted, so the
+  `MEMBER_INPUT_MESSAGE` echo that settles the web's send arrives as an ordinary live
+  event (SR-048); the Org stream acknowledges `SEND_MESSAGE` (`AGENT_COMMAND_ACK`).
+  An interrupt or a tool approval for an agent of a stopped run is refused
+  (`TEAM_RUN_STOPPED` on the team stream, `AGENT_ORG_STOPPED` on the Org stream).
+- **Children's output.** A live root's views share one follower of its local
+  children (`LocalChildFollowers`); their output is sequenced in the root's own
+  stream. A stopped run's view follows them itself.
 
 ## Segment Contract
 

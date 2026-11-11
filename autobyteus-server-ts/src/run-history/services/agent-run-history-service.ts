@@ -1,9 +1,9 @@
-import { workingDelegatedRunsRefusal } from "./delegated-work-guard.js";
+import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunStatusProjectionService,
 } from "../../agent-execution/services/agent-run-status-projection-service.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   RunHistoryAgentGroup,
   RunHistoryIndexRow,
@@ -48,10 +48,15 @@ export class AgentRunHistoryService {
   private readonly statusProjectionService: AgentRunStatusProjectionService;
   private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forAgentRun">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "refusal">;
 
   constructor(
     memoryDir: string,
     dependencies: {
+      /** The relationships between runs, from the Task entries (SR-047). */
+      tree: Pick<DelegationTree, "subtreeOf">;
+      /** Archive and delete wait for the runs it delegated to (REQ-007). */
+      workGuard: Pick<DelegatedWorkGuard, "refusal">;
       catalogService?: AgentRunHistoryCatalogService;
       metadataStore?: AgentRunMetadataStore;
       statusProjectionService?: AgentRunStatusProjectionService;
@@ -60,9 +65,10 @@ export class AgentRunHistoryService {
       visibility?: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
       /** A run's last activity, its delegated copies included. */
       lastActivity?: Pick<RunLastActivityReader, "forAgentRun">;
-    } = {},
+    },
   ) {
-    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir });
+    this.workGuard = dependencies.workGuard;
+    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: dependencies.tree });
     this.visibility = dependencies.visibility ?? getInternalAgentVisibility();
     this.catalogService =
       dependencies.catalogService ?? new AgentRunHistoryCatalogService(memoryDir);
@@ -194,7 +200,7 @@ export class AgentRunHistoryService {
   }
 
   async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
-    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived");
+    const refused = this.workGuard.refusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived");
     if (refused) return { success: false, message: refused };
     return this.catalogService.archiveRun(runId);
   }
@@ -235,19 +241,20 @@ export class AgentRunHistoryService {
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
-    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted");
+    const refused = this.workGuard.refusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted");
     if (refused) return { success: false, message: refused };
     return this.catalogService.deleteRun(runId);
   }
 }
 
-let cachedAgentRunHistoryService: AgentRunHistoryService | null = null;
-
+let processService: AgentRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessAgentRunHistoryService = (service: AgentRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
 export const getAgentRunHistoryService = (): AgentRunHistoryService => {
-  if (!cachedAgentRunHistoryService) {
-    cachedAgentRunHistoryService = new AgentRunHistoryService(
-      appConfigProvider.config.getMemoryDir(),
-    );
-  }
-  return cachedAgentRunHistoryService;
+  if (!processService) throw new Error("AgentRunHistoryService is created by the composition root.");
+  return processService;
 };

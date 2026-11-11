@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -88,7 +89,8 @@ export const buildOrg = async (kind: "agent" | "team") => {
   run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
-    taskExecutionResources: new InMemoryTaskExecutionResources(),
+    taskRecords: new InMemoryTaskExecutionResources(),
+    delegationTree: noDelegations(),
   });
   run.activate();
   const owner = run;

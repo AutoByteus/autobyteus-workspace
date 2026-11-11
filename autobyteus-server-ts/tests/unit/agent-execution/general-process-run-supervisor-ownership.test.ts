@@ -1,3 +1,5 @@
+import { openTaskRecords } from "../../helpers/no-delegations.js";
+import { noDelegations } from "../../helpers/no-delegations.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -18,7 +20,6 @@ import { getTeamRunService } from "../../../src/agent-team-execution/services/te
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
-import type { TaskExecutionResourcePort } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
   RunFileChangeService,
   bindProcessRunFileChangeService,
@@ -69,7 +70,8 @@ const createSupervisorInput = () => {
     providerRelayAccess: null,
     runPasses: null,
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
-    taskExecutionResources: { ownerOf: vi.fn(() => null) } as unknown as TaskExecutionResourcePort,
+    taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
+    delegationTree: noDelegations(),
   };
 };
 
@@ -86,7 +88,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const supervisor = new GeneralProcessRunSupervisor(input);
     expect(initializeAgent).toHaveBeenCalledOnce();
     expect(initializeTeam).toHaveBeenCalledOnce();
-    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskExecutionResources: input.taskExecutionResources }));
+    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskRecords: input.taskRecords, delegationTree: input.delegationTree }));
     expect(initializeOrg).toHaveBeenCalledOnce();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
     expect(getTeamRunService()).toBe(supervisor.teamRunService);
@@ -141,7 +143,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
 
   it("releases AgentRunManager when exclusive Team manager initialization fails", async () => {
     const input = createSupervisorInput();
-    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({
+    const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService),

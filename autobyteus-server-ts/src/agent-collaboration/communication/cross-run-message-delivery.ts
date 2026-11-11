@@ -133,9 +133,3 @@ export class CrossRunMessageDelivery {
   }
 }
 
-let bound: CrossRunMessageDelivery | null = null;
-/** The composition binds the process delivery once the roots and the Task side exist. */
-export const bindCrossRunMessageDelivery = (delivery: CrossRunMessageDelivery): void => { bound = delivery; };
-export const unbindCrossRunMessageDelivery = (delivery: CrossRunMessageDelivery): void => { if (bound === delivery) bound = null; };
-/** The process delivery; `null` where collaboration is not composed (a run's messages then stay within its own run). */
-export const findCrossRunMessageDelivery = (): CrossRunMessageDelivery | null => bound;

@@ -1,9 +1,9 @@
-import { workingDelegatedRunsRefusal } from "./delegated-work-guard.js";
+import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunHistoryItem, TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
@@ -41,8 +41,13 @@ export class TeamRunHistoryService {
   private readonly layout: AgentMemoryLayout;
   private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "refusal">;
 
   constructor(memoryDir: string, options: {
+    /** The relationships between runs, from the Task entries (SR-047). */
+    tree: Pick<DelegationTree, "subtreeOf">;
+    /** Archive and delete wait for the runs it delegated to (REQ-007). */
+    workGuard: Pick<DelegatedWorkGuard, "refusal">;
     executionTreeStore?: TeamRunExecutionTreeStore;
     catalogService?: TeamRunHistoryCatalogService;
     teamRunManager?: AgentTeamRunManager;
@@ -51,8 +56,9 @@ export class TeamRunHistoryService {
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
     /** A run's last activity over its agents. */
     lastActivity?: Pick<RunLastActivityReader, "forTeamRun">;
-  } = {}) {
-    this.lastActivity = options.lastActivity ?? new RunLastActivityReader({ memoryDir });
+  }) {
+    this.workGuard = options.workGuard;
+    this.lastActivity = options.lastActivity ?? new RunLastActivityReader({ memoryDir, tree: options.tree });
     this.adHocTasks = options.adHocTasks;
     this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.catalog = options.catalogService ?? getTeamRunHistoryCatalogService();
@@ -99,13 +105,13 @@ export class TeamRunHistoryService {
   }
 
   async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
-    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "archived");
+    const refused = this.workGuard.refusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "archived");
     if (refused) return { success: false, message: refused };
     return this.catalog.archiveTeamRun(teamRunId);
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "deleted");
+    const refused = this.workGuard.refusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "deleted");
     if (refused) return { success: false, message: refused };
     const result = await this.catalog.deleteTeamRun(teamRunId);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
@@ -165,6 +171,14 @@ const collectConfiguredAgents = (members: readonly ConfiguredExecutionNode[]): C
 const statusFor = (agentRunId: string, snapshots: TeamRunMemberStatusProjection[]): AgentApiStatus =>
   snapshots.find((snapshot) => snapshot.agentRunId === agentRunId)?.status ?? "offline";
 
-let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
-export const getTeamRunHistoryService = (): TeamRunHistoryService => cachedTeamRunHistoryService ??=
-  new TeamRunHistoryService(appConfigProvider.config.getMemoryDir());
+let processService: TeamRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessTeamRunHistoryService = (service: TeamRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
+export const getTeamRunHistoryService = (): TeamRunHistoryService => {
+  if (!processService) throw new Error("TeamRunHistoryService is created by the composition root.");
+  return processService;
+};

@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import type { RootMessageAppend } from "../../../src/agent-collaboration/execution/communication/root-message-append.js";
 import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
 import { describe, expect, it, vi } from "vitest";
@@ -67,7 +68,7 @@ const createSubject = (options: Readonly<{
     return value;
   }
   const reserveRootAgentInput = vi.fn(async (agentRunId: string): Promise<AgentRunInputReservationResult> => reservation(agentRunId));
-  const run = new AgentOrgRun({
+  const run = new AgentOrgRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
     root,
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },

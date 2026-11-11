@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
@@ -10,7 +11,7 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-ex
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { testViewSources } from "../../helpers/child-rows-feed.js";
+import { noChildCommands, testViewSources } from "../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-status-traversal";
 
@@ -68,7 +69,7 @@ const buildRun = () => {
   };
   const persistence = { drain: vi.fn(async () => undefined) };
   Object.assign(rootAgents, { freezeForRootTermination: vi.fn(() => []) });
-  const run = new AgentOrgRun({
+  const run = new AgentOrgRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
     root: createAgentOrgRootExecutionIdentity(orgRunId),
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
@@ -87,7 +88,7 @@ const connect = async (run: AgentOrgRun) => {
   const handler = new AgentOrgStreamHandler({
     getActive: (id: string) => id === orgRunId ? run : null,
     recordRunActivity: vi.fn(),
-  } as never, testViewSources());
+  } as never, testViewSources(), noChildCommands());
   const sessionId = await handler.connect({ send: (value: string) => sent.push(value), close: vi.fn() }, orgRunId);
   const snapshot = sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)))
     .find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");

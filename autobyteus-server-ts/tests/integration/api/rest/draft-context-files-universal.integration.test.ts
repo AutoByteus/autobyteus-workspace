@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import http from "node:http";
 import os from "node:os";
@@ -28,7 +29,7 @@ import {
   testOrgAgentNode,
 } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { bindTestTaskSide } from "../../../helpers/task-side-binding.js";
+import { testTaskSide } from "../../../helpers/task-side-binding.js";
 
 type DraftOwnerKind = ContextFileDraftOwnerDescriptor["kind"];
 
@@ -68,7 +69,6 @@ const INVALID_LOCATORS = [
 
 let app: FastifyInstance;
 let layout: ContextFileLayout;
-let releaseTaskSide: () => void;
 
 const put = async (file: string, value: unknown) => {
   await fs.mkdir(path.dirname(file), { recursive: true });
@@ -157,16 +157,15 @@ beforeEach(async () => {
   const memoryDir = path.join(config.root, "memory");
   await writeOrgFixture(memoryDir);
   const tasks = new InMemoryTaskExecutionResources();
-  releaseTaskSide = bindTestTaskSide(tasks);
+  const { tree } = testTaskSide(tasks);
   await writeAgentCollaborationFixture(memoryDir, tasks);
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });
   app = fastify();
   await app.register(multipart);
-  await app.register(registerContextFileRoutes, { prefix: "/rest" });
+  await app.register((scope) => registerContextFileRoutes(scope, tree), { prefix: "/rest" });
 });
 
 afterEach(async () => {
-  releaseTaskSide();
   await app.close();
   await fs.rm(config.root, { recursive: true, force: true });
 });
@@ -303,7 +302,7 @@ describe("malformed and traversal owner IDs and stored filenames", () => {
   it("leaves malformed locators unresolved for the runtime with the real layout", async () => {
     const memoryDir = path.join(config.root, "memory");
     const local = new ContextFileLocalPathResolver({ layout, baseUrl: "http://app.test", ownerResolver: new ContextFileOwnerResolver({
-      memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir),
+      memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, noDelegations()),
     }) });
     await writeSentinels();
     const existing = await upload(DRAFT_OWNERS.agent_draft, "existing draft");

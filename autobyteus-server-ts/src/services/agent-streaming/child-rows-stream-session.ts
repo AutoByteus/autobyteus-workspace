@@ -1,5 +1,6 @@
 import { CollaborationStreamServerMessageSchema, type CollaborationStreamServerMessage } from "@autobyteus/collaboration-stream-contracts";
-import type { ChildRowsEvent, ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsStreams } from "../../agent-collaboration/delegation/child-rows-streams.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** An Agent or Org run's child-row change on the collaboration stream (SR-042, SR-043): its rows as its view has them. */
@@ -8,7 +9,7 @@ export const projectCollaborationChildRunsChanged = (kind: "agent" | "agent_org"
     event: { kind: "child_runs_changed", run_id: runId, added: event.added.map((record) => record.row), removed: event.removed } } });
 
 /**
- * One view stream connection's share of a run's child-row changes (DS-8, SR-044). It opens on the feed before the
+ * One view stream connection's share of a run's child-row changes (DS-8, SR-044). It opens on the streams before the
  * connection reads the tree for its snapshot; an event published while the snapshot is built is held and sent right
  * after it, in published order. So a change is in the snapshot (its event is then a no-op by membership) or applied
  * after it; none is lost.
@@ -17,8 +18,8 @@ export class ChildRowsStreamSession {
   private held: ChildRowsEvent[] | null = [];
   private close: (() => void) | null;
 
-  constructor(feed: ChildRowsFeed, run: RootExecutionIdentity, private readonly send: (event: ChildRowsEvent) => void) {
-    this.close = feed.open(run, (event) => this.deliver(event));
+  constructor(streams: Pick<ChildRowsStreams, "open">, run: RootExecutionIdentity, private readonly send: (event: ChildRowsEvent) => void) {
+    this.close = streams.open(run, (event) => this.deliver(event));
   }
 
   /** Another snapshot is being built on this connection (a mode switch, SR-046): events wait for it again. */

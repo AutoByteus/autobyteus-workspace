@@ -1,4 +1,5 @@
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
@@ -34,7 +35,9 @@ import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persiste
 export class AgentOrgExecutionScopeBuilder {
   constructor(private readonly dependencies: Readonly<{
     flatTeamExecutionFactory: FlatTeamExecutionFactory;
-    taskExecutionResources?: TaskExecutionResourcePort;
+    taskRecords: RunTaskRecords;
+    /** The relationships between runs, from the Task entries (SR-047). */
+    delegationTree: DelegationTree;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
     agentRunManager?: AgentRunManager;
@@ -59,8 +62,7 @@ export class AgentOrgExecutionScopeBuilder {
     }>> = [];
     const taskCapability: MemberTaskCapability = Object.freeze({
       root,
-      delegateToNewCopy: (caller, command) => this.requireActive(run).delegateToNewCopy({ identity: caller }, command),
-      assignToExistingCopy: (caller, command) => this.requireActive(run).assignToExistingCopy({ identity: caller }, command),
+      delegationSource: (caller) => this.requireActive(run).delegationSource({ identity: caller }),
       ownedTaskOf: (caller) => this.requireActive(run).ownedTaskOf({ identity: caller }),
     });
     // Delegated copies join after launch, so member contexts read the live tree.
@@ -185,7 +187,8 @@ export class AgentOrgExecutionScopeBuilder {
         callbacks,
         persistence: input.persistence,
         publisher,
-        taskExecutionResources: this.dependencies.taskExecutionResources,
+        taskRecords: this.dependencies.taskRecords,
+        delegationTree: this.dependencies.delegationTree,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         onTerminated: input.onTerminated,

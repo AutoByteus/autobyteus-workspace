@@ -9,7 +9,7 @@ import type { AgentOrgRunHistoryCatalogService } from "../run-history/services/a
 import { getAgentRunHistoryCatalogService } from "../run-history/services/agent-run-history-catalog-service.js";
 import { getTeamRunHistoryCatalogService } from "../run-history/services/team-run-history-catalog-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
-import { findDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
+import type { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
 
 export type RestartResume = Readonly<{ recorder: BusyRunRecorder; resumer: RestartResumer }>;
 
@@ -23,6 +23,8 @@ type HistoryRow = Readonly<{ terminatedAt?: string | null; archivedAt?: string |
 export const composeRestartResume = (input: Readonly<{
   appDataDir: string;
   rootResolver: CollaborationRootResolver;
+  /** The relationships between runs (SR-047): a delegated run is resumed through its own root. */
+  tree: Pick<DelegationTree, "parentOf">;
   orgHistory: Pick<AgentOrgRunHistoryCatalogService, "getCatalogRow">;
 }>): RestartResume => {
   const recordPath = busyRunRecordPath(input.appDataDir);
@@ -38,7 +40,7 @@ export const composeRestartResume = (input: Readonly<{
   return Object.freeze({
     recorder: new BusyRunRecorder({ liveRuns, roots: getActiveCollaborationRootDirectory(), recordPath, version: readReleaseIdentity }),
     resumer: new RestartResumer({
-      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: findDelegationTree,
+      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: input.tree,
     }),
   });
 };

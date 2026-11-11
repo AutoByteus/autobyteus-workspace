@@ -11,10 +11,6 @@ export type DelegatedRunAgent = Readonly<{ agentRunId: string; address: AgentTea
 /** The runs delegated from a run on this node, open or closed: the `DelegationTree` (contract §4). */
 type DelegatedRuns = Pick<DelegationTree, "childrenOf" | "subtreeOf">;
 
-let boundDelegatedRuns: DelegatedRuns | null = null;
-/** The composition binds the loaded tree once (`project-task-execution-resource-composition.ts`). */
-export const bindDelegatedRuns = (port: DelegatedRuns): void => { boundDelegatedRuns = port; };
-export const unbindDelegatedRuns = (port: DelegatedRuns): void => { if (boundDelegatedRuns === port) boundDelegatedRuns = null; };
 
 /**
  * The agents of the runs delegated from a run, open and closed (REQ-009's token roll-up of every run kind; the Team tab's
@@ -24,8 +20,8 @@ export const unbindDelegatedRuns = (port: DelegatedRuns): void => { if (boundDel
 export class DelegatedRunAgentsReader {
   private readonly own: RunOwnAgentsReader;
 
-  /** `delegatedRuns`: the tree; by default the bound one (none before the Task records are loaded: no delegated run). */
-  constructor(memoryDir: string, private readonly delegatedRuns: () => DelegatedRuns | null = () => boundDelegatedRuns) {
+  /** `delegatedRuns`: the tree, created by the composition root (SR-047). */
+  constructor(memoryDir: string, private readonly delegatedRuns: DelegatedRuns) {
     this.own = new RunOwnAgentsReader(memoryDir);
   }
 
@@ -34,7 +30,7 @@ export class DelegatedRunAgentsReader {
     const wanted = new Set(agentRunIds);
     if (!wanted.size) return [];
     const found: DelegatedRunAgent[] = [];
-    for (const run of this.delegatedRuns()?.childrenOf(root) ?? []) {
+    for (const run of this.delegatedRuns.childrenOf(root)) {
       for (const agent of await this.agentsOf(run)) if (wanted.has(agent.agentRunId)) found.push(agent);
     }
     return found;
@@ -42,7 +38,7 @@ export class DelegatedRunAgentsReader {
 
   /** Every agent run ID of every run delegated from this run, one hop at a time and recursively (token totals). */
   async agentRunIds(root: RootExecutionIdentity): Promise<string[]> {
-    const runs = this.delegatedRuns()?.subtreeOf(root) ?? [];
+    const runs = this.delegatedRuns.subtreeOf(root);
     return (await Promise.all(runs.map((run) => this.agentsOf(run)))).flat().map((agent) => agent.agentRunId);
   }
 

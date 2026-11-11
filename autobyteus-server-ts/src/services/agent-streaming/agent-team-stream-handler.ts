@@ -1,7 +1,4 @@
-import { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
-import { getProcessStandaloneRunCommandPort } from "../../agent-execution/services/standalone-run-ports.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -15,7 +12,7 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-ts";
 import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
-import { getTeamRunService, type TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import { parseCommandAgentRunId, TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE } from "./team-agent-run-command-parser.js";
@@ -33,7 +30,7 @@ type TeamStreamSink = AgentStreamServerMessageSink<TeamStreamServerMessage>;
 type TeamStreamEgress = AgentStreamWebSocketEgress<TeamStreamServerMessage>;
 type MemberCommands = Pick<RootTeamRun, "executeAgentCommand">;
 
-class AgentTeamSession extends AgentSession { get teamRunId(): string { return this.runId; } }
+export class AgentTeamSession extends AgentSession { get teamRunId(): string { return this.runId; } }
 
 const errorMessage = (
   code: string,
@@ -64,11 +61,8 @@ export class AgentTeamStreamHandler {
     private readonly sessionManager: AgentSessionManager,
     private readonly teamRunService: Pick<TeamRunService, "getActiveTeamRun" | "resolveManagedTeamRun" | "recordRunActivity">,
     private readonly sources: Omit<TeamViewSources, "activeTeamRun">,
-    private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
-      tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
-      activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
-      teamRun: (teamRunId, restore) => restore ? getTeamRunService().resolveManagedTeamRun(teamRunId) : Promise.resolve(getTeamRunService().getActiveTeamRun(teamRunId)),
-    }),
+    /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
+    private readonly children: Pick<DelegatedRunCommands, "execute" | "isChildAgent">,
   ) {}
 
   async connect(connection: WebSocketConnection, teamRunIdInput: string): Promise<string | null> {
@@ -242,5 +236,3 @@ export class AgentTeamStreamHandler {
 }
 
 /** A team stream handler on the process's team runs (the websocket route's default; tests pass their own). */
-export const createAgentTeamStreamHandler = (sources: Omit<TeamViewSources, "activeTeamRun">): AgentTeamStreamHandler =>
-  new AgentTeamStreamHandler(new AgentSessionManager(AgentTeamSession), getTeamRunService(), sources);

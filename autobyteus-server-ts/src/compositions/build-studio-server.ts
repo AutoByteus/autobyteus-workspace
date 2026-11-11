@@ -46,9 +46,8 @@ import { getGeneralProcessPublishedArtifactPublisher } from "../services/publish
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
-import { createChildRowsFeed } from "./child-rows-feed-composition.js";
-import { createRunViewSources } from "./run-view-composition.js";
-import { composeTaskDelegation } from "./task-delegation-composition.js";
+import { composeCollaboration, composeTaskSide, type Collaboration, type TaskSide } from "./collaboration-composition.js";
+import { findProcessRemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import {
@@ -81,8 +80,6 @@ import {
   type ContextFilePathEnvironment,
 } from "../context-files/domain/context-file-path-environment.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
-import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "./platform-notice-sources.js";
 import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
@@ -116,7 +113,6 @@ const closeStudioProcessResources = async (input: {
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
   platformNotices: PlatformNoticeSources | null;
   updateNotifications: UpdateNotifications | null;
-  taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
   agentRuntimeStatus: AgentRuntimeStatusHandle | null;
 }): Promise<void> => {
@@ -139,7 +135,6 @@ const closeStudioProcessResources = async (input: {
     await input.generalProcessRunSupervisor?.close();
   } finally {
     try {
-      if (input.taskExecutionResources) releaseProjectTaskExecutionResources(input.taskExecutionResources);
       input.generalProcessAuthority?.close();
     } finally {
       try {
@@ -203,9 +198,10 @@ const createStudioApplicationServices = (input: {
   modelSelectionValidator: RunModelSelectionValidator;
   providerRelayAccess: ProviderRelayAccess;
   runPasses: RunPassRevocation;
+  taskSide: TaskSide;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
-    appConfig: input.appConfig,
+    appConfig: input.appConfig, delegationTree: input.taskSide.tree, taskRecords: input.taskSide.taskRecords,
     contextFilePathEnvironment: input.contextFilePathEnvironment,
     bundleService: input.packages.bundleService,
     agentDefinitionService: input.definitions.agentDefinitionService,
@@ -269,12 +265,11 @@ export const buildStudioServer = async (input: {
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
   let platformNotices: PlatformNoticeSources | null = null;
   let updateNotifications: UpdateNotifications | null = null;
-  let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let releaseRemoteCollaboration: (() => void) | null = null;
-  let releaseTaskDelegation: (() => void) | null = null;
+  let collaboration: Collaboration | null = null;
   let nodeAccess: NodeAccess | null = null;
   let releaseModelRouting: (() => void) | null = null;
   let processResourcesClosed = false;
@@ -283,7 +278,7 @@ export const buildStudioServer = async (input: {
     processResourcesClosed = true;
     await nodeAccess?.close();
     releaseRemoteCollaboration?.();
-    releaseTaskDelegation?.();
+    collaboration?.release();
     releaseModelRouting?.();
     await closeStudioProcessResources({
       hostDefinitionServices,
@@ -294,7 +289,6 @@ export const buildStudioServer = async (input: {
       generalProcessRunSupervisor,
       platformNotices,
       updateNotifications,
-      taskExecutionResources,
       studioApiHandle,
       agentRuntimeStatus,
     });
@@ -331,10 +325,8 @@ export const buildStudioServer = async (input: {
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    // autobyteus-461 DS-8: the one child-row feed, following the tree and serving the view streams.
-    const childRowsFeed = createChildRowsFeed({ memoryDir: input.appConfig.getMemoryDir() });
-    taskExecutionResources = await composeProjectTaskExecutionResources({
-      appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(), childRowsFeed });
+    // autobyteus-461 SR-047 steps 1–2: the Task records, the tree, the run side's records (steps 4–8 follow the run services).
+    const taskSide = await composeTaskSide({ appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir() });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -357,7 +349,7 @@ export const buildStudioServer = async (input: {
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
       modelSelectionValidator,
-      taskExecutionResources,
+      taskRecords: taskSide.taskRecords, delegationTree: taskSide.tree,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
       // then tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, ...platformNotices.sources]),
@@ -376,15 +368,15 @@ export const buildStudioServer = async (input: {
       rootResolver,
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
-    // autobyteus-461 DS-1: every root delegates through the one TaskDelegation (each delegated run is its own run).
-    releaseTaskDelegation = composeTaskDelegation({ tasks: taskExecutionResources, agentRuns: generalProcessRunSupervisor.agentRunService,
-      teamRuns: generalProcessRunSupervisor.teamRunService, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), memoryDir: input.appConfig.getMemoryDir() }).release;
+    // autobyteus-461 SR-047 steps 4–8: the Task service, delegation and messages between runs, the views' owners, their consumers.
+    const currentCollaboration = collaboration = await composeCollaboration({ memoryDir: input.appConfig.getMemoryDir(), taskSide,
+      runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: findProcessRemoteRunChannel });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
-    const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver,
+    const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree,
       orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService });
     const applicationServices = createStudioApplicationServices({
-      appConfig: input.appConfig,
+      appConfig: input.appConfig, taskSide,
       packages,
       definitions: hostDefinitionServices,
       agentToolsMcpHost,
@@ -423,6 +415,7 @@ export const buildStudioServer = async (input: {
       collaborationRootHistoryService: generalProcessRunSupervisor.collaborationRootHistoryService,
       runModelConfigService,
       delegatedLaunchSelectionService: generalProcessRunSupervisor.delegatedLaunchSelectionService,
+      runViewChildren: currentCollaboration.runViewChildren, delegatedRunAgents: currentCollaboration.delegatedRunAgents,
     });
     agentRuntimeStatus = composeAgentRuntimeStatus({
       codexClientManager: getCodexAppServerClientManager(),
@@ -464,7 +457,7 @@ export const buildStudioServer = async (input: {
         async (restApp) => registerRestRoutes(restApp, {
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
-          nodeAccess: currentNodeAccess,
+          nodeAccess: currentNodeAccess, delegationTree: taskSide.tree,
         }),
         { prefix: "/rest" },
       );
@@ -472,8 +465,9 @@ export const buildStudioServer = async (input: {
         lifecycleReadiness: currentApplicationRuntime.lifecycle,
         application: currentApplicationRuntime.realtime,
         agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
+        teamRunService: generalProcessRunSupervisor.teamRunService, standaloneRoots: generalProcessRunSupervisor.standaloneRootManager,
         agentPackageDefinitionChangeHub: agentPackageDefinitionFeed.hub,
-        views: createRunViewSources({ memoryDir: input.appConfig.getMemoryDir(), childRowsFeed, registrations: getActiveCollaborationRootDirectory() }),
+        views: currentCollaboration.views,
       });
       await registerGraphql(app);
       // Last preClose hook: after the native drain and the WebSocket plugin's client close (AR-003).

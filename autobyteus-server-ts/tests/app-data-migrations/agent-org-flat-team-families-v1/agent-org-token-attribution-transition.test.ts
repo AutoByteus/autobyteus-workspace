@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { AgentRunPresentationAdapter } from "../../../src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -135,7 +136,7 @@ describe("Org attribution: isolated actual SQL and current token store", () => {
     await convertMessageLogsAsOnStartup(e.memory);
     await e.store.recordObservation(observation("org-direct"));
     const build = vi.fn(async () => { throw new Error("REACHED_SCOPE_BUILD"); });
-    const manager = new AgentOrgRunManager({ memoryDir: e.memory, tokenUsageRunStore: e.store, scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder });
+    const manager = new AgentOrgRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), memoryDir: e.memory, tokenUsageRunStore: e.store, scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder });
     await expect(manager.restore("org")).rejects.toThrow("AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY"); expect(build).not.toHaveBeenCalled();
     expect((await manager.getInspection("org")).isActive).toBe(false);
     expect((await e.migrate()).status).toBe("SUCCEEDED");

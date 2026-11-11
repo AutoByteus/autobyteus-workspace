@@ -1,3 +1,4 @@
+import { noDelegations, noWorkGuard } from "../../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import {
   AgentRunStatusProjectionService,
@@ -61,7 +62,7 @@ const buildService = (options: {
       buildProjection({ runId, ...(projectionByRunId[runId] ?? {}) }),
     ),
   };
-  const service = new AgentRunHistoryService("/tmp/memory", {
+  const service = new AgentRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(),
     catalogService: catalogService as never,
     statusProjectionService: statusProjectionService as never,
     agentRunManager: {} as never,
@@ -224,7 +225,7 @@ describe("AgentRunHistoryService", () => {
       metadataService: { readMetadata } as never,
     });
     const projectionSpy = vi.spyOn(statusProjectionService, "getCatalogListStatusProjection");
-    const service = new AgentRunHistoryService("/tmp/memory", {
+    const service = new AgentRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(),
       catalogService: {
         listCatalogRows: vi.fn().mockResolvedValue(rows),
         archiveRun: vi.fn(),
@@ -246,7 +247,7 @@ describe("AgentRunHistoryService", () => {
   it("keeps every run of each agent when the limit is null (workspace-tree-vs-chooser DS-002: the Runs view)", async () => {
     const rows = ["2026-03-25", "2026-03-27", "2026-03-26", "2026-03-24", "2026-03-23", "2026-03-22", "2026-03-21", "2026-03-20"]
       .map((day, index) => buildRow({ runId: `run-${index}`, createdAt: `${day}T08:00:00.000Z` }));
-    const service = new AgentRunHistoryService("/tmp/memory", {
+    const service = new AgentRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(),
       catalogService: { listCatalogRows: vi.fn().mockResolvedValue(rows), archiveRun: vi.fn(), deleteRun: vi.fn() } as never,
       statusProjectionService: new AgentRunStatusProjectionService({
         agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,

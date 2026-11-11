@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../../../../src/run-history/services/agent-run-history-service.js", () => ({
@@ -64,7 +65,7 @@ describe("WorkspaceRunHistoryService", () => {
       ]),
     } as any;
 
-    const service = new WorkspaceRunHistoryService({
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
       agentRunHistoryService,
       teamRunHistoryService,
     });
@@ -114,7 +115,7 @@ describe("WorkspaceRunHistoryService", () => {
   });
 
   it("creates an unassigned workspace bucket for team runs without workspace root path", async () => {
-    const service = new WorkspaceRunHistoryService({
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
       agentRunHistoryService: {
         listRunHistory: vi.fn(async () => []),
       } as any,
@@ -240,7 +241,7 @@ describe("WorkspaceRunHistoryService", () => {
         },
       ]),
     } as any;
-    const service = new WorkspaceRunHistoryService({
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
       agentRunHistoryService,
       teamRunHistoryService,
     });
@@ -269,7 +270,7 @@ describe("WorkspaceRunHistoryService", () => {
   });
 
   it("returns an empty scoped history group for a registered workspace with no history", async () => {
-    const service = new WorkspaceRunHistoryService({
+    const service = new WorkspaceRunHistoryService({ tree: noDelegations(),
       agentRunHistoryService: {
         listRunHistory: vi.fn(async () => []),
       } as any,

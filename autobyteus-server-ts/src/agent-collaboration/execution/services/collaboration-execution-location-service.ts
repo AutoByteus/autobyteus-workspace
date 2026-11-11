@@ -3,6 +3,7 @@ import type { AgentOrgExecutionTreeLocationService, LocatedAgentOrgAgentExecutio
 import { DelegatedChildLocations, type LocatedStandaloneRootAgentExecution } from "../delegation/delegated-child-locations.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
+import type { DelegationTree } from "../../delegation/delegation-tree.js";
 import type { CollaboratorExecutionSource } from "../../collaborators/collaborator-source-projector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentOrgExecutionTreeLocationService as StoredAgentOrgExecutionTreeLocationService } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
@@ -92,8 +93,26 @@ export class CollaborationExecutionLocationService {
 
 export const createStoredCollaborationExecutionLocationService = (
   memoryDir: string,
+  tree: Pick<DelegationTree, "childrenOf">,
 ): CollaborationExecutionLocationService => new CollaborationExecutionLocationService({
   teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
   orgs: new StoredAgentOrgExecutionTreeLocationService({ memoryDir }),
-  agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
+  agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir), tree }),
 });
+
+/**
+ * A lookup by an agent run's ID alone, in the stored team and Org families. A delegated run is never found under
+ * another run by its ID alone (each is the run it is; the agent-root family answers only a lookup that names its
+ * root), so that family has nothing to add here (the token display fields' lookup).
+ */
+export const createStoredRunMemberLocations = (memoryDir: string) => {
+  const teams = createStoredTeamRunExecutionTreeLocationService(memoryDir);
+  const orgs = new StoredAgentOrgExecutionTreeLocationService({ memoryDir });
+  return Object.freeze({
+    findAgent: async (input: Readonly<{ agentRunId: string }>): Promise<LocatedCollaborationAgentExecution | null> => {
+      const [team, org] = await Promise.all([teams.findAgent(input), orgs.findAgent(input)]);
+      if (team && org) throw new Error("AgentRun lookup is ambiguous across collaboration root families.");
+      return team ? tagTeamAgentExecution(team) : org;
+    },
+  });
+};

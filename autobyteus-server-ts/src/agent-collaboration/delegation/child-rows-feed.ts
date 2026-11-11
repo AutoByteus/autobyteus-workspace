@@ -1,6 +1,7 @@
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
-import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import type { ChildRowsStreams } from "./child-rows-streams.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
 import type { ChildRowsChange, DelegatedChild, DelegationTree } from "./delegation-tree.js";
 
@@ -21,46 +22,30 @@ export type ChildRowProjection = Readonly<{
   rowOf(parent: RootExecutionIdentity, child: DelegatedChild): Promise<ChildRowRecord | null>;
 }>;
 
-/** One open view stream of a run (a stream session); it orders the events against its snapshots. */
-export type ChildRowsSink = (event: ChildRowsEvent) => void;
-
 /**
  * The one publisher of child-row changes to open views (DS-8, SR-042 … SR-044). It listens to the `DelegationTree`'s
  * `childRowsChanged` reports and, for a run with open view streams, builds the added rows with the views' own
  * projection and hands one event to each stream, whether or not the run is active. It never starts or restores a run.
  * Events are published in the order the changes were reported; a change with no open view is dropped (a later view
- * reads the tree when it builds its snapshot). The composition root creates the one feed and passes it to the tree's
- * composition and to the view stream handlers.
+ * reads the tree when it builds its snapshot). The composition root creates the one feed with the open view streams
+ * (`ChildRowsStreams`, SR-047 step 7) and has it follow the tree.
  */
 export class ChildRowsFeed {
-  private readonly sinks = new Map<string, Set<ChildRowsSink>>();
   private publishing: Promise<void> = Promise.resolve();
 
-  /** `projection`: the views' own projection of a row (the composition root passes it). */
-  constructor(private readonly projection: ChildRowProjection) {}
+  /** `projection`: the views' own projection of a row; `streams`: the open view streams (the composition root passes both). */
+  constructor(private readonly projection: ChildRowProjection, private readonly streams: Pick<ChildRowsStreams, "isOpen" | "of">) {}
 
   /** Follows a tree's child-row reports until the returned function is called. */
   follow(tree: Pick<DelegationTree, "subscribeChildRows">): () => void {
     return tree.subscribeChildRows((change) => this.changed(change));
   }
 
-  /** An open view stream of `run`; the returned function closes it. */
-  open(run: RootExecutionIdentity, sink: ChildRowsSink): () => void {
-    const key = rootExecutionIdentityKey(run);
-    const sinks = this.sinks.get(key) ?? new Set<ChildRowsSink>();
-    sinks.add(sink);
-    this.sinks.set(key, sinks);
-    return () => {
-      sinks.delete(sink);
-      if (!sinks.size && this.sinks.get(key) === sinks) this.sinks.delete(key);
-    };
-  }
-
   /** Resolves once every change reported so far has been published. */
   settled(): Promise<void> { return this.publishing; }
 
   private changed(change: ChildRowsChange): void {
-    if (!this.sinks.has(rootExecutionIdentityKey(change.run))) return;
+    if (!this.streams.isOpen(change.run)) return;
     this.publishing = this.publishing.then(() => this.publish(change)).catch((error: unknown) => {
       console.warn(`The child rows of ${change.run.rootSubjectKind} run '${change.run.rootRunId}' could not be published:`, error);
     });
@@ -77,7 +62,7 @@ export class ChildRowsFeed {
     }
     if (!added.length && !change.removed.length) return;
     const event: ChildRowsEvent = Object.freeze({ run: change.run, added, removed: change.removed });
-    for (const sink of [...this.sinks.get(rootExecutionIdentityKey(change.run)) ?? []]) {
+    for (const sink of this.streams.of(change.run)) {
       try { sink(event); } catch (error) { console.warn("A child rows stream failed:", error); }
     }
   }

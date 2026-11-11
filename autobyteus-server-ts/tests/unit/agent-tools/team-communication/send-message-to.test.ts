@@ -42,7 +42,7 @@ const createDispatcher = (globalResult = {
   } as unknown as GlobalAgentRunMessageRouter;
   return {
     globalRouter,
-    dispatcher: new SendMessageToDispatcher({ globalRouter }),
+    dispatcher: new SendMessageToDispatcher({ crossRunAddresses: { resolve: async () => null }, globalRouter }),
   };
 };
 
@@ -53,7 +53,7 @@ describe("AutoByteus server-owned send_message_to", () => {
 
   it("projects work/result/blocker guidance through native and MCP tool contracts without changing fields", () => {
     const { dispatcher } = createDispatcher();
-    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const adapter = new SendMessageToMcpAdapterProvider(() => (dispatcher)).getAdapters()[0]!;
     expect(AutoByteusSendMessageToTool.getDescription()).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
     expect(adapter.definition.description).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
     expect(adapter.definition.description).toContain("self-contained request, result, question or blocker");
@@ -259,7 +259,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     const input = { recipient_address: "/writer", content: "Provider parity." };
     const nativeTool = createBoundAutoByteusSendMessageToTool(sender, dispatcher);
     const nativeText = await nativeTool.execute({}, input);
-    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const adapter = new SendMessageToMcpAdapterProvider(() => (dispatcher)).getAdapters()[0]!;
 
     const projected = await adapter.execute({
       session: { sender } as never,
@@ -288,7 +288,7 @@ describe("AutoByteus server-owned send_message_to", () => {
     };
     const nativeText = await createBoundAutoByteusSendMessageToTool(sender, dispatcher).execute({}, input);
     expect(parseEnvelope(nativeText)).toEqual(expected);
-    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    const adapter = new SendMessageToMcpAdapterProvider(() => (dispatcher)).getAdapters()[0]!;
     const projected = await adapter.execute({ session: { sender } as never, rawArguments: input });
     if (projected.kind !== "mcp_tool_result") throw new Error("Expected MCP tool result.");
     expect(projected.result.structuredContent).toEqual(expected);

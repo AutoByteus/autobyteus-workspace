@@ -1,8 +1,9 @@
-import { delegateThrough } from "../task/task-delegation-binding.js";
+import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationSource } from "../task/member-task-capability.js";
+import type { TaskDelegation } from "../task/task-delegation.js";
 import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
-import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
-import type { SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../task/task-delegation-command.js";
+import type { SpawnTaskInput, TaskDelegationOutcome } from "../task/task-delegation-command.js";
 import { REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import { resolveRemoteRunChannel, type RemoteAgentLaunch, type RemoteRunChannel } from "./remote-run-channel.js";
 import { launchNotesOf } from "../../collaborators/launch-configuration-notes.js";
@@ -22,16 +23,16 @@ export type RemotePlacementTarget = Omit<RemoteAgentPlacement, "work">;
 
 
 /**
- * A run's delegations to a peer node (DS-001, CM-10): the peer and address (`delegationPlacement`), then
- * `TaskDelegation.toPeerRun`, which records the peer's run in its Task entry. Each root holds one.
+ * Delegations to a peer node (DS-001, CM-10), on the tool path (autobyteus-461 SR-049): the peer and address
+ * (`delegationPlacement`), then `TaskDelegation.toPeerRun`, which records the peer's run in its Task entry; the sender's
+ * root is told of the new peer run. Created by the composition root (SR-047 step 8).
  */
 export class RemoteDelegation {
 
   constructor(private readonly options: Readonly<{
-    root: RootExecutionIdentity;
+    delegation: Pick<TaskDelegation, "toPeerRun">;
+    tree: Pick<DelegationTree, "peerChildrenOf">;
     channel?(): RemoteRunChannel | null;
-    /** The root's view learns the new peer run (its Task entry's link). */
-    onPeerRunLinked?(link: PeerRunLink): void;
   }>) {}
 
   /**
@@ -56,20 +57,16 @@ export class RemoteDelegation {
    * (autobyteus-461: the run's relationship is its Task entry, not a link in this run). A delegated result names the
    * peer (CM-11) and carries the peer's launch notes (REQ-009), as for a run on this node.
    */
-  async delegate(input: SpawnTaskInput & Readonly<{ node: string }>, context: TaskDelegationContext): Promise<TaskDelegationOutcome> {
+  async delegate(input: SpawnTaskInput & Readonly<{ node: string }>, source: DelegationSource): Promise<TaskDelegationOutcome> {
     const placement = await this.delegationPlacement(input);
     if (!("kind" in placement)) return placement;
     const { node: _node, ...local } = input;
-    let launches: readonly RemoteAgentLaunch[] = [];
-    const outcome = await delegateThrough(async (delegation) => {
-      const started = await delegation.toPeerRun({ sender: context.identity, senderRun: context.identity.root, spawn: local as SpawnTaskInput, placement });
-      launches = started.launches;
-      return started.outcome;
-    });
+    const started = await this.options.delegation.toPeerRun({ sender: source.sender, senderRun: source.senderRun, spawn: local as SpawnTaskInput, placement });
+    const { outcome, launches } = started;
     if (!outcome.delegated) return outcome;
     const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;
-    const link = peerRunLinksOf(this.options.root).find((candidate) => peerRunIdOf(candidate) === runId);
-    if (link) this.options.onPeerRunLinked?.(link);
+    const link = peerRunLinksOf(source.senderRun, this.options.tree).find((candidate) => peerRunIdOf(candidate) === runId);
+    if (link) source.peerRunLinked(link);
     const notes = remoteLaunchNotes(launches);
     return { ...outcome, ...(notes.length ? { launchNotes: notes } : {}) };
   }

@@ -1,4 +1,5 @@
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -14,7 +15,9 @@ import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-t
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 
 export type StandaloneRootBuilderDependencies = Readonly<{
-  taskExecutionResources?: TaskExecutionResourcePort;
+  taskRecords: RunTaskRecords;
+  /** The relationships between runs, from the Task entries (SR-047). */
+  delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf">;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
   collaboratorAdmission?: CollaboratorAdmission;
@@ -52,7 +55,8 @@ export class StandaloneRootBuilder {
       rootLaunchConfiguration: input.rootLaunchConfiguration,
       persistence,
       publisher: new RootEventPublisher<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent }),
-      taskExecutionResources: this.dependencies.taskExecutionResources,
+      taskRecords: this.dependencies.taskRecords,
+      delegationTree: this.dependencies.delegationTree,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       delegatedFrom: input.delegatedFrom,
       remoteRunChannel: this.dependencies.remoteRunChannel,

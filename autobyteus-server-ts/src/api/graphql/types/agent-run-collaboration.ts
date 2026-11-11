@@ -1,4 +1,5 @@
-import { delegatedChildrenDtos } from "../../../services/agent-streaming/delegated-children-dtos.js";
+import { createAgentRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { GraphQLError } from "graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
@@ -7,7 +8,6 @@ import { getCollaboratorAdmission } from "../../../agent-collaboration/collabora
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { getStandaloneRootMemberViewProjectionService } from "../../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
-import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { resolveCollaboratorRootPort } from "../services/collaborator-root-port-resolver.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { RunFileChangeEntryObject } from "./run-file-changes.js";
@@ -72,7 +72,10 @@ export class AgentRunCollaborationResolver {
         extensions: { code: "BAD_USER_INPUT" },
       });
     }
-    return (await getStandaloneAgentRunRootManager().getAgentStatuses(runIds)).map((answer) => ({
+    const roots = getStandaloneAgentRunRootManager(), children = getStudioRunViewChildren();
+    const answers = await Promise.all(runIds.map(async (runId) => ({ runId, isActive: roots.getActive(runId) !== null,
+      statuses: await children.statuses(createAgentRootExecutionIdentity(runId)) })));
+    return answers.map((answer) => ({
       runId: answer.runId,
       isActive: answer.isActive,
       statuses: answer.statuses.map((status) => ({
@@ -93,7 +96,8 @@ export class AgentRunCollaborationResolver {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
     if (!inspection) return null;
     const run = { rootSubjectKind: "agent" as const, rootRunId: inspection.hostRunId };
-    return projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: await remoteTaskExecutionDtos(run), taskExecutions: await delegatedChildrenDtos(run) });
+    const children = getStudioRunViewChildren();
+    return projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: await children.remote(run), taskExecutions: await children.rows(run) });
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)

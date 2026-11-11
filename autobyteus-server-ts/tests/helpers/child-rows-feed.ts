@@ -1,5 +1,6 @@
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
+import { ChildRowsStreams } from "../../src/agent-collaboration/delegation/child-rows-streams.js";
 import type { ChildRowsChange, DelegatedChild } from "../../src/agent-collaboration/delegation/delegation-tree.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
@@ -15,15 +16,17 @@ export const delegatedChild = (agentRunId: string): DelegatedChild => ({ run: { 
 
 /**
  * A `ChildRowsFeed` following a test's own tree reports (autobyteus-461 SR-042), with local rows projected by
- * `agentChildRow`. The handlers under test receive `feed`.
+ * `agentChildRow`, publishing to `streams` (SR-047: the handlers under test receive the streams).
  */
 export const followTestChildRows = () => {
   let report: ((change: ChildRowsChange) => void) | null = null;
+  const streams = new ChildRowsStreams();
   const feed = new ChildRowsFeed({ rowOf: async (_parent, child) => "agentRunId" in child.run
-    ? { kind: "local", row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null });
+    ? { kind: "local", row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null }, streams);
   feed.follow({ subscribeChildRows: (listener: (change: ChildRowsChange) => void) => { report = listener; return () => { report = null; }; } });
   return {
     feed,
+    streams,
     report: (change: ChildRowsChange) => report?.(change),
     settled: () => feed.settled(),
     release: () => undefined,
@@ -48,5 +51,15 @@ export const testRegistrations = () => {
   };
 };
 
-/** View sources for a stream handler under test whose run is live (no stored tree). */
-export const testViewSources = () => ({ childRowsFeed: followTestChildRows().feed, registrations: testRegistrations(), readStoredTree: async () => null });
+/** A run's children as its view reads them, for a test with none. */
+export const noViewChildren = () => ({ rows: async () => [], remote: async () => [], statuses: async () => [] });
+
+/** Local children's followers for a test with none. */
+export const noFollowers = () => ({ followLive: () => () => undefined, followStored: () => () => undefined, statuses: async () => [] });
+
+/** Child-row commands for a test with no child rows: every agent is the run's own. */
+export const noChildCommands = () => ({ execute: async () => null, isChildAgent: async () => false });
+
+/** View sources for a stream handler under test whose run is live (no stored tree, no children). */
+export const testViewSources = () => ({ streams: new ChildRowsStreams(), children: noViewChildren(), followers: noFollowers(),
+  registrations: testRegistrations(), readStoredTree: async () => null });

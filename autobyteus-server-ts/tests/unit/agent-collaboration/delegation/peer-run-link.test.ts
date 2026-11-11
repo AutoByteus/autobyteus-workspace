@@ -33,6 +33,5 @@ describe("peerRunLinksOf", () => {
     // S19: closing T7 keeps the peer team as a link, closed (its messages are refused by the closed entry; AR-020).
     tasks.close("T7");
     expect(peerRunLinksOf(M, tree)[0]).toMatchObject({ teamRunId: "research_team_77aa", open: false });
-    expect(peerRunLinksOf(M, null)).toEqual([]);
   });
 });

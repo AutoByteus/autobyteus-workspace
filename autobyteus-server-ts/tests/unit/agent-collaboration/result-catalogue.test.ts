@@ -42,7 +42,6 @@ const CATALOGUE: readonly (readonly [string, string, string])[] = [
   ["M-27", "delegate_task", "Invalid delegate_task input: <what is wrong>."],
   ["M-28", "delegate_task", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task."],
   ["M-29", "delegate_task", "Your Task is DONE or CANCELLED, so you can't start new work."],
-  ["M-30", "delegate_task", "Tasks are not available here, so this delegation can't be recorded."],
   ["M-31", "delegate_task", "The Task is <status>; set it to TODO or IN_PROGRESS before you delegate it."],
   ["M-32", "delegate_task", "The Task was marked DONE or CANCELLED; its new work was not started."],
   ["M-33", "delegate_task", "Task <task_id> was given to the task agent, but the message with its work was not delivered (<reason>). Message the task agent's run id <run id>, or set Task <task_id> to CANCELLED, or delegate it to a new task agent."],
@@ -79,9 +78,11 @@ const ID_RULE = /(?<!Task's |Task |Unknown )\bIDs?\b|\bsender id\b/;
 const FORBIDDEN = /\b(copy|copies|spawn\w*|this run(?! id)|your run(?! id)|the run(?! id)|in the run(?! id)|mounted|collaborators?|brought in|nested|task worker|work packet|pause[ds]?|wake[ds]?|restor\w+|reactivat\w+|shut down)\b/i;
 
 describe("result and refusal catalogue (wording §7.3, SR-014)", () => {
-  it("lists M-01 to M-45 once each, without the withdrawn M-43, M-16 and M-17 (hosted copies, autobyteus-461)", () => {
+  // M-30 ("Tasks are not available here …") was withdrawn with the process binding (autobyteus-461 SR-047, SR-052): every host
+  // composes the Task side and its delegation, so no delegation finds none.
+  it("lists M-01 to M-45 once each, without the withdrawn M-43, M-16, M-17 and M-30 (autobyteus-461)", () => {
     expect(CATALOGUE.map(([id]) => id)).toEqual(Array.from({ length: 45 }, (_unused, index) => `M-${String(index + 1).padStart(2, "0")}`)
-      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17"));
+      .filter((id) => id !== "M-43" && id !== "M-16" && id !== "M-17" && id !== "M-30"));
   });
 
   const source = normalizedSource();

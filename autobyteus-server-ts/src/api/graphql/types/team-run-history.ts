@@ -1,4 +1,4 @@
-import { delegatedChildrenDtos } from "../../../services/agent-streaming/delegated-children-dtos.js";
+import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
@@ -6,7 +6,6 @@ import { getTeamMemberRunViewProjectionService } from "../../../run-history/serv
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { RunFileChangeEntryObject } from "./run-file-changes.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
-import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
 import { RunModelConfigEditabilityObject } from "./run-model-config.js";
 import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
@@ -104,11 +103,13 @@ export class TeamRunHistoryResolver {
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TeamRunResumeConfigPayload> {
     const config = await this.runModelConfigService.getTeamRunResumeConfig(teamRunId);
+    const children = getStudioRunViewChildren();
+    const run = { rootSubjectKind: "agent_team" as const, rootRunId: config.executionTree.rootTeam.teamRunId };
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
-      executionTree: projectExecutionTree(config.executionTree, await delegatedChildrenDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId })),
-      remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId }),
+      executionTree: projectExecutionTree(config.executionTree, await children.rows(run)),
+      remoteTaskExecutions: await children.remote(run),
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,
       baseChangeSequence: config.baseChangeSequence,

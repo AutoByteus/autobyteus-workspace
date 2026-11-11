@@ -1,3 +1,4 @@
+import type { RunTaskRecords } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import {
   runReferenceOf,
@@ -22,7 +23,7 @@ type Entry = { taskId: string; delegatedFrom: RunDelegatedFrom; execution: TaskE
  * assigner and may hold several open Tasks, closed only when its last one closes, damaged data fails closed);
  * the Projects implementation is tested separately.
  */
-export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort {
+export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort, RunTaskRecords {
   readonly entries = new Map<string, Entry>();
   readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string; comments?: string[] }>();
   readonly damaged = new Set<string>();
@@ -192,10 +193,10 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!entry?.open) return [];
     return [...entry.otherOpenTaskIds ?? [], entry.taskId].filter((id) => id !== exceptTaskId).map((id) => this.tasks.get(id)?.taskKey ?? id);
   }
-  /** Every status-change notification, in order. */
+  /** Every status-change notification, in order (the run side's `RunTaskRecords.statusChanged`, SR-053). */
   readonly statusChanges: Array<{ references: TaskExecutionReference[] }> = [];
-  taskExecutionsStatusChanged(references: readonly TaskExecutionReference[]): void {
-    this.statusChanges.push({ references: [...references] });
+  statusChanged(execution: TaskExecutionReference): void {
+    this.statusChanges.push({ references: [execution] });
   }
   assertResourceDataReadable(): void {
     if (this.damaged.size) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read. Fix or restore the file and restart the app; other features keep working.");

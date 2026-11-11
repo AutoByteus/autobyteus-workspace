@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { createRequire } from "node:module";
@@ -193,7 +194,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     try {
       AgentTeamRunManager.getInstance();
     } catch {
-      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,

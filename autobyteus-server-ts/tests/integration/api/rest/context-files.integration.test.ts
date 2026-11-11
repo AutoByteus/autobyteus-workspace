@@ -42,6 +42,7 @@ import { registerContextFileRoutes } from "../../../../src/api/rest/context-file
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { ContextFileReadService } from "../../../../src/context-files/services/context-file-read-service.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
+import { noDelegations } from "../../../helpers/no-delegations.js";
 
 type MultipartPart =
   | { name: string; value: string }
@@ -174,7 +175,7 @@ describe("REST context-files routes", () => {
       limits: { fileSize: 25 * 1024 * 1024 },
       throwFileSizeLimit: false,
     });
-    await app.register(registerContextFileRoutes, { prefix: "/rest" });
+    await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: "/rest" });
   });
 
   afterEach(async () => {

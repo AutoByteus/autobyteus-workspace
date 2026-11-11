@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -92,14 +93,14 @@ const org = async (f: ReturnType<typeof fixture>) => {
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
     executionTreeStore: new AgentOrgRunExecutionTreeStore(),
     communicationStore: new AgentOrgCommunicationMessagesStore(), enterPersistenceFailStop: vi.fn() });
-  return new AgentOrgExecutionScopeBuilder({ ...f.dependencies, flatTeamExecutionFactory: f.factory, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
+  return new AgentOrgExecutionScopeBuilder({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), ...f.dependencies, flatTeamExecutionFactory: f.factory, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
   }).build({ state, persistence, activationMode: 'fresh', persistInitialPackage: true });
 };
 const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') => {
   f.useTeamTree();
   const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
     ['lead', 'unused'].map(id => testAgentNode(`/${id}`, { agentRunId: id, runtimeKind: RuntimeKind.CODEX_APP_SERVER })) });
-  return materializeTeamRoot({ config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
+  return materializeTeamRoot({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
     messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never), executionTreeStore: new TeamRunExecutionTreeStore(),

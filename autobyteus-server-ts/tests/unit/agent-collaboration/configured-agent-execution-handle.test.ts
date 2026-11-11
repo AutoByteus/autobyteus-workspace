@@ -22,8 +22,8 @@ import {
 
 const taskCapability = (root: ReturnType<typeof createTeamRootExecutionIdentity>) => ({
   root,
-  delegateToNewCopy: vi.fn(),
-  ownedTaskOf: () => null, assignToExistingCopy: vi.fn(),
+  delegationSource: vi.fn(),
+  ownedTaskOf: () => null,
   submitTaskResult: vi.fn(),
   reviewTaskResult: vi.fn(),
 });

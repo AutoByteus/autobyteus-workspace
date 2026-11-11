@@ -1,3 +1,4 @@
+import { noDelegations } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { CollaborationMemberNotFoundError } from "../../../src/agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
@@ -44,7 +45,7 @@ const harness = (located: unknown = location) => {
     locations,
     agentViews,
     fileChanges,
-    service: new TeamMemberRunViewProjectionService({
+    service: new TeamMemberRunViewProjectionService({ tree: noDelegations(),
       locations: locations as never,
       agentRunViewProjectionService: agentViews as never,
       runFileChangeProjectionService: fileChanges as never,

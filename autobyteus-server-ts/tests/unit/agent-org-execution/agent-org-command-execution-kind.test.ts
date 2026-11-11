@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
@@ -17,7 +18,7 @@ describe("AgentOrgRun command execution kind", () => {
     const rootCommand = vi.fn(async () => ({ accepted: true as const }));
     const live = new Set([direct.agentRunId]);
     const teamCommand = vi.fn(async () => ({ accepted: true as const }));
-    const run = new AgentOrgRun({
+    const run = new AgentOrgRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree,
       messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },

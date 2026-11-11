@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
@@ -18,7 +19,7 @@ const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
 } as never);
 
-const createManager = () => new AgentTeamRunManager({
+const createManager = () => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,

@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import type { ApplicationAgentBindingRecord } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
@@ -53,7 +54,7 @@ const buildRootTeamRuntime = () => {
     createdAt: "2026-04-19T09:10:00.000Z",
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
-  const root = new RootTeamRun({
+  const root = new RootTeamRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
     rootRun: {
       teamRunId,
       isActive: vi.fn(() => true),

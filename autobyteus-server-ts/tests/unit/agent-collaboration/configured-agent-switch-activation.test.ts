@@ -29,7 +29,7 @@ const build = (input: { target?: RuntimeKind; history?: "none" | "present" | "in
   const memberExecutionContext = new MemberExecutionContext({
     teamScoped: true, collaborationRole: "team_member", identity, authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-    tasks: { root, delegateToNewCopy: vi.fn(), ownedTaskOf: () => null, assignToExistingCopy: vi.fn(), submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
+    tasks: { root, delegationSource: vi.fn(), ownedTaskOf: () => null, submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
   });
   const order: string[] = [];
   const activity = { kind: input.history ?? "present" } as { kind: string; error?: Error };

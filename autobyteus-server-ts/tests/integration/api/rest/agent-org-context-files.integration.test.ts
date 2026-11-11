@@ -22,6 +22,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import { AgentRunProviderInputNormalizer } from '../../../../src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
+import { noDelegations } from '../../../helpers/no-delegations.js';
 
 const draft = (agentRunId: string, orgRunId = 'org') => ({ kind: 'org_member_draft', orgRunId, agentRunId });
 const final = (agentRunId: string, orgRunId = 'org') => ({ kind: 'org_member_final', orgRunId, agentRunId });
@@ -55,7 +56,7 @@ beforeEach(async () => {
   local = new ContextFileLocalPathResolver({ layout, baseUrl: 'http://app.test', ownerResolver: new ContextFileOwnerResolver({
     memoryDir, locations: new AgentOrgExecutionTreeLocationService({ memoryDir }), // no runtime manager
   }) });
-  app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: '/rest' });
+  app = fastify(); await app.register(multipart); await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: '/rest' });
 });
 afterEach(async () => {
   vi.restoreAllMocks(); await app.close(); await fs.rm(config.root, { recursive: true, force: true });
@@ -113,7 +114,7 @@ describe('exact Org attachment REST with actual stored-only identity and filesys
       expect((await app.inject({ method: 'GET', url: removable.locator })).statusCode).toBe(404);
     }
     expect(new Set(retained.map(a => a.file)).size).toBe(2);
-    await app.close(); app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: '/rest' });
+    await app.close(); app = fastify(); await app.register(multipart); await app.register((scope) => registerContextFileRoutes(scope, noDelegations()), { prefix: '/rest' });
     for (const a of retained.reverse()) expect((await app.inject({ method: 'GET', url: a.locator })).body).toBe(a.text);
     expect(await fs.readFile(treeFile)).toEqual(treeBytes);
   });

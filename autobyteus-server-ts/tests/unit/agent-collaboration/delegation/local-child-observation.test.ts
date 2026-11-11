@@ -32,12 +32,12 @@ const harness = () => {
     }),
   };
   const ports: LocalChildPorts = {
-    tree: () => ({ openChildrenOf: () => children, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
+    tree: ({ openChildrenOf: () => children, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
       agentsOf: async (run) => agents[run.rootRunId] ?? [] }),
     agents: () => access as never,
   };
   const events: LocalChildRootEvent[] = [];
-  const observation = new LocalChildObservation({ run: RUN, publish: (event) => events.push(event), ports: () => ports });
+  const observation = new LocalChildObservation({ run: RUN, publish: (event) => events.push(event), ports });
   const settle = async () => { for (let i = 0; i < 5; i += 1) await new Promise((resolve) => setTimeout(resolve, 0)); };
   return { observation, events, access, presenters, closes, listeners, settle,
     setChildren: (next: DelegatedChild[]) => { children = next; listeners.forEach((listener) => listener()); } };

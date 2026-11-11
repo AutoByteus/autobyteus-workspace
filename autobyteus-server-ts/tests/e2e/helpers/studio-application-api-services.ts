@@ -36,7 +36,7 @@ export const configureE2eStudioApplicationApiServices = (
   const agentTeamDefinitionService = overrides.agentTeamDefinitionService
     ?? AgentTeamDefinitionService.getInstance({ agentDefinitionService });
 
-  return configureStudioApplicationApiServices({
+  return configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never,
     agentDefinitionService,
     agentTeamDefinitionService,
     agentOrgDefinitionService: overrides.agentOrgDefinitionService

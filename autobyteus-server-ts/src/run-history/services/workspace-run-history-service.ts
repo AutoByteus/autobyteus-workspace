@@ -1,3 +1,4 @@
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { createTopLevelRunRule } from "./top-level-run-rule.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -60,12 +61,14 @@ export class WorkspaceRunHistoryService {
 
   constructor(
     options: {
+      /** The relationships between runs, from the Task entries (SR-047). */
+      tree: Pick<DelegationTree, "parentOf">;
       agentRunHistoryService?: AgentRunHistoryService;
       teamRunHistoryService?: TeamRunHistoryService;
       topLevel?: (run: TaskExecutionReference) => boolean;
-    } = {},
+    },
   ) {
-    this.topLevel = options.topLevel ?? createTopLevelRunRule(() => appConfigProvider.config.getMemoryDir());
+    this.topLevel = options.topLevel ?? createTopLevelRunRule(() => appConfigProvider.config.getMemoryDir(), options.tree);
     this.agentRunHistoryService =
       options.agentRunHistoryService ?? getAgentRunHistoryService();
     this.teamRunHistoryService =
@@ -102,13 +105,16 @@ export class WorkspaceRunHistoryService {
   }
 }
 
-let cachedWorkspaceRunHistoryService: WorkspaceRunHistoryService | null = null;
-
+let processService: WorkspaceRunHistoryService | null = null;
+/** The composition root sets the process service it created (SR-047 step 8); the returned function releases it. */
+export const setProcessWorkspaceRunHistoryService = (service: WorkspaceRunHistoryService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
 export const getWorkspaceRunHistoryService = (): WorkspaceRunHistoryService => {
-  if (!cachedWorkspaceRunHistoryService) {
-    cachedWorkspaceRunHistoryService = new WorkspaceRunHistoryService();
-  }
-  return cachedWorkspaceRunHistoryService;
+  if (!processService) throw new Error("WorkspaceRunHistoryService is created by the composition root.");
+  return processService;
 };
 
 

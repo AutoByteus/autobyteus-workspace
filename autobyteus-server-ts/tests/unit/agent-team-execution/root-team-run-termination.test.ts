@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
@@ -51,7 +52,7 @@ const buildRoot = (input: {
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),
   };
-  const root = new RootTeamRun({
+  const root = new RootTeamRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
     rootRun: rootRun as never,
     config,
     tree,

@@ -49,7 +49,7 @@ export class RestartResumer {
     rootHistory: (root: RootExecutionIdentity) => Promise<RootHistoryState>;
     rootResolver: CollaborationRootResolver;
     /** Who delegated to whom (the Task entries); `null` when the Task records are not loaded (nothing is related). */
-    tree: () => Pick<DelegationTree, "parentOf"> | null;
+    tree: Pick<DelegationTree, "parentOf">;
     now?: () => Date;
     concurrency?: number;
   }>) {}
@@ -88,10 +88,10 @@ export class RestartResumer {
 
   private async resumeEntries(entries: readonly BusyRunEntry[], version: string): Promise<Outcome[]> {
     const limit = createPostLimiter(this.dependencies.concurrency ?? RESTART_RESUME_CONCURRENCY);
-    const tree = this.dependencies.tree();
+    const tree = this.dependencies.tree;
     const parentKeyOf = (root: RootExecutionIdentity): string | null => {
       const reference = runReferenceOf(root);
-      const parent = reference && tree ? tree.parentOf(reference) : null;
+      const parent = reference ? tree.parentOf(reference) : null;
       return parent ? rootExecutionIdentityKey(parent.delegatingRun) : null;
     };
     const byRoot = new Map<string, BusyRunEntry[]>();

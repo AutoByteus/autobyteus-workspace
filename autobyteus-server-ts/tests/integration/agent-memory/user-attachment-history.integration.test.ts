@@ -1,3 +1,4 @@
+import { noDelegations } from "../../helpers/no-delegations.js";
 import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../fixtures/current-attachment-package-fixtures.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
@@ -67,7 +68,7 @@ beforeEach(async () => {
   writeAttachmentAgentMetadata(memoryDir, "isolated");
   normalizer = new AgentRunProviderInputNormalizer(new ContextFileLocalPathResolver({
     layout: new ContextFileLayout({ appDataDir: config.root, memoryDir }),
-    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir) }),
+    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, noDelegations()) }),
     baseUrl: "http://app.test",
   }));
   app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: "/rest" });

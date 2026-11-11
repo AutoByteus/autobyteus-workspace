@@ -1,3 +1,4 @@
+import { noDelegations, noWorkGuard } from "../../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { TeamRunHistoryService } from "../../../../src/run-history/services/team-run-history-service.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
@@ -47,7 +48,7 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
     manager,
     live,
     adHocTasks,
-    service: new TeamRunHistoryService("/tmp/memory", {
+    service: new TeamRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(),
       catalogService: catalog as never,
       executionTreeStore: treeStore as never,
       teamRunManager: manager as never,
@@ -75,7 +76,7 @@ describe("TeamRunHistoryService current execution tree", () => {
   it("carries each Team run's last activity from the reader (workspace-tree-vs-chooser DS-005)", async () => {
     const forTeamRun = vi.fn(async () => "2026-11-05T09:30:00.000Z");
     const { catalog, treeStore, manager, live } = harness();
-    const service = new TeamRunHistoryService("/tmp/memory", {
+    const service = new TeamRunHistoryService("/tmp/memory", { tree: noDelegations(), workGuard: noWorkGuard(),
       catalogService: catalog as never,
       executionTreeStore: treeStore as never,
       teamRunManager: manager as never,

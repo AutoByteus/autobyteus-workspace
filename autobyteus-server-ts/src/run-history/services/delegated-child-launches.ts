@@ -1,5 +1,4 @@
 import type { DelegatedChild, DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -39,7 +38,7 @@ export type ChildLaunchRefusal = Readonly<{
 }>;
 
 export type ChildLaunchPorts = Readonly<{
-  tree(): Pick<DelegationTree, "openChildrenOf"> | null;
+  tree: Pick<DelegationTree, "openChildrenOf">;
   agentMetadata(agentRunId: string): Promise<AgentRunMetadata | null>;
   teamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   isRunning(run: DelegatedRunReference): boolean;
@@ -159,13 +158,13 @@ export class DelegatedChildLaunches {
 
   /** A run this run delegated to on this node with an open Task (a child row), by its identity. */
   localChild(parent: RootExecutionIdentity, target: DelegatedRunReference): DelegatedChild | null {
-    return (this.ports.tree()?.openChildrenOf(parent) ?? []).find((child) => "agentRunId" in target
+    return this.ports.tree.openChildrenOf(parent).find((child) => "agentRunId" in target
       ? "agentRunId" in child.run && child.run.agentRunId === target.agentRunId
       : "teamRunId" in child.run && child.run.teamRunId === target.teamRunId) ?? null;
   }
 
   private localChildren(parent: RootExecutionIdentity): readonly DelegatedChild[] {
-    return (this.ports.tree()?.openChildrenOf(parent) ?? []).filter((child) => child.nodeId === undefined);
+    return this.ports.tree.openChildrenOf(parent).filter((child) => child.nodeId === undefined);
   }
 
   /** A team child's team row (`teamRunId`), or the team child a member row's agent belongs to, with its scope there. */
@@ -190,6 +189,7 @@ const refused = (outcome: DelegatedLaunchUpdateOutcome, message: string, fieldEr
 /** The process wiring: each child's own file, its own run services, and the loaded delegation tree. */
 export const createDelegatedChildLaunches = (input: Readonly<{
   memoryDir: string;
+  tree: Pick<DelegationTree, "openChildrenOf">;
   agentRuns: Pick<AgentRunService, "checkStoppedSelection" | "updateStoppedSelection">;
   activeAgentRun(agentRunId: string): unknown | null;
   teamManager: Pick<AgentTeamRunManager, "getManagedTeamRun" | "checkStoppedSelections" | "updateStoppedSelections">;
@@ -199,7 +199,7 @@ export const createDelegatedChildLaunches = (input: Readonly<{
   const layout = new AgentMemoryLayout(input.memoryDir);
   const teams = new TeamRunExecutionTreeStore();
   return new DelegatedChildLaunches({
-    tree: findDelegationTree,
+    tree: input.tree,
     agentMetadata: (agentRunId) => metadata.readMetadata(agentRunId),
     teamTree: (teamRunId) => teams.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),
     isRunning: (run) => "agentRunId" in run ? input.activeAgentRun(run.agentRunId) !== null : input.teamManager.getManagedTeamRun(run.teamRunId) !== null,

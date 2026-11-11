@@ -77,6 +77,7 @@ import type {
   ScopedAgentToolMcpSessionAuthority,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { buildApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 
 const createHarness = (input: {
   beginFailure?: Error;
@@ -148,6 +149,8 @@ const createHarness = (input: {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
+    delegationTree: noDelegations(),
+    taskRecords: openTaskRecords(),
   };
   return {
     buildInput,

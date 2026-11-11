@@ -1,3 +1,4 @@
+import { getStudioDelegatedRunAgents } from "../studio-application-api-services.js";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Query, Resolver } from "type-graphql";
 import {
@@ -13,9 +14,7 @@ import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-
 import { isPublicMessage } from "../../../services/agent-streaming/public-message-scope.js";
 import { getTeamCommunicationProjectionService } from "../../../services/team-communication/team-communication-projection-service.js";
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { DelegatedRunAgentsReader } from "../../../run-history/services/delegated-run-agents-reader.js";
 import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
 
 type RootRecords = Readonly<{
   messages: readonly CollaborationCommunicationMessage[];
@@ -67,7 +66,7 @@ export const readCollaborationParticipantMessages = async (input: Readonly<{
     message.senderAgentRunId === agentRunId ? message.receiverAgentRunId : message.senderAgentRunId;
   const own = records.messages.filter((message) => message.senderAgentRunId === agentRunId || message.receiverAgentRunId === agentRunId);
   const outsideTree = new Set(own.map(counterpartOf).filter((id) => !records.isAgentOfTree(id)));
-  const pastParticipants = outsideTree.size === 0 ? [] : await new DelegatedRunAgentsReader(appConfigProvider.config.getMemoryDir()).forAgentRunIds(createRootExecutionIdentity({ rootSubjectKind: rootKind, rootRunId }), outsideTree);
+  const pastParticipants = outsideTree.size === 0 ? [] : await getStudioDelegatedRunAgents().forAgentRunIds(createRootExecutionIdentity({ rootSubjectKind: rootKind, rootRunId }), outsideTree);
   const past = new Set(pastParticipants.map((participant) => participant.agentRunId));
   return collaborationParticipantMessagesDtoSchema.parse({
     pastParticipants,

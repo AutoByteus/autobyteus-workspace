@@ -1,11 +1,9 @@
-import { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
-import { getProcessStandaloneRunCommandPort } from "../../agent-execution/services/standalone-run-ports.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import { getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
+import type { ChildRowsStreams } from "../../agent-collaboration/delegation/child-rows-streams.js";
+import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
+import type { RunViewChildren } from "./run-view-children.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -24,9 +22,7 @@ import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/dom
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
-import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
 import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
-import type { ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
 
 /** A command for one agent of the root (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -65,13 +61,14 @@ export class AgentCollaborationStreamHandler {
 
   constructor(
     private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">,
-    /** The open views' child-row feed (DS-8, SR-042), passed in by the composition. */
-    private readonly childRowsFeed: ChildRowsFeed,
-    private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
-      tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
-      activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
-      teamRun: (teamRunId, restore) => restore ? getTeamRunService().resolveManagedTeamRun(teamRunId) : Promise.resolve(getTeamRunService().getActiveTeamRun(teamRunId)),
-    }),
+    /** What the views need of a run's children (DS-8; SR-047 step 7, passed in by the composition root). */
+    private readonly views: Readonly<{
+      streams: Pick<ChildRowsStreams, "open">;
+      children: Pick<RunViewChildren, "rows" | "remote">;
+      followers: Pick<LocalChildFollowers, "followLive">;
+    }>,
+    /** A child row's command goes to the child's own run (AR-011). */
+    private readonly children: Pick<DelegatedRunCommands, "execute">,
   ) {}
 
   /** A child row's command: a peer child's goes to its node through the root; a local child's to its own root (AR-011). */
@@ -102,9 +99,9 @@ export class AgentCollaborationStreamHandler {
     }
     const sessionId = randomUUID();
     // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
-    const childRows = new ChildRowsStreamSession(this.childRowsFeed, root.rootIdentity, (event) => egress.send(projectCollaborationChildRunsChanged("agent", hostRunId, event)));
-    const remoteTaskExecutions = await remoteTaskExecutionDtos(root.rootIdentity);
-    const taskExecutions = await delegatedChildrenDtos(root.rootIdentity);
+    const childRows = new ChildRowsStreamSession(this.views.streams, root.rootIdentity, (event) => egress.send(projectCollaborationChildRunsChanged("agent", hostRunId, event)));
+    const remoteTaskExecutions = await this.views.children.remote(root.rootIdentity);
+    const taskExecutions = await this.views.children.rows(root.rootIdentity);
     const barrier = await root.openPackageSnapshotConnection();
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({
@@ -139,8 +136,8 @@ export class AgentCollaborationStreamHandler {
       }));
       // autobyteus-278: a viewer of the root observes its remote children while connected.
       root.remoteChildren.viewerAttached();
-      root.localChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); childRows.dispose(); root.remoteChildren.viewerDetached(); root.localChildren.viewerDetached(); egress.dispose(); } });
+      const stopChildren = this.views.followers.followLive(root);
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); childRows.dispose(); root.remoteChildren.viewerDetached(); stopChildren(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();

@@ -136,12 +136,18 @@ export interface TaskExecutionResourcePort {
    * and appends the copy's new `starting` assignment entry to the Task (earlier entries are kept).
    */
   assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void>;
-  /**
-   * The live status of these delegated runs may have changed (an agent in them changed status, or the run stopped).
-   * Synchronous; never throws and never reads files.
-   */
-  taskExecutionsStatusChanged(references: readonly TaskExecutionReference[]): void;
 }
+
+/**
+ * What a run and its root ask of the Task records by the run's own identity (autobyteus-461 SR-053): whether its entry
+ * is open (the gate head and the work packet's check), and that its own live status may have changed (the Task page
+ * re-reads it). Built from the loaded Task records before the run services; the delegation owners take the full port.
+ */
+export type RunTaskRecords = Readonly<{
+  isOpen(execution: TaskExecutionReference): boolean;
+  /** Synchronous; never throws and never reads files. */
+  statusChanged(execution: TaskExecutionReference): void;
+}>;
 
 /** The run of a Task entry as the run's own identity (an agent run, or a team run). */
 export const runIdentityOf = (run: TaskExecutionReference): RootExecutionIdentity => "agentRunId" in run

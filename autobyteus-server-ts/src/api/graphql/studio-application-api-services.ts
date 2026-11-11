@@ -12,6 +12,8 @@ import type { StudioRunModelConfigService } from "../../run-history/services/stu
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
 import type { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
+import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
+import type { DelegatedRunAgentsReader } from "../../run-history/services/delegated-run-agents-reader.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -24,6 +26,10 @@ type StudioApplicationApiServices = Readonly<{
   collaborationRootHistoryService: CollaborationRootHistoryService;
   runModelConfigService: StudioRunModelConfigService;
   delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
+  /** A run view's children and the history poll's child statuses (autobyteus-461 DS-8; SR-047). */
+  runViewChildren: RunViewChildren;
+  /** The agents of the runs a run delegated to, open or closed (token totals, the Team tab's past participants). */
+  delegatedRunAgents: DelegatedRunAgentsReader;
   bundleService: ApplicationBundleService;
   capabilityService: ApplicationCapabilityService;
   packageQueries: ApplicationPackageRegistryService;
@@ -46,6 +52,8 @@ export const configureStudioApplicationApiServices = (
     || !services.collaborationRootHistoryService
     || !services.runModelConfigService
     || !services.delegatedLaunchSelectionService
+    || !services.runViewChildren
+    || !services.delegatedRunAgents
     || !services.bundleService
     || !services.capabilityService
     || !services.packageQueries
@@ -118,3 +126,9 @@ export const getStudioApplicationPackageQueries =
 
 export const getStudioApplicationPackageCommands =
   (): ApplicationPackageCommandService => requireConfiguredServices().packageCommands;
+
+export const getStudioRunViewChildren = (): RunViewChildren =>
+  requireConfiguredServices().runViewChildren;
+
+export const getStudioDelegatedRunAgents = (): DelegatedRunAgentsReader =>
+  requireConfiguredServices().delegatedRunAgents;

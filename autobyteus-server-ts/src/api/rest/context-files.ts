@@ -1,3 +1,4 @@
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import fs from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
@@ -31,7 +32,7 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const buildServices = () => {
+const buildServices = (tree: Pick<DelegationTree, "childrenOf">) => {
   const config = appConfigProvider.config;
   const memoryDir = config.getMemoryDir();
   const layout = new ContextFileLayout({
@@ -43,7 +44,7 @@ const buildServices = () => {
     locations: new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
-      agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
+      agents: new DelegatedChildLocations({ memoryDir, teams: createStoredTeamRunExecutionTreeLocationService(memoryDir), tree }),
     }),
   });
   const cleanupService = new ContextFileDraftCleanupService(layout);
@@ -82,8 +83,8 @@ const contextFileContent = (filePath: string): UserFileContent => ({
   body: fs.createReadStream(filePath),
 });
 
-export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {
-  const { uploadService, finalizationService, readService } = buildServices();
+export async function registerContextFileRoutes(app: FastifyInstance, tree: Pick<DelegationTree, "childrenOf">): Promise<void> {
+  const { uploadService, finalizationService, readService } = buildServices(tree);
 
   app.post("/context-files/upload", async (request, reply) => {
     try {

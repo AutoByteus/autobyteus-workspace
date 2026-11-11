@@ -271,8 +271,8 @@ describe("CodexThreadBootstrapper", () => {
           }),
           tasks: {
             root,
-            delegateToNewCopy: async () => ({ delegated: false, message: "unused" }),
-            ownedTaskOf: () => null, assignToExistingCopy: async () => ({ delegated: false, message: "unused" }),
+            delegationSource: async () => ({ delegated: false, message: "unused" }),
+            ownedTaskOf: () => null,
           },
         }) : null;
       const { bootstrapper } = createBootstrapper({

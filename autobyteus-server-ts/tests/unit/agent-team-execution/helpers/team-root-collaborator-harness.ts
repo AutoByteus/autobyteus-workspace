@@ -21,6 +21,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { testTaskSide } from "../../../helpers/task-side-binding.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -59,6 +60,8 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   let allocation = 0;
   // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
   const taskExecutionResources = new InMemoryTaskExecutionResources();
+  // The node's Task side: the delegation tree over these records, and the delegation the tool path runs (SR-049).
+  const taskSide = testTaskSide(taskExecutionResources);
   const dependencies = {
     factory: new FlatTeamExecutionFactory(),
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({
@@ -67,8 +70,9 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),
-    // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskExecutionResources,
+    // Production always passes the Task side; every delegated copy belongs to a Task.
+    taskRecords: taskExecutionResources,
+    delegationTree: taskSide.tree,
     onTerminated: vi.fn(),
   };
   const config = testTeamRunConfig({
@@ -99,7 +103,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: sender, displayName: sender.memberAddress.split("/").at(-1)! }),
     recipientAddress, content,
   });
-  return { root, handles, reopen, identity, message, dependencies, memoryDir, teamMemoryDir };
+  return { root, handles, reopen, identity, message, dependencies, taskSide, memoryDir, teamMemoryDir };
 };
 
 /** `@` of both catalog definitions by the coordinator: resolves their addresses, adds nothing. */

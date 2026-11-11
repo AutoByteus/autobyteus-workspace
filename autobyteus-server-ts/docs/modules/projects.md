@@ -76,9 +76,14 @@ Neither `create_project` nor `update_project` is added automatically either
 - `src/projects/context/project-task-context-store.ts`
 - `src/projects/search/project-task-search-service.ts`: Project Task search (see
   [Project Task Search](#project-task-search)) over the [embedding layer](./embeddings.md)
-- `src/compositions/project-task-execution-resource-composition.ts`: the **single**
-  place where Projects and the collaboration runtime are bound. Its composition
-  step also calls `src/compositions/project-run-links-composition.ts`, the one
+- `src/compositions/collaboration-composition.ts`: the **single** place where
+  Projects and the collaboration runtime meet, in the composition root's order
+  (autobyteus-461 SR-047): `composeTaskSide` loads the Task records, builds the
+  `DelegationTree` and the run side's `RunTaskRecords` (before the run services);
+  `composeCollaboration` then creates `TaskRunControl`, the Project Task service
+  with it, the delegation and cross-run owners and the views' owners, and passes
+  each to its consumers (no process binding). Its composition step also calls
+  `src/compositions/project-run-links-composition.ts`, the one
   place where run history and run execution are bound to Projects (the
   `ProjectRunLinks` (`startedRunsOf`), `RunProjectStarts` and `RunProjectContextReader` ports; see
   [Runs started under a Project](#runs-started-under-a-project))
@@ -1161,10 +1166,10 @@ running), the one the left panel shows:
   starting member as busy. Here a starting team stays `initializing`. A root that is not active, not admitting, or does
   not know the run answers `offline`. Reading never wakes or starts anything.
 - Each delegated run tells the Task side its own status changes
-  (`TaskWorkerStatusNotice` → `TaskRunControl.statusChanged` →
-  `TaskExecutionResourcePort.taskExecutionsStatusChanged`): an agent run's agent
-  status, a team run's member status, and its stop. `ProjectTaskService` marks a
-  worker-status change only for a Task whose root is that run.
+  (`TaskWorkerStatusNotice` → `RunTaskRecords.statusChanged`, built in
+  `src/projects/services/run-task-records.ts`): an agent run's agent status, a team
+  run's member status, and its stop. It marks a worker-status change only for a
+  Task whose root is that run.
 
 ## Workspace Registration Boundary
 

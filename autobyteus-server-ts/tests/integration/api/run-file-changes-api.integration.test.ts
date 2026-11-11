@@ -1,3 +1,6 @@
+import { noDelegations, noWorkGuard, openTaskRecords } from "../../helpers/no-delegations.js";
+import { setProcessTeamRunHistoryService, TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
+import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -48,6 +51,7 @@ describe("Run file changes API integration", () => {
   let processRunFileChanges: RunFileChangeService | null = null;
   // The team-run GraphQL resolver binds Studio services on construction; the file-change reads use none of them.
   let studioServices: ReturnType<typeof configureStudioApplicationApiServices> | null = null;
+  let releaseTeamReads: (() => void)[] = [];
 
   const getMemoryDir = (): string => path.join(appDataDir, "memory");
 
@@ -158,18 +162,26 @@ describe("Run file changes API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,
     });
+    // The team-scoped reads go through the team history and member projection services, which the composition root
+    // creates (SR-047).
+    releaseTeamReads = [
+      setProcessTeamRunHistoryService(new TeamRunHistoryService(getMemoryDir(), {
+        tree: noDelegations(), workGuard: noWorkGuard(), teamRunManager: ownedTeamRunManager,
+      })),
+      setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: getMemoryDir(), tree: noDelegations() })),
+    ];
 
     processRunFileChanges = new RunFileChangeService();
     bindProcessRunFileChangeService(processRunFileChanges);
     studioServices = configureStudioApplicationApiServices(Object.fromEntries([
       "agentDefinitionService", "agentTeamDefinitionService", "agentOrgDefinitionService", "agentRunService",
       "teamRunService", "agentOrgRunService", "definitionAdmissionService", "collaborationRootHistoryService",
-      "runModelConfigService", "delegatedLaunchSelectionService", "bundleService", "capabilityService",
+      "runModelConfigService", "delegatedLaunchSelectionService", "runViewChildren", "delegatedRunAgents", "bundleService", "capabilityService",
       "packageQueries", "packageCommands",
     ].map((name) => [name, {}])) as never);
 
@@ -188,6 +200,7 @@ describe("Run file changes API integration", () => {
     activeRuns.clear();
     await app.close();
     studioServices?.close();
+    for (const release of releaseTeamReads.splice(0).reverse()) release();
     if (processRunFileChanges) releaseProcessRunFileChangeService(processRunFileChanges);
     if (ownedTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
     if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);

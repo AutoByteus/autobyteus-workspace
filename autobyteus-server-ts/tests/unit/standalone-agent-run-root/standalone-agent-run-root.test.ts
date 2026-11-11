@@ -4,7 +4,6 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
-import { bindDelegationTree, unbindDelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree-binding.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { HOST, buildManager, cleanupDirectories } from "./helpers/standalone-root-harness.js";
 
@@ -12,9 +11,7 @@ import { HOST, buildManager, cleanupDirectories } from "./helpers/standalone-roo
  * autobyteus-461: a standalone run's root holds only its own agent (contract P1, P2; design DS-4, DS-8): its own log in
  * its run folder (TC-13), its own Stop, and nothing hosted. A run it delegates to is a run of its own.
  */
-const trees: DelegationTree[] = [];
 afterEach(async () => {
-  trees.splice(0).forEach(unbindDelegationTree);
   vi.restoreAllMocks();
   await cleanupDirectories();
 });
@@ -91,10 +88,10 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
   });
 
   it("the Task the run works on (get_project_task's scope) is its own current entry, by its own identity", async () => {
-    const h = await buildManager();
     const tasks = new InMemoryTaskExecutionResources();
     const tree = new DelegationTree(() => tasks);
-    tree.build(); tasks.setEntriesListener(tree); bindDelegationTree(tree); trees.push(tree);
+    tree.build(); tasks.setEntriesListener(tree);
+    const h = await buildManager(tasks, tree);
     tasks.addTask("T1");
     const root = (await h.manager.resolveRoot(HOST))!;
     expect(root.ownedTaskOf({ identity: h.hostIdentity })).toBeNull();

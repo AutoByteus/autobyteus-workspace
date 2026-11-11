@@ -12,7 +12,7 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { findCrossRunMessageDelivery, OTHER_TASK_REFUSAL, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import { OTHER_TASK_REFUSAL, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
@@ -45,22 +45,24 @@ const normalizeReferenceFiles = (referenceFiles: string[] | null | undefined): s
 export class GlobalAgentRunMessageRouter {
   private static instance: GlobalAgentRunMessageRouter | null = null;
 
-  static getInstance(): GlobalAgentRunMessageRouter {
-    if (!GlobalAgentRunMessageRouter.instance) {
-      GlobalAgentRunMessageRouter.instance = new GlobalAgentRunMessageRouter();
-    }
-    return GlobalAgentRunMessageRouter.instance;
+  /** The composition root creates the process router with its cross-run delivery (SR-047 step 8); the returned function releases it. */
+  static setProcessInstance(router: GlobalAgentRunMessageRouter): () => void {
+    GlobalAgentRunMessageRouter.instance = router;
+    return () => { if (GlobalAgentRunMessageRouter.instance === router) GlobalAgentRunMessageRouter.instance = null; };
   }
 
-  static resetInstance(): void {
-    GlobalAgentRunMessageRouter.instance = null;
+  /** The process router; its callers are older lookups (FU-011). */
+  static getInstance(): GlobalAgentRunMessageRouter {
+    if (!GlobalAgentRunMessageRouter.instance) throw new Error("The message router is created by the composition root.");
+    return GlobalAgentRunMessageRouter.instance;
   }
 
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
-    crossRun?: Pick<CrossRunMessageDelivery, "route">;
-  } = {}) {}
+    /** Messages between two runs of this node (DS-2); created by the composition root. */
+    crossRun: Pick<CrossRunMessageDelivery, "route">;
+  }) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
     const targetAgentRunId = normalizeRequired(input.targetAgentRunId, "targetAgentRunId");
@@ -91,7 +93,7 @@ export class GlobalAgentRunMessageRouter {
 
     // DS-2: an agent of another run that a Task relates to the sender's run (CrossRunMessageDelivery: the tree's rule,
     // the receiver restored when stopped, both runs' logs).
-    const crossRun = input.sender.memberExecutionContext ? (this.deps.crossRun ?? findCrossRunMessageDelivery()) : null;
+    const crossRun = input.sender.memberExecutionContext ? this.deps.crossRun : null;
     if (crossRun) {
       const routed = await crossRun.route({ sender: input.sender.memberExecutionContext!.identity, senderDisplayName: input.sender.senderName,
         targetAgentRunId, content, messageType, referenceFiles, ...(input.shownAs ? { shownAs: input.shownAs } : {}) });

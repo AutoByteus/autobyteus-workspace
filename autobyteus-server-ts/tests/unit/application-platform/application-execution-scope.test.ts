@@ -14,6 +14,7 @@ import { ApplicationExecutionScope } from "../../../src/application-platform/exe
 import type { ApplicationExecutionScopeKernel } from "../../../src/application-platform/execution/application-execution-scope-kernel-builder.js";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 
 const tempRoots: string[] = [];
 
@@ -83,6 +84,8 @@ const createScope = async () => {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
+    delegationTree: noDelegations(),
+    taskRecords: openTaskRecords(),
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;
   return {

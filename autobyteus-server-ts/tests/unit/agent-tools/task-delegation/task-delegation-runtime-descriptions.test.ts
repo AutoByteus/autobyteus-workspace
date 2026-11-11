@@ -110,7 +110,7 @@ describe("task delegation runtime descriptions", () => {
       EXPECTED_RECIPIENT_ADDRESS_DESCRIPTION,
     );
 
-    const provider = new TaskDelegationToolsMcpAdapterProvider({} as never);
+    const provider = new TaskDelegationToolsMcpAdapterProvider(() => ({} as never));
     const delegateAdapter = provider.getAdapters().find(
       (adapter) => adapter.definition.name === DELEGATE_TASK_TOOL_NAME,
     );
@@ -148,7 +148,7 @@ describe("task delegation runtime descriptions", () => {
   });
 
   it("publishes the delegate_task MCP output schema as the explicit-ID union; success may carry the created task_id and launch_notes (AC-001, REQ-001, REQ-008)", () => {
-    const provider = new TaskDelegationToolsMcpAdapterProvider({} as never);
+    const provider = new TaskDelegationToolsMcpAdapterProvider(() => ({} as never));
     const catalog = new AgentToolMcpCatalog({ adapters: provider.getAdapters() });
     const [mcpDefinition] = catalog.listMcpToolsForSession({
       enabledTools: [DELEGATE_TASK_TOOL_NAME],
@@ -198,7 +198,7 @@ describe("task delegation runtime descriptions", () => {
   });
 
   it("projects pure task tools through Agent Tools MCP adapter definitions", () => {
-    const adapters = new TaskDelegationToolsMcpAdapterProvider({} as never).getAdapters();
+    const adapters = new TaskDelegationToolsMcpAdapterProvider(() => ({} as never)).getAdapters();
 
     expect(adapters.map((adapter) => adapter.definition.name)).toEqual([DELEGATE_TASK_TOOL_NAME]);
     expect(JSON.stringify(adapters.map((adapter) => adapter.definition))).not.toContain(["mark", "task", "completed"].join("_"));
@@ -222,7 +222,7 @@ describe("task delegation runtime descriptions", () => {
     const delegateTask = vi.fn(async (): Promise<Record<string, unknown>> => ({
       delegated: true, target_kind: "agent", target_agent_run_id: "run-worker",
     }));
-    const provider = new TaskDelegationToolsMcpAdapterProvider({ delegateTask } as never);
+    const provider = new TaskDelegationToolsMcpAdapterProvider(() => ({ delegateTask } as never));
     const adapter = provider.getAdapters().find(
       (candidate) => candidate.definition.name === DELEGATE_TASK_TOOL_NAME,
     )!;

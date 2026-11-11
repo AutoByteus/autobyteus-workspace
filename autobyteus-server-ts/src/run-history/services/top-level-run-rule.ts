@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -14,9 +13,9 @@ const FOLDER_OF_KIND: Record<RootExecutionIdentity["rootSubjectKind"], string> =
  */
 export const createTopLevelRunRule = (
   memoryDir: () => string,
-  tree: () => Pick<DelegationTree, "parentOf"> | null = findDelegationTree,
+  tree: Pick<DelegationTree, "parentOf">,
 ) => (run: TaskExecutionReference): boolean => {
-  const parent = tree()?.parentOf(run);
+  const parent = tree.parentOf(run);
   if (!parent) return true;
   const { rootSubjectKind, rootRunId } = parent.delegatingRun;
   return !fs.existsSync(path.join(memoryDir(), FOLDER_OF_KIND[rootSubjectKind], rootRunId));

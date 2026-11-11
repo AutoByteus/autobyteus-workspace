@@ -33,7 +33,6 @@ const REFUSAL_SITES = [
   "src/agent-collaboration/execution/task/task-delegation-command.ts",
   "src/projects/domain/task-execution-resources.ts",
   "src/agent-collaboration/execution/task/task-delegation.ts",
-  "src/agent-collaboration/execution/task/task-delegation-binding.ts",
   "src/agent-collaboration/communication/cross-run-message-delivery.ts",
   "src/agent-collaboration/communication/cross-run-address-resolution.ts",
   "src/projects/services/project-task-service.ts",

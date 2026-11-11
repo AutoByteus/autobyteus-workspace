@@ -1,22 +1,26 @@
 import { randomUUID } from "node:crypto";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
-import type { ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsStreams } from "../../agent-collaboration/delegation/child-rows-streams.js";
+import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { localChildStatuses } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootTeamRun } from "../../agent-team-execution/domain/root-team-run.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { ChildRowsStreamSession } from "./child-rows-stream-session.js";
-import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
-import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
-import { followStoredChildren, storedTeamPackageSnapshot } from "./stored-view-children.js";
+import type { RunViewChildren } from "./run-view-children.js";
+import { storedTeamPackageSnapshot } from "./stored-view-children.js";
 import { projectSequencedTeamRunEvent, projectTeamChildRunsChanged, projectTeamExecutionViewSnapshot } from "./team-execution-view-projector.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
 import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 /** What a team run's view session needs, passed in by the composition (autobyteus-461 SR-046). */
 export type TeamViewSources = Readonly<{
-  childRowsFeed: ChildRowsFeed;
+  /** The open view streams the child-row feed publishes to. */
+  streams: Pick<ChildRowsStreams, "open">;
+  /** The run's children as its view reads them (rows, peer rows, statuses). */
+  children: Pick<RunViewChildren, "rows" | "remote" | "statuses">;
+  /** Its local children's output: into a live root's stream, or numbered by this view while the run is stopped. */
+  followers: Pick<LocalChildFollowers, "followLive" | "followStored">;
   /** The run's registration (managed) and its end, by its identity. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The managed, active team run; null while it is stopped (never restores). */
@@ -53,7 +57,7 @@ export class TeamViewSession {
     private readonly sources: TeamViewSources,
   ) {
     const identity: RootExecutionIdentity = createTeamRootExecutionIdentity(teamRunId);
-    this.childRows = new ChildRowsStreamSession(sources.childRowsFeed, identity, (event) => sink.send(projectTeamChildRunsChanged(teamRunId, event)));
+    this.childRows = new ChildRowsStreamSession(sources.streams, identity, (event) => sink.send(projectTeamChildRunsChanged(teamRunId, event)));
     this.stopFollowing = sources.registrations.onRegistrationChanged(identity, () => this.switchMode());
   }
 
@@ -97,9 +101,9 @@ export class TeamViewSession {
 
   private async enterLive(root: RootTeamRun): Promise<void> {
     const identity = createTeamRootExecutionIdentity(root.teamRunId);
-    const remote = await remoteTaskExecutionDtos(identity);
-    const delegated = await delegatedChildrenDtos(identity);
-    const statuses = await localChildStatuses(identity);
+    const remote = await this.sources.children.remote(identity);
+    const delegated = await this.sources.children.rows(identity);
+    const statuses = await this.sources.children.statuses(identity);
     const connection = await root.openPackageSnapshotConnection();
     try {
       this.sink.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection, remote, delegated, statuses));
@@ -110,9 +114,9 @@ export class TeamViewSession {
       });
       this.sink.send(lifecycle(true));
       root.remoteChildren.viewerAttached();
-      root.localChildren.viewerAttached();
+      const stopChildren = this.sources.followers.followLive(root);
       this.mode = { kind: "live", root };
-      this.leaveMode = () => { unsubscribe(); root.remoteChildren.viewerDetached(); root.localChildren.viewerDetached(); };
+      this.leaveMode = () => { unsubscribe(); root.remoteChildren.viewerDetached(); stopChildren(); };
     } catch (error) {
       connection.close();
       throw error;
@@ -123,9 +127,9 @@ export class TeamViewSession {
     const tree = await this.sources.readStoredTree(this.teamRunId);
     if (!tree) throw new TeamRunNotFoundError(`Team run '${this.teamRunId}' not found`);
     const identity = createTeamRootExecutionIdentity(this.teamRunId);
-    const remote = await remoteTaskExecutionDtos(identity);
-    const delegated = await delegatedChildrenDtos(identity);
-    const statuses = await localChildStatuses(identity);
+    const remote = await this.sources.children.remote(identity);
+    const delegated = await this.sources.children.rows(identity);
+    const statuses = await this.sources.children.statuses(identity);
     this.sink.send(projectTeamExecutionViewSnapshot(this.teamRunId, {
       snapshot: storedTeamPackageSnapshot(tree), baseChangeSequence: 0, liveSequenceId: `stored-${randomUUID()}`, lastMessageChangeSequence: 0,
     }, remote, delegated, statuses));
@@ -133,7 +137,7 @@ export class TeamViewSession {
     this.sink.send(lifecycle(false));
     this.mode = { kind: "stored" };
     // The children's output, as a live root gives its viewers; numbered from this snapshot's base.
-    this.leaveMode = followStoredChildren(identity, 0, (changeSequence, event) => {
+    this.leaveMode = this.sources.followers.followStored(identity, 0, (changeSequence, event) => {
       try { this.sink.send(projectTeamRemoteEvent(event, changeSequence)); }
       catch (error) { console.error(`Error projecting a child's output: ${String(error)}`); }
     });

@@ -1,3 +1,5 @@
+import { createRunTaskRecords } from "../../../src/projects/services/run-task-records.js";
+import type { RunTaskRecords } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -25,13 +27,17 @@ describe("Projects change publication (Publication Contract, services)", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore;
   let publisher: ProjectChangePublisher, projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[];
   let releases: ReleaseTracker;
+  /** The run side's Task records (SR-053): a run's status change marks the Task it is the root of. */
+  let records: RunTaskRecords;
   /** What the hosting root answers for the worker (the live status source). */
   let liveStatus: TaskRootStatus;
   const boot = async () => {
+    const resources = taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout));
     const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
       requestRelease: (releases = trackReleases()).request,
-      taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)),
+      taskExecutionResources: resources,
       changes: publisher, workerStatus: () => liveStatus });
+    records = createRunTaskRecords(resources, publisher);
     publisher.bind({
       readProject: (projectId) => projects.getProject(projectId),
       readTask: (location) => service.readTaskChangeView(location),
@@ -96,7 +102,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
     // Mirrors the handle: the run's first AGENT_STATUS is dispatched (synchronously reaching the
     // Task side) while the "initializing" overlay is still set; the overlay clears right after.
     liveStatus = "initializing";
-    tasks.taskExecutionsStatusChanged([worker]);
+    records.statusChanged(worker);
     liveStatus = "running";
     await publisher.idle();
     expect(emitted).toEqual([{ type: "task_worker_status", scope: { kind: "project", projectId }, taskId, status: "running" }]);
@@ -107,10 +113,10 @@ describe("Projects change publication (Publication Contract, services)", () => {
       adHocTask: { description: "Review it", referenceFiles: [] } });
     await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "first" }, delegatorAgentRunId: "first" }, execution: { agentRunId: "helper" } });
     await publisher.idle(); emitted.length = 0;
-    tasks.taskExecutionsStatusChanged([{ agentRunId: "helper" }, { agentRunId: "unknown" }]);
+    records.statusChanged({ agentRunId: "helper" }); records.statusChanged({ agentRunId: "unknown" });
     await publisher.idle();
     expect(emitted).toEqual([]);
-    tasks.taskExecutionsStatusChanged([{ agentRunId: "first" }]);
+    records.statusChanged({ agentRunId: "first" });
     await publisher.idle();
     expect(emitted).toEqual([{ type: "task_worker_status", scope: { kind: "no_project" }, taskId, status: "idle" }]);
   });

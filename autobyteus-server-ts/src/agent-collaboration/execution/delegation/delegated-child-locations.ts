@@ -5,7 +5,7 @@ import { AgentRunMetadataStore } from "../../../run-history/store/agent-run-meta
 import type { AgentRunMetadata } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaboratorExecutionSource } from "../../collaborators/collaborator-source-projector.js";
 import type { TeamRunExecutionTreeLocationService, LocatedTeamAgentExecution } from "../../../run-history/services/team-run-execution-tree-location-service.js";
-import { findDelegationTree } from "../../delegation/delegation-tree-binding.js";
+import type { DelegationTree } from "../../delegation/delegation-tree.js";
 import { createAgentRootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 
@@ -52,6 +52,8 @@ export class DelegatedChildLocations {
   constructor(private readonly input: Readonly<{
     memoryDir: string;
     teams: Pick<TeamRunExecutionTreeLocationService, "findAgent" | "findAgentSync" | "listAgents">;
+    /** The relationships between runs, from the Task entries (SR-047). */
+    tree: Pick<DelegationTree, "childrenOf">;
   }>) {
     this.layout = new AgentMemoryLayout(input.memoryDir);
     this.metadata = new AgentRunMetadataStore(input.memoryDir);
@@ -92,7 +94,7 @@ export class DelegatedChildLocations {
 
   private childrenOf(lookup: Lookup): readonly TaskExecutionReference[] {
     const rootRunId = lookup.rootRunId?.trim();
-    return rootRunId ? findDelegationTree()?.childrenOf(createAgentRootExecutionIdentity(rootRunId)) ?? [] : [];
+    return rootRunId ? this.input.tree.childrenOf(createAgentRootExecutionIdentity(rootRunId)) : [];
   }
 
   private matchesAddress(lookup: Lookup, located: Readonly<{ memberAddress: string }>): boolean {

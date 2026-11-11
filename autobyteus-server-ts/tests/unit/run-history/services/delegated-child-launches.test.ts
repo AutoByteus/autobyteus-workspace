@@ -30,7 +30,7 @@ const world = (overrides: { running?: string[]; parentLive?: boolean } = {}) => 
   const agents = { check: vi.fn(async () => null), save: vi.fn(async () => saved()) };
   const teams = { check: vi.fn(async () => null), save: vi.fn(async () => saved()) };
   const launches = new DelegatedChildLaunches({
-    tree: () => ({ openChildrenOf: () => children }),
+    tree: { openChildrenOf: () => children },
     agentMetadata: async () => null,
     teamTree: async (teamRunId) => teamRunId === "eng" ? engTree : null,
     isRunning: (run) => (overrides.running ?? []).includes("agentRunId" in run ? run.agentRunId : run.teamRunId),

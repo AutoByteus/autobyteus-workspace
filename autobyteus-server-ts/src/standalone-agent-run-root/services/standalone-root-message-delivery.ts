@@ -13,13 +13,12 @@ import {
   type RootExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { delegateThrough } from "../../agent-collaboration/execution/task/task-delegation-binding.js";
+import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
+import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import { buildTaskAssigneeWorkPacket } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteInboundWorkPacket, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
@@ -54,7 +53,6 @@ export class StandaloneRootMessageDelivery {
     getCommunication(): RootCommunicationEngine;
     host: StandaloneHostAgentHandle;
     remoteLinks: RemoteRunLinks;
-    remoteDelegation: RemoteDelegation;
     remoteSend: RemoteMessageSend;
     /** Told each time the run's agent is made ready (its idle shutdown follows it). */
     onHostReady?(run: AgentRun): void;
@@ -151,19 +149,17 @@ export class StandaloneRootMessageDelivery {
       description: packet.description, comments: packet.comments, ...(packet.task ? { task: packet.task } : {}), referenceFiles: packet.referenceFiles }));
   }
 
-  /** `delegate_task(address)`: a new run of its own (DS-1); never to the run's own address or definition. */
-  async delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
+  /**
+   * What this run answers when its agent delegates (SR-049): the sender, after its identity check; this run; its
+   * address; and this run's own placement (its catalog address map and own refusals). The root adds its gate and its
+   * view's peer-run notice; the delegation itself is the tool path's.
+   */
+  delegationSource(context: TaskDelegationContext): Omit<DelegationSource, "peerRunLinked"> {
     this.options.authorizeIdentity(context.identity);
-    if (input.node !== undefined) return this.options.remoteDelegation.delegate({ ...input, node: input.node }, context);
-    return delegateThrough((delegation) => delegation.toNewRun({ sender: context.identity, senderRun: this.options.root,
-      delegatorAddress: this.options.getIndex().agentAddressOf(context.identity.agentRunId), spawn: input,
-      resolvePlacement: async (work, folder) => localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work, folder)) }));
-  }
-
-  /** `delegate_task` with a run's own ID and `task_id` (DS-6). */
-  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
-    this.options.authorizeIdentity(context.identity);
-    return delegateThrough((delegation) => delegation.toExistingRun({ sender: context.identity, senderRun: this.options.root, assign: input }));
+    return Object.freeze({ sender: context.identity, senderRun: this.options.root,
+      delegatorAddress: this.options.getIndex().agentAddressOf(context.identity.agentRunId),
+      resolvePlacement: async (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) =>
+        localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, address, work, folder)) });
   }
 
   async reserveAgentInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult> {

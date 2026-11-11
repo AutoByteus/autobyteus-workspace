@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
@@ -9,7 +10,7 @@ const fixture = () => {
   const orgs = { listCatalogRows: vi.fn(async () => [row]), getCatalogRow: vi.fn(async (id: string) => id === "org-one" ? row : null) };
   const orgRuns = { getActive: vi.fn(() => null as any) };
   const teams = { listTeamRunHistory: vi.fn(async () => []) };
-  const service = new CollaborationRootHistoryService({ memoryDir: "/test-owned", orgs, orgRuns, teams, orgTrees: trees as never });
+  const service = new CollaborationRootHistoryService({ tree: noDelegations(), memoryDir: "/test-owned", orgs, orgRuns, teams, orgTrees: trees as never });
   return { tree, row, trees, orgs, orgRuns, teams, service };
 };
 describe("one authoritative admitted Org history subject", () => {

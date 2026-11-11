@@ -39,7 +39,7 @@ const world = async () => {
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/eng", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { teamRunId: "eng" }, teamCoordinatorAgentRunId: "designer" });
   await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/image_maker", delegatedFrom: { delegatingRun: E, delegatorAgentRunId: "designer" }, execution: { agentRunId: "image" } });
-  return { reader: new DelegatedRunAgentsReader(memory, () => tree), tasks };
+  return { reader: new DelegatedRunAgentsReader(memory, tree), tasks };
 };
 
 describe("DelegatedRunAgentsReader (runs delegated from a run)", () => {

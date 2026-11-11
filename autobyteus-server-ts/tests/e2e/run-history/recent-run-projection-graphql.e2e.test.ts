@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { createHash } from "node:crypto";
 import fsSync from "node:fs";
@@ -284,7 +285,7 @@ describe("recent run projection GraphQL e2e", () => {
       providerInputNormalizer: { normalizeForProvider: unavailableExecution },
       agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
     });
-    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: unusedExecutionBoundary(),
       memberExecutionContextBuilder: unusedExecutionBoundary(),

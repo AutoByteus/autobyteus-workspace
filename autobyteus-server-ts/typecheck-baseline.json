@@ -208,7 +208,6 @@
   "tests/unit/agent-tools/project-tasks/project-task-tools.test.ts": 2,
   "tests/unit/agent-tools/published-artifacts/publish-artifacts-tool.test.ts": 2,
   "tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts": 4,
-  "tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts": 1,
   "tests/unit/agent-tools/team-communication/collaboration-result-contracts.test.ts": 1,
   "tests/unit/agent-tools/team-communication/send-message-to.test.ts": 1,
   "tests/unit/api/graphql/agent-background-task-view.test.ts": 1,

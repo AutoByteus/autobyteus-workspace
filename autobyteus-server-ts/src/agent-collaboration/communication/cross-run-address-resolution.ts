@@ -83,8 +83,3 @@ export class CrossRunAddressResolution {
   }
 }
 
-let bound: CrossRunAddressResolution | null = null;
-export const bindCrossRunAddressResolution = (resolution: CrossRunAddressResolution): void => { bound = resolution; };
-export const unbindCrossRunAddressResolution = (resolution: CrossRunAddressResolution): void => { if (bound === resolution) bound = null; };
-/** The process resolution; `null` where collaboration is not composed (an address then resolves in the sender's run only). */
-export const findCrossRunAddressResolution = (): CrossRunAddressResolution | null => bound;

@@ -1,12 +1,11 @@
-import { workingDelegatedRunsRefusal } from "../../run-history/services/delegated-work-guard.js";
-import { delegatedChildrenDtos } from "../../services/agent-streaming/delegated-children-dtos.js";
+import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
+import type { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { listAgentOrgRunSelectionScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
-import { remoteTaskExecutionDtos } from "../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { PlacementLaunchOverride } from "../../agent-collaboration/services/collaboration-launch-configuration-resolver.js";
@@ -62,6 +61,8 @@ export class AgentOrgRunService {
     history: Pick<AgentOrgRunHistoryCatalogService, "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
+    /** Archive and delete wait for the runs it delegated to (REQ-007). */
+    workGuard: Pick<DelegatedWorkGuard, "refusal">;
   }>) {}
 
   /**
@@ -199,14 +200,14 @@ export class AgentOrgRunService {
 
   async archiveStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived");
+    const refused = this.dependencies.workGuard.refusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived");
     if (refused) return { success: false as const, message: refused };
     return this.dependencies.history.archiveStored(normalized);
   }
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "deleted");
+    const refused = this.dependencies.workGuard.refusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "deleted");
     if (refused) return { success: false as const, message: refused };
     const result = await this.dependencies.history.deleteStored(normalized);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
@@ -224,10 +225,11 @@ export class AgentOrgRunService {
     return this.dependencies.manager.getActive(required(agentOrgRunId, "agentOrgRunId"));
   }
 
-  async getInspection(orgRunId: string) {
+  /** The Org's stored or live view, with its children as `children` reads them (DS-8; passed by the read, SR-047). */
+  async getInspection(orgRunId: string, children: Pick<RunViewChildren, "rows" | "remote">) {
     const inspection = await this.dependencies.manager.getInspection(orgRunId);
     const run = { rootSubjectKind: "agent_org" as const, rootRunId: inspection.snapshot.tree.rootOrg.orgRunId };
-    return projectAgentOrgExecutionSnapshot({ ...inspection, remoteTaskExecutions: await remoteTaskExecutionDtos(run), delegated: await delegatedChildrenDtos(run) });
+    return projectAgentOrgExecutionSnapshot({ ...inspection, remoteTaskExecutions: await children.remote(run), delegated: await children.rows(run) });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

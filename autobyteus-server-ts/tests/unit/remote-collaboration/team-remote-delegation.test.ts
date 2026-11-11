@@ -38,7 +38,8 @@ import { StandaloneAgentRunRootManager } from "../../../src/standalone-agent-run
 import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../src/config/task-execution-idle-shutdown-setting.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
-import { bindTestTaskSide } from "../../helpers/task-side-binding.js";
+import { testTaskSide } from "../../helpers/task-side-binding.js";
+import { noDelegations } from "../../helpers/no-delegations.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
 /**
@@ -102,7 +103,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
   const client = peerClient(A_ID, A_PEERS, network);
   releases.splice(0).forEach((release) => release());
-  releases.push(bindTestTaskSide(resources, () => client));
+  const taskSide = testTaskSide(resources, () => client);
   const manager = new StandaloneAgentRunRootManager({
     memoryDir: dir, activeRootDirectory: new ActiveCollaborationRootDirectory(),
     definitions: { getAgentDefinitionById: async (id) => new AgentDefinition({ id, name: "Assistant", description: "x", instructions: "x" }) },
@@ -112,9 +113,9 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
       terminateHost: vi.fn(async () => { hostActive = false; return { outcome: "terminated" as const, runtimeKind: null }; }),
       readMetadata: async (runId) => metadata.get(runId) ?? null,
     },
-    taskExecutionResources: resources,
     rootDependencies: {
-      taskExecutionResources: resources,
+      taskRecords: resources,
+      delegationTree: taskSide.tree,
       remoteRunChannel: () => client,
     },
   });
@@ -130,13 +131,14 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
   hostActive = true;
   const identity = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/assistant" as never, agentRunId: DELEGATOR });
   const root = async () => (await manager.resolveRoot(DELEGATOR))!;
-  const delegate = async (input: Record<string, unknown> = {}) => (await root()).delegateToNewCopy({ identity },
+  // delegate_task on the tool path (SR-049): the root answers for its own run, the delegation goes on outside it.
+  const delegate = async (input: Record<string, unknown> = {}) => taskSide.delegate(await root(), { identity },
     { recipient_address: "/studio_team", description: "Draft the episode.", node: "docker", ...input } as never);
   const send = async (target: string, content: string) => (await root()).deliverExactAgentMessage({
     sender: { kind: "agent", identity, displayName: "assistant" } as never, targetAgentRunId: target, content, referenceFiles: [] });
   // autobyteus-261: this node's discovery of its peers, over the same client.
   const discovery = new PeerNodeDiscovery({ capability: { isEnabled: () => true }, peers: { list: async () => A_PEERS }, client });
-  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, setHostActive: (value: boolean) => { hostActive = value; } };
+  return { dir, metadata, manager, resources, received, host, client, discovery, root, delegate, send, taskSide, setHostActive: (value: boolean) => { hostActive = value; } };
 };
 
 /** Node B: a shared Agent Team behind the real Team stack; the agent runtimes are fakes whose status the test drives. */
@@ -203,7 +205,8 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       identity: createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity(teamContext.teamRunId), memberAddress: agentNode.address, agentRunId: agentNode.agentRunId }),
       teamScoped: true, collaborationRole: "team_member",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCapability }) } as never,
-    taskExecutionResources: new InMemoryTaskExecutionResources(),
+    taskRecords: new InMemoryTaskExecutionResources(),
+    delegationTree: noDelegations(),
     modelSelectionValidator: { validate: async ({ selection }: any) => ({ kind: "valid", selection }), validateMany: async () => [] } as never,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
   });
@@ -324,7 +327,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     await a.delegate();
     const root = await a.root();
     a.resources.addTask("task-B");
-    await expect(root.assignToExistingCopy({ identity: createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR),
+    await expect(a.taskSide.assign(root, { identity: createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR),
       memberAddress: "/assistant" as never, agentRunId: DELEGATOR }) }, { copy: { teamRunId: "studio_team_b" }, taskId: "task-B" }))
       .resolves.toEqual({ delegated: false, message: expect.stringContaining("can't be given to an agent on another node") });
     // The closed Task fences it: nothing on A stops a run on B (the Task side logs the fence, task-execution-resource-release.ts).

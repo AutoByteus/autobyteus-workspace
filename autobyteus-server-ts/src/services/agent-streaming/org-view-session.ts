@@ -4,21 +4,24 @@ import {
   RootExecutionEventDtoSchema,
   type CollaborationStreamServerMessage,
 } from "@autobyteus/collaboration-stream-contracts";
-import type { ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsStreams } from "../../agent-collaboration/delegation/child-rows-streams.js";
+import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { localChildStatuses } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { AgentOrgRun } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
-import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
-import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
-import { followStoredChildren } from "./stored-view-children.js";
+import type { RunViewChildren } from "./run-view-children.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot, projectAgentOrgExecutionView } from "./agent-org-execution-view-projector.js";
 
 /** What an Org run's view session needs, passed in by the composition (autobyteus-461 SR-046). */
 export type OrgViewSources = Readonly<{
-  childRowsFeed: ChildRowsFeed;
+  /** The open view streams the child-row feed publishes to. */
+  streams: Pick<ChildRowsStreams, "open">;
+  /** The run's children as its view reads them (rows, peer rows, statuses). */
+  children: Pick<RunViewChildren, "rows" | "remote" | "statuses">;
+  /** Its local children's output: into a live root's stream, or numbered by this view while the run is stopped. */
+  followers: Pick<LocalChildFollowers, "followLive" | "followStored">;
   /** The run's registration (managed) and its end, by its identity. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The stopped run's own stored tree; null when there is no such run. */
@@ -50,7 +53,7 @@ export class OrgViewSession {
     private readonly sources: OrgViewSources & Readonly<{ activeOrgRun(orgRunId: string): AgentOrgRun | null }>,
   ) {
     const identity = createAgentOrgRootExecutionIdentity(orgRunId);
-    this.childRows = new ChildRowsStreamSession(sources.childRowsFeed, identity, (event) => send(projectCollaborationChildRunsChanged("agent_org", orgRunId, event)));
+    this.childRows = new ChildRowsStreamSession(sources.streams, identity, (event) => send(projectCollaborationChildRunsChanged("agent_org", orgRunId, event)));
     this.stopFollowing = sources.registrations.onRegistrationChanged(identity, () => this.switchMode());
   }
 
@@ -104,9 +107,9 @@ export class OrgViewSession {
 
   private async enterLive(run: AgentOrgRun): Promise<void> {
     const identity = createAgentOrgRootExecutionIdentity(run.orgRunId);
-    const remote = await remoteTaskExecutionDtos(identity);
-    const delegated = await delegatedChildrenDtos(identity);
-    const statuses = await localChildStatuses(identity);
+    const remote = await this.sources.children.remote(identity);
+    const delegated = await this.sources.children.rows(identity);
+    const statuses = await this.sources.children.statuses(identity);
     const barrier = await run.openPackageSnapshotConnection();
     try {
       this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
@@ -121,9 +124,9 @@ export class OrgViewSession {
       });
       this.send(this.lifecycle(true));
       run.remoteChildren.viewerAttached();
-      run.localChildren.viewerAttached();
+      const stopChildren = this.sources.followers.followLive(run);
       this.mode = { kind: "live", run };
-      this.leaveMode = () => { unsubscribe(); run.remoteChildren.viewerDetached(); run.localChildren.viewerDetached(); };
+      this.leaveMode = () => { unsubscribe(); run.remoteChildren.viewerDetached(); stopChildren(); };
     } catch (error) {
       barrier.close();
       throw error;
@@ -138,12 +141,12 @@ export class OrgViewSession {
     this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: projectAgentOrgExecutionSnapshot({
       orgRunId: this.orgRunId, isActive: false, snapshot: { tree, statuses: [], inputStates: [] },
       baseChangeSequence: 0, liveSequenceId: `stored-${randomUUID()}`, lastMessageChangeSequence: 0,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(identity), delegated: await delegatedChildrenDtos(identity),
+      remoteTaskExecutions: await this.sources.children.remote(identity), delegated: await this.sources.children.rows(identity),
     }) }));
     this.childRows.snapshotSent();
     this.send(this.lifecycle(false));
     this.mode = { kind: "stored" };
-    this.leaveMode = followStoredChildren(identity, 0, (changeSequence, event) => {
+    this.leaveMode = this.sources.followers.followStored(identity, 0, (changeSequence, event) => {
       try {
         this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: RootExecutionEventDtoSchema.parse({
           root_subject_kind: "agent_org", root_run_id: this.orgRunId, change_sequence: changeSequence,

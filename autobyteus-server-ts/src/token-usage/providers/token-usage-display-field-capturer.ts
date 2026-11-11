@@ -11,7 +11,7 @@ import {
   type TeamRunHistoryCatalogService,
 } from "../../run-history/services/team-run-history-catalog-service.js";
 import {
-  createStoredCollaborationExecutionLocationService,
+  createStoredRunMemberLocations,
   type LocatedCollaborationAgentExecution,
 } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -42,7 +42,6 @@ export class TokenUsageDisplayFieldCapturer {
   async capture(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     const located = await this.getExecutionLocation().findAgent({ agentRunId: payload.run_id }).catch(() => null);
     if (located?.rootSubjectKind === "agent_org") return this.captureOrgUsage(payload, located);
-    if (located?.rootSubjectKind === "agent") return this.captureAgentRootChildUsage(payload, located);
     return payload.root_team_run_id
       ? this.captureTeamUsage(payload, payload.root_team_run_id, located)
       : this.captureStandaloneUsage(payload);
@@ -114,25 +113,6 @@ export class TokenUsageDisplayFieldCapturer {
     };
   }
 
-  /** Agent-root children are attributed by their own AgentRun; the host's name labels them (no roll-up). */
-  private async captureAgentRootChildUsage(
-    payload: TokenUsageUpdatedPayload,
-    located: Extract<LocatedCollaborationAgentExecution, { rootSubjectKind: "agent" }>,
-  ): Promise<TokenUsageUpdatedPayload> {
-    const hostRow = await this.getAgentCatalog().getCatalogRow(located.rootRunId).catch(() => null);
-    return {
-      ...payload,
-      team_name: compactOptional(payload.team_name) ?? compactOptional(hostRow?.agentName),
-      agent_name: compactOptional(payload.agent_name),
-      run_summary: compactOptional(payload.run_summary),
-      run_created_at: normalizeDateString(payload.run_created_at)
-        ?? normalizeDateString(located.startedAt)
-        ?? normalizeDateString(hostRow?.createdAt),
-      member_display_name: compactOptional(payload.member_display_name)
-        ?? compactOptional(located.memberAddress),
-    };
-  }
-
   private getAgentCatalog(): Pick<AgentRunHistoryCatalogService, "getCatalogRow"> {
     return this.dependencies.agentCatalog ?? getAgentRunHistoryCatalogService();
   }
@@ -147,6 +127,6 @@ export class TokenUsageDisplayFieldCapturer {
 
   private getExecutionLocation(): NonNullable<typeof this.dependencies.executionLocation> {
     return this.dependencies.executionLocation
-      ?? createStoredCollaborationExecutionLocationService(appConfigProvider.config.getMemoryDir());
+      ?? createStoredRunMemberLocations(appConfigProvider.config.getMemoryDir());
   }
 }

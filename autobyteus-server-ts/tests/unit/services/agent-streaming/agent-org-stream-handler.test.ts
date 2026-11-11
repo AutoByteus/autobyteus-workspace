@@ -7,7 +7,7 @@ import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domai
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
+import { delegatedChild, followTestChildRows, noChildCommands, noFollowers, noViewChildren, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-run-1";
 const agent = testOrgAgentNode("/director", "agent-run-1");
@@ -82,7 +82,8 @@ const harness = (snapshot = { tree, messages, statuses, inputStates: [] }, optio
   const readStoredTree = vi.fn(async (id: string) => id === orgRunId ? snapshot.tree : null);
   return { publisher, executeAgentCommand, executeAgentCommandWithExecutionKind, recordRunActivity, service, run, feed, registrations,
     stop: () => { managed = false; registrations.unregister(identity); },
-    handler: new AgentOrgStreamHandler(service as never, { childRowsFeed: feed.feed, registrations, readStoredTree }) };
+    handler: new AgentOrgStreamHandler(service as never,
+      { streams: feed.streams, children: noViewChildren(), followers: noFollowers(), registrations, readStoredTree }, noChildCommands()) };
 };
 
 describe("AgentOrgStreamHandler", () => {

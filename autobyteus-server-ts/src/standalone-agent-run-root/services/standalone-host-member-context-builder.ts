@@ -62,13 +62,9 @@ export class StandaloneHostMemberContextBuilder {
       }),
       tasks: Object.freeze({
         root,
-        delegateToNewCopy: async (caller, input) => {
+        delegationSource: async (caller) => {
           const active = this.options.getActiveRoot(metadata.runId);
-          return active ? active.delegateToNewCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
-        },
-        assignToExistingCopy: async (caller, input) => {
-          const active = this.options.getActiveRoot(metadata.runId);
-          return active ? active.assignToExistingCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
+          return active ? active.delegationSource({ identity: caller }) : { delegated: false, message: ROOT_NOT_ACTIVE_MESSAGE };
         },
         ownedTaskOf: (caller) => {
           // An inactive root can't say which Task the caller works on: refuse rather than answer "none".

@@ -20,8 +20,8 @@ const notLive = (agentRunId: string): AgentOperationResult =>
  */
 export class DelegatedRunCommands {
   constructor(private readonly dependencies: Readonly<{
-    tree(): Pick<DelegationTree, "runOfAgent" | "parentOf"> | null;
-    standaloneRuns(): Pick<StandaloneRunCommandPort, "postUserMessage"> | null;
+    tree: Pick<DelegationTree, "runOfAgent" | "parentOf">;
+    standaloneRuns: Pick<StandaloneRunCommandPort, "postUserMessage">;
     activeAgentRun(agentRunId: string): AgentRun | null;
     /** A team run's root, restored when stopped (`restore`), else only when live. */
     teamRun(teamRunId: string, restore: boolean): Promise<TeamRunCommands | null>;
@@ -40,7 +40,7 @@ export class DelegatedRunCommands {
       return team ? team.executeAgentCommand(agentRunId, command) : notLive(agentRunId);
     }
     if (command.kind === "post_message") {
-      const posted = await this.dependencies.standaloneRuns()?.postUserMessage({ runId: agentRunId, message: command.message, postOptions: command.postOptions ?? {} });
+      const posted = await this.dependencies.standaloneRuns.postUserMessage({ runId: agentRunId, message: command.message, postOptions: command.postOptions ?? {} });
       if (!posted) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' was not found.` };
       return posted.kind === "posted" ? posted.post
         : { accepted: false, code: "COLLABORATOR_MENTION_REJECTED", message: posted.kind === "admission_failed" ? posted.message : posted.admission.message };
@@ -51,10 +51,10 @@ export class DelegatedRunCommands {
   }
 
   private async childRunOf(parent: RootExecutionIdentity, agentRunId: string): Promise<RootExecutionIdentity | null> {
-    const tree = this.dependencies.tree();
-    const run = tree ? await tree.runOfAgent(agentRunId) : null;
+    const tree = this.dependencies.tree;
+    const run = await tree.runOfAgent(agentRunId);
     const reference = run ? runReferenceOf(run) : null;
-    const delegatedFrom = reference ? tree!.parentOf(reference) : null;
+    const delegatedFrom = reference ? tree.parentOf(reference) : null;
     return run && delegatedFrom && rootExecutionIdentityKey(delegatedFrom.delegatingRun) === rootExecutionIdentityKey(parent) ? run : null;
   }
 }

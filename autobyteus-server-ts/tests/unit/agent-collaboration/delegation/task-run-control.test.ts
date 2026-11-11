@@ -8,7 +8,7 @@ const control = (input: { agentStopped?: boolean; teamStopped?: boolean; agentSt
     getAgentRun: vi.fn(() => input.agentStatus === undefined || input.agentStatus === null ? null : { getStatusSnapshot: () => ({ status: input.agentStatus }) }) };
   const teamRuns = { stopForTaskClosure: vi.fn(async () => (input.teamStopped ?? true) ? "stopped" as const : "not_stopped" as const),
     getActiveTeamRun: vi.fn(() => input.teamStatuses ? { getLeafAgentStatusSnapshots: () => input.teamStatuses!.map((status) => ({ details: { status } })) } : null) };
-  return { agentRuns, teamRuns, control: new TaskRunControl({ agentRuns: agentRuns as never, teamRuns: teamRuns as never }) };
+  return { agentRuns, teamRuns, control: new TaskRunControl({ agentRuns: agentRuns as never, teamRuns: teamRuns as never, tasks: { isOpen: () => false } }) };
 };
 
 describe("TaskRunControl", () => {
@@ -54,7 +54,7 @@ describe("a pending closure stop and a reopen", () => {
       stopped.push(runId);
       return "stopped" as const;
     }) };
-    const control = new TaskRunControl({ agentRuns: runService as never, teamRuns: runService as never, tasks: () => tasks });
+    const control = new TaskRunControl({ agentRuns: runService as never, teamRuns: runService as never, tasks });
     return { tasks, control, reachGate, stopped };
   };
 

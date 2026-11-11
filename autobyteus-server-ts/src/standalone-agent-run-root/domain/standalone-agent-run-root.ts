@@ -1,6 +1,6 @@
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
@@ -9,7 +9,10 @@ import type { StandaloneHostTerminationResult, StandaloneRunPostInput, Standalon
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { RootCommunicationEngine, type RunSendInput } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
@@ -35,7 +38,6 @@ import { StandaloneRootRecipientResolver } from "../services/standalone-root-rec
 import { StandaloneRootMessageDelivery } from "../services/standalone-root-message-delivery.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
@@ -43,7 +45,6 @@ import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
-import { LocalChildObservation } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 /** What a view of the run opens with: its own agent; its children are the runs it delegated to (the view adds them). */
@@ -70,7 +71,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this run delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
-  readonly localChildren: LocalChildObservation;
   private readonly delegatedIdle: DelegatedRunIdleShutdown | null;
   private readonly workerStatus: TaskWorkerStatusNotice | null;
   private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
@@ -86,7 +86,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     rootLaunchConfiguration: AgentLaunchConfiguration;
     persistence: StandaloneRootPersistenceCoordinator;
     publisher: RootEventPublisher<StandaloneRootEvent>;
-    taskExecutionResources?: TaskExecutionResourcePort;
+    taskRecords: RunTaskRecords;
+    /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
+    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf">;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     /** The run's own origin (a delegated run, from its Task entry's delegator; a run a peer started, its back-link). */
@@ -103,26 +105,23 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.inheritedLaunch = options.rootLaunchConfiguration;
     this.index = new StandaloneRootIndex(host);
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
-    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(root),
+    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(root, options.delegationTree),
       backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016
       channel: options.remoteRunChannel });
-    const remoteDelegation = new RemoteDelegation({ root, channel: options.remoteRunChannel,
-      onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
-    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(root).filter((link) => link.open),
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(root, options.delegationTree).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event), channel: options.remoteRunChannel });
-    this.localChildren = new LocalChildObservation({ run: root, publish: (event) => options.publisher.publish(event) });
     // DS-7: a delegated run shuts down when quiet; its next message restores it.
     this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
       runInGate: (operation) => this.operationGate.run(operation), ...options.taskExecutionIdleShutdown,
     }) : null;
-    this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.hostRunId }) : null;
+    this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.hostRunId }, options.taskRecords) : null;
     this.collaborators = new StandaloneRootCollaborators({ admission: options.collaboratorAdmission, inheritedLaunch: () => this.inheritedLaunch, host });
     this.delivery = new StandaloneRootMessageDelivery({
       hostRunId: this.hostRunId, root, getIndex: () => this.index,
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
       collaborators: this.collaborators, getCommunication: () => this.communication, host: options.hostHandle,
-      remoteLinks: this.remoteLinks, remoteDelegation, remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
+      remoteLinks: this.remoteLinks, remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       onHostReady: (run) => { this.delegatedIdle?.watch(run); this.workerStatus?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
@@ -180,15 +179,21 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> { return this.delivery.listAvailableAgents(sender); }
   collaboratorPortFor(viewerAgentRunId: string): CollaboratorRootPort { return this.collaborators.portFor(viewerAgentRunId); }
 
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
-    return this.operationGate.run(() => this.delivery.delegateToNewCopy(context, input));
+  /** What this run answers when its agent delegates, in its gate (SR-049); the delegation is the tool path's. */
+  delegationSource(context: TaskDelegationContext): Promise<DelegationSource> {
+    return this.operationGate.run(async () => {
+      const own = this.delivery.delegationSource(context);
+      return Object.freeze({ ...own,
+        resolvePlacement: (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) =>
+          this.operationGate.run(() => own.resolvePlacement(address, work, folder)),
+        peerRunLinked: (link: Parameters<DelegationSource["peerRunLinked"]>[0]) => this.remoteChildren.linkCommitted(link) });
+    });
   }
-  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
-    return this.operationGate.run(() => this.delivery.assignToExistingCopy(context, input));
-  }
+  /** A local child's output for this run's views, sequenced in its own stream (DS-8; followed by `LocalChildFollowers`). */
+  publishLocalChildEvent(event: LocalChildRootEvent): void { this.options.publisher.publish(event); }
   /** The Task this run works on (`get_project_task`'s read scope): its own entries, by its own identity; else null. */
   ownedTaskOf(_context: TaskDelegationContext): TaskExecutionOwner | null {
-    return runOwnTaskOf({ agentRunId: this.hostRunId });
+    return runOwnTaskOf({ agentRunId: this.hostRunId }, this.options.delegationTree);
   }
 
   /** `send_message_to(address)` in this run (contract §2.3). */
@@ -265,7 +270,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.lifecycle = "terminating";
     this.delegatedIdle?.dispose();
     this.remoteChildren.dispose();
-    this.localChildren.dispose();
     this.communication.closeAdmission();
     this.termination = (async () => {
       await this.operationGate.closeAndDrain();
@@ -283,7 +287,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     const endpoint = this.remoteLinks.endpointFor(agentRunId);
     if (!endpoint || endpoint.kind === "delegator") return;
     const execution = endpoint.kind === "delegated_run" ? { agentRunId: endpoint.link.agentRunId } : { teamRunId: endpoint.link.teamRunId };
-    if (this.options.taskExecutionResources && !this.options.taskExecutionResources.isOpen(execution)) {
+    if (!this.options.taskRecords.isOpen(execution)) {
       throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
     }
   }

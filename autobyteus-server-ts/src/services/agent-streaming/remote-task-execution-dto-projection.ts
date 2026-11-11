@@ -1,13 +1,10 @@
 import type { RemoteAgentLaunchDto, RemoteTaskExecutionDto, RemoteTaskExecutionSummaryDto } from "@autobyteus/agent-presentation-contracts";
-import { findProcessRemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import {
   describeRemoteTaskExecutions,
   type RemoteRunSummaryEvent,
   type RemoteTaskExecutionView,
 } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
-import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** A remote link with its node's name as the root views list it (autobyteus-278). */
 export const projectRemoteTaskExecution = (execution: RemoteTaskExecutionView): RemoteTaskExecutionDto => {
@@ -45,11 +42,3 @@ export const projectRemoteTaskExecutionSummary = (summary: RemoteRunSummaryEvent
   statuses: summary.statuses.map((status) => ({ agent_run_id: status.agentRunId, status: status.status })),
   launches: summary.launches.map(projectRemoteLaunch),
 });
-
-/**
- * A run view's peer children: the open peer runs it delegated to (their Task entries, one hop) with this owner's node
- * names. The view never waits for a peer (only this node's peer list is read); the summaries follow as events.
- */
-export const remoteTaskExecutionDtos = async (run: RootExecutionIdentity): Promise<readonly RemoteTaskExecutionDto[]> =>
-  (await describeRemoteTaskExecutions(peerRunLinksOf(run).filter((link) => link.open), findProcessRemoteRunChannel()))
-    .map(projectRemoteTaskExecution);

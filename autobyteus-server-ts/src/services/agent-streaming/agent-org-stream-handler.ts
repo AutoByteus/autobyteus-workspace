@@ -1,8 +1,4 @@
-import { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
-import { getProcessStandaloneRunCommandPort } from "../../agent-execution/services/standalone-run-ports.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import { getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { randomUUID } from "node:crypto";
 import {
@@ -56,11 +52,8 @@ export class AgentOrgStreamHandler {
   constructor(
     private readonly service: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">,
     private readonly sources: OrgViewSources,
-    private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
-      tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
-      activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
-      teamRun: (teamRunId, restore) => restore ? getTeamRunService().resolveManagedTeamRun(teamRunId) : Promise.resolve(getTeamRunService().getActiveTeamRun(teamRunId)),
-    }),
+    /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
+    private readonly children: Pick<DelegatedRunCommands, "execute" | "isChildAgent">,
   ) {}
 
   async connect(connection: WebSocketConnection, orgRunIdInput: string): Promise<string | null> {

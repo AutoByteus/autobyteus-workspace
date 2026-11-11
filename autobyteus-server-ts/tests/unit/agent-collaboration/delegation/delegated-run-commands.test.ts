@@ -21,7 +21,7 @@ const harness = async () => {
   const post = vi.fn(async () => ({ kind: "posted" as const, run: {} as never, post: { accepted: true, code: "POSTED" } }));
   const team = { executeAgentCommand: vi.fn(async () => ({ accepted: true, code: "TEAM" })) };
   const teamRun = vi.fn(async (_id: string, restore: boolean) => restore ? team : null);
-  const commands = new DelegatedRunCommands({ tree: () => tree, standaloneRuns: () => ({ postUserMessage: post }),
+  const commands = new DelegatedRunCommands({ tree, standaloneRuns: { postUserMessage: post },
     activeAgentRun: (id) => id === "image" ? live as never : null, teamRun });
   return { commands, post, live, team, teamRun };
 };

@@ -32,6 +32,8 @@ const buildServices = () => ({
   collaborationRootHistoryService: { subject: "collaboration-root-history" },
   runModelConfigService: { subject: "run-model-config" },
   delegatedLaunchSelectionService: { subject: "delegated-launch-selection" },
+  runViewChildren: { subject: "run-view-children" },
+  delegatedRunAgents: { subject: "delegated-run-agents" },
   bundleService: { subject: "bundle" },
   capabilityService: { subject: "capability" },
   packageQueries: { subject: "package-queries" },

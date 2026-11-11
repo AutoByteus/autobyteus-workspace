@@ -1,3 +1,4 @@
+import { ChildRowsStreams } from "../../../../src/agent-collaboration/delegation/child-rows-streams.js";
 import { describe, expect, it, vi } from "vitest";
 import { ChildRowsFeed, type ChildRowsEvent } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
 import type { ChildRowsChange, DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
@@ -13,9 +14,11 @@ const row = (agentRunId: string) => ({ kind: "local" as const, row: { agentRunId
 type RowOf = (parent: unknown, child: DelegatedChild) => Promise<ReturnType<typeof row> | null>;
 const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (_parent, c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
   let report: (change: ChildRowsChange) => void = () => undefined;
-  const feed = new ChildRowsFeed({ rowOf });
+  const streams = new ChildRowsStreams();
+  const feed = new ChildRowsFeed({ rowOf }, streams);
   feed.follow({ subscribeChildRows: (listener) => { report = listener; return () => undefined; } });
-  return { feed, rowOf, report: (change: ChildRowsChange) => report(change) };
+  // SR-047: the open view streams are their own owner; the feed publishes to them.
+  return { feed: Object.assign(feed, { open: streams.open.bind(streams) }), rowOf, report: (change: ChildRowsChange) => report(change) };
 };
 
 describe("ChildRowsFeed", () => {

@@ -6,7 +6,11 @@ import {
   bindProcessStandaloneAgentRunRootManager,
   releaseProcessStandaloneAgentRunRootManager,
 } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { bindLocalChildPorts, unbindLocalChildPorts, type LocalChildPorts } from "../../../../src/agent-collaboration/execution/delegation/local-child-observation.js";
+import type { LocalChildPorts } from "../../../../src/agent-collaboration/execution/delegation/local-child-observation.js";
+import { LocalChildFollowers } from "../../../../src/agent-collaboration/execution/delegation/local-child-followers.js";
+import { createAgentRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { RunViewChildren } from "../../../../src/services/agent-streaming/run-view-children.js";
+import { withStudioServices } from "../../../helpers/studio-reads.js";
 
 /**
  * autobyteus-426 REQ-009 (D-09), autobyteus-461 SR-040: the history poll of listed standalone runs answers, active or
@@ -34,8 +38,8 @@ const agents: Record<string, { agentRunId: string; address: string | null }[]> =
 };
 const live: Record<string, { agentRunId: string; status: string }[]> = { "writer-1": [{ agentRunId: "writer-1", status: "running" }] };
 const ports: LocalChildPorts = {
-  tree: () => ({ openChildrenOf: (run) => (children[run.rootRunId] ?? []) as never, subscribe: () => () => undefined,
-    agentsOf: async (run) => agents[run.rootRunId] ?? [] }),
+  tree: { openChildrenOf: (run) => (children[run.rootRunId] ?? []) as never, subscribe: () => () => undefined,
+    agentsOf: async (run) => agents[run.rootRunId] ?? [] },
   agents: () => ({ observePairedAgents: vi.fn(), pairedAgentStatuses: (runId: string) => live[runId] ?? [] }) as never,
 };
 const MANAGER_STATUSES = [
@@ -43,21 +47,14 @@ const MANAGER_STATUSES = [
   { agentRunId: "lead-1", memberAddress: "/lead", status: "offline" },
   { agentRunId: "checker-1", memberAddress: "/checker", status: "offline" },
 ];
-afterEach(() => { unbindLocalChildPorts(ports); vi.clearAllMocks(); });
+afterEach(() => { vi.clearAllMocks(); });
+const followers = new LocalChildFollowers(ports);
+const runViewChildren = new RunViewChildren({ memoryDir: "/unused", tree: { openChildrenOf: () => [], peerChildrenOf: () => [] }, followers, channel: () => null });
 
-describe("StandaloneAgentRunRootManager.getAgentStatuses", () => {
-  it("answers each run, active or stopped, in the asked order, with its children's agents and statuses", async () => {
-    bindLocalChildPorts(ports);
-    await expect(managerWith(["manager"]).getAgentStatuses(["manager", "unknown"])).resolves.toEqual([
-      { runId: "manager", isActive: true, statuses: MANAGER_STATUSES },
-      { runId: "unknown", isActive: false, statuses: [] },
-    ]);
-    // A stopped delegator's rows follow its children too: they are runs of their own.
-    await expect(managerWith([]).getAgentStatuses(["manager"])).resolves.toEqual([{ runId: "manager", isActive: false, statuses: MANAGER_STATUSES }]);
-  });
-
-  it("names no child before the Task records are loaded", async () => {
-    await expect(managerWith(["manager"]).getAgentStatuses(["manager"])).resolves.toEqual([{ runId: "manager", isActive: true, statuses: [] }]);
+describe("LocalChildFollowers.statuses (SR-040; SR-047: the views' own read)", () => {
+  it("answers a run's open local children's agents with their statuses, a peer's run left out", async () => {
+    await expect(followers.statuses(createAgentRootExecutionIdentity("manager"))).resolves.toEqual(MANAGER_STATUSES);
+    await expect(followers.statuses(createAgentRootExecutionIdentity("unknown"))).resolves.toEqual([]);
   });
 });
 
@@ -67,16 +64,22 @@ describe("agentRunCollaborationStatuses", () => {
     try { return await run(); } finally { releaseProcessStandaloneAgentRunRootManager(manager as never); }
   };
 
-  it("maps each run's answer; nothing of the collaboration view and no closed-set digest", async () => {
-    bindLocalChildPorts(ports);
-    const answer = await withManager(managerWith([]), () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(["manager"]));
-    expect(answer).toEqual([{ runId: "manager", isActive: false, statuses: MANAGER_STATUSES.map((status) => ({ ...status, recoverableBlock: null })) }]);
+  it("answers each run, active or stopped, in the asked order; nothing of the collaboration view and no closed-set digest", async () => {
+    const answer = await withStudioServices({ runViewChildren }, () => withManager(managerWith(["manager"]),
+      () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(["manager", "unknown"])));
+    expect(answer).toEqual([{ runId: "manager", isActive: true, statuses: MANAGER_STATUSES.map((status) => ({ ...status, recoverableBlock: null })) },
+      { runId: "unknown", isActive: false, statuses: [] }]);
+    // A stopped delegator's rows follow its children too: they are runs of their own.
+    const stopped = await withStudioServices({ runViewChildren }, () => withManager(managerWith([]),
+      () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(["manager"])));
+    expect(stopped).toEqual([{ runId: "manager", isActive: false, statuses: MANAGER_STATUSES.map((status) => ({ ...status, recoverableBlock: null })) }]);
   });
 
   it("refuses more than 100 runs with BAD_USER_INPUT", async () => {
     const ids = Array.from({ length: 101 }, (_, index) => `run-${index}`);
     await expect(withManager(managerWith([]), () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(ids)))
       .rejects.toEqual(expect.objectContaining({ extensions: expect.objectContaining({ code: "BAD_USER_INPUT" }) }));
-    expect(await withManager(managerWith([]), () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(ids.slice(0, 100)))).toHaveLength(100);
+    expect(await withStudioServices({ runViewChildren }, () => withManager(managerWith([]),
+      () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(ids.slice(0, 100))))).toHaveLength(100);
   });
 });

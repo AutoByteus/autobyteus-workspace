@@ -1,3 +1,4 @@
+import { noDelegations } from "../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -131,7 +132,7 @@ describe("team member file-change reads name the team run", () => {
     }
     const read = vi.spyOn(store, "read");
     const live = liveChanges();
-    const views = new TeamMemberRunViewProjectionService({
+    const views = new TeamMemberRunViewProjectionService({ tree: noDelegations(),
       memoryDir,
       agentRunViewProjectionService: {} as never,
       locations,
@@ -241,7 +242,7 @@ describe("org member file-change reads name the org run and member", () => {
     }
     const read = vi.spyOn(store, "read");
     const live = liveChanges();
-    const views = new AgentOrgMemberRunViewProjectionService({
+    const views = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(),
       memoryDir,
       agentRunViewProjectionService: {} as never,
       locations,

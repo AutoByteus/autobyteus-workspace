@@ -10,7 +10,7 @@ import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/dom
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
-import { delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
+import { delegatedChild, followTestChildRows, noChildCommands, noFollowers, noViewChildren, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const scenarioDir = path.resolve(
   process.cwd(),
@@ -71,7 +71,8 @@ const createHarness = (input: {
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    { childRowsFeed: feed.feed, registrations, readStoredTree },
+    { streams: feed.streams, children: noViewChildren(), followers: noFollowers(), registrations, readStoredTree },
+    noChildCommands(),
   );
   return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree,
     stop: () => { managed = false; registrations.unregister(team); },

@@ -43,10 +43,10 @@ const memberSender = buildAgentRunMessageSenderContext({
 const createCatalog = (browserSupported: boolean): AgentToolMcpCatalog =>
   new AgentToolMcpCatalog({
     providers: [
-      new SendMessageToMcpAdapterProvider({ dispatch: async () => ({ accepted: true }) } as any),
+      new SendMessageToMcpAdapterProvider(() => ({ dispatch: async () => ({ accepted: true }) } as any)),
       new BrowserToolsMcpAdapterProvider({ isBrowserSupported: () => browserSupported } as any),
       new MediaToolsMcpAdapterProvider({} as any),
-      new TaskDelegationToolsMcpAdapterProvider({} as any),
+      new TaskDelegationToolsMcpAdapterProvider(() => ({} as any)),
       new PublishArtifactsMcpAdapterProvider({} as any),
     ],
   });
@@ -321,9 +321,9 @@ describe("AgentToolMcpCatalog configured MCP bridge", () => {
   it("keeps built-in adapter names authoritative when a configured MCP tool collides", () => {
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("send_message_to", "server-a"));
-    const [sendMessageAdapter] = new SendMessageToMcpAdapterProvider({
+    const [sendMessageAdapter] = new SendMessageToMcpAdapterProvider(() => ({
       dispatch: async () => ({ accepted: true }),
-    } as any).getAdapters();
+    } as any)).getAdapters();
     const catalog = new AgentToolMcpCatalog({
       adapters: [sendMessageAdapter!],
       registry: registry as any,

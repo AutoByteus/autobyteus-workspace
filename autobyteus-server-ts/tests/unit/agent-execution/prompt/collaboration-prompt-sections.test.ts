@@ -41,7 +41,7 @@ const context = (input: {
       outgoingHandoffs: input.handoffs ? [handoff] : [],
       deliverLogicalMessage: async () => ({ accepted: true }),
     }),
-    tasks: { root: identityRoot, delegateToNewCopy: async () => ({ delegated: false, message: "none" }), ownedTaskOf: () => null, assignToExistingCopy: async () => ({ delegated: false, message: "none" }) },
+    tasks: { root: identityRoot, delegationSource: async () => ({ delegated: false, message: "none" }), ownedTaskOf: () => null },
   });
 };
 

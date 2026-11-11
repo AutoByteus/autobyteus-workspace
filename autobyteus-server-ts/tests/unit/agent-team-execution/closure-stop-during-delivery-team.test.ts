@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
@@ -47,7 +48,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/eng", teamCoordinatorAgentRunId: "lead",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager-run" }, execution: run });
     await tasks.markStarted(run);
-    const manager = new AgentTeamRunManager({
+    const manager = new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/closure-stop-during-delivery-team",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),

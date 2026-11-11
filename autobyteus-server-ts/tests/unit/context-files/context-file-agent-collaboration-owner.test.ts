@@ -1,6 +1,6 @@
+import { noDelegations } from "../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
-import { bindDelegationTree, unbindDelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree-binding.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import os from "node:os";
 import path from "node:path";
@@ -24,9 +24,7 @@ import { ContextFileLayout } from "../../../src/context-files/store/context-file
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 
 const roots: string[] = [];
-const trees: DelegationTree[] = [];
 afterEach(async () => {
-  trees.splice(0).forEach(unbindDelegationTree);
   await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
 const put = async (file: string, value: unknown) => {
@@ -54,11 +52,10 @@ const fixture = async () => {
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/code_reviewer",
     delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "host" }, delegatorAgentRunId: "host" }, execution: { agentRunId: "child" } });
-  bindDelegationTree(tree); trees.push(tree);
   // Startup admits current packages before any context-file access.
   await new RootRunPackageReadinessIndex(memoryDir).rebuild();
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });
-  const resolver = new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir) });
+  const resolver = new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir, tree) });
   const cleanup = new ContextFileDraftCleanupService(layout);
   return {
     root, memoryDir, hostDir, layout, resolver,

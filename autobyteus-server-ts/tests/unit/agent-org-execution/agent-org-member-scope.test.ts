@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
@@ -36,7 +37,7 @@ const buildCallbacks = async () => {
     "product-team": "Ship the product UI.",
   };
   const lookup = { getDefinitionById: async (id: string) => ({ instructions: instructions[id] ?? null }) };
-  await new AgentOrgExecutionScopeBuilder({
+  await new AgentOrgExecutionScopeBuilder({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
     flatTeamExecutionFactory: { beginMaterialization: (input) => ({ prepare: () => materialize(input), cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) }) } as never,
     agentRunManager: testActivationManager({ newPreparation: vi.fn() }) as never,
     orgDefinitions: lookup as never,

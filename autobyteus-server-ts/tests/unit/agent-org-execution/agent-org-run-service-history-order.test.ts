@@ -1,3 +1,4 @@
+import { noWorkGuard } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
@@ -15,7 +16,7 @@ describe("AgentOrgRunService history ordering", () => {
       order.push("manager");
       return { orgRunId: tree.rootOrg.orgRunId, getExecutionTreeSnapshot: () => tree };
     });
-    const service = new AgentOrgRunService({
+    const service = new AgentOrgRunService({ workGuard: noWorkGuard(),
       manager: { create: managerCreate },
       admission: { requireAvailable: async () => ({ definition }) },
       agentDefinitions: { getAgentDefinitionById: async () => ({ id: "agent-1" }) },
@@ -55,7 +56,7 @@ describe("AgentOrgRunService history ordering", () => {
     const deleteStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `deleted ${orgRunId}` }));
     const manager = { restore: vi.fn(), create: vi.fn(), terminate: vi.fn() };
     const adHocTasks = { deleteAdHocTasksDelegatedFrom: vi.fn(async () => undefined) };
-    const service = new AgentOrgRunService({
+    const service = new AgentOrgRunService({ workGuard: noWorkGuard(),
       manager,
       history: { archiveStored, deleteStored },
       adHocTasks,

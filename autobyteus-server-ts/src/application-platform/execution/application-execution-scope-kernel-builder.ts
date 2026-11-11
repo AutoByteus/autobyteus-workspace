@@ -165,6 +165,8 @@ export const buildApplicationExecutionScopeKernel = (
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
       modelSelectionValidator: input.modelSelectionValidator,
+      delegationTree: input.delegationTree,
+      taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
         agentRunManager,
         memoryLocator,

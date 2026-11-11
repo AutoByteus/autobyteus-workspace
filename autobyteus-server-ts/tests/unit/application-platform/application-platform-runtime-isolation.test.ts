@@ -11,6 +11,7 @@ import {
 import type { AgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 
 const createCatalogSnapshot = (applicationId: string) => ({
   applications: [{
@@ -84,6 +85,8 @@ describe("application platform runtime isolation", () => {
       const get = vi.fn(() => '{malformed current setting');
       const setDurably = vi.fn();
       const runtime = buildApplicationPlatformRuntime({
+        delegationTree: noDelegations(),
+        taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
           baseUrl: "http://localhost:8000",
@@ -222,6 +225,8 @@ describe("application platform runtime isolation", () => {
 
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
+        delegationTree: noDelegations(),
+        taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
           baseUrl: "http://localhost:8000",

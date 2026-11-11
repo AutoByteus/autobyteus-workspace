@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { testActivationManager } from "./agent-run-preparation-fixtures.js";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -122,7 +123,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     });
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({
+    const root = await materializeTeamRoot({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
@@ -154,7 +155,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     executionTreeStore: { write } as never,
     communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never, enterPersistenceFailStop: failStop,
   });
-  const root = await new AgentOrgExecutionScopeBuilder({ flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
+  const root = await new AgentOrgExecutionScopeBuilder({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), flatTeamExecutionFactory: factory, orgDefinitions: definitions as never, teamDefinitions: definitions as never,
     ...dependencies,
   }).build({ state, persistence, activationMode: mode, persistInitialPackage: false });
   const flatten = (tree: typeof state.executionTree) => tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member] : [...member.members]);

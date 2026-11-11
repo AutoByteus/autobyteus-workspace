@@ -1,10 +1,8 @@
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { LocalChildObservation } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
@@ -14,7 +12,9 @@ import type { AgentOperationResult } from "../../agent-execution/domain/agent-op
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExecutionIdentity, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
+import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -65,7 +65,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this Org delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
-  readonly localChildren: LocalChildObservation;
   private readonly collaborators: AgentOrgRunCollaborators;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
@@ -84,11 +83,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       const agent = this.index.getAgent(agentRunId);
       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
     });
-    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root) });
-    const remoteDelegation = new RemoteDelegation({ root: options.root, onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
-    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root).filter((link) => link.open),
+    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root, options.delegationTree) });
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root, options.delegationTree).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event) });
-    this.localChildren = new LocalChildObservation({ run: options.root, publish: (event) => options.publisher.publish(event) });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
@@ -105,7 +102,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       teams: options.teams,
       publisher: options.publisher,
       remoteLinks: this.remoteLinks,
-      remoteDelegation,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
@@ -214,12 +210,18 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
   }
 
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
-    return this.operationGate.run(() => this.delivery.delegateToNewCopy(context, input));
+  /** What this Org answers when one of its agents delegates, in its gate (SR-049); the delegation is the tool path's. */
+  delegationSource(context: TaskDelegationContext): Promise<DelegationSource> {
+    return this.operationGate.run(async () => {
+      const own = this.delivery.delegationSource(context);
+      return Object.freeze({ ...own,
+        resolvePlacement: (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) =>
+          this.operationGate.run(() => own.resolvePlacement(address, work, folder)),
+        peerRunLinked: (link: Parameters<DelegationSource["peerRunLinked"]>[0]) => this.remoteChildren.linkCommitted(link) });
+    });
   }
-  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
-    return this.operationGate.run(() => this.delivery.assignToExistingCopy(context, input));
-  }
+  /** A local child's output for this run's views, sequenced in its own stream (DS-8; followed by `LocalChildFollowers`). */
+  publishLocalChildEvent(event: LocalChildRootEvent): void { this.options.publisher.publish(event); }
   /** The coordinator of a peer team run this org delegated to (`send_message_to` guidance); else null. */
   teamCoordinatorOf(teamRunId: string): string | null {
     const peer = this.remoteLinks.teamLinkFor(teamRunId);
@@ -286,7 +288,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
     this.remoteChildren.dispose();
-    this.localChildren.dispose();
     this.communication.closeAdmission();
     void this.operationGate.closeAndDrain();
     // Stopping the org's own agents and mounted teams is runtime-only (the runs it delegated to are runs of their own),
@@ -365,7 +366,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     const endpoint = this.remoteLinks.endpointFor(agentRunId);
     if (!endpoint || endpoint.kind === "delegator") return;
     const execution = endpoint.kind === "delegated_run" ? { agentRunId: endpoint.link.agentRunId } : { teamRunId: endpoint.link.teamRunId };
-    if (this.options.taskExecutionResources && !this.options.taskExecutionResources.isOpen(execution)) {
+    if (!this.options.taskRecords.isOpen(execution)) {
       throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
     }
   }

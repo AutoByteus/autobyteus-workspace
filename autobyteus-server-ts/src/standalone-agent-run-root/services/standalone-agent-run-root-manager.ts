@@ -1,4 +1,3 @@
-import { localChildStatuses, type LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -22,7 +21,6 @@ import type { StandaloneAgentRunRoot, StandaloneRootPackageSnapshot } from "../d
 import { StandaloneHostAgentHandle, type StandaloneHostActivationBackend } from "../domain/standalone-host-agent-handle.js";
 import { emptyStandaloneRootMessages, type StandaloneRootHost, type StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
 import { StandaloneHostMemberContextBuilder } from "./standalone-host-member-context-builder.js";
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { StandaloneRootBuilder, type StandaloneRootBuilderDependencies } from "./standalone-root-builder.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
@@ -57,12 +55,6 @@ export type StandaloneRootInspection = Readonly<{
   lastMessageChangeSequence: number | null;
 }>;
 
-/** One run's answer to the history poll's status read. */
-export type StandaloneRootAgentStatuses = Readonly<{
-  runId: string;
-  isActive: boolean;
-  statuses: readonly LocalChildAgentStatus[];
-}>;
 
 const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfiguration => Object.freeze({
   runtimeKind: metadata.runtimeKind,
@@ -99,7 +91,6 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     host: StandaloneRootHostServices;
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     rootDependencies: Omit<StandaloneRootBuilderDependencies, "packageStore">;
-    taskExecutionResources?: TaskExecutionResourcePort;
     packageStore?: StandaloneRootPackageStore;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
   }>) {
@@ -123,17 +114,6 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   hasRoot(hostRunIdInput: string): boolean {
     const hostRunId = hostRunIdInput.trim();
     return this.active.has(hostRunId) || this.pending.has(hostRunId);
-  }
-
-  /**
-   * Each listed run's state for the history poll (autobyteus-426 REQ-009; SR-040), from the same projection as its view,
-   * active or stopped, never restoring: whether it is active, and every agent of its open local children with its
-   * status from the child's own root (else `offline`).
-   */
-  async getAgentStatuses(hostRunIds: readonly string[]): Promise<StandaloneRootAgentStatuses[]> {
-    return Promise.all(hostRunIds.map(async (runId) => ({
-      runId, isActive: this.getActive(runId) !== null, statuses: await localChildStatuses(createAgentRootExecutionIdentity(runId)),
-    })));
   }
 
   /**
@@ -173,7 +153,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const delegatedFrom = peerDelegatedFromOf(metadata); // AR-016: only a run a peer started has a peer delegator
     return storedRemoteLinkCheck(delegatedFrom
       ? { peerRuns: () => [], backLink: { pairedAgentRunIds: () => [hostRunId], delegatedFrom } }
-      : { run: createAgentRootExecutionIdentity(hostRunId) }, query);
+      : { run: createAgentRootExecutionIdentity(hostRunId), tree: this.options.rootDependencies.delegationTree }, query);
   }
 
   /** `StandaloneRunCommandPort`: the root executes the command in its gate. */

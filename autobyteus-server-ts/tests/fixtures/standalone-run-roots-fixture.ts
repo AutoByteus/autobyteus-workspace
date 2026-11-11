@@ -1,3 +1,4 @@
+import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { createCollaboratorAdmission } from "../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { ActiveCollaborationRootDirectory } from "../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { AgentRunManager } from "../../src/agent-execution/services/agent-run-manager.js";
@@ -27,7 +28,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       terminateHost: (hostRunId) => input.lifecycleService.terminateHost(hostRunId),
       readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
     },
-    rootDependencies: {
+    rootDependencies: { delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
         isAgentHidden: () => false,

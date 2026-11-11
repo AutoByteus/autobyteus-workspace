@@ -1,10 +1,10 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RunLastActivityReader } from "../../../../src/run-history/services/run-last-activity-reader.js";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
-import { bindDelegationTree, unbindDelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree-binding.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 
@@ -26,7 +26,7 @@ const reader = (overrides: Partial<ConstructorParameters<typeof RunLastActivityR
   const warn = vi.fn();
   return {
     warn,
-    reader: new RunLastActivityReader({
+    reader: new RunLastActivityReader({ tree: noDelegations(),
       memoryDir,
       teamLocations: { listAgents: vi.fn(async () => []) },
       orgLocations: { listAgents: vi.fn(async () => []) },
@@ -37,8 +37,7 @@ const reader = (overrides: Partial<ConstructorParameters<typeof RunLastActivityR
 };
 
 beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "run-last-activity-")); });
-const trees: DelegationTree[] = [];
-afterEach(() => { trees.splice(0).forEach(unbindDelegationTree); fs.rmSync(memoryDir, { recursive: true, force: true }); });
+afterEach(() => { fs.rmSync(memoryDir, { recursive: true, force: true }); });
 
 describe("RunLastActivityReader (workspace-tree-vs-chooser DS-005, from autobyteus-378)", () => {
   it("answers createdAt for a run with no memory file anywhere", async () => {
@@ -56,11 +55,11 @@ describe("RunLastActivityReader (workspace-tree-vs-chooser DS-005, from autobyte
   it("moves an Agent run whose only new activity is a run it delegated to (autobyteus-461: from the Task entries, each run's own folder)", async () => {
     traces(agentFolder("host"), "2026-02-01T00:00:00.000Z");
     traces(agentFolder("image"), "2026-11-05T08:00:00.000Z");
-    const r = reader().reader;
-    await expect(r.forAgentRun({ runId: "host", createdAt: CREATED })).resolves.toBe("2026-02-01T00:00:00.000Z");
     const tasks = new InMemoryTaskExecutionResources();
     const tree = new DelegationTree(() => tasks);
-    tree.build(); tasks.setEntriesListener(tree); bindDelegationTree(tree); trees.push(tree);
+    tree.build(); tasks.setEntriesListener(tree);
+    const r = reader({ tree }).reader;
+    await expect(r.forAgentRun({ runId: "host", createdAt: CREATED })).resolves.toBe("2026-02-01T00:00:00.000Z");
     tasks.addTask("T1");
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/image_maker",
       delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "host" }, delegatorAgentRunId: "host" }, execution: { agentRunId: "image" } });

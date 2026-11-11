@@ -1,9 +1,9 @@
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import path from "node:path";
 import { MemoryRunSummaryBuilder, mergeMemoryAvailability } from "../../agent-memory/services/memory-run-summary-builder.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import type { MemoryAvailabilityBuildResult } from "../../agent-memory/domain/models.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
 
@@ -11,6 +11,8 @@ type Located = Readonly<{ memoryDir: string }>;
 
 export type RunLastActivityReaderDependencies = Readonly<{
   memoryDir: string;
+  /** The runs delegated from a run, from the Task entries (SR-047). */
+  tree: Pick<DelegationTree, "subtreeOf">;
   /** A Team run's own agents (its members). */
   teamLocations?: Pick<TeamRunExecutionTreeLocationService, "listAgents">;
   /** An Org root's agents. */
@@ -73,7 +75,7 @@ export class RunLastActivityReader {
   /** The runs delegated from `root` on this node, each from its own folders (an agent run's, or a team run's members'). */
   private async delegated(root: RootExecutionIdentity): Promise<(MemoryAvailabilityBuildResult | null)[]> {
     const summaries: (MemoryAvailabilityBuildResult | null)[] = [];
-    for (const run of findDelegationTree()?.subtreeOf(root) ?? []) {
+    for (const run of this.dependencies.tree.subtreeOf(root)) {
       if ("agentRunId" in run) { summaries.push(this.read(run.agentRunId, () => this.runs.build(run.agentRunId))); continue; }
       const members = await this.locate("agent_team", run.teamRunId, () => this.teamLocations.listAgents({ rootTeamRunId: run.teamRunId }));
       summaries.push(...members.map((located) => this.read(located.memoryDir, () => folderMemory(located))));

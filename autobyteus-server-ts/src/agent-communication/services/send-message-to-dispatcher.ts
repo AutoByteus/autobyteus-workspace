@@ -3,7 +3,6 @@ import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-s
 import { describeSendMessageTargetSelector } from "../domain/send-message-target-selector.js";
 import { collaborationErrorTextForAgent, isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import {
-  getGlobalAgentRunMessageRouter,
   type GlobalAgentRunMessageDeliveryInput,
   GlobalAgentRunMessageRouter,
 } from "./global-agent-run-message-router.js";
@@ -13,7 +12,7 @@ import {
 } from "./send-message-to-tool-argument-parser.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "./send-message-to-tool-contract.js";
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { findCrossRunAddressResolution, type CrossRunAddressResolution } from "../../agent-collaboration/communication/cross-run-address-resolution.js";
+import type { CrossRunAddressResolution } from "../../agent-collaboration/communication/cross-run-address-resolution.js";
 
 export type SendMessageToDispatcherInput = {
   toolName?: string | null;
@@ -24,21 +23,23 @@ export type SendMessageToDispatcherInput = {
 export class SendMessageToDispatcher {
   private static instance: SendMessageToDispatcher | null = null;
 
+  /** The composition root creates the process dispatcher with its address resolution (SR-047 step 8); the returned function releases it. */
+  static setProcessInstance(dispatcher: SendMessageToDispatcher): () => void {
+    SendMessageToDispatcher.instance = dispatcher;
+    return () => { if (SendMessageToDispatcher.instance === dispatcher) SendMessageToDispatcher.instance = null; };
+  }
+
+  /** The process dispatcher; its callers are older lookups (FU-011). */
   static getInstance(): SendMessageToDispatcher {
-    if (!SendMessageToDispatcher.instance) {
-      SendMessageToDispatcher.instance = new SendMessageToDispatcher();
-    }
+    if (!SendMessageToDispatcher.instance) throw new Error("The send_message_to dispatcher is created by the composition root.");
     return SendMessageToDispatcher.instance;
   }
 
-  static resetInstance(): void {
-    SendMessageToDispatcher.instance = null;
-  }
-
   constructor(private readonly deps: {
-    globalRouter?: GlobalAgentRunMessageRouter;
-    crossRunAddresses?: Pick<CrossRunAddressResolution, "resolve"> | null;
-  } = {}) {}
+    globalRouter: GlobalAgentRunMessageRouter;
+    /** Contract §2.3 step 2 (an address of the run that assigned the sender's Task); created by the composition root. */
+    crossRunAddresses: Pick<CrossRunAddressResolution, "resolve">;
+  }) {}
 
   async dispatch(input: SendMessageToDispatcherInput): Promise<AgentOperationResult> {
     const toolName = input.toolName?.trim() || SEND_MESSAGE_TO_TOOL_NAME;
@@ -110,7 +111,7 @@ export class SendMessageToDispatcher {
     const identity = input.sender.memberExecutionContext!.identity;
     let agentRunId: string | null | undefined;
     try {
-      agentRunId = await this.crossRunAddresses?.resolve(identity, input.address);
+      agentRunId = await this.deps.crossRunAddresses.resolve(identity, input.address);
     } catch (error) {
       if (!isCollaborationContractError(error)) throw error;
       return { accepted: false, code: error.code, message: error.message };
@@ -119,12 +120,8 @@ export class SendMessageToDispatcher {
       messageType: input.messageType, referenceFiles: input.referenceFiles, shownAs: input.address }) : null;
   }
 
-  private get crossRunAddresses(): Pick<CrossRunAddressResolution, "resolve"> | null {
-    return this.deps.crossRunAddresses === undefined ? findCrossRunAddressResolution() : this.deps.crossRunAddresses;
-  }
-
   private get globalRouter(): GlobalAgentRunMessageRouter {
-    return this.deps.globalRouter ?? getGlobalAgentRunMessageRouter();
+    return this.deps.globalRouter;
   }
 }
 

@@ -14,11 +14,6 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock(
-  "../../../../../src/services/agent-streaming/remote-task-execution-dto-projection.js",
-  () => ({ remoteTaskExecutionDtos: mocks.remoteTaskExecutionDtos }),
-);
-
-vi.mock(
   "../../../../../src/services/agent-streaming/team-execution-view-projector.js",
   () => ({ projectExecutionTree: mocks.projectExecutionTree }),
 );
@@ -26,7 +21,9 @@ vi.mock(
   "../../../../../src/api/graphql/studio-application-api-services.js",
   () => ({ getStudioRunModelConfigService: () => ({
     getTeamRunResumeConfig: mocks.getTeamRunResumeConfig,
-  }) }),
+  }),
+  // SR-047: the run's children as the views read them, from the framework-edge container.
+  getStudioRunViewChildren: () => ({ rows: async () => [], remote: mocks.remoteTaskExecutionDtos }) }),
 );
 vi.mock(
   "../../../../../src/run-history/services/team-run-history-service.js",

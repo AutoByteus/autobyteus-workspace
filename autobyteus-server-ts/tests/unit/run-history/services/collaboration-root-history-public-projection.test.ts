@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -45,7 +46,7 @@ const setup = async (active: boolean) => {
   const write = vi.spyOn(store, "write");
   const getExecutionTreeSnapshot = vi.fn(() => tree);
   const catalog = [projectAgentOrgRunHistoryRow(tree)];
-  const service = new CollaborationRootHistoryService({
+  const service = new CollaborationRootHistoryService({ tree: noDelegations(),
     memoryDir,
     teams: { listTeamRunHistory: async () => [] },
     orgs: { listCatalogRows: async () => catalog, getCatalogRow: async (id: string) => catalog.find(row => row.orgRunId === id) ?? null },
@@ -91,7 +92,7 @@ describe("mixed public history Org projection", () => {
   it("retains mixed family ordering and the existing archived inactive exclusion", async () => {
     const current = await setup(false);
     const team = { teamRunId: "team-root", createdAt: "2026-10-04T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Team" };
-    const service = new CollaborationRootHistoryService({
+    const service = new CollaborationRootHistoryService({ tree: noDelegations(),
       memoryDir: roots.at(-1)!, teams: { listTeamRunHistory: async () => [team] } as never,
       orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async (id: string) => current.catalog.find(row => row.orgRunId === id) ?? null },
       orgRuns: { getActive: () => null }, orgTrees: current.store,
@@ -128,7 +129,7 @@ describe("mixed public history Org projection", () => {
     const forOrgRun = vi.fn(async () => "2026-11-05T09:30:00.000Z");
     const team = { teamRunId: "team-root", createdAt: "2026-11-01T00:00:00.000Z", lastActivityAt: "2026-11-04T00:00:00.000Z",
       archivedAt: null, isActive: false, summary: "" };
-    const service = new CollaborationRootHistoryService({
+    const service = new CollaborationRootHistoryService({ tree: noDelegations(),
       memoryDir: current.memoryDir,
       teams: { listTeamRunHistory: async () => [team as never] },
       orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async () => current.catalog[0]! },

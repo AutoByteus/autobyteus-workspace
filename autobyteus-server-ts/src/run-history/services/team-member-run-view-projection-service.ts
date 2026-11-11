@@ -1,4 +1,4 @@
-import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { runReferenceOf } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
@@ -40,17 +40,21 @@ export interface TeamMemberRunProjection {
 }
 
 export class TeamMemberRunViewProjectionService {
+  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "runOfAgent" | "parentOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: TeamRunExecutionTreeLocationService;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
+    /** The relationships between runs, from the Task entries (SR-047). */
+    tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "runOfAgent" | "parentOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: TeamRunExecutionTreeLocationService;
     runFileChangeProjectionService?: RunFileChangeProjectionService;
-  } = {}) {
+  }) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
+    this.tree = options.tree;
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
     this.locations = options.locations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
     this.injectedFileChanges = options.runFileChangeProjectionService ?? null;
@@ -58,7 +62,7 @@ export class TeamMemberRunViewProjectionService {
 
   async getProjection(rootTeamRunId: string, agentRunId: string): Promise<TeamMemberRunProjection> {
     // N-403: a remote child's conversation is read from its node (autobyteus-278).
-    const remote = remoteChildOf(peerRunLinksOf({ rootSubjectKind: "agent_team", rootRunId: rootTeamRunId.trim() }), agentRunId.trim());
+    const remote = remoteChildOf(peerRunLinksOf({ rootSubjectKind: "agent_team", rootRunId: rootTeamRunId.trim() }, this.tree), agentRunId.trim());
     if (remote) {
       const { memberAddress: _address, ...projection } = await remoteMemberProjection(remote, null);
       return projection as TeamMemberRunProjection;
@@ -108,8 +112,8 @@ export class TeamMemberRunViewProjectionService {
 
   /** The run a child row's agent belongs to, when this team run delegated it (one hop); else null. */
   private async delegatedChildRun(rootTeamRunId: string, agentRunId: string): Promise<RootExecutionIdentity | null> {
-    const tree = findDelegationTree();
-    const run = tree ? await tree.runOfAgent(agentRunId.trim()) : null;
+    const tree = this.tree;
+    const run = await tree.runOfAgent(agentRunId.trim());
     const reference = run ? runReferenceOf(run) : null;
     const from = reference ? tree!.parentOf(reference) : null;
     return run && from && from.delegatingRun.rootSubjectKind === "agent_team" && from.delegatingRun.rootRunId === rootTeamRunId.trim() ? run : null;
@@ -164,6 +168,14 @@ const metadataFor = (location: LocatedTeamCollaborationAgentExecution): AgentRun
   };
 };
 
-let cachedTeamMemberRunViewProjectionService: TeamMemberRunViewProjectionService | null = null;
-export const getTeamMemberRunViewProjectionService = (): TeamMemberRunViewProjectionService =>
-  cachedTeamMemberRunViewProjectionService ??= new TeamMemberRunViewProjectionService();
+let processService: TeamMemberRunViewProjectionService | null = null;
+/** The composition root sets the process service it created with the tree (SR-047 step 8); the returned function releases it. */
+export const setProcessTeamMemberRunViewProjectionService = (service: TeamMemberRunViewProjectionService): (() => void) => {
+  processService = service;
+  return () => { if (processService === service) processService = null; };
+};
+/** The process service; its callers are older lookups (FU-011). */
+export const getTeamMemberRunViewProjectionService = (): TeamMemberRunViewProjectionService => {
+  if (!processService) throw new Error("TeamMemberRunViewProjectionService is created by the composition root.");
+  return processService;
+};

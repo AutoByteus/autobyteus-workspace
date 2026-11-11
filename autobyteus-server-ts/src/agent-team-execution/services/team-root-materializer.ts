@@ -1,4 +1,5 @@
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -29,7 +30,8 @@ export type TeamRootMaterializationInput = Readonly<{
   persistInitialPackage: boolean;
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
-  taskExecutionResources?: TaskExecutionResourcePort;
+  taskRecords: RunTaskRecords;
+  delegationTree: DelegationTree;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
@@ -62,8 +64,7 @@ export const materializeTeamRoot = async (
   };
   const taskCapability: MemberTaskCapability = Object.freeze({
     root: rootIdentity,
-    delegateToNewCopy: (caller, command) => requireActiveRoot().delegateToNewCopy({ identity: caller }, command),
-    assignToExistingCopy: (caller, command) => requireActiveRoot().assignToExistingCopy({ identity: caller }, command),
+    delegationSource: (caller) => requireActiveRoot().delegationSource({ identity: caller }),
     ownedTaskOf: (caller) => requireActiveRoot().ownedTaskOf({ identity: caller }),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
@@ -119,7 +120,8 @@ export const materializeTeamRoot = async (
       messages: input.messages,
       persistence,
       publisher,
-      taskExecutionResources: input.taskExecutionResources,
+      taskRecords: input.taskRecords,
+      delegationTree: input.delegationTree,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });

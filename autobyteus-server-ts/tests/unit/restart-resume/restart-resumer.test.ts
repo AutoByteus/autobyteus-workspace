@@ -80,10 +80,10 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
     liveRuns: { getActiveRun: (id: string) => (live.has(id) ? runOf(id) : null) as never },
     rootHistory: async (root) => history.get(keyOf(root)) ?? "present",
     rootResolver,
-    tree: () => ({ parentOf: (run: { agentRunId?: string; teamRunId?: string }) => {
+    tree: { parentOf: (run: { agentRunId?: string; teamRunId?: string }) => {
       const parent = options.parents?.["agentRunId" in run ? `agent:${run.agentRunId}` : `agent_team:${run.teamRunId}`];
       return parent ? { delegatingRun: parent, delegatorAgentRunId: parent.rootRunId } : null;
-    } }) as never,
+    } } as never,
     now: () => new Date("2026-11-01T10:00:30.000Z"),
     concurrency: options.concurrency,
   });

@@ -1,3 +1,4 @@
+import { noDelegations } from "../../../helpers/no-delegations.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -102,7 +103,8 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskExecutionResources: resources,
+    taskRecords: resources,
+    delegationTree: noDelegations(),
   });
   run.activate();
   return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources, enterPersistenceFailStop };

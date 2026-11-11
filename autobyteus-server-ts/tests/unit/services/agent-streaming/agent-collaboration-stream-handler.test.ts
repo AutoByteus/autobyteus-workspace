@@ -2,7 +2,7 @@ import { CollaborationStreamServerMessageSchema, type CollaborationStreamServerM
 import { describe, expect, it, vi } from "vitest";
 import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
 import { createAgentRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { delegatedChild, followTestChildRows } from "../../../helpers/child-rows-feed.js";
+import { delegatedChild, followTestChildRows, noFollowers, noViewChildren } from "../../../helpers/child-rows-feed.js";
 
 /**
  * The agent run's view stream (design DS-8): connecting never starts the run's agent; a local child row's command goes to
@@ -33,7 +33,7 @@ const childCommands = () => ({ execute: vi.fn(async (_parent: unknown, target: s
 const connect = async (roots: ConstructorParameters<typeof AgentCollaborationStreamHandler>[0], children = childCommands(), feed = followTestChildRows()) => {
   const wire: CollaborationStreamServerMessage[] = [];
   const close = vi.fn();
-  const handler = new AgentCollaborationStreamHandler(roots, feed.feed, children as never);
+  const handler = new AgentCollaborationStreamHandler(roots, { streams: feed.streams, children: noViewChildren(), followers: noFollowers() }, children as never);
   const sessionId = await handler.connect({ send: (raw) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close }, HOST);
   return { handler, sessionId, wire, close, children };
 };

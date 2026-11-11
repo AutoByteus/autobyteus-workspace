@@ -294,15 +294,6 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   entriesOf(taskId: string) { return this.resources.entriesOf(taskId); }
   isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
-  /** Marks the Tasks whose root is one of these runs; the status is read later. Never throws. */
-  taskExecutionsStatusChanged(references: readonly TaskExecutionReference[]): void {
-    try {
-      for (const reference of references) {
-        const location = this.resources.rootTaskLocationOf(reference);
-        if (location) this.changes.workerStatusChanged(location);
-      }
-    } catch (error) { console.warn("TASK_ROOT_STATUS_MARK_FAILED", error); }
-  }
   /** Advisory: lets the runtime refuse an ineligible sender before it touches any runtime state. */
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const location = await this.reopenLocation(input.execution);
