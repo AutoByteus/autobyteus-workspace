@@ -217,6 +217,17 @@ describe("catalog policy and mention resolution", () => {
       .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Daily Assistant is already in this run." });
   });
 
+  it("autobyteus-461 SR-037 (DL-11, U7): a team run never delegates to its own definition, also a delegated team rooted at `/`", async () => {
+    const { admission } = harness();
+    const productTeamRun: CollaboratorRootPort = { ...port(), ownDefinition: () => ({ kind: "agent_team", definitionId: "product" }) };
+    // Its own definition has no catalog address in its run, so `delegate_task("/product_team")` is not found (today's text).
+    await expect(admission.catalogDefinitionAt(productTeamRun, "/product_team")).resolves.toBeNull();
+    await expect(admission.policy.requireAdmissible(productTeamRun, { kind: "agent_team", definitionId: "product" }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Product Team is this run's own definition." });
+    // Another run reaches it as a catalog address.
+    await expect(admission.catalogDefinitionAt(port(), "/product_team")).resolves.toEqual({ kind: "agent_team", definitionId: "product" });
+  });
+
   it("derives address segments from names", () => {
     expect(collaboratorSegmentForName("Product Team")).toBe("product_team");
     expect(collaboratorSegmentForName("  Café—Reviewer v2 ")).toBe("cafe_reviewer_v2");
