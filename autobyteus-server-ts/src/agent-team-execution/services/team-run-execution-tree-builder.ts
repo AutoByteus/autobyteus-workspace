@@ -48,8 +48,8 @@ export const buildInitialTeamRunExecutionTree = (input: {
     teamRunId: input.config.rootTeam.teamRunId,
     coordinatorAddress: input.config.rootTeam.coordinatorAddress,
     defaultLaunchConfiguration: launchConfiguration(input.config.rootTeam.defaultLaunchConfiguration),
+    ...(input.config.rootTeam.defaultLaunchSource ? { defaultLaunchSource: input.config.rootTeam.defaultLaunchSource } : {}),
     members: input.config.rootTeam.children.map(toAgent),
-    taskExecutions: [],
   },
 }, input.config.rootTeam.teamRunId);
 
@@ -79,6 +79,7 @@ export const buildTeamRunConfigFromExecutionTree = (
     teamRunId: tree.rootTeam.teamRunId,
     coordinatorAddress: tree.rootTeam.coordinatorAddress,
     defaultLaunchConfiguration: launchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
+    ...(tree.rootTeam.defaultLaunchSource ? { defaultLaunchSource: tree.rootTeam.defaultLaunchSource } : {}),
     children: tree.rootTeam.members.map(fromConfiguredAgent),
   },
   handoffs: tree.handoffs,

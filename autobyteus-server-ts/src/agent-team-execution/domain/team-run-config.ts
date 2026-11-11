@@ -49,6 +49,8 @@ export type TeamRunAgentTeamNode = Readonly<{
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
+  /** How the team's default launch was resolved, when recorded (a delegated team, DS-10 step 4). */
+  defaultLaunchSource?: LaunchConfigurationSource;
   role?: string | null;
   description?: string | null;
   children: readonly TeamRunAgentNode[];
@@ -159,6 +161,7 @@ export const cloneTeamRunAgentTeamNode = (node: TeamRunAgentTeamNode): TeamRunAg
       node.defaultLaunchConfiguration,
       `defaultLaunchConfiguration at '${address}'`,
     ),
+    ...(node.defaultLaunchSource ? { defaultLaunchSource: structuredClone(node.defaultLaunchSource) } : {}),
     ...placement,
     children,
   });

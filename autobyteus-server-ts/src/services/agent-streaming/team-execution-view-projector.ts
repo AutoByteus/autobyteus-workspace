@@ -150,7 +150,8 @@ const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutio
           follows_team: member.followsTeam, ...(memberSource ? { launch_source: memberSource } : {}) };
       }),
       handoffs: source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
-      default_launch_configuration: launchOf(source.defaultLaunchConfiguration) } } as TaskExecutionDto;
+      default_launch_configuration: launchOf(source.defaultLaunchConfiguration),
+      ...(sourceOf(source.defaultLaunchSource) ? { default_launch_source: sourceOf(source.defaultLaunchSource) } : {}) } } as TaskExecutionDto;
 };
 
 const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => {

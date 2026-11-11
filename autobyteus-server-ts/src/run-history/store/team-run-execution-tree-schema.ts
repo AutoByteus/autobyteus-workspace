@@ -22,6 +22,7 @@ import {
   requireKeys,
 } from "./run-execution-tree-shared-record-schemas.js";
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
+import { parseOptionalLaunchFields } from "./launch-configuration-source-schema.js";
 
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const root = objectRecord(value, "rootTeam");
@@ -53,6 +54,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     teamRunId: requiredString(root.teamRunId, "rootTeam.teamRunId"),
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
+    ...parseOptionalLaunchFields(root, { source: "defaultLaunchSource" }, "rootTeam"),
     members,
   };
 };

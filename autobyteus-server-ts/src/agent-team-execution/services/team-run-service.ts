@@ -49,6 +49,8 @@ export type TeamRunMemberConfigInput = {
 };
 export type TeamRunTeamConfigInput = {
   teamAddress: string;
+  /** A delegated team's resolved default launch source (DS-10 step 4). */
+  launchSource?: LaunchConfigurationSource;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   workspaceRootPath?: string | null;

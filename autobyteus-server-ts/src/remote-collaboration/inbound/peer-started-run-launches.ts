@@ -29,6 +29,7 @@ export class PeerStartedRunLaunches {
     }
     const tree = await this.teams.read(this.layout.getTeamDirPath({ rootTeamRunId: run.runId, ancestorTeamRunIds: [] }), run.runId);
     return Object.freeze((tree?.rootTeam.members ?? []).map((member) => Object.freeze({ address: member.address, runtimeKind: member.launchConfiguration.runtimeKind,
-      llmModelIdentifier: member.launchConfiguration.llmModelIdentifier, source: member.launchSource ?? UNRECORDED })));
+      // A member's own source, else the team's (DS-10 step 4: the team's default source is recorded on the team).
+      llmModelIdentifier: member.launchConfiguration.llmModelIdentifier, source: member.launchSource ?? tree?.rootTeam.defaultLaunchSource ?? UNRECORDED })));
   }
 }

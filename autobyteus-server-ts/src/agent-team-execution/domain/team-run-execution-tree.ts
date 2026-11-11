@@ -1,6 +1,7 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { AgentLaunchConfiguration } from "./team-run-config.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type {
   ConfiguredAgentExecutionNode,
   IsoTimestamp,
@@ -23,6 +24,8 @@ export type RootConfiguredTeamExecutionNode = Readonly<{
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
+  /** How the team's default launch was resolved, when recorded (a delegated team, DS-10 step 4). */
+  defaultLaunchSource?: LaunchConfigurationSource;
   members: readonly ConfiguredAgentExecutionNode[];
 }>;
 

@@ -36,6 +36,8 @@ export type TeamAgentLaunchInput = Omit<TeamAgentLaunchSettings, "memberAddress"
 
 export type TeamScopeLaunchInput = Omit<TeamScopeLaunchSettings, "teamAddress"> & {
   teamAddress: string;
+  /** A delegated team's resolved default launch source (DS-10 step 4), recorded on the team. */
+  launchSource?: LaunchConfigurationSource;
 };
 
 export type FlatTeamTopologyPlan = Readonly<{
@@ -208,6 +210,7 @@ export class FlatTeamTopologyPlanner {
       teamRunId: this.teamRunIdentityAllocator.allocateForTeamDefinitionName(teamDefinitionName),
       coordinatorAddress: createAgentTeamAddress(graph.coordinator.absolutePath),
       defaultLaunchConfiguration: launchValue(rootConfig),
+      ...(rootConfig.launchSource ? { defaultLaunchSource: rootConfig.launchSource } : {}),
       children,
     };
   }

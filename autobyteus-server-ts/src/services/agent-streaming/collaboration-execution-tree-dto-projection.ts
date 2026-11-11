@@ -72,7 +72,8 @@ export const projectDelegatedTeamRun = (child: DelegatedChild, tree: TeamRunExec
     source: { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: team.coordinatorAddress,
       members: team.members.map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
         launchConfiguration: projectLaunch(member.launchConfiguration), followsTeam: sameLaunch(member), ...projectOptionalSource(member, "launchSource") })),
-      handoffs: tree.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(team.defaultLaunchConfiguration) },
+      handoffs: tree.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(team.defaultLaunchConfiguration),
+      ...projectOptionalSource(team, "defaultLaunchSource") },
   };
 };
 

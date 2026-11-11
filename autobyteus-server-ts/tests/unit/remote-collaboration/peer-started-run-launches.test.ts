@@ -29,13 +29,15 @@ describe("PeerStartedRunLaunches (node B)", () => {
     const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team_b", ancestorTeamRunIds: [] });
     const base = structuredClone(testExecutionTree({ rootTeamRunId: "team_b", coordinatorAddress: "/lead",
       children: [testAgentNode("/lead", { agentRunId: "lead_b" }), testAgentNode("/analyst", { agentRunId: "analyst_b" })] })) as unknown as { rootTeam: { members: Record<string, unknown>[] } };
-    base.rootTeam.members[0]!.launchSource = { origin: "team_default", fallbacks: [] };
+    // The lead records its own source; the analyst takes the team's (recorded on the team, DS-10 step 4).
+    base.rootTeam.members[0]!.launchSource = routed;
+    (base.rootTeam as Record<string, unknown>).defaultLaunchSource = { origin: "team_default", fallbacks: [] };
     const tree = base;
     await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload(tree, "team_b"));
     const launches = new PeerStartedRunLaunches(memory);
     expect(await launches.of({ kind: "agent", runId: "writer_1" })).toEqual([{ address: "/writer", runtimeKind: "autobyteus", llmModelIdentifier: "sonnet", source: routed }]);
     const team = await launches.of({ kind: "agent_team", runId: "team_b" });
-    expect(team.map((launch) => [launch.address, launch.source.origin])).toEqual([["/lead", "team_default"], ["/analyst", "agent_default"]]);
+    expect(team.map((launch) => [launch.address, launch.source.origin])).toEqual([["/lead", "model_router"], ["/analyst", "team_default"]]);
     await new AgentRunMetadataStore(memory).writeMetadata("writer_1", metadata("opus"));
     expect((await launches.of({ kind: "agent", runId: "writer_1" }))[0]!.llmModelIdentifier).toBe("opus");
     expect(await launches.of({ kind: "agent", runId: "gone" })).toEqual([]);

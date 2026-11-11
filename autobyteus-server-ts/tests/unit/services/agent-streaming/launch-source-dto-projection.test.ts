@@ -24,7 +24,8 @@ const teamFile = (recorded: boolean) => {
     testAgentNode("/ie", { agentRunId: "ie-run", workspaceRootPath: "/w" }),
   ] });
   const team = base.rootTeam;
-  return { ...base, rootTeam: { ...team, defaultLaunchConfiguration: { ...team.defaultLaunchConfiguration, ...claude }, members: [
+  return { ...base, rootTeam: { ...team, defaultLaunchConfiguration: { ...team.defaultLaunchConfiguration, ...claude },
+    ...(recorded ? { defaultLaunchSource: { origin: "inherited" as const, fallbacks: [] } } : {}), members: [
     { ...team.members[0]!, launchConfiguration: { ...team.members[0]!.launchConfiguration, ...claude },
       ...(recorded ? { launchSource: { origin: "inherited" as const, fallbacks: [fallback] } } : {}) },
     { ...team.members[1]!, launchConfiguration: { ...team.members[1]!.launchConfiguration, ...claude, runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" },
@@ -42,6 +43,7 @@ describe("launch values and sources in run views' child rows", () => {
       launch_configuration: { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus" }, follows_team: true,
       launch_source: { origin: "inherited", fallbacks: [{ layer: "agent_default", runtime_kind: "grok_build", llm_model_identifier: "grok-4", reason: "runtime_unavailable", detail: "no grok" }] } });
     expect(dto.source.members.map((member) => [member.launch_configuration.llm_model_identifier, member.follows_team])).toEqual([["opus", true], ["sol-6.1", false]]);
+    expect(dto.source.default_launch_source).toEqual({ origin: "inherited", fallbacks: [] });
     expect(JSON.stringify(teamView(false).root_team.task_executions[0])).not.toMatch(/launch_source/);
   });
 

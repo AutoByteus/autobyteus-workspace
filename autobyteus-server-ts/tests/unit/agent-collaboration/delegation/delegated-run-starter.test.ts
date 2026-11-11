@@ -27,7 +27,7 @@ describe("DelegatedRunStarter (local delegation)", () => {
       address: "/image_maker" as never, delegatedFrom })).rejects.toBeInstanceOf(DelegatedRunStartError);
   });
 
-  it("a team run rooted at `/`: each member's launch and its resolved launch source are recorded on it (SR-038, contract §3.3)", async () => {
+  it("a team run rooted at `/`: the team's launch source on the team, a member's own on the member (SR-038, DS-10 step 4)", async () => {
     const launch = source.launchConfiguration;
     const routed = { origin: "model_router" as const, fallbacks: [], choiceReason: "Careful review.", taskKind: "review" };
     const team = { kind: "agent_team" as const, teamDefinitionId: "product-team", coordinatorAddress: "/product_team/lead" as never, handoffs: [],
@@ -40,8 +40,9 @@ describe("DelegatedRunStarter (local delegation)", () => {
     const starter = new DelegatedRunStarter({ agentRuns: {} as never, teamRuns: { createTeamRun, terminateTeamRun: vi.fn() } as never });
     await expect(starter.startTeam({ source: team as never, address: "/product_team" as never, delegatedFrom }))
       .resolves.toMatchObject({ teamRunId: "product_team_e03d", coordinatorAgentRunId: "lead_1" });
-    expect((createTeamRun.mock.calls[0] as unknown[])[0]).toMatchObject({ memberConfigs: [
-      { memberAddress: "/lead", agentDefinitionId: "lead", launchSource: routed },
-      { memberAddress: "/writer", agentDefinitionId: "writer", launchSource: { origin: "team_default", fallbacks: [] } }] });
+    const request = (createTeamRun.mock.calls[0] as unknown[])[0] as { teamConfigs: unknown[]; memberConfigs: Record<string, unknown>[] };
+    expect(request).toMatchObject({ teamConfigs: [{ teamAddress: "/", launchSource: { origin: "team_default", fallbacks: [] } }],
+      memberConfigs: [{ memberAddress: "/lead", agentDefinitionId: "lead", launchSource: routed }, { memberAddress: "/writer", agentDefinitionId: "writer" }] });
+    expect(request.memberConfigs[1]).not.toHaveProperty("launchSource");
   });
 });
