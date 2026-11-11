@@ -1,3 +1,4 @@
+import path from "node:path";
 import type {
   StandaloneRootMessagesFile,
   StandaloneRootTreeFile,
@@ -38,9 +39,9 @@ import {
 
 /** Reader and writer of one Agent-root collaboration package (tree plus communication messages). */
 export class StandaloneRootPackageStore {
-  /** The host's own message log in `agents/<hostRunId>/collaboration/`. */
+  /** The run's own message log, in its run folder `agents/<hostRunId>/` like every agent run's (contract §3.4, TC-13). */
   private hostLog(collaborationDir: string): MessageLog {
-    return new MessageLog(collaborationDir, "communication_messages", { writer: this.writer });
+    return new MessageLog(path.dirname(collaborationDir), "communication_messages", { writer: this.writer });
   }
 
   private taskLogs(collaborationDir: string): TaskAgentMessageLogs {
