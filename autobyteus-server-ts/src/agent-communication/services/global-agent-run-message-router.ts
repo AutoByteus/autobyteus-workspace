@@ -12,6 +12,7 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { findCrossRunMessageDelivery, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
@@ -56,6 +57,7 @@ export class GlobalAgentRunMessageRouter {
   constructor(private readonly deps: {
     agentRunManager?: ActiveRunLookup;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
+    crossRun?: Pick<CrossRunMessageDelivery, "route">;
   } = {}) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -83,6 +85,15 @@ export class GlobalAgentRunMessageRouter {
         referenceFiles,
       });
       return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
+    }
+
+    // DS-2: an agent of another run that a Task relates to the sender's run (CrossRunMessageDelivery: the tree's rule,
+    // the receiver restored when stopped, both runs' logs).
+    const crossRun = input.sender.memberExecutionContext ? (this.deps.crossRun ?? findCrossRunMessageDelivery()) : null;
+    if (crossRun) {
+      const routed = await crossRun.route({ sender: input.sender.memberExecutionContext!.identity, senderDisplayName: input.sender.senderName,
+        targetAgentRunId, content, messageType, referenceFiles });
+      if (routed) return routed;
     }
 
     // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID.

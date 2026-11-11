@@ -37,6 +37,9 @@ export interface ActiveRootMessageBoundary {
    * Stop, and stays restorable. `stopped` false with the reason when it could not.
    */
   stopForTaskClosure?(): Promise<TaskExecutionReleaseResult>;
+  /** DS-2: this root as the sender of a message to another run (its own log only). */
+  prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
+  commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;
   /** This run's own live status (an agent run's agent; a team run's folded members), for the Task page; wakes nothing. */
   ownStatus?(): AgentExecutionStatus;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;

@@ -1,3 +1,4 @@
+import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
@@ -70,6 +71,15 @@ export class TeamRunMessageDelivery {
     this.options.authorizeIdentity(sender);
     return this.options.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
       content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+  }
+
+  /** DS-2: a message from another run of this node, for a member of this team run; the member is woken or restored first. */
+  acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
+    const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
+    if (!receiver) return Promise.resolve(NOT_AN_AGENT_OF_THIS_RUN(input.message.receiverAgentRunId));
+    return this.options.withLiveLease(receiver.agentRunId, () => this.options.communication.acceptFromRun({ ...input,
+      receiverIdentity: this.identityFor(receiver.address, receiver.agentRunId),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId }));
   }
 
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */

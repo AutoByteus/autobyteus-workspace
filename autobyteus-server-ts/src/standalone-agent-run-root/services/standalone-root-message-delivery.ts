@@ -1,3 +1,4 @@
+import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -158,6 +159,15 @@ export class StandaloneRootMessageDelivery {
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
       senderNodeName: input.fromNodeName,
     }));
+  }
+
+  /** DS-2: a message from another run of this node, for this run's own agent; it is woken or restored first. */
+  acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
+    const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
+    if (receiver?.executionKind !== "host") return Promise.resolve(NOT_AN_AGENT_OF_THIS_RUN(input.message.receiverAgentRunId));
+    return this.wakeAndRun(receiver.agentRunId, () => this.options.getCommunication().acceptFromRun({ ...input,
+      receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId }));
   }
 
   /**

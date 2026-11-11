@@ -6,6 +6,8 @@ import type { TaskExecutionResourcePort } from "../agent-collaboration/execution
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { bindCrossRunMessageDelivery, CrossRunMessageDelivery, unbindCrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
+import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 
 /**
  * The process `TaskDelegation` (autobyteus-461 DS-1): every root delegates through it. A new run is created by
@@ -17,6 +19,7 @@ export const composeTaskDelegation = (deps: Readonly<{
   agentRuns: Pick<AgentRunService, "prepareAgentRun" | "cancelPreparedAgentRun">;
   teamRuns: Pick<TeamRunService, "createTeamRun" | "terminateTeamRun">;
   rootResolver: CollaborationRootResolver;
+  activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve">;
 }>): Readonly<{ release(): void }> => {
   const delegation = new TaskDelegation({
     tasks: () => deps.tasks,
@@ -33,5 +36,17 @@ export const composeTaskDelegation = (deps: Readonly<{
     },
   });
   bindTaskDelegation(delegation);
-  return Object.freeze({ release: () => unbindTaskDelegation(delegation) });
+  // DS-2: messages between two runs of this node; the sender is active, the receiver is restored when stopped.
+  const crossRun = new CrossRunMessageDelivery({
+    tree: () => getDelegationTree(),
+    tasks: () => deps.tasks,
+    senderRoot: (run) => {
+      const root = deps.activeRoots.resolve(run);
+      return root?.prepareSendToRun && root.commitSentToRun
+        ? { prepareSendToRun: (input) => root.prepareSendToRun!(input), commitSentToRun: (message) => root.commitSentToRun!(message) } : null;
+    },
+    receiverRoot: async (run) => (await deps.rootResolver.resolveOrRestore(run))?.root ?? null,
+  });
+  bindCrossRunMessageDelivery(crossRun);
+  return Object.freeze({ release: () => { unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); } });
 };

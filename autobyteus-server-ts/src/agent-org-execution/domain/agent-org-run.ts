@@ -173,7 +173,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       isOpen: () => this.isAdmitting(),
       assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender, receiver),
       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
-      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
+      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? REMOTE_RUN_LOG
         : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
@@ -277,6 +277,10 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
 
   /** A message from a linked run on a peer node, admitted by its peer gateway (DS-003). */
+  /** DS-2: a message from, and to, another run of this node (CrossRunMessageDelivery: receiver in the gate, sender's own log). */
+  acceptFromRun(input: import("../../agent-collaboration/communication/cross-run-accept-input.js").CrossRunAcceptInput): Promise<AgentOperationResult> { return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptFromRun(input); }); }
+  prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
+  commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
   acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
   }

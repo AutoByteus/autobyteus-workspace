@@ -106,6 +106,15 @@ export class DelegationTree implements TaskEntriesListener {
     return newest((this.byTask.get(taskId) ?? []).filter((entry) => entry.role === "assigned"))?.delegatedFrom.delegatingRun ?? null;
   }
 
+  /** Every run that assigned the Task: the delegating runs of its `assigned` entries (`model.py` `assigners`). */
+  assignersOf(taskId: string): readonly RootExecutionIdentity[] {
+    const runs = new Map<string, RootExecutionIdentity>();
+    for (const entry of this.byTask.get(taskId) ?? []) {
+      if (entry.role === "assigned") runs.set(keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun);
+    }
+    return [...runs.values()];
+  }
+
   /** One hop (DS-8): the runs whose entries name this run as delegating run and that hold an open Task. */
   openChildrenOf(run: RootExecutionIdentity): readonly DelegatedChild[] {
     const children: Array<DelegatedChild & { firstLinkedAt: string }> = [];
@@ -161,7 +170,7 @@ export class DelegationTree implements TaskEntriesListener {
     const openA = openOf(a), openB = openOf(b);
     if (openA.some((x) => openB.some((y) => x.taskId === y.taskId))) return true;
     const assigns = (assigner: RootExecutionIdentity, open: readonly TaskRunEntry[]) =>
-      open.some((entry) => { const by = this.assignerOf(entry.taskId); return by !== null && keyOf(by) === keyOf(assigner); });
+      open.some((entry) => this.assignersOf(entry.taskId).some((by) => keyOf(by) === keyOf(assigner)));
     return assigns(a, openB) || assigns(b, openA);
   }
 

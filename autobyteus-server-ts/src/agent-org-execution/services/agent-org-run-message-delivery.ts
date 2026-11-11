@@ -1,3 +1,4 @@
+import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
@@ -71,6 +72,15 @@ export class AgentOrgRunMessageDelivery {
     this.options.authorizeIdentity(sender);
     return this.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
       content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
+  }
+
+  /** DS-2: a message from another run of this node, for an agent of this org run; it is woken or restored first. */
+  acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {
+    const receiver = this.options.getIndex().getAgent(input.message.receiverAgentRunId);
+    if (!receiver) return Promise.resolve(NOT_AN_AGENT_OF_THIS_RUN(input.message.receiverAgentRunId));
+    return this.withLiveLease(receiver.agentRunId, () => this.options.getCommunication().acceptFromRun({ ...input,
+      receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
+      receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId }));
   }
 
   /** The inbound order: the link check, then the paired agent is woken or restored (N-8), then the engine admits it. */

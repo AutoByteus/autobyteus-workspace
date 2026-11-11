@@ -229,7 +229,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       // The host is the run itself; a remote endpoint's log is on its own node; every other endpoint is a
       // task agent or a task-team member.
       messageLogOwnerOf: (agentRunId) => agentRunId === options.root.rootRunId ? COORDINATING_LOG
-        : this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
+        : this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? REMOTE_RUN_LOG
           : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
@@ -366,6 +366,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   acceptWorkPacket(packet: import("../../agent-collaboration/execution/task/task-delegation.js").WorkPacket): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptWorkPacket(packet); });
   }
+  /** DS-2: a message from, and to, another run of this node (CrossRunMessageDelivery: receiver in the gate, sender's own log). */
+  acceptFromRun(input: import("../../agent-collaboration/communication/cross-run-accept-input.js").CrossRunAcceptInput): Promise<AgentOperationResult> { return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptFromRun(input); }); }
+  prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
+  commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
   /** The work packet of the peer's delegation that started this run (N-6). */
   acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteWorkPacket(input); });

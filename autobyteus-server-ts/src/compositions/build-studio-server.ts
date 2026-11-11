@@ -374,7 +374,7 @@ export const buildStudioServer = async (input: {
     releaseRemoteCollaboration = remoteCollaboration.release;
     // autobyteus-461 DS-1: every root delegates through the one TaskDelegation (each delegated run is its own run).
     releaseTaskDelegation = composeTaskDelegation({ tasks: taskExecutionResources, agentRuns: generalProcessRunSupervisor.agentRunService,
-      teamRuns: generalProcessRunSupervisor.teamRunService, rootResolver }).release;
+      teamRuns: generalProcessRunSupervisor.teamRunService, rootResolver, activeRoots: getActiveCollaborationRootDirectory() }).release;
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver,
