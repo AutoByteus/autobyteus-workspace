@@ -247,7 +247,7 @@ describe("WorkspaceRunHistoryService", () => {
 
     const result = await service.getWorkspaceRunHistory("/ws/a");
 
-    expect(agentRunHistoryService.listRunHistory).toHaveBeenCalledWith(6);
+    expect(agentRunHistoryService.listRunHistory).toHaveBeenCalledWith(6, expect.any(Function));
     expect(result).toMatchObject({
       workspaceRootPath: "/ws/a",
       workspaceName: "Workspace A",

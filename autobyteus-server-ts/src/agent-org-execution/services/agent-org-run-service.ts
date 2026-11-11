@@ -1,3 +1,4 @@
+import { workingDelegatedRunsRefusal } from "../../run-history/services/delegated-work-guard.js";
 import { delegatedChildrenDtos } from "../../services/agent-streaming/delegated-children-dtos.js";
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -196,12 +197,17 @@ export class AgentOrgRunService {
     return terminated;
   }
 
-  archiveStoredRun(orgRunId: string) {
-    return this.dependencies.history.archiveStored(required(orgRunId, "orgRunId"));
+  async archiveStoredRun(orgRunId: string) {
+    const normalized = required(orgRunId, "orgRunId");
+    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived");
+    if (refused) return { success: false as const, message: refused };
+    return this.dependencies.history.archiveStored(normalized);
   }
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
+    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "deleted");
+    if (refused) return { success: false as const, message: refused };
     const result = await this.dependencies.history.deleteStored(normalized);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())

@@ -1,3 +1,4 @@
+import { workingDelegatedRunsRefusal } from "./delegated-work-guard.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunStatusProjectionService,
@@ -82,7 +83,7 @@ export class AgentRunHistoryService {
    * The run history the user browses; runs of internal agents are left out while they are hidden (autobyteus-308).
    * `limitPerAgent` keeps the newest runs of each agent in each folder; `null` keeps every run (the Runs view).
    */
-  async listRunHistory(limitPerAgent: number | null = 6): Promise<RunHistoryWorkspaceGroup[]> {
+  async listRunHistory(limitPerAgent: number | null = 6, include: (row: RunHistoryIndexRow) => boolean = () => true): Promise<RunHistoryWorkspaceGroup[]> {
     const [rows, hidden] = await Promise.all([this.catalogService.listCatalogRows(), this.visibility.hiddenDefinitionIds()]);
     const workspaceMap = new Map<string, Map<string, {
       agentDefinitionId: string;
@@ -90,7 +91,7 @@ export class AgentRunHistoryService {
       rows: RunHistoryIndexRow[];
     }>>();
     for (const row of rows) {
-      if (row.archivedAt || hidden.has(row.agentDefinitionId)) {
+      if (row.archivedAt || hidden.has(row.agentDefinitionId) || !include(row)) {
         continue;
       }
       const workspaceRootPath = canonicalizeWorkspaceRootPath(row.workspaceRootPath);
@@ -193,6 +194,8 @@ export class AgentRunHistoryService {
   }
 
   async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
+    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived");
+    if (refused) return { success: false, message: refused };
     return this.catalogService.archiveRun(runId);
   }
 
@@ -232,6 +235,8 @@ export class AgentRunHistoryService {
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
+    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted");
+    if (refused) return { success: false, message: refused };
     return this.catalogService.deleteRun(runId);
   }
 }

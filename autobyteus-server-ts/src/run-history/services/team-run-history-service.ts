@@ -1,3 +1,4 @@
+import { workingDelegatedRunsRefusal } from "./delegated-work-guard.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -97,11 +98,15 @@ export class TeamRunHistoryService {
     };
   }
 
-  archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
+  async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
+    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "archived");
+    if (refused) return { success: false, message: refused };
     return this.catalog.archiveTeamRun(teamRunId);
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
+    const refused = workingDelegatedRunsRefusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "deleted");
+    if (refused) return { success: false, message: refused };
     const result = await this.catalog.deleteTeamRun(teamRunId);
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.adHocTasks ?? getProjectTaskService())
