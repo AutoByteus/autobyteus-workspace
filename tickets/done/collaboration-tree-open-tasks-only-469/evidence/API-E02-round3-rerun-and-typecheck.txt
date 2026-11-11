@@ -1,0 +1,17 @@
+# Case: API-E02 rerun after moving its built-server helpers to tests/e2e/helpers/built-studio-roots.ts (round 3), and the server typecheck
+# Commands: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts --no-watch (env as API-E03); pnpm -C autobyteus-server-ts typecheck
+# Code under test: 1ee1ea61cf + this round test files
+# Date: 2026-11-11
+# Look for: "Tests  3 passed (3)"; "[typecheck] PASS", test-file errors 1180 = baseline
+
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests) 15600ms
+     ✓ OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it  7887ms
+     ✓ OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must  4151ms
+     ✓ OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back  3537ms
+      Tests  3 passed (3)
+   Duration  24.56s (transform 6.38s, setup 57ms, import 8.51s, tests 15.60s, environment 0ms)
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.0s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 26.1s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS

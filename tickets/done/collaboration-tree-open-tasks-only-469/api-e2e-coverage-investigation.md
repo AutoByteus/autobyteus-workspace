@@ -225,3 +225,12 @@ None at planning time. Execution found F-1, F-2, F-3 (execution report, "Failure
 | API-E01 | Rerun (whole server E2E) | Shared foundation changed; also covers API-E02 and EXC-E2E-007 |
 | API-B01 | Rerun (all 16 cases, one run) | F-2, F-3 fixes are web/stream changes; BR-005, BR-007 never ran |
 | API-F01 | Rerun | Build input changed (team-stream contract `dist/`) |
+
+## Round 3 Note (trigger: delivery re-entry DR-002)
+
+- Gap: AC-007 ("a file attached in an earlier conversation of a dismissed run opens") had no case that opens an attachment of a run that left the tree. API-I01, TAU-1 and AOML-1/2 reach only runs in the tree.
+- Requirement, as decided by the Solution Designer:
+  - (1) a message reference between the top run and the closed run opens through the top run's route after the closure and after a restart;
+  - (2) once the Task is reopened, the run's context file opens again.
+  - The context-file route while the Task is closed is not a pass condition (FU-006).
+- Plan: one new durable built-server E2E, API-E03 (`tests/e2e/projects/closed-run-attachments.e2e.test.ts`), for the Agent and Org roots. The Team root is left out because its delegated run's context file is uploaded through a Team draft owner. API-E02 is rerun after its helpers moved to `tests/e2e/helpers/built-studio-roots.ts`.

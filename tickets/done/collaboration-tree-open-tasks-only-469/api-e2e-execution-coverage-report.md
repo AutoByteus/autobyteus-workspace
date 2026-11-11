@@ -7,12 +7,13 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `tickets/in-progress/collaboration-tree-open-tasks-only-469/api-e2e-coverage-investigation.md` (round-2 plan at its end)
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2, code review pass CRR-003 on IR-002 (code `fa48d74a3e`; SR-009, ARCH-REV-006, DEC-011)
+- Round and trigger: round 3, delivery re-entry DR-002 (`/software_engineering_team/delivery_engineer`). AC-007 was recorded `Proven` by cases that do not reach a run that left the tree. Round 2 is complete and unchanged; round 3 adds API-E03 and corrects the AC-007 row. Code under test: `origin/personal` `1ee1ea61cf` (the merged change), worktree `collaboration-tree-open-tasks-only-469-ac007`.
 - Prior round reviewed: round 1 (API-REV-001, Fail F-1…F-3); each prior failure was checked first (table "Round 1 failures and their resolution")
-- Deviations from the investigation's plan, and why: none in round 2. Round 1's deviations are recorded in the revision record.
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/tickets/in-progress/collaboration-tree-open-tasks-only-469/evidence/` (the handoff message gives the commit that holds it)
+- Deviations from the investigation's plan, and why: none in rounds 2 and 3. Round 1's deviations are recorded in the revision record.
+- Round 3 correction: my round-2 AC-007 row cited API-I01, TAU-1 and AOML-1/2. Those reach attachments only of runs that are in the tree: TAU and AOML give their runs open Tasks, and API-I01 reads a reference with no past participant. The row overclaimed. It now cites API-E03, which closes the run's Task first.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469-ac007/tickets/done/collaboration-tree-open-tasks-only-469/evidence/` (the ticket is archived; the handoff message gives the commit that holds it)
 
 ## Routing Classification
 
@@ -28,6 +29,7 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 | --- | --- | --- | --- | --- |
 | ENV-1 | Product source `fa48d74a3e` (HEAD `c7eb0d8626`: test-only after it) | macOS darwin 25.5 (arm64) | Node v22.21.1; server `dist/` rebuilt from `fa48d74a3e` (EXIT 0), `test:integration:prepare` (EXIT 0); in-process and built (`dist/app.js`) servers | `env -i PATH HOME=<resolved temp> TMPDIR USER LANG`; `RUN_AGY_FAILURE_E2E=1`; `ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`; test-owned temp data roots only |
 | ENV-2 | as ENV-1 | as ENV-1 | Probe-owned stack: built `dist/app.js`, Nuxt dev server, headless Google Chrome (Playwright) | Free ports, private data root, launch credential; scripted AGY `linked_skills` |
+| ENV-4 | `1ee1ea61cf` (merged; worktree `collaboration-tree-open-tasks-only-469-ac007`) + round-3 test files | macOS darwin 25.5 arm64 | Node v22.21.1; fresh `pnpm install --frozen-lockfile`, `prebuild`, server `build` in that worktree (EXIT 0); built `dist/app.js` | as ENV-1 |
 | ENV-3 | `c7eb0d8626` | macOS darwin 25.5 arm64 | Fresh clone, `pnpm install --frozen-lockfile` (pnpm 10.28.2), desktop release build command | TESTING.md "Fresh-start build" |
 
 ## Cases
@@ -44,6 +46,8 @@ Round 2 (current). Every case was rerun because a contract package changed (TEST
 | API-E02 | AC-005, AC-006, AC-008, AC-009, AC-010, AC-011, AC-012 | Built server on an upgraded test-owned data root; restarts | Within API-E01 (`tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts`) | ENV-1 | Pass | `API-E01-round2-server-e2e.txt` | `✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests)`, `✓ OT-1`, `✓ OT-2`, `✓ OT-3` | |
 | API-B01 | AC-001, AC-002, AC-003, AC-004, AC-005, AC-011 | Rendered tree, Team tab, reactivation and follow-up Tasks, real backend restarts | `pnpm -C autobyteus-web test:e2e:task-closure-tree --output-dir /tmp/api469/r2-probe-B01` (all 16 cases, one run) | ENV-2 | Pass | `API-B01-round2-probe-evidence.json`, `API-B01-round2-agent-team-tab-after.png`, `API-B01-round2-team-team-tab-after.png`, `API-B01-round2-org-team-tab-after.png`, `API-B01-round2-agent-restart-reload-team-tab.png`, `API-B01-round2-team-reactivated-after-second-restart.png`, `API-B01-round2-team-existing-copy-after-restart.png` | `"result": "Pass"`; every `BR-0xx` `"Pass"`; BR-001…003 `storedLocalEntriesAfterA: 0`, `teamTab.beforeA` = `afterA`, `beforeB` = `afterB`, `duringB: {"framesDiffering": 0, "unknownTeammateFrames": 0}`; BR-005 `afterRestart.<kind>.teamTabRows: 1` with `seen: []`; cleanup `"dataRootRemoved": true` | |
 | API-F01 | Release build of changed build inputs (team-stream contract `dist/`) | Fresh clone and the release build job | `git clone --no-local` at `c7eb0d8626`; `pnpm install --frozen-lockfile`; `NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=… CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64`; the job's Prisma and packaged-terminal verify steps | ENV-3 | Pass | `API-F01-round2-fresh-start-build.txt` | `INSTALL EXIT 0`, `BUILD EXIT 0`, `[typecheck] PASS`, `Build completed`, `schema-engine-darwin-arm64 OK`, `VERIFY3 EXIT 0` | Signing, notarization, Intel and Linux jobs need the runner: not tested |
+| API-E03 (round 3) | AC-007 | Built server; the top run's message-reference route and member context-file route; a real restart | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=… pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/closed-run-attachments.e2e.test.ts --no-watch` | ENV-4 | Pass | `API-E03-closed-run-attachments.txt` | `✓ CRA-1 …`, `Tests  1 passed (1)`; observed only: `{"agentContextFileWhileClosed":404,"orgContextFileWhileClosed":404}` | New durable test. Agent and Org roots |
+| API-E02 (round 3 rerun) | AC-005, AC-006, AC-008 … AC-012 | as API-E02 | `… vitest run tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts --no-watch`; `pnpm -C autobyteus-server-ts typecheck` | ENV-4 | Pass | `API-E02-round3-rerun-and-typecheck.txt` | `Tests  3 passed (3)`, `[typecheck] PASS` | Rerun because its built-server helpers moved to `tests/e2e/helpers/built-studio-roots.ts` (shared with API-E03); no assertion changed |
 
 ### Round 1 cases (history; results on `42652879b3`)
 
@@ -89,7 +93,7 @@ I checked one escalation trigger directly: the released migration `20261017_task
 | AC-004 | No | API-R01, API-E01 (EXC-E2E-001…003: E DONE keeps the copy; A DONE closes it) | Proven | — |
 | AC-005 | Yes | API-E02 OT-1/OT-2/OT-3, API-E01 SCP-E2E-006, API-B01 BR-016 (damaged Task data refused, accepted after restore) | Proven | — |
 | AC-006 | Yes | API-E02 OT-1/OT-2 | Proven | — |
-| AC-007 | Yes | API-I01 (context-file integration), API-E01 TAU-1 (context file served through the hub), AOML-1/2 (message references resolve) | Proven | — |
+| AC-007 | Yes | API-E03 CRA-1 (Agent and Org roots). (1) A file referenced by a message between the Manager and its worker opens through the top run's route with its exact bytes after the worker's Task closed and it left the tree, after a real restart from the stopped root, and after the root's restore. (2) Once the Task is reopened and the Manager continues the worker by run ID, the worker's context file opens again. Supporting only, attachments of runs in the tree: API-I01, TAU-1, AOML-1/2 | Proven (round 3; the round-2 citation did not prove it) | — The Team root is not covered: the context file of a Team root's delegated run is uploaded through a Team draft owner this journey cannot address from an existing run. The reference route of the Team root is the Team records' route, unchanged by this ticket. Observed, not asserted (FU-006): the context-file route answers 404 for both roots while the Task is closed |
 | AC-008 | Yes | API-E02 OT-2 (built-server start with Team and Org trees listing local runs), API-E01 TAU-1/2, AOML-1/2, team-run-v1, collaborators | Proven | — |
 | AC-009 | Yes | API-R01, API-E02 OT-2, API-E01 TAU-2 (interrupted released migration completes) | Proven | — |
 | AC-010 | Yes | API-R01, API-E02 OT-2 (with positive control) | Proven | — |
@@ -170,6 +174,7 @@ Notes for failure-origin review:
 
 ## Durable Coverage Changed In The Codebase
 
+- Round 3: added `autobyteus-server-ts/tests/e2e/projects/closed-run-attachments.e2e.test.ts` (API-E03) and `tests/e2e/helpers/built-studio-roots.ts` (built-server helpers moved out of `open-task-tree-upgrade-startup.e2e.test.ts`, which now imports them). Commit in the handoff.
 - Repository-resident durable coverage added, updated, or removed: `Yes` (commits `009f707955` baseline fix, `431de4c9d1` ticket tests, `c7eb0d8626` EXC-E2E-007 per DEC-011). IR-002 also adapted `task-existing-copy-assignment` and `task-reactivation-root-visibility` helpers (`fa48d74a3e`); both ran green here.
 
 | Path / Test | Change | Case IDs | For A Removal |
@@ -219,4 +224,4 @@ Notes for failure-origin review:
 - Criteria not proven, or parts only the user can check (IDs): `None`
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review)
-- Notes: task size `Large`, architectural risk `High` preserved. Follow-up FU-004 recorded in round 1.
+- Notes: round 3 (DR-002): AC-007 now proven by API-E03 and the row corrected; result stays `Pass`. Task size `Large`, architectural risk `High` preserved. Follow-up FU-004 recorded in round 1.

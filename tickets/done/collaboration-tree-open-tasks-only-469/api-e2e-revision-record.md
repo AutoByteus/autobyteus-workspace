@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report stay authoritati
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-001, round 1 | SR-008, ARCH-REV-005, IR-001, CRR-001 | N/A | Fail / 82% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-003, round 2 | SR-009, ARCH-REV-006, DEC-011, IR-002, CRR-003 | Fail / 82% | Pass / 95% |
+| API-REV-003 | Delivery Engineer, DR-002 (`delivery-revision-record.md`), round 3 | DR-002 | Pass / 95% (AC-007 overclaimed) | Pass / 95% |
 
 ## Revision Entries
 
@@ -64,3 +65,30 @@ None.
 - New or remaining failure IDs: none.
 - Recommended owner: Code Reviewer, for proportional test-code review.
 - Remaining risks, blocked evidence, or untested scope: Memory Sync imported sources with delegated runs (not tested); signing and non-macOS release jobs (runner only).
+
+### API-REV-003: AC-007 proven for a run that left the tree (delivery re-entry DR-002)
+
+- Triggering role, report path, and round: Delivery Engineer (`/software_engineering_team/delivery_engineer`), `delivery-revision-record.md` DR-002, round 3. Solution Designer's receipt verification: `prerequisite-469-delivery-receipt-verification.md` (ticket 461).
+- Triggering finding or case IDs: AC-007 row of the execution report.
+- Related revision IDs: DR-002.
+- Why this revision was recorded: my round-2 row recorded AC-007 `Proven` by cases (API-I01, TAU-1, AOML-1/2) whose runs are in the tree. None opened an attachment of a run that left it. It was an evidence gap, not a known product failure.
+- Coverage decisions or durable test paths changed:
+  - Added `tests/e2e/projects/closed-run-attachments.e2e.test.ts` (API-E03, CRA-1).
+  - Moved the built-server root helpers of `open-task-tree-upgrade-startup.e2e.test.ts` into `tests/e2e/helpers/built-studio-roots.ts`, now shared by both tests.
+- Cases added, changed, removed, or rechecked: API-E03 added; API-E02 rerun (helpers moved); server typecheck rerun.
+- Commands, environment, fixture, or broader-validation delta: ENV-4, the merged `1ee1ea61cf` in worktree `collaboration-tree-open-tasks-only-469-ac007`. Fresh install and server build there.
+
+#### Prior Failure Resolution
+
+None (no failure; an evidence gap closed).
+
+- Canonical artifacts and sections updated: execution report (Round, environments, Cases, AC-007 row, durable coverage, result notes), this record, the progress log, the investigation's round-3 note.
+- Prior result and confidence: Pass / 95%, with AC-007 overclaimed.
+- Current result and confidence: Pass / 95%. AC-007 is proven by API-E03:
+  - (1) a closed run's message reference opens through the top run, after the closure, after a restart and after a restore;
+  - (2) its context file opens again once its Task is reopened.
+- New or remaining failure IDs: none.
+- Recommended owner: Code Reviewer, for proportional test-code review of the new and moved test code; then Delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - The Team root is not covered by API-E03 (draft-owner limit, see the AC-007 row).
+  - The context-file route answers 404 while the Task is closed. That is observed only (FU-006, sent by the Solution Designer).
