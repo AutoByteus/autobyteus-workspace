@@ -944,4 +944,4 @@
   - The other option, separating "active" from "managed" across every reader, is the larger change U-001 sized, and is not taken.
 - Done: the design's DS-8 (the server per stream kind, the modes and the switch, the tests). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-023)
-
+- ARCH-REV-021 (2026-11-11): Pass. AR-001 … AR-023 are resolved. Its residual is added to DS-8's tests: the restore snapshot keeps the restoring member's input state.
