@@ -32,8 +32,11 @@ export function usePdfPinchZoom(
   pages: Ref<HTMLElement | null>,
   options: {
     zoom: () => number;
-    /** Draws the pages at `zoom` and resolves when their new layout is in place (never rejects). */
-    setZoom: (zoom: number) => Promise<void>;
+    /**
+     * Draws the pages at `zoom`; resolves `true` when every page is laid out at it, `false` when that did not happen
+     * (the anchor is then not scrolled against a partial layout). Never rejects.
+     */
+    setZoom: (zoom: number) => Promise<boolean>;
     onCommit?: () => void;
   },
 ) {
@@ -85,14 +88,14 @@ export function usePdfPinchZoom(
     }
     committing = true;
     show(anchor, factor, from, screen);
-    await options.setZoom(next);
+    const laidOut = await options.setZoom(next);
     // The pages are laid out at the new zoom: clear the live view, then (before the next paint) scroll so the anchor
     // is where the live view showed it. The layout is measured without the transform.
     transform.value = '';
     await nextTick();
     const box = scroller.value;
     const rect = pages.value?.getBoundingClientRect();
-    if (box && rect) {
+    if (box && rect && laidOut) {
       box.scrollLeft += rect.left + anchor.x * factor - screen.x;
       box.scrollTop += rect.top + anchor.y * factor - screen.y;
     }

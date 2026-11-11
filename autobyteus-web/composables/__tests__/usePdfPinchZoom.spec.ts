@@ -10,7 +10,7 @@ const PADDING = 16;
 
 const mountPinch = async (startZoom = 1) => {
   let zoom = startZoom;
-  const setZoom = vi.fn(async (next: number) => { zoom = next; });
+  const setZoom = vi.fn(async (next: number) => { zoom = next; return true; });
   const onCommit = vi.fn();
   const scroll = { left: 0, top: 0 };
   let live!: ReturnType<typeof usePdfPinchZoom>;

@@ -104,7 +104,8 @@ let placed = false
 let generation = 0
 let unmounted = false
 let scrollTimer: ReturnType<typeof setTimeout> | null = null
-const LAYOUT_WAIT_MS = 2000
+/** How long a layout may take before the viewer gives up putting a place back (it never scrolls against a partial one). */
+const LAYOUT_WAIT_MS = 10_000
 
 const measureBase = () => {
   const box = scroller.value
@@ -113,12 +114,24 @@ const measureBase = () => {
   baseWidth.value = Math.max(0, box.clientWidth - parseFloat(style.paddingLeft || '0') - parseFloat(style.paddingRight || '0'))
 }
 
-/** Resolves when vue-pdf-embed has sized the pages at `width` (it sets each page canvas's CSS width), or after a bound. */
-const pagesLaidOutAt = (width: number): Promise<void> => new Promise((resolve) => {
+/**
+ * Whether vue-pdf-embed has laid out every page at `width`: it sizes each page's canvas (CSS width and height) as that
+ * page resolves, one after another, so the scrolled height is whole only when the last page is sized (CRR-007 CR-003).
+ */
+const everyPageAt = (width: number): boolean => {
+  const canvases = [...(pages.value?.querySelectorAll<HTMLElement>('.vue-pdf-embed__page canvas') ?? [])]
+  return canvases.length > 0 && canvases.every((canvas) => canvas.style.width === `${width}px`)
+}
+
+/**
+ * Resolves `true` once every page is laid out at the current zoom's width (a zoom that changes meanwhile is the one
+ * waited for); `false` if the viewer goes or the layout takes too long.
+ */
+const pagesLaidOut = (): Promise<boolean> => new Promise((resolve) => {
   const until = Date.now() + LAYOUT_WAIT_MS
   const check = () => {
-    const canvas = pages.value?.querySelector<HTMLElement>('.vue-pdf-embed__page canvas')
-    if (unmounted || canvas?.style.width === `${width}px` || Date.now() > until) resolve()
+    if (unmounted || Date.now() > until) resolve(false)
+    else if (everyPageAt(renderWidth.value)) resolve(true)
     else requestAnimationFrame(check)
   }
   requestAnimationFrame(check)
@@ -138,7 +151,7 @@ const pinchZoom = usePdfPinchZoom(scroller, pages, {
   zoom: () => zoom.value,
   setZoom: async (next) => {
     zoom.value = next
-    await pagesLaidOutAt(renderWidth.value)
+    return pagesLaidOut()
   },
   onCommit: remember,
 })
@@ -155,12 +168,13 @@ watch(resolvedUrl, () => {
 const onTouchLoaded = async () => {
   loading.value = false
   const loaded = generation
-  await pagesLaidOutAt(renderWidth.value)
+  const laidOut = await pagesLaidOut()
   // A newer source is being drawn: its own `loaded` puts the place back.
   if (unmounted || loaded !== generation) return
   const box = scroller.value
   const place = props.zoomMemory?.pdf
-  if (box && place) {
+  // Only against the whole layout: a partial one would put the place too high.
+  if (box && place && laidOut) {
     box.scrollLeft = place.scrollLeftRatio * box.scrollWidth
     box.scrollTop = place.scrollTopRatio * box.scrollHeight
   }
