@@ -1,0 +1,711 @@
+{
+  "startedAt": "2026-11-11T14:08:18.290Z",
+  "node": "v22.23.1",
+  "cases": {
+    "API-002": {
+      "result": "Pass",
+      "details": {
+        "found": [
+          "resume-notes.md",
+          "applications/nested/resume sample.pdf"
+        ],
+        "pdfStatus": 200,
+        "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d",
+        "denied": [
+          {
+            "locator": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace/applications/nested/resume sample.pdf",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../outside.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          },
+          {
+            "locator": "../workspace-sibling/leak.txt",
+            "status": 400,
+            "body": "{\"detail\":\"Access denied: Path resolves outside the workspace boundary.\"}"
+          }
+        ],
+        "textRead": true
+      }
+    },
+    "API-003": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [],
+          "preview": null,
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "searched": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": null,
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "rendered": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "applications/nested/resume sample.pdf",
+            "type": "PDF",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": null,
+            "url": "http://127.0.0.1:63619/rest/workspaces/agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+            "contentRevision": 0,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 7191
+            },
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 7146
+            }
+          ],
+          "spinner": false,
+          "alerts": []
+        },
+        "searchedText": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "resume-notes.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n",
+            "url": null,
+            "contentRevision": 0,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "treeText": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "paths": [
+            "workspace",
+            "applications",
+            "resume-notes.md"
+          ],
+          "openFolders": {},
+          "results": [
+            {
+              "path": "resume-notes.md",
+              "id": "3094e73e-b0d4-5bb6-aad1-da4398c4de88",
+              "reused": true
+            },
+            {
+              "path": "applications/nested/resume sample.pdf",
+              "id": "search-applications/nested/resume sample.pdf",
+              "reused": false
+            }
+          ],
+          "preview": {
+            "path": "resume-notes.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n",
+            "url": null,
+            "contentRevision": 0,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [],
+          "spinner": false,
+          "alerts": []
+        },
+        "treePdf": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "paths": [
+            "workspace",
+            "applications",
+            "applications/nested",
+            "applications/nested/resume sample.pdf",
+            "resume-notes.md"
+          ],
+          "openFolders": {
+            "applications": true,
+            "applications/nested": true
+          },
+          "results": [],
+          "preview": {
+            "path": "applications/nested/resume sample.pdf",
+            "type": "PDF",
+            "mode": "preview",
+            "accessIntent": null,
+            "content": null,
+            "url": "http://127.0.0.1:63619/rest/workspaces/agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+            "contentRevision": 1,
+            "relativeResourceContext": {
+              "kind": "workspace",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06"
+            },
+            "isLoading": false,
+            "error": null
+          },
+          "searchLoading": false,
+          "canvases": [
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 7191
+            },
+            {
+              "width": 896,
+              "height": 1095,
+              "ink": 7146
+            }
+          ],
+          "spinner": false,
+          "alerts": []
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 19178
+    },
+    {
+      "label": "frontend",
+      "pid": 21550
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+              "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+              "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetUpdateNotifications",
+        "variables": {},
+        "query": "query GetUpdateNotifications {\n  updateNotifications {\n    ...UpdateNotificationFields\n    __typename\n  }\n}\n\nfragment UpdateNotificationFields on UpdateNotification {\n  kind\n  sourceId\n  name\n  repositoryUrl\n  defaultBranch\n  installedRevision\n  latestRevision\n  foundAt\n  read\n  state\n  handledRevision\n  handledAt\n  outcome\n  outcomeReason\n  outcomeAt\n  __typename\n}"
+      },
+      "response": {
+        "data": {
+          "updateNotifications": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetUpdateAutomationSettings",
+        "variables": {},
+        "query": "query GetUpdateAutomationSettings {\n  updateAutomationSettings {\n    ...UpdateAutomationSettingsFields\n    __typename\n  }\n}\n\nfragment UpdateAutomationSettingsFields on UpdateAutomationSettings {\n  intervals {\n    agentPackages\n    skillSources\n    agentRuntimes\n    __typename\n  }\n  automaticUpdates {\n    agentPackages\n    skillSources\n    agentRuntimes\n    __typename\n  }\n  githubWaitUntil\n  desktopEmbeddedNode\n  __typename\n}"
+      },
+      "response": {
+        "data": {
+          "updateAutomationSettings": {
+            "intervals": {
+              "agentPackages": 30,
+              "skillSources": 30,
+              "agentRuntimes": 60,
+              "__typename": "UpdateCheckIntervals"
+            },
+            "automaticUpdates": {
+              "agentPackages": false,
+              "skillSources": false,
+              "agentRuntimes": false,
+              "__typename": "AutomaticUpdates"
+            },
+            "githubWaitUntil": null,
+            "desktopEmbeddedNode": false,
+            "__typename": "UpdateAutomationSettings"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetUpdateNotifications",
+        "variables": {},
+        "query": "query GetUpdateNotifications {\n  updateNotifications {\n    ...UpdateNotificationFields\n    __typename\n  }\n}\n\nfragment UpdateNotificationFields on UpdateNotification {\n  kind\n  sourceId\n  name\n  repositoryUrl\n  defaultBranch\n  installedRevision\n  latestRevision\n  foundAt\n  read\n  state\n  handledRevision\n  handledAt\n  outcome\n  outcomeReason\n  outcomeAt\n  __typename\n}"
+      },
+      "response": {
+        "data": {
+          "updateNotifications": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+              "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+              "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetUpdateAutomationSettings",
+        "variables": {},
+        "query": "query GetUpdateAutomationSettings {\n  updateAutomationSettings {\n    ...UpdateAutomationSettingsFields\n    __typename\n  }\n}\n\nfragment UpdateAutomationSettingsFields on UpdateAutomationSettings {\n  intervals {\n    agentPackages\n    skillSources\n    agentRuntimes\n    __typename\n  }\n  automaticUpdates {\n    agentPackages\n    skillSources\n    agentRuntimes\n    __typename\n  }\n  githubWaitUntil\n  desktopEmbeddedNode\n  __typename\n}"
+      },
+      "response": {
+        "data": {
+          "updateAutomationSettings": {
+            "intervals": {
+              "agentPackages": 30,
+              "skillSources": 30,
+              "agentRuntimes": 60,
+              "__typename": "UpdateCheckIntervals"
+            },
+            "automaticUpdates": {
+              "agentPackages": false,
+              "skillSources": false,
+              "agentRuntimes": false,
+              "__typename": "AutomaticUpdates"
+            },
+            "githubWaitUntil": null,
+            "desktopEmbeddedNode": false,
+            "__typename": "UpdateAutomationSettings"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetAllWorkspaces",
+        "variables": {},
+        "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+      },
+      "response": {
+        "data": {
+          "workspaces": [
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+              "name": "workspace",
+              "displayName": "workspace",
+              "config": {
+                "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+                "workspaceId": null
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+              "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+              "kind": "filesystem",
+              "isTemp": false
+            },
+            {
+              "__typename": "WorkspaceMetadata",
+              "workspaceId": "temp_ws_default",
+              "name": "Temp Workspace",
+              "displayName": "Temp Workspace",
+              "config": {
+                "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+                "workspaceId": "temp_ws_default"
+              },
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+              "absolutePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/data/temp_workspace",
+              "kind": "temp",
+              "isTemp": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetUpdateNotifications",
+        "variables": {},
+        "query": "query GetUpdateNotifications {\n  updateNotifications {\n    ...UpdateNotificationFields\n    __typename\n  }\n}\n\nfragment UpdateNotificationFields on UpdateNotification {\n  kind\n  sourceId\n  name\n  repositoryUrl\n  defaultBranch\n  installedRevision\n  latestRevision\n  foundAt\n  read\n  state\n  handledRevision\n  handledAt\n  outcome\n  outcomeReason\n  outcomeAt\n  __typename\n}"
+      },
+      "response": {
+        "data": {
+          "updateNotifications": []
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetUpdateAutomationSettings",
+        "variables": {},
+        "query": "query GetUpdateAutomationSettings {\n  updateAutomationSettings {\n    ...UpdateAutomationSettingsFields\n    __typename\n  }\n}\n\nfragment UpdateAutomationSettingsFields on UpdateAutomationSettings {\n  intervals {\n    agentPackages\n    skillSources\n    agentRuntimes\n    __typename\n  }\n  automaticUpdates {\n    agentPackages\n    skillSources\n    agentRuntimes\n    __typename\n  }\n  githubWaitUntil\n  desktopEmbeddedNode\n  __typename\n}"
+      },
+      "response": {
+        "data": {
+          "updateAutomationSettings": {
+            "intervals": {
+              "agentPackages": 30,
+              "skillSources": 30,
+              "agentRuntimes": 60,
+              "__typename": "UpdateCheckIntervals"
+            },
+            "automaticUpdates": {
+              "agentPackages": false,
+              "skillSources": false,
+              "agentRuntimes": false,
+              "__typename": "AutomaticUpdates"
+            },
+            "githubWaitUntil": null,
+            "desktopEmbeddedNode": false,
+            "__typename": "UpdateAutomationSettings"
+          }
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "folderPath": ""
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"c984eea4-c843-5816-b16c-42ccac7ac935\",\"name\":\"workspace\",\"path\":\"workspace\",\"is_file\":false,\"children\":[{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[],\"children_loaded\":false},{\"id\":\"3094e73e-b0d4-5bb6-aad1-da4398c4de88\",\"name\":\"resume-notes.md\",\"path\":\"resume-notes.md\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "SearchFiles",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "query": "resume"
+        },
+        "query": "query SearchFiles($workspaceId: String!, $query: String!) {\n  searchFiles(workspaceId: $workspaceId, query: $query)\n}"
+      },
+      "response": {
+        "data": {
+          "searchFiles": [
+            "resume-notes.md",
+            "applications/nested/resume sample.pdf"
+          ]
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/rest/workspaces/agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFileContent",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "filePath": "resume-notes.md"
+        },
+        "query": "query GetFileContent($workspaceId: String!, $filePath: String!) {\n  fileContent(workspaceId: $workspaceId, filePath: $filePath)\n}"
+      },
+      "response": {
+        "data": {
+          "fileContent": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFileContent",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "filePath": "resume-notes.md"
+        },
+        "query": "query GetFileContent($workspaceId: String!, $filePath: String!) {\n  fileContent(workspaceId: $workspaceId, filePath: $filePath)\n}"
+      },
+      "response": {
+        "data": {
+          "fileContent": "# SYNTHETIC RESUME NOTES\n\nSame workspace-relative text reader.\n"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "folderPath": "applications"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"b300cdc4-3ae2-52f6-affe-1dc517c9b482\",\"name\":\"applications\",\"path\":\"applications\",\"is_file\":false,\"children\":[{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[],\"children_loaded\":false}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/graphql",
+      "request": {
+        "operationName": "GetFolderChildren",
+        "variables": {
+          "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+          "folderPath": "applications/nested"
+        },
+        "query": "query GetFolderChildren($workspaceId: String!, $folderPath: String!) {\n  folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)\n}"
+      },
+      "response": {
+        "data": {
+          "folderChildren": "{\"id\":\"2b387004-6df4-5b92-9101-58024b5de68d\",\"name\":\"nested\",\"path\":\"applications/nested\",\"is_file\":false,\"children\":[{\"id\":\"e7ed1549-3298-5f08-88b5-efae4ef54b85\",\"name\":\"resume sample.pdf\",\"path\":\"applications/nested/resume sample.pdf\",\"is_file\":true,\"children\":[],\"children_loaded\":true}],\"children_loaded\":true}"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:63619/rest/workspaces/agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06/content?path=applications%2Fnested%2Fresume%20sample.pdf",
+      "status": 200,
+      "contentType": "application/pdf"
+    }
+  ],
+  "browserErrors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "processes": [
+      {
+        "pid": 21550,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      },
+      {
+        "pid": 19178,
+        "exitCode": 0,
+        "signal": null,
+        "liveGroupMembers": 0
+      }
+    ],
+    "fixturePageRemoved": true,
+    "ownedRootRemoved": true,
+    "baseClosed": true,
+    "frontClosed": true
+  },
+  "build": {
+    "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts/src/file-explorer/file-explorer.ts",
+    "sourceSha256": "8e43f4b98bcf7d8aa02b535fa22ee503beafa399e5dd47b1c647f2a16e78bd4e",
+    "dist": "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts/dist/file-explorer/file-explorer.js",
+    "distSha256": "90b6abe16699570f760c89a8b5d9d266e42344582f815b493a400a2e46abb308",
+    "gitHead": "b49b5c539f61deec21b8b5fd8d1d261d6a336419"
+  },
+  "fixture": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ",
+    "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-pdf-preview-zyVdkZ/workspace",
+    "pdfPath": "applications/nested/resume sample.pdf",
+    "textPath": "resume-notes.md",
+    "pdfSha256": "999bd43e8b679a7f1b65482120948444dca47a1e541122cae3bb27862069e87d"
+  },
+  "endpoints": {
+    "base": "http://127.0.0.1:63619",
+    "front": "http://127.0.0.1:63620"
+  },
+  "workspaceId": "agent_ws_6e2cce818ac0bb6e6430e738bfea978edd5445501368fad2bc71859a01c47e06",
+  "browser": "157.0.8103.39",
+  "warmupBrowserErrors": [],
+  "finishedAt": "2026-11-11T14:08:59.946Z"
+}

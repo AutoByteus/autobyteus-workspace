@@ -1,0 +1,82 @@
+{
+  "storeUrls": [
+    {
+      "file": "picture-471.png",
+      "revoked": true
+    },
+    {
+      "file": "plan-471.pdf",
+      "revoked": true
+    },
+    {
+      "file": "tone-471.wav",
+      "revoked": true
+    }
+  ],
+  "created": [
+    {
+      "type": "image/png",
+      "size": 255,
+      "revoked": true,
+      "store": true,
+      "from": [
+        "at Proxy._loadNodeFile (entry.gy256Nye.js:2037:6155)",
+        "at async Proxy._openFileWithMode (entry.gy256Nye.js:2037:4805)",
+        "at async Object.openPath (useEventMonitorFilePreview.6dgh-QE1.js:1:2274)"
+      ]
+    },
+    {
+      "type": "application/pdf",
+      "size": 589,
+      "revoked": true,
+      "store": true,
+      "from": [
+        "at Proxy._loadNodeFile (entry.gy256Nye.js:2037:6155)",
+        "at async Proxy._openFileWithMode (entry.gy256Nye.js:2037:4805)",
+        "at async Object.openPath (useEventMonitorFilePreview.6dgh-QE1.js:1:2274)"
+      ]
+    },
+    {
+      "type": "text/javascript",
+      "size": 1890161,
+      "revoked": false,
+      "store": false,
+      "from": [
+        "at _l._createCDNWrapper (useWorkspaceFileExplorer.ChGhq83l.js:616:191663)",
+        "at _l._initialize (useWorkspaceFileExplorer.ChGhq83l.js:616:188936)",
+        "at new _l (useWorkspaceFileExplorer.ChGhq83l.js:616:188496)"
+      ]
+    },
+    {
+      "type": "audio/wav",
+      "size": 16044,
+      "revoked": true,
+      "store": true,
+      "from": [
+        "at Proxy._loadNodeFile (entry.gy256Nye.js:2037:6155)",
+        "at async Proxy._openFileWithMode (entry.gy256Nye.js:2037:4805)",
+        "at async Object.openPath (useEventMonitorFilePreview.6dgh-QE1.js:1:2274)"
+      ]
+    },
+    {
+      "type": "audio/wav",
+      "size": 16044,
+      "revoked": true,
+      "store": false,
+      "from": [
+        "at Proxy._loadNodeFile (entry.gy256Nye.js:2037:6155)"
+      ]
+    },
+    {
+      "type": "text/javascript",
+      "size": 1890161,
+      "revoked": false,
+      "store": false,
+      "from": [
+        "at _l._createCDNWrapper (useWorkspaceFileExplorer.ChGhq83l.js:616:191663)",
+        "at _l._initialize (useWorkspaceFileExplorer.ChGhq83l.js:616:188936)",
+        "at new _l (useWorkspaceFileExplorer.ChGhq83l.js:616:188496)"
+      ]
+    }
+  ]
+}
