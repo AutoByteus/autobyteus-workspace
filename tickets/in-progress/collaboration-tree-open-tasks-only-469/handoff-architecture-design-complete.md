@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-469` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("A run's collaboration tree lists only the runs whose Task is open: stop the tree from growing with every delegation"). Prerequisite PRE-001 of `autobyteus-461`.
 - Package identifier: `collaboration-tree-open-tasks-only-469`
-- Current solution revision: `SR-008` (answers ARCH-REV-004 finding AR-002 on D-3)
+- Current solution revision: `SR-009` (answers the Code Reviewer's CRR-002 finding CR-003 on D-8, after API/E2E round 1)
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-10
 
@@ -30,6 +30,13 @@ D-3 dropped every stored local entry at the first save. An existing migration te
 ## What changed since SR-007 (review round 4: Fail, one finding)
 
 AR-002: a full Team record whose own file exists can still hold the only record of a nested run, and SR-007's save looked at the entry's own run only. Answer: the review's route (b), made strict. A save leaves out a stored local entry only when it is a link by an exact key set (`address`, one of `agentRunId` / `teamRunId`, `startedAt`, optionally `delegatorAgentRunId`) and its run's own file exists at the standard place. Every other stored local entry is kept unchanged and not looked into. AC-009 has three more fixtures, the reviewer's among them.
+
+## What changed since SR-008 (architecture review round 5: Pass; implemented; API/E2E round 1: Fail)
+
+The Code Reviewer's failure-origin review (CRR-002, `code-review-report.md` "Round 2") classified three failures:
+- **CR-003 (F-3), Design Impact, this role's.** After a restart a Team view never held a closed run. D-8 sent its unknown "reopened" reference to stream recovery, which in the Team client is a manual recovery ("select this Team member again to reload"), so AC-002 and AC-003 fail for a Team root. Answer: the Team's `TASK_EXECUTIONS_REOPENED` carries each reopened execution's record with its parent Team run; the Team view inserts a record it does not hold and un-hides one it holds. The Agent-run and Org contexts keep reloading themselves.
+- **CR-002 (F-2), Local Fix, implementation (web).** Recorded in the file mapping: the participant-messages owner keeps `pastParticipants` current when a view stops holding an agent a loaded list names.
+- **F-1, Local Fix, API/E2E (stale test).** DEC-011 records this role's call: the add-back's refusal for a copy whose own file was deleted by hand is accepted; the test changes.
 
 ## Goals and status
 
@@ -78,7 +85,7 @@ Design spec "Risks"; notes U-005.
 
 ## Next expected action
 
-Architecture review of D-3 as corrected in `SR-008`, round 5 (design spec D-3, Legacy Removal Policy, "Persisted Data / State Transition Decision", Removal Plan, Backward-Compatibility Rejection Log, Guidance; notes B-8).
+Architecture review of D-8 as corrected in `SR-009`, round 6 (design spec D-8, DS-R1, the Team rows of "Final File Responsibility Mapping", Key Tradeoffs; notes B-9). Then implementation of CR-003 and CR-002, a targeted source review, and API/E2E again (BR-001 … BR-005, BR-007, BR-011, BR-015 and the F-1 test update), as the Code Reviewer listed.
 
 ## Route
 

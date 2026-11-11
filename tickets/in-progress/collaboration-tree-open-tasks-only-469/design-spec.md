@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (answers architecture review ARCH-REV-004, finding AR-002, on D-3; `SR-007` answered the Implementation Engineer's second Design Impact, on D-3; `SR-006` answered its first, on D-1's candidate rule; `SR-005` answered architecture review ARCH-REV-001, finding AR-001, on `SR-004`; `SR-004` replaced `SR-003`, which was withdrawn before a review decision)
+- Current solution revision ID: `SR-009` (answers the Code Reviewer's failure-origin review CRR-002 of API/E2E round 1, finding CR-003, on D-8; `SR-008` answered architecture review ARCH-REV-004, finding AR-002, on D-3; `SR-007` answered the Implementation Engineer's second Design Impact, on D-3; `SR-006` answered its first, on D-1's candidate rule; `SR-005` answered architecture review ARCH-REV-001, finding AR-001, on `SR-004`; `SR-004` replaced `SR-003`, which was withdrawn before a review decision)
 - Approved requirements baseline / revision, who approved, and approval reference: `SR-004`, with wording corrections at `SR-005` that change no intended behavior. The user decided DEC-001, DEC-008 and DEC-009 on 2026-11-10 (quoted in `requirements-doc.md`); the Solution Designer decided the rest within that direction, the user informed.
 - Behavior-defining supplements and their approval references: none
 - User approval of the design, when the direction requires it: `Not required`. The model itself is the user's (DEC-009).
@@ -34,7 +34,7 @@ Constraints: links to a run on another node hold facts that exist nowhere else o
 | D-5 | **The Team tab keeps its rows.** A root's message view keeps the messages of its own log that involve one of its own agents. The participant reader returns, for a counterpart that is not in the tree, the agent's address read from the closed run's own file. |
 | D-6 | **Memory listing** asks whether the coordinating run named in the delegated run's own file still exists, not whether a tree lists the run. |
 | D-7 | **A standalone run's token total** covers the tree's agents and the agents of this run's closed delegated runs. |
-| D-8 | **Web:** a "reopened" event for an execution the view does not hold reloads the view; a Team-tab counterpart that is not in the tree is named from the reader's answer. |
+| D-8 | **Web: a run that is in the tree again reaches every client without a manual step.** A client's view either still holds the run, hidden (a view loaded before the run left the tree), or never held it (a view loaded after, for example after a restart). The server cannot tell which. Agent-run and Org views: a "reopened" reference the view does not hold reloads the view through their existing checkpoint, which is automatic. Team view: it has no automatic reload (its stream recovery is a manual one, and it inserts a new run from the "started" event's record), so the Team's "reopened" event carries the record of each reopened execution with its parent Team run, as "started" does; the view inserts a record it does not hold and un-hides one it holds. A Team-tab counterpart that is not in the view is named from the reader's answer, which the participant-messages owner keeps current whenever a view stops holding an agent its loaded lists name. |
 | D-9 | **Links to runs on another node** stay stored where they are, in the same shape. |
 | D-10 | **The standalone run's tree file stays** as a small file (its host, links to runs on another node); it holds no local list. Removing the file is not needed for the outcome. |
 | D-11 | **Admission reads a run's own parts only.** The Team and Org stores get a second read, `readOwnParts`, that returns the tree of the run's own parts with no delegated run, local or on another node, and never asks the source. The startup package admission and the maintenance repair use it. Every other reader uses the composed read, which exists only after the source is bound. |
@@ -177,7 +177,7 @@ Changed in `collaboration_model.md` §1 in this change.
 | DS-005 | Primary End-to-End | BEH-005, BEH-007 | Team tab shown | Rows with names; attachments open | The participant messages reader | The visible surface |
 | DS-006 | Primary End-to-End | BEH-006 | Memory page or search | Run listed | The memory sources | Listing rule |
 | DS-007 | Primary End-to-End | BEH-007 | Token total requested | Same total | `StandaloneRunTokenUsageSummaryService` | Total over closed runs |
-| DS-R1 | Return-Event | BEH-004 | Root publishes "reopened" | Web lists the run | The web context of the root kind | A client whose view never held the run |
+| DS-R1 | Return-Event | BEH-004 | Root publishes "reopened" | Web lists the run, with no user action | The web context of the root kind | A client whose view never held the run, and one that holds it hidden |
 
 DS-001 … DS-004 apply to the three kinds of top run; DS-007 is standalone only (A-4); DS-008 is Team and Org only (a standalone run is admitted from its metadata, B-5).
 
@@ -240,9 +240,9 @@ The tree stores, `OpenDelegatedRunSource` (new interface; the Task side implemen
 
 ## Return Or Event Spine(s)
 
-- **DS-R1:** `lifecycle publishes "task_executions_reopened" after the commit (as today) -> root event stream -> web context: reference known -> remove it from the closed list (today); unknown -> reload the view (agent run and Org: "checkpoint required"; Team: stream recovery)`.
+- **DS-R1:** `lifecycle publishes "reopened" after the commit (as today) -> root event stream -> web context`. Agent run and Org: `reference held -> remove it from the closed list (today); not held -> "checkpoint required" -> the view reloads itself`. Team: `Team adapter builds each reopened execution's record from the loaded tree -> TASK_EXECUTIONS_REOPENED { executions: [{ parent_team_run_id, execution }] } -> Team view: record not held -> insert it as for "started"; held -> keep the held record; then remove every reopened execution from the closed list`.
 
-"Closed" is published before the run is dropped and names a run the loaded tree holds, so a client always knows it. No new event exists.
+"Closed" is published before the run is dropped and names a run the loaded tree holds, so a client always knows it. No new event kind exists; the Team's "reopened" payload changes (D-8). A client that holds a dropped run keeps it hidden; nothing tells it to remove it, and nothing needs to.
 
 ## Bounded Local / Internal Spines
 
@@ -319,7 +319,7 @@ The tree stores, `OpenDelegatedRunSource` (new interface; the Task side implemen
 | Composing and saving trees | `run-history/store` | Extend | It owns both functions for three kinds | — |
 | "Runs of a top run" | The Task side's per-run current entry and per-root index | Extend | An open index beside the closed one | — |
 | Step ordering | The lifecycle's queue; the coordinator's `commitTreeMutation` | Reuse | Existing steps and lock | — |
-| Client refresh | The contexts' reload paths | Reuse | Used for "started" today | — |
+| A run entering a client's view | Agent run and Org: the contexts' checkpoint reload. Team: `insertTaskExecution` from an event's record | Reuse | Both are what "started" uses today in that context | — |
 | Tree-membership policy | — | Create New (`TaskExecutionTreeMembership`) | — | The lifecycle file is over 500 lines; one concern |
 | Agents of closed runs | — | Create New (`ClosedDelegatedRunReader`) | — | Two consumers; no reader of own files by top run exists |
 
@@ -344,7 +344,7 @@ Superseded by the final mapping; the draft differed only in having a separate fi
 | --- | --- | --- | --- | --- | --- | --- |
 | Compose for three shapes | `run-history/store/task-execution-tree-split.ts` (existing) | `run-history/store` | One rule | Yes | Yes (the stored link is gone) | A place for Task rules |
 | The view message rule | `run-history/store/task-agent-message-logs.ts` (`isMessageOfView`) | `run-history/store` | Stored and loaded views | Yes | Yes | — |
-| Unknown "reopened" → reload (three web contexts) | Each context's own reload path | `autobyteus-web` | The recoveries differ per context | N/A | N/A | A shared helper hiding three recoveries |
+| A reopened run the view does not hold (three web contexts) | Each context's own path: Agent run and Org reload through their checkpoint; Team inserts from the event's record | `autobyteus-web` | The mechanisms differ per context | N/A | N/A | A shared helper hiding three different mechanisms |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -387,7 +387,11 @@ Server paths are under `autobyteus-server-ts/src/`.
 | `agent-memory/services/agent-memory-explorer-service.ts`, `agent-memory/services/task-team-root-memory-source.ts` (Modify) | Memory | Listing | Use `CoordinatingRunPresence` | — | — |
 | `autobyteus-collaboration-stream-contracts/src/` (the file that defines `collaborationParticipantMessagesDtoSchema`) (Modify) | Contracts | DTO | `pastParticipants` (required array) | Contract | — |
 | `autobyteus-web/services/collaborationMessages/collaborationParticipantMessages.ts`, `types/workspace/collaborationMessagesContextView.ts` (Modify) | Web | Participant messages | Keep `pastParticipants`; identity kind `past` (`address`, `label`) | — | — |
-| `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts`, `services/agentOrgExecution/agentOrgExecutionContext.ts`, `services/teamExecution/teamExecutionViewState.ts`, `services/teamExecution/teamCollaborationMessagesView.ts` (Modify) | Web | Contexts | `identityOf` falls back to a past participant; an unknown "reopened" reference reloads the view | — | — |
+| `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts`, `services/agentOrgExecution/agentOrgExecutionContext.ts`, `services/teamExecution/teamCollaborationMessagesView.ts` (Modify) | Web | Contexts | `identityOf` falls back to a past participant; in the Agent-run and Org contexts a "reopened" reference the view does not hold reloads the view | — | — |
+| `autobyteus-web/services/teamExecution/teamExecutionViewState.ts` (Modify) | Web | Team view | `TASK_EXECUTIONS_REOPENED`: insert each record the tree does not hold (the existing `insertTaskExecution`, with the same context and navigation effects as "started"), then remove every reopened execution from the closed list. The unknown-reference branch to stream recovery is removed | One handler | — |
+| `autobyteus-team-stream-contracts/src/team-stream-server-message.ts` (and the payload schema it uses) (Modify) | Contracts | Team stream | `TASK_EXECUTIONS_REOPENED` payload: `executions: [{ parent_team_run_id, execution }]` (at least one), replacing the list of references; the client derives the references from the records | Contract | The "started" payload's record schema |
+| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-execution-event-factory.ts`, `team-task-execution-adapter.ts`, the Team view projector in `services/agent-streaming/team-execution-view-projector.ts` (Modify) | Roots | Team events | `publishTaskExecutionsReopened(references)` builds each execution's record and parent from the loaded tree, as the "started" event does | Event building | — |
+| `autobyteus-web/services/collaborationMessages/collaborationParticipantMessages.ts` (Modify; listed above) | Web | Participant messages | When a view rebuild or event leaves a loaded list naming an agent the view no longer holds, the list's `pastParticipants` are brought up to date (re-fetch that root's lists, or keep the identities the lists need), without missing or doubling a message (CR-002) | — | — |
 | `docs/design/collaboration_model.md`, `docs/modules/standalone_agent_run_root.md`, `agent_team_execution.md`, `agent_orgs.md`, `agent_communication.md`, `projects.md`, `agent_memory.md` (Modify) | Docs | — | §1 words; CM-6 exception (runs without a Task are in no tree); CM-8 ("a coordinating run stores nothing of a local delegated run; its tree is built from the Task records"); §3 layout text; §5 row; each module's mechanics | — | — |
 
 The three managers need no change: they load through their store.
@@ -453,7 +457,7 @@ This ticket keeps the Task record's shape and looks runs up by `hostRoot`. The 4
 4. Lifecycle: `TaskExecutionTreeMembership`; the "release" and "reopen" steps; `knowsRunId` in each root's `hasAgentExecution` and in `isDelegatedRun`; `resolveExistingCopy` for closed copies. Remove `refuseCopyOutsideTree`.
 5. View rule: `isMessageOfView`, the three message stores, the two validators, the loaded roots' trim.
 6. Readers: `ClosedDelegatedRunReader`; the participant messages reader and DTO; the standalone token total; `CoordinatingRunPresence`, removal of `TaskAgentLinkChecker`.
-7. Web: identity fallback, the participant store, unknown "reopened" → reload.
+7. Web: identity fallback; the participant store, kept current when a view stops holding an agent a list names; Agent-run and Org: a reopened reference not held → reload; Team: the "reopened" record contract, server and view.
 8. Documents.
 
 After step 2 a tree no longer holds closed runs, so steps 3 to 7 must ship in the same change: otherwise a reopened run could not continue and the Team tab, the Memory page and the token total would lose closed runs.
@@ -466,6 +470,7 @@ After step 2 a tree no longer holds closed runs, so steps 3 to 7 must ship in th
 - **The 14 runs without a Task record leave the tree** (DEC-008).
 - **Names from own files:** the Team tab reads one small file per closed run named in the shown messages, when the tab is shown.
 - **The closed-run filter stays** for the short time a loaded root holds a closed run whose stop is not confirmed.
+- **The Team's "reopened" carries records, the other two do not.** The Agent-run and Org views reload themselves on anything they do not hold; a record in their event would be read by nobody. The Team view has no automatic reload; giving it one would be a new recovery mechanism for one case that the existing insert already serves.
 - **The standalone tree file stays** as a small file; removing it would touch the package marker and the remote links for no visible gain.
 
 ## Risks
@@ -476,6 +481,7 @@ After step 2 a tree no longer holds closed runs, so steps 3 to 7 must ship in th
 | A run with an open Task is missing from a tree | The candidate rule is "open entry that names this top run", one function with a test per entry state (notes B-6); AC-005 |
 | The loaded tree and a fresh compose disagree | Both follow the same Task entry: drop only after the Task side says closed; add inside the step that commits the reopen; undo on failure |
 | An added-back run cannot be restored | The add builds the record with the same compose function as a load; `assertRestorableChain` runs after it as today |
+| A client is left needing a manual step when a run returns | D-8 covers both client states for each root kind; AC-002 and AC-003 run in the browser for each kind, after a restart and without one |
 | A reader of closed runs through the tree was missed | Change Scope table; escalation trigger; AC-006, AC-007, AC-011, AC-012 on an isolated instance |
 | Team and Org mechanics differ from the standalone path read in detail | U-005; server tests per kind in AC-001 … AC-003, AC-008, AC-009 |
 

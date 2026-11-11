@@ -12,6 +12,7 @@
 | SR-006 | Design | Implementation Engineer, Design Impact from early check U-008 (message of 2026-11-10) | N/A (no report ID; the engineer's message) | Requirements Approved; design Ready (SR-005), review Pass (ARCH-REV-002) | Requirements Approved; design Ready (SR-006) | BEH-002 (the rule that realizes REQ-001) | D-1's candidate rule corrected; architecture review ARCH-REV-003 (round 3): Pass, no findings |
 | SR-007 | Design (and wording of REQ-007, AC-009) | Implementation Engineer, second Design Impact (message of 2026-11-10) | N/A | Requirements Approved; design Ready (SR-006), review Pass (ARCH-REV-003) | Requirements Approved; design Ready (SR-007) | REQ-007, AC-009; BEH-002 | D-3 corrected; architecture review ARCH-REV-004 (round 4): Fail with one finding (AR-002) |
 | SR-008 | Design (and wording of REQ-007, AC-009) | Architecture review ARCH-REV-004, round 4, `design-review-report.md` | AR-002 | Requirements Approved; design Ready (SR-007), review Fail | Requirements Approved; design Ready (SR-008) | REQ-007, AC-009; BEH-002 | D-3 corrected; architecture review ARCH-REV-005 (round 5): Pass, no open findings |
+| SR-009 | Design (DEC-011 and wording of AC-002 in the requirements) | Code Reviewer, failure-origin review of API/E2E round 1, `code-review-report.md` "Round 2", CRR-002 | CR-003 (Design Impact); CR-002 and F-1 recorded (Local Fixes of other owners) | Requirements Approved; design Ready (SR-008), review Pass (ARCH-REV-005); implemented, code review round 1 passed, API/E2E round 1 Fail | Requirements Approved; design Ready (SR-009) | BEH-004; AC-002, AC-003; DEC-011 | D-8 corrected; to architecture review |
 
 ## Revision Entries
 
@@ -201,3 +202,26 @@
 - Remaining gaps, assumptions or blocked decisions: U-005 (continues); follow-ups FU-001 … FU-003
 - Next action: architecture review, round 5
 - Review result (recorded 2026-11-10, informational): `Pass`, ARCH-REV-005, round 5, on SR-008 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). AR-002 resolved by the strict route (b). The reviewer verified in the code that the second released migration reads only configured placements (`own-file-completion.ts:76-93`) and that v1 own files require `address` and are written at the standard place. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
+
+### SR-009 — A Team view gets a reopened run's record with the event (answer to CR-003)
+
+- Phase and classification: Design, `Design Impact` resolved
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: Code Reviewer, `code-review-report.md` "Round 2" and `code-review-revision-record.md`, CRR-002, failure-origin review of API/E2E round 1 (API-REV-001; failures F-1, F-2, F-3)
+- Triggering finding IDs: CR-003 (F-3, Design Impact, this role's). CR-002 (F-2, implementation, web) and F-1 (API/E2E, stale test) are Local Fixes of their owners; DEC-011 records this role's call on F-1
+- Prior authoritative requirements/design status: requirements `Approved`; design `Ready` at SR-008, architecture review `Pass` (ARCH-REV-005)
+- Current authoritative requirements/design status: requirements `Approved` (DEC-011 added; AC-002 names both client states); design `Ready` at SR-009
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: BEH-004; AC-002, AC-003; DEC-011
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: CR-003 is correct. D-8 sent a Team view's unknown "reopened" reference to stream recovery, which in the Team client is a manual recovery, so AC-002's "without a manual reload" could not hold for a Team view opened after a restart. The Solution Designer had taken that effect to be an automatic reload without reading it (notes B-9). Of the Code Reviewer's three options the design takes the first: the Team's "reopened" event carries each reopened execution's record with its parent Team run, and the view inserts a record it does not hold, as it does for "started". Reasons: it serves both client states (a view that holds the run hidden, and one that never held it) with one event; it reuses the Team view's existing insert; an automatic Team reload would be a new recovery mechanism; a "started" event at the add-back would break a view that already holds the run (the Team insert throws on a known run, and the Org handler rejects one) and would arrive before the reopen commit. The Agent-run and Org contexts keep D-8 as implemented (they reload themselves).
+- Canonical requirements, investigation and design sections changed: `design-spec.md` D-8, DS-R1 (inventory, spine, the paragraph on events), the reuse rows, the file mapping (the Team view's handler; the Team stream contract; the Team event factory, adapter and view projector; the participant-messages owner for CR-002), Change Sequence step 7, Key Tradeoffs, Risks; `requirements-doc.md` DEC-011, AC-002; `investigation-notes.md` B-9
+- Supplemental artifacts added, changed or removed: none of this role's
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: none for behavior. DEC-011 is the Solution Designer's decision within the direction (an unsupported state; the user is informed)
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: D-8 and DS-R1 for the Team view; a changed shared contract (`TASK_EXECUTIONS_REOPENED` in the Team stream). Everything else stands
+- Post-design task-size/risk classification and rationale changes: `Large`, `High`, unchanged
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: sent to `/software_engineering_team/architecture_reviewer` (revised package, Large and High); the Code Reviewer was answered on F-1 (it asked)
+- Downstream and architecture-review impact: review round 6 on D-8; then implementation (CR-003 per the design, CR-002), targeted source review, API/E2E again as the Code Reviewer listed
+- Remaining gaps, assumptions or blocked decisions: follow-ups FU-001 … FU-003
+- Next action: architecture review, round 6
