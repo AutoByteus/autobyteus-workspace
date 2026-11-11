@@ -4,16 +4,16 @@
 
 - Upstream Requirements Doc: `tickets/in-progress/collaboration-tree-open-tasks-only-469/requirements-doc.md` (SR-004 approved; wording corrections at SR-005 that change no intended behavior)
 - Upstream Investigation Notes: `.../investigation-notes.md` (A-1 … A-8, B-1 … B-7; U-005 continues)
-- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001 … SR-008)
-- Reviewed Design Spec: `.../design-spec.md` (SR-008, `Ready`; commit `ebe9646c12`). Round 5 re-reviews D-3 only
+- Upstream Solution Revision Record: `.../solution-revision-record.md` (SR-001 … SR-009)
+- Reviewed Design Spec: `.../design-spec.md` (SR-009, `Ready`; commit `6e1f3cb23e`). Round 6 re-reviews D-8 only (DS-R1 and the Team event contract), after the Code Reviewer's failure-origin finding CR-003 (CRR-002, API/E2E round 1)
 - Supplemental Task Artifacts Reviewed: `evidence/links-without-task-2026-11-10.txt`, `evidence/unlink-cases-2026-11-10.txt`, `evidence/team-tab-messages-2026-11-10.txt` (and their scripts); `follow-ups.md` (FU-001 … FU-003); `handoff-architecture-design-complete.md`
-- Relevant Solution Revision IDs: SR-004 … SR-008 (SR-003 was withdrawn; its review was stopped with no decision)
+- Relevant Solution Revision IDs: SR-004 … SR-009 (SR-003 was withdrawn; its review was stopped with no decision)
 - Architecture Review Revision Record: `.../architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: 5
-- Trigger: SR-008, the Solution Designer's answer to AR-002 of ARCH-REV-004 (route (b), strict)
-- Prior Review Round Reviewed: 4 (`ARCH-REV-004`, `Fail`, AR-002)
-- Latest Authoritative Round: 5
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: 6
+- Trigger: SR-009, which answers the Code Reviewer's failure-origin finding CR-003 on D-8
+- Prior Review Round Reviewed: 5 (`ARCH-REV-005`, `Pass`)
+- Latest Authoritative Round: 6
 - Current-State Evidence Basis: code at base `bff4faa6f6`, read in the worktree under `autobyteus-server-ts/src`.
   - Round 1:
     - `server-runtime.ts:172-197`
@@ -44,6 +44,10 @@
   - Round 5:
     - `migrations/delegated-copy-own-file-complete-v1/own-file-completion.ts:76-151`: reads only the configured placements of a coordinating tree, never its delegated-run lists; the link facts (`address`, `delegatorAgentRunId`, `startedAt`) come from the released own file
     - `frozen/released-run-package-shapes/released-task-agent-own-files-with-origin.ts:119, 483-514`: a v1 own file requires `address`; v1 writes it at `agentMemoryDir(id)` / `teamDir(id)`, the standard place
+  - Round 6:
+    - `autobyteus-web/services/teamExecution/teamExecutionViewState.ts:380-433`: the "started" handler inserts, plans contexts, repairs focus and reconciles navigation, with no auto-navigation. Today's "reopened" handler sends an unknown reference to `team_stream_recovery_required`. "Closed" throws on an unknown reference.
+    - `autobyteus-team-stream-contracts/src/team-task-execution-message-dtos.ts:10-36`: the started payload `{change_sequence, parent_team_run_id, execution}`; the reopened schema is today an alias of the closed one.
+    - Every consumer of `TASK_EXECUTIONS_REOPENED` (grep): 3 server root events, 3 view projectors, the Org DTOs, the Team stream contract, three web contexts and a type union in `teamExecutionViewModels.ts`. The cross-node Team projector does not use it.
   - Nothing was run.
 
 ## Routing Classification Review
@@ -288,9 +292,25 @@ None.
   - a link whose run has no own file.
 - **REQ-007 precision:** no visible change, approved within the direction.
 
+## Round 6: D-8 (SR-009)
+
+- **Problem (CR-003):** a Team view loaded after a restart never holds a closed run. On reopen, today's handler requests a stream recovery, which in the Team client is a manual step. The Agent-run and Org contexts reload themselves through `checkpoint_required`.
+- **SR-009:**
+  - The Team's `TASK_EXECUTIONS_REOPENED` carries each reopened execution's record with its parent Team run, built from the loaded tree after the add-back, as "started" is.
+  - The view inserts a record it does not hold (`insertTaskExecution`), keeps one it holds, then removes every reopened execution from the closed list. The branch to stream recovery is removed.
+- **Judgement:**
+  - One event serves both client states: holds it hidden, or never held it. It is idempotent: a view whose snapshot already includes the add-back holds the record and only un-hides it.
+  - The effects of "started" add no visible behavior: no auto-navigation, focus repaired, navigation reconciled. That keeps DEC-001.
+  - The event follows the reopen commit and the add-back in the same queue step, and nothing is published when the commit fails. So the record always exists in the loaded tree when the event is built.
+  - The parent of a reopened execution is the root Team run: only `assigned` entries reopen, and an assignment is never made by a Task-owned agent (A-3), so it is never hosted inside a task team. D-2 also puts every local record in the root list.
+  - The rejected options are rejected for the right reasons. An automatic Team snapshot reload would be a new recovery mechanism. A "started" event at the add-back throws on a view that holds the run (Team) or is rejected (Org, `agentOrgExecutionContext.ts:371-385`), and would precede the commit.
+  - The Agent-run and Org contexts are unchanged and correct.
+  - CR-002 (keeping `pastParticipants` current) and DEC-011 (F-1) are recorded and not for this review.
+- **Result:** `Pass`.
+
 ## Review Decision
 
-`Pass`. AR-002 is resolved. D-1 (round 3) and D-11 (round 2) stand. The design is ready for implementation.
+`Pass`. D-8 as revised in SR-009 is ready for implementation. All earlier verdicts stand: D-11 (round 2), D-1 (round 3), D-3 (round 5).
 
 ## Findings
 
@@ -308,13 +328,13 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`). 
 
 Non-blocking.
 
-- **U-005** continues file by file during implementation. Report a difference as a Design Impact.
-- **The `Inferred` application-runtime construction site:** covered by AC-008.
-- **Kept entries:** a link-shaped entry whose run's folder is gone, or one with a key outside the exact set, is kept forever. This is harmless (ignored on read) and bounded.
-- **D-12, the 461 note:** as before.
+- **Contract detail:** today `teamTaskExecutionsReopenedPayloadSchema` is an alias of the closed schema (`team-task-execution-message-dtos.ts:35`). Split it, keep `change_sequence` in the new reopened payload (the view's sequence tracking uses it), and leave "closed" with references.
+- **Closed events:** "closed" still throws on an unknown reference in the Team view. This stays unreachable because "closed" is published before the drop, for a run the loaded tree holds (DS-R1 paragraph). Keep that order.
+- **U-005** continues during implementation; AC-002 and AC-003 run in the browser per root kind, with and without a restart.
+- **Kept entries, D-12, the 461 note:** as before.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001 and MP-002 closed)
-- Notes: round 5 confirms SR-008's strict D-3. No open findings.
+- Material-Premise Gate: `Pass`
+- Notes: round 6 confirms SR-009's D-8 (the Team's reopened event carries records). No open findings.

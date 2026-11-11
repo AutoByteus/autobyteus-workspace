@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report stay authoritati
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-001, round 1 | SR-008, ARCH-REV-005, IR-001, CRR-001 | N/A | Fail / 82% |
+| API-REV-002 | Code Reviewer, `code-review-report.md` CRR-003, round 2 | SR-009, ARCH-REV-006, DEC-011, IR-002, CRR-003 | Fail / 82% | Pass / 95% |
 
 ## Revision Entries
 
@@ -35,3 +36,31 @@ None.
 - Recommended owner: failure-origin review by the Code Reviewer; preliminary F-1 and F-2 `Local Fix` (implementation), F-3 `Unclear`.
 - Remaining risks, blocked evidence, or untested scope: BR-005 and BR-007 not run (they need BR-001…BR-003 in the same run); imported Memory Sync sources with delegated runs not tested; signing and non-macOS release jobs not tested.
 - Rerun plan for the next round: EXC-E2E-007; the probe's BR-001…BR-005, BR-007, BR-011 and BR-015; the files a fix touches (TESTING.md "Rerun by impact"); API-F01 again if a fix touches a build input.
+
+### API-REV-002: round 2 on IR-002, prior failures resolved
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-003 (IR-002 passed), round 2.
+- Triggering finding or case IDs: F-1, F-2, F-3 of API-REV-001.
+- Related revision IDs: SR-009, ARCH-REV-006, DEC-011, IR-002 (`fa48d74a3e`), CRR-003.
+- Why this revision was recorded: rerun after rework; prior failures rechecked first.
+- Coverage decisions or durable test paths changed: EXC-E2E-007 now removes only the stopped copy's conversation and keeps today's text (DEC-011; `c7eb0d8626`). No other test change. IR-002 itself adapted two E2E helpers, which ran green here.
+- Cases added, changed, removed, or rechecked:
+  - API-I01 added (server integration; IR-002 had not rerun it).
+  - Rerun, as every case is marked Rerun when a contract package changes: API-E01 (whole, includes API-E02), API-B01 (all 16 in one run), API-F01.
+  - API-R01…R03 reuse IMP-08…IMP-11.
+- Commands, environment, fixture, or broader-validation delta: server `dist/` rebuilt from `fa48d74a3e`; `test:integration:prepare` rerun; otherwise unchanged.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-1 EXC-E2E-007 agent text | Local Fix (preliminary); reviewed as a test fix, confirmed by DEC-011 | Test now covers the supported state (own file present, conversation gone); today's text holds | API-E01 round 2 `✓ EXC-E2E-007` |
+| F-2 Team tab loses past-participant rows (Agent, Org) | Local Fix (web) | IR-002 CR-002: list re-fetches when a rebuilt view no longer holds an agent it names | API-B01 round 2 BR-001…BR-003 (0 differing frames), BR-005 |
+| F-3 Team view after restart (AC-002, AC-003) | Unclear → design SR-009 | Team reopened event carries the record; the view inserts it | API-B01 round 2 BR-011, BR-015 |
+
+- Canonical artifacts and sections updated: execution report (rebuilt for round 2; round 1 kept as history), coverage investigation (round-2 plan), progress log, this record.
+- Prior result and confidence: Fail / 82%.
+- Current result and confidence: Pass / 95% (no category below 95%).
+- New or remaining failure IDs: none.
+- Recommended owner: Code Reviewer, for proportional test-code review.
+- Remaining risks, blocked evidence, or untested scope: Memory Sync imported sources with delegated runs (not tested); signing and non-macOS release jobs (runner only).

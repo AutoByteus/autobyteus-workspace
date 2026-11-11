@@ -211,3 +211,17 @@ None at planning time. Execution found F-1, F-2, F-3 (execution report, "Failure
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: the plan is updated in place if a run changes a validity decision.
+
+## Round 2 Plan (trigger: CRR-003 on IR-002, code `fa48d74a3e`)
+
+- Upstream delta read: SR-009 (Team reopened event carries the run's record), ARCH-REV-006, DEC-011 (a copy whose own file is gone is outside the supported states; a copy with its own file and no conversation keeps today's text), IR-002, CRR-003.
+- Validated commit of round 1: product `42652879b3`; diff to `fa48d74a3e` (`git diff --name-only d34ef51c8d fa48d74a3e`): Team event, projector, adapter and lookup; the `autobyteus-team-stream-contracts` source and `dist/`; web Team view state, Team streaming service, participant store, Agent/Org contexts; two server E2E helpers.
+- Rerun decision (TESTING.md "Rerun by impact" item 4): a contract package changed, a shared foundation, so every case is **Rerun**. API-R01…R03 stay reused from IMP-08…IMP-11 on `fa48d74a3e`. API-R04 (server integration) was not rerun by the implementation, so it runs here as API-I01.
+- EXC-E2E-007 updated per DEC-011: only the stopped copy's conversation traces are removed; its own file stays; today's assertion kept.
+
+| Case ID | Round-2 status | Why |
+| --- | --- | --- |
+| API-I01 (new) | Run | Server integration on `fa48d74a3e`; contract and Team event changed |
+| API-E01 | Rerun (whole server E2E) | Shared foundation changed; also covers API-E02 and EXC-E2E-007 |
+| API-B01 | Rerun (all 16 cases, one run) | F-2, F-3 fixes are web/stream changes; BR-005, BR-007 never ran |
+| API-F01 | Rerun | Build input changed (team-stream contract `dist/`) |

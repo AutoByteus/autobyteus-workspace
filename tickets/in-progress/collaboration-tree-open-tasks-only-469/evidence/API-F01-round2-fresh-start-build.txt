@@ -1,0 +1,35 @@
+# Case: API-F01 round 2 fresh-start release build (TESTING.md "Fresh-start build")
+# Commands: git clone --no-local <worktree> /tmp/api469/fresh2; git checkout c7eb0d8626; pnpm install --frozen-lockfile; cd autobyteus-web; NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64; then the job steps "Verify bundled Prisma ARM64 engine target" and "Verify packaged terminal runtime ARM64" from the clone root
+# Commit: c7eb0d8626 (product source fa48d74a3e)
+# Environment: macOS darwin 25.5 arm64, Node v22.21.1, pnpm v10.28.2
+# Date: 2026-11-11
+# Look for: INSTALL EXIT 0, BUILD EXIT 0, [typecheck] PASS, Build completed (dmg, zip), schema-engine/libquery_engine OK, VERIFY1..3 EXIT 0
+
+# API-F01 round 2, clone of c7eb0d8626, Wed Nov 11 03:30:45 CET 2026
+## pnpm install --frozen-lockfile
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 8.5s using pnpm v10.28.2
+INSTALL EXIT 0
+## build:electron:mac -- --arm64
+BUILD EXIT 0
+## Verify bundled Prisma ARM64
+schema-engine-darwin-arm64 OK
+libquery_engine-darwin-arm64 OK
+## Verify packaged terminal runtime
+VERIFY1 EXIT 0
+VERIFY2 EXIT 0
+VERIFY3 EXIT 0
+
+## Build log excerpt
+66:[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 32.4s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 20.5s
+70:[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+71:[typecheck] PASS
+898:Build completed: [
+900:  '/private/tmp/api469/fresh2/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg',
+902:  '/private/tmp/api469/fresh2/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip'

@@ -1,0 +1,11 @@
+# Case: API-I01 round 2 (server integration)
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare; pnpm -C autobyteus-server-ts test:integration
+# Code under test: fa48d74a3e
+# Environment: macOS darwin 25.5 arm64, Node v22.21.1 (the suite isolates its own environment)
+# Date: 2026-11-11
+# Look for: "Test Files  90 passed | 20 skipped (110)", "Tests  524 passed | 69 skipped (593)"
+
+ Test Files  90 passed | 20 skipped (110)
+      Tests  524 passed | 69 skipped (593)
+   Duration  226.21s (transform 8.08s, setup 2.37s, import 76.04s, tests 137.96s, environment 6ms)
+EXIT 0

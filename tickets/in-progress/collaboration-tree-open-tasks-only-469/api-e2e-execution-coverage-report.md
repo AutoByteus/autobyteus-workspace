@@ -6,16 +6,12 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 
 ## Round
 
-- Coverage investigation (the plan; it lists the upstream documents): `tickets/in-progress/collaboration-tree-open-tasks-only-469/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- Coverage investigation (the plan; it lists the upstream documents): `tickets/in-progress/collaboration-tree-open-tasks-only-469/api-e2e-coverage-investigation.md` (round-2 plan at its end)
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, code review pass CRR-001 (Large / High)
-- Prior round reviewed: N/A
-- Deviations from the investigation's plan, and why:
-  - API-E01's first full run failed in 17 files. I classified every failure (table "API-E01 triage" below), updated the stale durable tests, and reran each affected file. The investigation's inventory is updated with these decisions.
-  - Three released-data startup suites now get Task records from a new fixture helper. Their released fixture had none, and DEC-008 takes a run without a Task record out of every tree.
-  - API-E02 needed corrections to my own test before it passed (the expected token total; where a link to another node is stored; a positive control for the read check). None changed a product expectation.
-  - API-B01: my first probe extension waited for a Team-tab row that a delegation never adds. I fixed the wait and reran BR-001…BR-005.
+- Round and trigger: round 2, code review pass CRR-003 on IR-002 (code `fa48d74a3e`; SR-009, ARCH-REV-006, DEC-011)
+- Prior round reviewed: round 1 (API-REV-001, Fail F-1…F-3); each prior failure was checked first (table "Round 1 failures and their resolution")
+- Deviations from the investigation's plan, and why: none in round 2. Round 1's deviations are recorded in the revision record.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/tickets/in-progress/collaboration-tree-open-tasks-only-469/evidence/` (the handoff message gives the commit that holds it)
 
 ## Routing Classification
@@ -24,17 +20,32 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` (on Pass); this round's result is `Fail`, so failure-origin review is requested first
+- Proportional test-code review decision: `Required`
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | Product source `42652879b3` (HEAD `7ec463393b` + this round's test-only changes) | macOS darwin 25.5 (arm64) | Node v22.21.1; server `dist/` built in this worktree (`pnpm -C autobyteus-server-ts build`, EXIT 0); in-process and built (`dist/app.js`) servers | `env -i PATH HOME=<resolved temp> TMPDIR USER`; `RUN_AGY_FAILURE_E2E=1`; `ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`; test-owned temp data roots only |
+| ENV-1 | Product source `fa48d74a3e` (HEAD `c7eb0d8626`: test-only after it) | macOS darwin 25.5 (arm64) | Node v22.21.1; server `dist/` rebuilt from `fa48d74a3e` (EXIT 0), `test:integration:prepare` (EXIT 0); in-process and built (`dist/app.js`) servers | `env -i PATH HOME=<resolved temp> TMPDIR USER LANG`; `RUN_AGY_FAILURE_E2E=1`; `ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`; test-owned temp data roots only |
 | ENV-2 | as ENV-1 | as ENV-1 | Probe-owned stack: built `dist/app.js`, Nuxt dev server, headless Google Chrome (Playwright) | Free ports, private data root, launch credential; scripted AGY `linked_skills` |
-| ENV-3 | `431de4c9d1` | macOS darwin 25.5 arm64 | Fresh clone, `pnpm install --frozen-lockfile` (pnpm 10.28.2), desktop release build command | TESTING.md "Fresh-start build" |
+| ENV-3 | `c7eb0d8626` | macOS darwin 25.5 arm64 | Fresh clone, `pnpm install --frozen-lockfile` (pnpm 10.28.2), desktop release build command | TESTING.md "Fresh-start build" |
 
 ## Cases
+
+Round 2 (current). Every case was rerun because a contract package changed (TESTING.md "Rerun by impact" item 4).
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-R01 | AC-001, AC-004, AC-005, AC-009, AC-010 (unit parts) | Server unit | Reused IMP-09 | — | Pass | (IMP-09) | (IMP-09) | Ran on `fa48d74a3e` (after two test fixes, explained in its file) |
+| API-R02 | — | Typecheck, contracts | Reused IMP-08 (team-stream contracts), IMP-11 (server and web typechecks), IMP-04 | — | Pass | (IMP-08, IMP-11) | (IMP-08, IMP-11) | Same product commit; my test changes since are E2E only |
+| API-R03 | AC-002 (web), AC-011 (web logic) | Web unit and component | Reused IMP-10 | — | Pass | (IMP-10) | (IMP-10) | On `fa48d74a3e` |
+| API-I01 | AC-001, AC-007, AC-011 (in-process) | Server integration | `pnpm -C autobyteus-server-ts test:integration:prepare` then `test:integration` | ENV-1 | Pass | `API-I01-round2-server-integration.txt` | `Test Files  90 passed \| 20 skipped (110)`, `Tests  524 passed \| 69 skipped (593)` | Not rerun by IR-002; run here |
+| API-E01 | AC-001 … AC-005, AC-007, AC-008, AC-011, AC-012; D-9, D-12; regressions | Real Studio server HTTP/WS/GraphQL/scoped MCP; built-server starts | `env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=… pnpm -C autobyteus-server-ts exec vitest run tests/e2e --no-watch` | ENV-1 | Pass | `API-E01-round2-server-e2e.txt` | `Test Files  182 passed \| 71 skipped (253)`; `✓ EXC-E2E-007`; reactivation, follow-up-Task and closure journeys for three kinds `✓` | Includes API-E02 and the two helpers IR-002 adapted |
+| API-E02 | AC-005, AC-006, AC-008, AC-009, AC-010, AC-011, AC-012 | Built server on an upgraded test-owned data root; restarts | Within API-E01 (`tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts`) | ENV-1 | Pass | `API-E01-round2-server-e2e.txt` | `✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests)`, `✓ OT-1`, `✓ OT-2`, `✓ OT-3` | |
+| API-B01 | AC-001, AC-002, AC-003, AC-004, AC-005, AC-011 | Rendered tree, Team tab, reactivation and follow-up Tasks, real backend restarts | `pnpm -C autobyteus-web test:e2e:task-closure-tree --output-dir /tmp/api469/r2-probe-B01` (all 16 cases, one run) | ENV-2 | Pass | `API-B01-round2-probe-evidence.json`, `API-B01-round2-agent-team-tab-after.png`, `API-B01-round2-team-team-tab-after.png`, `API-B01-round2-org-team-tab-after.png`, `API-B01-round2-agent-restart-reload-team-tab.png`, `API-B01-round2-team-reactivated-after-second-restart.png`, `API-B01-round2-team-existing-copy-after-restart.png` | `"result": "Pass"`; every `BR-0xx` `"Pass"`; BR-001…003 `storedLocalEntriesAfterA: 0`, `teamTab.beforeA` = `afterA`, `beforeB` = `afterB`, `duringB: {"framesDiffering": 0, "unknownTeammateFrames": 0}`; BR-005 `afterRestart.<kind>.teamTabRows: 1` with `seen: []`; cleanup `"dataRootRemoved": true` | |
+| API-F01 | Release build of changed build inputs (team-stream contract `dist/`) | Fresh clone and the release build job | `git clone --no-local` at `c7eb0d8626`; `pnpm install --frozen-lockfile`; `NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=… CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64`; the job's Prisma and packaged-terminal verify steps | ENV-3 | Pass | `API-F01-round2-fresh-start-build.txt` | `INSTALL EXIT 0`, `BUILD EXIT 0`, `[typecheck] PASS`, `Build completed`, `schema-engine-darwin-arm64 OK`, `VERIFY3 EXIT 0` | Signing, notarization, Intel and Linux jobs need the runner: not tested |
+
+### Round 1 cases (history; results on `42652879b3`)
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -46,6 +57,7 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 | API-E02 | AC-005, AC-006, AC-008, AC-009, AC-010, AC-011, AC-012 | Built server (`dist/app.js`) on an upgraded test-owned data root; restarts; GraphQL; files on disk | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts --no-watch` | ENV-1 | Pass | `API-E02-open-task-tree-upgrade-startup.txt` | `Tests  3 passed (3)`: OT-1, OT-2, OT-3 | New durable test |
 | API-B01 | AC-001, AC-002, AC-003, AC-004, AC-005, AC-011 | Rendered tree, Team tab, reactivation and follow-up Tasks, real backend restarts | Run 1: `pnpm -C autobyteus-web test:e2e:task-closure-tree --output-dir /tmp/api469/probe-B01` (all 16 cases). Run 2 after fixing my probe's wait: `… --output-dir /tmp/api469/probe-B01-r2 --cases BR-001,BR-002,BR-003,BR-004,BR-005,BR-007`. Diagnostics (temporary probe edits, reverted): `--cases BR-008,BR-009,BR-010,BR-011` twice, `--cases BR-001` | ENV-2 | **Fail** | `API-B01-probe-run1-evidence.json`, `API-B01-probe-run2-BR001-005-evidence.json`, `API-B01-diag-BR-011-evidence.json`, `API-B01-diag-BR-001-evidence.json`, `API-B01-diag-BR-011-team-no-row.png`, `API-B01-diag-BR-011-team-after-manual-reload.png`, `API-B01-diag-BR-001-agent-team-tab-empty.png`, `API-B01-diag-BR-001-agent-team-tab-after-reload.png`, `API-B01-BR-001-agent-team-tab-after-closure.png`, `API-B01-BR-002-team-team-tab-after-closure.png`, `API-B01-BR-009-team-reactivated-live.png` | Run 1: `"BR-008": "Pass"`, `"BR-009": "Pass"`, `"BR-010": "Pass"`, `"BR-012"`…`"BR-014": "Pass"`, `"BR-016": "Pass"`, `"BR-011": "Fail"`, `"BR-015": "Fail"`. Run 2: `"BR-002": "Pass"`, `"BR-001": "Fail"`, `"BR-003": "Fail"`. Diagnostics: `"team": {"serverTree": [<worker>, …], "rowAfterManualReload": 1}`, `"agent": "row shown live"`, `"org": "row shown live"`; BR-001 `"rowsNow": []` with `serverTab.messages` holding `Status of the release notes?` and `pastParticipants` naming the worker, `"rowsAfterReload"` holding the row | Two web failures, F-2 and F-3 (below). BR-005 (rendered after restart, AC-011) and BR-007 did not run: they need BR-001…BR-003 in the same run |
 | API-F01 | Release build of the changed build inputs (contract `dist/`, `typecheck-baseline.json`) | Fresh clone and release build job | `git clone --no-local` at `431de4c9d1`; `pnpm install --frozen-lockfile`; `NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=… CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64`; the job's Prisma and packaged-terminal verify steps | ENV-3 | Pass | `API-F01-fresh-start-build.txt` | `INSTALL EXIT 0`, `BUILD EXIT 0`, `[typecheck] PASS`, `Build completed`, `schema-engine-darwin-arm64 OK`, `VERIFY3 EXIT 0` | Signing, notarization, Intel and Linux jobs need the runner: not tested. Product source is unchanged since this build; a fix touching a build input needs it again |
+
 
 ### API-E01 triage (first run: 17 files, 47 tests)
 
@@ -71,21 +83,21 @@ I checked one escalation trigger directly: the released migration `20261017_task
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-E01 (task-closure, three kinds: left the tree once stopped, the tree file holds no local run, a closure while the root is stopped writes no file), API-E02 OT-1, API-B01 BR-001…BR-003 run 2 (rendered rows leave; tree file checked after the closure before the failing step), API-R01 | Proven | — |
-| AC-002 | Yes | API-E01 (task-reactivation: three root journeys, CANCELLED ×2, QR-001), API-B01 BR-008…BR-010 (rendered, live), BR-011 | **Not Proven (Fail F-3)**: the server side is proven for all three kinds; the web lists the run without a manual reload for Agent and Org, and also for Team while the view already knew the run (BR-009). After a restart, the Team root's view needs a manual reload | — |
-| AC-003 | Yes | API-E01 (task-existing-copy EXC-E2E-001…005), API-B01 BR-012…BR-014 (rendered, live), BR-015 | **Not Proven (Fail F-3)** for the Team root's rendered row after a restart; server side and Agent root proven | — |
-| AC-004 | No | API-R01 (unit), API-E01 (EXC-E2E-001…003: E DONE keeps the copy, A DONE closes it) | Proven | — |
-| AC-005 | Yes | API-E02 OT-1/OT-2 (temporary Task left open stays across restarts; no-Task run in no tree, folder byte-identical, on the Memory page), OT-3 (unreadable record: warning names the Task, run absent; back after restore), API-E01 SCP-E2E-006 | Proven | — |
-| AC-006 | Yes | API-E02 OT-1 (total = Manager + three runs, closed run counted) and OT-2 (after restart; DEC-008 run no longer counted) | Proven | — |
-| AC-007 | Yes | API-R04 (context-file integration tests), API-E01 TAU-1 (context file served through the hub for a migrated run with an open Task), AOML-1/2 (message references resolve) | Proven for open runs and message references | A closed run's attachments are reached through the Team tab's message references (proven); the closed run itself is not openable (REQ-005) |
-| AC-008 | Yes | API-E02 OT-2 (built server start: Team and Org runs whose tree files list local runs are admitted, load and work), API-E01 TAU-1/2, AOML-1/2, team-run-v1, collaborators | Proven | — |
-| AC-009 | Yes | API-R01 (every shape per kind), API-E02 OT-2 (read writes nothing; first save keeps the link without own file, the full record and the remote link unchanged and in place; older Org entry left out; own files byte-identical), TAU-2 (interrupted released migration completes) | Proven | — |
-| AC-010 | Yes | API-R01 (read counts ×3 kinds), API-E02 OT-2 (closed runs' own files unreadable while the roots load and work: no read reported; positive control shows a read would be) | Proven | — |
-| AC-011 | Yes | API-E02 OT-1/OT-2 (server: message kept, closed run named from its own file, also after a restart), API-E01 task-closure (Manager's messages kept), API-B01 BR-001…BR-003 (rendered rows and names identical before and after the closure of Task A, three kinds) | **Not Proven (Fail F-2)**: in a live session, after the closure and a later delegation, the Agent and Org Manager's Team tab shows no messages until a page reload. The rendered after-restart check (BR-005) did not run | — |
-| AC-012 | Yes | API-E02 OT-1/OT-2 (Memory page lists the closed run and the no-Task run, after restart) | Proven | — |
-| Preserved agent texts (Non-Goals; BEH-004) | Yes | API-E01 EXC-E2E-007 | **Not Proven (Fail)** | — |
+| AC-001 | Yes | API-E01 (task-closure, three kinds: the runs left the tree once stopped, the tree file holds no local run, a closure while the root is stopped writes no file), API-E02 OT-1, API-B01 BR-001…BR-003 (rendered rows leave; `storedLocalEntriesAfterA: 0`), API-R01 | Proven | — |
+| AC-002 | Yes | API-E01 (task-reactivation: three root journeys, CANCELLED ×2, QR-001), API-B01 BR-008…BR-010 (live) and BR-011 (after real restarts, three kinds) | Proven | — |
+| AC-003 | Yes | API-E01 (EXC-E2E-001…005), API-B01 BR-012…BR-014 (live) and BR-015 (after real restarts) | Proven | — |
+| AC-004 | No | API-R01, API-E01 (EXC-E2E-001…003: E DONE keeps the copy; A DONE closes it) | Proven | — |
+| AC-005 | Yes | API-E02 OT-1/OT-2/OT-3, API-E01 SCP-E2E-006, API-B01 BR-016 (damaged Task data refused, accepted after restore) | Proven | — |
+| AC-006 | Yes | API-E02 OT-1/OT-2 | Proven | — |
+| AC-007 | Yes | API-I01 (context-file integration), API-E01 TAU-1 (context file served through the hub), AOML-1/2 (message references resolve) | Proven | — |
+| AC-008 | Yes | API-E02 OT-2 (built-server start with Team and Org trees listing local runs), API-E01 TAU-1/2, AOML-1/2, team-run-v1, collaborators | Proven | — |
+| AC-009 | Yes | API-R01, API-E02 OT-2, API-E01 TAU-2 (interrupted released migration completes) | Proven | — |
+| AC-010 | Yes | API-R01, API-E02 OT-2 (with positive control) | Proven | — |
+| AC-011 | Yes | API-E02 OT-1/OT-2 (server, also after a restart), API-I01, API-B01 BR-001…BR-003 (rendered, per frame during a closure) and BR-005 (after a reload and a real restart) | Proven | — |
+| AC-012 | Yes | API-E02 OT-1/OT-2 | Proven | — |
+| Preserved agent texts (Non-Goals; BEH-004; DEC-011) | Yes | API-E01 EXC-E2E-007 | Proven | — |
 
-## Failures Found
+### Round 1 failures and their resolution
 
 | ID | Case / Criteria | Expected | Observed | Reproduction | Evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -98,32 +110,38 @@ Notes for failure-origin review:
 - F-2: code review recorded this path as residual risk C-06 (`autobyteus-web/services/collaborationMessages/participantMessageRows.ts:56-58`, `agentRunCollaborationStore.ts:84-87`): a view rebuild re-fetches the participant list. Observed here, the rows do not come back without a page reload. The re-delegation's tree change is the trigger in the journey.
 - F-3: D-8 chose "reload the view" for an unknown "reopened" reference: Team through stream recovery, Agent and Org through `checkpoint_required`. Here the Team stream recovery shows the out-of-sync notice and waits for the user. In BR-009 (no restart) the Team view still held the closed run, so the known-reference path ran and passed.
 
+| Round-1 failure | Resolution in round 2 | Now proven by |
+| --- | --- | --- |
+| F-1 (EXC-E2E-007 text) | DEC-011 (Solution Designer): a copy whose own file is gone is outside the supported states. The test now removes only the stopped copy's conversation and keeps today's text (`c7eb0d8626`) | API-E01 round 2: `✓ EXC-E2E-007` |
+| F-2 (Team tab loses past-participant rows after a view rebuild, Agent/Org) | IR-002 (CR-002): a loaded Team-tab list re-fetches when a rebuilt view no longer holds an agent it names | API-B01 round 2: BR-001…BR-003 pass; `duringB.framesDiffering: 0` over about 284 frames; BR-005 after reload and restart |
+| F-3 (Team view does not list a run reopened after a restart) | IR-002 (CR-003, SR-009): the Team `TASK_EXECUTIONS_REOPENED` event carries the run's record; the view inserts it | API-B01 round 2: BR-011, BR-015 pass |
+
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 70% | API-E01, API-E02 prove AC-001, AC-004 … AC-010, AC-012 and the server side of AC-002, AC-003, AC-011 | F-1, F-2, F-3 fail critical criteria; BR-005 not run | Fixes, then rerun EXC-E2E-007, BR-001…BR-005, BR-007, BR-011, BR-015 |
-| Changed-boundary execution directness | 90% | 90% | Built server starts on upgraded data, real tool calls, real restarts, rendered views | Desktop shell not exercised (unchanged) | — |
-| Cross-boundary integration realism and mock gap | 90% | 90% | Only the AGY CLI is scripted; real Task records, stores, GraphQL, WebSockets, Nuxt, Chrome | In-process GraphQL suites use the test stand-in source | — |
-| Environment, configuration, identity, and fixture fidelity | 90% | 90% | Test-owned data roots; old tree entries hand-built from the released key set and the inventory; released-data suites given the Task records real installs keep | Imported (Memory Sync) sources with delegated runs: no fixture exists (residual risk below) | A fixture of an imported source with delegated runs |
-| Failure, edge-case, lifecycle, and recovery evidence | 90% | 85% | Unreadable Task record, unreadable tree, interrupted released migration (TAU-2), stopped-root closure, restarts | F-3 is a restart path; BR-005 rendered restart not run | Rerun after fixes |
-| User-surface, browser, and desktop-shell confidence | 70% | 60% | 11 of 16 probe cases pass; diagnostics pin the two web failures | F-2, F-3 | Fixes, then rerun the probe |
-| Durable regression coverage quality and relevance | 90% | 90% | New API-E02; 17 E2E files updated to the approved behavior; probe extended with AC-001 and AC-011 checks that caught F-2 | — | — |
+| Requirement and acceptance-criteria proof | 95% | 97% | Every AC proven at its real boundary: API-E01, API-E02, API-B01 | Imported Memory Sync sources with delegated runs untested | A fixture for that shape |
+| Changed-boundary execution directness | 95% | 95% | Built-server starts on upgraded data, real tool calls, real restarts, rendered views | Desktop shell not exercised (unchanged) | — |
+| Cross-boundary integration realism and mock gap | 95% | 95% | Only the AGY CLI is scripted; real Task records, stores, GraphQL, WebSockets, Nuxt, Chrome | In-process suites use the test stand-in source | — |
+| Environment, configuration, identity, and fixture fidelity | 95% | 95% | Test-owned data roots; old entries hand-built from released key sets; released-data suites with the Task records real installs keep | User's own data volume never loaded (by rule) | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 95% | Unreadable Task record and tree, interrupted migration, stopped-root closure, restarts (BR-005, BR-011, BR-015, OT-2/3) | — | — |
+| User-surface, browser, and desktop-shell confidence | 90% | 95% | API-B01 16/16 in one run, with per-frame sampling of the Team tab | Electron shell not exercised (no shell change) | — |
+| Durable regression coverage quality and relevance | 95% | 95% | New API-E02; 18 E2E files updated; probe checks AC-001 and AC-011 (they caught F-2) | — | — |
 
-- Overall post-repository confidence: 86%
-- Overall final confidence: 82%
-- Calculation method: simple average of the seven categories
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-002, AC-003, AC-011 and the preserved agent text fail)
-- Any final applicable category below `90%`: `Yes`: requirement proof 70%, failure/lifecycle 85%, user surface 60%
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-1, F-2, F-3; BR-005 (rendered Team tab after a restart) not run
+- Overall post-repository confidence: 94%
+- Overall final confidence: 95%
+- Calculation method: simple average of the seven categories (rounded)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: imported Memory Sync sources with delegated runs (not tested); signing and non-macOS release jobs need the runner
 
 ## Broader Validation Decision (Mandatory)
 
 - Decision: `Required` (executed)
 - Execution mode: `Browser` (probe-owned real stack) and `Lifecycle` (built-server starts on upgraded data, real restarts)
-- Confidence gap or residual risk it addresses, and the expected gain: the rendered tree and Team tab (AC-002, AC-003, AC-011), restarts and the upgrade start (AC-008, AC-009). It found F-2 and F-3, which no repository test covered.
-- Browser validation needed, and why: yes. The Team tab and the live "reopened" handling are renderer behavior over a real event sequence, covered only by component logic tests before this round.
+- Confidence gap or residual risk it addresses, and the expected gain: the rendered tree and Team tab (AC-002, AC-003, AC-011), restarts and the upgrade start (AC-008, AC-009). In round 1 it found F-2 and F-3; in round 2 it proves their fixes.
+- Browser validation needed, and why: yes. The Team tab and live "reopened" handling are renderer behavior over a real event sequence.
 - If `Blocked`: N/A
 
 ## Desktop Application Validation
@@ -152,7 +170,7 @@ Notes for failure-origin review:
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes` (commits `009f707955` baseline fix, `431de4c9d1` ticket tests)
+- Repository-resident durable coverage added, updated, or removed: `Yes` (commits `009f707955` baseline fix, `431de4c9d1` ticket tests, `c7eb0d8626` EXC-E2E-007 per DEC-011). IR-002 also adapted `task-existing-copy-assignment` and `task-reactivation-root-visibility` helpers (`fa48d74a3e`); both ran green here.
 
 | Path / Test | Change | Case IDs | For A Removal |
 | --- | --- | --- | --- |
@@ -165,7 +183,7 @@ Notes for failure-origin review:
 | `autobyteus-server-ts/tests/e2e/{remote-collaboration/remote-delegation-two-server,projects/delegated-launch-config-defaults,projects/collaboration-model-contract}.e2e.test.ts` | Updated (baseline fix) | API-E01 | — |
 | `autobyteus-web/tests/e2e/task-closure-tree-probe.mjs` | Updated | API-B01 | — |
 
-- Added or updated paths attached for proportional test-code review: `No` (the result is `Fail`; test-code review follows a passing round)
+- Added or updated paths attached for proportional test-code review: `Yes`
 - Diff or repository evidence supplied for removed paths: none removed
 
 ## Dependencies Mocked Or Emulated
@@ -180,27 +198,25 @@ Notes for failure-origin review:
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Temporary diagnostics in `task-agent-own-run-startup` (TAU-1), `task-existing-copy-assignment` (EXC-E2E-007), `open-task-tree-upgrade-startup`, `imported-team-memory`, `memory-collaboration`, `task-closure-tree-probe.mjs` (×3) | Yes | Each restored from its backup copy right after its run | `cmp`/`git diff` confirmed; nothing committed |
-| Test data roots, spawned servers, probe stacks (ports, Nuxt, Chrome, backend) | Yes | Removed by the tests and probe | Probe receipts: `"dataRootRemoved": true`, backend/frontend terminated, browser closed |
-| Fresh clone `/tmp/api469/fresh` | Yes | Removed after API-F01 | Removed |
+| Temporary diagnostics (round 1, six files) | Yes | Each restored from its backup right after its run | `cmp`/`git diff` confirmed; nothing committed |
+| Test data roots, spawned servers, probe stacks | Yes | Removed by the tests and probe | Round-2 probe receipt: `"dataRootRemoved": true`, backend/frontend terminated, browser closed |
+| Fresh clones `/tmp/api469/fresh` (round 1), `/tmp/api469/fresh2` (round 2) | Yes | Removed after API-F01 | Removed |
 
 ## Not Tested / Residual Risks
 
-- BR-005 (rendered Team tab and closed rows after a reload and a real restart) and BR-007 did not run, because they need BR-001…BR-003 in the same run. The after-restart Team tab is proven at the server boundary (API-E02 OT-2).
-- Memory Sync imported sources: a composed read of an imported team or org tree asks this node's Task records, which never name an imported root, so its delegated runs would not be listed under their imported team run. No test fixture holds an imported source with delegated runs; code reading only. They should stay listed through own-file presence (D-6). Not tested.
-- Inactive closed-set digest (C-02): not observed as a problem in the journeys.
+- Memory Sync imported sources: a composed read of an imported team or org tree asks this node's Task records, which never name an imported root, so its delegated runs would not be listed under their imported team run. They should stay listed through own-file presence (D-6). No fixture holds an imported source with delegated runs; code reading only. Not tested.
+- Signing, notarization and the Intel and Linux release jobs need the release runner: not tested.
+- Inactive closed-set digest (C-02): one extra view read per digest value; not observed as a problem in the journeys.
+- The user's own data (145-entry hub) is never loaded by tests (TESTING.md); shapes are covered by the inventory-based fixtures.
 
 ## Preliminary Classification (On `Fail`)
 
-- F-1: `Local Fix`, implementation. Keep today's refusal text when the stopped copy's saved run is gone; the outcome itself is correct.
-- F-2: `Local Fix`, implementation (web). The Agent and Org Manager's Team tab loses its past-participant rows after a view rebuild and does not recover; the server answer is correct.
-- F-3: `Unclear` (`Local Fix` or `Design Impact`). The Team root's handling of an unknown "reopened" reference (D-8, "Team: stream recovery") does not list the run without a manual reload. Failure-origin review decides whether the Team recovery has a bug or the design's choice cannot meet AC-002.
-- Recommended owner: failure-origin review by the Code Reviewer.
+- N/A (round 2 result is `Pass`)
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven, or parts only the user can check (IDs): AC-002 (Team root after a restart, F-3), AC-003 (Team root after a restart, F-3), AC-011 (Agent and Org live session, F-2; rendered after restart not run), preserved agent text (F-1). Nothing is left for the user to check.
-- Preliminary classification and recommended owner: above; failure-origin review requested
-- Next recipient from `get_handoff_rules`: (see handoff)
-- Notes: task size `Large`, architectural risk `High` preserved. Fresh-start build (API-F01) passed on `431de4c9d1`. Follow-up recorded: FU-004 (Collaboration Model §3 wording on where a remote link is stored).
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check (IDs): `None`
+- Preliminary classification and recommended owner: N/A
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review)
+- Notes: task size `Large`, architectural risk `High` preserved. Follow-up FU-004 recorded in round 1.

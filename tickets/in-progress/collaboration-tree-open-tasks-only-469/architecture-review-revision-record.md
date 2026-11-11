@@ -11,6 +11,7 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-003 | Round 3 / SR-006 corrects D-1 after the Implementation Engineer's Design Impact | SR-006 | Pass | Pass | None |
 | ARCH-REV-004 | Round 4 / SR-007 corrects D-3 after the Implementation Engineer's second Design Impact | SR-007 | Pass | Fail | AR-002 (new) |
 | ARCH-REV-005 | Round 5 / SR-008 answers AR-002 (route (b), strict) | SR-008 | Fail | Pass | AR-002 (resolved) |
+| ARCH-REV-006 | Round 6 / SR-009 answers the Code Reviewer's CR-003 on D-8 | SR-009 | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -127,6 +128,31 @@ None.
 | --- | --- | --- | --- | --- |
 | AR-001 | Resolved (ARCH-REV-002) | Resolved | Unchanged by SR-008 | — |
 | AR-002 | Open (High) | Resolved | SR-008: D-3, checklist item 4, removal plan, Legacy Removal Policy, rejection log, Guidance; AC-009 fixtures; REQ-007 | A full record is never link-shaped, so it is kept for v1 (`coordinating-run-migration.ts:193-195`). The standard place equals v1's `agentMemoryDir` / `teamDir` (`released-task-agent-own-files-with-origin.ts:483-514`). `own-file-completion.ts:76-93` reads only configured placements |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (`Large` / `High`)
+- Recommended recipient: Implementation Engineer (primary); Solution Designer (informational)
+- Remaining risks or uncertainty: U-005 continues during implementation.
+
+### ARCH-REV-006 — D-8: the Team's reopened event carries records (SR-009)
+
+- Canonical design review report: same path as above
+- Review round and trigger: 6; SR-009 (commit `6e1f3cb23e`), after the Code Reviewer's failure-origin review CRR-002 (API/E2E round 1), finding CR-003
+- Triggering role, report path, and finding IDs: Code Reviewer, through the Solution Designer; `code-review-report.md`; CR-003 (not an architecture-review finding)
+- Relevant solution revision IDs: SR-009
+- Prior authoritative decision: `Pass` (ARCH-REV-005)
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established:
+  - D-8 for the Team root: the reopened event carries records and the view inserts what it lacks. Verified against the Team view's handlers and the contracts; the effects of "started" add no visible behavior.
+  - The Agent-run and Org contexts are unchanged. No new findings.
+  - Two implementation notes are in Residual Risks: split the reopened schema from the closed one and keep `change_sequence`; keep "closed" published before the drop.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Resolved | Unchanged by SR-009 | — |
+| AR-002 | Resolved | Resolved | Unchanged by SR-009 | — |
 
 - New or remaining finding IDs: none
 - Material classification changes: none (`Large` / `High`)

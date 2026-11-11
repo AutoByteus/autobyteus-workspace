@@ -21,3 +21,11 @@
 | 2026-11-11 03:12 | API-B01 | Completed | Fail | F-2 (AC-011 rendered, Agent and Org), F-3 (AC-002/AC-003 rendered after restart, Team). BR-005, BR-007 not run (depend on BR-001/BR-003) |
 | 2026-11-11 03:15 | API-F01 | Started | | fresh clone of 431de4c9d1 in /tmp/api469/fresh: frozen install, `build:electron:mac -- --arm64`, verify steps; log /tmp/api469/API-F01.log |
 | 2026-11-11 04:05 | API-F01 | Completed | Pass | install, desktop build (typecheck PASS, dmg/zip), Prisma and terminal-runtime verify steps all EXIT 0; clone removed |
+| 2026-11-11 (round 2) | — | Checkpoint | | Round 2 started on `fa48d74a3e` (CRR-003). EXC-E2E-007 rewritten per DEC-011. Plan: build, API-I01, API-E01 (whole), API-B01 (16), API-F01 |
+| 2026-11-11 02:35 | API-I01 | Started | | server integration |
+| 2026-11-11 02:39 | API-I01 | Completed | Pass | Test Files 90 passed, 20 skipped; Tests 524 passed, 69 skipped |
+| 2026-11-11 02:39 | API-E01 | Started | | round 2 whole server E2E, log /tmp/api469/r2-API-E01.log |
+| 2026-11-11 03:24 | API-E01 | Completed | Pass | round 2: Test Files 182 passed, 71 skipped (253); Tests 849 passed, 334 skipped; EXC-E2E-007 and OT-1..3 pass |
+| 2026-11-11 03:24 | API-B01 | Started | | round 2, all 16 cases, --output-dir /tmp/api469/r2-probe-B01 |
+| 2026-11-11 03:29 | API-B01 | Completed | Pass | round 2: 16/16 pass in one run; cleanup receipt dataRootRemoved true |
+| 2026-11-11 03:38 | API-F01 | Completed | Pass | round 2 on c7eb0d8626: install, build (typecheck PASS, dmg/zip), verify steps EXIT 0; clone removed |

@@ -1,6 +1,152 @@
 # Code Review Report
 
-## Review Round Meta
+The latest result is round 3, the implementation review of the rework IR-002 (CRR-003). Its section comes first. Round 2 (CRR-002, the failure-origin review) and round 1 (CRR-001, the first implementation review) follow as history.
+
+## Round 3: Implementation Review of IR-002 (CRR-003)
+
+### Review Meta
+
+- Review Entry Point: `Implementation Review`
+- Current Code Review Revision ID: `CRR-003`; Current Review Round: `3`
+- Review Scope: `Full Re-Audit`
+  - Why: the rework changes a shared contract, the `autobyteus-team-stream-contracts` "reopened" payload, and its server producer and web consumer.
+  - Every structural check was rerun over the changed files. Round-1 evidence is carried forward for source that IR-002 did not touch.
+- Trigger: IR-002 (implementation commit `fa48d74a3e`; handoff and evidence in `3ac4cfe76b`), after CRR-002.
+- Design basis: SR-009 (`6e1f3cb23e`), ARCH-REV-006 Pass. The requirements add DEC-011 (F-1 wording).
+- Classification: task_size `Large`, architectural_risk `High`, unchanged and confirmed.
+
+### Prior Findings
+
+| Finding | Status | Evidence |
+| --- | --- | --- |
+| CR-003 (F-3) | **Resolved** | Server, as SR-009 D-8 specifies: the Team event carries `executions: [{ parentTeamRunId, execution }]`. `TeamTaskExecutionAdapter.publishTaskExecutionsReopened` builds them from the loaded tree after the add-back (`team-task-execution-adapter.ts:192`, `task-execution-event-factory.ts:25-36`) and throws if a run is not in the tree. The projector maps them as it maps "started" (`team-execution-view-projector.ts:101-107`). The contract schema has its own shape with `min(1)`. Web: "started" and "reopened" share one branch (`teamExecutionViewState.ts:385-406`). It inserts only the records the view does not hold, keeps held ones, removes every reopened reference from the closed list, and pushes the same effects as "started". The stream-recovery branch for "reopened" is gone. With nothing inserted, `prepareContextAssociations` starts from the existing contexts (`:209-213`), so a held run keeps its contexts. The changed payload has no other consumer: a repo-wide search finds only the factory, the type, the projector, the contract and `teamExecutionViewState.ts`/`teamExecutionViewModels.ts`. |
+| CR-002 (F-2) | **Resolved** | `reloadRoot(…, holdsAgent)`: in the keep path, a loaded list whose counterpart the rebuilt view does not hold and its `pastParticipants` do not name loads again (`collaborationParticipantMessages.ts:35-40, 123-135`). The rows stay while it loads. Live messages are buffered and merged by ID, as in the existing full-reload path, so the no-miss / no-double rule holds. All four callers pass the predicate. Team: `getMemberAddress`, the same predicate its rows use (`teamCollaborationMessagesView.ts:26`). Agent and Org: a new `holdsAgent` on each context. |
+| CR-001 | Open, non-blocking | `knowsRunId` is unchanged |
+
+### Candidate Gate (new observations only)
+
+| Candidate | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| C-08 | The Agent and Org `holdsAgent` cover host and tree agents (`agentRunCollaborationContext.ts:144`, `agentOrgExecutionContext.ts:121`). Their row identity uses `index.addressOf`, which also covers remote agents. | Reject | The server never returns a message whose counterpart is a remote run (`isPublicMessage` with the local index, or a past participant: `collaboration-participant-messages.ts:22-46, 76`). For every counterpart a list can hold, the two answers agree. |
+| C-09 | A list in `loading` during a keep-path rebuild is not re-checked. | Reject | It needs the Team-tab load in flight across a closure, the server's drop and a rebuild: artificial timing. Every later rebuild re-checks it once loaded. |
+| C-10 | "Reopened" is published after the queue step. A closure of the new Task between the step and the publish would make the factory throw. | Reject | That needs two contradictory actions within the same tick (a reopen and an immediate closure). No supported workflow does this (Principle 6). |
+
+### Structural Checks (delta)
+
+All pass.
+
+- **Lookup has one home:** `findTeamTaskExecution` (`agent-team-execution/domain/team-task-execution-lookup.ts`) is shared by the projector and the event factory, and the projector's private copy is removed.
+- **No compatibility shape:** the reopened contract changed in one cut; producer, contract and consumer change together.
+- **Dead code:** the removed stream-recovery branch and the reference-only reopened schema leave nothing dead behind.
+- **Ownership:** the Team adapter builds its event from its own loaded tree. The participant-messages store owns the re-fetch decision, and the contexts only answer what they hold.
+- **File sizes:** no changed source file is over 500 effective lines. `teamExecutionViewState.ts` went from 499 to 495; the largest other is `TeamStreamingService.ts` at 419.
+- **Tests:**
+  - contracts: the reopened payload;
+  - projector: the reopened record equals the "started" record;
+  - Team view spec: a run the view never held is inserted, with no recovery effect;
+  - participant store spec: re-fetch once, then stable.
+- **Checks:** IMP-08 … IMP-11 are green on `fa48d74a3e`. The two server E2E helpers changed but were not run; they are left to API/E2E.
+
+### Scorecard (round 3)
+
+| Category | Score | Note |
+| --- | --- | --- |
+| Data-Flow Spine | 9.5 | DS-R1 now ends in the client listing the run for all three kinds |
+| Ownership / Boundaries | 9.5 | — |
+| API / Interface | 9.4 | Reopened payload mirrors "started"; CR-001 remains |
+| SoC / Placement | 9.4 | — |
+| Shared Structure Tightness | 9.5 | One lookup |
+| Naming / Readability | 9.2 | CR-001; the merged started/reopened branch is dense but clear |
+| API/E2E Readiness | 9.3 | BR-001 … BR-005, BR-007, BR-011, BR-015 and EXC-E2E-007 still to run |
+| Runtime Correctness | 9.4 | CR-002 and CR-003 traced resolved; C-08 … C-10 rejected |
+| No Legacy | 9.5 | — |
+| Cleanup | 9.5 | — |
+
+Overall 9.4. Every category is at or above 9.2.
+
+### Round 3 Result
+
+- Review Decision: **Pass**
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- F-1 is the API/E2E test fix decided at DEC-011.
+
+---
+
+## Round 2: API/E2E Failure-Origin Review (CRR-002)
+
+### Review Meta
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Current Code Review Revision ID: `CRR-002`; Current Review Round: `2`; Review Scope: `N/A` (failure-origin round)
+- Trigger: API/E2E round 1 `Fail` (API-REV-001), failures F-1, F-2, F-3
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` ("Failures Found", "API-E01 triage", "Acceptance-Criteria Proof")
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`; Relevant API/E2E Revision IDs: API-REV-001
+- Failing Scenario IDs: F-1 (EXC-E2E-007; BEH-004, Non-Goals), F-2 (BR-001, BR-003; AC-011), F-3 (BR-011, BR-015; AC-002, AC-003)
+- Exact Failing Commands: as in the execution report. Product source under test: `832f0a4572` + `42652879b3`, unchanged.
+- Failure Evidence Paths: `evidence/API-E01-EXC-E2E-007-fail.txt`; `evidence/API-B01-diag-BR-001-evidence.json` and its two screenshots; `evidence/API-B01-diag-BR-011-evidence.json` and its two screenshots; `evidence/API-B01-probe-run1-evidence.json`
+- Testing guideline read: `TESTING.md` "Rules" (no conflict with this review)
+- Classification preserved: task_size `Large`, architectural_risk `High`
+
+### F-1: refusal text for a follow-up Task to a stopped copy whose folder was deleted
+
+- **Scenario basis.**
+  - Trigger: the test deletes every folder named after the stopped helper (`task-existing-copy-assignment.e2e.test.ts:846-848`), which removes its own file and its conversation, while the top run stays loaded.
+  - No product action produces this state. A delegated run has no delete action: `deleteRun` acts on standalone-catalog runs, and deleting a coordinating run keeps its delegated runs' folders (CM-8). This is manual deletion, outside scope by default (Principle 6).
+  - The governing contract is `delegate-to-existing-copy` REQ-005 / AC-009: a copy whose saved conversation is unavailable is refused with a specific reason, and nothing starts or changes. That contract still holds. The execution report shows every other assertion passes: refused before any change, Task files unchanged, no reopen, no process.
+- **Why the text changed.**
+  - The copy left the loaded tree at its confirmed stop (D-4), so the reopen step first adds it back from its own file.
+  - `addTaskExecution` rejects `TASK_EXECUTION_CONTEXT_UNAVAILABLE` for a missing own file. The design states this in its Interface Boundary Mapping (D-4), and the error code is the same one as before.
+  - The old text needed the record still in memory. Before this ticket, the same deleted-folder state after any reload of the top run also gave a different answer: the load left the record out, and `refuseCopyOutsideTree` answered "… is not one of your task agents". So the old text was never a stable contract for this state.
+- **Path the approved edge still covers.** A copy whose own file is present but whose conversation is missing still gets today's text. The add succeeds, then `prepareClosedCopyForResume` → `assertRestorableChain` → `taskExecutionConversationUnavailable` (`task-execution-conversation-availability.ts:26-27`), unchanged.
+- **Origin:** invalid (stale) test expectation under the approved D-4. Not an implementation defect.
+- **Classification:** `Local Fix`, owned by API/E2E. Model "saved conversation is gone" without deleting the run's own file (remove only the saved conversation), so the test keeps proving today's text through the unchanged restore check. If the whole-folder case is kept, assert the refusal's code, its specific reason, and the no-change outcome, not the old wording.
+- **Review gap:** none. Round 1 read this order (add, then restore check) as designed. The text difference appears only in a state no product action produces.
+
+### F-2: Team tab of an Agent or Org root goes empty after a later view rebuild (CR-002)
+
+- **Scenario basis:** SCN-004 / AC-011, a Supported Normal Scenario. The Manager's Task closes, then the Manager delegates again (here Task A to a fresh run). Delegating after a closure is ordinary use.
+- **Forward path in the web client:**
+  1. A new delegation publishes `task_execution_started`.
+  2. The Agent context answers `checkpoint_required` (`agentRunCollaborationContext.ts:164-166`). The Org context does the same.
+  3. The stream reconnects for a fresh snapshot (`agentRunCollaborationStreamingService.ts:248-251`) and publishes it (`agentRunCollaborationStore.ts:75-87`), which calls `reloadRoot`.
+  4. `reloadRoot` keeps every loaded list without re-fetching when the rebuild is in the same live sequence and no message was missed (`collaborationParticipantMessages.ts:114-121`). That is the case here, so the list keeps the `pastParticipants` it fetched while the worker was still in the tree: an empty list.
+  5. The rebuilt view no longer holds the closed worker. Its `identityOf` returns `null`, `pastIdentityOf` finds nothing, and `projectParticipantMessageRows` drops the row (`participantMessageRows.ts:24-25, 36-39, 56-58`).
+  6. Nothing re-fetches until the page reloads.
+- **Evidence:** `API-B01-diag-BR-001-evidence.json`. `rowsNow: []` while the server returns the message and `pastParticipants` naming the worker; `rowsAfterReload` holds the row.
+- **Root kinds:** the Team root passed BR-002 because its `TASK_EXECUTION_STARTED` inserts the run into the existing tree (`teamExecutionViewState.ts:385-392`), and the closed worker stays in its client tree. The same keep rule applies to the Team's `reload_collaboration_messages` effect (`TeamStreamingService.ts:373-374`), so the fix must hold for every root kind.
+- **Origin:** implementation defect. D-5 and D-8 require a counterpart that is not in the tree to be named from the reader's answer. The client fetches that answer only with a list load, while the view can drop the counterpart later without one.
+- **Classification:** `Local Fix`, owned by implementation (web), inside the participant-messages owner. Either reload a root's lists when a rebuild removes an agent those lists name, or keep the identities a loaded list depends on. Keep the SR-004 … SR-007 rule that no message is missed or doubled. No contract or design change is needed.
+- **Review gap: yes.** In round 1 I rejected this path as transient (C-06) on the premise that every rebuild re-fetches. The keep condition at `collaborationParticipantMessages.ts:114-121`, and the store's own doc comment (`:45-50`), show that a rebuild in the same live sequence does not re-fetch. C-06 is corrected below.
+
+### F-3: Team root does not list a reopened run that its view never held (CR-003)
+
+- **Scenario basis:** SCN-002 / SCN-003, AC-002 ("the web client lists it without a manual reload"), AC-003, Supported Normal Scenarios. After a restart, the loaded Team view never held the closed run (D-2). The assigner reopens the Task and messages the run, or gives it a follow-up Task.
+- **Forward path:**
+  1. The server reactivates the run and publishes `TASK_EXECUTIONS_REOPENED` with references only.
+  2. The Team view finds an unknown reference and sets `streamRecoveryRequired` with the effect `team_stream_recovery_required` (`teamExecutionViewState.ts:423-427`), as D-8 / DS-R1 specify ("Team: stream recovery").
+  3. That effect calls `enterReopenRequired(true)` (`TeamStreamingService.ts:366-367, 411-427`): it disconnects the stream, sets `reopen_required`, and shows "Live Team updates are out of sync … select this Team member again to reload" (`TeamWorkspaceView.vue:44-47`).
+  4. Recovery waits for a user action.
+- **Why no other path helps:** the Team view has no automatic snapshot reload for an unknown execution. Its `TASK_EXECUTION_STARTED` inserts from the event's payload, and a "reopened" event carries no execution record. The Agent and Org roots reload through `checkpoint_required` and pass. BR-009 passes because without a restart the view still held the run.
+- **Origin:** design. DS-R1 / D-8 assume that the Team's stream recovery reloads the view, like the Agent's and Org's `checkpoint_required`. For Team it is a manual recovery, so this choice cannot meet AC-002's "without a manual reload". The implementation follows the design exactly.
+- **Classification:** `Design Impact`, owned by the Solution Designer. The design must choose how a Team client gets a run its view never held, for example:
+  - a "reopened" event that carries the execution record, so Team inserts it as it does for "started";
+  - an automatic Team snapshot reload;
+  - a started-like event published at the add-back.
+- **Review gap: partly.** The effect's handler was one step from the changed line. Round 1 accepted the design's premise without tracing `team_stream_recovery_required` to `enterReopenRequired`.
+
+### Routing
+
+- Highest-order classification: `Design Impact` (F-3). It goes to the Solution Designer, who also receives the bounded F-1 and F-2 classifications for the revised package:
+  - F-2: implementation-owned `Local Fix`.
+  - F-1: API/E2E-owned `Local Fix`.
+- After the revision: implementation fixes CR-003 per the revised design and CR-002; source review (targeted) and API/E2E run again, including BR-001 … BR-005, BR-007, BR-011 and BR-015.
+
+---
+
+## Round 1: Implementation Review (CRR-001)
+
+### Review Round Meta
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-004 baseline, wording at SR-005, REQ-007/AC-009 restated at SR-008)
@@ -81,7 +227,7 @@ All paths below are under `/Users/normy/autobyteus_org/autobyteus-worktrees/coll
 | C-03 | A message from a run already stopped and dropped is refused at identity authorization, not with the Task-closed text. | SCN-001 | None | A confirmed-stopped run runs no tools | Handoff "Known Risks"; drop only after a confirmed stop | Reject | — | Not reachable through a supported workflow (a closed run is not openable from the Task page, REQ-005). |
 | C-04 | The compose consistency loop leaves out an open run whose delegator sits in a closed run. | REQ-003 | None | Sub-work joins its delegator's Task, so a nested run is never open while its delegating run is closed | Notes A-3 (`Measured`: 0 cases) | Reject | — | Not reachable. |
 | C-05 | A drop where a nested copy's stop is unconfirmed while its parent's is confirmed may fail validation and leave both hidden. | SCN-001 | Same-Task release with a partial stop | Membership logs and keeps both hidden; the next closure request or a reload resolves it | `task-execution-tree-membership.ts:41-45` | Reject | — | Matches the approved "unconfirmed stop stays, hidden" outcome (AC-001 alternate). |
-| C-06 | Team-tab rows of a just-dropped counterpart may be hidden while the rebuilt view's participant list re-fetches (`pastParticipants` of the previous list are empty). | SCN-004 / AC-011 | View rebuild after a closure | Transient until the fetch returns; every rebuild calls `reloadRoot` | `participantMessageRows.ts:56-58`; `agentRunCollaborationStore.ts:84-87` | Reject (as a finding) | — | No lasting difference; listed for the AC-011 rendered check. |
+| C-06 | Team-tab rows of a just-dropped counterpart are hidden after a view rebuild. **Corrected at CRR-002:** `reloadRoot` keeps loaded lists without re-fetching in the same live sequence (`collaborationParticipantMessages.ts:114-121`), so the rows stay hidden. | SCN-004 / AC-011 | A view rebuild after a closure (e.g. a later delegation) | Rows disappear until a page reload | `participantMessageRows.ts:56-58`; `collaborationParticipantMessages.ts:114-121`; API-B01 BR-001/BR-003 | Promote (CRR-002; round 1 wrongly rejected it) | This ticket | CR-002, implementation `Local Fix` |
 | C-07 | Lines merged in place in files already near or over 500 lines (e.g. `teamExecutionViewState.ts:426-427`, `root-team-run.ts:149,154-155`) to keep them from growing. | Principle 12; FU-002 | Engineering contract | Slightly denser code; no file grew past the limit | Effective line counts below | Reject (as a finding) | — | Within the design's guidance ("no line added to a file over 500"); the split is FU-002. |
 
 ## Structural / Design Checks
@@ -189,17 +335,36 @@ No new or reclassified premise.
 - Consequence: maintainability only; a later caller trusting the name would miss tree agents.
 - Proportionate response: rename to what it answers (e.g. `isClosedCopyIngress`) or make it include the tree. Not blocking: it protects no REQ/AC (requirements "Review Authority"). Take it up at the next implementation change of this file in this ticket, if any.
 
+### CR-002: the Team tab loses a past participant's rows after a view rebuild (CRR-002, blocking)
+
+- Location: `autobyteus-web/services/collaborationMessages/collaborationParticipantMessages.ts:114-121` (keep rule) with `participantMessageRows.ts:36-39, 56-58`.
+- Basis: AC-011 / SCN-004, the F-2 trace above.
+- Consequence: after any rebuild in the same live sequence (a later delegation, a settings Save), the Manager's messages with a run that left the tree disappear until a page reload. Agent and Org roots are proven to fail. Team is exposed through the same keep rule.
+- Classification: `Local Fix`, implementation (web).
+
+### CR-003: a Team view cannot list a reopened run it never held (CRR-002, blocking)
+
+- Location: `autobyteus-web/services/teamExecution/teamExecutionViewState.ts:423-427` → `TeamStreamingService.ts:366-367, 411-427`; design DS-R1 / D-8.
+- Basis: AC-002, AC-003 / SCN-002, SCN-003, the F-3 trace above.
+- Consequence: after a restart, a reopened or re-assigned Team-root run appears only after a manual reload, behind an "out of sync" notice.
+- Classification: `Design Impact`, Solution Designer.
+
 ## Follow-ups
 
-- Follow-ups this review added: None (FU-001 … FU-003 already recorded by the Solution Designer).
+- Follow-ups this review added: None. FU-001 … FU-003 were recorded by the Solution Designer, FU-004 by API/E2E.
 
 ## Classification
 
-- None (Pass).
+- Round 1: none (Pass).
+- Round 2 (CRR-002):
+  - F-3 / CR-003: `Design Impact`
+  - F-2 / CR-002: `Local Fix` (implementation)
+  - F-1: `Local Fix` (API/E2E, stale test)
 
 ## Recommended Recipient
 
-- `/software_engineering_team/api_e2e_engineer` (implementation review passes).
+- Round 1: `/software_engineering_team/api_e2e_engineer`.
+- Round 2: `/software_engineering_team/solution_designer`. The Design Impact governs; it carries the F-1 and F-2 classifications.
 
 ## Residual Risks
 
@@ -210,11 +375,19 @@ No new or reclassified premise.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
+- **Current: `Pass` (round 3, CRR-003, implementation review of IR-002). CR-002 and CR-003 are resolved, CR-001 is non-blocking, and the next recipient is `/software_engineering_team/api_e2e_engineer`.** The round-2 record below is history.
+- Round 2 Review Decision: `Fail` (failure-origin round 2, CRR-002). Round 1's `Pass` (CRR-001) was superseded for routing.
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Supported Product Scenario Gate: `Pass`
+  - F-2 and F-3 are Supported Normal Scenarios.
+  - F-1's whole-folder deletion has no product trigger. Its governing contract still holds.
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 average; every category ≥ 9.2
-- Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: one non-blocking naming finding (CR-001); task size `Large`, architectural risk `High` preserved.
+- Score Summary: not rescored in a failure-origin round. Affected round-1 rationale:
+  - Runtime Correctness (8) and API/E2E Readiness (7) did not account for CR-002 or CR-003.
+  - C-06 was wrongly rejected.
+- Failure Origin:
+  - F-1: stale test under approved D-4.
+  - F-2: implementation defect, with a round-1 review gap.
+  - F-3: design premise (DS-R1 / D-8, Team stream recovery is manual), with a partial review gap.
+- Recommended Recipient: `/software_engineering_team/solution_designer`
+- Notes: CR-001 remains non-blocking. Task size `Large` and architectural risk `High` are preserved.
