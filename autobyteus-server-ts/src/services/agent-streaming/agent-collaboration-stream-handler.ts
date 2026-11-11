@@ -26,6 +26,7 @@ import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
 import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
+import type { ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
 
 /** A command for one agent of the root (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -64,6 +65,8 @@ export class AgentCollaborationStreamHandler {
 
   constructor(
     private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">,
+    /** The open views' child-row feed (DS-8, SR-042), passed in by the composition. */
+    private readonly childRowsFeed: ChildRowsFeed,
     private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
       tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
       activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
@@ -99,7 +102,7 @@ export class AgentCollaborationStreamHandler {
     }
     const sessionId = randomUUID();
     // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
-    const childRows = new ChildRowsStreamSession(root.rootIdentity, (event) => egress.send(projectCollaborationChildRunsChanged("agent", hostRunId, event)));
+    const childRows = new ChildRowsStreamSession(this.childRowsFeed, root.rootIdentity, (event) => egress.send(projectCollaborationChildRunsChanged("agent", hostRunId, event)));
     const remoteTaskExecutions = await remoteTaskExecutionDtos(root.rootIdentity);
     const taskExecutions = await delegatedChildrenDtos(root.rootIdentity);
     const barrier = await root.openPackageSnapshotConnection();
@@ -130,8 +133,9 @@ export class AgentCollaborationStreamHandler {
           if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
         }
       });
+      // The run's own agent's state (SR-045): a stopped run's view keeps its stream; its agent starts on its first input.
       egress.send(CollaborationStreamServerMessageSchema.parse({
-        type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: true },
+        type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: root.isHostLive() },
       }));
       // autobyteus-278: a viewer of the root observes its remote children while connected.
       root.remoteChildren.viewerAttached();

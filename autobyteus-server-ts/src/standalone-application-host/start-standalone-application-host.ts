@@ -66,6 +66,7 @@ import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
+import { createChildRowsFeed } from "../compositions/child-rows-feed-composition.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 
@@ -240,7 +241,9 @@ export const startStandaloneApplicationHost = async (
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
       appDataDir: processResources.appConfig.getAppDataDir(),
-      memoryDir: processResources.appConfig.getMemoryDir() });
+      memoryDir: processResources.appConfig.getMemoryDir(),
+      // This host serves no run views; the tree's child-row changes reach no stream.
+      childRowsFeed: createChildRowsFeed({ memoryDir: processResources.appConfig.getMemoryDir() }) });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,

@@ -1,6 +1,7 @@
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
-import { getChildRowsFeed, type ChildRowProjection } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
+import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
 import type { ChildRowsChange, DelegatedChild } from "../../src/agent-collaboration/delegation/delegation-tree.js";
+import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** A local child's row as the views project it (`delegatedChildDto`). */
 export const agentChildRow = (agentRunId: string, address = `/${agentRunId}`): CollaborationTaskExecutionDto => ({
@@ -13,19 +14,39 @@ export const delegatedChild = (agentRunId: string): DelegatedChild => ({ run: { 
   entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}` });
 
 /**
- * The process `ChildRowsFeed` following a test's own tree reports (autobyteus-461 SR-042), with local rows projected by
- * `agentChildRow`. `release()` restores the feed.
+ * A `ChildRowsFeed` following a test's own tree reports (autobyteus-461 SR-042), with local rows projected by
+ * `agentChildRow`. The handlers under test receive `feed`.
  */
 export const followTestChildRows = () => {
-  const feed = getChildRowsFeed();
   let report: ((change: ChildRowsChange) => void) | null = null;
-  const unfollow = feed.follow({ subscribeChildRows: (listener) => { report = listener; return () => { report = null; }; } });
-  const projection: ChildRowProjection = { rowOf: async (_parent, child) => "agentRunId" in child.run
-    ? { kind: "local", row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null };
-  feed.bindProjection(projection);
+  const feed = new ChildRowsFeed({ rowOf: async (_parent, child) => "agentRunId" in child.run
+    ? { kind: "local", row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null });
+  feed.follow({ subscribeChildRows: (listener: (change: ChildRowsChange) => void) => { report = listener; return () => { report = null; }; } });
   return {
+    feed,
     report: (change: ChildRowsChange) => report?.(change),
     settled: () => feed.settled(),
-    release: () => { unfollow(); feed.unbindProjection(projection); },
+    release: () => undefined,
   };
 };
+
+/** A run's registration that a test drives: `register(run)` / `unregister(run)` tell the listeners (SR-046). */
+export const testRegistrations = () => {
+  const listeners = new Map<string, Set<(registered: boolean) => void>>();
+  const tell = (run: RootExecutionIdentity, registered: boolean) => [...listeners.get(rootExecutionIdentityKey(run)) ?? []].forEach((listener) => listener(registered));
+  return {
+    onRegistrationChanged: (run: RootExecutionIdentity, listener: (registered: boolean) => void) => {
+      const key = rootExecutionIdentityKey(run);
+      const set = listeners.get(key) ?? new Set<(registered: boolean) => void>();
+      set.add(listener);
+      listeners.set(key, set);
+      return () => { set.delete(listener); };
+    },
+    register: (run: RootExecutionIdentity) => tell(run, true),
+    unregister: (run: RootExecutionIdentity) => tell(run, false),
+    listening: (run: RootExecutionIdentity) => listeners.get(rootExecutionIdentityKey(run))?.size ?? 0,
+  };
+};
+
+/** View sources for a stream handler under test whose run is live (no stored tree). */
+export const testViewSources = () => ({ childRowsFeed: followTestChildRows().feed, registrations: testRegistrations(), readStoredTree: async () => null });

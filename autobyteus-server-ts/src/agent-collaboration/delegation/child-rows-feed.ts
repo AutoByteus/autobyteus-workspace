@@ -29,20 +29,20 @@ export type ChildRowsSink = (event: ChildRowsEvent) => void;
  * `childRowsChanged` reports and, for a run with open view streams, builds the added rows with the views' own
  * projection and hands one event to each stream, whether or not the run is active. It never starts or restores a run.
  * Events are published in the order the changes were reported; a change with no open view is dropped (a later view
- * reads the tree when it builds its snapshot).
+ * reads the tree when it builds its snapshot). The composition root creates the one feed and passes it to the tree's
+ * composition and to the view stream handlers.
  */
 export class ChildRowsFeed {
   private readonly sinks = new Map<string, Set<ChildRowsSink>>();
-  private projection: ChildRowProjection | null = null;
   private publishing: Promise<void> = Promise.resolve();
+
+  /** `projection`: the views' own projection of a row (the composition root passes it). */
+  constructor(private readonly projection: ChildRowProjection) {}
 
   /** Follows a tree's child-row reports until the returned function is called. */
   follow(tree: Pick<DelegationTree, "subscribeChildRows">): () => void {
     return tree.subscribeChildRows((change) => this.changed(change));
   }
-
-  bindProjection(projection: ChildRowProjection): void { this.projection = projection; }
-  unbindProjection(projection: ChildRowProjection): void { if (this.projection === projection) this.projection = null; }
 
   /** An open view stream of `run`; the returned function closes it. */
   open(run: RootExecutionIdentity, sink: ChildRowsSink): () => void {
@@ -69,10 +69,10 @@ export class ChildRowsFeed {
   private async publish(change: ChildRowsChange): Promise<void> {
     const added: ChildRowRecord[] = [];
     for (const child of change.added) {
-      const record = await this.projection?.rowOf(change.run, child).catch((error: unknown) => {
+      const record = await this.projection.rowOf(change.run, child).catch((error: unknown) => {
         console.warn(`A child row of ${change.run.rootSubjectKind} run '${change.run.rootRunId}' could not be read:`, error);
         return null;
-      }) ?? null;
+      });
       if (record) added.push(record);
     }
     if (!added.length && !change.removed.length) return;
@@ -82,7 +82,3 @@ export class ChildRowsFeed {
     }
   }
 }
-
-const processFeed = new ChildRowsFeed();
-/** The process feed: the composition follows the tree and binds the projection; the stream sessions open on it. */
-export const getChildRowsFeed = (): ChildRowsFeed => processFeed;

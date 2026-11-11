@@ -13,9 +13,8 @@ const row = (agentRunId: string) => ({ kind: "local" as const, row: { agentRunId
 type RowOf = (parent: unknown, child: DelegatedChild) => Promise<ReturnType<typeof row> | null>;
 const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (_parent, c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
   let report: (change: ChildRowsChange) => void = () => undefined;
-  const feed = new ChildRowsFeed();
+  const feed = new ChildRowsFeed({ rowOf });
   feed.follow({ subscribeChildRows: (listener) => { report = listener; return () => undefined; } });
-  feed.bindProjection({ rowOf });
   return { feed, rowOf, report: (change: ChildRowsChange) => report(change) };
 };
 
@@ -68,7 +67,7 @@ describe("ChildRowsStreamSession", () => {
   it("holds the events published while its snapshot is built and sends them after it, in published order, each once", async () => {
     const h = harness();
     const sent: string[] = [];
-    const session = new ChildRowsStreamSession(M, (event) => sent.push(`${event.added.map((r) => (r.row as { agentRunId: string }).agentRunId).join()}|${event.removed.length}`), h.feed);
+    const session = new ChildRowsStreamSession(h.feed, M, (event) => sent.push(`${event.added.map((r) => (r.row as { agentRunId: string }).agentRunId).join()}|${event.removed.length}`));
     h.report({ run: M, added: [child("a")], removed: [] });
     h.report({ run: M, added: [], removed: [{ agentRunId: "a" }] });
     h.report({ run: M, added: [child("b")], removed: [] });

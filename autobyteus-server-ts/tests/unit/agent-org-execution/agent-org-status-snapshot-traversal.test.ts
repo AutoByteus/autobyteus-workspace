@@ -10,6 +10,7 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-ex
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { testViewSources } from "../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-status-traversal";
 
@@ -86,7 +87,7 @@ const connect = async (run: AgentOrgRun) => {
   const handler = new AgentOrgStreamHandler({
     getActive: (id: string) => id === orgRunId ? run : null,
     recordRunActivity: vi.fn(),
-  } as never);
+  } as never, testViewSources());
   const sessionId = await handler.connect({ send: (value: string) => sent.push(value), close: vi.fn() }, orgRunId);
   const snapshot = sent.map((value) => CollaborationStreamServerMessageSchema.parse(JSON.parse(value)))
     .find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");

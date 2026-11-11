@@ -15,14 +15,18 @@ import type { AgentOrgRunService } from "../../agent-org-execution/services/agen
 import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
 import { AgentCollaborationStreamHandler } from "../../services/agent-streaming/agent-collaboration-stream-handler.js";
 import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { createAgentTeamStreamHandler } from "../../services/agent-streaming/agent-team-stream-handler.js";
+import type { RunViewSources } from "../../compositions/run-view-composition.js";
 
 export async function registerWebsocketRoutes(
   app: FastifyInstance,
   dependencies: {
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRealtimeContracts;
-    agentOrgRunService: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">;
+    agentOrgRunService: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">;
     agentPackageDefinitionChangeHub: AgentPackageDefinitionChangeHub;
+    /** autobyteus-461 DS-8, SR-046: what the run view streams need (their child rows, the runs' registration, stored trees). */
+    views: RunViewSources;
   },
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
@@ -31,15 +35,17 @@ export async function registerWebsocketRoutes(
   await registerProjectChangesWebsocket(app);
   await registerUpdateNotificationsWebsocket(app);
   await registerAgentPackageDefinitionsWebsocket(app, dependencies.agentPackageDefinitionChangeHub);
+  const { views } = dependencies;
   await registerAgentWebsocket(
     app,
     undefined,
-    undefined,
-    new AgentOrgStreamHandler(dependencies.agentOrgRunService),
+    createAgentTeamStreamHandler({ childRowsFeed: views.childRowsFeed, registrations: views.registrations, readStoredTree: views.readStoredTeamTree }),
+    new AgentOrgStreamHandler(dependencies.agentOrgRunService,
+      { childRowsFeed: views.childRowsFeed, registrations: views.registrations, readStoredTree: views.readStoredOrgTree }),
     new AgentCollaborationStreamHandler({
       resolveRoot: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
       getActive: (hostRunId) => getStandaloneAgentRunRootManager().getActive(hostRunId),
-    }),
+    }, views.childRowsFeed),
   );
   await registerApplicationBackendNotificationWebsocket(app, {
     notificationHub: dependencies.application.notifications,

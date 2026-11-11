@@ -11,6 +11,7 @@ import { AgentOrgStreamHandler } from '../../../src/services/agent-streaming/age
 import { AgentSessionManager } from '../../../src/services/agent-streaming/agent-session-manager.js';
 import { RootEventPublisher } from '../../../src/agent-collaboration/execution/services/root-event-publisher.js';
 import { testAgentOrgExecutionTree,testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { testViewSources } from "../../helpers/child-rows-feed.js";
 
 // Real strict command decoding -> configured live handle -> AgentRun -> native core.
 // Root package hosting is test-owned; this is not a full root/API acceptance campaign.
@@ -41,13 +42,13 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,localChildren:{viewerAttached:()=>{},viewerDetached:()=>{}},remoteChildren:{viewerAttached:()=>{},viewerDetached:()=>{},refresh:async()=>{}},executeAgentCommand,
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};
   handler=new AgentTeamStreamHandler(new AgentSessionManager(),{resolveActiveTeamRun:async()=>run,getActiveTeamRun:()=>run,recordRunActivity:async()=>{}} as any,
-   {getLifecycleSnapshot:()=>({teamRunId:root.rootRunId,isActive:true}),subscribeToLifecycle:()=>()=>{}} as any);
+   testViewSources());
  } else {
   const tree=testAgentOrgExecutionTree({orgRunId:root.rootRunId,members:[testOrgAgentNode(identity.memberAddress,f.run.runId)]});
   const run={orgRunId:root.rootRunId,isActive:()=>true,getExecutionTreeSnapshot:()=>tree,localChildren:{viewerAttached:()=>{},viewerDetached:()=>{}},remoteChildren:{viewerAttached:()=>{},viewerDetached:()=>{},refresh:async()=>{}},executeAgentCommand,
    executeAgentCommandWithExecutionKind:async(id:string,command:any)=>({result:await executeAgentCommand(id,command),executionKind:'configured'}),
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:root.rootRunId,messages:[]},statuses:[handle.getStatusSnapshot()],inputStates:handle.getInputStateSnapshots()}))};
-  handler=new AgentOrgStreamHandler({getActive:()=>run,recordRunActivity:async()=>{}} as any);
+  handler=new AgentOrgStreamHandler({getActive:()=>run,recordRunActivity:async()=>{}} as any,testViewSources());
  }
  const session=await handler.connect(connection,root.rootRunId);expect(session,JSON.stringify(send.mock.calls)).toBeTruthy();
  return { handle,prepareNewAgentRun,

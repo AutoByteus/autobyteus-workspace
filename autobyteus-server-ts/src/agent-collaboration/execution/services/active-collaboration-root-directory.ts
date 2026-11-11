@@ -42,6 +42,28 @@ export class ActiveCollaborationRootDirectory {
     boundary: ActiveRootMessageBoundary;
   }>>();
   private readonly reserved = new Set<string>();
+  private readonly registrationListeners = new Map<string, Set<(registered: boolean) => void>>();
+
+  /**
+   * Told when a run's root is registered (it became managed) or unregistered (it ended), by the run's identity: an open
+   * view follows its run's lifecycle this way without holding the root (autobyteus-461 SR-046).
+   */
+  onRegistrationChanged(rootInput: RootExecutionIdentity, listener: (registered: boolean) => void): () => void {
+    const key = rootExecutionIdentityKey(rootInput);
+    const listeners = this.registrationListeners.get(key) ?? new Set<(registered: boolean) => void>();
+    listeners.add(listener);
+    this.registrationListeners.set(key, listeners);
+    return () => {
+      listeners.delete(listener);
+      if (!listeners.size && this.registrationListeners.get(key) === listeners) this.registrationListeners.delete(key);
+    };
+  }
+
+  private notifyRegistration(key: string, registered: boolean): void {
+    for (const listener of [...this.registrationListeners.get(key) ?? []]) {
+      try { listener(registered); } catch (error) { console.warn("A root registration listener failed:", error); }
+    }
+  }
 
   reserve(
     rootInput: RootExecutionIdentity,
@@ -65,6 +87,7 @@ export class ActiveCollaborationRootDirectory {
         }
         this.active.set(key, Object.freeze({ root, boundary }));
         state = "committed";
+        this.notifyRegistration(key, true);
       },
       release: () => {
         if (state === "released") return;
@@ -118,6 +141,7 @@ export class ActiveCollaborationRootDirectory {
     const current = this.active.get(key);
     if (!current || current.boundary !== expected || !sameRootExecutionIdentity(current.root, root)) return false;
     this.active.delete(key);
+    this.notifyRegistration(key, false);
     return true;
   }
 

@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
 import { flushMicrotasks } from "./helpers/task-publication-handles.js";
 import { buildOrg, cleanupDirectories } from "./helpers/org-collaborator-harness.js";
+import { testViewSources } from "../../helpers/child-rows-feed.js";
 
 afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
 
@@ -11,7 +12,7 @@ describe("`@` mentions of an AgentOrg run", () => {
   it("resolves mentions on SEND_MESSAGE without adding anything and posts the note steering to delegate_task", async () => {
     const f = await buildOrg();
     const wire: CollaborationStreamServerMessage[] = [];
-    const stream = new AgentOrgStreamHandler({ getActive: () => f.owner, recordRunActivity: vi.fn() });
+    const stream = new AgentOrgStreamHandler({ getActive: () => f.owner, recordRunActivity: vi.fn() } as never, testViewSources());
     const session = await stream.connect({ send: (raw) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close: vi.fn() }, f.root.rootRunId);
     await stream.handleMessage(session!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
       root_subject_kind: "agent_org", root_run_id: f.root.rootRunId, target_agent_run_id: "director", command_id: "c1",

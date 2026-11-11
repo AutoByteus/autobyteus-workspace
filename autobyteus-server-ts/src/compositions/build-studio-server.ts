@@ -46,6 +46,8 @@ import { getGeneralProcessPublishedArtifactPublisher } from "../services/publish
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
 import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { createChildRowsFeed } from "./child-rows-feed-composition.js";
+import { createRunViewSources } from "./run-view-composition.js";
 import { composeTaskDelegation } from "./task-delegation-composition.js";
 import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
@@ -329,8 +331,10 @@ export const buildStudioServer = async (input: {
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
+    // autobyteus-461 DS-8: the one child-row feed, following the tree and serving the view streams.
+    const childRowsFeed = createChildRowsFeed({ memoryDir: input.appConfig.getMemoryDir() });
     taskExecutionResources = await composeProjectTaskExecutionResources({
-      appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir() });
+      appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(), childRowsFeed });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -469,6 +473,7 @@ export const buildStudioServer = async (input: {
         application: currentApplicationRuntime.realtime,
         agentOrgRunService: generalProcessRunSupervisor.agentOrgRunService,
         agentPackageDefinitionChangeHub: agentPackageDefinitionFeed.hub,
+        views: createRunViewSources({ memoryDir: input.appConfig.getMemoryDir(), childRowsFeed, registrations: getActiveCollaborationRootDirectory() }),
       });
       await registerGraphql(app);
       // Last preClose hook: after the native drain and the WebSocket plugin's client close (AR-003).

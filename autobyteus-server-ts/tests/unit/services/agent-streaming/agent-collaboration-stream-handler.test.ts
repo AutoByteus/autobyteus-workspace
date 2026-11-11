@@ -30,10 +30,10 @@ const fakeRoot = (hostLive = true) => ({
 /** The child-command route: `child-run` is a local child; any other target is not this route's. */
 const childCommands = () => ({ execute: vi.fn(async (_parent: unknown, target: string) => target === "child-run" ? { accepted: true } : null) });
 
-const connect = async (roots: ConstructorParameters<typeof AgentCollaborationStreamHandler>[0], children = childCommands()) => {
+const connect = async (roots: ConstructorParameters<typeof AgentCollaborationStreamHandler>[0], children = childCommands(), feed = followTestChildRows()) => {
   const wire: CollaborationStreamServerMessage[] = [];
   const close = vi.fn();
-  const handler = new AgentCollaborationStreamHandler(roots, children as never);
+  const handler = new AgentCollaborationStreamHandler(roots, feed.feed, children as never);
   const sessionId = await handler.connect({ send: (raw) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close }, HOST);
   return { handler, sessionId, wire, close, children };
 };
@@ -130,8 +130,10 @@ describe("AgentCollaborationStreamHandler", () => {
         return { snapshot: { host, createdAt: "2026-09-30T00:00:00.000Z", statuses: [] }, baseChangeSequence: 0, liveSequenceId: "live-hub-1",
           lastMessageChangeSequence: 0, subscribe: vi.fn(() => () => undefined), close: vi.fn() };
       });
-      const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null });
+      const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null }, childCommands(), feed);
       expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "CHILD_RUNS_CHANGED", "ROOT_LIFECYCLE"]);
+      // SR-045: the lifecycle frame is the run's agent's own state; a stopped run's view keeps its stream.
+      expect(wire[3]).toMatchObject({ payload: { is_active: false } });
       expect(wire[2]).toEqual({ type: "CHILD_RUNS_CHANGED", payload: { root_subject_kind: "agent", root_run_id: HOST,
         event: { kind: "child_runs_changed", run_id: HOST, added: [expect.objectContaining({ agentRunId: "writer", address: "/writer" })], removed: [] } } });
       feed.report({ run: hostRun, added: [], removed: [{ agentRunId: "writer" }] });

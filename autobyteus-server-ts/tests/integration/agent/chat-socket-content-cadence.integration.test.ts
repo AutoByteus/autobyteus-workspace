@@ -41,6 +41,7 @@ import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { testViewSources } from "../../helpers/child-rows-feed.js";
 
 type AgentKey = "A" | "B";
 type Frame = Readonly<{ at: number; label: string; first: number | null; through: number | null; texts: readonly string[] }>;
@@ -124,7 +125,7 @@ const teamScenario: Scenario = {
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       { resolveActiveTeamRun: vi.fn(async () => root), getActiveTeamRun: vi.fn(() => root), recordRunActivity: vi.fn(async () => undefined) } as never,
-      { getLifecycleSnapshot: () => ({ teamRunId: "team-run-root", isActive: true }), subscribeToLifecycle: () => () => undefined } as never,
+      testViewSources(),
     );
     const bindings = { A: "member-run-a", B: "member-run-b" } as const;
     const execution = (agent: AgentKey) => createTeamAgentExecutionBinding({
@@ -192,12 +193,12 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
       const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
         openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
         executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };
-      handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never) };
+      handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never, testViewSources()) };
     } else {
       const snapshot = { host: { address: "/assistant" as never, agentRunId: rootRunId, agentDefinitionId: "assistant" }, createdAt: "2026-10-18T00:00:00.000Z", statuses: [] };
       const root = { rootIdentity: createAgentRootExecutionIdentity(rootRunId), ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
         openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot as never) };
-      handlers = { collaborationHandler: new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never }) };
+      handlers = { collaborationHandler: new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never }, testViewSources().childRowsFeed) };
     }
     const app = await serve(handlers);
     return {

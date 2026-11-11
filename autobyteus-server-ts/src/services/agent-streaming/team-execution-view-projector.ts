@@ -12,6 +12,7 @@ import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
 import type { ChildRowsEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
@@ -28,12 +29,15 @@ const projectReference = (ownerId: string, filePath: string, timestamp: string):
 export const projectTeamExecutionViewSnapshot = (
   rootTeamRunId: string,
   { snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence }: Readonly<{
-    snapshot: RootTeamRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string; lastMessageChangeSequence: number;
+    snapshot: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; baseChangeSequence: number; liveSequenceId: string;
+    lastMessageChangeSequence: number;
   }>,
   /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
   /** autobyteus-461 DS-8: the runs on this node it delegated to (`delegatedChildrenDtos`). */
   delegated: readonly CollaborationTaskExecutionDto[] = [],
+  /** Their agents' statuses, each from its own run (`localChildStatuses`): the view reports one for every agent it lists. */
+  childStatuses: readonly LocalChildAgentStatus[] = [],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
   payload: {
@@ -42,11 +46,19 @@ export const projectTeamExecutionViewSnapshot = (
     live_sequence_id: liveSequenceId,
     last_message_change_sequence: lastMessageChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree, delegated),
-    agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
+    agent_statuses: [...snapshot.statuses.map(projectTeamAgentStatusSnapshotDto), ...childStatusDtos(snapshot.statuses, childStatuses)],
     agent_input_states: snapshot.inputStates,
     remote_task_executions: remoteTaskExecutions,
   },
 });
+
+const childStatusDtos = (own: Pick<RootTeamRunPackageSnapshot, "statuses">["statuses"], children: readonly LocalChildAgentStatus[]) => {
+  const listed = new Set(own.map((status) => status.execution.agentRunId));
+  return children.filter((child) => !listed.has(child.agentRunId)).map((child) => ({
+    agent_run_id: child.agentRunId, member_address: child.memberAddress, status: child.status,
+    trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+  }));
+};
 
 export const projectSequencedTeamRunEvent = (
   root: RootTeamRun,

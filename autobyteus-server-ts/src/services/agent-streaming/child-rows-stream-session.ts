@@ -1,5 +1,5 @@
 import { CollaborationStreamServerMessageSchema, type CollaborationStreamServerMessage } from "@autobyteus/collaboration-stream-contracts";
-import { getChildRowsFeed, type ChildRowsEvent, type ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsEvent, ChildRowsFeed } from "../../agent-collaboration/delegation/child-rows-feed.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** An Agent or Org run's child-row change on the collaboration stream (SR-042, SR-043): its rows as its view has them. */
@@ -17,8 +17,13 @@ export class ChildRowsStreamSession {
   private held: ChildRowsEvent[] | null = [];
   private close: (() => void) | null;
 
-  constructor(run: RootExecutionIdentity, private readonly send: (event: ChildRowsEvent) => void, feed: ChildRowsFeed = getChildRowsFeed()) {
+  constructor(feed: ChildRowsFeed, run: RootExecutionIdentity, private readonly send: (event: ChildRowsEvent) => void) {
     this.close = feed.open(run, (event) => this.deliver(event));
+  }
+
+  /** Another snapshot is being built on this connection (a mode switch, SR-046): events wait for it again. */
+  snapshotBuilding(): void {
+    if (this.close) this.held ??= [];
   }
 
   /** The snapshot was sent: the events held while it was built follow, oldest first, each once. */

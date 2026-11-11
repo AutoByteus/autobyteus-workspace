@@ -27,12 +27,14 @@ export class DelegatedRunCommands {
     teamRun(teamRunId: string, restore: boolean): Promise<TeamRunCommands | null>;
   }>) {}
 
+  /** Whether the agent run is an agent of a run `parent` delegated to (one hop): a child row's agent. */
+  async isChildAgent(parent: RootExecutionIdentity, agentRunId: string): Promise<boolean> {
+    return (await this.childRunOf(parent, agentRunId)) !== null;
+  }
+
   async execute(parent: RootExecutionIdentity, agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult | null> {
-    const tree = this.dependencies.tree();
-    const run = tree ? await tree.runOfAgent(agentRunId) : null;
-    const reference = run ? runReferenceOf(run) : null;
-    const delegatedFrom = reference ? tree!.parentOf(reference) : null;
-    if (!run || !delegatedFrom || rootExecutionIdentityKey(delegatedFrom.delegatingRun) !== rootExecutionIdentityKey(parent)) return null;
+    const run = await this.childRunOf(parent, agentRunId);
+    if (!run) return null;
     if (run.rootSubjectKind === "agent_team") {
       const team = await this.dependencies.teamRun(run.rootRunId, command.kind === "post_message");
       return team ? team.executeAgentCommand(agentRunId, command) : notLive(agentRunId);
@@ -46,5 +48,13 @@ export class DelegatedRunCommands {
     const live = this.dependencies.activeAgentRun(agentRunId);
     if (!live) return notLive(agentRunId);
     return command.kind === "interrupt" ? live.interrupt() : live.approveToolInvocation(command.invocationId, command.approved, command.reason);
+  }
+
+  private async childRunOf(parent: RootExecutionIdentity, agentRunId: string): Promise<RootExecutionIdentity | null> {
+    const tree = this.dependencies.tree();
+    const run = tree ? await tree.runOfAgent(agentRunId) : null;
+    const reference = run ? runReferenceOf(run) : null;
+    const delegatedFrom = reference ? tree!.parentOf(reference) : null;
+    return run && delegatedFrom && rootExecutionIdentityKey(delegatedFrom.delegatingRun) === rootExecutionIdentityKey(parent) ? run : null;
   }
 }

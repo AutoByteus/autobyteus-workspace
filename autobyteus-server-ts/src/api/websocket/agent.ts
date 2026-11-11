@@ -5,7 +5,6 @@ import {
   AgentTeamStreamHandler,
   createErrorMessage,
   getAgentStreamHandler,
-  getAgentTeamStreamHandler,
   type WebSocketConnection,
 } from "../../services/agent-streaming/index.js";
 import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
@@ -99,7 +98,7 @@ const attachRootStream = (
 export async function registerAgentWebsocket(
   app: FastifyInstance,
   agentHandler: AgentStreamHandler = getAgentStreamHandler(),
-  teamHandler: AgentTeamStreamHandler = getAgentTeamStreamHandler(),
+  teamHandler: AgentTeamStreamHandler,
   orgHandler?: AgentOrgStreamHandler,
   agentCollaborationHandler?: AgentCollaborationStreamHandler,
 ): Promise<void> {

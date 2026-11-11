@@ -4,7 +4,6 @@ import { getProcessStandaloneRunCommandPort } from "../../agent-execution/servic
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -14,13 +13,11 @@ import {
 } from "@autobyteus/collaboration-stream-contracts";
 import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-ts";
 import type { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
-import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionView } from "./agent-org-execution-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
-import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
-import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
+import { OrgRunNotFoundError, OrgViewSession, type OrgViewSources } from "./org-view-session.js";
 
 /** A command for one agent of the Org (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -48,11 +45,17 @@ const commandAck = (
   },
 });
 
-/** Native AgentOrg stream. It does not reuse or reinterpret the Team envelope. */
+/**
+ * Native AgentOrg stream `/ws/agent-org/:orgRunId` (autobyteus-461 DS-8, SR-046): one view session per connection
+ * (`OrgViewSession`), active or stopped, which never restores the run to serve the view. A command to a child row goes
+ * to the child's own run; a message to one of the Org's own agents restores a stopped Org through its service, on that
+ * first input; an interrupt or tool approval for an agent of a stopped Org is refused.
+ */
 export class AgentOrgStreamHandler {
-  private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; orgRunId: string; close(): void }>();
+  private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; view: OrgViewSession }>();
   constructor(
-    private readonly service: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">,
+    private readonly service: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">,
+    private readonly sources: OrgViewSources,
     private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
       tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
       activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
@@ -62,84 +65,37 @@ export class AgentOrgStreamHandler {
 
   async connect(connection: WebSocketConnection, orgRunIdInput: string): Promise<string | null> {
     const orgRunId = orgRunIdInput.trim();
-    // Every message to this socket leaves through its egress; an ERROR or ROOT_LIFECYCLE sent
-    // before a close flushes pending content first.
+    // Every message to this socket leaves through its egress; an ERROR sent before a close flushes pending content first.
     const egress = createRootExecutionStreamEgress(connection, `AgentOrg run '${orgRunId}'`);
-    const run = orgRunId ? this.service.getActive(orgRunId) : null;
-    if (!run) {
-      egress.send(error("AGENT_ORG_NOT_ACTIVE", `AgentOrg run '${orgRunId}' is not active.`));
-      egress.dispose();
-      connection.close(4004);
-      return null;
-    }
     const sessionId = randomUUID();
-    // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
-    const childRows = new ChildRowsStreamSession({ rootSubjectKind: "agent_org", rootRunId: run.orgRunId },
-      (event) => egress.send(projectCollaborationChildRunsChanged("agent_org", orgRunId, event)));
-    const remoteTaskExecutions = await remoteTaskExecutionDtos({ rootSubjectKind: "agent_org", rootRunId: run.getExecutionTreeSnapshot().rootOrg.orgRunId });
-    const barrier = await run.openPackageSnapshotConnection();
+    const view = new OrgViewSession(orgRunId, (message) => egress.send(message),
+      { ...this.sources, activeOrgRun: (id) => this.service.getActive(id) });
+    egress.send(CollaborationStreamServerMessageSchema.parse({
+      type: "CONNECTED", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, session_id: sessionId },
+    }));
     try {
-      egress.send(CollaborationStreamServerMessageSchema.parse({
-        type: "CONNECTED",
-        payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, session_id: sessionId },
-      }));
-      egress.send(CollaborationStreamServerMessageSchema.parse({
-        type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentOrgExecutionView(run, barrier, remoteTaskExecutions,
-          await delegatedChildrenDtos({ rootSubjectKind: "agent_org", rootRunId: run.orgRunId })),
-      }));
-      childRows.snapshotSent();
-      const unsubscribe = barrier.subscribe((event) => {
-        try {
-          const projected = projectAgentOrgExecutionEvent(run, event);
-          if (projected) egress.send(CollaborationStreamServerMessageSchema.parse({
-            type: "ROOT_EXECUTION_EVENT",
-            payload: projected,
-          }));
-        } catch (cause) {
-          egress.send(error(
-            "AGENT_ORG_STREAM_PROJECTION_FAILED",
-            cause instanceof Error ? cause.message : String(cause),
-          ));
-          queueMicrotask(() => {
-            this.disconnect(sessionId);
-            connection.close(1011);
-          });
-          return;
-        }
-        if (event.event.kind === "lifecycle") {
-          egress.send(CollaborationStreamServerMessageSchema.parse({
-            type: "ROOT_LIFECYCLE",
-            payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, is_active: event.event.isActive },
-          }));
-          if (!event.event.isActive) queueMicrotask(() => {
-            this.disconnect(sessionId);
-            connection.close(1000);
-          });
-        }
-      });
-      egress.send(CollaborationStreamServerMessageSchema.parse({
-        type: "ROOT_LIFECYCLE",
-        payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, is_active: true },
-      }));
-      // autobyteus-278: a viewer of the Org observes its remote children while connected.
-      run.remoteChildren.viewerAttached();
-      run.localChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); childRows.dispose(); run.remoteChildren.viewerDetached(); run.localChildren.viewerDetached(); egress.dispose(); } });
-      return sessionId;
+      await view.open();
     } catch (cause) {
-      barrier.close();
-      childRows.dispose();
-      egress.send(error("AGENT_ORG_STREAM_UNAVAILABLE", String(cause)));
+      view.close();
+      const notFound = cause instanceof OrgRunNotFoundError;
+      egress.send(error(notFound ? "AGENT_ORG_NOT_FOUND" : "AGENT_ORG_STREAM_UNAVAILABLE", cause instanceof Error ? cause.message : String(cause)));
       egress.dispose();
-      connection.close(1011);
+      connection.close(notFound ? 4004 : 1011);
       return null;
     }
+    this.sessions.set(sessionId, { egress, view });
+    return sessionId;
   }
 
   async handleMessage(sessionId: string, raw: string): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session) return;
+    // A message to an agent of a stopped Org restores it: the view's switch to live waits for the message.
+    await (this.service.getActive(session.view.orgRunId) ? this.handle(session, raw) : session.view.whileRestoring(() => this.handle(session, raw)));
+  }
+
+  private async handle(session: { egress: RootExecutionStreamEgress; view: OrgViewSession }, raw: string): Promise<void> {
+    const orgRunId = session.view.orgRunId;
     let parsed: CollaborationStreamClientMessage;
     try {
       parsed = CollaborationStreamClientMessageSchema.parse(JSON.parse(raw));
@@ -152,21 +108,35 @@ export class AgentOrgStreamHandler {
     }
     if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
       // Retry: the answers arrive as root events.
-      if (parsed.payload.root_subject_kind === "agent_org" && parsed.payload.root_run_id === session.orgRunId) {
-        void this.service.getActive(session.orgRunId)?.remoteChildren.refresh();
+      if (parsed.payload.root_subject_kind === "agent_org" && parsed.payload.root_run_id === orgRunId) {
+        void this.service.getActive(orgRunId)?.remoteChildren.refresh();
       }
       return;
     }
     const message: AgentCommand = parsed;
     try {
-      if (message.payload.root_subject_kind !== "agent_org" || message.payload.root_run_id !== session.orgRunId) {
+      if (message.payload.root_subject_kind !== "agent_org" || message.payload.root_run_id !== orgRunId) {
         throw new Error("AgentOrg command root correlation mismatch.");
       }
-      const run = this.service.getActive(session.orgRunId);
-      if (!run) throw new Error(`AgentOrg run '${session.orgRunId}' is not active.`);
+      const target = message.payload.target_agent_run_id;
+      const identity = createAgentOrgRootExecutionIdentity(orgRunId);
+      const isChild = await this.children.isChildAgent(identity, target);
+      let run = this.service.getActive(orgRunId);
+      if (!run && !isChild) {
+        if (message.type !== "SEND_MESSAGE") {
+          session.egress.send(commandAck(message, "rejected", "AGENT_ORG_STOPPED", `AgentOrg run '${orgRunId}' is stopped. A message to one of its agents starts it.`));
+          return;
+        }
+        // A message to one of the Org's own agents starts the stopped Org, on that first input (SR-046).
+        run = await this.service.restore(orgRunId);
+      }
+      if (!run && message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
+        session.egress.send(commandAck(message, "rejected", "AGENT_ORG_STOPPED", "Start the Org to mention collaborators in a message to a run it delegated to."));
+        return;
+      }
       let content = message.type === "SEND_MESSAGE" ? message.payload.content : "";
       if (message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
-        const admission = await run.resolveCollaboratorMentions({
+        const admission = await run!.resolveCollaboratorMentions({
           focusedAgentRunId: message.payload.target_agent_run_id,
           mentions: toCollaboratorMentions(message.payload.mentions),
         });
@@ -208,21 +178,19 @@ export class AgentOrgStreamHandler {
               reason: message.payload.reason,
             };
       // AR-011: a child row's command goes to the child's own run (not this org's activity).
-      const child = await this.children.execute(createAgentOrgRootExecutionIdentity(run.orgRunId), message.payload.target_agent_run_id, command);
+      const child = isChild ? await this.children.execute(identity, target, command) : null;
+      const own = run!;
       const outcome = child ? Object.freeze({ result: child, executionKind: null })
         : message.type === "SEND_MESSAGE"
-        ? await run.executeAgentCommandWithExecutionKind(message.payload.target_agent_run_id, command)
-        : Object.freeze({
-            result: await run.executeAgentCommand(message.payload.target_agent_run_id, command),
-            executionKind: null,
-          });
+        ? await own.executeAgentCommandWithExecutionKind(target, command)
+        : Object.freeze({ result: await own.executeAgentCommand(target, command), executionKind: null });
       const result = outcome.result;
       if (message.type === "SEND_MESSAGE" && result.accepted && outcome.executionKind !== null) {
-        const historyCommit = this.service.recordRunActivity(run, { summary: message.payload.content });
+        const historyCommit = this.service.recordRunActivity(run!, { summary: message.payload.content });
         try {
           await historyCommit;
         } catch (cause) {
-          console.error(`Accepted AgentOrg input history summary commit failed for '${session.orgRunId}':`, cause);
+          console.error(`Accepted AgentOrg input history summary commit failed for '${orgRunId}':`, cause);
         }
       }
       session.egress.send(commandAck(
@@ -244,7 +212,8 @@ export class AgentOrgStreamHandler {
   disconnect(sessionId: string): void {
     const session = this.sessions.get(sessionId);
     if (!session) return;
-    session.close();
+    session.view.close();
+    session.egress.dispose();
     this.sessions.delete(sessionId);
   }
 }

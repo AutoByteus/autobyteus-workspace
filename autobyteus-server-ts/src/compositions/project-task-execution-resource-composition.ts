@@ -3,7 +3,7 @@ import type { TaskExecutionResourcePort } from "../agent-collaboration/execution
 import { findTaskRunControl } from "../agent-collaboration/execution/task/task-run-control.js";
 import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
 import { bindDelegationTree, unbindDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
-import { getChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { TaskExecutionResourceService } from "../projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../projects/stores/task-execution-resource-store.js";
@@ -56,6 +56,8 @@ const taskChangeMarks: ProjectChangeMarks = {
 export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   appDataDir: string;
   memoryDir: string;
+  /** The open views' child-row feed, which follows the tree built here (DS-8, SR-042). */
+  childRowsFeed: ChildRowsFeed;
 }>): Promise<TaskExecutionResourcePort> => {
   const adHocTasksLayout = new AdHocTasksLayout(path.join(deps.appDataDir, "ad-hoc-tasks"));
   const projectsLayout = new ProjectsLayout(path.join(deps.appDataDir, "projects"));
@@ -69,7 +71,7 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   taskExecutionResources.setEntriesListener(delegationTree);
   bindDelegationTree(delegationTree);
   unfollowChildRows?.();
-  unfollowChildRows = getChildRowsFeed().follow(delegationTree);
+  unfollowChildRows = deps.childRowsFeed.follow(delegationTree);
   projectRunLinks?.close();
   projectRunLinks = await composeProjectRunLinks({ projectsLayout });
   const service = initializeProjectTaskServiceProcessInstance({

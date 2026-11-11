@@ -11,6 +11,7 @@ import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-or
 import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
+import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 
 
 export const projectAgentOrgExecutionView = (
@@ -19,10 +20,11 @@ export const projectAgentOrgExecutionView = (
     lastMessageChangeSequence: number }>,
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
   delegated: readonly CollaborationTaskExecutionDto[] = [],
+  childStatuses: readonly LocalChildAgentStatus[] = [],
 ): RootExecutionViewDto => projectAgentOrgExecutionSnapshot({
   orgRunId: run.orgRunId, isActive: run.isActive(), snapshot: connection.snapshot,
   baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
-  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions, delegated,
+  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions, delegated, childStatuses,
 });
 
 export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
@@ -36,6 +38,8 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
   /** autobyteus-461 DS-8: the runs on this node its agents delegated to. */
   delegated?: readonly CollaborationTaskExecutionDto[];
+  /** Their agents' statuses, each from its own run: an active Org reports one for every agent its view lists. */
+  childStatuses?: readonly LocalChildAgentStatus[];
 }>): RootExecutionViewDto => {
   const { orgRunId, isActive, snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence } = input;
   return RootExecutionViewDtoSchema.parse({
@@ -48,7 +52,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree, input.delegated ?? []),
     agent_input_states: snapshot.inputStates,
-    agent_statuses: snapshot.statuses.map((status) => ({
+    agent_statuses: [...snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
       agent_run_id: status.execution.agentRunId,
       status: status.details.status,
@@ -56,7 +60,10 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
       tool_name: null,
       error_message: status.details.errorMessage,
       error_details: null, recoverableBlock: status.details.recoverableBlock,
-    })),
+    })), ...(isActive ? input.childStatuses ?? [] : [])
+      .filter((child) => !snapshot.statuses.some((own) => own.execution.agentRunId === child.agentRunId))
+      .map((child) => ({ member_address: child.memberAddress, agent_run_id: child.agentRunId, status: child.status,
+        trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null }))],
     remote_task_executions: input.remoteTaskExecutions,
   },
   });
