@@ -3910,7 +3910,7 @@ export type StreamableHttpMcpServerConfigInput = {
 export type TaskRoot = {
   __typename?: 'TaskRoot';
   closed: Scalars['Boolean']['output'];
-  hostRoot: TaskRootHost;
+  delegatingRun: TaskRootDelegatingRun;
   ingressAgentRunId: Scalars['String']['output'];
   kind: Scalars['String']['output'];
   recipientAddress?: Maybe<Scalars['String']['output']>;
@@ -3920,8 +3920,8 @@ export type TaskRoot = {
   teamRunId?: Maybe<Scalars['String']['output']>;
 };
 
-export type TaskRootHost = {
-  __typename?: 'TaskRootHost';
+export type TaskRootDelegatingRun = {
+  __typename?: 'TaskRootDelegatingRun';
   kind: Scalars['String']['output'];
   runId: Scalars['String']['output'];
 };
@@ -5386,21 +5386,21 @@ export type CreateProjectTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type UpdateProjectTaskMutationVariables = Exact<{
   input: UpdateProjectTaskInput;
 }>;
 
 
-export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type AddProjectTaskCommentMutationVariables = Exact<{
   input: AddProjectTaskCommentInput;
 }>;
 
 
-export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type DeleteProjectTaskMutationVariables = Exact<{
   input: DeleteProjectTaskInput;
@@ -5952,16 +5952,16 @@ export type GetProjectRunHistoryQueryVariables = Exact<{
 
 export type GetProjectRunHistoryQuery = { __typename?: 'Query', projectRunHistory: { __typename?: 'ProjectRunHistoryObject', projectId: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
-export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
+export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
 
-export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
+export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
 
 export type GetProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
+export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
 
 export type GetTaskWorkerTasksQueryVariables = Exact<{
   agentRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -5974,7 +5974,7 @@ export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: A
 export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
 
 export type SearchProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -6945,7 +6945,7 @@ export const TaskRootFieldsFragmentDoc = gql`
   recipientAddress
   ingressAgentRunId
   teamRunId
-  hostRoot {
+  delegatingRun {
     kind
     runId
   }
