@@ -24,7 +24,7 @@
 | SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | Architecture review ARCH-REV-002: Fail (AR-004, AR-005, AR-008, AR-011 … AR-015) |
 | SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Architecture review ARCH-REV-003: Fail (AR-005, narrowed) |
 | SR-020 | Design | Architecture review ARCH-REV-003 (round 3) on SR-019 | AR-005 (narrowed); residual | Design Ready, review Fail | Design Ready | DS-10; `TaskRunIndex` | Architecture review ARCH-REV-004: Fail (AR-005, narrowed again) |
-| SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Back to architecture review |
+| SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Architecture review ARCH-REV-005 (round 5): Pass, no open findings |
 
 ## Revision Entries
 
@@ -486,3 +486,4 @@
 - Classification: `Large`, `High`, unchanged
 - Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
 - Next action: architecture review, round 5
+- Review result (recorded 2026-11-11, informational): `Pass`, ARCH-REV-005, round 5, on SR-021 (`design-review-report.md`, `architecture-review-revision-record.md`, both the reviewer's). AR-001 … AR-015 resolved. The reviewer verified that `runPending` continues past failed migrations (`app-data-migration-runner.ts:79-100`), that `20261019_…` reads coordinating trees only for configured-place copies of team and org runs, and that no predecessor holds back a capability. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`; the Solution Designer sends none.
