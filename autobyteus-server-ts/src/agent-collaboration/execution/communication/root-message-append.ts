@@ -3,7 +3,7 @@ import type {
   AgentRunInputReservation,
   CommittedAgentRunInput,
 } from "../../../agent-execution/input/agent-run-input-contract.js";
-import type { StoredMessageLogOwner } from "../../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../../run-history/store/message-log-owners.js";
 import type { CollaborationCommunicationMessage } from "./collaboration-communication-message.js";
 
 /** What `prepare` decided under the root's lock: append to these logs, or append nothing. */

@@ -34,7 +34,7 @@ import {
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { teamRunRemoteLinks } from "./team-run-remote-links.js";
@@ -126,8 +126,7 @@ export class RootTeamRun {
       // AR-020: a message to or from a peer run whose Task entry is closed is refused (its node keeps the run).
       assertDeliveryAllowed: (sender, receiver) => { this.assertPeerEntryOpen(sender); this.assertPeerEntryOpen(receiver); },
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
-      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? REMOTE_RUN_LOG
-        : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
+      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
       publish: (event) => options.publisher.publish(event),
@@ -393,7 +392,6 @@ export class RootTeamRun {
 
   private async runTermination(quiet: PreparedLocalExecutionTermination | null): Promise<AgentOperationResult> {
     await this.materializationGate.closeAndDrain();
-    this.teamRunResolver.closeRegistration();
     // A quiet shutdown (DS-004) fences nothing: every member and child already prepared its quiescent termination.
     const committed = quiet?.commit() ?? null;
     if (!committed) this.frozenTerminationScope ??= this.options.rootRun.freezeForRootTermination();

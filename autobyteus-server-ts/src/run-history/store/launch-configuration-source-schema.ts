@@ -1,5 +1,3 @@
-import type { UserLaunchSelection } from "../domain/run-execution-tree-shared-records.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { PendingRuntimeSwitch } from "./agent-run-metadata-types.js";
 import { parsePendingRuntimeSwitch } from "./agent-run-pending-runtime-switch.js";
 import {
@@ -9,14 +7,7 @@ import {
   type LaunchConfigurationFallback,
   type LaunchConfigurationSource,
 } from "../../agent-collaboration/domain/launch-configuration-source.js";
-import {
-  isoTimestamp,
-  nullableString,
-  objectRecord,
-  requireKeys,
-  requiredArray,
-  requiredString,
-} from "./run-execution-tree-shared-record-schemas.js";
+import { nullableString, objectRecord, requireKeys, requiredArray, requiredString } from "./run-execution-tree-shared-record-schemas.js";
 
 const oneOf = <T extends string>(value: unknown, allowed: readonly T[], label: string): T => {
   if (!allowed.includes(value as T)) throw new Error(`${label} must be one of ${allowed.join(", ")}.`);
@@ -67,38 +58,6 @@ export const parseOptionalLaunchFields = (
     ? { [keys.source]: parseLaunchConfigurationSource(record[keys.source], `${label}.${keys.source}`) }
     : {}
 );
-
-/**
- * The optional user model choice of a copy record (`userLaunchSelection` on
- * agent-level records, `userTeamLaunchSelection` on team-level records). Absent truthfully means
- * no user choice (every record written before selections existed); present values are validated
- * and projected exactly.
- */
-export const parseOptionalUserLaunchSelection = <TKey extends "userLaunchSelection" | "userTeamLaunchSelection">(
-  record: Record<string, unknown>,
-  key: TKey,
-  label: string,
-): { [K in TKey]?: UserLaunchSelection } => {
-  if (record[key] === undefined) return {};
-  const at = `${label}.${key}`;
-  const selection = objectRecord(record[key], at);
-  requireKeys(selection, ["llmModelIdentifier", "llmConfig", "selectedAt"], at);
-  if (
-    selection.llmConfig !== null
-    && (!selection.llmConfig || typeof selection.llmConfig !== "object" || Array.isArray(selection.llmConfig))
-  ) throw new Error(`${at}.llmConfig must be an object or null.`);
-  if (selection.runtimeKind !== undefined && !Object.values(RuntimeKind).includes(selection.runtimeKind as RuntimeKind)) {
-    throw new Error(`${at}.runtimeKind is unsupported.`);
-  }
-  return {
-    [key]: {
-      ...(selection.runtimeKind === undefined ? {} : { runtimeKind: selection.runtimeKind as RuntimeKind }),
-      llmModelIdentifier: requiredString(selection.llmModelIdentifier, `${at}.llmModelIdentifier`),
-      llmConfig: selection.llmConfig === null ? null : structuredClone(selection.llmConfig as Record<string, unknown>),
-      selectedAt: isoTimestamp(selection.selectedAt, `${at}.selectedAt`),
-    },
-  } as { [K in TKey]?: UserLaunchSelection };
-};
 
 /**
  * The optional pending agent runtime switch of a member or copy record (autobyteus-348). Absent truthfully means none (every

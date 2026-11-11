@@ -9,7 +9,7 @@ import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execu
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import type { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { MessageLog } from "../../../src/run-history/store/message-log.js";
-import { COORDINATING_LOG } from "../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../src/run-history/store/message-log-owners.js";
 import { TeamRunPersistenceCoordinator } from "../../../src/agent-team-execution/services/team-run-persistence-coordinator.js";
 import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
@@ -108,7 +108,7 @@ const appendFor = (current: readonly CollaborationCommunicationMessage[], next: 
     isOpen: () => true,
     getMessages: () => current,
     setMessages: (messages) => { committed.messages = messages; },
-    logOwnersOf: () => [COORDINATING_LOG],
+    logOwnersOf: () => [OWN_RUN_LOG],
     publishToRootView: vi.fn(),
     scopeRefusalOf: () => null,
   });

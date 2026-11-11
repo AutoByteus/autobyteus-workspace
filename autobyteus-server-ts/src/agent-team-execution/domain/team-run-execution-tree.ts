@@ -11,10 +11,6 @@ import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-t
 export type {
   ConfiguredAgentExecutionNode,
   IsoTimestamp,
-  TaskAgentExecution,
-  TaskExecution,
-  TaskTeamAgentExecution,
-  TaskTeamExecution,
   TeamRunApplicationBinding,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 

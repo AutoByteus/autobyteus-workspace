@@ -145,7 +145,6 @@ export class RootRunPackageCurrentValidator {
     }
     const metadataStore = new AgentRunMetadataStore(this.memoryDir);
     const state = await metadataStore.readMetadataState(id);
-    if (state.kind === "missing" && (await metadataStore.readTaskAgentMetadataState(id)).kind !== "missing") return;
     if (state.kind !== "present") {
       this.record(candidate, "agent", id, entry.packagePath,
         state.kind === "unreadable" && isAttemptError(state.error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",

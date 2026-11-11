@@ -35,7 +35,7 @@ export class StandaloneRootPersistenceCoordinator {
       const prepared = append.prepare();
       if (prepared.kind !== "append") return { outcome: prepared.kind };
       // Only the run's own log is written here: another run's log is written by its own root (CM-9).
-      if (!prepared.logOwners.some((owner) => owner.kind === "coordinating")) {
+      if (!prepared.logOwners.some((owner) => owner.kind === "own")) {
         this.finalize(() => append.commitAfterDurability());
         return { outcome: "committed" };
       }

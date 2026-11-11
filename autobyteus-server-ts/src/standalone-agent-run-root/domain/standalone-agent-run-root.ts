@@ -15,7 +15,7 @@ import { RootCommunicationEngine, type RunSendInput } from "../../agent-collabor
 import type { CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher, RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import { COORDINATING_LOG, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG, OTHER_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -125,7 +125,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       assertDeliveryAllowed: (sender, receiver) => this.assertPeerEntryOpen(this.index.isHost(sender) ? receiver : sender),
       isCurrentAgent: (identity) => this.isCurrentAgent(identity),
       // The run's own log; every other agent (another run, or a peer's) keeps its own.
-      messageLogOwnerOf: (agentRunId) => this.index.isHost(agentRunId) ? COORDINATING_LOG : REMOTE_RUN_LOG,
+      messageLogOwnerOf: (agentRunId) => this.index.isHost(agentRunId) ? OWN_RUN_LOG : OTHER_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
       presentCommittedMessage: (message) => this.delivery.presentCommittedCommunication(message),

@@ -4,7 +4,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { CollaborationCommunicationMessage } from "../../../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { createRootMessageAppend } from "../../../../../src/agent-collaboration/execution/communication/root-message-append.js";
 import { TaskDelegationError } from "../../../../../src/agent-collaboration/execution/task/task-delegation-command.js";
-import { COORDINATING_LOG } from "../../../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../../../src/run-history/store/message-log-owners.js";
 
 /** The one append protocol (DS-004): its states, the slot rule, and the closure classification. */
 const message: CollaborationCommunicationMessage = Object.freeze({
@@ -34,7 +34,7 @@ const subject = (options: { current?: readonly CollaborationCommunicationMessage
     isOpen: () => options.open ?? true,
     getMessages: () => options.current ?? [],
     setMessages,
-    logOwnersOf: () => [COORDINATING_LOG],
+    logOwnersOf: () => [OWN_RUN_LOG],
     publishToRootView: options.publishes === false ? null : () => { order.push("publish"); },
     scopeRefusalOf: refusalOf,
   });
@@ -44,7 +44,7 @@ const subject = (options: { current?: readonly CollaborationCommunicationMessage
 describe("RootMessageAppend", () => {
   it("prepares under the lock, then after durability: list, slot commit, publish, present, release", () => {
     const s = subject();
-    expect(s.append.prepare()).toEqual({ kind: "append", logOwners: [COORDINATING_LOG] });
+    expect(s.append.prepare()).toEqual({ kind: "append", logOwners: [OWN_RUN_LOG] });
     s.append.commitAfterDurability();
     expect(s.order).toEqual(["list:1", "commit", "publish", "present", "release"]);
     expect(s.closure()).toBeNull();

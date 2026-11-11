@@ -4,7 +4,7 @@ import {
 } from "../../agent-collaboration/execution/communication/root-communication-port.js";
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/message-log-owners.js";
 import type { StandaloneRootMessagesFile } from "../domain/standalone-root-host.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 

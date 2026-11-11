@@ -7,32 +7,6 @@ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain
 
 export type IsoTimestamp = string;
 
-/**
- * The user's choice for one delegated copy (DEC-005): its model and settings and, when the user also chose another agent
- * runtime (autobyteus-348), that runtime (absent: the started runtime). Tool approval and workspace stay as started.
- * Recorded beside the started values, never over them, so extra and teammate copies still start
- * on the started values (AR-005).
- */
-export type UserLaunchSelection = Readonly<{
-  runtimeKind?: RuntimeKind;
-  llmModelIdentifier: string;
-  llmConfig: Readonly<Record<string, unknown>> | null;
-  selectedAt: IsoTimestamp;
-}>;
-
-/**
- * autobyteus-348: optional on every record that holds a member's binding. Present from the save that changed the member's
- * agent runtime until the member's next input makes the switch real; absent means none. The record's own binding holds
- * the NEW selection (for a copy: its effective launch), `from` the previous one.
- */
-export type RecordedPendingRuntimeSwitch = Readonly<{ pendingRuntimeSwitch?: PendingRuntimeSwitch }>;
-
-/** Optional on an agent-level copy record; absent truthfully means no user choice. */
-export type RecordedUserLaunchSelection = Readonly<{ userLaunchSelection?: UserLaunchSelection }>;
-
-/** Optional on a team-level copy record; followers of the team resolve to it. */
-export type RecordedUserTeamLaunchSelection = Readonly<{ userTeamLaunchSelection?: UserLaunchSelection }>;
-
 export type ConfiguredAgentExecutionNode = Readonly<{
   address: AgentTeamAddress;
   agentDefinitionId: string;
@@ -43,7 +17,7 @@ export type ConfiguredAgentExecutionNode = Readonly<{
   launchConfiguration: AgentLaunchConfiguration;
   /** How its launch was resolved, when recorded (a delegated team's member, TC-12). */
   launchSource?: LaunchConfigurationSource;
-}> & RecordedPendingRuntimeSwitch;
+}> & Readonly<{ pendingRuntimeSwitch?: PendingRuntimeSwitch }>;
 
 export type ConfiguredTeamExecutionNode = Readonly<{
   address: AgentTeamAddress;
@@ -59,8 +33,8 @@ export type ConfiguredTeamExecutionNode = Readonly<{
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
 
 /**
- * One member of a Team copy (D-5): `launchConfiguration` is the complete launch it started with, and
- * `followsTeam` says whether a Team-level user selection reaches it. `launchSource` is display provenance
+ * One member of a delegated Team's source (D-5): `launchConfiguration` is the complete launch it starts with, and
+ * `followsTeam` says whether it took the Team's launch. `launchSource` is display provenance
  * only: present when the member's agent definition had a default (used or skipped), else the Team's
  * applies (`effectiveMemberLaunchSource`); it never decides the launch or the following.
  */
@@ -114,60 +88,6 @@ export const sourceInFolder = <TSource extends TaskExecutionSource>(source: TSou
 };
 
 /**
- * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
- * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.
- * `source` is what the copy runs with (its snapshot); the configured placement at its address never is.
- */
-export type TaskAgentExecution = Readonly<{
-  address: AgentTeamAddress;
-  agentRunId: string;
-  platformAgentRunId: string | null;
-  delegatorAgentRunId?: string;
-  startedAt: IsoTimestamp;
-  source: TaskAgentExecutionSource;
-}> & RecordedUserLaunchSelection & RecordedPendingRuntimeSwitch;
-
-export type TaskTeamAgentExecution = Readonly<{
-  address: AgentTeamAddress;
-  agentRunId: string;
-  platformAgentRunId: string | null;
-}> & RecordedUserLaunchSelection & RecordedPendingRuntimeSwitch;
-
-/**
- * A delegated child Team. Teams are flat: its members are agents. Liveness is runtime-only;
- * `delegatorAgentRunId` and `source` as on `TaskAgentExecution`.
- */
-export type TaskTeamExecution = Readonly<{
-  address: AgentTeamAddress;
-  teamRunId: string;
-  members: readonly TaskTeamAgentExecution[];
-  taskExecutions: readonly TaskExecution[];
-  delegatorAgentRunId?: string;
-  startedAt: IsoTimestamp;
-  source: TaskTeamExecutionSource;
-}> & RecordedUserTeamLaunchSelection;
-
-export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
-
-/**
- * A delegated Agent run on a peer node (CM-10), recorded by the topmost coordinating run. On disk it is a
- * `taskExecutions` entry with `nodeId` (absent `nodeId` means this node); in memory the store loads it into
- * the root's own `remoteTaskExecutions` list, never into `taskExecutions`, so walkers of local copies never
- * see it. It has no own file here: `agentRunId` is the ID the peer gave the run, `nodeId` the peer's server ID.
- * In memory a remote link is kinded (`kind`); on disk the kind is not stored (a Team link has `teamRunId`).
- */
-export type RemoteTaskAgentExecution = Readonly<{
-  kind: "agent";
-  address: AgentTeamAddress;
-  agentRunId: string;
-  nodeId: string;
-  delegatorAgentRunId: string;
-  startedAt: IsoTimestamp;
-  /** The launch the peer resolved for it (autobyteus-32 REQ-009); absent on links recorded before. */
-  launches?: readonly RemoteAgentLaunch[];
-}>;
-
-/**
  * One agent's launch on a peer node as the peer resolved it (autobyteus-32 REQ-009): its address there (mounted at the
  * catalog address), runtime, model and source (with the Model Router's reason and task kind when it chose).
  */
@@ -181,34 +101,6 @@ export type RemoteAgentLaunch = Readonly<{
 /** One member of a Team run on a peer node: its address in the Team and the run ID the peer gave it. */
 export type RemoteTeamMember = Readonly<{ address: AgentTeamAddress; agentRunId: string }>;
 
-/**
- * A delegated Team run on a peer node (autobyteus-247), recorded like a remote Agent link. The peer allocated
- * every member's run ID when it created the Team run, so the delegator reaches any member by run ID; the
- * coordinator is the member at `coordinatorAddress` (each fact stored once).
- */
-export type RemoteTaskTeamExecution = Readonly<{
-  kind: "agent_team";
-  address: AgentTeamAddress;
-  teamRunId: string;
-  nodeId: string;
-  coordinatorAddress: AgentTeamAddress;
-  members: readonly RemoteTeamMember[];
-  delegatorAgentRunId: string;
-  startedAt: IsoTimestamp;
-  /** Each member's launch as the peer resolved it (autobyteus-32 REQ-009); absent on links recorded before. */
-  launches?: readonly RemoteAgentLaunch[];
-}>;
-
-export type RemoteTaskExecution = RemoteTaskAgentExecution | RemoteTaskTeamExecution;
-
-/** The run ID a remote link names on its node: the Agent run, or the Team run. */
-export const remoteTaskExecutionRunId = (link: RemoteTaskExecution): string =>
-  link.kind === "agent" ? link.agentRunId : link.teamRunId;
-
-/** The coordinator's run ID of a remote Team link (validation keeps the coordinator among the members). */
-export const remoteTeamCoordinatorRunId = (link: RemoteTaskTeamExecution): string =>
-  link.members.find((member) => member.address === link.coordinatorAddress)!.agentRunId;
-
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;
   bindingId: string;
@@ -221,47 +113,3 @@ export const isConfiguredAgentExecution = (
 export const isConfiguredTeamExecution = (
   value: ConfiguredExecutionNode,
 ): value is ConfiguredTeamExecutionNode => "teamRunId" in value;
-
-export const isTaskAgentExecution = (value: TaskExecution): value is TaskAgentExecution =>
-  "agentRunId" in value;
-
-export const isTaskTeamExecution = (value: TaskExecution): value is TaskTeamExecution =>
-  "teamRunId" in value;
-
-export type EffectiveCopyAgentLaunch = Readonly<{
-  launch: AgentLaunchConfiguration;
-  /** Which user selection decided the model: the agent's own, its Team's, or none (started value). */
-  selected: "agent" | "team" | null;
-}>;
-
-/**
- * The single launch rule of a delegated copy agent (DS-003): its own user
- * selection, else (when it follows its Team) the Team's user selection, else its started launch.
- * A selection replaces the model and its settings and, when it carries one, the agent runtime. Every restore, hosting and view site uses
- * this; none combines selections and started values inline.
- */
-export const effectiveCopyAgentLaunch = (input: Readonly<{
-  started: AgentLaunchConfiguration;
-  followsTeam?: boolean;
-  teamSelection?: UserLaunchSelection | null;
-  agentSelection?: UserLaunchSelection | null;
-}>): EffectiveCopyAgentLaunch => {
-  const team = input.followsTeam && input.teamSelection ? input.teamSelection : null;
-  const selection = input.agentSelection ?? team;
-  if (!selection) return Object.freeze({ launch: input.started, selected: null });
-  return Object.freeze({
-    launch: Object.freeze({
-      ...input.started,
-      runtimeKind: selection.runtimeKind ?? input.started.runtimeKind,
-      llmModelIdentifier: selection.llmModelIdentifier,
-      llmConfig: selection.llmConfig === null ? null : structuredClone(selection.llmConfig),
-    }),
-    selected: input.agentSelection ? "agent" : "team",
-  });
-};
-
-/** The recorded source of a Team member's launch: its own, else the Team's; null when not recorded. */
-export const effectiveMemberLaunchSource = (
-  team: Pick<RecordedTeamLaunch, "defaultLaunchSource">,
-  member: Pick<RecordedMemberLaunch, "launchSource">,
-): LaunchConfigurationSource | null => member.launchSource ?? team.defaultLaunchSource ?? null;

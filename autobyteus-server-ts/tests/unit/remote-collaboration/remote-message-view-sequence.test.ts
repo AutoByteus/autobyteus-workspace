@@ -15,7 +15,7 @@ import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/a
 import { createAgentOrgCommunicationPort } from "../../../src/agent-org-execution/services/agent-org-communication-port.js";
 import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import { COORDINATING_LOG } from "../../../src/run-history/store/task-agent-message-logs.js";
+import { OWN_RUN_LOG } from "../../../src/run-history/store/message-log-owners.js";
 import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { projectAgentOrgExecutionEvent } from "../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectSequencedTeamRunEvent } from "../../../src/services/agent-streaming/team-execution-view-projector.js";
@@ -82,7 +82,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       rootTeamRunId: "team-root",
       initial: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: "team-root", messages: Object.freeze([]) }),
       isCurrentAgent: () => true,
-      messageLogOwnerOf: () => COORDINATING_LOG,
+      messageLogOwnerOf: () => OWN_RUN_LOG,
       assertDeliveryAllowed: () => undefined,
       requireContainingTeamRun: vi.fn(async () => ({
         reserveDirectAgentInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
@@ -113,7 +113,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       root: createAgentRootExecutionIdentity(LEAD),
       build: (root: RootExecutionIdentity, publisher: RootEventPublisher<StandaloneRootEvent>) => createStandaloneRootCommunicationPort({
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", hostRunId: LEAD, messages: [] },
-        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => COORDINATING_LOG, assertDeliveryAllowed: () => undefined,
+        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
         publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
       }),
@@ -124,7 +124,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       root: createAgentOrgRootExecutionIdentity("org-root"),
       build: (root: RootExecutionIdentity, publisher: RootEventPublisher<AgentOrgRunEvent>) => createAgentOrgCommunicationPort({
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
-        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => COORDINATING_LOG, assertDeliveryAllowed: () => undefined,
+        isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
         publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
       }),

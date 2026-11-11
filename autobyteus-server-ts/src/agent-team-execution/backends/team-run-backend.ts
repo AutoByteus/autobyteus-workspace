@@ -1,14 +1,9 @@
-import type { RetainedAgentExecutionControl } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 import type { TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
-import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/task-agent-execution.js";
-import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
 import type { TeamRun } from "../domain/team-run.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { TaskExecutionPreparationOperation } from "../domain/prepared-task-execution.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
@@ -27,20 +22,6 @@ export interface TeamRunBackend {
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;
   deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult>;
   executeDirectAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult>;
-  beginTaskAgent(input: PrepareTaskAgentInput): TaskExecutionPreparationOperation;
-  beginTaskTeam(input: PrepareTaskTeamInput): TaskExecutionPreparationOperation;
-  restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void>;
-  restoreTaskTeam(input: RestoreTaskTeamInput): Promise<TeamRun>;
-  cancelDirectTaskExecution(reference: TaskExecutionReference): void;
-  releaseDirectTaskExecution(reference: TaskExecutionReference): Promise<AgentOperationResult>;
-  /** Drops the released (fenced or terminated) authority of one direct task execution; a live one is kept. */
-  discardReleasedDirectTaskExecution(reference: TaskExecutionReference): void;
-  hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean;
-  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
-  /** User Stop of one live direct task execution, quiet or not; it stays restorable. False when not live. */
-  shutDownDirectTaskExecutionForUser(reference: TaskExecutionReference): Promise<boolean>;
-  /** User control of a direct configured Agent of this TeamRun; null for any other AgentRun. */
-  getRetainedAgentControl(agentRunId: string): RetainedAgentExecutionControl | null;
   cancelRuntimeActivation(): void;
   releaseOwnedRuntime(): Promise<AgentOperationResult>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;

@@ -73,7 +73,6 @@ export const materializeTeamRoot = async (
     assertExecutionInputAllowed: () => { requireActiveRoot(); },
     teamContext: new TeamRunContext({
       physicalScope,
-      teamKind: "configured",
       teamRunId: input.config.rootTeam.teamRunId,
       teamBackendKind: input.config.teamBackendKind,
       teamNode: input.config.rootTeam,
@@ -97,7 +96,6 @@ export const materializeTeamRoot = async (
   });
   const prepared = await input.factory.beginMaterialization({
     physicalScope,
-    teamKind: "configured",
     teamNode: input.config.rootTeam,
     handoffs: input.config.handoffs,
     applicationBinding: input.config.applicationBinding,

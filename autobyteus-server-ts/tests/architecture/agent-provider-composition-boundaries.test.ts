@@ -483,7 +483,6 @@ describe("agent provider composition boundaries", () => {
     const nonOwningLocalFiles = [
       "agent-team-execution/local/flat-team-execution-manager.ts",
       "agent-team-execution/local/registries/configured-agent-execution-registry.ts",
-      "agent-team-execution/local/registries/task-agent-execution-registry.ts",
     ];
     for (const relativePath of nonOwningLocalFiles) {
       expect(read(join(SRC, relativePath)), relativePath).not.toMatch(/AgentToolMcp|agentToolMcp/);

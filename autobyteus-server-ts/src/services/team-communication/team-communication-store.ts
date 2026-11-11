@@ -1,5 +1,4 @@
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
@@ -9,9 +8,8 @@ import type { TeamCommunicationMessagesFile } from "./team-communication-message
 import { MessageLog } from "../../run-history/store/message-log.js";
 import {
   appendMessageToOwnerLogs,
-  TaskAgentMessageLogs,
   type StoredMessageLogOwner,
-} from "../../run-history/store/task-agent-message-logs.js";
+} from "../../run-history/store/message-log-owners.js";
 
 /**
  * A team run's message log (`team_communication_messages`, a `MessageLog`) and its stored view (design
@@ -54,14 +52,10 @@ export class TeamCommunicationStore {
     owners: readonly StoredMessageLogOwner[],
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     return appendMessageToOwnerLogs(owners, async (owner) => {
-      if (owner.kind !== "coordinating") return this.taskLogs(teamMemoryDir).append(owner, message);
       const log = this.ownLog(teamMemoryDir);
       if (!await log.exists()) throw new Error(`TeamRun '${rootTeamRunId}' has no message log.`);
       return log.append(message);
     });
   }
 
-  private taskLogs(teamMemoryDir: string): TaskAgentMessageLogs {
-    return new TaskAgentMessageLogs(memoryRootOfCoordinatingDir("agent_team", teamMemoryDir), this.writer);
-  }
 }

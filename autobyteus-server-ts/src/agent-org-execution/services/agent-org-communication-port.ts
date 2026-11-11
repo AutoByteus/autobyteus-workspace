@@ -3,7 +3,7 @@ import {
   type RootCommunicationPort,
 } from "../../agent-collaboration/execution/communication/root-communication-port.js";
 import { buildRootCommunicationInputMessage } from "../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
-import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/message-log-owners.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 

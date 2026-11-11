@@ -3,7 +3,6 @@ import path from "node:path";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RAW_TRACES_MANIFEST_FILE_NAME } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { TaskTeamRootMemorySource } from "../../agent-memory/services/task-team-root-memory-source.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
@@ -18,14 +17,12 @@ import type { MemoryRun } from "../domain/memory-search-models.js";
 
 type TeamLocations = Pick<TeamRunExecutionTreeLocationService, "listAgents">;
 type OrgLocations = Pick<AgentOrgExecutionTreeLocationService, "listAgents">;
-type TaskTeams = Pick<TaskTeamRootMemorySource, "listTaskTeams">;
 type AgentCatalog = Pick<AgentRunHistoryCatalogService, "listCatalogRows">;
-type AgentMetadata = Pick<AgentRunMetadataStore, "readMetadata" | "readTaskAgentMetadata">;
+type AgentMetadata = Pick<AgentRunMetadataStore, "readMetadata">;
 
 export type MemoryRunDiscoveryDependencies = Readonly<{
   teamLocations?: TeamLocations;
   orgLocations?: OrgLocations;
-  taskTeams?: TaskTeams;
   agentCatalog?: AgentCatalog;
   agentMetadata?: AgentMetadata;
 }>;
@@ -41,10 +38,10 @@ const optional = (value: string | null | undefined): string | null => (typeof va
 const SKIPPED_FOLDERS = new Set(["work_journal", "imports"]);
 
 /**
- * The "Find runs" step (DS-001, § Run Kinds): every run folder in this node's memory layout — standalone and
- * task agents, team and org members, task-team members, agent-root collaboration members, and folders no
- * record attributes — with its names, workspace and runtime as recorded. Attribution reuses the owners of
- * each record (location services, metadata, catalogs, the task-team source); this never parses a tree.
+ * The "Find runs" step (DS-001, § Run Kinds): every run folder in this node's memory layout — agent runs (delegated
+ * or not: autobyteus-461), team and org members, and folders no record attributes — with its names, workspace and
+ * runtime as recorded. Attribution reuses the owners of each record (location services, metadata, catalogs); this
+ * never parses a tree.
  * A run folder is a folder with raw traces. Imported memory (`memory/imports/`) is not part of the layout.
  */
 export class MemoryRunDiscovery {
@@ -58,7 +55,6 @@ export class MemoryRunDiscovery {
     this.deps = {
       teamLocations: deps.teamLocations ?? createStoredTeamRunExecutionTreeLocationService(this.memoryDir),
       orgLocations: deps.orgLocations ?? new AgentOrgExecutionTreeLocationService({ memoryDir: this.memoryDir }),
-      taskTeams: deps.taskTeams ?? new TaskTeamRootMemorySource(this.memoryDir),
       agentCatalog: deps.agentCatalog ?? new AgentRunHistoryCatalogService(this.memoryDir),
       agentMetadata: deps.agentMetadata ?? new AgentRunMetadataStore(this.memoryDir),
     };
@@ -72,7 +68,6 @@ export class MemoryRunDiscovery {
     };
     await this.guarded("team runs", async () => (await this.teamMembers()).forEach(add));
     await this.guarded("agent org runs", async () => (await this.orgMembers()).forEach(add));
-    await this.guarded("task teams", async () => (await this.taskTeamMembers()).forEach(add));
     await this.guarded("agent runs", async () => (await this.agentRuns(runFolders)).forEach(add));
     for (const memoryDir of runFolders) if (!runs.has(memoryDir)) runs.set(memoryDir, this.folderRun(memoryDir));
     return [...runs.values()].sort((a, b) => a.runKey.localeCompare(b.runKey));
@@ -98,16 +93,14 @@ export class MemoryRunDiscovery {
 
   private async teamMembers(): Promise<MemoryRun[]> {
     return (await this.deps.teamLocations.listAgents()).map((located): MemoryRun => {
-      const taskTeam = located.groupPath.at(-1);
       const launch = located.configuredPlacement?.launchConfiguration ?? null;
       const runtimeKind = launch ? openRawTraceRuntimeKind({ runtimeKind: launch.runtimeKind, pendingRuntimeSwitch: located.configuredPlacement?.pendingRuntimeSwitch }) : null;
-      const teamRunId = located.executionKind === "task_team_member" && taskTeam ? taskTeam.teamRunId : located.rootTeamRunId;
       return {
         ...this.place(located.memoryDir), runId: located.agentRunId, agentName: addressName(located.memberAddress),
-        teamName: located.executionKind === "task_team_member" && taskTeam ? addressName(taskTeam.address) : located.tree.rootTeam.teamDefinitionName,
+        teamName: located.tree.rootTeam.teamDefinitionName,
         memberName: addressName(located.memberAddress), orgName: null,
         workspace: launch?.workspaceRootPath ?? null, runtimeKind,
-        subject: { kind: "TEAM_MEMBER", teamRunId, agentRunId: located.agentRunId },
+        subject: { kind: "TEAM_MEMBER", teamRunId: located.rootTeamRunId, agentRunId: located.agentRunId },
       };
     });
   }
@@ -126,16 +119,7 @@ export class MemoryRunDiscovery {
     });
   }
 
-  private async taskTeamMembers(): Promise<MemoryRun[]> {
-    return (await this.deps.taskTeams.listTaskTeams()).flatMap((team) => team.members.map((member): MemoryRun => ({
-      ...this.place(member.memoryDir), runId: member.agentRunId, agentName: member.displayName,
-      teamName: team.displayName, memberName: member.displayName, orgName: null,
-      workspace: member.launchConfiguration.workspaceRootPath, runtimeKind: openRawTraceRuntimeKind({ runtimeKind: member.launchConfiguration.runtimeKind, pendingRuntimeSwitch: member.pendingRuntimeSwitch }),
-      subject: { kind: "TEAM_MEMBER", teamRunId: team.teamRunId, agentRunId: member.agentRunId },
-    })));
-  }
-
-  /** `agents/<runId>` folders: standalone and task agents, named by the run history catalog as recorded. */
+  /** `agents/<runId>` folders: agent runs, delegated or not, named by the run history catalog as recorded. */
   private async agentRuns(runFolders: ReadonlySet<string>): Promise<MemoryRun[]> {
     const rows = new Map((await this.deps.agentCatalog.listCatalogRows()).map((row) => [row.runId, row]));
     const runs: MemoryRun[] = [];
@@ -143,21 +127,15 @@ export class MemoryRunDiscovery {
       const memoryDir = path.join(this.layout.getStandaloneRootDirPath(), entry);
       if (!runFolders.has(memoryDir)) continue;
       const metadata = await this.deps.agentMetadata.readMetadata(entry).catch(() => null);
-      const taskAgent = metadata ? null : await this.deps.agentMetadata.readTaskAgentMetadata(entry).catch(() => null);
       const row = rows.get(entry) ?? null;
-      const definitionId = optional(metadata?.agentDefinitionId) ?? optional(taskAgent?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
+      const definitionId = optional(metadata?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
       // The journal target: the agent runtime that wrote the open raw-trace file (the previous one while a switch is pending).
-      // A task agent's effective runtime is its choice's, else the one it started with; its pending switch sits on the copy.
-      const runtimeKind: RuntimeKind | null = metadata
-        ? openRawTraceRuntimeKind(metadata) ?? null
-        : taskAgent
-          ? openRawTraceRuntimeKind({ runtimeKind: taskAgent.taskAgent.userLaunchSelection?.runtimeKind ?? taskAgent.runtimeKind, pendingRuntimeSwitch: taskAgent.taskAgent.pendingRuntimeSwitch })
-          : null;
+      const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) ?? null : null;
       runs.push({
         ...this.place(memoryDir), runId: entry,
         agentName: optional(row?.agentName) ?? definitionId ?? nameFromFolder(entry),
         teamName: null, memberName: null, orgName: null,
-        workspace: optional(metadata?.workspaceRootPath) ?? optional(taskAgent?.workspaceRootPath) ?? optional(row?.workspaceRootPath),
+        workspace: optional(metadata?.workspaceRootPath) ?? optional(row?.workspaceRootPath),
         runtimeKind,
         subject: { kind: "AGENT", runId: entry, agentDefinitionId: definitionId },
       });

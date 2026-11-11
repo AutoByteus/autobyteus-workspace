@@ -1,6 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
-import type { StoredMessageLogOwner } from "../../../run-history/store/task-agent-message-logs.js";
+import type { StoredMessageLogOwner } from "../../../run-history/store/message-log-owners.js";
 import type {
   CollaborationMemberExecutionIdentity,
   RootExecutionIdentity,

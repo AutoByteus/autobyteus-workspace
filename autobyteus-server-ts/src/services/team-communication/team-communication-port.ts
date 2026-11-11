@@ -7,7 +7,7 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-exec
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import { buildInterAgentDeliveryInputMessage } from "../../agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../agent-team-execution/services/team-member-input-event-builder.js";
-import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwners, type MessageLogOwner } from "../../run-history/store/message-log-owners.js";
 import type { TeamCommunicationMessagesSnapshot } from "./team-communication-messages-file.js";
 
 /** The Team root's facts and effects for RootCommunicationEngine. */
