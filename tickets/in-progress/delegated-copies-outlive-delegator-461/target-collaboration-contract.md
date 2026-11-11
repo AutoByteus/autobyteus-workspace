@@ -99,7 +99,7 @@ The first match wins.
    - A Task an org agent assigned: the org's agents and mounted teams.
 3. **Its own run's standing agents.** This step applies to runs the user started.
 
-Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. One exception: a delegated team's member that writes an address under the name its team was delegated to (its `recipientAddress`, the prefix members used before TC-12) gets a correction naming the address to use (S24). Every delegated run is reached by its run ID.
+Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. One exception: a delegated team's member that writes an address under the name its team was delegated to (its `recipientAddress`, the prefix members used before TC-12) gets a correction naming the address to use (S24). The correction is checked after step 2, so it never hides an agent of the assigning run (ARCH-REV-011). Every delegated run is reached by its run ID.
 
 ### 2.4 Which Task a delegation belongs to
 

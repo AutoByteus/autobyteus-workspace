@@ -161,16 +161,6 @@ class World:
         own, prefix, team, _ = self.agent_info(sender)
         if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", "You can't send a message to yourself.")
         if kind == "agent_team" and address in team: return team[address], 1
-        if kind == "agent_team":
-            # an address under the name the team was delegated to (its recipientAddress, the prefix its members used
-            # before SR-025) is corrected, not resolved: the refusal names the address to use (contract §2.3)
-            for pre in sorted({e["recipientAddress"] for t, e in self.entries_of(node, run)}):
-                if address == pre:
-                    raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"{address} is no longer an address: your team is addressed from its own root. "
-                                  f"Your team as a whole has no address; its coordinator is {self.file_of(run)['rootTeam']['coordinatorAddress']}.")
-                if address.startswith(pre + "/") and address[len(pre):] in team:
-                    raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"{address} is no longer an address: your team is addressed from its own root. "
-                                  f"Use {address[len(pre):]}.")
         if prefix:
             if address == prefix: return self.agent_info(sender)[3], 1
             if address.startswith(prefix + "/"):
@@ -183,6 +173,16 @@ class World:
                 for ak in sorted(self.assigners(node, t)):
                     st = self.standing((node, ak[0], ak[1]))
                     if address in st: return st[address], 2
+            if kind == "agent_team":  # after step 2 (ARCH-REV-011): it can never shadow an assigner's agent
+                # an address under the name the team was delegated to (its recipientAddress, the prefix its members used
+                # before SR-025) is corrected, not resolved: the refusal names the address to use (contract §2.3)
+                for pre in sorted({e["recipientAddress"] for t, e in self.entries_of(node, run)}):
+                    if address == pre:
+                        raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"{address} is no longer an address: your team is addressed from its own root. "
+                                      f"Your team as a whole has no address; its coordinator is {self.file_of(run)['rootTeam']['coordinatorAddress']}.")
+                    if address.startswith(pre + "/") and address[len(pre):] in team:
+                        raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"{address} is no longer an address: your team is addressed from its own root. "
+                                      f"Use {address[len(pre):]}.")
             raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
         st = self.standing(run)
         if address in st and st[address] != sender: return st[address], 3

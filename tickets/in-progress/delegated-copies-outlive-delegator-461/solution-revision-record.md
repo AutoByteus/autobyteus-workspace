@@ -797,4 +797,4 @@
   - The design's test line.
   - `walkthrough.py --check` passes.
 - Approval: within the user's decision of SR-035 (option 1). The way members learn their addresses is less intrusive than the "told once" the user was shown, and the user is informed. The architecture review passed SR-035 in round 10 (ARCH-REV-010); this refinement is sent to the reviewer as a narrow note.
-
+- ARCH-REV-011 (2026-11-11): Pass, no finding. Its note is applied: the correction is checked after address step 2 (`model.py` `resolve`; contract §2.3), so it can never hide an agent of the assigning run. `walkthrough.py --check` passes.
