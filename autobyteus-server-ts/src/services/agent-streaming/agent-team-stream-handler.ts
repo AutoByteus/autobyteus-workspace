@@ -20,7 +20,8 @@ import { TeamRunService, getTeamRunService } from "../../agent-team-execution/se
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import { parseCommandAgentRunId, TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE } from "./team-agent-run-command-parser.js";
-import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "./team-execution-view-projector.js";
+import { projectSequencedTeamRunEvent, projectTeamChildRunsChanged, projectTeamExecutionViewSnapshot } from "./team-execution-view-projector.js";
+import { ChildRowsStreamSession } from "./child-rows-stream-session.js";
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
@@ -60,6 +61,7 @@ export class AgentTeamStreamHandler {
   private readonly sessionConnections = new Map<string, WebSocketConnection>();
   private readonly sessionEgresses = new Map<string, TeamStreamEgress>();
   private readonly subscribedRunsBySessionId = new Map<string, RootTeamRun>();
+  private readonly childRowsBySessionId = new Map<string, ChildRowsStreamSession>();
 
   constructor(
     private readonly sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
@@ -148,6 +150,10 @@ export class AgentTeamStreamHandler {
     if (this.subscribedRunsBySessionId.get(sessionId) === root) return;
     if (this.subscribedRunsBySessionId.has(sessionId)) egress.flush();
     this.unsubscribeSession(sessionId);
+    // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
+    const childRows = new ChildRowsStreamSession(createTeamRootExecutionIdentity(root.teamRunId),
+      (event) => egress.send(projectTeamChildRunsChanged(root.teamRunId, event)));
+    this.childRowsBySessionId.set(sessionId, childRows);
     const remoteTaskExecutions = await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: root.teamRunId });
     const connection = await root.openPackageSnapshotConnection();
     try {
@@ -156,6 +162,7 @@ export class AgentTeamStreamHandler {
       }));
       egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection, remoteTaskExecutions,
         await delegatedChildrenDtos({ rootSubjectKind: "agent_team", rootRunId: root.teamRunId })));
+      childRows.snapshotSent();
       const unsubscribeEvents = connection.subscribe((event) => {
         try { egress.send(projectSequencedTeamRunEvent(root, event)); }
         catch (error) { console.error(`Error projecting TeamRun event: ${String(error)}`); }
@@ -277,6 +284,8 @@ export class AgentTeamStreamHandler {
   }
 
   private unsubscribeSession(sessionId: string): void {
+    this.childRowsBySessionId.get(sessionId)?.dispose();
+    this.childRowsBySessionId.delete(sessionId);
     this.eventUnsubscribers.get(sessionId)?.();
     this.eventUnsubscribers.delete(sessionId);
     this.lifecycleUnsubscribers.get(sessionId)?.();

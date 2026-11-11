@@ -20,6 +20,7 @@ import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-c
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
+import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
 
 /** A command for one agent of the Org (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -72,6 +73,9 @@ export class AgentOrgStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
+    // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
+    const childRows = new ChildRowsStreamSession({ rootSubjectKind: "agent_org", rootRunId: run.orgRunId },
+      (event) => egress.send(projectCollaborationChildRunsChanged("agent_org", orgRunId, event)));
     const remoteTaskExecutions = await remoteTaskExecutionDtos({ rootSubjectKind: "agent_org", rootRunId: run.getExecutionTreeSnapshot().rootOrg.orgRunId });
     const barrier = await run.openPackageSnapshotConnection();
     try {
@@ -84,6 +88,7 @@ export class AgentOrgStreamHandler {
         payload: projectAgentOrgExecutionView(run, barrier, remoteTaskExecutions,
           await delegatedChildrenDtos({ rootSubjectKind: "agent_org", rootRunId: run.orgRunId })),
       }));
+      childRows.snapshotSent();
       const unsubscribe = barrier.subscribe((event) => {
         try {
           const projected = projectAgentOrgExecutionEvent(run, event);
@@ -120,10 +125,11 @@ export class AgentOrgStreamHandler {
       // autobyteus-278: a viewer of the Org observes its remote children while connected.
       run.remoteChildren.viewerAttached();
       run.localChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); run.remoteChildren.viewerDetached(); run.localChildren.viewerDetached(); egress.dispose(); } });
+      this.sessions.set(sessionId, { egress, orgRunId, close: () => { unsubscribe(); childRows.dispose(); run.remoteChildren.viewerDetached(); run.localChildren.viewerDetached(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
+      childRows.dispose();
       egress.send(error("AGENT_ORG_STREAM_UNAVAILABLE", String(cause)));
       egress.dispose();
       connection.close(1011);

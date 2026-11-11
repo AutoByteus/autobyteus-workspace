@@ -28,7 +28,6 @@ export type RemoteRunSummaryEvent = Readonly<{
  * `agent_presentation` there and nowhere else (N-402): no server consumer treats a peer's output as a local agent's.
  */
 export type RemoteRunRootEvent =
-  | Readonly<{ kind: "remote_task_execution_started"; execution: RemoteTaskExecutionView }>
   | Readonly<{ kind: "remote_task_execution_summary"; summary: RemoteRunSummaryEvent }>
   | Readonly<{
       kind: "remote_agent_presentation";
@@ -105,16 +104,11 @@ export class RemoteRunObservation {
     return this.fetchSummaries(this.options.links());
   }
 
-  /** A delegation recorded a new remote link: the root's viewers learn it, and it is observed while viewed. */
+  /** A delegation recorded a new remote link: it is observed while viewed (its row reaches the views from `ChildRowsFeed`). */
   linkCommitted(link: PeerRunLink): void {
-    if (this.disposed) return;
-    void describeRemoteTaskExecutions([link], this.channel()).then(([execution]) => {
-      if (!this.disposed && execution) this.options.publish({ kind: "remote_task_execution_started", execution });
-      if (this.viewers > 0) {
-        this.open(link);
-        void this.fetchSummaries([link]);
-      }
-    });
+    if (this.disposed || this.viewers === 0) return;
+    this.open(link);
+    void this.fetchSummaries([link]);
   }
 
   /** The root ended: every stream closes and nothing is published any more. */

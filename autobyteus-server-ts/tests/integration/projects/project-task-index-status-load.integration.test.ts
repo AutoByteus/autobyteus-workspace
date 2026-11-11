@@ -14,7 +14,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getProjectService, resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
-import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskService, getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
@@ -29,7 +29,7 @@ const PROJECTS = Number(env["TEST_STATUS_LOAD_PROJECTS"] ?? 20);
 const TASKS = Number(env["TEST_STATUS_LOAD_TASKS"] ?? 1000);
 const FIRST_LOAD_BUDGET_MS = 1000;
 const REFRESH_BUDGET_MS = 300;
-const reset = () => { resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const median = (values: number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)]!;
 
 describe.runIf(enabled)("Embedding section status load (QR-001)", () => {

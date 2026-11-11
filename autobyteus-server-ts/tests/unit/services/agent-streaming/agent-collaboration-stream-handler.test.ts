@@ -2,6 +2,7 @@ import { CollaborationStreamServerMessageSchema, type CollaborationStreamServerM
 import { describe, expect, it, vi } from "vitest";
 import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
 import { createAgentRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { delegatedChild, followTestChildRows } from "../../../helpers/child-rows-feed.js";
 
 /**
  * The agent run's view stream (design DS-8): connecting never starts the run's agent; a local child row's command goes to
@@ -116,4 +117,36 @@ describe("AgentCollaborationStreamHandler", () => {
     await Promise.resolve();
     expect(close).toHaveBeenCalledWith(1011);
   });
+
+  it("autobyteus-461 SR-042 … SR-044: an open view gets each child-row change, unsequenced, after its snapshot, even when its agent is not live", async () => {
+    const feed = followTestChildRows();
+    try {
+      const root = fakeRoot(false);
+      const hostRun = createAgentRootExecutionIdentity(HOST);
+      // A delegation committed while the snapshot is being built: held, then sent right after it.
+      root.openPackageSnapshotConnection.mockImplementationOnce(async () => {
+        feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
+        await feed.settled();
+        return { snapshot: { host, createdAt: "2026-09-30T00:00:00.000Z", statuses: [] }, baseChangeSequence: 0, liveSequenceId: "live-hub-1",
+          lastMessageChangeSequence: 0, subscribe: vi.fn(() => () => undefined), close: vi.fn() };
+      });
+      const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null });
+      expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "CHILD_RUNS_CHANGED", "ROOT_LIFECYCLE"]);
+      expect(wire[2]).toEqual({ type: "CHILD_RUNS_CHANGED", payload: { root_subject_kind: "agent", root_run_id: HOST,
+        event: { kind: "child_runs_changed", run_id: HOST, added: [expect.objectContaining({ agentRunId: "writer", address: "/writer" })], removed: [] } } });
+      feed.report({ run: hostRun, added: [], removed: [{ agentRunId: "writer" }] });
+      feed.report({ run: createAgentRootExecutionIdentity("another-run"), added: [delegatedChild("other")], removed: [] });
+      await feed.settled();
+      expect(wire.at(-1)).toMatchObject({ type: "CHILD_RUNS_CHANGED", payload: { event: { added: [], removed: [{ agentRunId: "writer" }] } } });
+      expect(wire).toHaveLength(5);
+      expect(root.ensureHostReady).not.toHaveBeenCalled();
+      handler.disconnect(sessionId!);
+      feed.report({ run: hostRun, added: [delegatedChild("late")], removed: [] });
+      await feed.settled();
+      expect(wire).toHaveLength(5);
+    } finally {
+      feed.release();
+    }
+  });
 });
+

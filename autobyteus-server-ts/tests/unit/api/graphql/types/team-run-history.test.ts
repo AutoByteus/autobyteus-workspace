@@ -81,7 +81,6 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
       teamRunId: "team-run-1",
       isActive: false,
       executionTree: { rootTeam: { address: "/", teamRunId: "team-run-1", members: [] } },
-      closedTaskExecutions: [],
       modelConfigEditability: { editable: true, reason: null },
     });
 

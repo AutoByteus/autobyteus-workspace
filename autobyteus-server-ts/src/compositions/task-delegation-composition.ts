@@ -14,6 +14,11 @@ import { bindTaskRunControl, TaskRunControl, unbindTaskRunControl } from "../age
 import { bindLocalChildPorts, unbindLocalChildPorts, type LocalChildPorts } from "../agent-collaboration/execution/delegation/local-child-observation.js";
 import { delegatedChildDto } from "../services/agent-streaming/delegated-children-dtos.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { getChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
+import { describeRemoteTaskExecutions } from "../agent-collaboration/execution/remote/remote-run-observation.js";
+import { findProcessRemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
+import { peerRunIdOf, peerRunLinksOf } from "../agent-collaboration/execution/remote/peer-run-link.js";
+import { projectRemoteTaskExecution } from "../services/agent-streaming/remote-task-execution-dto-projection.js";
 
 /**
  * The process `TaskDelegation` (autobyteus-461 DS-1): every root delegates through it. A new run is created by
@@ -68,12 +73,22 @@ export const composeTaskDelegation = (deps: Readonly<{
   const localChildren: LocalChildPorts = {
     // Before the Task records are loaded no run has children.
     tree: () => findDelegationTree(),
-    rowOf: (child) => delegatedChildDto(child, deps.memoryDir),
     agents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().pairedAgents : deps.teamRuns.pairedAgents,
   };
   bindLocalChildPorts(localChildren);
+  // DS-8, SR-043: a view's new child rows, projected as the view projects them (a local run's own file; a peer's run).
+  const childRows: ChildRowProjection = { rowOf: async (parent, child) => {
+    if (child.nodeId === undefined) {
+      const row = await delegatedChildDto(child, deps.memoryDir);
+      return row ? { kind: "local", row } : null;
+    }
+    const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
+    const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(parent).filter((link) => peerRunIdOf(link) === runId), findProcessRemoteRunChannel());
+    return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer) } : null;
+  } };
+  getChildRowsFeed().bindProjection(childRows);
   return Object.freeze({ release: () => {
     unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); unbindCrossRunAddressResolution(addresses); unbindTaskRunControl(control);
-    unbindLocalChildPorts(localChildren);
+    unbindLocalChildPorts(localChildren); getChildRowsFeed().unbindProjection(childRows);
   } });
 };

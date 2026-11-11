@@ -1,26 +1,20 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
-import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import type { DelegatedChild, DelegationTree } from "../../delegation/delegation-tree.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { PairedAgentAccess, PairedAgentObservation } from "../remote/paired-agent-access.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 
 /**
- * A view's facts about the runs on this node its run delegated to (design DS-8: "a local child's status and live output
- * reach the view the way a remote child's do"). The view projectors turn them into the streams' existing messages: a new
- * row (`task_execution_started`), rows that left (`task_executions_closed`), and a child agent's output
- * (`agent_presentation`, the N-402 path of a remote child).
+ * A view's live facts about the runs on this node its run delegated to (design DS-8: "a local child's status and live
+ * output reach the view the way a remote child's do"): a child agent's output, which the view projectors turn into the
+ * streams' `agent_presentation` (the N-402 path of a remote child). The rows themselves come from `ChildRowsFeed`.
  */
 export type LocalChildRootEvent =
-  | Readonly<{ kind: "local_child_started"; row: CollaborationTaskExecutionDto }>
-  | Readonly<{ kind: "local_children_closed"; runs: readonly TaskExecutionReference[] }>
-  | Readonly<{ kind: "local_child_presentation"; agentRunId: string; memberAddress: string; message: AgentPresentationMessage }>;
+  Readonly<{ kind: "local_child_presentation"; agentRunId: string; memberAddress: string; message: AgentPresentationMessage }>;
 
 /** What a view needs of its local children; bound once by the composition (`composeTaskDelegation`). */
 export type LocalChildPorts = Readonly<{
   tree(): Pick<DelegationTree, "openChildrenOf" | "subscribe" | "agentsOf"> | null;
-  /** A child's row, from its own file; `null` when its file cannot be read. */
-  rowOf(child: DelegatedChild): Promise<CollaborationTaskExecutionDto | null>;
   /** A run's own agents' output and live statuses (an agent run's agent; a team run's members). */
   agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
 }>;
@@ -54,6 +48,8 @@ export const localChildStatuses = async (run: RootExecutionIdentity, ports: Loca
 };
 
 const keyOf = (run: TaskExecutionReference): string => "agentRunId" in run ? `agent:${run.agentRunId}` : `team:${run.teamRunId}`;
+const childRunOf = (run: TaskExecutionReference): RootExecutionIdentity => "agentRunId" in run
+  ? { rootSubjectKind: "agent", rootRunId: run.agentRunId } : { rootSubjectKind: "agent_team", rootRunId: run.teamRunId };
 const statusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
   status, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } } as AgentPresentationMessage);
@@ -63,7 +59,7 @@ type Followed = { child: DelegatedChild; observation: PairedAgentObservation | n
 /**
  * One run's view of its local children while someone views it (as `RemoteRunObservation` for its peer children): the
  * first viewer follows each open child (its agents' current statuses, then their live output); a delegation or a
- * Task change re-reads the run's children from the `DelegationTree` and announces new rows and rows that left; the last
+ * Task change re-reads the run's children from the `DelegationTree`, following new ones and leaving gone ones; the last
  * viewer stops following. Nothing is started, woken or stored.
  */
 export class LocalChildObservation {
@@ -80,8 +76,8 @@ export class LocalChildObservation {
 
   viewerAttached(): void {
     if (this.disposed || ++this.viewers > 1) return;
-    this.unsubscribeTree = this.ports()?.tree()?.subscribe(() => { queueMicrotask(() => { void this.refresh(true); }); }) ?? null;
-    void this.refresh(false);
+    this.unsubscribeTree = this.ports()?.tree()?.subscribe(() => { queueMicrotask(() => { void this.refresh(); }); }) ?? null;
+    void this.refresh();
   }
 
   viewerDetached(): void {
@@ -95,34 +91,30 @@ export class LocalChildObservation {
     this.stopFollowing();
   }
 
-  /** Follows the run's open local children; with `announce`, a new one is published as a row and a gone one as closed. */
-  private async refresh(announce: boolean): Promise<void> {
+  /** Follows the run's open local children: a new one is followed, a gone one left. */
+  private async refresh(): Promise<void> {
     const ports = this.ports();
-    if (!ports || this.disposed || this.viewers === 0) return;
-    const current = (ports.tree()?.openChildrenOf(this.options.run) ?? []).filter((child) => child.nodeId === undefined);
+    const tree = ports?.tree();
+    if (!ports || !tree || this.disposed || this.viewers === 0) return;
+    const current = tree.openChildrenOf(this.options.run).filter((child) => child.nodeId === undefined);
     const keys = new Set(current.map((child) => keyOf(child.run)));
-    const gone = [...this.followed.entries()].filter(([key]) => !keys.has(key));
-    for (const [key, entry] of gone) { this.close(entry); this.followed.delete(key); }
-    if (announce && gone.length) this.options.publish({ kind: "local_children_closed", runs: gone.map(([, entry]) => entry.child.run) });
+    for (const [key, entry] of [...this.followed.entries()].filter(([candidate]) => !keys.has(candidate))) { this.close(entry); this.followed.delete(key); }
     for (const child of current) {
       const key = keyOf(child.run);
       if (this.followed.has(key)) continue;
       const entry: Followed = { child, observation: null, closed: false };
       this.followed.set(key, entry);
-      await this.follow(ports, entry, announce);
+      await this.follow(ports, tree, entry);
     }
   }
 
-  private async follow(ports: LocalChildPorts, entry: Followed, announce: boolean): Promise<void> {
-    const { child } = entry;
-    let row: CollaborationTaskExecutionDto | null = null;
-    try { row = await ports.rowOf(child); } catch (error) { console.warn(`A delegated run's row could not be read: ${String(error)}`); }
-    if (!row || entry.closed) return;
-    if (announce) this.options.publish({ kind: "local_child_started", row });
-    const addresses = new Map<string, string>("agentRunId" in row
-      ? [[row.agentRunId, row.address]] : row.members.map((member) => [member.agentRunId, member.address] as [string, string]));
-    const kind = "agentRunId" in child.run ? "agent" : "agent_team";
-    const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
+  private async follow(ports: LocalChildPorts, tree: NonNullable<ReturnType<LocalChildPorts["tree"]>>, entry: Followed): Promise<void> {
+    const childRun = childRunOf(entry.child.run);
+    // Each agent's address as the view's row has it (SR-041: the tree's per-run agents, read once).
+    const addresses = new Map((await tree.agentsOf(childRun)).flatMap((agent) => agent.address ? [[agent.agentRunId, agent.address] as [string, string]] : []));
+    if (entry.closed) return;
+    const kind = childRun.rootSubjectKind === "agent" ? "agent" : "agent_team";
+    const runId = childRun.rootRunId;
     const access = ports.agents(kind);
     const present = (agentRunId: string, message: AgentPresentationMessage): void => {
       const memberAddress = addresses.get(agentRunId);

@@ -2,7 +2,7 @@ import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-co
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
-import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
+import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 
 /**
  * A remote child's presentation message on the Team stream (autobyteus-278): the Team stream's agent messages are
@@ -30,10 +30,6 @@ export const projectTeamRemoteEvent = (event: RemoteRunRootEvent | Extract<Local
     case "remote_task_execution_summary":
       return parseTeamStreamServerMessage({ type: "REMOTE_TASK_EXECUTION_SUMMARY", payload: {
         change_sequence: changeSequence, ...projectRemoteTaskExecutionSummary(event.summary),
-      } });
-    case "remote_task_execution_started":
-      return parseTeamStreamServerMessage({ type: "REMOTE_TASK_EXECUTION_STARTED", payload: {
-        change_sequence: changeSequence, execution: projectRemoteTaskExecution(event.execution),
       } });
   }
 };

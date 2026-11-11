@@ -9,7 +9,7 @@ import {
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
+import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 
@@ -47,7 +47,6 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     last_message_change_sequence: lastMessageChangeSequence,
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree, input.delegated ?? []),
-    closed_task_executions: [],
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
@@ -85,17 +84,8 @@ export const projectAgentOrgExecutionEvent = (
     case "local_child_presentation":
       event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
       break;
-    case "local_child_started":
-      event = { kind: "task_execution_started" as const, host_kind: "root" as const, host_run_id: run.orgRunId, execution: source.row };
-      break;
-    case "local_children_closed":
-      event = { kind: "task_executions_closed" as const, task_executions: source.runs.map((run) => ("agentRunId" in run ? { agentRunId: run.agentRunId } : { teamRunId: run.teamRunId })) };
-      break;
     case "remote_task_execution_summary":
       event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };
-      break;
-    case "remote_task_execution_started":
-      event = { kind: "remote_task_execution_started" as const, execution: projectRemoteTaskExecution(source.execution) };
       break;
     case "communication":
       event = { kind: "communication" as const, message: source.message };

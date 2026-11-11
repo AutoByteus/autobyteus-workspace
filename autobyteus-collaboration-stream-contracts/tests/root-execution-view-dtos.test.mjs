@@ -36,7 +36,6 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
         taskExecutions: [],
       },
     },
-    closed_task_executions: [],
     agent_statuses: [],
     agent_input_states: [],
     remote_task_executions: [],
@@ -185,8 +184,6 @@ test("requires one correlated status for every live Agent execution", () => {
     startedAt: "2026-09-01T00:00:00.000Z",
     source: agentCopySource,
   });
-  // A closed (DONE) task execution stays in the tree, so it still has its status.
-  snapshot.root_org.closed_task_executions.push({ agentRunId: "agent-run-task-closed" });
   snapshot.root_org.agent_statuses.push(
     status("/lead", "agent-run-lead"),
     status("/task-active", "agent-run-task-active"),
@@ -205,10 +202,6 @@ test("requires one correlated status for every live Agent execution", () => {
   const unknownStatus = structuredClone(snapshot);
   unknownStatus.root_org.agent_statuses.push(status("/task-unknown", "agent-run-task-unknown"));
   assert.throws(() => RootExecutionViewDtoSchema.parse(unknownStatus), /status identity mismatch/);
-
-  const closedConfigured = structuredClone(snapshot);
-  closedConfigured.root_org.closed_task_executions.push({ agentRunId: "agent-run-lead" });
-  assert.throws(() => RootExecutionViewDtoSchema.parse(closedConfigured), /is not a task execution of the execution tree/);
 });
 
 test("rejects duplicate and sidecar AgentOrg member identities", () => {

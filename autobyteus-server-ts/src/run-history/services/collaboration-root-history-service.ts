@@ -1,7 +1,7 @@
 import type { AgentOrgRunIndexRowRecord } from "../store/agent-org-run-history-index-record-types.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
-import type { AgentOrgExecutionTreeDto, TaskExecutionReferenceDto } from "@autobyteus/collaboration-stream-contracts";
+import type { AgentOrgExecutionTreeDto } from "@autobyteus/collaboration-stream-contracts";
 import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
@@ -11,9 +11,7 @@ import { RunLastActivityReader } from "./run-last-activity-reader.js";
 
 export type CollaborationRootHistoryItem =
   | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
-  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto;
-    /** Task executions of `org` whose Task is DONE or CANCELLED; the Workspaces rows leave them out before the Org context hydrates. */
-    closed_task_executions: readonly TaskExecutionReferenceDto[] }>;
+  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto }>;
 
 /** Read-only mixed facade. Family selection remains explicit and subject readers stay authoritative. */
 export class CollaborationRootHistoryService {
@@ -77,7 +75,6 @@ export class CollaborationRootHistoryService {
       is_active: Boolean(active),
       summary: row.summary,
       org: projectAgentOrgExecutionTree(tree),
-      closed_task_executions: [],
     });
   }
 }

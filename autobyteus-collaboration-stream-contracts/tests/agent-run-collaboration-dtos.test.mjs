@@ -39,7 +39,6 @@ const agentView = (overrides = {}) => ({
         { address: "/code_reviewer", agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z", source: agentSource },
       ],
     },
-    closed_task_executions: [],
     agent_input_states: [],
     remote_task_executions: [],
     agent_statuses: [
@@ -84,10 +83,9 @@ test("an Agent root view names its live sequence, or null for a stored view; the
 });
 
 test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions", () => {
-  assert.equal(RootExecutionEventDtoSchema.parse({
-    root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 4,
-    event: { kind: "task_execution_started", host_kind: "root", host_run_id: "host-run", execution: reviewerRun },
-  }).event.kind, "task_execution_started");
+  assert.equal(CollaborationStreamServerMessageSchema.parse({ type: "CHILD_RUNS_CHANGED", payload: {
+    root_subject_kind: "agent", root_run_id: "host-run", event: { kind: "child_runs_changed", run_id: "host-run", added: [reviewerRun], removed: [] },
+  } }).payload.event.added.length, 1);
   assert.throws(() => RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent", root_run_id: "host-run", change_sequence: 5,
     event: { kind: "collaborator_added", collaborator: productTeamRun },

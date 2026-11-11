@@ -36,7 +36,6 @@ const live: Record<string, { agentRunId: string; status: string }[]> = { "writer
 const ports: LocalChildPorts = {
   tree: () => ({ openChildrenOf: (run) => (children[run.rootRunId] ?? []) as never, subscribe: () => () => undefined,
     agentsOf: async (run) => agents[run.rootRunId] ?? [] }),
-  rowOf: vi.fn(),
   agents: () => ({ observePairedAgents: vi.fn(), pairedAgentStatuses: (runId: string) => live[runId] ?? [] }) as never,
 };
 const MANAGER_STATUSES = [
@@ -55,7 +54,6 @@ describe("StandaloneAgentRunRootManager.getAgentStatuses", () => {
     ]);
     // A stopped delegator's rows follow its children too: they are runs of their own.
     await expect(managerWith([]).getAgentStatuses(["manager"])).resolves.toEqual([{ runId: "manager", isActive: false, statuses: MANAGER_STATUSES }]);
-    expect(ports.rowOf).not.toHaveBeenCalled();
   });
 
   it("names no child before the Task records are loaded", async () => {

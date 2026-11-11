@@ -11,6 +11,7 @@ import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-proje
 import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
+import type { ChildRowsEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
@@ -41,7 +42,6 @@ export const projectTeamExecutionViewSnapshot = (
     live_sequence_id: liveSequenceId,
     last_message_change_sequence: lastMessageChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree, delegated),
-    closed_task_executions: [],
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
     remote_task_executions: remoteTaskExecutions,
@@ -75,14 +75,17 @@ export const projectSequencedTeamRunEvent = (
         parent_communication_message_id: event.payload.parentCommunicationMessageId,
       } });
     case TeamRunEventSourceType.REMOTE:
-      // DS-8: a local child's new row and rows that left, as the hosted children's were; its output as a remote child's.
-      if (event.event.kind === "local_child_started") return parseTeamStreamServerMessage({ type: "TASK_EXECUTION_STARTED", payload: {
-        change_sequence: changeSequence, parent_team_run_id: root.teamRunId, execution: teamTaskExecutionOf(event.event.row) } });
-      if (event.event.kind === "local_children_closed") return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_CLOSED", payload: {
-        change_sequence: changeSequence, task_executions: event.event.runs.map(projectTaskExecutionReference) } });
+      // DS-8: a local child's output as a remote child's (its rows come from `ChildRowsFeed`).
       return projectTeamRemoteEvent(event.event, changeSequence);
   }
 };
+
+/** A Team run's child-row change (SR-043): local rows under the Team run, as its snapshot projects them; peer rows. */
+export const projectTeamChildRunsChanged = (teamRunId: string, event: ChildRowsEvent): TeamStreamServerMessage => parseTeamStreamServerMessage({
+  type: "CHILD_RUNS_CHANGED", payload: { run_id: teamRunId,
+    added: event.added.map((record) => record.kind === "local" ? { parent_team_run_id: teamRunId, execution: teamTaskExecutionOf(record.row) } : record.row),
+    removed: event.removed.map(projectTaskExecutionReference) },
+});
 
 const projectTaskExecutionReference = (reference: TaskExecutionReference): TeamTaskExecutionReferenceDto =>
   "agentRunId" in reference ? { agent_run_id: reference.agentRunId } : { team_run_id: reference.teamRunId };

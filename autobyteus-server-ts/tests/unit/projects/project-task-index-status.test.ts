@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ProjectError } from "../../../src/projects/domain/project-errors.js";
 import { getProjectService, resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
-import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskService, getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
@@ -17,7 +17,7 @@ import { createFakeEmbeddingIndex, fakeModel } from "../../helpers/fake-embeddin
 // SR-007: Settings' index status caches only inputs (fingerprints) and is computed fresh at every read; Task writes
 // index their Project in the background when the active model is on disk (REQ-011). Real Project files and Task
 // service (with its post-commit marks wired as in production); only the model is the deterministic stand-in.
-const reset = () => { resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const MODEL_A = fakeModel("fake-model-a");
 const MODEL_B = fakeModel("fake-model-b");
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

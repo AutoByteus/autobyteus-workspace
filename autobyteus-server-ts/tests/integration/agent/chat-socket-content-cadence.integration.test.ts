@@ -115,7 +115,7 @@ const teamScenario: Scenario = {
     const publisher = new RootEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const root = {
       teamRunId: "team-run-root",
-      openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => ({ tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] })),
+      openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => ({ tree, messages, inputStates: [], statuses: [] })),
       executeAgentCommand: vi.fn(async () => ({ accepted: true })),
       getExecutionTreeSnapshot: () => tree,
       localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
@@ -187,7 +187,7 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
         execution: createCollaborationMemberExecutionIdentity({ root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: member.address, agentRunId: member.agentRunId }),
         details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
       }));
-      const snapshot = { tree, closedTaskExecutions: [], messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
+      const snapshot = { tree, messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
       const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
         openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
         executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };

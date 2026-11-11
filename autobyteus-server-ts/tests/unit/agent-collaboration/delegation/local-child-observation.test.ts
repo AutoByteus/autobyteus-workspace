@@ -5,18 +5,17 @@ import { projectAgentCollaborationEvent } from "../../../../src/services/agent-s
 
 /**
  * autobyteus-461 DS-8: a delegating run's view of its local children while viewed: their agents' statuses and live
- * output, a new row when it delegates, and the rows that leave when a child's Task closes.
+ * output, with each agent's address from the tree (SR-041). New and gone rows reach the view from `ChildRowsFeed`.
  */
 const RUN = { rootSubjectKind: "agent" as const, rootRunId: "manager" };
 const child = (run: DelegatedChild["run"], address: string): DelegatedChild => ({
   run, taskId: "T1", delegatorAgentRunId: "manager", entryAgentRunId: "agentRunId" in run ? run.agentRunId : "lead",
   started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: address,
 });
-const launch = { runtimeKind: "autobyteus", llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true, workspaceRootPath: "/w" };
-const agentRow = (agentRunId: string, address: string) => ({ address, agentRunId, platformAgentRunId: null, delegatorAgentRunId: "manager",
-  startedAt: "2026-11-01T00:00:00.000Z", source: { kind: "agent", agentDefinitionId: "writer", launchConfiguration: launch } }) as never;
-const teamRow = () => ({ address: "/eng", teamRunId: "eng", members: [{ address: "/lead", agentRunId: "lead", platformAgentRunId: null }],
-  taskExecutions: [], delegatorAgentRunId: "manager", startedAt: "2026-11-01T00:00:00.000Z", source: {} }) as never;
+const agents: Record<string, { agentRunId: string; address: string | null }[]> = {
+  writer: [{ agentRunId: "writer", address: "/writer" }],
+  eng: [{ agentRunId: "lead", address: "/lead" }, { agentRunId: "new-member", address: null }],
+};
 
 const harness = () => {
   let children: DelegatedChild[] = [child({ agentRunId: "writer" }, "/writer")];
@@ -33,8 +32,8 @@ const harness = () => {
     }),
   };
   const ports: LocalChildPorts = {
-    tree: () => ({ openChildrenOf: () => children, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; } }),
-    rowOf: async (c) => "agentRunId" in c.run ? agentRow(c.run.agentRunId, c.recipientAddress) : teamRow(),
+    tree: () => ({ openChildrenOf: () => children, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
+      agentsOf: async (run) => agents[run.rootRunId] ?? [] }),
     agents: () => access as never,
   };
   const events: LocalChildRootEvent[] = [];
@@ -57,29 +56,31 @@ describe("LocalChildObservation", () => {
     expect(h.access.observePairedAgents).toHaveBeenCalledTimes(1);
   });
 
-  it("announces a new child as a row and a child whose Task closed as closed; the last viewer stops following", async () => {
+  it("follows a new child and leaves one whose Task closed, publishing no rows; the last viewer stops following", async () => {
     const h = harness();
     h.observation.viewerAttached();
     await h.settle();
     h.setChildren([child({ agentRunId: "writer" }, "/writer"), child({ teamRunId: "eng" }, "/eng")]);
     await h.settle();
-    expect(h.events).toContainEqual({ kind: "local_child_started", row: expect.objectContaining({ teamRunId: "eng" }) });
     h.presenters.get("eng")!("lead", { type: "AGENT_STATUS", payload: { status: "idle" } } as never);
     expect(h.events.at(-1)).toMatchObject({ kind: "local_child_presentation", agentRunId: "lead", memberAddress: "/lead" });
     h.setChildren([child({ teamRunId: "eng" }, "/eng")]);
     await h.settle();
-    expect(h.events).toContainEqual({ kind: "local_children_closed", runs: [{ agentRunId: "writer" }] });
+    expect(h.events.every((event) => event.kind === "local_child_presentation")).toBe(true);
+    // An agent without an address in the tree is not presented (it has no row in the view).
+    const before = h.events.length;
+    h.presenters.get("eng")!("new-member", { type: "AGENT_STATUS", payload: { status: "idle" } } as never);
+    expect(h.events).toHaveLength(before);
     expect(h.closes.get("writer")).toHaveBeenCalledOnce();
     h.observation.viewerDetached();
     expect(h.closes.get("eng")).toHaveBeenCalledOnce();
     expect(h.listeners.size).toBe(0);
   });
 
-  it("projects a new row and closed rows into the Agent view's existing events", () => {
-    const sequenced = (event: LocalChildRootEvent) => ({ changeSequence: 3, event }) as never;
-    expect(projectAgentCollaborationEvent("manager", null, sequenced({ kind: "local_child_started", row: agentRow("writer", "/writer") })))
-      .toMatchObject({ event: { kind: "task_execution_started", host_kind: "root", host_run_id: "manager", execution: { agentRunId: "writer" } } });
-    expect(projectAgentCollaborationEvent("manager", null, sequenced({ kind: "local_children_closed", runs: [{ teamRunId: "eng" }] })))
-      .toMatchObject({ event: { kind: "task_executions_closed", task_executions: [{ teamRunId: "eng" }] } });
+  it("projects a child's output into the Agent view's agent_presentation (N-402)", () => {
+    const event: LocalChildRootEvent = { kind: "local_child_presentation", agentRunId: "writer", memberAddress: "/writer",
+      message: { type: "AGENT_STATUS", payload: { status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } as never };
+    expect(projectAgentCollaborationEvent("manager", null, { changeSequence: 3, event } as never))
+      .toMatchObject({ change_sequence: 3, event: { kind: "agent_presentation", agent_run_id: "writer", member_address: "/writer" } });
   });
 });

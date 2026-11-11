@@ -3,6 +3,7 @@ import type { TaskExecutionResourcePort } from "../agent-collaboration/execution
 import { findTaskRunControl } from "../agent-collaboration/execution/task/task-run-control.js";
 import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
 import { bindDelegationTree, unbindDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
+import { getChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 import { TaskExecutionResourceService } from "../projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../projects/stores/task-execution-resource-store.js";
@@ -30,6 +31,8 @@ import { bindDelegatedRuns, unbindDelegatedRuns } from "../run-history/services/
 let projectRunLinks: Readonly<{ close(): void }> | null = null;
 /** The process `DelegationTree` (contract §2.6), built from the loaded Task records and released with them. */
 let delegationTree: DelegationTree | null = null;
+/** The open views' child-row feed following that tree (DS-8, SR-042). */
+let unfollowChildRows: (() => void) | null = null;
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -65,6 +68,8 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   delegationTree.build();
   taskExecutionResources.setEntriesListener(delegationTree);
   bindDelegationTree(delegationTree);
+  unfollowChildRows?.();
+  unfollowChildRows = getChildRowsFeed().follow(delegationTree);
   projectRunLinks?.close();
   projectRunLinks = await composeProjectRunLinks({ projectsLayout });
   const service = initializeProjectTaskServiceProcessInstance({
@@ -99,6 +104,8 @@ export const releaseProjectTaskExecutionResources = (port: TaskExecutionResource
   projectRunLinks = null;
   if (delegationTree) { unbindDelegationTree(delegationTree); unbindDelegatedRuns(delegationTree); }
   delegationTree = null;
+  unfollowChildRows?.();
+  unfollowChildRows = null;
   getProjectChangePublisher().unbind();
   releaseProjectTaskSearchService();
   void shutdownEmbeddingIndex().catch((error: unknown) => console.warn("EMBEDDING_INDEX_SHUTDOWN_FAILED", error));

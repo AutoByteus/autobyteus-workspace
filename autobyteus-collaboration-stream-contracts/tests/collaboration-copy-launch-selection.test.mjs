@@ -2,8 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   collaborationCopyAgentLaunch,
-  agentOrgExecutionEventDtoSchema,
-  agentRunCollaborationEventDtoSchema,
   taskExecutionDtoSchema,
 } from "../dist/index.js";
 
@@ -32,15 +30,6 @@ test("the copy launch rule: own choice, else the followed Team's, else started",
     { launch: { ...claude, llmModelIdentifier: "haiku", llmConfig: null }, selected: "agent" });
 });
 
-test("a live Save's event carries each saved choice by run ID, on Org and Agent streams", () => {
-  const event = { kind: "delegated_launch_selections_changed", selections: [{ agentRunId: "ie", selection: haiku }, { teamRunId: "se", selection: sonnet }] };
-  assert.deepEqual(agentOrgExecutionEventDtoSchema.parse(event), event);
-  assert.deepEqual(agentRunCollaborationEventDtoSchema.parse(event), event);
-  assert.throws(() => agentOrgExecutionEventDtoSchema.parse({ ...event, selections: [] }));
-  assert.throws(() => agentRunCollaborationEventDtoSchema.parse({ ...event, selections: [{ agentRunId: "ie", teamRunId: "se", selection: haiku }] }));
-  assert.throws(() => agentOrgExecutionEventDtoSchema.parse({ ...event, selections: [{ agentRunId: "ie", selection: { llmModelIdentifier: "x" } }] }));
-});
-
 const codexHaiku = { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5", llmConfig: null, selectedAt: "2026-11-01T00:00:00.000Z" };
 
 test("a user choice may carry the agent runtime; the launch rule yields it, and absent keeps the started runtime", () => {
@@ -51,6 +40,4 @@ test("a user choice may carry the agent runtime; the launch rule yields it, and 
     { launch: { ...claude, runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5", llmConfig: null }, selected: "agent" });
   assert.deepEqual(collaborationCopyAgentLaunch({ started: claude, followsTeam: true, teamSelection: codexHaiku }).launch.runtimeKind, "codex_app_server");
   assert.deepEqual(collaborationCopyAgentLaunch({ started: claude, agentSelection: haiku }).launch.runtimeKind, "claude_agent_sdk");
-  const event = { kind: "delegated_launch_selections_changed", selections: [{ agentRunId: "ie", selection: codexHaiku }] };
-  assert.deepEqual(agentOrgExecutionEventDtoSchema.parse(event), event);
 });

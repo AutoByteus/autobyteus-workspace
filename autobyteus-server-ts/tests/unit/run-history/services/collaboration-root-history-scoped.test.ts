@@ -29,7 +29,7 @@ describe("one authoritative admitted Org history subject", () => {
     expect(f.trees.read).not.toHaveBeenCalled();
   });
   it("carries no closed set: a run it delegated to is its own run, and only open ones are child rows (autobyteus-461)", async () => {
-    expect(await fixture().service.getAgentOrg("org-one")).toMatchObject({ closed_task_executions: [] });
+    expect(await fixture().service.getAgentOrg("org-one")).not.toHaveProperty("closed_task_executions");
   });
   it("returns admitted absence without tree reads, and propagates tree failure/root mismatch", async () => {
     const f = fixture(); expect(await f.service.getAgentOrg("unknown")).toBeNull(); expect(f.trees.read).not.toHaveBeenCalled();

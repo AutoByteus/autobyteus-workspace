@@ -7,6 +7,7 @@ import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domai
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { delegatedChild, followTestChildRows } from "../../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-run-1";
 const agent = testOrgAgentNode("/director", "agent-run-1");
@@ -42,7 +43,7 @@ const orgPackage = () => {
     details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null },
     statusHint: "IDLE" as const,
   }));
-  return { tree: executionTree, closedTaskExecutions: [], messages, inputStates: [], statuses: [...statuses, ...memberStatuses] };
+  return { tree: executionTree, messages, inputStates: [], statuses: [...statuses, ...memberStatuses] };
 };
 
 const connection = () => {
@@ -50,7 +51,7 @@ const connection = () => {
   return { sent, socket: { send: (value: string) => sent.push(value), close: vi.fn() } };
 };
 
-const harness = (snapshot = { tree, closedTaskExecutions: [], messages, statuses, inputStates: [] }) => {
+const harness = (snapshot = { tree, messages, statuses, inputStates: [] }) => {
   const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const executeAgentCommand = vi.fn(async () => ({ accepted: true }));
   const executeAgentCommandWithExecutionKind = vi.fn(async (agentRunId: string) => ({
@@ -268,4 +269,30 @@ describe("AgentOrgStreamHandler", () => {
     expect(JSON.parse(client.sent[0] ?? "{}")).toMatchObject({ type: "ERROR", payload: { code: "AGENT_ORG_NOT_ACTIVE" } });
     expect(client.socket.close).toHaveBeenCalledWith(4004);
   });
+
+  it("autobyteus-461 SR-042: an open Org view gets each child-row change, unsequenced, after its snapshot", async () => {
+    const feed = followTestChildRows();
+    try {
+      const { handler, run } = harness();
+      const open = run.openPackageSnapshotConnection;
+      run.openPackageSnapshotConnection = async () => {
+        feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [delegatedChild("analyst")], removed: [] });
+        await feed.settled();
+        return open();
+      };
+      const client = connection();
+      const sessionId = await handler.connect(client.socket, orgRunId);
+      const types = client.sent.map((raw) => CollaborationStreamServerMessageSchema.parse(JSON.parse(raw)).type);
+      expect(types.slice(0, 3)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "CHILD_RUNS_CHANGED"]);
+      expect(JSON.parse(client.sent[2]!)).toMatchObject({ payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
+        event: { kind: "child_runs_changed", run_id: orgRunId, added: [{ agentRunId: "analyst" }], removed: [] } } });
+      feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [], removed: [{ teamRunId: "eng" }] });
+      await feed.settled();
+      expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "CHILD_RUNS_CHANGED", payload: { event: { removed: [{ teamRunId: "eng" }] } } });
+      handler.disconnect(sessionId!);
+    } finally {
+      feed.release();
+    }
+  });
 });
+

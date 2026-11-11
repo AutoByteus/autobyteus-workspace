@@ -12,9 +12,6 @@ import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIden
 
 const running = { type: "AGENT_STATUS", payload: { status: "running", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } as AgentPresentationMessage;
 const frame: RemoteRunRootEvent = { kind: "remote_agent_presentation", nodeId: "srv_docker", agentRunId: "lead-run", memberAddress: "/marketing/lead", message: running };
-const started: RemoteRunRootEvent = { kind: "remote_task_execution_started", execution: {
-  kind: "agent", address: "/researcher" as never, agentRunId: "researcher-run", nodeId: "srv_docker", nodeName: "docker",
-  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:00:00.000Z", open: true } };
 const summary: RemoteRunRootEvent = { kind: "remote_task_execution_summary", summary: { nodeId: "srv_docker", runId: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } };
 
 describe("remote children in the root streams", () => {
@@ -25,9 +22,6 @@ describe("remote children in the root streams", () => {
     const org = projectAgentOrgExecutionEvent({ orgRunId: "org-run" } as never, { event: summary, changeSequence: 10 });
     expect(org).toEqual({ root_subject_kind: "agent_org", root_run_id: "org-run", change_sequence: 10,
       event: { kind: "remote_task_execution_summary", node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } });
-    expect(projectAgentCollaborationEvent("manager-run", {} as never, { event: started, changeSequence: 11 })?.event).toEqual({
-      kind: "remote_task_execution_started", execution: { kind: "agent", address: "/researcher", agent_run_id: "researcher-run", node_id: "srv_docker",
-        node_name: "docker", delegator_agent_run_id: "manager-run", started_at: "2026-10-23T08:00:00.000Z" } });
   });
 
   it("the Team projector presents it as the Team stream's agent message; a member input names its recipient; usage is not this Team's", () => {
@@ -38,7 +32,6 @@ describe("remote children in the root streams", () => {
       payload: { change_sequence: 5, recipient_agent_run_id: "lead-run", ...input.payload } });
     expect(projectTeamRemoteEvent(summary, 6)).toEqual({ type: "REMOTE_TASK_EXECUTION_SUMMARY", payload: {
       change_sequence: 6, node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } });
-    expect(projectTeamRemoteEvent(started, 7)).toMatchObject({ type: "REMOTE_TASK_EXECUTION_STARTED", payload: { change_sequence: 7, execution: { node_name: "docker" } } });
   });
 
   it("the Team root's own consumers do not take a remote frame for a local agent's status", () => {

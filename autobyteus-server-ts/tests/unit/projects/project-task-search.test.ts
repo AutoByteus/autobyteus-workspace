@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getProjectService, resetProjectServiceForTests, ProjectService } from "../../../src/projects/services/project-service.js";
-import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskService, getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 
-const reset = () => { resetProjectServiceForTests(); resetProjectTaskServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const ids = (result: { matches: Array<{ task: { description: string }; match: string }> }) =>
   result.matches.map(({ task, match }) => `${match}:${task.description}`);
 

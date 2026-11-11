@@ -109,26 +109,15 @@ export const taskExecutionReferenceDtoSchema = z.union([
     z.object({ agentRunId: nonEmptyStringSchema }).strict(),
     z.object({ teamRunId: nonEmptyStringSchema }).strict(),
 ]);
-/** Task executions whose Task is DONE: the tree keeps them, the Workspaces listing leaves them out. */
-export const closedTaskExecutionsDtoSchema = z.array(taskExecutionReferenceDtoSchema);
-/** Live: these task executions of the root were closed (their Task became DONE). */
-export const taskExecutionsClosedEventDtoSchema = z.object({
-    kind: z.literal("task_executions_closed"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
-}).strict();
-/** Live: these closed task executions were reactivated by their assigner; the listing shows them again. */
-export const taskExecutionsReopenedEventDtoSchema = z.object({
-    kind: z.literal("task_executions_reopened"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
-}).strict();
 /**
- * Live: the user's model choices of these delegated copies were saved (DS-001).
- * Each names one record by its run ID (unique in the tree) with its choice as now recorded.
+ * Live (autobyteus-461 DS-8, SR-042 … SR-044): the run's open child rows changed. `added` holds each new or reopened
+ * child's row record, as the view projects it (a run on this node, or a peer's run); `removed` the runs that left the
+ * view. Unsequenced: a view applies it by membership, and a client that cannot reads the view again.
  */
-export const delegatedLaunchSelectionsChangedEventDtoSchema = z.object({
-    kind: z.literal("delegated_launch_selections_changed"),
-    selections: z.array(z.union([
-        z.object({ agentRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
-        z.object({ teamRunId: nonEmptyStringSchema, selection: userLaunchSelectionDtoSchema }).strict(),
-    ])).min(1),
+export const childRunsChangedEventDtoSchema = z.object({
+    kind: z.literal("child_runs_changed"), run_id: nonEmptyStringSchema,
+    added: z.array(z.union([taskExecution, remoteTaskExecutionDtoSchema])),
+    removed: z.array(taskExecutionReferenceDtoSchema),
 }).strict();
 /**
  * Live: response text a chat socket coalesced over one content window. Each item is the
@@ -187,7 +176,6 @@ export const agentOrgExecutionViewDtoSchema = z.object({
     /** The sequence of the root's latest message through `base_change_sequence` (0 when none); null for a stored view. */
     last_message_change_sequence: z.number().int().nonnegative().nullable(),
     execution_tree: agentOrgExecutionTreeDtoSchema,
-    closed_task_executions: closedTaskExecutionsDtoSchema,
     agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
     agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
     /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */
@@ -196,15 +184,7 @@ export const agentOrgExecutionViewDtoSchema = z.object({
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
     agentPresentationBatchEventDtoSchema,
-    z.object({
-        kind: z.literal("task_execution_started"),
-        host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,
-    }).strict(),
     z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
-    taskExecutionsClosedEventDtoSchema,
-    taskExecutionsReopenedEventDtoSchema,
-    delegatedLaunchSelectionsChangedEventDtoSchema,
-    z.object({ kind: z.literal("remote_task_execution_started"), execution: remoteTaskExecutionDtoSchema }).strict(),
     remoteTaskExecutionSummaryDtoSchema.extend({ kind: z.literal("remote_task_execution_summary") }).strict(),
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

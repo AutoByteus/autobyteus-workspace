@@ -1,13 +1,12 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
   LocatedExecutionGroup,
-  LocatedExecutionKind,
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgRunManager } from "./agent-org-run-manager.js";
-import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
+import { AgentOrgExecutionIndex, type AgentOrgExecutionKind } from "./agent-org-execution-index.js";
 import type { ConfiguredAgentExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
 
@@ -20,7 +19,7 @@ export type LocatedAgentOrgAgentExecution = Readonly<{
   memberAddress: AgentTeamAddress;
   platformAgentRunId: string | null;
   configuredPlacement: ConfiguredAgentExecutionNode | null;
-  executionKind: LocatedExecutionKind;
+  executionKind: AgentOrgExecutionKind;
   /** Task agents only. */
   startedAt: string | null;
   /** Teams from the org root (exclusive) down to the hosting team, outermost first. */

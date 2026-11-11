@@ -22,10 +22,6 @@ class TeamRunResumeConfigPayload {
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
 
-  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE or CANCELLED. */
-  @Field(() => GraphQLJSON)
-  closedTaskExecutions!: unknown;
-
   /** autobyteus-278: the runs this Team delegated to other nodes, with their node's name, as its stream snapshot lists them. */
   @Field(() => GraphQLJSON)
   remoteTaskExecutions!: unknown;
@@ -112,8 +108,6 @@ export class TeamRunHistoryResolver {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree, await delegatedChildrenDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId })),
-      // No closed copies: a run delegated to is its own run, and only open ones are child rows (autobyteus-461).
-      closedTaskExecutions: [],
       remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId }),
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,

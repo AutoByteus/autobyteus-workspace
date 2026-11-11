@@ -32,6 +32,13 @@ export type DelegatedChild = Readonly<{
   members?: readonly PeerRunMember[];
 }>;
 
+/** A run's open children changed (DS-8, SR-042): the rows that came and the runs that left its view. */
+export type ChildRowsChange = Readonly<{
+  run: RootExecutionIdentity;
+  added: readonly DelegatedChild[];
+  removed: readonly TaskExecutionReference[];
+}>;
+
 type Source = Pick<TaskExecutionResourcePort, "taskIdsWithEntries" | "entriesOf">;
 const keyOf = rootExecutionIdentityKey;
 const newest = (entries: readonly TaskRunEntry[]): TaskRunEntry | undefined =>
@@ -69,6 +76,7 @@ export class DelegationTree implements TaskEntriesListener {
   private readonly membersRead = new Set<string>();
   private reading: Promise<void> | null = null;
   private readonly listeners = new Set<() => void>();
+  private readonly childRowsListeners = new Set<(change: ChildRowsChange) => void>();
 
   constructor(private readonly source: () => Source, private readonly reader: () => RunAgentsReader | null = () => null) {}
 
@@ -86,12 +94,39 @@ export class DelegationTree implements TaskEntriesListener {
     return () => { this.listeners.delete(listener); };
   }
 
+  /**
+   * Told, inside a Task's change and after the tree is updated, of each run whose open children changed (DS-8, SR-042):
+   * one report per run per change. A listener must not wait.
+   */
+  subscribeChildRows(listener: (change: ChildRowsChange) => void): () => void {
+    this.childRowsListeners.add(listener);
+    return () => { this.childRowsListeners.delete(listener); };
+  }
+
   /** The Task side's change notice: that Task's entries are read again from its memory (no file read). */
   entriesChanged(taskId: string): void {
+    // The runs whose children this change can move: the delegating runs of the Task's entries before and after it.
+    const parents = new Map([...this.byTask.get(taskId) ?? [], ...this.source().entriesOf(taskId)]
+      .map((entry) => [keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun] as const));
+    const before = new Map([...parents].map(([key, run]) => [key, this.openChildrenOf(run)]));
     this.forgetTask(taskId);
     this.indexTask(taskId);
     this.rebuildEntryAgents();
     this.notify();
+    for (const [key, run] of parents) this.reportChildRows(run, before.get(key)!);
+  }
+
+  private reportChildRows(run: RootExecutionIdentity, before: readonly DelegatedChild[]): void {
+    const childKey = (child: DelegatedChild): string => keyOf(runIdentityOf(child.run));
+    const after = this.openChildrenOf(run);
+    const held = new Set(before.map(childKey));
+    const kept = new Set(after.map(childKey));
+    const change: ChildRowsChange = { run, added: after.filter((child) => !held.has(childKey(child))),
+      removed: before.filter((child) => !kept.has(childKey(child))).map((child) => child.run) };
+    if (!change.added.length && !change.removed.length) return;
+    for (const listener of [...this.childRowsListeners]) {
+      try { listener(change); } catch (error) { console.warn("A delegation tree child-rows listener failed:", error); }
+    }
   }
 
   private notify(): void {

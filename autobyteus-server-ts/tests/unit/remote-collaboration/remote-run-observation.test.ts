@@ -112,12 +112,12 @@ describe("RemoteRunObservation", () => {
     expect(f.channel.runSummaries).toHaveBeenCalledTimes(3);
   });
 
-  it("a recorded link is announced with its node's name and observed while the root is viewed; nothing is published after dispose", async () => {
+  it("a recorded link is observed while the root is viewed (its row comes from ChildRowsFeed, SR-042); nothing is published after dispose", async () => {
     const links = [agentLink];
     const f = harness(links);
     f.observation.linkCommitted(agentLink);
     await f.flush();
-    expect(f.events).toEqual([{ kind: "remote_task_execution_started", execution: { ...agentLink, nodeName: "docker" } }]);
+    expect(f.events).toEqual([]);
     expect(f.channel.observeRun).not.toHaveBeenCalled();
     f.observation.viewerAttached();
     links.push(teamLink);

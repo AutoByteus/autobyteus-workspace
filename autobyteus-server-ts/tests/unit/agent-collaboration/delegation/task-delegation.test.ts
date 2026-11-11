@@ -22,7 +22,7 @@ const harness = () => {
   tasks.setEntriesListener(tree);
   const starter = { startAgent: vi.fn(async () => ({ agentRunId: "image_maker_33f0" })),
     startTeam: vi.fn(async () => ({ teamRunId: "product_team_e03d", coordinatorAddress: "/designer" as never, coordinatorAgentRunId: "designer_1", members: [] })) };
-  const deliverWorkPacket = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
+  const deliverWorkPacket = vi.fn(async (_run: unknown, _packet: WorkPacket) => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating });

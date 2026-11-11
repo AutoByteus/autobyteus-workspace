@@ -25,6 +25,7 @@ import { projectAgentCollaborationEvent, projectAgentCollaborationView } from ".
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
 import { remoteTaskExecutionDtos } from "./remote-task-execution-dto-projection.js";
+import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
 
 /** A command for one agent of the root (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -97,6 +98,8 @@ export class AgentCollaborationStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
+    // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
+    const childRows = new ChildRowsStreamSession(root.rootIdentity, (event) => egress.send(projectCollaborationChildRunsChanged("agent", hostRunId, event)));
     const remoteTaskExecutions = await remoteTaskExecutionDtos(root.rootIdentity);
     const taskExecutions = await delegatedChildrenDtos(root.rootIdentity);
     const barrier = await root.openPackageSnapshotConnection();
@@ -110,6 +113,7 @@ export class AgentCollaborationStreamHandler {
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
           lastMessageChangeSequence: barrier.lastMessageChangeSequence, remoteTaskExecutions, taskExecutions }),
       }));
+      childRows.snapshotSent();
       const unsubscribe = barrier.subscribe((event) => {
         try {
           const projected = projectAgentCollaborationEvent(hostRunId, null, event);
@@ -132,10 +136,11 @@ export class AgentCollaborationStreamHandler {
       // autobyteus-278: a viewer of the root observes its remote children while connected.
       root.remoteChildren.viewerAttached();
       root.localChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); root.remoteChildren.viewerDetached(); root.localChildren.viewerDetached(); egress.dispose(); } });
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); childRows.dispose(); root.remoteChildren.viewerDetached(); root.localChildren.viewerDetached(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
+      childRows.dispose();
       egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
       egress.dispose();
       connection.close(1011);

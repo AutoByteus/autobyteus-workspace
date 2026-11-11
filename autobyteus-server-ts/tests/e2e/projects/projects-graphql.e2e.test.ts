@@ -13,7 +13,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
-import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
 // Un-mocked Projects GraphQL boundary: resolver -> ProjectService -> ProjectStore (per-Project folders)
@@ -44,7 +44,7 @@ const resetWorkspaceRegistryForTest = () => {
 const resetProjectsSingletons = () => {
   resetProjectStoreForTests();
   resetProjectServiceForTests();
-  resetProjectTaskServiceForTests();
+  releaseProjectTaskServiceProcessInstance(getProjectTaskService());
 };
 
 // A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_APPLICATIONS=true):

@@ -63,8 +63,6 @@ const toTeamSummary = (definition: CollaborationDefinitionMemory): AgentTeamWith
   memberMemoryCount: definition.memberMemoryCount,
   latestMemoryAt: definition.memory.latestMemoryAt,
   memory: definition.memory,
-  isTaskTeam: false,
-  startedByAgentName: null,
 });
 
 const toTeamRunSummary = (run: CollaborationRootRunMemory): AgentTeamRunMemorySummary => ({
@@ -77,6 +75,4 @@ const toTeamRunSummary = (run: CollaborationRootRunMemory): AgentTeamRunMemorySu
   lastUpdatedAt: run.memory.availability.latestMemoryAt,
   memory: run.memory.availability,
   memberTargets: run.members.map(toCollaborationMemberMemoryTargetSummary),
-  isTaskTeam: false,
-  startedByAgentName: null,
 });

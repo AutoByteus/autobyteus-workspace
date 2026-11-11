@@ -9,6 +9,7 @@ import { validateCollaborationCommunicationMessageArray } from "../../../../src/
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
+import { delegatedChild, followTestChildRows } from "../../../helpers/child-rows-feed.js";
 
 const scenarioDir = path.resolve(
   process.cwd(),
@@ -42,7 +43,7 @@ const createHarness = (input: {
   const root = {
     teamRunId: "team-run-root",
     openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] },
+      snapshot: { tree, messages, inputStates: [], statuses: [] },
       baseChangeSequence: 31,
       liveSequenceId: "live-team-1", lastMessageChangeSequence: 0,
       subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
@@ -67,7 +68,7 @@ const createHarness = (input: {
     teamRunService as never,
     lifecycle as never,
   );
-  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, emit: (event: unknown) => eventListener?.(event) };
+  return { handler, connection, root, teamRunService, lifecycle, executeAgentCommand, closeSnapshot, emit: (event: unknown) => eventListener?.(event) };
 };
 
 const sessions: Array<{ handler: AgentTeamStreamHandler; id: string }> = [];
@@ -252,4 +253,41 @@ describe("AgentTeamStreamHandler current root stream", () => {
       },
     }))).toThrow();
   });
+
+  it("autobyteus-461 SR-043/044: an open Team view gets each child-row change, unsequenced, after its snapshot, also once the team run stopped", async () => {
+    const feed = followTestChildRows();
+    try {
+      const harness = createHarness();
+      const team = createTeamRootExecutionIdentity("team-run-root");
+      const open = harness.root.openPackageSnapshotConnection.getMockImplementation()!;
+      // Two changes committed while the snapshot is built: held, then sent after it in published order (FIFO), each once.
+      harness.root.openPackageSnapshotConnection.mockImplementationOnce(async () => {
+        feed.report({ run: team, added: [delegatedChild("writer")], removed: [] });
+        feed.report({ run: team, added: [], removed: [{ agentRunId: "old-helper" }] });
+        await feed.settled();
+        return open();
+      });
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      const output = sent(harness.connection);
+      expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "CHILD_RUNS_CHANGED", "CHILD_RUNS_CHANGED", "TEAM_RUN_LIFECYCLE"]);
+      expect(output[2]!.payload).toEqual({ run_id: "team-run-root", removed: [],
+        added: [{ parent_team_run_id: "team-run-root", execution: expect.objectContaining({ kind: "task_agent", agent_run_id: "writer", address: "/writer" }) }] });
+      expect(output[3]!.payload).toEqual({ run_id: "team-run-root", added: [], removed: [{ agent_run_id: "old-helper" }] });
+      expect(output[2]!.payload).not.toHaveProperty("change_sequence");
+      // The team run stopped: its open view still gets the change; nothing restarts it.
+      const stopped = (harness.lifecycle.subscribeToLifecycle.mock.calls[0] as unknown as [string, (snapshot: { isActive: boolean }) => void])[1];
+      stopped({ isActive: false });
+      expect(sent(harness.connection).at(-1)).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
+      harness.root.openPackageSnapshotConnection.mockClear();
+      feed.report({ run: team, added: [delegatedChild("checker")], removed: [] });
+      await feed.settled();
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "CHILD_RUNS_CHANGED", payload: { added: [{ execution: { agent_run_id: "checker" } }] } });
+      expect(harness.root.openPackageSnapshotConnection).not.toHaveBeenCalled();
+      expect(harness.teamRunService.resolveActiveTeamRun).toHaveBeenCalledTimes(1);
+    } finally {
+      feed.release();
+    }
+  });
 });
+

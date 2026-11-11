@@ -16,7 +16,7 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { ListProjectsTool, ListProjectTasksTool, CreateProjectTool, UpdateProjectTool, CreateTaskTool, UpdateTaskTool, createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
-import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
+import { getProjectTaskService, releaseProjectTaskServiceProcessInstance } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
@@ -56,7 +56,7 @@ const titled = (args: Record<string, unknown>): Record<string, unknown> => "proj
   ? { ...args, title: (typeof args.description === "string" && firstLine(args.description)) || "A titled Task" } : args;
 /** A saved context file as agents read it (REQ-013): `{name, path}`; `path` is the saved copy, named by its stored file name. */
 const storedNameOf = (file: { path: string }) => path.basename(file.path);
-const reset = () => { resetProjectTaskServiceForTests(); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+const reset = () => { releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 
 describe("Project Task production HTTP boundaries", () => {
   let root: string, origin: string, mcpUrl: string, app: FastifyInstance;

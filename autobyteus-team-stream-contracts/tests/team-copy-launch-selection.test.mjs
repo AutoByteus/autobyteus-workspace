@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  parseTeamStreamServerMessage,
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
   teamCopyAgentLaunch,
@@ -37,15 +36,6 @@ test("the copy launch rule: own choice, else the followed Team's, else started; 
     { launch: { ...claude, llm_model_identifier: "haiku", llm_config: null }, selected: "agent" });
 });
 
-test("a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choice by run ID", () => {
-  const message = { type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: { change_sequence: 4,
-    selections: [{ agent_run_id: "ie", selection: haiku }, { team_run_id: "se", selection: sonnet }] } };
-  assert.deepEqual(parseTeamStreamServerMessage(message), message);
-  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, selections: [] } }));
-  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload,
-    selections: [{ agent_run_id: "ie", team_run_id: "se", selection: haiku }] } }));
-});
-
 const codexHaiku = { runtime_kind: "codex_app_server", llm_model_identifier: "gpt-5", llm_config: null, selected_at: "2026-11-01T00:00:00.000Z" };
 
 test("a user choice may carry the agent runtime; the launch rule yields it, and absent keeps the started runtime", () => {
@@ -57,6 +47,4 @@ test("a user choice may carry the agent runtime; the launch rule yields it, and 
     { launch: { ...claude, runtime_kind: "codex_app_server", llm_model_identifier: "gpt-5", llm_config: null }, selected: "agent" });
   assert.equal(teamCopyAgentLaunch({ started: claude, followsTeam: true, teamSelection: codexHaiku }).launch.runtime_kind, "codex_app_server");
   assert.equal(teamCopyAgentLaunch({ started: claude, agentSelection: haiku }).launch.runtime_kind, "claude_agent_sdk");
-  const message = { type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: { change_sequence: 5, selections: [{ agent_run_id: "ie", selection: codexHaiku }] } };
-  assert.deepEqual(parseTeamStreamServerMessage(message), message);
 });

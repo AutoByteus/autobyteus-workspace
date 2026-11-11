@@ -18,7 +18,6 @@ const agentView = (remote) => ({
     base_change_sequence: 0, live_sequence_id: "live-1", last_message_change_sequence: 0, is_active: true,
     execution_tree: { subjectKind: "agent", createdAt: "2026-10-23T08:00:00.000Z",
       host: { address: "/project_task_manager", agentRunId: "host-run", agentDefinitionId: "ptm-def" }, taskExecutions: [] },
-    closed_task_executions: [],
     agent_statuses: [], agent_input_states: [],
     ...(remote === undefined ? {} : { remote_task_executions: remote }),
   },
@@ -29,11 +28,8 @@ test("an Agent root view lists its remote runs beside its tree; the list is requ
   assert.throws(() => RootExecutionViewDtoSchema.parse(agentView(undefined)));
 });
 
-test("Agent and Org root events carry a remote run's start and its node's summary", () => {
+test("Agent and Org root events carry a remote run's node's summary (its start is a child row change, SR-042)", () => {
   for (const root_subject_kind of ["agent", "agent_org"]) {
-    const started = { root_subject_kind, root_run_id: "root-run", change_sequence: 4,
-      event: { kind: "remote_task_execution_started", execution: remoteTeam } };
-    assert.deepEqual(RootExecutionEventDtoSchema.parse(started), started);
     const summary = { root_subject_kind, root_run_id: "root-run", change_sequence: 5,
       event: { kind: "remote_task_execution_summary", node_id: "srv_docker", run_id: "marketing-team-run", reachable: true,
         title: "Plan the October campaign", statuses: [{ agent_run_id: "lead-run", status: "running" }] } };
