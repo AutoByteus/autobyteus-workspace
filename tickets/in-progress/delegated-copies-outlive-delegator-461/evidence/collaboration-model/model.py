@@ -1,0 +1,416 @@
+"""The collaboration contract as an executable model (autobyteus-461).
+
+Every operation applies the contract's rules (target-collaboration-contract.md §2 … §4) to an in-memory disk: a dict
+from a node-qualified path ("A:memory/agents/<id>/run_metadata.json") to its JSON. Run lists and message logs are
+lists. The DelegationTree is derived from the disk, never stored. Nothing here reads the user's data.
+"""
+import copy, json
+
+ELL = "…"
+
+NOT_FOUND = lambda a: (f"No agent or agent team you can talk with has the address {a}. To answer a message or report your task result, "
+                       "use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.")
+CLOSED = ("This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, "
+          "then message the task agent's run id (for a task agent team, its coordinator's run id).")
+OTHER_TASK = "You can't message this agent: it works on a different Task."
+
+class Refused(Exception):
+    def __init__(self, code, message):
+        super().__init__(message); self.code = code; self.message = message
+
+def addr_of_def(def_id): return "/" + def_id.replace("-", "_")
+
+class Defs:
+    """The catalog: agent definitions, team definitions (members, coordinator, handoffs), org definitions."""
+    def __init__(self):
+        self.agents, self.teams, self.orgs = {}, {}, {}
+    def agent(self, def_id, name): self.agents[def_id] = name
+    def team(self, def_id, name, members, coordinator, handoffs=()):
+        self.teams[def_id] = {"name": name, "members": list(members), "coordinator": coordinator, "handoffs": list(handoffs)}
+    def org(self, def_id, name, agents, mounted, handoffs=()):
+        self.orgs[def_id] = {"name": name, "agents": list(agents), "mounted": list(mounted), "handoffs": list(handoffs)}
+
+class World:
+    def __init__(self, defs):
+        self.defs = defs
+        self.disk = {}
+        self.runs = {}          # agent run id -> (node, run kind, run id)
+        self.result = None
+        self.receiver_sees = None
+        self.node_ids = {"A": "node-a-77d2", "B": "node-b-1f0e"}
+
+    # ---------- paths
+    @staticmethod
+    def p(node, path): return f"{node}:{path}"
+    def agent_dir(self, node, run_id): return f"memory/agents/{run_id}"
+    def run_file(self, node, kind, run_id):
+        return self.p(node, {"agent": f"memory/agents/{run_id}/run_metadata.json",
+                             "agent_team": f"memory/agent_teams/{run_id}/team_run_execution_tree.json",
+                             "agent_org": f"memory/agent_orgs/{run_id}/agent_org_run_execution_tree.json"}[kind])
+    def log_path(self, node, kind, run_id):
+        return self.p(node, {"agent": f"memory/agents/{run_id}/communication_messages_active.jsonl",
+                             "agent_team": f"memory/agent_teams/{run_id}/team_communication_messages_active.jsonl",
+                             "agent_org": f"memory/agent_orgs/{run_id}/agent_org_communication_messages_active.jsonl"}[kind])
+    def index_path(self, node, kind):
+        return self.p(node, {"agent": "memory/run_history_index.json", "agent_team": "memory/team_run_history_index.json",
+                             "agent_org": "memory/agent_org_run_history_index.json"}[kind])
+    ROW_KEY = {"agent": "runId", "agent_team": "teamRunId", "agent_org": "orgRunId"}
+    def row(self, node, kind, run_id):
+        for r in self.disk.get(self.index_path(node, kind), []):
+            if r[self.ROW_KEY[kind]] == run_id: return r
+        return None
+    def add_row(self, node, kind, row): self.disk.setdefault(self.index_path(node, kind), []).append(row)
+    def member_dir(self, node, kind, run_id, agent_id, team_run_id=None):
+        if kind == "agent": return self.p(node, f"memory/agents/{run_id}/ (memory)")
+        if kind == "agent_team": return self.p(node, f"memory/agent_teams/{run_id}/{agent_id}/ (memory)")
+        return self.p(node, f"memory/agent_orgs/{run_id}/{team_run_id + '/' if team_run_id else ''}{agent_id}/ (memory)")
+
+    # ---------- runs and their agents
+    def run_of(self, agent_id):
+        if agent_id not in self.runs: raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"No run has agent {agent_id}.")
+        return self.runs[agent_id]
+    def file_of(self, run): return self.disk[self.run_file(*run)]
+    def agent_info(self, agent_id):
+        """(own-space address, mounted team prefix or None, mounted team members {address: id}, coordinator id)."""
+        node, kind, run_id = self.run_of(agent_id); f = self.file_of((node, kind, run_id))
+        if kind == "agent": return (f.get("address") or addr_of_def(f["agentDefinitionId"]), None, {}, None)
+        if kind == "agent_team":
+            ms = {m["address"]: m["agentRunId"] for m in f["rootTeam"]["members"]}
+            return (next(a for a, i in ms.items() if i == agent_id), None, ms, ms[f["rootTeam"]["coordinatorAddress"]])
+        for m in f["rootOrg"]["members"]:
+            if m.get("agentRunId") == agent_id: return (m["address"], None, {}, None)
+            for y in m.get("members", []):
+                if y["agentRunId"] == agent_id:
+                    sub = {z["address"]: z["agentRunId"] for z in m["members"]}
+                    return (y["address"], m["address"], sub, sub[m["coordinatorAddress"]])
+        raise KeyError(agent_id)
+    def standing(self, run):
+        node, kind, run_id = run; f = self.file_of(run)
+        if kind == "agent": return {f.get("address") or addr_of_def(f["agentDefinitionId"]): run_id}
+        if kind == "agent_team": return {m["address"]: m["agentRunId"] for m in f["rootTeam"]["members"]}
+        out = {}
+        for m in f["rootOrg"]["members"]:
+            if "agentRunId" in m: out[m["address"]] = m["agentRunId"]
+            for y in m.get("members", []): out[y["address"]] = y["agentRunId"]
+            if "members" in m: out[m["address"]] = next(y["agentRunId"] for y in m["members"] if y["address"] == m["coordinatorAddress"])
+        return out
+    def agents_of(self, run): return sorted(set(self.standing(run).values()))
+    def entry_agent(self, run):
+        node, kind, run_id = run; f = self.file_of(run)
+        if kind == "agent": return run_id
+        return next(m["agentRunId"] for m in f["rootTeam"]["members"] if m["address"] == f["rootTeam"]["coordinatorAddress"])
+
+    # ---------- Tasks
+    def task_dir(self, node, task):
+        return f"projects/{task['projectId']}/tasks/{task['taskId']}" if task.get("projectId") else f"ad-hoc-tasks/{task['taskId']}"
+    def tasks(self, node):
+        return {v["taskId"]: (k, v) for k, v in self.disk.items() if k.startswith(node + ":") and k.endswith("/task.json")}
+    def task_by_key(self, node, key):
+        for tid, (k, v) in self.tasks(node).items():
+            if v.get("taskKey") == key or tid == key: return v
+        raise Refused("TASK_NOT_FOUND", f"No Task {key}.")
+    def resources_path(self, node, task): return self.p(node, self.task_dir(node, task) + "/agent_run_resources.json")
+    def entries(self, node):
+        """Every Task entry on the node: (task id, entry)."""
+        out = []
+        for k, v in self.disk.items():
+            if k.startswith(node + ":") and k.endswith("/agent_run_resources.json"):
+                out += [(v["taskId"], e) for e in v["agentRunResources"]]
+        return out
+    @staticmethod
+    def run_key_of_entry(e):
+        a = e["agentRun"]; return ("agent", a["agentRunId"]) if a["kind"] == "agent" else ("agent_team", a["teamRunId"])
+    def entries_of(self, node, run): return [(t, e) for t, e in self.entries(node) if self.run_key_of_entry(e) == (run[1], run[2])]
+    def open_tasks(self, node, run): return {t for t, e in self.entries_of(node, run) if e["closedAt"] is None}
+    def assigners(self, node, task_id):
+        return {(e["delegatedFrom"]["delegatingRun"]["kind"], e["delegatedFrom"]["delegatingRun"]["runId"])
+                for t, e in self.entries(node) if t == task_id and e["role"] == "assigned"}
+    def run_by_key(self, node, kind, run_id): return (node, kind, run_id)
+
+    # ---------- the DelegationTree (derived)
+    def tree(self, node):
+        nodes = {}
+        def ensure(k):
+            if k not in nodes:
+                run = (node, k[0], k[1]); local = self.run_file(*run) in self.disk
+                nodes[k] = {"run": {"kind": k[0], "runId": k[1]}, "parent": None, "tasks": [], "agents": self.agents_of(run) if local else []}
+            return nodes[k]
+        for t, e in self.entries(node):
+            dr = e["delegatedFrom"]["delegatingRun"]; ensure((dr["kind"], dr["runId"]))
+            n = ensure(self.run_key_of_entry(e))
+            n["parent"] = {"kind": dr["kind"], "runId": dr["runId"]}; n["delegatorAgentRunId"] = e["delegatedFrom"]["delegatorAgentRunId"]
+            asg = sorted(self.assigners(node, t))
+            n["tasks"].append({"taskId": t, "role": e["role"], "open": e["closedAt"] is None,
+                               "assigner": {"kind": asg[0][0], "runId": asg[0][1]} if asg else None})
+            if "nodeId" in e: n["node"] = e["nodeId"]; n["agents"] = [m["agentRunId"] for m in e["members"]]
+        order = ["run", "parent", "delegatorAgentRunId", "node", "tasks", "agents"]
+        return [{k: n[k] for k in order if k in n} for n in nodes.values()]
+
+    # ---------- the rules
+    def can_message(self, node, a, b):
+        """§2.2: (a) a shared open Task, or (b) one is the assigner of an open Task of the other."""
+        if a == b: return True
+        ta, tb = self.open_tasks(node, a), self.open_tasks(node, b)
+        if ta & tb: return True
+        if any((a[1], a[2]) in self.assigners(node, t) for t in tb): return True
+        if any((b[1], b[2]) in self.assigners(node, t) for t in ta): return True
+        return False
+    def resolve(self, sender, address):
+        """§2.3. Returns (receiver agent id, step) or raises not found / self."""
+        node, kind, run_id = run = self.run_of(sender)
+        own, prefix, team, _ = self.agent_info(sender)
+        if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", "You can't send a message to yourself.")
+        if kind == "agent_team" and address in team: return team[address], 1
+        if prefix:
+            if address == prefix: return self.agent_info(sender)[3], 1
+            if address.startswith(prefix + "/"):
+                if address in team: return team[address], 1
+                raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
+        f = self.file_of(run)
+        if "delegatedFrom" in f:
+            for t in sorted(self.open_tasks(node, run)) or sorted({t for t, e in self.entries_of(node, run)}):
+                for ak in sorted(self.assigners(node, t)):
+                    st = self.standing((node, ak[0], ak[1]))
+                    if address in st: return st[address], 2
+            raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
+        st = self.standing(run)
+        if address in st and st[address] != sender: return st[address], 3
+        raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
+    def reaching_address(self, receiver, sender):
+        """§2.4: the sender's own-space address, when the receiver resolves it back to the sender."""
+        if self.run_of(receiver)[0] != self.run_of(sender)[0]: return None
+        own = self.agent_info(sender)[0]
+        try: return own if self.resolve(receiver, own)[0] == sender else None
+        except Refused: return None
+
+    # ---------- operations: runs the user starts
+    def start_agent(self, node, run_id, def_id, at, project=None):
+        self.runs[run_id] = (node, "agent", run_id)
+        self.disk[self.run_file(node, "agent", run_id)] = {
+            "runId": run_id, "agentDefinitionId": def_id, "workspaceRootPath": "/Users/me/projects/x",
+            "memoryDir": f"…/memory/agents/{run_id}", "llmModelIdentifier": ELL, "llmConfig": {ELL: ELL}, "autoExecuteTools": True,
+            "runtimeKind": ELL, "platformAgentRunId": ELL, "startedAt": at}
+        self.add_row(node, "agent", {"runId": run_id, "agentDefinitionId": def_id, "agentName": self.defs.agents[def_id],
+                                     "workspaceRootPath": "/Users/me/projects/x", "summary": ELL, "createdAt": at, "archivedAt": None, "terminatedAt": None})
+        self.disk[self.member_dir(node, "agent", run_id, run_id)] = "created"
+        if project:
+            self.disk.setdefault(self.p(node, f"projects/{project}/project_runs.json"), {"projectId": project, "runs": []})["runs"].append(
+                {"root": {"kind": "agent", "runId": run_id}, "linkedAt": at})
+    def _team_file(self, run_id, def_id, member_ids, at):
+        d = self.defs.teams[def_id]
+        return {"schemaVersion": 1, "createdAt": at, "archivedAt": None, "applicationBinding": None,
+                "handoffs": [{"from": f, "to": t, "rules": [r]} for f, t, r in d["handoffs"]],
+                "rootTeam": {"address": "/", "teamDefinitionId": def_id, "teamDefinitionName": d["name"], "teamRunId": run_id,
+                             "coordinatorAddress": addr_of_def(d["coordinator"]), "defaultLaunchConfiguration": {ELL: ELL},
+                             "members": [{"address": addr_of_def(m), "agentDefinitionId": m, "role": ELL, "description": ELL,
+                                          "agentRunId": member_ids[m], "platformAgentRunId": ELL, "launchConfiguration": {ELL: ELL}}
+                                         for m in d["members"]]}}
+    def start_team(self, node, run_id, def_id, member_ids, at):
+        for i in member_ids.values(): self.runs[i] = (node, "agent_team", run_id)
+        self.disk[self.run_file(node, "agent_team", run_id)] = self._team_file(run_id, def_id, member_ids, at)
+        d = self.defs.teams[def_id]
+        self.add_row(node, "agent_team", {"teamRunId": run_id, "teamDefinitionId": def_id, "teamDefinitionName": d["name"],
+                                          "workspaceRootPath": "/Users/me/projects/x", "summary": ELL, "createdAt": at, "archivedAt": None, "terminatedAt": None})
+    def start_org(self, node, run_id, def_id, agent_ids, team_run_ids, at):
+        d = self.defs.orgs[def_id]; members = []
+        for a in d["agents"]:
+            self.runs[agent_ids[a]] = (node, "agent_org", run_id)
+            members.append({"address": addr_of_def(a), "agentDefinitionId": a, "agentRunId": agent_ids[a], "launchConfiguration": {ELL: ELL}})
+        for tdef in d["mounted"]:
+            td = self.defs.teams[tdef]; pre = addr_of_def(tdef)
+            for m in td["members"]: self.runs[agent_ids[m]] = (node, "agent_org", run_id)
+            members.append({"address": pre, "teamDefinitionId": tdef, "teamRunId": team_run_ids[tdef], "coordinatorAddress": pre + addr_of_def(td["coordinator"]),
+                            "members": [{"address": pre + addr_of_def(m), "agentDefinitionId": m, "agentRunId": agent_ids[m], "launchConfiguration": {ELL: ELL}} for m in td["members"]]})
+        self.disk[self.run_file(node, "agent_org", run_id)] = {
+            "subjectKind": "agent_org", "createdAt": at, "archivedAt": None, "applicationBinding": None,
+            "handoffs": [{"from": f, "to": t, "rules": [r]} for f, t, r in d["handoffs"]],
+            "rootOrg": {"address": "/", "orgDefinitionId": def_id, "orgDefinitionName": d["name"], "orgRunId": run_id,
+                        "defaultLaunchConfiguration": {ELL: ELL}, "members": members}}
+        self.add_row(node, "agent_org", {"orgRunId": run_id, "orgDefinitionId": def_id, "orgDefinitionName": d["name"],
+                                         "workspaceRootPath": "/Users/me/projects/x", "summary": ELL, "createdAt": at, "archivedAt": None, "terminatedAt": None})
+    def create_task(self, node, project, task_id, key, title, status, at):
+        t = {"taskId": task_id, "projectId": project, "taskKey": key, "title": title, "description": ELL, "status": status,
+             "dependsOnTaskIds": [], "partOfTaskId": None, "createdAt": at, "updatedAt": at, "contextFiles": [], "comments": []}
+        self.disk[self.p(node, self.task_dir(node, t) + "/task.json")] = t
+
+    # ---------- the agent's life
+    def activate(self, agent_id):
+        node, kind, run_id = self.run_of(agent_id)
+        team_run = None
+        if kind == "agent_org":
+            info = self.agent_info(agent_id)
+            if info[1]:
+                f = self.file_of((node, kind, run_id)); team_run = next(m["teamRunId"] for m in f["rootOrg"]["members"] if m["address"] == info[1])
+        self.disk.setdefault(self.member_dir(node, kind, run_id, agent_id, team_run), "created")
+        r = self.row(node, kind, run_id)
+        if r and r["terminatedAt"] is not None: r["terminatedAt"] = None
+    def stop(self, run, at):
+        r = self.row(*run)
+        if r is not None and r["terminatedAt"] is None: r["terminatedAt"] = at
+
+    # ---------- messages
+    def _log(self, run, line): self.disk.setdefault(self.log_path(*run), []).append(line)
+    def _deliver(self, sender, receiver, content, message_type, message_id, at, shown_as):
+        a, b = self.run_of(sender), self.run_of(receiver)
+        line = {"messageId": message_id, "senderAgentRunId": sender, "receiverAgentRunId": receiver, "content": content,
+                "messageType": message_type, "referenceFiles": [], "createdAt": at}
+        self._log(a, dict(line))
+        if b != a: self._log(b, dict(line))
+        self.activate(receiver)
+        addr = self.reaching_address(receiver, sender)
+        if a[0] != b[0]:
+            self.receiver_sees = f'You received a message from the agent with sender run id "{sender}" on node "{self.node_ids[a[0]]}".'
+        else:
+            self.receiver_sees = (f'You received a message from the agent with sender address "{addr}" and sender run id "{sender}".' if addr
+                                  else f'You received a message from the agent with sender run id "{sender}".')
+        self.result = {"accepted": True, "code": "DELIVERED", "message": f"Delivered message to {shown_as}.", "target_agent_run_id": receiver}
+    def _admit(self, sender, receiver):
+        a, b = self.run_of(sender), self.run_of(receiver)
+        if a == b: return
+        if a[0] != b[0]:
+            # across nodes: the peer side admits its own delegator; this side admits by its Task entry
+            local, peer = (a, b) if self.file_of(a).get("delegatedFrom", {}).get("nodeId") is None else (b, a)
+            pf = self.file_of(peer)["delegatedFrom"]
+            other = receiver if peer == a else sender
+            if pf["delegatorAgentRunId"] != other: raise Refused("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK)
+            entry = [e for t, e in self.entries(local[0]) if "nodeId" in e and self.run_key_of_entry(e) == (peer[1], peer[2])]
+            if not entry or entry[-1]["closedAt"] is not None:
+                raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
+            return
+        node = a[0]
+        if self.can_message(node, a, b): return
+        # an assigner's reactivation of its run's last assigned entry (§5.4.2 R-6)
+        for t, e in reversed(self.entries_of(node, b)):
+            if e["role"] == "assigned" and e["closedAt"] is not None and e["delegatedFrom"]["delegatorAgentRunId"] == sender:
+                status = self.tasks(node)[t][1]["status"] if t in self.tasks(node) else None
+                if status in ("TODO", "IN_PROGRESS"): e["closedAt"] = None; return
+            break
+        shared = {t for t, e in self.entries_of(node, a)} & {t for t, e in self.entries_of(node, b)}
+        assigned_by = any((a[1], a[2]) in self.assigners(node, t) for t, e in self.entries_of(node, b))
+        if shared or assigned_by: raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
+        raise Refused("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK)
+    def send_by_address(self, sender, address, content, message_id, at, message_type="agent_message"):
+        receiver, step = self.resolve(sender, address)
+        self._admit(sender, receiver)
+        self._deliver(sender, receiver, content, message_type, message_id, at, address); return step
+    def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message"):
+        self.run_of(receiver); self._admit(sender, receiver)
+        self._deliver(sender, receiver, content, message_type, message_id, at, receiver)
+    def handoff_rules(self, agent_id):
+        node, kind, run_id = self.run_of(agent_id); own = self.agent_info(agent_id)[0]; f = self.file_of((node, kind, run_id))
+        return {"handoffs": [{"when": h["rules"][0], "recipient_address": h["to"]} for h in f.get("handoffs", []) if h["from"] == own]}
+
+    # ---------- delegation
+    def delegate(self, sender, address, at, new_run, task_key=None, description=None, node=None, peer_run_node=None):
+        """delegate_task(recipient_address, task_id?, description?, node?). `new_run` names the new run: (kind, run id, {member def: agent id})."""
+        snode, skind, srun = srun_key = self.run_of(sender)
+        own, prefix, team, _ = self.agent_info(sender)
+        if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is your own address; you can't delegate to yourself.")
+        if (skind == "agent_team" and address in team) or (prefix and (address == prefix or address.startswith(prefix + "/"))):
+            raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is in your own team; use send_message_to.")
+        def_id = next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
+        if def_id is None: raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"No agent or agent team has the address {address}.")
+        # which Task
+        if task_key:
+            task = self.task_by_key(snode, task_key); role = "assigned"
+            if task["status"] not in ("TODO", "IN_PROGRESS"): raise Refused("TASK_NOT_ASSIGNABLE", f"The Task is {task['status']}.")
+        else:
+            mine = sorted(self.entries_of(snode, srun_key), key=lambda te: te[1]["linkedAt"])
+            if mine:
+                # sub-work joins the run's current Task: its most recently linked entry, which must be open
+                t, cur = mine[-1]
+                if cur["closedAt"] is not None: raise Refused("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.")
+                task = self.tasks(snode)[t][1]; role = "subWork"
+            else:
+                tid = new_run[3]; task = {"taskId": tid, "projectId": None, "title": ELL, "description": description, "status": "IN_PROGRESS",
+                                         "createdAt": at, "updatedAt": at}
+                self.disk[self.p(snode, self.task_dir(snode, task) + "/task.json")] = task; role = "assigned"
+        kind, run_id, members = new_run[0], new_run[1], new_run[2]
+        rnode = peer_run_node or snode
+        df = {"delegatingRun": {"kind": skind, "runId": srun}, "delegatorAgentRunId": sender}
+        own_df = dict(df, nodeId=self.node_ids[snode]) if peer_run_node else df
+        if peer_run_node: own_df = {"nodeId": self.node_ids[snode], **df}
+        if kind == "agent":
+            self.runs[run_id] = (rnode, "agent", run_id)
+            self.disk[self.run_file(rnode, "agent", run_id)] = {
+                "runId": run_id, "agentDefinitionId": def_id, "address": address, "workspaceRootPath": "/Users/me/projects/x",
+                "memoryDir": f"…/memory/agents/{run_id}", "llmModelIdentifier": ELL, "llmConfig": {ELL: ELL}, "autoExecuteTools": True,
+                "runtimeKind": ELL, "platformAgentRunId": ELL, "startedAt": at,
+                "launchSource": {"origin": "agent_default", "fallbacks": []}, "delegatedFrom": own_df}
+            self.add_row(rnode, "agent", {"runId": run_id, "agentDefinitionId": def_id, "agentName": self.defs.agents[def_id],
+                                          "workspaceRootPath": "/Users/me/projects/x", "summary": ELL, "createdAt": at, "archivedAt": None, "terminatedAt": None})
+            agent_run = {"kind": "agent", "agentRunId": run_id}
+        else:
+            for i in members.values(): self.runs[i] = (rnode, "agent_team", run_id)
+            tf = self._team_file(run_id, def_id, members, at); tf["delegatedFrom"] = own_df
+            self.disk[self.run_file(rnode, "agent_team", run_id)] = tf
+            d = self.defs.teams[def_id]
+            self.add_row(rnode, "agent_team", {"teamRunId": run_id, "teamDefinitionId": def_id, "teamDefinitionName": d["name"],
+                                               "workspaceRootPath": "/Users/me/projects/x", "summary": ELL, "createdAt": at, "archivedAt": None, "terminatedAt": None})
+            agent_run = {"kind": "team", "teamRunId": run_id, "coordinatorAgentRunId": members[d["coordinator"]]}
+        entry = {"role": role, "delegatedFrom": df, "recipientAddress": address, "agentRun": agent_run}
+        if peer_run_node:
+            entry["nodeId"] = self.node_ids[peer_run_node]
+            if kind != "agent":
+                entry["members"] = [{"address": m["address"], "agentRunId": m["agentRunId"]} for m in self.disk[self.run_file(rnode, "agent_team", run_id)]["rootTeam"]["members"]]
+        entry.update({"linkedAt": at, "start": "started", "closedAt": None})
+        rp = self.resources_path(snode, task)
+        self.disk.setdefault(rp, {"taskId": task["taskId"], "agentRunResources": []})["agentRunResources"].append(entry)
+        # the delegator's run collaborates: an agent run's own address and its row's hasCollaboration (§3.3, §3.5)
+        if skind == "agent":
+            f = self.file_of(srun_key)
+            if "address" not in f:
+                items = list(f.items()); items.insert(2, ("address", own)); self.disk[self.run_file(*srun_key)] = dict(items)
+            r = self.row(snode, "agent", srun)
+            if not r.get("hasCollaboration"): r["hasCollaboration"] = True
+        self.activate(self.entry_agent((rnode, "agent" if kind == "agent" else "agent_team", run_id)))
+        res = {"delegated": True, "target_kind": "agent" if kind == "agent" else "team"}
+        if peer_run_node: res["node"] = node
+        if kind == "agent": res["target_agent_run_id"] = run_id
+        else: res.update({"target_team_run_id": run_id, "target_team_coordinator_agent_run_id": agent_run["coordinatorAgentRunId"]})
+        if role == "assigned" and not task_key: res["task_id"] = task["taskId"]
+        self.result = res; self.receiver_sees = None
+        return role
+    def delegate_existing(self, sender, target_run, task_key, message_id, at):
+        """delegate_task(target_*_run_id, task_id): only the delegator of the run's most recent assignment."""
+        snode, skind, srun = self.run_of(sender); run = (snode, target_run[0], target_run[1])
+        last = [e for t, e in self.entries_of(snode, run) if e["role"] == "assigned"][-1]
+        if last["delegatedFrom"]["delegatorAgentRunId"] != sender: raise Refused("TASK_DELEGATION_NOT_ALLOWED", "Only the run's last assigner.")
+        task = self.task_by_key(snode, task_key)
+        entry = {k: copy.deepcopy(last[k]) for k in ("role", "delegatedFrom", "recipientAddress", "agentRun")}
+        entry.update({"linkedAt": at, "start": "started", "closedAt": None})
+        self.disk.setdefault(self.resources_path(snode, task), {"taskId": task["taskId"], "agentRunResources": []})["agentRunResources"].append(entry)
+        receiver = self.entry_agent(run)
+        a, b = self.run_of(sender), run
+        line = {"messageId": message_id, "senderAgentRunId": sender, "receiverAgentRunId": receiver,
+                "content": f"New Task assigned to you: {task['taskKey']}. …", "messageType": "task_assignment", "referenceFiles": [], "createdAt": at}
+        self._log(a, dict(line)); self._log(b, dict(line)); self.activate(receiver)
+        self.result = {"delegated": True, "target_kind": "team" if target_run[0] == "agent_team" else "agent",
+                       **({"target_team_run_id": target_run[1], "target_team_coordinator_agent_run_id": receiver} if target_run[0] == "agent_team" else {"target_agent_run_id": target_run[1]})}
+
+    # ---------- Task changes
+    def _stop_runs_without_open_task(self, node, task_id, at):
+        for t, e in self.entries(node):
+            if t != task_id: continue
+            k = self.run_key_of_entry(e)
+            if "nodeId" in e:
+                if not any(x["closedAt"] is None for tt, x in self.entries(node) if self.run_key_of_entry(x) == k):
+                    peer = next(n for n, i in self.node_ids.items() if i == e["nodeId"]); self.stop((peer, k[0], k[1]), at)
+                continue
+            if not self.open_tasks(node, (node, k[0], k[1])): self.stop((node, k[0], k[1]), at)
+    def update_task(self, sender, task_key, status, at):
+        node = self.run_of(sender)[0]; task = self.task_by_key(node, task_key)
+        task["status"] = status; task["updatedAt"] = at
+        if status in ("DONE", "CANCELLED"):
+            rp = self.resources_path(node, task)
+            for e in self.disk.get(rp, {"agentRunResources": []})["agentRunResources"]:
+                if e["closedAt"] is None: e["closedAt"] = at
+            self._stop_runs_without_open_task(node, task["taskId"], at)
+        self.result = {"taskId": task["taskKey"], "status": status}
+    def delete_task(self, node, task_key, at):
+        task = self.task_by_key(node, task_key); rp = self.resources_path(node, task)
+        for e in self.disk.get(rp, {"agentRunResources": []})["agentRunResources"]:
+            if e["closedAt"] is None: e["closedAt"] = at
+        self._stop_runs_without_open_task(node, task["taskId"], at)
+        for k in [k for k in self.disk if k.startswith(self.p(node, self.task_dir(node, task) + "/"))]: del self.disk[k]
+        self.result = None

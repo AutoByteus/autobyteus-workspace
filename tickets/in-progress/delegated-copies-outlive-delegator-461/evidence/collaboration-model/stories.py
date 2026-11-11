@@ -1,0 +1,240 @@
+"""The three stories of the contract's §5, as steps on the model. Each step: its ID, title, case IDs, the call as the
+agent writes it, the operation, and the prose that is not data (how it is found, what differs from today, the check)."""
+from model import Defs, World, Refused, addr_of_def
+
+def catalog():
+    d = Defs()
+    for a, n in [("project-task-manager", "Project Task Manager"), ("image-maker", "Image Maker"), ("research-agent", "Research Agent"),
+                 ("upscaler", "Upscaler"), ("release-agent", "Release Agent"), ("solution-designer", "Solution Designer"),
+                 ("architecture-reviewer", "Architecture Reviewer"), ("implementation-engineer", "Implementation Engineer"),
+                 ("code-reviewer", "Code Reviewer"), ("product-designer", "Product Designer"), ("prototyper", "Prototyper"),
+                 ("lead", "Lead"), ("analyst", "Analyst"), ("student", "Student"), ("tutor", "Tutor"), ("ceo-agent", "CEO Agent"),
+                 ("cto", "CTO"), ("Teacher", "Teacher"), ("dev-lead", "Dev Lead"), ("qa", "QA")]:
+        d.agent(a, n)
+    d.team("software-engineering-team", "Software Engineering Team",
+           ["solution-designer", "architecture-reviewer", "implementation-engineer", "code-reviewer"], "solution-designer",
+           [("/solution_designer", "/architecture_reviewer", "When the design is ready for review …"),
+            ("/architecture_reviewer", "/implementation_engineer", "When the review passes …"),
+            ("/implementation_engineer", "/code_reviewer", "When the implementation is ready for review …")])
+    d.team("product-team", "Product Team", ["product-designer", "prototyper"], "product-designer")
+    d.team("research-team", "Research Team", ["lead", "analyst"], "lead")
+    d.team("study-group", "Study Group", ["student", "tutor"], "student", [("/student", "/Teacher", "When the homework is done …")])
+    d.team("dev-team", "Dev Team", ["dev-lead", "qa"], "dev-lead")
+    d.org("company-org", "Company Org", ["ceo-agent", "cto", "Teacher"], ["dev-team"], [("/dev_team/dev_lead", "/ceo_agent", "When the release is ready …")])
+    return d
+
+M, SD, AR, IE, CR = "project_task_manager_7c8d", "solution_designer_65a9", "architecture_reviewer_m_5c20", "implementation_engineer_m_7d31", "code_reviewer_m_3b10"
+E = "software_engineering_team_0218"
+E_MEMBERS = {"solution-designer": SD, "architecture-reviewer": AR, "implementation-engineer": IE, "code-reviewer": CR}
+
+def standalone():
+    w = World(catalog()); P = "project_8f21"
+    def s0():
+        w.start_agent("A", M, "project-task-manager", "2026-11-01T08:00:00.000Z", project=P)
+        for tid, key, title, status, at in [("project_task_440e", "demo-1", "Build the export feature", "IN_PROGRESS", "2026-11-01T08:05:00.000Z"),
+                                            ("project_task_2b2b", "demo-2", "Research competitors", "TODO", "2026-11-01T08:06:00.000Z"),
+                                            ("project_task_6a6a", "demo-6", "Fix the import bug", "TODO", "2026-11-01T08:07:00.000Z"),
+                                            ("project_task_7c7c", "demo-7", "Market study", "TODO", "2026-11-01T08:08:00.000Z")]:
+            w.create_task("A", P, tid, key, title, status, at)
+    steps = [
+     dict(id="S0", title="The user starts M from the Project; its Tasks exist", cases="RUN-1", call="The user starts the Project Task Manager from the Project's page.", op=s0,
+          found="There is no `address` in M's `run_metadata.json` yet: it is derived from the definition until M first delegates (§3.3). There is no `delegatedFrom`: the user started M. The Tasks have no `agent_run_resources.json`: no run works on them. M has no message log. By address M can reach only itself, and that is refused (IN-7).",
+          today="Today M also has `collaboration/`, and after its first delegation `collaboration/collaboration_tree.json`. Both are gone (TC-8, TC-13).",
+          checked="485 agent runs the user started; 109 Task folders hold only `task.json`; `project_runs.json` holds only runs the user started (57 entries, 0 delegated)."),
+     dict(id="S1", title="M delegates T1 to the Software Engineering Team", cases="DL-1",
+          call='`delegate_task(recipient_address: "/software_engineering_team", task_id: "demo-1")`, by M',
+          op=lambda: w.delegate(M, "/software_engineering_team", "2026-11-10T09:39:18.439Z", ("agent_team", E, E_MEMBERS), task_key="demo-1"),
+          found="`/software_engineering_team` is in M's catalog (`list_available_agents`). A new team run is created, rooted at `/`, with the definition's members and handoffs. M delegates for the first time, so its `run_metadata.json` gains `address` and its row gains `hasCollaboration`. The work packet is the coordinator's first input, kept in its own memory, not a logged message. The Task's `task.json` does not change: only `update_task` sets a status.",
+          today="Today M's `collaboration/collaboration_tree.json` is created here with `host.address`; E's file is rooted at `/software_engineering_team` with members `/software_engineering_team/solution_designer` and a `taskAgent` section; E has no row of its own in the run list.",
+          checked="141 entries delegated by a standalone agent: for all, `delegatedFrom` can be computed, `recipientAddress` is present or fillable, and one hop equals today's top run."),
+     dict(id="S2", title="E's solution designer follows its handoff to the architecture reviewer", cases="IN-2, IN-1, A-4",
+          call='`get_handoff_rules()`, then `send_message_to(recipient_address: "/architecture_reviewer", content: "Design ready for review …")`, by `solution_designer_65a9`',
+          op=lambda: w.send_by_address(SD, "/architecture_reviewer", "Design ready for review …", "collabmsg_A1", "2026-11-10T10:00:00.000Z"),
+          found="`get_handoff_rules()` returns the team file's handoffs whose `from` is the caller: `{ \"handoffs\": [ { \"when\": \"When the design is ready for review …\", \"recipient_address\": \"/architecture_reviewer\" } ] }`. The address is found by step 1, its own team. The message stays inside E: one line in E's log.",
+          today="Today a delegated team's members write `\"/software_engineering_team/architecture_reviewer\"`; now `\"/architecture_reviewer\"`, as in a team the user starts. An old prefixed address is not found, with guidance (A-6).",
+          checked="3,311 delegated-team sends replayed: every one reaches the same receiver with the prefix dropped."),
+     dict(id="S3", title="E's solution designer reports to M by address", cases="B-1, E-3",
+          call='`send_message_to(recipient_address: "/project_task_manager", content: "Design approved by the reviewer …")`, by `solution_designer_65a9`',
+          op=lambda: w.send_by_address(SD, "/project_task_manager", "Design approved by the reviewer …", "collabmsg_B1", "2026-11-10T11:00:00.000Z"),
+          found="Not in E (step 1). E works on T1, whose assigner is M, so step 2 finds M's own agent; rule (b) admits it. The same line goes into E's log and into M's log, which is created now. M is restored if it is stopped.",
+          today="The same.", checked="412 sends replayed, all to the same receiver; 747 stored messages to an assigner show the run ID only."),
+     dict(id="S4", title="M answers E by run ID", cases="R-1, E-2, C-1",
+          call='`send_message_to(target_agent_run_id: "solution_designer_65a9", content: "Go ahead …")`, by M. (`recipient_address: "/software_engineering_team"` would not be found: a delegated run is reached by run ID.)',
+          op=lambda: w.send_by_run_id(M, SD, "Go ahead …", "collabmsg_C1", "2026-11-10T11:05:00.000Z"),
+          found="Rule (b): M assigned T1. The same line goes into both logs.", today="The same.", checked="690 stored messages from an assigner show the address."),
+     dict(id="S5", title="E's solution designer hands sub-work of T1 to the product team", cases="DL-5",
+          call='`delegate_task(recipient_address: "/product_team", description: "Prototype the export screen …")`, by `solution_designer_65a9`',
+          op=lambda: w.delegate(SD, "/product_team", "2026-11-10T13:00:00.000Z", ("agent_team", "product_team_e03d", {"product-designer": "product_designer_1a2b", "prototyper": "prototyper_4e11"}), description="Prototype the export screen …"),
+          found="There is no `task_id`, so the work joins the Task E currently works on (its most recently assigned open Task): T1, as a `subWork` entry. P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.",
+          today="Today the entry names M as `hostRoot` and P runs inside M's process. Now P is one hop under E and runs on its own.",
+          checked="30 sub-work entries: all can be computed, and all are nested one hop below today's top run."),
+     dict(id="S6", title="E's solution designer hands sub-work of T1 to the image agent", cases="DL-5",
+          call='`delegate_task(recipient_address: "/image_maker", description: "Draw the export icon …")`, by `solution_designer_65a9`',
+          op=lambda: w.delegate(SD, "/image_maker", "2026-11-10T13:10:00.000Z", ("agent", "image_maker_33f0", None), description="Draw the export icon …"),
+          found="As S5, for an agent run: its own `run_metadata.json` carries `address` (its delegation address) and `delegatedFrom`.", today="As S5.", checked="As S5."),
+     dict(id="S7", title="The product team reports to M and talks with E; M answers the product team", cases="B-2, R-3, R-4, C-2",
+          call='By `product_designer_1a2b`: `send_message_to(recipient_address: "/project_task_manager", content: "Prototype ready …")`; then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "See the prototype …")`. By M: `send_message_to(target_agent_run_id: "product_designer_1a2b", content: "Looks good …")`. (`recipient_address: "/solution_designer"` from P is not found: P has no member there, and step 1 never falls through.)',
+          op=lambda: (w.send_by_address("product_designer_1a2b", "/project_task_manager", "Prototype ready …", "collabmsg_E1", "2026-11-10T13:30:00.000Z"),
+                      w.send_by_run_id("product_designer_1a2b", SD, "See the prototype …", "collabmsg_F1", "2026-11-10T13:31:00.000Z"),
+                      w.send_by_run_id(M, "product_designer_1a2b", "Looks good …", "collabmsg_F2", "2026-11-10T13:40:00.000Z")),
+          found="The first by step 2: T1's assigner is M, not P's delegator. The second by rule (a): both on T1. The third by rule (b): M assigned T1, and P works on it at depth 2. Each line goes into the sender's and the receiver's run logs; P's log is created now. M and E see P by run ID only; P sees M's address.",
+          today="The same.", checked="B-2: 3 sends replayed, all to the same receiver."),
+     dict(id="S8", title="The user stops E", cases="T-4",
+          call="The user presses Stop on E.", op=lambda: w.stop(("A", "agent_team", E), "2026-11-10T14:00:00.000Z"),
+          found="Stop sets `terminatedAt` on E's own row. Only E stops (TC-1): P and I keep working. The tree does not change: stopping a run does not change who is related to whom.",
+          today="Today stopping E also stops the runs E delegated to.", checked="—"),
+     dict(id="S9", title="P's next message restores E", cases="T-4, R-3",
+          call='`send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more question …")`, by `product_designer_1a2b`',
+          op=lambda: w.send_by_run_id("product_designer_1a2b", SD, "One more question …", "collabmsg_G1", "2026-11-10T14:05:00.000Z"),
+          found="Rule (a). E is restored and woken once: its row's `terminatedAt` is back to `null`.", today="The same.", checked="—"),
+     dict(id="S10", title="M closes T1", cases="T-1, R-8",
+          call='`update_task(task_id: "demo-1", status: "DONE")`, by M',
+          op=lambda: w.update_task(M, "demo-1", "DONE", "2026-11-10T15:00:00.000Z"),
+          found="Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), except the assigner's continuation (S11).",
+          today="The same.", checked="—"),
+     dict(id="S11", title="M reopens T1 and continues E", cases="T-2, R-6",
+          call='`update_task(task_id: "demo-1", status: "IN_PROGRESS")`, then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more change …")`, by M',
+          op=lambda: (w.update_task(M, "demo-1", "IN_PROGRESS", "2026-11-10T15:30:00.000Z"),
+                      w.send_by_run_id(M, SD, "One more change …", "collabmsg_H1", "2026-11-10T15:31:00.000Z")),
+          found="The message is the assigner's continuation: E's last entry in T1 is the `assigned` entry M made, T1 is open again, so that entry gets `closedAt: null` and E is restored. P's and I's `subWork` entries stay closed: only an `assigned` entry is continued, by its assigner. If E needs the product team again, it delegates anew.",
+          today="The same.", checked="—"),
+     dict(id="S12", title="M gives E another Task, T6", cases="DL-7",
+          call='`delegate_task(target_team_run_id: "software_engineering_team_0218", task_id: "demo-6")`, by M',
+          op=lambda: w.delegate_existing(M, ("agent_team", E), "demo-6", "collabmsg_D1", "2026-11-10T16:00:00.000Z"),
+          found="Only M, which made E's most recent assignment, may do this. T6 gets an `assigned` entry with the same `delegatedFrom` and `recipientAddress`. The work comes as a `task_assignment` message, in both logs. From now on E's current Task is T6: sub-work E starts joins T6.",
+          today="The same.", checked="225 entries for a run that already existed; 225 of 227 `task_assignment` messages are in both logs."),
+     dict(id="S13", title="T1 is deleted", cases="T-3, R-9",
+          call="The user deletes T1 from the Project.",
+          op=lambda: w.delete_task("A", "demo-1", "2026-11-10T17:00:00.000Z"),
+          found="T1's open entries are closed and its runs with no other open Task are stopped (none here: E still works on T6, and P and I are already stopped). Then T1's folder is removed. Each run keeps its own `delegatedFrom`. P and I are no longer named by any Task: they leave the tree and are runs of their own (TC-3), labeled \"delegated from\" E; no Task relates them to anyone (R-9). E stays, through T6.",
+          today="Today the runs stay in M's hosting process.", checked="—"),
+     dict(id="S14", title="M delegates T7 to a team on a peer node", cases="DL-9, DL-10",
+          call='`delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`, by M on node A. (`/research_team` is in node B\'s list for node A: `list_available_agents(node: "node-b")`.)',
+          op=lambda: w.delegate(M, "/research_team", "2026-11-10T18:00:00.000Z", ("agent_team", "research_team_77aa", {"lead": "lead_0c11", "analyst": "analyst_5d20"}), task_key="demo-7", node="node-b", peer_run_node="B"),
+          found="Node B accepts only while remote collaboration is on and only from a paired peer (CM-12). On node A, only T7's entry is written; it holds the node and the members by their own addresses (P8), because node A cannot read the run. On node B the run is an ordinary team run with the peer's `delegatedFrom` (`nodeId` present: `isPeerStarted`); node B has no Task record and no tree node for it.",
+          today="Today node A keeps the node and the members in M's `collaboration/collaboration_tree.json` link, with the members addressed under `/research_team`; node B's `delegatedFrom` names `coordinatingRun`.",
+          checked="2 such links on the user's machine (a team with 4 members, an agent); the migration moves them into their Task entries and drops the prefix from the 4 addresses (E3). 0 runs started by a peer on this node."),
+     dict(id="S15", title="The peer team reports to M", cases="R-10",
+          call='`send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`, by `lead_0c11` on node B. (By address, `"/project_task_manager"` is not found on node B: across nodes only run IDs work.)',
+          op=lambda: w.send_by_run_id("lead_0c11", M, "Findings …", "collabmsg_P1", "2026-11-10T18:30:00.000Z"),
+          found="Node B admits it because the run's own `delegatedFrom` names M as its delegator; node A admits it by T7's entry (rule (b)). Each node writes its own run's log, with one `messageId` (CM-9). M sees the run ID and the node (CM-11).",
+          today="The same.", checked="—"),
+     dict(id="S16", title="M closes T7: the peer run is stopped through the link", cases="T-1",
+          call='`update_task(task_id: "demo-7", status: "DONE")`, by M',
+          op=lambda: w.update_task(M, "demo-7", "DONE", "2026-11-10T19:00:00.000Z"),
+          found="Node A closes the entry and asks node B, through the link, to stop the run (it has no other open Task); node B sets `terminatedAt` on the run's row. Node B keeps the run as an ordinary run of its own.",
+          today="The same.", checked="—"),
+     dict(id="S17", title="Refused: runs of different Tasks", cases="R-7",
+          call='M: `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`. Then, by `solution_designer_65a9` (E works on T6): `send_message_to(target_agent_run_id: "research_agent_9b10", content: "…")`',
+          op=lambda: (w.delegate(M, "/research_agent", "2026-11-10T19:30:00.000Z", ("agent", "research_agent_9b10", None), task_key="demo-2"),
+                      w.send_by_run_id(SD, "research_agent_9b10", "…", "x", "2026-11-10T19:31:00.000Z")),
+          found="The delegation is as S1, for an agent run. The message is refused: E works on T6 and R on T2, and neither assigned the other's Task.",
+          today="The same.", checked="—"),
+     dict(id="S18", title="Refused: M messages itself", cases="IN-7",
+          call='`send_message_to(recipient_address: "/project_task_manager", content: "…")`, by M',
+          op=lambda: w.send_by_address(M, "/project_task_manager", "…", "x", "2026-11-10T19:40:00.000Z"),
+          found="Its own address. Nothing is written.", today="The same.", checked="—"),
+     dict(id="S19", title="Refused: addressing a delegated run", cases="C-1, C-3",
+          call='`send_message_to(recipient_address: "/software_engineering_team", content: "…")`, by M',
+          op=lambda: w.send_by_address(M, "/software_engineering_team", "…", "x", "2026-11-10T19:50:00.000Z"),
+          found="A delegated run's agents have no address in M's space; M reaches E by run ID (S4). The same holds for E writing `\"/product_team\"` (C-3).",
+          today="The same as today's code; 53 older sends (2026-08 … 2026-10) reached a delegated run by address before that rule.", checked="53 older sends."),
+    ]
+    return w, steps
+
+def team():
+    w = World(catalog()); U = "software_engineering_team_73d7"
+    U_SD = "solution_designer_7a33"
+    U_MEMBERS = {"solution-designer": U_SD, "architecture-reviewer": "architecture_reviewer_cd34", "implementation-engineer": "implementation_engineer_864a", "code-reviewer": "code_reviewer_2e4f"}
+    def u0():
+        w.start_team("A", U, "software-engineering-team", U_MEMBERS, "2026-11-01T09:00:00.000Z")
+        w.create_task("A", "project_8f21", "project_task_3c3c", "demo-3", "Design the onboarding", "IN_PROGRESS", "2026-11-01T09:05:00.000Z")
+    steps = [
+     dict(id="U0", title="The user starts the Software Engineering Team on its own", cases="RUN-2", call="The user starts the team from its page.", op=u0,
+          found="An ordinary team file rooted at `/`, with the definition's members and handoffs, and its run list row. There is no `delegatedFrom`: the user started it. Each member's memory folder appears when the member first runs; the team's log when the first message is sent.",
+          today="The same.", checked="601 of 601 team runs the user started are rooted at `/` with members as direct children; 133 have handoffs, all inside the team; 0 nested sub-teams."),
+     dict(id="U1", title="The solution designer follows its handoff", cases="IN-1, IN-2",
+          call='`get_handoff_rules()`, then `send_message_to(recipient_address: "/architecture_reviewer", message_type: "architecture_review_request", content: "Please review …")`, by `solution_designer_7a33`',
+          op=lambda: w.send_by_address(U_SD, "/architecture_reviewer", "Please review …", "collabmsg_U1", "2026-11-01T10:00:00.000Z", "architecture_review_request"),
+          found="Step 1, its own team. One line in the team's log. The receiver sees the sender's address.",
+          today="The same.", checked="2,237 such sends replayed, all to the same receiver; 8,715 messages in these teams, each once in the team's log."),
+     dict(id="U2", title="The reviewer messages a teammate by run ID", cases="IN-3",
+          call='`send_message_to(target_agent_run_id: "implementation_engineer_864a", content: "Approved, please implement …")`, by `architecture_reviewer_cd34`',
+          op=lambda: w.send_by_run_id("architecture_reviewer_cd34", "implementation_engineer_864a", "Approved, please implement …", "collabmsg_U2", "2026-11-01T11:00:00.000Z"),
+          found="Inside one run the Task is not asked. One line in the team's log.", today="The same.", checked="—"),
+     dict(id="U3", title="The solution designer delegates Task T3 to an image agent", cases="DL-2",
+          call='`delegate_task(recipient_address: "/image_maker", task_id: "demo-3")`, by `solution_designer_7a33`',
+          op=lambda: w.delegate(U_SD, "/image_maker", "2026-11-01T12:00:00.000Z", ("agent", "image_maker_44a1", None), task_key="demo-3"),
+          found="The delegating run is the team run (one hop), the delegator its member. Nothing is written in the team's file.",
+          today="The same, except that the image agent runs on its own instead of inside the team's process.", checked="9 entries delegated by a member of a team the user started; all can be computed."),
+     dict(id="U4", title="The image agent reports back by address", cases="B-3",
+          call='`send_message_to(recipient_address: "/solution_designer", content: "Mockups ready …")`, by `image_maker_44a1`',
+          op=lambda: w.send_by_address("image_maker_44a1", "/solution_designer", "Mockups ready …", "collabmsg_U3", "2026-11-01T13:00:00.000Z"),
+          found="Step 2: T3's assigner is the team run, whose standing agents are its members. One line in the image agent's log (created now) and in the team's log. The solution designer sees the run ID only.",
+          today="The same.", checked="6 sends replayed, all to the same receiver."),
+     dict(id="U5", title="The image agent hands part of its work further", cases="DL-6",
+          call='`delegate_task(recipient_address: "/upscaler", description: "Upscale the mockups …")`, by `image_maker_44a1`',
+          op=lambda: w.delegate("image_maker_44a1", "/upscaler", "2026-11-01T13:30:00.000Z", ("agent", "upscaler_55b2", None), description="Upscale the mockups …"),
+          found="A `subWork` entry in T3 that names the image agent as the delegating run. The image agent delegates for the first time, so its row gains `hasCollaboration`.",
+          today="The same.", checked="1 entry."),
+     dict(id="U6", title="Refused: delegating to a teammate", cases="DL-11",
+          call='`delegate_task(recipient_address: "/architecture_reviewer")`, by `solution_designer_7a33`',
+          op=lambda: w.delegate(U_SD, "/architecture_reviewer", "2026-11-01T14:00:00.000Z", ("agent", "x", None), description="…"),
+          found="Its own team: use `send_message_to`. Nothing is written.", today="The same.", checked="—"),
+     dict(id="U7", title="Delegating to the team's own definition creates a new copy", cases="DL-11, DL-8",
+          call='`delegate_task(recipient_address: "/software_engineering_team", description: "Review our process …")`, by `solution_designer_7a33`',
+          op=lambda: w.delegate(U_SD, "/software_engineering_team", "2026-11-01T14:30:00.000Z",
+                                ("agent_team", "software_engineering_team_9e9e", {"solution-designer": "solution_designer_9e01", "architecture-reviewer": "architecture_reviewer_9e02", "implementation-engineer": "implementation_engineer_9e03", "code-reviewer": "code_reviewer_9e04"}, "adhoc_task_91a1"),
+                                description="Review our process …"),
+          found="`/software_engineering_team` is a catalog address, not the team's own address (the team's root `/` never is). The team works on no Task, so a Task with no Project is created for the work (`ad-hoc-tasks/`).",
+          today="The same in a team the user started. (In a delegated team today it is refused; now it behaves the same.)", checked="16 description-only entries."),
+    ]
+    return w, steps
+
+def org():
+    w = World(catalog()); O = "company_org_9d00"
+    ids = {"ceo-agent": "ceo_agent_1f2e", "cto": "cto_2a3b", "Teacher": "Teacher_5c6d", "dev-lead": "dev_lead_4c3d", "qa": "qa_8e9f"}
+    def o0():
+        w.start_org("A", O, "company-org", ids, {"dev-team": "dev_team_6b70"}, "2026-11-01T10:00:00.000Z")
+        w.create_task("A", "project_8f21", "project_task_4d4d", "demo-4", "Run the study program", "IN_PROGRESS", "2026-11-01T10:05:00.000Z")
+        w.create_task("A", "project_8f21", "project_task_5e5e", "demo-5", "Prepare the release notes", "IN_PROGRESS", "2026-11-01T10:06:00.000Z")
+    steps = [
+     dict(id="O0", title="The user starts the org", cases="RUN-3", call="The user starts the org from its page.", op=o0,
+          found="Its direct agents and its mounted team, with their addresses in the org's one space. Memory folders appear when each agent first runs.",
+          today="The same.", checked="24 org runs, all rooted at `/`, with 26 direct agents and 74 mounted teams; 625 of 625 handoffs inside the org."),
+     dict(id="O1", title="The CEO agent messages the CTO", cases="IN-5, A-2", call='`send_message_to(recipient_address: "/cto", content: "Plan the quarter …")`, by `ceo_agent_1f2e`',
+          op=lambda: w.send_by_address("ceo_agent_1f2e", "/cto", "Plan the quarter …", "collabmsg_O1", "2026-11-01T11:00:00.000Z"),
+          found="Step 3, its own run's standing agents. One line in the org's log.", today="The same.", checked="42 sends replayed; 1,015 messages inside orgs, each once in the org's log."),
+     dict(id="O2", title="The CEO agent messages the mounted team", cases="IN-5, A-2", call='`send_message_to(recipient_address: "/dev_team", content: "Ship the fix …")`, by `ceo_agent_1f2e`',
+          op=lambda: w.send_by_address("ceo_agent_1f2e", "/dev_team", "Ship the fix …", "collabmsg_O2", "2026-11-01T11:10:00.000Z"),
+          found="`/dev_team` reaches its coordinator, `/dev_team/dev_lead` (step 3).", today="The same.", checked="In A-2."),
+     dict(id="O3", title="The dev lead messages its teammate", cases="IN-6, A-3", call='`send_message_to(recipient_address: "/dev_team/qa", content: "Please test …")`, by `dev_lead_4c3d`',
+          op=lambda: w.send_by_address("dev_lead_4c3d", "/dev_team/qa", "Please test …", "collabmsg_O3", "2026-11-01T11:20:00.000Z"),
+          found="Step 1, its own team.", today="The same.", checked="472 sends replayed, all to the same receiver."),
+     dict(id="O4", title="Refused: an address that is not in the dev team", cases="IN-6, C-4", call='`send_message_to(recipient_address: "/dev_team/designer", content: "…")`, by `dev_lead_4c3d`',
+          op=lambda: w.send_by_address("dev_lead_4c3d", "/dev_team/designer", "…", "x", "2026-11-01T11:30:00.000Z"),
+          found="A miss under `/dev_team/` is not found; it never falls through to the org.", today="The same.", checked="—"),
+     dict(id="O5", title="The CEO agent delegates Task T4 to a study group team", cases="DL-3",
+          call='`delegate_task(recipient_address: "/study_group", task_id: "demo-4")`, by `ceo_agent_1f2e`',
+          op=lambda: w.delegate("ceo_agent_1f2e", "/study_group", "2026-11-01T12:00:00.000Z", ("agent_team", "study_group_7a7a", {"student": "student_31aa", "tutor": "tutor_31bb"}), task_key="demo-4"),
+          found="The delegating run is the org run. The study group's own file is rooted at `/`; its handoff `{ \"from\": \"/student\", \"to\": \"/Teacher\" }` is kept as written: an external target (§3.2). The org's file keeps only its own units.",
+          today="Today the study group is mounted in the org's address space.", checked="0 such entries in the data."),
+     dict(id="O6", title="The study group follows its handoff to the org's Teacher", cases="B-5",
+          call='`get_handoff_rules()`, then `send_message_to(recipient_address: "/Teacher", content: "Homework done …")`, by `student_31aa`',
+          op=lambda: w.send_by_address("student_31aa", "/Teacher", "Homework done …", "collabmsg_O4", "2026-11-01T13:00:00.000Z"),
+          found="`get_handoff_rules()` returns `{ \"handoffs\": [ { \"when\": \"When the homework is done …\", \"recipient_address\": \"/Teacher\" } ] }`. Not in the study group (step 1); step 2: T4's assigner is the org, whose standing agents include `/Teacher`. One line in the study group's log and in the org's log.",
+          today="The same.", checked="0 sends; the 2 legacy teams with such a rule have no Task record, so for them it is not found."),
+     dict(id="O7", title="The study group reaches the org's mounted team", cases="B-4",
+          call='`send_message_to(recipient_address: "/dev_team/dev_lead", content: "Need a tool …")`, by `student_31aa`',
+          op=lambda: w.send_by_address("student_31aa", "/dev_team/dev_lead", "Need a tool …", "collabmsg_O5", "2026-11-01T13:10:00.000Z"),
+          found="Step 2, the org's standing agents.", today="The same.", checked="2 sends replayed, all to the same receiver."),
+     dict(id="O8", title="The dev lead delegates Task T5", cases="DL-4",
+          call='`delegate_task(recipient_address: "/release_agent", task_id: "demo-5")`, by `dev_lead_4c3d`',
+          op=lambda: w.delegate("dev_lead_4c3d", "/release_agent", "2026-11-01T14:00:00.000Z", ("agent", "release_agent_66c3", None), task_key="demo-5"),
+          found="A mounted team is part of the org run, so the delegating run is the org run.", today="The same.", checked="2 entries; both can be computed."),
+    ]
+    return w, steps
+
+STORIES = [("5.1", "You start a standalone agent: the Project Task Manager (M), with a peer node", standalone),
+           ("5.2", "You start a team: the Software Engineering Team on its own (U)", team),
+           ("5.3", "You start an org (O)", org)]

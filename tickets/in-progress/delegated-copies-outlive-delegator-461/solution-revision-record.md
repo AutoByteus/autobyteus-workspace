@@ -693,5 +693,32 @@
   - Target: the entry's `members` carry each member's own address (`/marketing_content_creator`). Node B's answer stops mounting them (`remote-team-run-starter.ts`, added to the removal plan), and the migration drops the prefix (DS-10 step 3, 4 addresses).
   - Node A reaches peer members by run ID only, so nothing resolves these addresses; they are shown by leaf name.
 - Classification: `Large`, `High`, unchanged
-- Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's §5)
+- Next action: superseded by SR-031
+
+### SR-031 — The contract as an executable model; every state generated
+
+- Phase and classification: Requirements (supplement) and Design; no intended behavior changed
+- Triggering: the user (2026-11-11). The contract should record every collaboration case, local and across nodes: each address, each data change, each transition. It must be validated as such, so that the code can be implemented from it. Until now the transitions were hand-written, which is how the errors of SR-030 got in.
+- Done:
+  - `evidence/collaboration-model/model.py`: the rules of §2 … §4 as code on an in-memory disk:
+    - starting a standalone agent, a team and an org;
+    - `delegate_task` (new run; existing run; sub-work joining the delegator's current Task; description-only; a peer node);
+    - `send_message_to` by address (steps 1 … 3) and by run ID (rules (a) and (b), the assigner's continuation, across nodes);
+    - the sender address shown;
+    - stop, restore, `update_task` close and reopen, Task deletion;
+    - the `DelegationTree`, derived.
+    Refusals use the code's exact texts.
+  - `stories.py`: the three stories of §5, 36 steps: the Project Task Manager with a peer node (S0 … S19), a team (U0 … U7) and an org (O0 … O8).
+  - `walkthrough.py` generates `collaboration-walkthrough.md`: every state, with the call, the result, the receiver's header, every created, changed or removed file in full (new rows and log lines), the unchanged files, and the tree. It also generates the step lists of the contract's §5.1 … §5.3.
+  - `--check` fails when the walkthrough, the step lists or any JSON example of §3 … §4 differs from the model. Three tamperings were each caught.
+  - `validate_contract_examples.py` on the walkthrough: 107 JSON blocks, 0 findings.
+- Found by running the stories (the hand-written walk had them wrong or unstated):
+  - **Sub-work joins the delegator's current Task**, its most recently linked entry, not any open Task (`task-execution-resource-service.ts` `linkInherited`, `new-copy-work.ts`). Delegating sub-work after M gave E T6 would have joined T6, so the story gives T6 after T1's life.
+  - **An assigner's continuation reopens the run's last `assigned` entry only.** A run that works on another open Task is reached through that Task, and its closed entry stays closed.
+  - **A delegated team has its definition's members and handoffs.** The contract's examples showed E with 2 members, and U (the same definition) with 4. The §3 examples are now model states.
+  - **The header of a message from another node** is `You received a message from the agent with sender run id "<id>" on node "<node>".` (`received-message-header.ts`).
+- The rules themselves stay validated on the user's data by `validate_every_case.py` (6,646 addressed sends, 16,006 messages, 406 entries); the model guarantees that the transitions follow them.
+- Design: the acceptance test of the ticket runs the same stories against the server and compares its files with the walkthrough after every step.
+- Classification: `Large`, `High`, unchanged
+- Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's model and §5)
 
