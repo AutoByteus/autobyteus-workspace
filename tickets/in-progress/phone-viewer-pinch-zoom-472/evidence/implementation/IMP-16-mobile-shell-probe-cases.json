@@ -1,0 +1,308 @@
+{
+ "header": {
+  "id": "IMP-16",
+  "command": "pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<tmp> --cases=MSP-39",
+  "commit": "1b5b7f5b0e",
+  "env": "clean env, headless Chrome 390x844 touch, DPR 2",
+  "date": "2026-11-11T18:40:40.942Z",
+  "source": "excerpt of mobile-shell-probe.json"
+ },
+ "result": "Pass",
+ "summary": {
+  "cases": {
+   "MSP-39": "Pass"
+  },
+  "unknownBrowserErrors": 0
+ },
+ "MSP-39": {
+  "result": "Pass",
+  "seconds": 9.4,
+  "base": 358,
+  "pdfStart": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": 358,
+   "pagesTransform": "",
+   "pagesRect": {
+    "left": 16,
+    "top": 64
+   },
+   "canvases": [
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    },
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    },
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    },
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    }
+   ],
+   "scrollLeft": 0,
+   "scrollTop": 0,
+   "pictureTransform": null,
+   "download": true
+  },
+  "pinched": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": 716,
+   "pagesTransform": "",
+   "pagesRect": {
+    "left": -163,
+    "top": -292
+   },
+   "canvases": [
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    }
+   ],
+   "scrollLeft": 179,
+   "scrollTop": 356,
+   "pictureTransform": null,
+   "download": true
+  },
+  "anchor": {
+   "x": 179,
+   "y": 356
+  },
+  "anchorNow": {
+   "x": 195,
+   "y": 420
+  },
+  "centre": [
+   195,
+   420
+  ],
+  "panned2": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": 716,
+   "pagesTransform": "",
+   "pagesRect": {
+    "left": -163,
+    "top": -442
+   },
+   "canvases": [
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    }
+   ],
+   "scrollLeft": 179,
+   "scrollTop": 506,
+   "pictureTransform": null,
+   "download": true
+  },
+  "scrolled": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": 716,
+   "pagesTransform": "",
+   "pagesRect": {
+    "left": -163,
+    "top": -990
+   },
+   "canvases": [
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    }
+   ],
+   "scrollLeft": 179,
+   "scrollTop": 1054,
+   "pictureTransform": null,
+   "download": true
+  },
+  "backToFit": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": 358,
+   "pagesTransform": "",
+   "pagesRect": {
+    "left": 16,
+    "top": -285
+   },
+   "canvases": [
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    },
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    },
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    },
+    {
+     "cssWidth": 358,
+     "bitmapWidth": 716
+    }
+   ],
+   "scrollLeft": 0,
+   "scrollTop": 349,
+   "pictureTransform": null,
+   "download": true
+  },
+  "doubleTapped": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": 716,
+   "pagesTransform": "",
+   "pagesRect": {
+    "left": -163,
+    "top": -990
+   },
+   "canvases": [
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    },
+    {
+     "cssWidth": 716,
+     "bitmapWidth": 1432
+    }
+   ],
+   "scrollLeft": 179,
+   "scrollTop": 1054,
+   "pictureTransform": null,
+   "download": true
+  },
+  "pdfDownloaded": {
+   "name": "resume-472.pdf",
+   "sameBytes": true,
+   "url": "blob:"
+  },
+  "imageStart": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": null,
+   "pagesTransform": null,
+   "pagesRect": null,
+   "canvases": [],
+   "scrollLeft": null,
+   "scrollTop": null,
+   "pictureTransform": "translate(0px, 0px) scale(1)",
+   "download": true
+  },
+  "imagePinched": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": null,
+   "pagesTransform": null,
+   "pagesRect": null,
+   "canvases": [],
+   "scrollLeft": null,
+   "scrollTop": null,
+   "pictureTransform": "translate(-195px, -398px) scale(2)",
+   "download": true
+  },
+  "imageFit": {
+   "zoomScale": 1,
+   "dpr": 2,
+   "back": {
+    "x": 4,
+    "y": 0
+   },
+   "pagesWidth": null,
+   "pagesTransform": null,
+   "pagesRect": null,
+   "canvases": [],
+   "scrollLeft": null,
+   "scrollTop": null,
+   "pictureTransform": "translate(0px, 0px) scale(1)",
+   "download": true
+  },
+  "pngDownloaded": {
+   "name": "photo-472.png",
+   "sameBytes": true,
+   "url": "blob:"
+  }
+ }
+}

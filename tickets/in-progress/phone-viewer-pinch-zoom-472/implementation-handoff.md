@@ -18,14 +18,15 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zo
 
 PDFs and images in the phone viewer zoom by touch. A PDF goes from page width to 3× and is drawn again at the new width; an image goes from fit to 4×. The viewer keeps the zoom across a reload of the same file. A Download button saves the open PDF or image: through a new shell-bridge action into Downloads in the Android app, or as the browser's download.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 fixes CRR-002 CR-001; IR-001 was the initial round, CRR-001 Pass)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
-- Commits (on `ed481ae4ca`):
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (Fail, CR-001); API/E2E: `API-REV-001`; delivery: `N/A`
+- Triggering finding IDs: CR-001 (API/E2E F-1, API-01 `pan2-hold`)
+- IR-002 commit: `1b5b7f5b0e`. A two-finger move that ends at the same zoom pans instead of snapping back; this is the code under test for IMP-11…IMP-16.
+- IR-001 commits (on `ed481ae4ca`):
   - `0185e8f7c5`: the received package.
   - `a0c57dc9dd`: web.
   - `617b43165e`: Android, docs and release notes.
@@ -51,6 +52,7 @@ PDFs and images in the phone viewer zoom by touch. A PDF goes from page width to
 | Behavior | Approved change / preserved outcome | Implemented production path / key files | Result / notes |
 | --- | --- | --- | --- |
 | REQ-001 PDF zoom (DS-001) | Pinch 1×–3× around the pinch centre, pan, page scroll, double tap 1× ↔ 2×, sharp text | `MobileFileViewer` → `FileViewer` (`touchZoom`) → `PdfViewer` touch mode → `usePdfPinchZoom`:<br>• two-finger touch events (non-passive, `preventDefault`) drive a live CSS transform around the anchor<br>• on release, `setZoom` sets `zoom`, vue-pdf-embed's `width` = base × zoom, and the composable waits until the page canvases have the new CSS width<br>• then it clears the transform and scrolls the anchor under the fingers<br>• one finger: native scrolling (`touch-action: pan-x pan-y`) | Unit: `usePdfPinchZoom.spec.ts` (6), `MobileFileViewer.zoom.spec.ts`. Browser (IMP-06 MSP-39):<br>• the width doubles (358 → 716)<br>• the anchor lands exactly under the fingers (195, 420)<br>• bitmaps are at width × DPR (1432)<br>• one finger scrolls<br>• double tap both ways<br>Android WebView mechanism: IMP-00 |
+| REQ-001 two-finger pan at a fixed zoom (IR-002, CR-001) | A two-finger drag, or a pinch held at 1× or 3× while the fingers move, leaves the pages where the fingers took them | `usePdfPinchZoom.commit`, factor ≈ 1 branch: the live transform is cleared and, on the next tick, the scroller scrolls back by the fingers' move; then `onCommit` (zoom memory). Resting fingers change nothing | `usePdfPinchZoom.spec.ts` (9; without the fix the drag and cap cases fail). MSP-39 (IMP-16): a two-finger pan at 2× moves `scrollTop` 356 → 506 (the 150 px move) with the width kept at 716 |
 | REQ-002 image zoom (DS-002) | Fit to 4×, pan, double tap fit ↔ fill, as the VNC picture | `ImageViewer` touch mode: a `touch-none` layer, `usePictureZoom(layer, { picture: natural size, onCommit })` | `usePictureZoom.spec.ts` (13, VNC cases unchanged plus commit/restore), MSP-39 (pinch to `scale(2)`, double tap back to fit) |
 | REQ-003 page never zooms, bar stays | — | The page zoom stays off; the PDF's two-finger moves are taken from the browser; the image layer is `touch-none`; the viewer is under the fixed bar | MSP-39: `visualViewport.scale` 1 and the back arrow at (4, 0) in all 8 states. IMP-00: Android WebView `visualViewport.scale` 1, no scroll on pinch |
 | REQ-004 Download (DS-003) | Bar button for a loaded PDF/image. App: Downloads under its name, with "Saved to Downloads: <name>" or "Couldn't save the file.". Browser: the browser's download | `MobileFileViewer` bar `actions` → `useMobileFileDownload`:<br>• `fetchAuthorizedResourceBlob(fileState.url)` → base64 → `getShellBridge().saveFile`, or `<a download>` in a browser<br>Android:<br>• `ShellBridge` → `ShellBridgeMessages.read` (`saveFile`) → `MainActivity.bridgeActions.onSaveFile` → `DownloadsSaver`<br>• API ≥ 29: MediaStore.Downloads with `IS_PENDING`<br>• API 26–28: `ACTION_CREATE_DOCUMENT`, with the bytes in the cache and the pending save kept in the saved instance state<br>• result toast | Unit: `useMobileFileDownload.spec.ts` (5), `MobileFileViewer.zoom.spec.ts` (button). JVM: `ShellBridgeMessagesTest` (13). Instrumented: `DownloadsSaverTest` (3) on Android 15 (IMP-08) and Android 10 (IMP-10). Browser download: MSP-39 (names and bytes) |
@@ -148,6 +150,17 @@ Evidence: `tickets/in-progress/phone-viewer-pinch-zoom-472/evidence/implementati
 | IMP-09 | `vitest run components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts` | `d2b9f99603` | shell | AC-005 and the Download button at the viewer level | AC-005, REQ-004 | Pass | `IMP-09-web-zoom-spec.log` | `Tests  3 passed (3)` |
 | IMP-10 | `ANDROID_SERIAL=emulator-5604 ./gradlew :app:connectedDebugAndroidTest -P…class=org.autobyteus.mobile.DownloadsSaverTest` | `d2b9f99603` | my AVD API 29 (Android 10), headless | `DownloadsSaver` on the first Android with `MediaStore.Downloads` | REQ-004 | Pass | `IMP-10-android-saver-api29.log` | `Finished 3 tests on impl472_api29(AVD) - 10`; Downloads empty afterwards |
 
+IR-002 rows (code under test `1b5b7f5b0e`; they supersede the web rows above for the current code; the Android rows are unchanged, as IR-002 changes no Android code):
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-11 | `pnpm -C autobyteus-web typecheck` | `1b5b7f5b0e` | shell | web | all | Pass | `IMP-11-web-typecheck.log` | `test-file errors: 93 in 40 files (baseline 93 in 40 files)`, `PASS` |
+| IMP-12 | full web suite | `1b5b7f5b0e` | shell | every web spec | AC-001…AC-005 | Pass for 472's specs, with 2 timeouts in an unrelated spec (see IMP-12b) | `IMP-12-web-nuxt-tests-excerpt.log` | `usePdfPinchZoom.spec.ts (9 tests)` ✓; `Tests  2 failed \| 5697 passed`; the 2 are `CollaborationMessagesOrgRoot.integration.spec.ts`, `Test timed out in 5000ms` |
+| IMP-12b | `vitest run components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts` | `1b5b7f5b0e` | shell | the two timed-out cases, alone | — | Pass | `IMP-12b-web-org-root-spec.log` | `Tests  3 passed (3)` (870 ms and 738 ms); the spec touches nothing of 472 |
+| IMP-13 | web guards | `1b5b7f5b0e` | shell | boundaries, locales | — | Pass | `IMP-13-web-guards.log` | `Passed with zero unresolved findings.` |
+| IMP-14 / IMP-15 | `build:mobile-web`, server build | `1b5b7f5b0e` | shell | the phone bundle with the fix | — | Pass | `IMP-14-mobile-web-build.log`, `IMP-15-server-build.log` | `Mobile web assets written to` |
+| IMP-16 | mobile-shell probe `--cases=MSP-39` | `1b5b7f5b0e` | clean env; headless Chrome touch 390×844 | the phone viewer with the fix, incl. the new two-finger pan at 2× | AC-001, AC-002, REQ-003, REQ-004 | Pass | `IMP-16-mobile-shell-probe.log`, `IMP-16-mobile-shell-probe-cases.json` | `"panned2"`: `pagesWidth` 716, `scrollTop` 506 (from 356), `zoomScale` 1; `"unknownBrowserErrors": 0` |
+
 Mutation checks (observed, not saved as files):
 - `MobileFileViewer` without its zoom memory: the two AC-005 cases fail.
 - `DownloadsSaverTest` leaves no file in Downloads on either emulator (`content query … downloads` → "No result found.").
@@ -179,6 +192,8 @@ Mutation checks (observed, not saved as files):
   - Very long PDFs at 3× (memory).
 
 ## Downstream Coverage Hints / Suggested Scenarios
+
+0. IR-002 rechecks (CRR-002), in the Android app: API-01 `pan2-hold`, a two-finger pan at 2×, a moving pinch held at the 3× cap, and the other PDF gestures.
 
 1. AC-001/AC-002 in the Android app (a debug APK from this branch) on a device or emulator, with a test-owned node and a several-page PDF (a resume) and an image opened from a conversation:
    - pinch in and out, pan, scroll through pages, double tap;
