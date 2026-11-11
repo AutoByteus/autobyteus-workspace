@@ -1,3 +1,4 @@
+import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { projectAgentOrgExecutionTree, projectCollaborationTaskExecution, projectCollaborationSelectionsChanged } from "./collaboration-execution-tree-dto-projection.js";
 import {
   RootExecutionEventDtoSchema,
@@ -26,10 +27,11 @@ export const projectAgentOrgExecutionView = (
   connection: Readonly<{ snapshot: AgentOrgRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string;
     lastMessageChangeSequence: number }>,
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
+  delegated: readonly CollaborationTaskExecutionDto[] = [],
 ): RootExecutionViewDto => projectAgentOrgExecutionSnapshot({
   orgRunId: run.orgRunId, isActive: run.isActive(), snapshot: connection.snapshot,
   baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
-  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions,
+  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions, delegated,
 });
 
 export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
@@ -41,6 +43,8 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   lastMessageChangeSequence: number | null;
   /** autobyteus-278: the runs this Org delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
+  /** autobyteus-461 DS-8: the runs on this node its agents delegated to. */
+  delegated?: readonly CollaborationTaskExecutionDto[];
 }>): RootExecutionViewDto => {
   const { orgRunId, isActive, snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence } = input;
   return RootExecutionViewDtoSchema.parse({
@@ -51,7 +55,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     live_sequence_id: liveSequenceId,
     last_message_change_sequence: lastMessageChangeSequence,
     is_active: isActive,
-    execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
+    execution_tree: projectAgentOrgExecutionTree(snapshot.tree, input.delegated ?? []),
     closed_task_executions: snapshot.closedTaskExecutions,
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({

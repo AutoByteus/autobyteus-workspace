@@ -110,7 +110,7 @@ const projectConfigured = (member: ConfiguredExecutionNode): AgentOrgExecutionTr
     address: member.address, teamDefinitionId: member.teamDefinitionId, role: member.role, description: member.description,
     teamRunId: member.teamRunId, coordinatorAddress: member.coordinatorAddress,
     defaultLaunchConfiguration: projectLaunch(member.defaultLaunchConfiguration), members: member.members.map(projectConfiguredAgent),
-    taskExecutions: member.taskExecutions.map(projectCollaborationTaskExecution),
+    taskExecutions: [],
   };
 
 /** A standalone run's view tree: its own agent and its child rows (the runs it delegated to, DS-8). */
@@ -147,7 +147,7 @@ export const projectDelegatedTeamRun = (child: DelegatedChild, tree: TeamRunExec
   };
 };
 
-export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot): AgentOrgExecutionTreeDto => ({
+export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot, delegated: readonly CollaborationTaskExecutionDto[] = []): AgentOrgExecutionTreeDto => ({
   subjectKind: "agent_org", createdAt: tree.createdAt, archivedAt: tree.archivedAt,
   applicationBinding: tree.applicationBinding === null ? null : {
     applicationId: tree.applicationBinding.applicationId, bindingId: tree.applicationBinding.bindingId,
@@ -157,6 +157,7 @@ export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnaps
     address: tree.rootOrg.address, orgDefinitionId: tree.rootOrg.orgDefinitionId, orgDefinitionName: tree.rootOrg.orgDefinitionName,
     orgRunId: tree.rootOrg.orgRunId, defaultLaunchConfiguration: projectLaunch(tree.rootOrg.defaultLaunchConfiguration),
     members: tree.rootOrg.members.map(projectConfigured),
-    taskExecutions: tree.rootOrg.taskExecutions.map(projectCollaborationTaskExecution),
+    // DS-8: its child rows are the runs its agents delegated to (one hop); nothing is hosted.
+    taskExecutions: [...delegated],
   },
 });

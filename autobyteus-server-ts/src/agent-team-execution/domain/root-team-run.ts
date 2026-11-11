@@ -24,7 +24,6 @@ import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
 import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js"; import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
-import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";

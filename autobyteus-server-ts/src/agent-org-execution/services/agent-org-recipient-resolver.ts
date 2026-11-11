@@ -11,7 +11,7 @@ import {
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
-import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
+import type { DelegationPlacement as ResolvedAgentOrgRecipient } from "../../agent-collaboration/collaborators/catalog-delegation.js";
 
 /** Resolves Org addresses by subject (DS-001, DS-002). Called inside the Org operation gate. */
 export class AgentOrgRecipientResolver {

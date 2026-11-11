@@ -1,3 +1,10 @@
+import { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
+import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
+import { getProcessStandaloneRunCommandPort } from "../../agent-execution/services/standalone-run-ports.js";
+import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import { getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -43,7 +50,14 @@ const commandAck = (
 /** Native AgentOrg stream. It does not reuse or reinterpret the Team envelope. */
 export class AgentOrgStreamHandler {
   private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; orgRunId: string; close(): void }>();
-  constructor(private readonly service: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">) {}
+  constructor(
+    private readonly service: Pick<AgentOrgRunService, "getActive" | "recordRunActivity">,
+    private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
+      tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
+      activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
+      teamRun: (teamRunId, restore) => restore ? getTeamRunService().resolveManagedTeamRun(teamRunId) : Promise.resolve(getTeamRunService().getActiveTeamRun(teamRunId)),
+    }),
+  ) {}
 
   async connect(connection: WebSocketConnection, orgRunIdInput: string): Promise<string | null> {
     const orgRunId = orgRunIdInput.trim();
@@ -67,7 +81,8 @@ export class AgentOrgStreamHandler {
       }));
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentOrgExecutionView(run, barrier, remoteTaskExecutions),
+        payload: projectAgentOrgExecutionView(run, barrier, remoteTaskExecutions,
+          await delegatedChildrenDtos({ rootSubjectKind: "agent_org", rootRunId: run.orgRunId })),
       }));
       const unsubscribe = barrier.subscribe((event) => {
         try {
@@ -185,7 +200,10 @@ export class AgentOrgStreamHandler {
               approved: message.type === "APPROVE_TOOL",
               reason: message.payload.reason,
             };
-      const outcome = message.type === "SEND_MESSAGE"
+      // AR-011: a child row's command goes to the child's own run (not this org's activity).
+      const child = await this.children.execute(createAgentOrgRootExecutionIdentity(run.orgRunId), message.payload.target_agent_run_id, command);
+      const outcome = child ? Object.freeze({ result: child, executionKind: null })
+        : message.type === "SEND_MESSAGE"
         ? await run.executeAgentCommandWithExecutionKind(message.payload.target_agent_run_id, command)
         : Object.freeze({
             result: await run.executeAgentCommand(message.payload.target_agent_run_id, command),

@@ -11,11 +11,9 @@ import {
   type RootExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
-import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { getTaskDelegation } from "../../agent-collaboration/execution/task/task-delegation-binding.js";
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
-import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -31,7 +29,6 @@ import type { AgentOrgExecutionIndex, AgentOrgIndexedAgentExecution } from "./ag
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOrgRecipientResolver } from "./agent-org-recipient-resolver.js";
 import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js";
-import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
 import { REMOTE_REFUSAL } from "../../agent-collaboration/execution/remote/remote-refusal-codes.js";
 import type { RemoteInboundMessage, RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
@@ -49,7 +46,6 @@ export class AgentOrgRunMessageDelivery {
     getIndex(): AgentOrgExecutionIndex;
     recipients: AgentOrgRecipientResolver;
     collaborators: AgentOrgRunCollaborators;
-    taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
     getCommunication(): RootCommunicationEngine;
     rootAgents: RootAgentExecutionRegistry;
     teams: RootTeamExecutionDirectory;
@@ -68,7 +64,7 @@ export class AgentOrgRunMessageDelivery {
   deliverExact(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
     const sender = input.sender.identity;
     const endpoint = this.options.remoteLinks.endpointFor(input.targetAgentRunId);
-    if (!endpoint) return this.options.taskExecutions.deliverToExactTarget(sender.agentRunId, input.targetAgentRunId, () => this.deliverToRunId(input));
+    if (!endpoint) return this.deliverToRunId(input);
     this.options.authorizeIdentity(sender);
     return this.withLiveLease(sender.agentRunId, () => this.options.remoteSend.send({ sender, endpoint,
       content: input.content, messageType: input.messageType, referenceFiles: input.referenceFiles }));
@@ -214,7 +210,7 @@ export class AgentOrgRunMessageDelivery {
       : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
     if (command.kind !== "post_message") {
       const result = this.isLiveAgent(agentRunId)
-        ? await this.options.taskExecutions.withLiveLease(agentRunId, execute)
+        ? await execute()
         : { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in AgentOrg '${this.options.orgRunId}'.` };
       return Object.freeze({ result, executionKind: agent.executionKind });
     }
@@ -223,9 +219,9 @@ export class AgentOrgRunMessageDelivery {
     return Object.freeze({ result, executionKind: agent.executionKind });
   }
 
-  /** Target lease that records the receiver's first accepted message or operator post. */
-  withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return this.options.taskExecutions.withLiveLease(agentRunId, operation);
+  /** Runs a delivery into an agent of this org (nothing hosted needs holding, autobyteus-461). */
+  withLiveLease(_agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return operation();
   }
 
   /**

@@ -1,3 +1,4 @@
+import { delegatedChildrenDtos } from "../../services/agent-streaming/delegated-children-dtos.js";
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { listAgentOrgRunSelectionScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
@@ -219,8 +220,8 @@ export class AgentOrgRunService {
 
   async getInspection(orgRunId: string) {
     const inspection = await this.dependencies.manager.getInspection(orgRunId);
-    return projectAgentOrgExecutionSnapshot({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_org", rootRunId: inspection.snapshot.tree.rootOrg.orgRunId }) });
+    const run = { rootSubjectKind: "agent_org" as const, rootRunId: inspection.snapshot.tree.rootOrg.orgRunId };
+    return projectAgentOrgExecutionSnapshot({ ...inspection, remoteTaskExecutions: await remoteTaskExecutionDtos(run), delegated: await delegatedChildrenDtos(run) });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

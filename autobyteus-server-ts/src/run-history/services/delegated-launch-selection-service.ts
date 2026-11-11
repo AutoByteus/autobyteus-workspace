@@ -90,9 +90,8 @@ export class DelegatedLaunchSelectionService {
         if (hasConfiguredPatches(input.configured)) {
           return updateResult("RUN_ACTIVE", "The run is running: only its stopped copies' models can change. Stop the run to change its own settings.");
         }
-        if (!("updateDelegatedLaunchSelections" in root)) return updateResult(input.changes.length ? "NOT_FOUND" : "UNCHANGED", NO_COPIES);
-        const result = await root.updateDelegatedLaunchSelections(input.changes, this.dependencies.validator);
-        return updateResult(result.outcome, result.message, result.fieldErrors);
+        // A delegated run is configured as itself (autobyteus-461): a live run has no copies to change here.
+        return updateResult(input.changes.length ? "NOT_FOUND" : "UNCHANGED", NO_COPIES);
       }
       return await this.updateStopped(input);
     } catch (error) {
