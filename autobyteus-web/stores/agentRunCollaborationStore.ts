@@ -1,7 +1,6 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { defineStore } from 'pinia'
-import { closedTaskExecutionsDigest } from '@autobyteus/collaboration-stream-contracts'
 import { shallowReactive, shallowRef, watch } from 'vue'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { ContextFilePath } from '~/types/conversation'
@@ -186,8 +185,10 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   /** The status read on the history poll that is still running; a tick that finds one skips its own. */
   let statusRefresh: Promise<void> | null = null
-  /** Per stopped host, the node's closed-set digest its view was last re-read for: one re-read per digest value. */
-  const stoppedHostRereads = new Map<string, string>()
+  /** Per host, the answer its view was last re-read for (active state and local children): one re-read per distinct answer. */
+  const rereadAnswers = new Map<string, string>()
+  const answerKey = (answer: AgentRunCollaborationStatusesAnswer): string =>
+    JSON.stringify([answer.isActive, answer.statuses.map((status) => [status.agentRunId, status.memberAddress])])
 
   /** The answer names exactly the context's local children (ID and address), each once. */
   const sameLocalChildren = (context: AgentRunCollaborationContext, answer: AgentRunCollaborationStatusesAnswer): boolean => {
@@ -200,10 +201,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * The history poll's refresh of task rows under listed runs that are not open (autobyteus-426 REQ-009, D-09): one
    * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
    * listed (`listedAgentRunIds`, active or stopped) or whose context is still live. Each answer, in order: dropped
-   * unless its hub is as it was at selection; when both are inactive, a view re-read only when the node's closed-set
-   * digest differs from the view's and was not re-read for before (a Task closed or reopened while the host is
-   * stopped, autobyteus-435); a view re-read when the active state or the local children changed, or when the
-   * digest differs (autobyteus-446); else the states are applied.
+   * unless its hub is as it was at selection; a view re-read when the active state or the local children (ID and
+   * address) differ from the view's, at most once per distinct answer (autobyteus-461 SR-040: one rule for every hub,
+   * whose children are runs of their own); else, or for an answer already re-read for, the states are applied.
    */
   const refreshListedStatuses = (listedAgentRunIds: readonly string[]): Promise<void> => {
     if (statusRefresh) return statusRefresh
@@ -226,19 +226,14 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         const current = contexts.value[hostRunId] === context && binding.bindingRevision === revision
           && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
         if (!answer || !current) continue
-        if (!answer.isActive && !context.isActive) {
-          const digest = answer.closedTaskExecutionsDigest
-          if (digest && digest !== closedTaskExecutionsDigest(context.view.closed_task_executions)
-            && stoppedHostRereads.get(hostRunId) !== digest) {
-            stoppedHostRereads.set(hostRunId, digest)
+        // One rule for every hub, active or stopped (autobyteus-461 SR-040): its children are runs of their own.
+        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)) {
+          const key = answerKey(answer)
+          if (rereadAnswers.get(hostRunId) !== key) {
+            rereadAnswers.set(hostRunId, key)
             void inspect(hostRunId)
+            continue
           }
-          continue
-        }
-        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)
-          || answer.closedTaskExecutionsDigest !== closedTaskExecutionsDigest(context.view.closed_task_executions)) {
-          void inspect(hostRunId)
-          continue
         }
         context.applyStatuses(answer.statuses)
       }
@@ -455,7 +450,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     delete selection[hostRunId]
     delete expandedTeams[hostRunId]
     delete errors[hostRunId]
-    stoppedHostRereads.delete(hostRunId)
+    rereadAnswers.delete(hostRunId)
   }
 
   /** Releases every host's view and stream: the window's node changed, or the phone's session ended (autobyteus-435). */

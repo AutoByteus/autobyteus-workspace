@@ -6,11 +6,10 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationIndex } from '~/services/agentCollaboration/agentRunCollaborationIndex'
 import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
-import { closedTaskExecutionsDigest } from '@autobyteus/collaboration-stream-contracts'
 
 // autobyteus-426 REQ-009 / D-09: the history poll's states-only refresh of task rows under listed runs that are not open;
-// autobyteus-446: the answer's closed-set digest re-reads a view whose Task closed or reopened; autobyteus-435: also for a
-// listed stopped host (its digest comes from the node's Task index), once per digest value.
+// autobyteus-461 SR-040: one rule for every hub, active or stopped (its children are runs of their own): the view is
+// re-read when the answer's active state or local children differ from it, at most once per distinct answer.
 
 const io = vi.hoisted(() => ({
   viewActive: true,
@@ -51,10 +50,8 @@ const children = (statuses: Record<string, string>, extra: Array<[string, string
     .map(([agentRunId, memberAddress]) => ({ agentRunId, memberAddress, status: statuses[agentRunId] ?? 'idle', recoverableBlock: null })),
   ...extra.map(([agentRunId, memberAddress]) => ({ agentRunId, memberAddress, status: 'running', recoverableBlock: null })),
 ]
-type Reference = { agentRunId: string } | { teamRunId: string }
-/** The node's answer for one run, with the digest of its closed set (the fixture's is empty), active or stopped. */
-const answerFor = (runId: string, isActive: boolean, statuses: unknown[], closed: Reference[] = []) =>
-  ({ runId, isActive, statuses, closedTaskExecutionsDigest: closedTaskExecutionsDigest(closed) })
+/** The node's answer for one run, active or stopped: its open local children's agents with their statuses. */
+const answerFor = (runId: string, isActive: boolean, statuses: unknown[]) => ({ runId, isActive, statuses })
 const statusOf = (store: ReturnType<typeof useAgentRunCollaborationStore>, hostRunId: string, agentRunId: string) =>
   store.contextFor(hostRunId)!.getAgentContext(agentRunId)!.state.currentStatus
 
@@ -129,17 +126,10 @@ describe('agentRunCollaborationStore.refreshListedStatuses', () => {
     expect(io.readView).toHaveBeenCalledTimes(1)
   })
 
-  it('does nothing when the listed run and its stored view are both inactive (activating), and asks nothing for an unlisted stored view', async () => {
+  it('asks nothing for an unlisted stopped view', async () => {
     io.viewActive = false
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
-    io.readView.mockClear()
-    io.readStatuses.mockResolvedValueOnce([answerFor('host-run', false, [])])
-    await store.refreshListedStatuses(['host-run'])
-    expect(io.readView).not.toHaveBeenCalled()
-    expect(statusOf(store, 'host-run', 'pp-run')).toBe(AgentStatus.Running)
-
-    io.readStatuses.mockClear()
     await store.refreshListedStatuses([])
     expect(io.readStatuses).not.toHaveBeenCalled()
   })
@@ -192,98 +182,73 @@ describe('agentRunCollaborationStore.refreshListedStatuses', () => {
     warn.mockRestore()
   })
 
-  describe('the closed-set digest (autobyteus-446)', () => {
-    it('re-reads the view once when a listed run\'s Task closed (the digest differs), and applies no states from that answer', async () => {
-      const store = useAgentRunCollaborationStore()
-      await store.inspect('host-run')
-      io.readView.mockClear()
-      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', true, children({ 'cua-run': 'running' }), [{ agentRunId: 'cua-run' }, { teamRunId: 'team-run' }])])
-      await store.refreshListedStatuses(['host-run'])
-      expect(io.readView).toHaveBeenCalledTimes(1)
-      expect(io.readView).toHaveBeenCalledWith('host-run')
-      expect(statusOf(store, 'host-run', 'cua-run')).toBe(AgentStatus.Idle)
-    })
-
-    it('re-reads the view once when a closed Task was reopened (the node\'s set shrank)', async () => {
-      const store = useAgentRunCollaborationStore()
-      await store.inspect('host-run')
-      store.contextFor('host-run')!.applyEvent(5, { kind: 'task_executions_closed', task_executions: [{ agentRunId: 'cua-run' }] })
-      io.readView.mockClear()
-      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', true, children({}), [])])
-      await store.refreshListedStatuses(['host-run'])
-      expect(io.readView).toHaveBeenCalledTimes(1)
-    })
-
-    it('reads no view over ten refreshes while the digests match: one batched states read each (AC-005)', async () => {
-      const store = useAgentRunCollaborationStore()
-      await store.inspect('host-run')
-      io.readView.mockClear()
-      io.readStatuses.mockResolvedValue([answerFor('host-run', true, children({}))])
-      for (let tick = 0; tick < 10; tick += 1) await store.refreshListedStatuses(['host-run'])
-      expect(io.readStatuses).toHaveBeenCalledTimes(10)
-      expect(io.readView).not.toHaveBeenCalled()
-    })
-
-    it('a closed set the context already follows (a live event) matches the node\'s digest: no extra re-read', async () => {
-      const store = useAgentRunCollaborationStore()
-      await store.inspect('host-run')
-      store.contextFor('host-run')!.applyEvent(5, { kind: 'task_executions_closed', task_executions: [{ teamRunId: 'team-run' }, { agentRunId: 'cua-run' }] })
-      io.readView.mockClear()
-      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', true, children({ 'pp-run': 'idle' }), [{ agentRunId: 'cua-run' }, { teamRunId: 'team-run' }])])
-      await store.refreshListedStatuses(['host-run'])
-      expect(io.readView).not.toHaveBeenCalled()
-      expect(statusOf(store, 'host-run', 'pp-run')).toBe(AgentStatus.Idle)
-    })
-
-    it('an inactive answer whose digest matches the stopped view re-reads nothing', async () => {
-      io.viewActive = false
-      const store = useAgentRunCollaborationStore()
-      await store.inspect('host-run')
-      io.readView.mockClear()
-      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', false, [])])
-      await store.refreshListedStatuses(['host-run'])
-      expect(io.readView).not.toHaveBeenCalled()
-    })
+  it('reads no view over ten refreshes of an active hub whose answer equals its view: one batched states read each (AC-005)', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    io.readView.mockClear()
+    io.readStatuses.mockResolvedValue([answerFor('host-run', true, children({}))])
+    for (let tick = 0; tick < 10; tick += 1) await store.refreshListedStatuses(['host-run'])
+    expect(io.readStatuses).toHaveBeenCalledTimes(10)
+    expect(io.readView).not.toHaveBeenCalled()
   })
 
-  describe('a listed stopped host (autobyteus-435 REQ-011)', () => {
+  describe('a listed stopped delegator (autobyteus-461 SR-040)', () => {
     beforeEach(() => { io.viewActive = false })
 
-    it('asks for a listed stopped host and re-reads its view when its Task closed while it is stopped (AC-011-1)', async () => {
+    it('shows its working children\'s statuses within one poll, with no view re-read on any poll', async () => {
       const store = useAgentRunCollaborationStore()
       await store.inspect('host-run')
       io.readView.mockClear()
-      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', false, [], [{ agentRunId: 'cua-run' }])])
+      io.readStatuses.mockResolvedValue([answerFor('host-run', false, children({ 'pp-run': 'running', 'pb-run': 'running', 'cua-run': 'idle' }))])
       await store.refreshListedStatuses(['host-run'])
       expect(io.readStatuses).toHaveBeenCalledWith(['host-run'])
-      expect(io.readView).toHaveBeenCalledTimes(1)
-      expect(io.readView).toHaveBeenCalledWith('host-run')
+      expect(statusOf(store, 'host-run', 'pb-run')).toBe(AgentStatus.Running)
+      expect(statusOf(store, 'host-run', 'cua-run')).toBe(AgentStatus.Idle)
+      for (let tick = 0; tick < 4; tick += 1) await store.refreshListedStatuses(['host-run'])
+      expect(io.readView).not.toHaveBeenCalled()
     })
 
-    it('re-reads at most once per digest value, even when the re-read view still differs (a stale index entry, AC-011-2)', async () => {
+    it('a child whose Task closed leaves with one re-read; its reopen brings it back with one more', async () => {
       const store = useAgentRunCollaborationStore()
       await store.inspect('host-run')
       io.readView.mockClear()
-      const closed = answerFor('host-run', false, [], [{ agentRunId: 'cua-run' }])
-      io.readStatuses.mockResolvedValue([closed])
-      for (let tick = 0; tick < 5; tick += 1) await store.refreshListedStatuses(['host-run'])
+      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', false, children({}).slice(1))])
+      await store.refreshListedStatuses(['host-run'])
       expect(io.readView).toHaveBeenCalledTimes(1)
+      expect(io.readView).toHaveBeenCalledWith('host-run')
 
-      // Another value (the Task reopened, or a second one closed): one more re-read.
-      io.readStatuses.mockResolvedValue([answerFor('host-run', false, [], [{ agentRunId: 'cua-run' }, { teamRunId: 'team-run' }])])
-      for (let tick = 0; tick < 3; tick += 1) await store.refreshListedStatuses(['host-run'])
+      io.readStatuses.mockResolvedValueOnce([answerFor('host-run', false, children({}, [['new-run', '/release_notes_writer']]))])
+      await store.refreshListedStatuses(['host-run'])
+      expect(io.readView).toHaveBeenCalledTimes(2)
+    })
+
+    it('an answer a re-read cannot match is re-read once, then its statuses are applied; another answer is re-read once more', async () => {
+      const store = useAgentRunCollaborationStore()
+      await store.inspect('host-run')
+      io.readView.mockClear()
+      // The re-read view keeps all three children; the answer names two.
+      const unmatched = answerFor('host-run', false, children({ 'pp-run': 'idle' }).slice(1))
+      io.readStatuses.mockResolvedValue([unmatched])
+      await store.refreshListedStatuses(['host-run'])
+      expect(statusOf(store, 'host-run', 'pp-run')).toBe(AgentStatus.Running)
+      for (let tick = 0; tick < 4; tick += 1) await store.refreshListedStatuses(['host-run'])
+      expect(io.readView).toHaveBeenCalledTimes(1)
+      expect(statusOf(store, 'host-run', 'pp-run')).toBe(AgentStatus.Idle)
+
+      io.readStatuses.mockResolvedValue([answerFor('host-run', true, children({}))])
+      await store.refreshListedStatuses(['host-run'])
       expect(io.readView).toHaveBeenCalledTimes(2)
 
-      // Back to the first value: it differs from the last re-read's, so once more.
-      io.readStatuses.mockResolvedValue([closed])
+      // Back to the first answer: it differs from the last re-read's, so once more.
+      io.readStatuses.mockResolvedValue([unmatched])
       await store.refreshListedStatuses(['host-run'])
       expect(io.readView).toHaveBeenCalledTimes(3)
     })
 
-    it('forgets the re-read digest when the host is released: a later view of it is re-read again for that value', async () => {
+    it('forgets the re-read answer when the host is released: a later view of it is re-read again for that answer', async () => {
       const store = useAgentRunCollaborationStore()
       await store.inspect('host-run')
-      io.readStatuses.mockResolvedValue([answerFor('host-run', false, [], [{ agentRunId: 'cua-run' }])])
+      io.readStatuses.mockResolvedValue([answerFor('host-run', false, children({}).slice(1))])
       await store.refreshListedStatuses(['host-run'])
       store.release('host-run')
       await store.inspect('host-run')

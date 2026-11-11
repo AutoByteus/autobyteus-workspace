@@ -16,12 +16,11 @@ import { AgentRunCollaborationContext, type CollaborationChildStatus } from './a
 export type AgentRunCollaborationStatusesAnswer = Readonly<{
   runId: string
   isActive: boolean
+  /** Every agent of the run's open local children (its view's rows) with its status (autobyteus-461 SR-040). */
   statuses: readonly CollaborationChildStatus[]
-  /** The node's digest of the active root's closed task executions (autobyteus-446); null when inactive. */
-  closedTaskExecutionsDigest: string | null
 }>
 
-/** The children's states and closed-set digest of the given runs (never the view), in the order asked. Never restores. */
+/** The children's states of the given runs (never the view), in the order asked. Never restores. */
 export const readAgentRunCollaborationStatuses = async (runIds: readonly string[]): Promise<AgentRunCollaborationStatusesAnswer[]> => {
   const result = await getApolloClient().query<GetAgentRunCollaborationStatusesQuery>({
     query: GetAgentRunCollaborationStatuses, variables: { runIds: [...runIds] },
@@ -31,7 +30,6 @@ export const readAgentRunCollaborationStatuses = async (runIds: readonly string[
   return (result.data?.agentRunCollaborationStatuses ?? []).map((answer) => ({
     runId: answer.runId,
     isActive: answer.isActive,
-    closedTaskExecutionsDigest: answer.closedTaskExecutionsDigest ?? null,
     statuses: answer.statuses.map((status) => ({
       agentRunId: status.agentRunId,
       memberAddress: status.memberAddress,
