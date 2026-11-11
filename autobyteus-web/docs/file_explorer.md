@@ -206,8 +206,8 @@ The runtime locator rules are deliberately different by environment:
 | Runtime | Locator / behavior |
 | --- | --- |
 | Embedded Electron | An embedded node binding **and** trusted local-file bridge permit an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
-| Browser / remote / missing local bridge | The path must be contained by the selected workspace root and converted to a workspace-relative locator before the existing authorized content route is used. A remote-node Electron window never falls back to client-local bytes. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
-| Phone-first `/mobile` | The path must lie in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only; `MobileFiles` reads it only when the entry's workspace is the open agent's, and shows the unavailable state otherwise. |
+| Browser / remote / missing local bridge | A path inside the selected workspace root is converted to a workspace-relative locator and read through the existing authorized content route. Any other absolute path opens read-only in the Files panel as a **node file** from the run's node (autobyteus-471): the store fetches it once through the shared loader (`utils/fileExplorer/nodeFileContent.ts`, `GET /rest/node-files/content?path=` with the window's credential); text becomes content, other types an object URL revoked when the file is closed or reloaded. A missing path shows "This file was not found on the computer.", a folder "This path is a folder, not a file.", any other refusal "The file preview could not be opened.". A remote-node Electron window never falls back to client-local bytes. A path of a run on another node shows "This file is on <node>, where this run runs." without a content request. |
+| Phone-first `/mobile` | A path in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) opens as a workspace file, any other absolute path as a node file through the same loader (`useMobileNodeFile`, autobyteus-436). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only, whatever its size (autobyteus-471). A path of a run on another node shows "This file is on <node>, where this run runs.". |
 
 Path recognition is opt-in to the Event Monitor Markdown renderer and passive
 output is inert. Explicit pointer or keyboard activation is required. The
@@ -267,8 +267,9 @@ remain literal and inert; they do not fall through to generic browser
 navigation. Raw URI provenance is transient and never enters DOM attributes,
 persisted File Explorer state, references/artifacts, workspace requests, or API
 payloads. A valid URI that cannot map in the active browser/remote workspace
-remains an action with the localized host-only/unavailable result before any
-Files/mobile/content access.
+remains an action: it opens as a node file, or, in a run on another node, shows
+"This file is on <node>, where this run runs." before any Files/mobile/content
+access.
 
 Incomplete placeholder components (`.`, `..`, `...`, and `…`) are rejected
 before a preview action is created, including on POSIX and Windows paths.

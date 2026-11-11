@@ -1,6 +1,6 @@
 // Files attached to a conversation open on the phone, and every explicit open of a file shows its current content
 // (autobyteus-450). Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after all its
-// other cases (`--cases=MSP-28,MSP-29,MSP-30,MSP-31` runs only these).
+// other cases (`--cases=MSP-28,MSP-29,MSP-30,MSP-31,MSP-37` runs only these).
 //
 // Stack of MSP-28…30 (owned by these cases, removed at their end, inside the probe's temp root):
 // - epsilon and its peer zeta, two more nodes from this worktree's `autobyteus-server-ts/dist/app.js` with the probe's owner
@@ -21,13 +21,20 @@
 //                  message carrying a workspace path (`notes/brief.txt`) opens it in the viewer. Throughout: no 401/403
 //                  from the node, no main-frame navigation to `/rest/` or `/graphql`, no new window.
 //   MSP-29 AC-002 (DEC-006)  The run on zeta (opened from the phone through its delegating run) shows a message whose path is
-//                  on zeta; a tap shows "This file is available only on the host workspace." and opens nothing.
+//                  on zeta; a tap shows "This file is on zeta-node, where this run runs." (autobyteus-471 AC-003) and opens
+//                  nothing.
 //   MSP-30 AC-004  Links to `posts/post.md` and `images/chart.png` (2×1 px) opened; both rewritten (VERSION-TWO, 3×1 px) and
 //                  linked again: the new links and the old ones show the current text and image.
 //   MSP-31 AC-003  A desktop window (`nuxt dev` against alpha): a run's link to `docs/reopen-450.md` (VERSION-ONE); the file
 //                  rewritten (TWO) and linked again: the new link, the same old link again and the Files tab each show TWO;
 //                  an unsaved edit typed in the editor survives a rewrite (THREE) and two more opens of the same file (its
 //                  link, which shows the tab read-only in preview, then the Files tab). Runs last (alpha's desktop window).
+//   MSP-37 autobyteus-471 AC-001, AC-002  A desktop window that is not the embedded one (`nuxt dev` against alpha, the
+//                  owner credential on its requests as the desktop app attaches it; the same Files panel path a window on a
+//                  Docker or remote node takes): a run's links to files outside its folder. A Markdown file and a PNG open
+//                  read-only in the Files panel through `GET /rest/node-files/content` (no edit control, typing changes
+//                  nothing); a missing path says "This file was not found on the computer.", a folder "This path is a
+//                  folder, not a file."; no "host workspace" text; the files are unchanged.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import zlib from 'node:zlib';
@@ -38,7 +45,7 @@ import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 const PHONE_HOST = '192.168.77.40';
 const MODEL = 'gemini-3.8-flash-low';
 const PEER = 'zeta-node';
-const HOST_ONLY_NOTICE = 'This file is available only on the host workspace.';
+const ON_OTHER_NODE_NOTICE = `This file is on ${PEER}, where this run runs.`;
 
 /** A solid-colour PNG of the given size (the size tells versions apart in the viewer). */
 const png = (width, height) => {
@@ -272,12 +279,12 @@ export const runFileOpenCases = async (probe) => {
         await chip.scrollIntoViewIfNeeded();
         await chip.tap();
         let notice = false;
-        try { await waitFor('the host-only notice', async () => (await page.locator('[data-testid="toast-container"]').innerText().catch(() => '')).includes(HOST_ONLY_NOTICE), 10_000); notice = true; } catch { /* recorded */ }
+        try { await waitFor('the other-node notice', async () => (await page.locator('[data-testid="toast-container"]').innerText().catch(() => '')).includes(ON_OTHER_NODE_NOTICE), 10_000); notice = true; } catch { /* recorded */ }
         await shot(page, 'MSP-29-remote-path-notice');
         const requests = netSince(from);
-        const details = { notice, viewerOpened: (await viewer.count()) > 0, stillOnConversation: await conversationShown(),
+        const details = { notice, toast: (await page.locator('[data-testid="toast-container"]').innerText().catch(() => '')).slice(0, 200), viewerOpened: (await viewer.count()) > 0, stillOnConversation: await conversationShown(),
           mainFrameNodeNavigations: requests.filter(e => e.navigation && e.mainFrame && /^\/(rest|graphql)/.test(e.path)).map(e => e.path), refused: requests.filter(e => e.status === 401 || e.status === 403).map(e => e.path) };
-        assert(notice && !details.viewerOpened && details.stillOnConversation, 'a path on another node shows the host-only notice and opens nothing (AC-002, DEC-006)', details);
+        assert(notice && !details.viewerOpened && details.stillOnConversation, 'a path on another node names the node it is on and opens nothing (AC-002, DEC-006; autobyteus-471 AC-003)', details);
         assert(details.mainFrameNodeNavigations.length === 0 && details.refused.length === 0, 'no navigation and no refusal', details);
         return details;
       });
@@ -400,6 +407,87 @@ export const runFileOpenCases = async (probe) => {
         assert(first.includes('VERSION-ONE'), 'the first open shows VERSION-ONE', details);
         assert(newLink === 'VERSION-TWO-2222' && sameOldLink === 'VERSION-TWO-2222' && filesTab === 'VERSION-TWO-2222', 'the new link, the same old link and the Files tab each show VERSION-TWO (AC-003)', details);
         assert(details.unsavedEdit.typed && details.unsavedEdit.keptAfterRewriteAndOpen, 'an unsaved edit survives another open of the same file (AC-003)', details);
+        return details;
+      } finally {
+        await context.close().catch(() => undefined);
+      }
+    });
+  }
+
+  if (wants('MSP-37')) {
+    const { browser, alpha, stack, desktopRunsView } = probe;
+    await runCase('MSP-37', async () => {
+      // Files outside the run's folder, on the node's computer.
+      const outsideDir = path.join(path.dirname(stack.workspace), 'outside-471');
+      const notesPath = path.join(outsideDir, 'notes-471.md');
+      const chartPath = path.join(outsideDir, 'chart-471.png');
+      const missingPath = path.join(outsideDir, 'gone-471.md');
+      const folderPath = path.join(outsideDir, 'reports-471.md');
+      const notes = '# NOTES-471\n\nNODE-FILE-ON-DESKTOP-471 opened from outside the run folder.\n';
+      await fs.mkdir(folderPath, { recursive: true });
+      await fs.writeFile(notesPath, notes);
+      await fs.writeFile(chartPath, png(5, 2));
+      const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.checker, ...stack.runConfig } })).createAgentRun;
+      assert(created.success, created.message);
+      const run = created.runId;
+      await stack.agentSay(run, `ECHO_INPUT NODE-FILES-471 [notes-471.md](${notesPath}) [chart-471.png](${chartPath}) [gone-471.md](${missingPath}) [reports-471.md](${folderPath})`);
+      await waitFor('the echo of NODE-FILES-471', async () => { const text = await stack.projection(run); return text.includes('ECHO:') && text.includes('NODE-FILES-471'); }, 60_000);
+      const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+      await attachToBrowserContext(context);
+      await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+      const page = await context.newPage();
+      watchBrowser(page, 'desktop', stack.frontendUrl, () => 'MSP-37');
+      const nodeFileRequests = [];
+      page.on('response', response => {
+        const url = new URL(response.url());
+        if (url.pathname.endsWith('/rest/node-files/content')) nodeFileRequests.push({ path: url.searchParams.get('path'), status: response.status() });
+      });
+      try {
+        await waitForDevServerReady(stack.frontendUrl, { timeoutMs: 120_000 });
+        // The first load lets the dev server finish its bundles (as MSP-31).
+        await page.goto(stack.frontendUrl, { waitUntil: 'networkidle', timeout: 240_000 }).catch(() => undefined);
+        await sleep(3_000);
+        await page.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+        await desktopRunsView(page);
+        const showOlder = page.locator('[data-test="run-list-show-older"]');
+        if (await showOlder.count() && (await showOlder.innerText()).startsWith('Show older')) await showOlder.click();
+        await page.locator(`[data-test="run-list-row"][data-run-id="${run}"] [data-test="workspace-agent-run-row"]`).first().click({ timeout: 60_000 });
+        const link = filePath => page.locator(`[data-event-monitor-file-action-control="true"][title="${filePath}"]`).last();
+        await link(notesPath).waitFor({ timeout: 60_000 });
+        const viewer = page.locator('#contentViewer:visible').first();
+        const open = async (filePath, name, settled) => {
+          await link(filePath).scrollIntoViewIfNeeded();
+          await link(filePath).click();
+          await waitFor(`${name} in the Files panel`, settled, 20_000).catch(() => undefined);
+          await sleep(500);
+          const facts = {
+            text: (await viewer.innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 300),
+            alert: (await viewer.locator('[role="alert"]').innerText().catch(() => '')).trim(),
+            image: await viewer.locator('img[src^="blob:"]').count(),
+            editControls: await viewer.getByRole('button', { name: /^(Edit|Save)$/ }).count() + await viewer.locator('[title="Edit Mode"]:visible').count(),
+            status: (await page.locator('[data-testid="event-monitor-file-preview-status"]').innerText().catch(() => '')).trim(),
+          };
+          const body = viewer.locator('.monaco-editor, .markdown-body, [data-testid="markdown-preview"]').first();
+          if (await body.count()) { await body.click({ position: { x: 40, y: 20 } }).catch(() => undefined); await page.keyboard.type('TYPED-471', { delay: 10 }).catch(() => undefined); await sleep(300); }
+          facts.typedChanges = (await viewer.innerText().catch(() => '')).includes('TYPED-471');
+          await shot(page, `MSP-37-${name}`);
+          return facts;
+        };
+        const viewerHas = text => async () => (await viewer.innerText().catch(() => '')).includes(text);
+        const markdown = await open(notesPath, 'markdown', viewerHas('NODE-FILE-ON-DESKTOP-471'));
+        const image = await open(chartPath, 'image', async () => (await viewer.locator('img[src^="blob:"]').count()) > 0);
+        const missing = await open(missingPath, 'missing', viewerHas('not found'));
+        const folder = await open(folderPath, 'folder', viewerHas('is a folder'));
+        const details = { markdown, image, missing, folder, nodeFileRequests: nodeFileRequests.map(r => ({ file: path.basename(r.path ?? ''), status: r.status })),
+          hostWorkspaceText: (await page.locator('body').innerText()).includes('host workspace'),
+          unchanged: (await fs.readFile(notesPath, 'utf8')) === notes };
+        const readOnly = facts => facts.editControls === 0 && !facts.typedChanges && facts.status === '';
+        assert(markdown.text.includes('NODE-FILE-ON-DESKTOP-471') && readOnly(markdown), 'AC-001 a Markdown file outside the run folder opens read-only in the Files panel', details);
+        assert(image.image === 1 && readOnly(image), 'AC-001 a PNG outside the run folder shows in the Files panel', details);
+        assert(missing.alert === 'This file was not found on the computer.', 'AC-002 a missing path says so', details);
+        assert(folder.alert === 'This path is a folder, not a file.', 'AC-002 a folder says so', details);
+        assert(['notes-471.md', 'chart-471.png', 'gone-471.md', 'reports-471.md'].every(file => details.nodeFileRequests.some(r => r.file === file)), 'each opens through the node-file route', details);
+        assert(!details.hostWorkspaceText && details.unchanged, 'no "host workspace" text; the file is unchanged', details);
         return details;
       } finally {
         await context.close().catch(() => undefined);

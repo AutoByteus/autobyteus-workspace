@@ -64,7 +64,8 @@
 //                  conversation. autobyteus-436 (AC-001, AC-004): a file outside the workspace opens too, read-only, by its
 //                  absolute path (`screen=files&nodeFile=`): a text file, a Markdown file and an image; Back closes each;
 //                  a missing path says "This file was not found on the computer.", a folder "This path is a folder, not a
-//                  file."; no edit control; no opener failure in the console.
+//                  file."; no edit control; no opener failure in the console. autobyteus-471 (AC-004): a Markdown file of
+//                  more than 130,000 characters outside the workspace opens in full: its last line is shown, no "too large".
 //   MSP-09 AC-008  The connection sheet: the node's name from the pairing code (the name the desktop gives it, the dialog's
 //                  name; the node's status carries none), URL, state, the refresh icon while connected and no peer list
 //                  (one-step-phone-pairing REQ-019, AC-016); alpha down: the bar and the banner, "Retry" in the sheet;
@@ -107,7 +108,9 @@
 //   MSP-28…31 autobyteus-450  Files attached to a conversation open in the phone's viewer with its key (drafts, sent, a
 //                  workspace path, another node's path), and a file opened again shows its current content (phone and a
 //                  desktop window): `mobile-file-open-cases.mjs` (MSP-28…30 on its own nodes epsilon and zeta; MSP-31 on
-//                  alpha's desktop window, last).
+//                  alpha's desktop window, last). MSP-37 autobyteus-471: a desktop window that is not the embedded one opens
+//                  files outside the run's folder read-only in the Files panel, with plain reasons for a missing path and
+//                  a folder (same file, after MSP-31).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
@@ -1563,17 +1566,24 @@ const runCases = async () => {
     const imagePath = path.join(outsideDir, 'diagram-436.png');
     const missingPath = path.join(outsideDir, 'gone-436.md');
     const folderPath = path.join(outsideDir, 'reports-436.md');
+    // autobyteus-471 AC-004: a Markdown file over 130,000 characters, its last line a marker.
+    const bigPath = path.join(outsideDir, 'big-471.md');
+    const bigLines = ['# BIG-471', ''];
+    for (let n = 1; bigLines.join('\n').length < 130_000; n += 1) bigLines.push(`Paragraph ${n} of the big file, written to pass the old 120,000-character limit.`, '');
+    bigLines.push('LAST-LINE-471 the end of the big file.', '');
+    const bigMarkdown = bigLines.join('\n');
     await fs.mkdir(path.dirname(draftPath), { recursive: true });
     await fs.mkdir(folderPath, { recursive: true });
     await fs.writeFile(draftPath, 'DRAFT-V3-TEXT-5150: the third draft.\n');
     await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-9090 opens read-only on the phone.\n');
     await fs.writeFile(notesPath, '# NOTES-436\n\nREAD-ONLY-NOTES-436 from a worktree.\n');
+    await fs.writeFile(bigPath, bigMarkdown);
     await fs.writeFile(imagePath, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'));
     const marker = 'FILE-LINK-427';
     await sendOver(stack.wsUrl(`agent-team/${stack.delivery}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
       context_file_paths: [], image_urls: [], agent_run_id: stack.deliveryLead,
       content: `ECHO_INPUT ${marker} The draft is in [draft-v3.txt](${draftPath}); the old one is [private.txt](${outsidePath}); `
-        + `notes [notes-436.md](${notesPath}), the diagram [diagram-436.png](${imagePath}), [gone-436.md](${missingPath}), [reports-436.md](${folderPath}).` });
+        + `notes [notes-436.md](${notesPath}), the diagram [diagram-436.png](${imagePath}), [gone-436.md](${missingPath}), [reports-436.md](${folderPath}), the big [big-471.md](${bigPath}).` });
     await waitFor('the lead\'s answer naming the files', async () => /ECHO:[^]*FILE-LINK-427/.test(await stack.leadProjection()), 60_000);
     const workspaceId = (await alpha.gql('query($r:String!){workspaceMetadata(rootPath:$r){workspaceId}}', { r: stack.workspace })).workspaceMetadata?.workspaceId;
     const consoleLines = [];
@@ -1608,7 +1618,7 @@ const runCases = async () => {
         composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count() };
       await shot(page, 'MSP-16-back');
       // autobyteus-436: a file outside the workspace opens read-only by its absolute path; Back closes it.
-      const openOutside = async (filePath, name) => {
+      const openOutside = async (filePath, name, lastLine = null) => {
         await control(filePath).last().scrollIntoViewIfNeeded();
         await control(filePath).last().tap();
         await viewer.waitFor({ timeout: 20_000 }).catch(() => undefined);
@@ -1624,6 +1634,16 @@ const runCases = async () => {
           editControls: await viewer.getByRole('button', { name: /save|rename|delete|edit/i }).count(),
           status: await page.locator(sel('event-monitor-file-preview-status')).count(),
         };
+        if (lastLine) {
+          // autobyteus-471 AC-004: the whole file is there; scrolled to its end, the last line is on screen.
+          const full = await viewer.innerText().catch(() => '');
+          const line = viewer.getByText(lastLine, { exact: false }).last();
+          await line.scrollIntoViewIfNeeded({ timeout: 10_000 }).catch(() => undefined);
+          facts.lastLineVisible = await line.isVisible().catch(() => false);
+          facts.tooLarge = /too large/i.test(full);
+          facts.shownChars = full.length;
+          await shot(page, `MSP-16-outside-${name}-end`);
+        }
         // Read-only: typing into the shown file changes nothing.
         const content = viewer.locator(sel('mobile-file-preview-content'));
         if (await content.count()) {
@@ -1644,6 +1664,7 @@ const runCases = async () => {
       const image = await openOutside(imagePath, 'image');
       const missing = await openOutside(missingPath, 'missing');
       const folder = await openOutside(folderPath, 'folder');
+      const big = await openOutside(bigPath, 'big', 'LAST-LINE-471');
       const warnings = consoleLines.filter(line => /inject\(\)|File preview failed|reading 'query'/.test(line));
       assert(links.draft >= 1 && links.outside >= 1, 'the message renders both paths as file links', links);
       assert(opened.viewer === 1 && opened.text, 'a tap on the workspace file shows its text in the phone\'s file viewer', { opened, consoleLines });
@@ -1656,9 +1677,10 @@ const runCases = async () => {
       assert(openedReadOnly(image, imagePath) && image.image === 1, 'AC-001 an image outside the workspace shows', image);
       assert(missing.viewer === 1 && missing.error === 'This file was not found on the computer.' && missing.backToConversation, 'AC-004 a missing path says so', missing);
       assert(folder.viewer === 1 && folder.error === 'This path is a folder, not a file.' && folder.backToConversation, 'AC-004 a folder says so', folder);
+      assert(openedReadOnly(big, bigPath) && big.lastLineVisible && !big.tooLarge && big.error === '', 'autobyteus-471 AC-004 a Markdown file over 130,000 characters opens in full: its last line is shown, no "too large"', { ...big, fileChars: bigMarkdown.length });
       assert(warnings.length === 0, 'no opener failure in the console', warnings);
-      return { draftPath: path.relative(root, draftPath), outsidePath: path.relative(root, outsidePath), workspaceId, links, before: before.query, opened, back,
-        outside, notes, image, missing, folder, consoleLines };
+      return { bigChars: bigMarkdown.length, draftPath: path.relative(root, draftPath), outsidePath: path.relative(root, outsidePath), workspaceId, links, before: before.query, opened, back,
+        outside, notes, image, missing, folder, big, consoleLines };
     } finally {
       page.off('console', onConsole);
     }
