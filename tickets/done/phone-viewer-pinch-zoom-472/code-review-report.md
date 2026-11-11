@@ -184,12 +184,119 @@ None.
 - Rechecked category: Runtime Correctness 9.4 (restored). The other scores carry forward from CRR-001 (9.4/10 average).
 - New findings: none.
 
+## API/E2E Failure-Origin Review (Round 4, CRR-005): Merged State
+
+### Review Meta
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Trigger: API/E2E engineer, API-REV-003 (Fail, 86%): F-2. A delivery re-entry (DR-001) after `origin/personal` moved to `8641bc393a` (autobyteus-452, merged as `965a6b43c4`). Local commits: `3eebc0b7a4` (MSP-39 → MSP-43 renumber, for the later test review) and `22f4806207` (evidence).
+- Execution: Android 15 emulator, this branch's APK, real touch; `live-472.pdf` and `live-472.png` in the run's folder, rewritten on the node while zoomed and open (`evidence/api-e2e/r3-android/journey.md`, `shots/API-06-live-reload-pdf.png`)
+- Failing Scenario: API-06, PDF live reload (AC-005; REQ-006 as worded by SR-004: "a live refresh, autobyteus-452 … keeps its zoom and position")
+- Review Scope: `N/A` (failure-origin)
+- Skill update noted: design principle 16 (visible dependencies) and its template check apply to implementation reviews; this failure-origin round adds no dependency.
+
+### Scenario Basis
+
+| Item | Approved behavior | Trigger | Path | Validity |
+| --- | --- | --- | --- | --- |
+| F-2 | REQ-006 (SR-004): while a file stays open, a live refresh keeps zoom **and position** | An agent rewrites a PDF in the run's folder while the owner has it zoomed on the phone | 452: `applyFileSystemChange` → `_reloadOpenFile` → non-Text: `contentRevision += 1` (no `isLoading`) → the same `PdfViewer` instance → `useAuthorizedObjectUrl` fetches a new blob → `VuePdfEmbed` redraws → `@loaded` → `onTouchLoaded` | Supported Normal Scenario (named in the requirement) |
+
+### Origin Findings
+
+#### CR-002 — A live refresh of an open PDF keeps the zoom but loses the position (F-2; Local Fix, implementation)
+
+- Evidence: `components/fileExplorer/viewers/PdfViewer.vue:141-151, 155-158`.
+  - After 452, a media file's reload is in place (`stores/fileExplorerContentActions.ts:159-160`, `contentRevision += 1`, no "Opening…"), so the viewer is not remounted. The `zoom` ref survives, which is why the width stays 759 (2×).
+  - The redraw collapses the scroller to the top. `onTouchLoaded` runs again but returns at `if (placed) return`, so the remembered place is never put back.
+  - `onScroll`, with `placed` still true, then records the top as the new position.
+  - Observed twice: scroll (190, 933) → (0, 0) and (0, 599) → (0, 0). The image path passes, because `onTouchImageLoad` restores on every load.
+- Origin: implementation defect against the design's own rule: "on mount **and after its content is ready** (`vue-pdf-embed` `loaded`; image `load`), a viewer applies the remembered state". The PDF applies it only on the first `loaded`.
+- Design-artifact note (non-blocking): the design's AR-001 premise says the viewers are replaced on a workspace reload. That is not true for media files: the in-place `contentRevision` path dates from autobyteus-450, and 452 now uses it for live refresh. The mechanism (memory owned by `MobileFileViewer`, applied after content is ready) is still correct, so no design revision is required to fix this. The Solution Designer may correct that sentence.
+- Review gap: partial. `FileViewer.vue`'s comment ("an explicit open of the same file bumps `contentRevision`; the viewer loads its (same) URL again") was in the reviewed diff, and the `placed` guard could have been traced against it in round 1. The AC-005 component tests cover only the remount path.
+- Required action:
+  - On a same-instance reload (a change of `resolvedUrl` / `contentRevision` in touch mode), treat the viewer as unplaced until the new document is laid out: no position is remembered while the pages are redrawn.
+  - Then put the remembered position back from `zoomMemory`, which holds the place from before the reload, and resume remembering.
+  - Keep one rule for both the first load and a reload: the existing `onTouchLoaded` path, without the `if (placed) return` short-circuit.
+  - It must hold when a rewrite triggers two redraws (observed once).
+  - Add a `MobileFileViewer`/`PdfViewer` spec for the in-place path: zoom and scroll, bump `contentRevision` with a new URL without `isLoading`, and assert the zoom and position after `loaded`.
+
+### Classification And Routing
+
+- CR-002: `Local Fix`, owner implementation engineer. After the fix: targeted source review, then API/E2E rechecks API-06 (PDF and image live refresh) and MSP-43 on the merged state, then the test review covers `3eebc0b7a4` and the new spec.
+
+## Implementation Review Round 5 (CRR-006): Targeted Delta Review of IR-003
+
+- Trigger: implementation engineer, IR-003, code `43ef1748da` (on `22f4806207`, the merge with autobyteus-452); docs `e81240959a`.
+- Review Scope: `Targeted Delta Review`. `git diff 22f4806207..43ef1748da` touches only `PdfViewer.vue` (+17/−3) and `MobileFileViewer.zoom.spec.ts`. These are CR-002's file and behavior; there is no interface, dependency (Principle 16: none added) or Android change.
+- CR-002: **Resolved.**
+  - A `watch(resolvedUrl)` in touch mode starts a new generation for every new source and pauses remembering (`placed = false`, pending scroll write cleared).
+  - `onTouchLoaded` drops the first-load-only `if (placed) return`. It waits for layout, ignores a stale generation, then puts back the zoom memory's position and resumes remembering. One rule now covers the first load and every in-place reload, as the design states ("after its content is ready").
+  - Confirmed against the real reload path: `useAuthorizedObjectUrl.refresh` sets `resolvedUrl` to `null` synchronously before fetching the new blob (`useAuthorizedObjectUrl.ts:42-46`). So the pages element and `VuePdfEmbed` are recreated with fresh canvases, the layout wait cannot match a stale canvas, and the generation check handles the null → new-URL pair and a double redraw.
+- Test: the new in-place case in `MobileFileViewer.zoom.spec.ts` checks the same scroller, no "Opening…", a simulated collapse, and the position back at (100, 150) at 2×, including after two back-to-back redraws. It fails without the fix. The remount case still passes; the vue-pdf-embed double now emits `loaded` on a source change, as the real component does.
+- Checks: IMP-21 typecheck at baseline, IMP-22 full web suite (756 / 5706), IMP-23 guards, IMP-24/25 builds, and IMP-26 MSP-43 Pass. No Android change.
+- Rechecked category: Runtime Correctness 9.4 (restored). The other scores carry forward from CRR-001 (9.4/10).
+- New findings: none. The design-premise note (AR-001 remount assumption) stays with the Solution Designer, non-blocking.
+
+## API/E2E Failure-Origin Review (Round 6, CRR-007): Merged State
+
+### Review Meta
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Trigger: API/E2E engineer, API-REV-004 (Fail, 87%): F-3. Code under test `43ef1748da` (no source change since; evidence `3eebc0b7a4…3ecfdda33b`)
+- Execution: Android 15 emulator, real touch, live rewrites of a zoomed 12-page PDF while open; per-frame traces `[ms, scrollTop, scrollHeight, canvases, sizedCanvases]` (`evidence/api-e2e/r4-android/late-trials.json`, `restore-trace.json`, `journey.md`)
+- Failing Scenario: API-06, PDF live refresh (AC-005; REQ-006 per SR-004: zoom **and position** kept)
+- Review Scope: `N/A` (failure-origin)
+- Skill update noted: the principles are now applied by purpose and judgment, and findings must name the concrete problem. This finding is a concrete behavior defect (the wrong position after a refresh).
+
+### Scenario Basis
+
+| Item | Approved behavior | Trigger | Path | Validity |
+| --- | --- | --- | --- | --- |
+| F-3 | REQ-006: a live refresh keeps the position | An agent rewrites a multi-page PDF that the owner has zoomed and scrolled on the phone | `onTouchLoaded` → `pagesLaidOutAt(renderWidth)` → `scrollTop = scrollTopRatio × scrollHeight` | Supported Normal Scenario (same as F-2, a different timing of the same path) |
+
+### Origin Findings
+
+#### CR-003 — The position is restored against a partly laid-out document (F-3; Local Fix, implementation)
+
+- Evidence: `components/fileExplorer/viewers/PdfViewer.vue:117-125`. `pagesLaidOutAt` resolves as soon as the **first** `.vue-pdf-embed__page canvas` has the CSS width. `onTouchLoaded` (`:158`) then sets `scrollTop = scrollTopRatio × scrollHeight` with the height of the pages sized so far. The traces show the restore landing on partial frames: trial 2 `[5399, 0, 3496, 12, 2]` → 846 (= 2861/11816 × 3496), trial 4 `[4828, 0, 2664, 12, 1]` → 384. That puts the view too high in the document, in 2 of 5 traced refreshes plus the first refresh of the round (751 → 486). When the full height arrives in one frame, the restore is exact.
+- The same helper also gates the pinch commit's anchor scroll (`setZoom` → `pagesLaidOutAt`, `:130-134`). An anchor below the sized pages is exposed to the same timing. One fix in the helper covers both callers.
+- Origin: implementation defect. Review gap: partial. The first-canvas check was in the round-1 code and its single-page assumption could have been traced. The specs size pages all at once.
+- Required action:
+  - Restore, and anchor, only once every page is laid out. The explicit signal is vue-pdf-embed's `rendered` event, emitted after all pages render (`VuePdfEmbed.vue.d.ts:67`); an alternative is to wait until every page canvas has the target width.
+  - A layout that is not complete within the bound must not be treated as complete: either keep waiting for `rendered`, or skip the restore instead of scrolling against a partial height.
+  - Keep the generation guard from CR-002.
+  - Add a spec in which the pages are sized one by one (the double sizes canvases over several frames), and assert that the position is restored against the full height.
+
+### Classification And Routing
+
+- CR-003: `Local Fix`, owner implementation engineer. After the fix: targeted source review, then API/E2E rechecks API-06 with several traced refreshes (and a pinch anchor on a lower page), then the test review covers `3eebc0b7a4` and the new specs.
+
+## Implementation Review Round 7 (CRR-008): Targeted Delta Review of IR-004
+
+- Trigger: implementation engineer, IR-004, code `bb9b300c4a` (docs `1d2d2d9de3`).
+- Review Scope: `Targeted Delta Review`. `git diff 43ef1748da..bb9b300c4a` touches only `PdfViewer.vue` (the layout helper and its two uses), `usePdfPinchZoom.ts` (`setZoom` returns whether the layout is whole), and the specs. These are CR-003's code and behavior; there is no Android change and no new dependency.
+- CR-003: **Resolved.**
+  - `pagesLaidOut()` resolves `true` only when the page list is non-empty and every page canvas has the current zoom's width. The traces show all 12 canvases exist from the start, sized one by one, so this is the whole-layout condition.
+  - It resolves `false` on unmount or after 10 s. In that case neither the remembered place (`onTouchLoaded`) nor the pinch anchor (`commit`) is scrolled, so nothing scrolls against a partial height, as required.
+  - The width is read on each check, so a zoom that changes meanwhile is the one waited for.
+  - The CR-002 generation guard is unchanged.
+- Choosing per-page canvas size over `rendered` was one of the two options I offered, and the reason holds: the size is the layout signal and comes before the slower drawing.
+- Degraded path judged acceptable: after a 10 s timeout the viewer stays where the redraw left it, and remembering resumes from what the user then sees. No silent wrong scroll.
+- Spec `PdfViewer.touchLayout.spec.ts` (sizes 4 pages one per frame):
+  - The restore is set after page 4, at (150, 1560) of 3120.
+  - A double-tap anchor on a lower page scrolls after all pages are at 2×.
+  - A double tap during the first layout still zooms and is remembered.
+  - Without the fix, the first two set after page 1.
+- Checks: IMP-31 typecheck at baseline, IMP-32 full web suite (757 / 5709), IMP-33 guards, IMP-34/35 builds, and IMP-36 MSP-43 Pass.
+- Rechecked category: Runtime Correctness 9.4 (restored). The other scores carry forward (9.4/10).
+- New findings: none.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (implementation review, round 3, CRR-003, Targeted Delta Review of IR-002)
+- Review Decision: `Pass` (implementation review, round 7, CRR-008, Targeted Delta Review of IR-004 on the merged state)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.4/10, every category ≥ 9.3
 - Recommended Recipient: API/E2E engineer
-- Notes: U-1 resolved by SR-004 (REQ-006 wording). API/E2E rechecks API-01 (`pan2-hold`, a moving pinch at the 3× cap, the PDF gestures).
+- Notes: API/E2E rechecks API-06 with several traced refreshes (and a pinch anchor on a lower page), then the test review covers `3eebc0b7a4` and the new specs.

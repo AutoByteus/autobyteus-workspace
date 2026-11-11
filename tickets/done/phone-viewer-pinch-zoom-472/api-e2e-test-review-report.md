@@ -47,10 +47,25 @@ None.
 
 - Follow-ups this review added: None.
 
+## Round 2 (CRR-009): Delivery Re-Entry on the Merged State, API-REV-005
+
+- Trigger: API/E2E engineer, API-REV-005 (Pass, 95%) on the merge with autobyteus-452; code `bb9b300c4a`; evidence `0b0b02b4c2`.
+- Changed durable tests reviewed:
+
+| Durable Test Path | Change | Related | Notes |
+| --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/mobile-file-zoom-cases.mjs`, `mobile-shell-probe.mjs` (`3eebc0b7a4`, API/E2E) | Updated | Case ID collision with 452's MSP-39 | A pure renumber MSP-39 → MSP-43 (ID, header, `runCase`, four screenshot names); no assertion changed; no `MSP-39` reference left in the file. The full probe is 43/43 (round 3), and the file cases 11/11 (round 5). |
+| `components/fileExplorer/viewers/__tests__/PdfViewer.touchLayout.spec.ts` (IR-004) | Added | CR-003, REQ-006, DS-001 | The vue-pdf-embed double sizes 4 pages one per frame, and the spec records how many were sized when `scrollTop` was set (`sizedAtTop`), so it proves the ordering, not just the end value. Cases: the remembered place restored against the full height; a lower-page double-tap anchor after all pages are at 2×; a double tap during the first layout still zooms and is remembered. The first two fail without the fix. |
+| `components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts` (IR-003) | Updated | CR-002, AC-005 | An in-place reload case: same scroller, no "Opening…", a simulated collapse, the position back at 2×, also after two redraws. The double now emits `loaded` on a source change, as the real component does. |
+| `composables/__tests__/usePdfPinchZoom.spec.ts` (IR-002, IR-004) | Updated | CR-001, CR-003 | Drag, capped-pinch and resting-finger cases; the `setZoom` double resolves `true` (the new contract). |
+
+- Proportional checks: names state the gesture and the outcome; the assertions measure order and positions, not internals; the doubles mirror the real component's events; deterministic per-frame sizing; no stale or disabled tests. All `Pass`.
+- Findings: none.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `mobile-file-zoom-cases.mjs`, `mobile-shell-probe.mjs`, `usePdfPinchZoom.spec.ts`
+- Result: `Pass` (round 2, CRR-009; round 1 CRR-004 stands)
+- Changed durable test paths reviewed: round 2: `3eebc0b7a4` renumber, `PdfViewer.touchLayout.spec.ts`, `MobileFileViewer.zoom.spec.ts`, `usePdfPinchZoom.spec.ts`; round 1: `mobile-file-zoom-cases.mjs`, `mobile-shell-probe.mjs`, `usePdfPinchZoom.spec.ts`
 - Unresolved finding IDs: none
 - Recommended Recipient: `delivery_engineer`
 - Notes: open validation gaps are for the user, not the tests: the Android 8–9 Save dialog on a real 8–9 system (it needs an API 26–28 image or device), and RSK-001 memory at 3× on a real low-end phone.
