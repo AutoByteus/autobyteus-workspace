@@ -10,8 +10,11 @@ import { decisionRecordsOf, type DelegationWork } from "../../../model-routing/d
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../domain/agent-team-address.js";
 import { runReferenceOf, taskExecutionResourceRejectionCode, type TaskExecutionResourcePort } from "./task-execution-resource-port.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
-import { TaskDelegationError, type DelegatedCopy, type SpawnTaskInput, type TaskDelegationOutcome } from "./task-delegation-command.js";
-import { requireTaskString, validateTaskReferenceFiles, type DelegatedProjectTask } from "./task-execution-input.js";
+import { TaskDelegationError, type AssignToExistingCopyInput, type DelegatedCopy, type SpawnTaskInput, type TaskDelegationOutcome } from "./task-delegation-command.js";
+import {
+  TASK_ASSIGNMENT_MESSAGE_TYPE, buildExistingCopyTaskMessage, requireTaskString, validateTaskReferenceFiles, type DelegatedProjectTask,
+} from "./task-execution-input.js";
+import { notACopyOfThisRun } from "./existing-copy-target.js";
 
 /** The work packet a new run starts with (its first input), as the delegated run's own root posts it. */
 export type WorkPacket = Readonly<{
@@ -63,7 +66,10 @@ const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
 export class TaskDelegation {
   constructor(private readonly dependencies: Readonly<{
     tasks(): TaskExecutionResourcePort;
-    tree(): Pick<DelegationTree, "currentTaskOf">;
+    tree(): Pick<DelegationTree, "currentTaskOf" | "tasksOf">;
+    /** A message to another run (DS-2, `CrossRunMessageDelivery`): stored in both runs' logs, the receiver woken. */
+    deliverToRun?(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderDisplayName: string; targetAgentRunId: string; content: string;
+      messageType: string; referenceFiles: readonly string[] }>): Promise<AgentOperationResult | null>;
     starter: Pick<DelegatedRunStarter, "startAgent" | "startTeam">;
     /** The new run's own root posts its work packet (it starts the agent, or the team's coordinator). */
     deliverWorkPacket(run: RootExecutionIdentity, packet: WorkPacket): Promise<AgentOperationResult>;
@@ -214,6 +220,58 @@ export class TaskDelegation {
     const createdTaskId = work.join.role === "assigned" && "adHocTask" in work.join ? link.taskId : null;
     return { delegated: true, copy, ...(createdTaskId ? { taskId: createdTaskId } : {}),
       ...(placement.launchNotes?.length ? { launchNotes: placement.launchNotes } : {}) };
+  }
+
+  /**
+   * `delegate_task` with a run's own ID and `task_id` (DS-6, `model.py` `delegate_existing`): a follow-up Task for a run
+   * the sender assigned. The saved Task first (its refusals come before the run's), then the run: one this node's Task
+   * records name (a peer's run takes no saved Task); the Task side checks the sender is its last assigner and the
+   * conditions, and appends the run's new `assigned` entry (the same `delegatedFrom` and address). The Task's work is
+   * then delivered as a `task_assignment` message between the two runs (both logs; the run woken or restored).
+   */
+  async toExistingRun(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderRun: RootExecutionIdentity; assign: AssignToExistingCopyInput }>): Promise<TaskDelegationOutcome> {
+    const tasks = this.dependencies.tasks();
+    const senderReference = runReferenceOf(input.senderRun);
+    let taskId: string, content: string, referenceFiles: readonly string[], entryAgentRunId: string, taskReference: string;
+    const execution = input.assign.copy;
+    try {
+      if (senderReference && this.dependencies.tree().currentTaskOf(senderReference)) {
+        throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
+      }
+      const saved = await tasks.resolveAssignment(requireTaskString(input.assign.taskId, "task_id"));
+      ({ taskId, taskReference } = saved);
+      const entries = this.dependencies.tree().tasksOf(execution);
+      if (entries.some((entry) => entry.nodeId !== undefined)) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
+      const current = [...entries].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)).at(-1);
+      if (!current) throw notACopyOfThisRun(execution);
+      entryAgentRunId = current.entryAgentRunId;
+      referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
+      await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId });
+      const otherOpenTaskReferences = await tasks.openTaskReferencesOf(execution, taskId);
+      await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId }, execution, taskId,
+        ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: entryAgentRunId } : {}) });
+      content = buildExistingCopyTaskMessage({ taskReference, projectId: saved.projectId, description: saved.description, comments: saved.comments, otherOpenTaskReferences });
+    } catch (error) {
+      const refusal = asRefusal(error);
+      if (refusal) return refusal;
+      throw error;
+    }
+    let delivered: AgentOperationResult | null;
+    try {
+      delivered = await this.dependencies.deliverToRun?.({ sender: input.sender, senderDisplayName: getAgentTeamAddressBasename(input.sender.memberAddress) ?? input.sender.agentRunId,
+        targetAgentRunId: entryAgentRunId, content, messageType: TASK_ASSIGNMENT_MESSAGE_TYPE, referenceFiles }) ?? null;
+    } catch (error) {
+      delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: message(error) };
+    }
+    if (!delivered?.accepted) {
+      const reason = delivered?.message ?? delivered?.code ?? "delivery was not accepted";
+      await tasks.markFailed(execution, { code: delivered?.code ?? "TASK_WORK_NOT_DELIVERED", message: reason });
+      return { delegated: false, message: `Task ${taskReference} was given to the task agent, but the message with its work was not delivered (${reason}). `
+        + `Message the task agent's run id ${entryAgentRunId}, or set Task ${taskReference} to CANCELLED, or delegate it to a new task agent.` };
+    }
+    await tasks.markStarted(execution);
+    return { delegated: true, copy: "agentRunId" in execution ? { kind: "agent", agentRunId: execution.agentRunId }
+      : { kind: "team", teamRunId: execution.teamRunId, teamCoordinatorAgentRunId: entryAgentRunId } };
   }
 
   /** Step 1 (DS-1): the work and how the new run joins a Task, from the sender's own run's Task work (the tree). */

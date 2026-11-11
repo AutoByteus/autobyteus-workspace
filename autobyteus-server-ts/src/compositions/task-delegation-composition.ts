@@ -21,7 +21,19 @@ export const composeTaskDelegation = (deps: Readonly<{
   rootResolver: CollaborationRootResolver;
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve">;
 }>): Readonly<{ release(): void }> => {
+  // DS-2: messages between two runs of this node; the sender is active, the receiver is restored when stopped.
+  const crossRun = new CrossRunMessageDelivery({
+    tree: () => getDelegationTree(),
+    tasks: () => deps.tasks,
+    senderRoot: (run) => {
+      const root = deps.activeRoots.resolve(run);
+      return root?.prepareSendToRun && root.commitSentToRun
+        ? { prepareSendToRun: (input) => root.prepareSendToRun!(input), commitSentToRun: (message) => root.commitSentToRun!(message) } : null;
+    },
+    receiverRoot: async (run) => (await deps.rootResolver.resolveOrRestore(run))?.root ?? null,
+  });
   const delegation = new TaskDelegation({
+    deliverToRun: (input) => crossRun.route(input),
     tasks: () => deps.tasks,
     tree: () => getDelegationTree(),
     starter: new DelegatedRunStarter({ agentRuns: deps.agentRuns, teamRuns: deps.teamRuns }),
@@ -36,17 +48,6 @@ export const composeTaskDelegation = (deps: Readonly<{
     },
   });
   bindTaskDelegation(delegation);
-  // DS-2: messages between two runs of this node; the sender is active, the receiver is restored when stopped.
-  const crossRun = new CrossRunMessageDelivery({
-    tree: () => getDelegationTree(),
-    tasks: () => deps.tasks,
-    senderRoot: (run) => {
-      const root = deps.activeRoots.resolve(run);
-      return root?.prepareSendToRun && root.commitSentToRun
-        ? { prepareSendToRun: (input) => root.prepareSendToRun!(input), commitSentToRun: (message) => root.commitSentToRun!(message) } : null;
-    },
-    receiverRoot: async (run) => (await deps.rootResolver.resolveOrRestore(run))?.root ?? null,
-  });
   bindCrossRunMessageDelivery(crossRun);
   return Object.freeze({ release: () => { unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); } });
 };

@@ -146,4 +146,50 @@ describe("TaskDelegation.toNewRun", () => {
       expect(failing.tasks.entry({ agentRunId: "remote_agent_1" })).toMatchObject({ start: "failed", nodeId: "node-b-1f0e" });
     });
   });
+
+  describe("toExistingRun (S8, DS-6: a follow-up Task by run ID)", () => {
+    const followUp = async (deliverToRun = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string })) => {
+      const tasks = new InMemoryTaskExecutionResources();
+      const tree = new DelegationTree(() => tasks);
+      tree.build();
+      tasks.setEntriesListener(tree);
+      tasks.addTask("T1", "Build it", "abc-1"); tasks.addTask("T2", "Polish it", "abc-2");
+      await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
+        delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
+      await tasks.markStarted({ teamRunId: E.rootRunId });
+      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun });
+      const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
+        sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
+        assign: { copy: copy as never, taskId } });
+      return { tasks, tree, give, deliverToRun };
+    };
+
+    it("its assigner gives it a second Task: a new assigned entry with the same delegatedFrom and address; the work is a task_assignment message between the runs", async () => {
+      const h = await followUp();
+      await expect(h.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: true,
+        copy: { kind: "team", teamRunId: E.rootRunId, teamCoordinatorAgentRunId: "solution_designer_65a9" } });
+      expect(h.tasks.assignments).toEqual([{ delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId },
+        taskId: "T2", teamCoordinatorAgentRunId: "solution_designer_65a9" }]);
+      expect(h.deliverToRun).toHaveBeenCalledWith(expect.objectContaining({ targetAgentRunId: "solution_designer_65a9", messageType: "task_assignment",
+        content: expect.stringContaining("New Task assigned to you: abc-2.") }));
+      expect(h.tasks.entry({ teamRunId: E.rootRunId })).toMatchObject({ taskId: "T2", start: "started", open: true });
+      expect(h.tree.openTaskIdsOf({ teamRunId: E.rootRunId })).toEqual(["T1", "T2"]);
+    });
+
+    it("refusals keep today's texts: another agent than its last assigner, a sender that works on a Task, a run no Task names", async () => {
+      const h = await followUp();
+      await expect(h.give(M, "someone_else", { teamRunId: E.rootRunId })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("Only the agent that gave this task agent") });
+      await expect(h.give(E, "solution_designer_65a9", { agentRunId: "anyone" })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("you can't use task_id") });
+      await expect(h.give(M, M.rootRunId, { agentRunId: "never_delegated" })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("is not one of your task agents") });
+      expect(h.tasks.assignments).toEqual([]);
+      expect(h.deliverToRun).not.toHaveBeenCalled();
+    });
+
+    it("a work message that is not delivered marks the new entry failed and says what to do", async () => {
+      const h = await followUp(vi.fn(async () => ({ accepted: false, code: "TARGET_RUN_NOT_AVAILABLE", message: "It could not be resumed." })));
+      await expect(h.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: false,
+        message: expect.stringContaining("Task abc-2 was given to the task agent, but the message with its work was not delivered (It could not be resumed.)") });
+      expect(h.tasks.entry({ teamRunId: E.rootRunId })).toMatchObject({ taskId: "T2", start: "failed" });
+    });
+  });
 });

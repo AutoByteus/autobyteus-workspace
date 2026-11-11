@@ -164,8 +164,7 @@ export class AgentOrgRunMessageDelivery {
   /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
-    return this.options.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
-      this.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
+    return getTaskDelegation().toExistingRun({ sender: context.identity, senderRun: context.identity.root, assign: input });
   }
 
   reserveAgentInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
