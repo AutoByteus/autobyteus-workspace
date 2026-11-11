@@ -91,7 +91,7 @@ describe('agentRunCollaborationStore', () => {
     })
   })
 
-  it('sending to a child attaches the stream (which restores the host) and carries mentions', async () => {
+  it('sending to a child goes over the view\'s stream, which never restores the host, and carries mentions (SR-045, SR-046)', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     const context = store.contextFor('host-run')!.getAgentContext('cua-run')!

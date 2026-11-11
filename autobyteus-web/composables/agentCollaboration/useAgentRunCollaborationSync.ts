@@ -8,8 +8,9 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 const TEMPORARY_RUN_ID_PREFIX = 'temp-'
 
 /**
- * Keeps the selected standalone run's collaboration view in step with its host: the live
- * stream while the host runs (including Error with live compaction recovery), inspection otherwise.
+ * Keeps the selected standalone run's collaboration view in step with its host: the view's stream is kept while the
+ * run is selected, running or stopped (autobyteus-461 SR-045: a stopped run's children may still work), and the host's
+ * running state (including Error with live compaction recovery) is passed on. Used by the desktop and the phone shell.
  * A stopped or crashed host is never restored by viewing.
  */
 export function useAgentRunCollaborationSync(): void {

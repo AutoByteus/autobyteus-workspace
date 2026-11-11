@@ -140,6 +140,37 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(team.view.isRootTeamActive()).toBe(false);
   });
 
+  it('a stopped Team\'s first message to its own member settles after the in-band live snapshot, and the composer does not stay pending (autobyteus-461 SR-048)', async () => {
+    const { callbacks, service, team } = createHarness();
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
+    // The view of a stopped Team: its stored-mode snapshot and lifecycle.
+    admitReady(callbacks, team);
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
+    let settled = false;
+    const sending = service.sendMessage('start on this input', teacherRunId, [], [], { messageId: 'message-start', dedupeKey: 'dedupe-start' })
+      .then(() => { settled = true; });
+
+    // The server restores the Team and switches the view to live first: a fresh snapshot with a new sequence base.
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(team, 7), live_sequence_id: 'live-2' });
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: true });
+    await Promise.resolve();
+    // A snapshot neither drains nor settles the pending send.
+    expect(settled).toBe(false);
+    expect(service.isReady).toBe(true);
+
+    // Then it posts the message: its echo is an ordinary live event after the snapshot, and settles the send by identity.
+    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
+      change_sequence: 8, recipient_agent_run_id: teacherRunId, message_id: 'message-start', dedupe_key: 'dedupe-start',
+      content: 'start on this input', input_origin: 'user_message', received_at: '2026-11-11T00:00:00.000Z', context_file_paths: [],
+      sender_agent_run_id: null, parent_communication_message_id: null,
+    });
+    await sending;
+    expect(settled).toBe(true);
+    expect(team.view.isRootTeamActive()).toBe(true);
+    // Nothing is left pending for the member: its next message is admitted.
+    expect(() => service.sendMessage('next input', teacherRunId, [], [], { messageId: 'message-next', dedupeKey: 'dedupe-next' })).not.toThrow();
+  });
+
   it('reconciles a mounted task activation without stealing exact focus', () => {
     const { callbacks, team } = createHarness();
     teamContextsStoreMock.getTeamContextById.mockReturnValue(team);

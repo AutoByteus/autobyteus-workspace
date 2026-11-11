@@ -160,10 +160,13 @@ for the user interaction contract.
     on success or failure. Pending edits, focus/input/workspace/removal/clear,
     selection changes, and duplicate launch allocation are rejected.
   - `connectToTeamStream(rootTeamRunId)`: attaches one `TeamStreamingService` to
-    the root TeamRun and its canonical `AgentTeamContext`. Transport readiness is
-    separate from root Team liveness and leaf Agent status. The service accepts
-    the initial structural snapshot as its sequence base and then requires exact
-    next-sequence admission for every live execution message. The first gap is
+    the root TeamRun and its canonical `AgentTeamContext`, for the open Team run
+    whether it runs or not (autobyteus-461 SR-045: a stopped Team's child rows are
+    runs of their own, so its view keeps its stream; connecting never starts it).
+    Transport readiness is separate from root Team liveness and leaf Agent status.
+    The service accepts the initial structural snapshot as its sequence base, and
+    each later in-band snapshot (the Team started or stopped) as a new base, and
+    then requires exact next-sequence admission for every live execution message. The first gap is
     rejected before Team or Agent conversation mutation, enters the persistent
     `reopen_required` phase once, closes the stale transport, and blocks commands
     and ordinary reconnect rather than silently dropping later output.
@@ -215,7 +218,10 @@ for the user interaction contract.
   only the returned `agentOrgRunId`. `restore()`, `terminate()`, and
   `fetchHistory()` use the AgentOrg GraphQL operations and the
   `root_subject_kind: "agent_org"` history projection.
-- `agentOrgContextsStore` owns one `AgentOrgStreamingService` per active Org.
+- `agentOrgContextsStore` owns one `AgentOrgStreamingService` per open Org, active
+  or stopped (autobyteus-461 SR-045: a stopped Org's child rows are runs of their
+  own; its stream serves the stored mode and takes an in-band snapshot when the Org
+  starts or stops).
   Launch establishes the full coordinator-free scope without focus; `select()`
   later focuses an exact Agent or mounted Team. A mounted Team selection resolves
   to its direct coordinator but does not create a standalone Team lifecycle.
@@ -301,12 +307,13 @@ replays the configuration mutation.
 ### Org Observational Inspection And Deliberate Continuation
 
 History selection reads the exact retained package without Restore or provider
-activation. `agentOrgContextsStore.accessFor` distinguishes live, continuable
-inactive configured Agents, and read-only delegated children of an inactive
-Org (continuation starts from a configured Agent; once the Org is active, a
-message to a shut-down delegated child wakes it). Deliberate configured
-Send alone performs exact-root Restore and strict stream readiness, preserving
-captured AgentContext/AgentRun/owner and newer drafts across failure. Existing
+activation, and the open Org's view keeps its stream. `agentOrgContextsStore.accessFor`
+distinguishes live, continuable inactive configured Agents, and delegated children,
+which take input over the view's stream whether the Org is active or stopped (each
+is a run of its own; a message wakes only it). A deliberate configured Send goes
+over the same stream and the server starts the Org on that input (autobyteus-461
+SR-046); the client makes no Restore call. Captured AgentContext/AgentRun/owner and
+newer drafts are preserved across failure. Existing
 reopen-required copy takes priority over generic historical recovery text.
 Successful Stop keeps the same monitor, immediately publishes inactive activity,
 then stages final retained content. Exact Org history, inspection and member
@@ -318,8 +325,9 @@ no global client switch or new persistence/lifecycle owner.
 ### Retained Activity After Termination
 
 Runtime termination and Activity disposal are separate responsibilities. Successful
-Team termination retires the stream and applies existing Offline/terminal cleanup
-without clearing any retained member's Activity. Standalone Agent termination
+Team termination keeps the open view's stream (its stored-mode snapshot follows) and
+applies existing Offline/terminal cleanup to the Team's own members, not its child
+rows (runs of their own), without clearing any retained member's Activity. Standalone Agent termination
 also keeps its Activity; Org termination retains the monitor and uses its existing
 staged inspection owner. Do not replace these distinct lifecycle paths with a
 shared stop-time cache or a provider restart merely to display history.
@@ -333,9 +341,10 @@ A rejected/failed Stop preserves retained content and existing uncertainty/error
 handling; failure alone must not be presented as confirmed Offline.
 
 Historical cards do not authorize execution. Existing Team inline conversation
-approval buttons can still look enabled after Stop, but the retired stream and
-cleared approval targets prevent an old decision from dispatching or starting a
-runtime. Later deliberate Send uses normal recovery/hydration and manual policy.
+approval buttons can still look enabled after Stop; an old decision reaches the
+server over the kept stream and is refused for a stopped member (`TEAM_RUN_STOPPED`),
+starting nothing. A later deliberate Send goes over the same stream: the server
+starts the Team on that input and the view continues after one in-band snapshot.
 Compare exact Activity identities to detect duplication: a legitimately new
 System capture or tool event is new Activity, not a duplicate of an old card.
 
