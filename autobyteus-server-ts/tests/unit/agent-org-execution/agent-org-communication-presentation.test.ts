@@ -40,42 +40,7 @@ const createSubject = (options: Readonly<{
     orgRunId,
     members: [direct, secondDirect, team, otherTeam],
   });
-  const firstTask = {
-    address: direct.address,
-    agentRunId: "task-one-run",
-    platformAgentRunId: null,
-    delegatorAgentRunId: "direct-run",
-    startedAt: "2026-09-06T00:00:00.000Z",
-  } as const;
-  const secondTask = {
-    address: mounted.address,
-    agentRunId: "task-two-run",
-    platformAgentRunId: null,
-    delegatorAgentRunId: "direct-run",
-    startedAt: "2026-09-06T00:00:01.000Z",
-  } as const;
-  const taskTeamMember = {
-    address: mounted.address,
-    agentRunId: "task-team-member-run",
-    platformAgentRunId: null,
-  } as const;
-  const secondTaskTeamMember = {
-    address: "/team/second",
-    agentRunId: "task-team-member-two-run",
-    platformAgentRunId: null,
-  } as const;
-  const taskTeam = {
-    address: team.address,
-    teamRunId: "task-team-run",
-    members: [taskTeamMember, secondTaskTeamMember],
-    taskExecutions: [],
-    delegatorAgentRunId: "direct-run",
-    startedAt: "2026-09-06T00:00:02.000Z",
-  } as const;
-  const tree = {
-    ...base,
-    rootOrg: { ...base.rootOrg, taskExecutions: [firstTask, secondTask, taskTeam] },
-  };
+  const tree = base;
   const order: string[] = [];
   const reservations: ReservedAgentInput[] = [];
   const events: AgentOrgRunEvent[] = [];
@@ -140,10 +105,6 @@ const createSubject = (options: Readonly<{
     secondDirect,
     mounted,
     secondMounted,
-    firstTask,
-    secondTask,
-    taskTeamMember,
-    secondTaskTeamMember,
     events,
     sequences,
     order,
@@ -228,39 +189,6 @@ describe("AgentOrg committed communication presentation", () => {
       execution: { agentRunId: targetAgentRunId },
       message: { type: "MEMBER_INPUT_MESSAGE" },
     });
-  });
-
-  it.each([
-    ["configured to task", "direct-run", "/director", "task-one-run"],
-    ["task to configured", "task-one-run", "/director", "mounted-run"],
-    ["task to task", "task-one-run", "/director", "task-two-run"],
-    ["configured to task-Team member", "direct-run", "/director", "task-team-member-run"],
-    ["task-Team member to configured", "task-team-member-run", "/team/reviewer", "direct-run"],
-    ["task to task-Team member", "task-one-run", "/director", "task-team-member-run"],
-    ["task-Team member to task", "task-team-member-run", "/team/reviewer", "task-one-run"],
-    ["task-Team member to task-Team member", "task-team-member-run", "/team/reviewer", "task-team-member-two-run"],
-  ])("presents accepted %s delivery once for the exact receiver", async (
-    _label,
-    senderAgentRunId,
-    senderAddress,
-    targetAgentRunId,
-  ) => {
-    const subject = createSubject();
-
-    await expect(subject.run.deliverExactAgentMessage({
-      sender: subject.sender(senderAgentRunId, senderAddress),
-      targetAgentRunId,
-      content: "Task-scoped update.",
-    })).resolves.toMatchObject({ accepted: true, agentRunId: targetAgentRunId });
-
-    expect(subject.order).toEqual(["reservation_commit", "communication", "MEMBER_INPUT_MESSAGE", "release"]);
-    expect(subject.sequences).toEqual([1, 2]);
-    expect(subject.events).toHaveLength(2);
-    expect(subject.events[1]).toMatchObject({ kind: "agent_presentation",
-      execution: { agentRunId: targetAgentRunId }, message: { type: "MEMBER_INPUT_MESSAGE",
-        payload: { content: expect.stringContaining("Task-scoped update."), sender_agent_run_id: senderAgentRunId } } });
-    expect(subject.events[0]?.kind).toBe("communication");
-    expect(subject.run.getCommunicationSnapshot().messages).toHaveLength(1);
   });
 
   it("keeps rejected and pre-durability-failed configured messages out of both presentations", async () => {
@@ -348,13 +276,13 @@ describe("AgentOrg committed communication presentation", () => {
 it("correlates a committed receiver presentation against the retained tree identity rather than runtime liveness", async () => {
   const { AgentInputUserMessage } = await import("autobyteus-ts/agent/message/agent-input-user-message.js");
   const subject = createSubject();
-  const message = { messageId: "committed-before-settlement", senderAgentRunId: "direct-run", receiverAgentRunId: "task-one-run",
+  const message = { messageId: "committed-before-settlement", senderAgentRunId: "direct-run", receiverAgentRunId: "mounted-run",
     content: "Accepted work", messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-06T00:00:59.000Z" };
   // Exercise only the post-commit callback, not a new admission (which would wake a shut-down child).
   const committed = (subject.run as unknown as { delivery: { presentCommittedCommunication(message: unknown, receiverInput: unknown): void } }).delivery;
   expect(() => committed.presentCommittedCommunication(message, new AgentInputUserMessage("Accepted work"))).not.toThrow();
   expect(subject.events).toHaveLength(1);
-  expect(subject.events[0]).toMatchObject({ kind: "agent_presentation", execution: { agentRunId: "task-one-run" },
+  expect(subject.events[0]).toMatchObject({ kind: "agent_presentation", execution: { agentRunId: "mounted-run" },
     message: { type: "MEMBER_INPUT_MESSAGE", payload: { content: "Accepted work" } } });
   expect(subject.reserveRootAgentInput).not.toHaveBeenCalled();
 });

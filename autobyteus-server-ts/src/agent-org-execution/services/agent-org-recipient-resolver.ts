@@ -21,9 +21,8 @@ export class AgentOrgRecipientResolver {
   }>) {}
 
   /**
-   * The one standing instance a message reaches: within the sender's own Team instance first (a
-   * copy of a mounted Team reaches its own members, REQ-007), then a configured Agent or mounted
-   * Team (its coordinator); anything else is not found (messaging never creates a run).
+   * The one standing instance a message reaches: within the sender's own mounted Team first, then a configured Agent
+   * or mounted Team (its coordinator); anything else is not found (messaging never creates a run).
    */
   resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): CollaborationMessagePlacement {
     return resolveMessageRecipient({
@@ -48,7 +47,7 @@ export class AgentOrgRecipientResolver {
 
   /**
    * A configured placement of the Org (CM-1 has already refused the sender's own Team), with the snapshot
-   * its copy starts from: the placement as it is now, a Team's with its members' handoff rules in the Org.
+   * the delegated run starts from: the placement as it is now, a Team's with its members' handoff rules in the Org.
    */
   private resolveInRunDelegationPlacement(address: AgentTeamAddress): ResolvedAgentOrgRecipient {
     const index = this.options.getIndex();
