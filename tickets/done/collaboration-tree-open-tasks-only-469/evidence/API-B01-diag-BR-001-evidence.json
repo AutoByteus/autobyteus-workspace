@@ -1,0 +1,73 @@
+{
+  "startedAt": "2026-11-11T00:42:39.220Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-001": {
+      "result": "Fail",
+      "description": "Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer",
+      "message": "DIAG469 before B"
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 10609,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 10577,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "BR-001",
+      "message": "DIAG469 before B"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:55561",
+    "frontendUrl": "http://127.0.0.1:55562",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-xb68hX"
+  },
+  "browserVersion": "157.0.8103.39",
+  "diag469": {
+    "agent": {
+      "kind": "agent",
+      "commAfterA": [
+        "heroicons:paper-airplane | to release notes writer bragent edbb | Status of the release notes?"
+      ],
+      "rowsNow": [],
+      "tabText": "Projects\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+      "serverTab": {
+        "collaborationParticipantMessages": {
+          "messages": [
+            {
+              "messageId": "collabmsg_NTkEwA50qm9CWLKkrZUVii11FStLfTo4",
+              "senderAgentRunId": "manager_bragent_edbb_7416d19a5f8d49c5b523bd605c6b5bae",
+              "receiverAgentRunId": "release_notes_writer_bragent_edbb_2f77f48193a64d72b877360ee58c988c",
+              "content": "Status of the release notes?",
+              "messageType": "agent_message",
+              "referenceFiles": [],
+              "createdAt": "2026-11-11T00:42:53.450Z"
+            }
+          ],
+          "pastParticipants": [
+            {
+              "agentRunId": "release_notes_writer_bragent_edbb_2f77f48193a64d72b877360ee58c988c",
+              "address": "/release_notes_writer_bragent_edbb"
+            }
+          ]
+        }
+      },
+      "rowsAfterReload": [
+        "heroicons:paper-airplane | to release notes writer bragent edbb | Status of the release notes?"
+      ]
+    }
+  },
+  "result": "Fail",
+  "finishedAt": "2026-11-11T00:43:32.619Z"
+}

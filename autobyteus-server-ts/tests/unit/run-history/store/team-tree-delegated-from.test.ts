@@ -10,6 +10,7 @@ import { agentRunIdsOfTree } from "../../../../src/run-history/store/task-execut
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * autobyteus-247 design § On-Disk Data Model: a Team run a peer started carries `delegatedFrom` on its tree (tolerant
@@ -27,7 +28,7 @@ const delegatedFrom = { nodeId: "srv_node_a", coordinatingRun: { kind: "agent_te
 const base = () => testExecutionTree({ rootTeamRunId: "team-b", coordinatorAddress: "/lead",
   children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] });
 const teamDir = async () => {
-  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "team-delegated-from-"));
+  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "team-delegated-from-")); openEveryOwnFileUnder(memory);
   roots.push(memory);
   return new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-b", ancestorTeamRunIds: [] });
 };

@@ -506,6 +506,10 @@ every ownership question reads it:
   an earlier Task inside a reused Team copy stays closed);
 - a copy is open or closed by its current entry;
 - a root's closed task executions are the copies whose current entry is closed;
+- a root's tree holds its local copies whose current entry is open, whatever their
+  start (`openDelegatedRunsOf`, the run storage's `OpenDelegatedRunSource`, bound by
+  the composition after `load()`; autobyteus-469). No root stores this list; a
+  damaged Task contributes none until it is readable again;
 - DONE or CANCELLED stops only copies whose current Task is the closing Task.
 
 Two open entries for one copy can only come from damaged data: the latest is
@@ -894,6 +898,8 @@ both. DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE.
    work to become idle.
 3. A closed run receives no input and is never woken or restored while its
    entry is closed, whatever happened to its stop. This holds after restart.
+   Once its stop is confirmed it leaves the loaded root's tree (a tree built later
+   does not hold it); its own files, conversation and log stay (autobyteus-469).
    Only a [reactivation](#reactivation) by the assigning run opens one
    assignment again; a deleted Task's work stays closed.
 
@@ -929,6 +935,11 @@ continue with the same worker after DONE or CANCELLED:
    `send_message_to(target_agent_run_id=<the copy's agent run ID>)`: the Agent
    copy's `target_agent_run_id`, or a Team copy's
    `target_team_coordinator_agent_run_id`.
+
+The root finds a copy that left its tree through the Task records
+(`closedTaskExecutionOf`, by its ingress run ID) and adds it back from its own file
+in the same queue step that commits the reopen (autobyteus-469). A run ID of a
+member that is not a closed Team copy's coordinator is "not in this run".
 
 Reactivation continues the **same** Task and applies only to the copy's current
 Task (its latest assignment). To give the copy a different Task, use

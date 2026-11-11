@@ -406,7 +406,10 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
     let refusal: Frame | undefined;
     await until(() => Boolean(refusal = view.frames.slice(frames).find((frame) => frame.type === "ERROR")), "native copy input refused", 60_000);
     receipt.results.push({ who: "native helper (damaged)", route: "native", refusal });
-    expect(JSON.stringify(refusal!.payload)).toContain("TASK_AGENT_RESOURCES_UNAVAILABLE");
+    // autobyteus-469 DEC-010: a run whose Task record cannot be read is in no tree until it can be read again, so its root
+    // refuses the input as not one of its runs (fail closed: no model request follows).
+    expect(JSON.stringify(refusal!.payload)).toContain("INVALID_TARGET");
+    expect(JSON.stringify(refusal!.payload)).toContain(`AgentRun '${runs.native}' is not in root`);
     await new Promise((resolve) => setTimeout(resolve, 3_000));
     expect(nativeRequests.slice(mark).filter((request) => request.system.includes(names["Native Helper"]!))).toEqual([]);
     // The manager's list marks the damaged Task, the others are listed as before.

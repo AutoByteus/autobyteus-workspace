@@ -2,6 +2,8 @@ import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-col
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import type { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
@@ -59,6 +61,11 @@ export class AgentOrgRunPersistenceCoordinator {
       }
       this.finalizeAfterDurability("execution_tree", prepared.commitAfterDurability);
     });
+  }
+
+  /** A delegated run's record from its own file, for adding it back to the loaded tree (D-4); throws with the reason. */
+  readTaskExecution(run: TaskExecutionReference): Promise<TaskExecution> {
+    return this.options.executionTreeStore.readTaskExecution(this.options.orgMemoryDir, this.options.orgRunId, run);
   }
 
   /** Task-execution activation is one execution-tree write (execution + delegator). */

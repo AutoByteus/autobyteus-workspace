@@ -61,6 +61,12 @@ export class TaskAgentOwnFiles {
     return this.layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] });
   }
 
+  /** Whether the run's own file is on disk, by its run ID alone; nothing is read or parsed (autobyteus-469 D-3). */
+  async exists(run: Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>): Promise<boolean> {
+    const file = "agentRunId" in run ? this.metadata.getMetadataPath(run.agentRunId) : getTeamRunExecutionTreePath(this.teamDir(run.teamRunId));
+    return fsPromises.access(file).then(() => true, () => false);
+  }
+
   readAgent(agentRunId: string): Promise<TaskAgentRunMetadataReadState> {
     return this.metadata.readTaskAgentMetadataState(agentRunId);
   }

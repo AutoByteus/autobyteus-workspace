@@ -262,6 +262,16 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
     const closedRefsOf = (frame: Frame) => kind === "team" ? frame.payload.task_executions : frame.payload.event.task_executions;
     const reopenView = async () => { view.socket.close(); view = await openView(); return snapshotOf(view.frames); };
+    /** A closed Agent copy's saved conversation, read as the Memory page reads it: it is in no tree (autobyteus-469). */
+    const memoryText = async (agentRunId: string) => JSON.stringify((await graphql(
+      `query($id:String!){getAgentRunMemoryView(runId:$id,includeRawTraces:true){rawTraces{content}}}`, { id: agentRunId })).getAgentRunMemoryView);
+    /** autobyteus-469: once stopped, closed copies leave the tree and are listed nowhere in a fresh snapshot. */
+    const leftTree = async (out: string[]) => {
+      let last: unknown;
+      await until(async () => { const snap = await reopenView(); const inTree = keys(taskNodes(snap.tree)); last = { inTree, closed: keys(snap.closed) };
+        return keys(snap.closed).length === 0 && out.every((key) => !inTree.includes(key)); }, `closed copies left the tree: ${out.join(", ")}`, 30_000)
+        .catch((error) => { throw new Error(`${error}: ${JSON.stringify(last)}`); });
+    };
 
     // 1. `@Reviewer` send whose turn delegates by description with a reference file (SCN-001, AC-001..003, AC-015).
     // The Reviewer copy's own work is a described sub-delegation to the Helper (SCN-006 under the ad-hoc owner, AC-011).
@@ -366,16 +376,15 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     // Fenced: the closed copy cannot receive input by run ID; its conversation is kept.
     const fenced = await managerCalls(callTool("send_message_to", { target_agent_run_id: copy.agentRunId, content: "Are you there?" }));
     expect(fenced).toContain("TASK_AGENT_RESOURCE_CLOSED");
-    expect(calledResults(await conversationOf(copy.agentRunId!, copy.address)).length).toBeGreaterThanOrEqual(1);
-    // Repeating DONE re-requests the stop and changes nothing else.
-    const redoFrom = view.frames.length;
+    expect(await memoryText(copy.agentRunId!)).toContain("CALLED:");
+    // autobyteus-469: once stopped, the closed copies leave the tree; the others stay.
+    await leftTree(keys(adHocRefs));
+    // Repeating DONE changes nothing else (the stopped copies left the tree: nothing to stop again or re-publish).
     await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
-    await until(() => view.frames.slice(redoFrom).some(closedFrame), "repeated DONE closure", 60_000);
-    expect(keys(closedRefsOf(view.frames.slice(redoFrom).find(closedFrame)!))).toEqual(keys(adHocRefs));
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
     const reopened = await reopenView();
-    expect(keys(reopened.closed)).toEqual(keys(adHocRefs));
-    expect(keys(taskNodes(reopened.tree))).toEqual(keys(nodes));
+    expect(keys(reopened.closed)).toEqual([]);
+    expect(keys(taskNodes(reopened.tree))).toEqual(keys(nodes).filter((key) => !keys(adHocRefs).includes(key)));
 
     // 6. Messaging never brings anyone in (collaboration-model-contract): `send_message_to` to an outside catalog address is
     // not found and creates nothing; delegation is the way in, and the copy is then reached by its run ID.
@@ -463,8 +472,10 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
       if (kind === "team") return (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){closedTaskExecutions}}`, { id: rootId })).getTeamRunResumeConfig.closedTaskExecutions;
       return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){closed_task_executions}}`, { id: rootId })).getAgentOrgRootHistory.closed_task_executions;
     };
+    // autobyteus-469: a stored tree holds no closed copy (its closed list is empty), only the open ones.
     const closedAfterStop = await storedClosed();
-    for (const ref of adHocRefs) expect(keys(closedAfterStop)).toContain(keyOf(ref));
+    expect(keys(closedAfterStop)).toEqual([]);
+    for (const ref of adHocRefs) expect(keys(taskNodes(await liveTree()))).not.toContain(keyOf(ref));
     expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
 
     // 9. Restore by sending: the open assistant copy still answers by run ID (wake); the closed copy stays closed.
@@ -481,7 +492,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
     const stillFenced = await managerCalls(callTool("send_message_to", { target_agent_run_id: copy.agentRunId, content: "Wake up." }));
     expect(stillFenced).toContain("TASK_AGENT_RESOURCE_CLOSED");
-    expect(keys(snapshotOf(view.frames).closed)).toEqual(expect.arrayContaining(keys(adHocRefs)));
+    expect(keys(snapshotOf(view.frames).closed)).toEqual([]);
+    for (const ref of adHocRefs) expect(keys(taskNodes(snapshotOf(view.frames).tree))).not.toContain(keyOf(ref));
     view.socket.close();
     inputChannel?.socket.close();
     await terminate(kind, rootId);

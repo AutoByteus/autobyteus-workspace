@@ -30,6 +30,7 @@ import {
   testOrgAgentNode,
   testOrgLaunchConfiguration,
 } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 type DraftOwnerKind = ContextFileDraftOwnerDescriptor["kind"];
 
@@ -154,7 +155,7 @@ const snapshotFiles = async (): Promise<Record<string, string>> => {
 
 beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), "draft-context-files-universal-"));
-  const memoryDir = path.join(config.root, "memory");
+  const memoryDir = path.join(config.root, "memory"); openEveryOwnFileUnder(memoryDir);
   await writeOrgFixture(memoryDir);
   await writeAgentCollaborationFixture(memoryDir);
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });

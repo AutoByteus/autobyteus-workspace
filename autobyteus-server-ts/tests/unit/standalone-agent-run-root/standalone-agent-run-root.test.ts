@@ -598,7 +598,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(released).not.toHaveBeenCalled();
   });
 
-  it("Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read", async () => {
+  it("Task DONE: closed copies are published before stopping, then leave the tree once stopped, live and in the stored read (autobyteus-469 AC-001)", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A"); resources.addTask("B");
     const f = await buildManager(resources);
@@ -626,28 +626,28 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     await stopped;
     expect(closedIndex).toBeLessThan(eventsWhenStopped);
 
+    // Its stop is confirmed: it left the loaded tree (D-4); its own file stays.
     const live = await root.openPackageSnapshotConnection();
-    expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
+    expect(live.snapshot.closedTaskExecutions).toEqual([]);
     const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence,
       liveSequenceId: live.liveSequenceId, lastMessageChangeSequence: live.lastMessageChangeSequence, remoteTaskExecutions: [] });
     live.close();
-    expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
+    expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([]);
     // autobyteus-446: the history poll's digest of the live root equals the digest of the view's closed list (the client's side).
     expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest)
       .toBe(closedTaskExecutionsDigest(view.root_subject_kind === "agent" ? view.root_agent.closed_task_executions : []));
-    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).not.toBe(closedTaskExecutionsDigest([]));
-    // The tree is never filtered: both copies stay recorded.
     expect(root.getExecutionTreeSnapshot().taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId))
-      .toEqual([ingressOfOutcome(assigned), ingressOfOutcome(other)]);
+      .toEqual([ingressOfOutcome(other)]);
+    await expect(fs.access(path.join(f.memoryDir, "agents", closedA.agentRunId, "run_metadata.json"))).resolves.toBeUndefined();
 
     await f.manager.stopRoot(HOST);
     const stored = (await f.manager.getInspection(HOST))!;
     expect(stored.isActive).toBe(false);
-    expect(stored.snapshot.closedTaskExecutions).toEqual([closedA]);
-    expect(stored.snapshot.tree.taskExecutions).toHaveLength(2);
+    expect(stored.snapshot.closedTaskExecutions).toEqual([]);
+    expect(stored.snapshot.tree.taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId)).toEqual([ingressOfOutcome(other)]);
   });
 
-  it("a stopped host's digest follows a Task closed while it is stopped, from memory, and matches its stored view's (autobyteus-435 AC-011-1, QR-002)", async () => {
+  it("a stopped host's digest follows a Task closed while it is stopped, from memory; the one re-read view no longer holds the copy (autobyteus-435 AC-011-1, QR-002, autobyteus-469)", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A");
     const f = await buildManager(resources);
@@ -664,8 +664,11 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const closed = f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest;
     expect(closed).toBe(closedTaskExecutionsDigest([copy]));
     for (const read of storedReads) expect(read).not.toHaveBeenCalled();
-    // The client re-reads the stopped host's stored view once: its closed list gives the same digest.
-    expect(closedTaskExecutionsDigest((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions)).toBe(closed);
+    // The digest changed, so the client re-reads the stopped host's stored view once (once per digest value): the copy
+    // left the tree (AC-001: the Task closed while the top run was not loaded), so nothing of it is listed.
+    const reread = (await f.manager.getInspection(HOST))!.snapshot;
+    expect(reread.closedTaskExecutions).toEqual([]);
+    expect(reread.tree.taskExecutions).toEqual([]);
   });
 
   it("reactivation: once the agent reopens the Task, the assigner's run-ID message restores the copy, delivers, and lists it again (AC-001/004/015, REQ-007/008)", async () => {

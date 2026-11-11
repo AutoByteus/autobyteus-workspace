@@ -16,10 +16,20 @@ export const collaborationParticipantMessageDtoSchema = z.object({
     createdAt: nonEmptyStringSchema,
 }).strict();
 /**
+ * An agent of a delegated run that left the root's tree when its Task closed (autobyteus-469 D-5): the other agent of
+ * one of the participant's messages, with the address it had in the tree, so the Team tab names it as before.
+ */
+export const collaborationPastParticipantDtoSchema = z.object({
+    agentRunId: nonEmptyStringSchema,
+    address: nonEmptyStringSchema,
+}).strict();
+/**
  * `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)` (autobyteus-358): the messages one participant
- * of one root sent or received, as the root's view would show them (both endpoints are agents of the root).
+ * of one root sent or received, as the root's view would show them: the other agent is an agent of the root, or an
+ * agent of a delegated run that left its tree, listed in `pastParticipants`.
  */
 export const collaborationParticipantMessagesDtoSchema = z.object({
     messages: z.array(collaborationParticipantMessageDtoSchema),
+    pastParticipants: z.array(collaborationPastParticipantDtoSchema),
 }).strict();
 //# sourceMappingURL=collaboration-participant-messages-dtos.js.map

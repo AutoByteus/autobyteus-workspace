@@ -72,6 +72,10 @@ export class RootCommunicationEngine {
   }
 
   getMessages(): readonly CollaborationCommunicationMessage[] { return this.current; }
+  /** Keeps only the loaded messages still in the root's view after a delegated run left its tree (D-4, D-5); memory only. */
+  retainMessages(keep: (message: CollaborationCommunicationMessage) => boolean): void {
+    this.current = Object.freeze(this.current.filter(keep));
+  }
   closeAdmission(): void { this.accepting = false; }
 
   async deliver(input: RootCommunicationDeliveryInput): Promise<AgentOperationResult> {

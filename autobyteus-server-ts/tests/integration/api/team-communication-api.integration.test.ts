@@ -125,6 +125,8 @@ describe("Team communication API integration", () => {
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
 
     vi.resetModules();
+    // Bound in the module graph the app uses after the reset (autobyteus-469: a tree read needs its source).
+    (await import("../../fixtures/open-delegated-run-sources.js")).openEveryOwnFileUnder(path.join(appDataDir, "memory"));
     const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir });
@@ -209,7 +211,7 @@ describe("Team communication API integration", () => {
       content: expect.stringContaining(readableReferencePath),
       referenceFiles: [readableReferencePath, missingReferencePath, directoryReferencePath],
       createdAt: timestamp,
-    }] });
+    }], pastParticipants: [] });
     // The sender sees the same message; a run that is not a participant is refused (autobyteus-358).
     expect((await execGraphql<{ collaborationParticipantMessages: { messages: unknown[] } }>(
       participantMessages, { rootRunId: teamRunId, agentRunId: "sender-run-1" })).collaborationParticipantMessages.messages).toHaveLength(1);

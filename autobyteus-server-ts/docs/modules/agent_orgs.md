@@ -359,10 +359,14 @@ memory/agents/<task-agent-run-id>/       # a task agent of the org: a run of its
 memory/agent_teams/<task-team-run-id>/   # a task agent team of the org: its own tree (with taskAgent), log and members
 ```
 
-Task agents are not part of the org's folder: the org tree keeps a link per task agent
-(`rootOrg.taskExecutions`, and older links under a configured team's `taskExecutions`), and
-`AgentOrgRunExecutionTreeStore` composes their records from their own files (task-agent-own-run,
-D-1). A task agent created from a configured place records the place's definition and launch as
+Task agents are not part of the org's folder, and the org tree stores nothing of them
+(autobyteus-469, CM-8): `AgentOrgRunExecutionTreeStore` asks the Task records for the org's task
+agents with an open Task entry and composes their records from their own files into
+`rootOrg.taskExecutions`; a configured team's `taskExecutions` stays empty (older entries there and
+in the root list are ignored and left out at the next save; FU-003 of autobyteus-469). Only links to
+runs on another node are stored. `readOwnParts` reads the org's own parts only (startup admission,
+history-index repair). A task agent whose Task closed leaves the loaded tree once stopped and comes
+back from its own file when continued. A task agent created from a configured place records the place's definition and launch as
 they were when it started (a Team copy also its members' handoff rules in the Org), and restores
 from its own file like any copy: a later edit of the place does not change it. Messages with a task
 agent are stored in both logs.

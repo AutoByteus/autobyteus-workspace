@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
-import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { NEW_FOLDERS, OLD_FOLDERS, snapshot, writeOpenTaskRecordsOfReleasedData, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // The startup migration `20261017_task_agent_own_run_v1` through the BUILT Studio server (`dist/app.js`) on a FAITHFUL
@@ -141,6 +141,8 @@ const faithfulRoot = async () => {
   expect(remaining.length, "every earlier migration stays recorded").toBe(recorded.length - 1 - LATER.length);
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);
+  // autobyteus-469: the installs this stands for keep a Task record per task agent; a top run's tree is built from them.
+  await writeOpenTaskRecordsOfReleasedData(root);
   for (const file of await jsonFiles(memory)) await fs.writeFile(file, `${JSON.stringify(toScriptedRuntime(JSON.parse(await fs.readFile(file, "utf8"))), null, 2)}\n`);
   return { root, memory, ledgerBefore: remaining };
 };

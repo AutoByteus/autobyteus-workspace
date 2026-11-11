@@ -1,0 +1,17 @@
+# Case: API-E02 new durable E2E: open-task-tree-upgrade-startup (AC-005, 006, 008, 009, 010, 011, 012)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  3 passed (3)' (OT-1, OT-2, OT-3)
+
+## API-E02-run6.log
+ ✓ tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts (3 tests) 15428ms
+     ✓ OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it  7863ms
+     ✓ OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the first save keeps only what it must  4004ms
+     ✓ OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back  3538ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  01:18:45
+   Duration  24.09s (transform 6.10s, setup 50ms, import 8.23s, tests 15.43s, environment 0ms)
+

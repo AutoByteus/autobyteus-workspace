@@ -1,0 +1,8 @@
+# IMP-11 server and web type-check gates (IR-002)
+# Commands: node ./scripts/typecheck.mjs (autobyteus-server-ts); pnpm -C autobyteus-web typecheck
+# Code: commit fa48d74a3e content; macOS, 2026-11-11
+
+server: [typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+server: [typecheck] PASS
+web:    [typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+web:    [typecheck] PASS

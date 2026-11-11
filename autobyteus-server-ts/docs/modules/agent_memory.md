@@ -391,7 +391,7 @@ Team and org explorers share one catalog policy owner,
 - `TeamRootMemorySource` — lists stored root team runs and reads each admitted
   V2 Team execution tree through `TeamRunExecutionTreeLocationService`; display
   metadata comes from the Team catalog owner.
-- `TaskTeamRootMemorySource` — lists task agent teams (`memory/agent_teams/<taskTeamRunId>/` with a `taskAgent` section) that are linked to the run that started them (`TaskAgentLinkChecker`), and reads each one's own files (`TaskAgentOwnFiles.readTeam`). Detached task teams are not listed. Memory search uses the same source to find task-team members.
+- `TaskTeamRootMemorySource` — lists task agent teams (`memory/agent_teams/<taskTeamRunId>/` with a `taskAgent` section) whose coordinating run still exists (`CoordinatingRunPresence`: its `run_metadata.json` or tree file), and reads each one's own files (`TaskAgentOwnFiles.readTeam`). Detached task teams (their coordinating run deleted) are not listed; one whose Task closed and that left its coordinating run's tree is (autobyteus-469 D-6). Memory search uses the same source to find task-team members.
 - `AgentOrgRootMemorySource` — lists stored root org runs and reads each org
   execution tree through `AgentOrgExecutionTreeLocationService`; display
   metadata comes from `AgentOrgRunHistoryCatalogService.listCatalogRows()`,

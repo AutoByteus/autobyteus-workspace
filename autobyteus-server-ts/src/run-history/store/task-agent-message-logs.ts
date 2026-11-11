@@ -131,18 +131,29 @@ export const appendMessageToOwnerLogs = async (
 };
 
 /**
- * The stored view of a coordinating run's messages: its own log and its loaded task agents' logs, each
- * message once (by `messageId`), only messages whose endpoints are loaded (L6), in `createdAt` order.
+ * The one rule of a coordinating run's message view (D-5), for its stored and its loaded view: a message whose two
+ * agents are in the tree, or one of whose agents is one of the run's own agents. The second keeps the Team tab of an own
+ * agent unchanged after a delegated run left the tree (DEC-001): every such message is in the run's own log.
+ */
+export const isMessageOfView = (
+  message: Pick<CollaborationCommunicationMessage, "senderAgentRunId" | "receiverAgentRunId">,
+  ownAgentRunIds: ReadonlySet<string>,
+  treeAgentRunIds: ReadonlySet<string>,
+): boolean => (treeAgentRunIds.has(message.senderAgentRunId) && treeAgentRunIds.has(message.receiverAgentRunId))
+  || ownAgentRunIds.has(message.senderAgentRunId) || ownAgentRunIds.has(message.receiverAgentRunId);
+
+/**
+ * The stored view of a coordinating run's messages: its own log and its open delegated runs' logs, each message once
+ * (by `messageId`), only messages of the view (`isMessageOfView` bound to the tree: `messageViewOfTree`), in `createdAt` order.
  */
 export const composeMessageLogs = (
   logs: readonly (readonly CollaborationCommunicationMessage[])[],
-  loadedAgentRunIds: ReadonlySet<string>,
+  inView: (message: CollaborationCommunicationMessage) => boolean,
 ): CollaborationCommunicationMessage[] => {
   const byId = new Map<string, CollaborationCommunicationMessage>();
   for (const log of logs) {
     for (const message of log) {
-      if (byId.has(message.messageId)) continue;
-      if (!loadedAgentRunIds.has(message.senderAgentRunId) || !loadedAgentRunIds.has(message.receiverAgentRunId)) continue;
+      if (byId.has(message.messageId) || !inView(message)) continue;
       byId.set(message.messageId, message);
     }
   }

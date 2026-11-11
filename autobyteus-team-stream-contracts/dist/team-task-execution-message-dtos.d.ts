@@ -61,16 +61,57 @@ export declare const teamTaskExecutionsClosedPayloadSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskExecutionsClosedPayloadSchema>>;
-/** These closed task executions were reactivated by their assigner; the Workspaces listing shows them again. Same shape as closed. */
+/**
+ * These closed task executions were reactivated by their assigner, or given another Task, and are in the tree again
+ * (autobyteus-469 D-8). Each carries its record and parent Team run, as "started" does, so a view that no longer holds
+ * the run (it left the tree when its Task closed) inserts it; one that holds it lists it again.
+ */
 export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
     change_sequence: z.ZodNumber;
-    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-        agent_run_id: z.ZodString;
-    }, z.core.$strict>, z.ZodObject<{
-        team_run_id: z.ZodString;
-    }, z.core.$strict>]>>;
+    executions: z.ZodArray<z.ZodObject<{
+        parent_team_run_id: z.ZodString;
+        execution: z.ZodUnion<readonly [z.ZodType<Readonly<{
+            kind: "task_agent";
+            address: string;
+            agent_run_id: string;
+            platform_agent_run_id: string | null;
+            delegator_agent_run_id: string | null;
+            started_at: string;
+            source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            kind: "task_agent";
+            address: string;
+            agent_run_id: string;
+            platform_agent_run_id: string | null;
+            delegator_agent_run_id: string | null;
+            started_at: string;
+            source: import("./team-execution-view-dtos.js").TaskAgentExecutionSourceDto;
+            user_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
+        }>, unknown>>, z.ZodType<Readonly<{
+            kind: "task_team";
+            address: string;
+            team_run_id: string;
+            members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
+            task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
+            delegator_agent_run_id: string | null;
+            started_at: string;
+            source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            kind: "task_team";
+            address: string;
+            team_run_id: string;
+            members: readonly import("./team-execution-view-dtos.js").TaskTeamAgentExecutionDto[];
+            task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
+            delegator_agent_run_id: string | null;
+            started_at: string;
+            source: import("./team-execution-view-dtos.js").TaskTeamExecutionSourceDto;
+            user_team_launch_selection?: import("./team-execution-view-dtos.js").UserLaunchSelectionDto;
+        }>, unknown>>]>;
+    }, z.core.$strict>>;
 }, z.core.$strict>;
-export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
+export type TeamTaskExecutionsReopenedPayload = Readonly<z.infer<typeof teamTaskExecutionsReopenedPayloadSchema>>;
 /**
  * The user's model choices of these delegated copies were saved on the live run
  * (DS-001). Each names one record by its run ID (unique in the tree) with its choice as now recorded.

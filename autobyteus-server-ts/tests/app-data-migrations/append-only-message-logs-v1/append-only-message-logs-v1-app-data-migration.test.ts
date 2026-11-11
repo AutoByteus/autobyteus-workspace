@@ -25,12 +25,13 @@ import { AGENT_ORG_RUN_TREE_SHAPE, STANDALONE_ROOT_TREE_SHAPE, TEAM_RUN_TREE_SHA
 import { MESSAGE_LOG_ROTATION_LIMIT_BYTES, MessageLog, type MessageLogBaseName } from "../../../src/run-history/store/message-log.js";
 import { MessageLog as FrozenMessageLog } from "../../../src/app-data-migrations/frozen/server/run-history/store/message-log.js";
 import { composeMessageLogs, taskAgentLogOwners } from "../../../src/run-history/store/task-agent-message-logs.js";
-import { agentRunIdsOfTree } from "../../../src/run-history/store/task-execution-tree-split.js";
+import { messageViewOfTree } from "../../../src/run-history/store/task-execution-tree-split.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { T0, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { InMemoryMigrationLedger, runStart } from "../../helpers/migration-start-harness.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * `20261018_append_only_message_logs_v1` (design DS-005; AC-004, AC-006, AC-007) on faithful synthesized
@@ -49,7 +50,7 @@ afterEach(async () => {
 });
 
 const dataRoot = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "append-only-logs-migration-")); roots.push(root);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "append-only-logs-migration-")); roots.push(root); openEveryOwnFileUnder(path.join(root, "memory"));
   return { root, memory: path.join(root, "memory") };
 };
 const ledgerWith = (pending: readonly string[] = []) => ({
@@ -136,20 +137,20 @@ const composedViews = async (memory: string, source: "json" | "current") => {
   const hubTree = (await new StandaloneRootPackageStore().readTree(hubDir, "hub"))!;
   views.hub = source === "current" ? (await new StandaloneRootPackageStore().readMessages(hubDir, hubTree))?.messages ?? null
     : composeMessageLogs([await readJson(path.join(hubDir, "communication_messages.json"), (value) => validateStandaloneRootMessages(value, "hub")),
-      ...await Promise.all(taskAgentLogOwners(STANDALONE_ROOT_TREE_SHAPE.taskLists(hubTree).values()).map(taskLogJson))], agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, hubTree));
+      ...await Promise.all(taskAgentLogOwners(STANDALONE_ROOT_TREE_SHAPE.taskLists(hubTree).values()).map(taskLogJson))], messageViewOfTree(STANDALONE_ROOT_TREE_SHAPE, hubTree));
   for (const id of ["team-r", "team-empty"]) {
     const dir = path.join(memory, "agent_teams", id);
     const tree = (await new TeamRunExecutionTreeStore().read(dir, id))!;
     views[id] = source === "current" ? (await new TeamCommunicationStore().read(dir, tree))?.messages ?? null
       : composeMessageLogs([await readJson(path.join(dir, "team_communication_messages.json"), (value) => validateTeamCommunicationMessagesPayload(value, id)),
-        ...await Promise.all(taskAgentLogOwners(TEAM_RUN_TREE_SHAPE.taskLists(tree).values()).map(taskLogJson))], agentRunIdsOfTree(TEAM_RUN_TREE_SHAPE, tree));
+        ...await Promise.all(taskAgentLogOwners(TEAM_RUN_TREE_SHAPE.taskLists(tree).values()).map(taskLogJson))], messageViewOfTree(TEAM_RUN_TREE_SHAPE, tree));
   }
   for (const id of ["org-o", "org-empty", "org-unordered"]) {
     const dir = path.join(memory, "agent_orgs", id);
     const tree = (await new AgentOrgRunExecutionTreeStore().read(dir, id))!;
     views[id] = source === "current" ? (await new AgentOrgCommunicationMessagesStore().read(dir, tree))?.messages ?? null
       : composeMessageLogs([await readJson(path.join(dir, "agent_org_communication_messages.json"), (value) => validateAgentOrgCommunicationMessages(value, id)),
-        ...await Promise.all(taskAgentLogOwners(AGENT_ORG_RUN_TREE_SHAPE.taskLists(tree).values()).map(taskLogJson))], agentRunIdsOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree));
+        ...await Promise.all(taskAgentLogOwners(AGENT_ORG_RUN_TREE_SHAPE.taskLists(tree).values()).map(taskLogJson))], messageViewOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree));
   }
   return views;
 };

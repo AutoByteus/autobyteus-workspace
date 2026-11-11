@@ -36,6 +36,7 @@ import { LocalMemoryRunViewProjectionProvider } from "../../../src/run-history/p
 import { toCodexUserInput } from "../../../src/agent-execution/backends/codex/thread/codex-user-input-mapper.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { recordAcceptedAttachmentMessage } from "../../fixtures/accepted-attachment-message.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 let app: ReturnType<typeof fastify>, memoryDir: string, normalizer: AgentRunProviderInputNormalizer;
 let memoryView: AgentMemoryView, pageView: EventMonitorActiveTracePageObject;
@@ -46,7 +47,7 @@ class ReadSurface {
 }
 beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), "attachment-history-"));
-  memoryDir = path.join(config.root, "memory");
+  memoryDir = path.join(config.root, "memory"); openEveryOwnFileUnder(memoryDir);
   const layout = new AgentMemoryLayout(memoryDir);
   const direct = testOrgAgentNode("/same", "direct");
   const lead = testOrgAgentNode("/team/lead", "lead");

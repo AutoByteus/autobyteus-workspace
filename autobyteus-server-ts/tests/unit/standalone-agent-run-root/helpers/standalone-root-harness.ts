@@ -19,6 +19,7 @@ import type { MemberExecutionContext } from "../../../../src/agent-collaboration
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { bindTestOpenDelegatedRuns } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * A standalone run's Agent root with real persistence: the host run is a double that records reservations
@@ -99,6 +100,8 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
   vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
+  // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
+  bindTestOpenDelegatedRuns(taskExecutionResources);
   const host = hostRun();
   // The host's activation backend (the standalone lifecycle): records the root-built member context.
   const contexts: MemberExecutionContext[] = [];

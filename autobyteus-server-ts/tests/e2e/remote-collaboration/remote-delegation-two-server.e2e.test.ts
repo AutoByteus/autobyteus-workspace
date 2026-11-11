@@ -864,7 +864,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       ["/half_set", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Half Set on node "${node}", and Model Routing is off on node "${node}".`],
       // AC-203: the default's runtime is unavailable on beta; the default's model is not offered there.
       ["/codex_writer", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Writer on node "${node}" cannot run there: .+`)],
-      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: The model 'no-such-model' is not available on Antigravity CLI, and Model Routing is off on node "${node}".`],
+      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: 'no-such-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "${node}".`],
       // AC-204: the Model Router (never a collaborator, 455 REQ-002), an Agent Org, a team-local Agent and an unknown address
       // are not delegable targets.
       ["/model_router", "AGENT_NOT_FOUND", notFound("/model_router")],
@@ -2281,7 +2281,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(updated.defaultLaunchConfig).toEqual({ runtimeKind: "antigravity_cli", llmModelIdentifier: "retired-model" });
     const runsBefore = await remoteRunDirs();
     const refused = await delegateRemote(solo, "After the default changed.");
-    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: The model 'retired-model' is not available on Antigravity CLI, and Model Routing is off on node "${LABEL.beta}".`);
+    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: 'retired-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "${LABEL.beta}".`);
     expect(await remoteRunDirs()).toEqual(runsBefore);
     expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-DEFAULT-CHANGE-FOLLOWUP");

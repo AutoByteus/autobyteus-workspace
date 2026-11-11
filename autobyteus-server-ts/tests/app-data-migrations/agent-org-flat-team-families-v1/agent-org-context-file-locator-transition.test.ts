@@ -27,6 +27,7 @@ import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../.
 const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
   toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 import { testOrgTeamNode, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(async () => { vi.restoreAllMocks(); for (const root of roots.splice(0)) { resetRootRunPackageReadinessIndex(path.join(root, 'memory')); await fs.rm(root, { recursive: true, force: true }); } });
@@ -38,7 +39,7 @@ const old = (team: string, address: string, file = 'ctx_x__image.png') => `/rest
 const current = (agent: string, file = 'ctx_x__image.png') => `/rest/agent-org-runs/org/agent-runs/${agent}/context-files/${file}`;
 const trace = (uri: string, id = 'trace-id') => JSON.stringify({ id, trace_type: 'user', turn_id: 'turn', seq: 4, ts: 123, content: uri, media: { images: [uri] }, tool_args: { text: uri } });
 const env = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'org-locator-cutover-')); roots.push(root);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'org-locator-cutover-')); roots.push(root); openEveryOwnFileUnder(root);
   vi.spyOn(appConfigProvider.config, 'getBaseUrl').mockReturnValue('https://installation.test');
   const memory = path.join(root, 'memory'), source = path.join(memory, 'agent_teams', 'org'), target = path.join(memory, 'agent_orgs', 'org');
   const config = { getAgentTeamsDir: () => path.join(root, 'defs', 'teams'), getAgentOrgsDir: () => path.join(root, 'defs', 'orgs'), getBaseUrl: () => 'https://installation.test' } as AppConfig;

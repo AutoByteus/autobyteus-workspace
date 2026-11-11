@@ -16,6 +16,7 @@ import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-ro
 import { communicationPortDouble } from "./helpers/communication-port-double.js";
 import { StandaloneRootPersistenceCoordinator } from "../../../src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * The commit path after append-only message logs (REQ-001, REQ-002; AC-002; ARCH-F-002, ARCH-F-004):
@@ -30,7 +31,7 @@ afterEach(async () => {
   vi.restoreAllMocks();
   await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
-const tempDir = async () => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), "commit-path-")); roots.push(dir); return dir; };
+const tempDir = async () => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), "commit-path-")); roots.push(dir); openEveryOwnFileUnder(dir); return dir; };
 const message = (messageId: string, second: number, overrides: Partial<CollaborationCommunicationMessage> = {}): CollaborationCommunicationMessage => Object.freeze({
   messageId, senderAgentRunId: "sender", receiverAgentRunId: "receiver", content: messageId, messageType: "agent_message",
   referenceFiles: Object.freeze([]), createdAt: `2026-10-18T10:00:${String(second).padStart(2, "0")}.000Z`, ...overrides,

@@ -50,6 +50,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * The AR-001 guard (design § Remote Links In Memory): per root kind, a tree with one local and one remote link.
@@ -67,7 +68,7 @@ afterEach(async () => {
   vi.restoreAllMocks();
   await Promise.all(roots.splice(0).map((root) => { resetRootRunPackageReadinessIndex(root); return fs.rm(root, { recursive: true, force: true }); }));
 });
-const memoryRoot = async () => { const root = await fs.mkdtemp(path.join(os.tmpdir(), "remote-walkers-")); roots.push(root); return root; };
+const memoryRoot = async () => { const root = await fs.mkdtemp(path.join(os.tmpdir(), "remote-walkers-")); roots.push(root); openEveryOwnFileUnder(root); return root; };
 
 const localCopy = (delegator: string) => ({ address: "/code_reviewer", agentRunId: LOCAL, platformAgentRunId: null, delegatorAgentRunId: delegator,
   startedAt: T0, source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: launch } });
@@ -284,12 +285,13 @@ describe.each([
     expect(await restore(dir)).toEqual(["collabmsg_out", "collabmsg_in", "collabmsg_local"]);
   });
 
-  it("keeps refusing an endpoint outside the run, equal endpoints, and a message with no local endpoint", () => {
+  it("keeps refusing equal endpoints and a message with no local endpoint; an agent outside the tree with one of this run is kept (autobyteus-469 D-5)", () => {
     const second = { ...remoteLink(delegator), agentRunId: "remote-second-run" };
     const withRemotes = tree([], [remoteLink(delegator), second]) as never;
     const at = (sender: string, receiver: string): CollaborationCommunicationMessage[] =>
       [{ messageId: "m", senderAgentRunId: sender, receiverAgentRunId: receiver, content: "x", messageType: "agent_message", referenceFiles: [], createdAt: T0 }];
-    expect(() => validate(withRemotes, at(delegator, "stranger-run"))).toThrow("names AgentRun 'stranger-run', which is not in this run");
+    // The other agent may be an agent of a delegated run that left the tree when its Task closed.
+    expect(() => validate(withRemotes, at(delegator, "stranger-run"))).not.toThrow();
     expect(() => validate(withRemotes, at(delegator, delegator))).toThrow("must use distinct AgentRun endpoints");
     expect(() => validate(withRemotes, at(REMOTE, "remote-second-run"))).toThrow("has no endpoint that is an agent of this run");
     expect(() => validate(withRemotes, at(delegator, REMOTE))).not.toThrow();

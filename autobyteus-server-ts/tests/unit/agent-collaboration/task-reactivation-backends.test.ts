@@ -46,8 +46,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     expect(original?.alive).toBe(true);
     await f.done('B');
     expect(original.alive).toBe(false);
-    // The released authority stays registered: restoring it in place fails (the reason for the discard).
-    await expect(f.adapter.restoreChain('B-worker', () => undefined)).rejects.toThrow();
+    // Stopped and closed, it left the loaded tree with its released authority (autobyteus-469 D-4).
+    expect(f.adapter.containsTaskExecution({ agentRunId: 'B-worker' })).toBe(false);
     f.resources.setTaskOpen('B');
     expect(await f.message('B-worker')).toMatchObject({ accepted: true, message: 'Delivered message to B-worker. B-worker continues with its conversation.' });
     const restored = f.active.get('B-worker');
@@ -129,7 +129,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     expect(live.isActive()).toBe(true);
     await f.done('A');
     expect(live.isTerminated()).toBe(true);
-    await expect(f.adapter.restoreChain('A-lead', () => undefined)).rejects.toThrow();
+    // Stopped and closed, the Team copy left the loaded tree with what it delegated (autobyteus-469 D-4).
+    expect(f.adapter.containsTaskExecution({ teamRunId: 'A-team' })).toBe(false);
     const helperAcquisitions = ['A-child', 'A-grand', 'A-helper'].map(f.acquisitions);
     f.resources.setTaskOpen('A');
     // A member that is not the ingress cannot reactivate the Team.

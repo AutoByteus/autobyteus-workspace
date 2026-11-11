@@ -33,6 +33,13 @@ export const addStandaloneRootTaskExecution = (input: {
   return revalidate({ ...input.tree, taskExecutions: [...input.tree.taskExecutions, input.execution] });
 };
 
+/** Removes these delegated runs (by run ID) from the loaded tree: their Task closed and they stopped (D-4). */
+export const removeStandaloneRootTaskExecutions = (input: {
+  tree: StandaloneRootTreeSnapshot;
+  runIds: ReadonlySet<string>;
+}): StandaloneRootTreeSnapshot => revalidate({ ...input.tree,
+  taskExecutions: input.tree.taskExecutions.filter((task) => !input.runIds.has("agentRunId" in task ? task.agentRunId : task.teamRunId)) });
+
 /** Records a remote run the host delegated to (CM-10), once, at its delegation's commit. */
 export const addStandaloneRootRemoteTaskExecution = (input: {
   tree: StandaloneRootTreeSnapshot;

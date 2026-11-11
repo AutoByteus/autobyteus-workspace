@@ -46,6 +46,11 @@ const build = (closed: Array<{ agentRunId: string } | { teamRunId: string }> = [
     testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: worker.address, target: { agentRunId: 'other-task-run' } }),
   ],
 });
+/** A task execution's record as the view holds it, the shape a "reopened" event carries (autobyteus-469 D-8). */
+const recordOf = (context: ReturnType<typeof build>, runId: string) => context.view.getExecutionTree().root_team.task_executions
+  .find((execution: any) => (execution.agent_run_id ?? execution.team_run_id) === runId)!;
+const reopenedMessage = (sequence: number, records: readonly any[]) =>
+  ({ type: 'TASK_EXECUTIONS_REOPENED', payload: { change_sequence: sequence, executions: records.map((execution) => ({ parent_team_run_id: ROOT, execution })) } }) as const;
 const treeRunIds = (context: ReturnType<typeof build>) => buildRunHistoryTeamExecutionRows(historyTeam(), context)
   .map((row) => row.agentRunId ?? row.teamRunIdForNode);
 const closedMessage = (sequence: number, taskExecutions: Array<{ agent_run_id: string } | { team_run_id: string }>) =>
@@ -92,17 +97,30 @@ describe('Team root closed task executions', () => {
   it('applies TASK_EXECUTIONS_REOPENED in sequence: the reactivated Team and its members are listed again, others stay hidden (REQ-008, AC-004)', () => {
     const context = build([{ teamRunId: 'task-team-run-1' }, { agentRunId: 'task-agent-run-1' }, { agentRunId: 'sub-task-run' }]);
     expect(treeRunIds(context)).not.toContain(TASK_TEAM_MEMBER);
-    const result = applyTestTeamMessage(context, { type: 'TASK_EXECUTIONS_REOPENED', payload: { change_sequence: 4, task_executions: [{ team_run_id: 'task-team-run-1' }] } });
+    const result = applyTestTeamMessage(context, reopenedMessage(4, [recordOf(context, 'task-team-run-1')]));
     expect(result).toMatchObject({ disposition: 'applied' });
     expect(result.effects.map((effect) => effect.kind)).toEqual(['reconcile_team_navigation']);
     expect(context.view.getChangeSequence()).toBe(4);
     const ids = treeRunIds(context);
     expect(ids).toEqual(expect.arrayContaining(['task-team-run-1', TASK_TEAM_MEMBER]));
     for (const hidden of ['task-agent-run-1', 'sub-task-run']) expect(ids).not.toContain(hidden);
-    // A reopened reference outside the tree is rejected and keeps the sequence.
-    expect(applyTestTeamMessage(context, { type: 'TASK_EXECUTIONS_REOPENED', payload: { change_sequence: 5, task_executions: [{ agent_run_id: 'ghost-run' }] } }))
-      .toMatchObject({ disposition: 'rejected' });
+  });
+
+  it('inserts a reopened run its view never held from the event\'s record, with no manual step (autobyteus-469 D-8, AC-002)', () => {
+    // A view loaded after the run left the tree (for example after a restart): it holds neither the run nor what it delegated.
+    const full = build();
+    const record = recordOf(full, 'task-agent-run-1');
+    const context = buildTestTeamContext({
+      teamRunId: ROOT, coordinatorAddress: solution.address, rootChildren: [solution, worker, reviewer], baseChangeSequence: 3,
+      delegations: [testDelegation({ delegatorAgentRunId: solution.agentRunId, recipientAddress: worker.address, target: { agentRunId: 'other-task-run' } })],
+    });
+    expect(treeRunIds(context)).not.toContain('task-agent-run-1');
+    const result = applyTestTeamMessage(context, reopenedMessage(4, [record]));
+    expect(result).toMatchObject({ disposition: 'applied' });
+    expect(result.effects.map((effect) => effect.kind)).toEqual(['invalidate_team_member_projection', 'reconcile_team_navigation']);
     expect(context.view.getChangeSequence()).toBe(4);
+    expect(treeRunIds(context)).toContain('task-agent-run-1');
+    expect(context.view.getExecutionTree().root_team.task_executions).toContainEqual(record);
   });
 
   it('rejects a closed reference that is not in the execution tree and keeps the sequence', () => {

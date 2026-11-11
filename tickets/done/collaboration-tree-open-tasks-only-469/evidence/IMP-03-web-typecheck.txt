@@ -1,0 +1,10 @@
+# IMP-03 web typecheck gate
+# Command: pnpm -C autobyteus-web typecheck   (after `pnpm -C autobyteus-web exec nuxt prepare`)
+# Code: commit 832f0a4572 content; macOS, 2026-11-10
+
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 34.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.5s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS

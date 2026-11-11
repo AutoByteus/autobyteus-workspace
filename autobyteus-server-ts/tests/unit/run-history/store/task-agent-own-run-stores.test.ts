@@ -20,8 +20,13 @@ import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from 
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { configuredPlacementSource } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
+import { FixedOpenDelegatedRuns, openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
-/** Design D-1 (compose at load, split at save), D-3 (G1, G2, task-agent readers / writers), contract §3, L4–L6. */
+/**
+ * Design D-1 (compose at load, split at save), D-3 (G1, G2, task-agent readers / writers), contract §3; since
+ * autobyteus-469 a tree file stores nothing of a local task agent: the test source names every run whose own file
+ * names the coordinating run as open (`openEveryOwnFileUnder`).
+ */
 
 const HOST = "host-run";
 const T0 = "2026-10-17T09:00:00.000Z";
@@ -32,7 +37,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => { resetRootRunPackageReadinessIndex(root); return fs.rm(root, { recursive: true, force: true }); }));
 });
 const memoryRoot = async (): Promise<string> => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-own-run-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-own-run-")); openEveryOwnFileUnder(root);
   roots.push(root);
   return root;
 };
@@ -68,17 +73,14 @@ const standalone = async () => {
   return { memory, layout, dir: layout.getAgentRunCollaborationDirPath(HOST), store: new StandaloneRootPackageStore() };
 };
 
-describe("a delegation writes the task agent's own files first, then its link (D-1, contract §3, §4)", () => {
-  it("splits a standalone run's tree into links and own files at L1, and composes today's records back", async () => {
+describe("a delegation writes the task agent's own files; the tree file keeps nothing of it (D-1, contract §3, §4, autobyteus-469)", () => {
+  it("splits a standalone run's tree into own files, and composes today's records back", async () => {
     const f = await standalone();
     const tree = hostTree([agentCopy("reviewer-run", { userLaunchSelection: { llmModelIdentifier: "edited", llmConfig: null, selectedAt: T0 } }), teamCopy("team-run")]);
     expect((await f.store.writeTree(f.dir, tree)).outcome).toBe("committed");
 
     const rawTree = await readJson(path.join(f.dir, "collaboration_tree.json"));
-    expect(rawTree.taskExecutions).toEqual([
-      { address: "/code_reviewer", agentRunId: "reviewer-run", delegatorAgentRunId: HOST, startedAt: T0 },
-      { address: "/product_team", teamRunId: "team-run", delegatorAgentRunId: HOST, startedAt: T0 },
-    ]);
+    expect(rawTree.taskExecutions).toEqual([]);
     const own = await readJson(path.join(f.memory, "agents", "reviewer-run", "run_metadata.json"));
     expect(own).toEqual({
       runId: "reviewer-run", agentDefinitionId: "code-reviewer", workspaceRootPath: "/workspace",
@@ -112,7 +114,7 @@ describe("a delegation writes the task agent's own files first, then its link (D
     expect(f.store.readTreeSync(f.dir, HOST)).toEqual(tree);
   });
 
-  it("writes only the changed task agent's own file on a Settings edit; the links tree is not rewritten (H3)", async () => {
+  it("writes only the changed task agent's own file on a Settings edit; the tree file is not rewritten (H3)", async () => {
     const f = await standalone();
     await f.store.writeTree(f.dir, hostTree([agentCopy("one"), agentCopy("two"), teamCopy("team-run")]));
     const files = {
@@ -123,7 +125,8 @@ describe("a delegation writes the task agent's own files first, then its link (D
     };
     const before = Object.fromEntries(await Promise.all(Object.entries(files).map(async ([key, file]) => [key, await sha(file)])));
     const write = vi.spyOn(AtomicRunPackageFileCommitWriter.prototype, "write");
-    const edited = hostTree([agentCopy("one"), agentCopy("two", { userLaunchSelection: { llmModelIdentifier: "other", llmConfig: null, selectedAt: T0 } }), teamCopy("team-run")]);
+    // A composed tree lists its runs by start, then run ID.
+    const edited = hostTree([agentCopy("one"), teamCopy("team-run"), agentCopy("two", { userLaunchSelection: { llmModelIdentifier: "other", llmConfig: null, selectedAt: T0 } })]);
     expect((await f.store.writeTree(f.dir, edited)).outcome).toBe("committed");
     expect(write.mock.calls.map(([input]) => input.filePath)).toEqual([files.two]);
     expect(await sha(files.one)).toBe(before.one);
@@ -133,7 +136,7 @@ describe("a delegation writes the task agent's own files first, then its link (D
     expect(await f.store.readTree(f.dir, HOST)).toEqual(edited);
   });
 
-  it("writes no link when a task agent's own file does not commit, and a link only after its own file exists", async () => {
+  it("writes nothing when a task agent's own file does not commit; once its own file is written the run is recorded", async () => {
     const f = await standalone();
     await f.store.writeTree(f.dir, hostTree([]));
     const treeBefore = await sha(path.join(f.dir, "collaboration_tree.json"));
@@ -148,17 +151,17 @@ describe("a delegation writes the task agent's own files first, then its link (D
     expect(await sha(path.join(f.dir, "collaboration_tree.json"))).toBe(treeBefore);
     expect(await exists(path.join(f.memory, "agents", "reviewer-run"))).toBe(false);
 
-    // A crash after the own file and before the link leaves an unlinked own file; the run loads without it.
-    const linkFails = new (class extends AtomicRunPackageFileCommitWriter {
+    // The own file is the record: a tree file with nothing new to hold is not written at all (autobyteus-469 D-3).
+    const treeFails = new (class extends AtomicRunPackageFileCommitWriter {
       override async write(input: Parameters<AtomicRunPackageFileCommitWriter["write"]>[0]): Promise<RunPackageFileWriteResult<any>> {
         if (input.file === "execution_tree") return { outcome: "not_committed", file: input.file, stage: "rename", cause: new Error("stopped") };
         return super.write(input);
       }
     })();
-    expect((await new StandaloneRootPackageStore(linkFails).writeTree(f.dir, hostTree([agentCopy("reviewer-run")]))).outcome).toBe("not_committed");
+    expect((await new StandaloneRootPackageStore(treeFails).writeTree(f.dir, hostTree([agentCopy("reviewer-run")]))).outcome).toBe("committed");
     expect(await exists(path.join(f.memory, "agents", "reviewer-run", "run_metadata.json"))).toBe(true);
     expect(await sha(path.join(f.dir, "collaboration_tree.json"))).toBe(treeBefore);
-    expect(await f.store.readTree(f.dir, HOST)).toEqual(hostTree([]));
+    expect(await f.store.readTree(f.dir, HOST)).toEqual(hostTree([agentCopy("reviewer-run")]));
   });
 
   it("refuses a coordinating directory outside a memory root, so own files never land elsewhere", async () => {
@@ -208,48 +211,22 @@ describe("G1 and G2: a task agent is never read as a run the user started (D-3, 
   });
 });
 
-describe("L4–L6: a save never removes what it did not load", () => {
-  it("leaves out a full record whose own file does not exist (migration not finished) and writes it back unchanged in place", async () => {
-    const f = await standalone();
-    await f.store.writeTree(f.dir, hostTree([agentCopy("migrated")]));
-    const raw = await readJson(path.join(f.dir, "collaboration_tree.json"));
-    const unmigrated = agentCopy("unmigrated");
-    raw.taskExecutions = [unmigrated, ...raw.taskExecutions];
-    await fs.writeFile(path.join(f.dir, "collaboration_tree.json"), JSON.stringify(raw));
-
-    const loaded = (await f.store.readTree(f.dir, HOST))!;
-    expect(loaded.taskExecutions.map((task) => "agentRunId" in task && task.agentRunId)).toEqual(["migrated"]);
-    await f.store.writeTree(f.dir, { ...loaded, taskExecutions: [...loaded.taskExecutions, agentCopy("new") as never] });
-    expect((await readJson(path.join(f.dir, "collaboration_tree.json"))).taskExecutions).toEqual([
-      unmigrated,
-      { address: "/code_reviewer", agentRunId: "migrated", delegatorAgentRunId: HOST, startedAt: T0 },
-      { address: "/code_reviewer", agentRunId: "new", delegatorAgentRunId: HOST, startedAt: T0 },
-    ]);
-  });
-
-  it("becomes a link once the full record's own file exists (the own file is the authority)", async () => {
-    const f = await standalone();
-    await f.store.writeTree(f.dir, hostTree([agentCopy("reviewer-run")]));
-    await fs.writeFile(path.join(f.dir, "collaboration_tree.json"), JSON.stringify(hostTree([agentCopy("reviewer-run", { platformAgentRunId: "stale" })])));
-    const loaded = (await f.store.readTree(f.dir, HOST))!;
-    expect(loaded.taskExecutions[0]).toMatchObject({ platformAgentRunId: null });
-    await f.store.writeTree(f.dir, loaded);
-    expect((await readJson(path.join(f.dir, "collaboration_tree.json"))).taskExecutions)
-      .toEqual([{ address: "/code_reviewer", agentRunId: "reviewer-run", delegatorAgentRunId: HOST, startedAt: T0 }]);
-  });
-
+describe("one task agent never fails a load (DESIGN.md rule 7)", () => {
   it("loads the run without a task agent whose own file is missing, and without the copies it delegated (L5)", async () => {
     const f = await standalone();
     const delegated = agentCopy("delegated-by-lead", { delegatorAgentRunId: "team-run-lead" });
     await f.store.writeTree(f.dir, hostTree([agentCopy("kept"), teamCopy("team-run"), delegated]));
     await fs.rm(path.join(f.memory, "agent_teams", "team-run"), { recursive: true });
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const loaded = (await f.store.readTree(f.dir, HOST))!;
+    // The Task records name all three as open; the team's own file is gone.
+    const open = new FixedOpenDelegatedRuns().set({ kind: "agent", runId: HOST }, [{ agentRunId: "kept" }, { teamRunId: "team-run" }, { agentRunId: "delegated-by-lead" }]);
+    const loaded = (await new StandaloneRootPackageStore(undefined, open).readTree(f.dir, HOST))!;
     expect(loaded.taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId)).toEqual(["kept"]);
     expect(warn.mock.calls.flat().join(" ")).toMatch(/team-run.*not available[\s\S]*delegated-by-lead.*delegator 'team-run-lead'/);
+    // A save stores nothing of a local task agent; the left-out ones keep their own files (autobyteus-469 D-3).
     await f.store.writeTree(f.dir, loaded);
-    expect((await readJson(path.join(f.dir, "collaboration_tree.json"))).taskExecutions.map((task: any) => task.agentRunId ?? task.teamRunId))
-      .toEqual(["kept", "team-run", "delegated-by-lead"]);
+    expect((await readJson(path.join(f.dir, "collaboration_tree.json"))).taskExecutions).toEqual([]);
+    expect(await exists(path.join(f.memory, "agents", "delegated-by-lead", "run_metadata.json"))).toBe(true);
   });
 });
 
@@ -283,7 +260,7 @@ describe("copies of a configured place restore from their own file (REQ-001, REQ
     expect(reread.rootTeam.taskExecutions).toEqual([copy]);
   });
 
-  it("keeps older links under a configured team, and records a copy of a mounted team with its members' facts and Org handoffs", async () => {
+  it("composes every copy into the root list (a configured team's list stays empty), and records a copy of a mounted team with its members' facts and Org handoffs", async () => {
     const memory = await memoryRoot();
     const dir = new AgentMemoryLayout(memory).getOrgDirPath("org-root");
     const base = { ...testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "director-run"),
@@ -301,7 +278,8 @@ describe("copies of a configured place restore from their own file (REQ-001, REQ
     const store = new AgentOrgRunExecutionTreeStore();
     await store.write(dir, tree);
     const raw = await readJson(path.join(dir, "agent_org_run_execution_tree.json"));
-    expect(raw.rootOrg.members[1].taskExecutions).toEqual([{ address: "/team/lead", agentRunId: "older-copy", delegatorAgentRunId: "lead-run", startedAt: T0 }]);
+    expect(raw.rootOrg.members[1].taskExecutions).toEqual([]);
+    expect(raw.rootOrg.taskExecutions).toEqual([]);
     const ownTeam = await readJson(path.join(memory, "agent_teams", "team-copy", "team_run_execution_tree.json"));
     expect(ownTeam).toMatchObject({
       handoffs: [{ from: "/team/lead", to: "/director", rules: ["report"] }],
@@ -310,6 +288,7 @@ describe("copies of a configured place restore from their own file (REQ-001, REQ
       taskAgent: { coordinatingRun: { kind: "agent_org", runId: "org-root" }, launchSource: { origin: "configured", fallbacks: [] } },
     });
     expect("origin" in ownTeam.taskAgent).toBe(false);
-    expect(await store.read(dir, "org-root")).toEqual(tree);
+    expect(await store.read(dir, "org-root")).toEqual(validateAgentOrgRunExecutionTreePayload({ ...base, rootOrg: { ...base.rootOrg,
+      taskExecutions: [older, teamCopyOfPlace] } }, "org-root"));
   });
 });

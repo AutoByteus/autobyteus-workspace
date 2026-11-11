@@ -30,5 +30,6 @@ export const markCommittedTeamRunHydrationAuthority = (
   candidate.projectionByAgentRunId.forEach((projection, agentRunId) => {
     if (projection) markTeamMemberProjectionAuthoritative(candidate.hydratedContext, agentRunId);
   });
-  useCollaborationParticipantMessagesStore().reloadRoot('agent_team', candidate.teamRunId, candidate.rebuild);
+  useCollaborationParticipantMessagesStore().reloadRoot('agent_team', candidate.teamRunId, candidate.rebuild,
+    (agentRunId) => candidate.hydratedContext.view.getMemberAddress(agentRunId) !== null);
 };

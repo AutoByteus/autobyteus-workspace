@@ -409,8 +409,11 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       const candidateCallbacks = new Map<string, (payload?: any) => void>();
       const wsClient = { state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
         on: vi.fn((event: string, callback: (payload?: any) => void) => candidateCallbacks.set(event, callback)) } as any;
+      // The rebuilt view holds the same agents (a view that drops one a list names re-fetches that list, autobyteus-469 CR-002).
       const candidateTeam = buildTestTeamContext({ teamRunId: rootTeamRunId, coordinatorAddress: '/Teacher',
-        rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })] });
+        rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' }),
+          testAgentNode('/Student', { agentRunId: persistentStudentRunId, displayName: 'Student' })],
+        delegations: [testDelegation({ delegatorAgentRunId: teacherRunId, recipientAddress: '/Student', target: { agentRunId: taskStudentRunId } })] });
       const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
       void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
       emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });

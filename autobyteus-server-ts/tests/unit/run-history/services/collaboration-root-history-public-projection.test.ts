@@ -9,6 +9,7 @@ import { getAgentOrgRunExecutionTreePath } from "../../../../src/run-history/sto
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
 import { orgProjectionTree, withoutRemoteLinks } from "../../../fixtures/collaboration-public-projection-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -19,7 +20,7 @@ afterEach(async () => {
 // Check every public field, not just a set of IDs: source/ingress/launch facts
 // and every nested position must survive. Private ownership stays in storage.
 const setup = async (active: boolean, linked: boolean) => {
-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-history-public-"));
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-history-public-")); openEveryOwnFileUnder(memoryDir);
   roots.push(memoryDir);
   const tree = { ...orgProjectionTree(linked), archivedAt: null };
   const expected = agentOrgExecutionTreeDtoSchema.parse(withoutRemoteLinks({ ...orgProjectionTree(false), archivedAt: null }));
@@ -39,7 +40,14 @@ const setup = async (active: boolean, linked: boolean) => {
     orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null), closedTaskExecutionsFor: () => [] } as never,
     orgTrees: store,
   });
-  return { memoryDir, tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
+  // A stored read composes every delegated run into the root list by start, then run ID; a configured team's list is
+  // empty (autobyteus-469 D-2). The active root's snapshot is shown as it is.
+  const runId = (task: { agentRunId?: string; teamRunId?: string }) => task.agentRunId ?? task.teamRunId ?? "";
+  const all = [...expected.rootOrg.taskExecutions, ...expected.rootOrg.members.flatMap((member: any) => member.taskExecutions ?? [])]
+    .sort((a: any, b: any) => a.startedAt.localeCompare(b.startedAt) || runId(a).localeCompare(runId(b)));
+  const expectedStored = { ...expected, rootOrg: { ...expected.rootOrg, taskExecutions: all,
+    members: expected.rootOrg.members.map((member: any) => member.taskExecutions ? { ...member, taskExecutions: [] } : member) } };
+  return { memoryDir, tree, expected: active ? expected : expectedStored, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
 };
 
 describe("mixed public history Org projection", () => {

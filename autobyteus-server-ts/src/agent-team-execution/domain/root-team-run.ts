@@ -146,13 +146,13 @@ export class RootTeamRun {
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
       teamRunResolver: this.teamRunResolver,
-      commitTaskActivation: (command) => options.persistence.commitTaskActivation(command),
+      persistence: options.persistence,
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
       taskExecutionIdentity: options.taskExecutionIdentity,
-      memoryLocator: options.memoryLocator,
-      activityInspector: options.activityInspector,
+      memoryLocator: options.memoryLocator, activityInspector: options.activityInspector,
+      retainMessages: (keep) => this.communication.retainMessages(keep),
       idleShutdown: options.taskExecutionIdleShutdown,
       taskExecutionResources: options.taskExecutionResources,
       onLiveLeaseReleased: () => this.remoteIdle?.arm(),
@@ -262,7 +262,7 @@ export class RootTeamRun {
   getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot { return this.tree; }
   /** Same-root membership for run-ID routing: every agent of the Team (and its copies) and every remote endpoint. */
   hasAgentExecution(agentRunId: string): boolean {
-    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
+    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim()) || this.taskExecutions.knowsRunId(agentRunId);
   }
   getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
     return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });

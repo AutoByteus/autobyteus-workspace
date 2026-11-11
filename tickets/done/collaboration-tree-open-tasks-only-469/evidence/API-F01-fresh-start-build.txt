@@ -1,0 +1,71 @@
+# Case: API-F01 fresh-start release build (TESTING.md "Fresh-start build")
+# Commands: git clone --no-local <worktree> /tmp/api469/fresh; git checkout 431de4c9d1; pnpm install --frozen-lockfile; cd autobyteus-web; NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64; then the job steps "Verify bundled Prisma ARM64 engine target" and "Verify packaged terminal runtime ARM64" from the clone root
+# Commit: 431de4c9d1 (product source 42652879b3)
+# Environment: macOS darwin 25.5 arm64, Node v22.21.1, pnpm v10.28.2
+# Date: 2026-11-11
+# Look for: INSTALL EXIT 0, BUILD EXIT 0, [typecheck] PASS, Build completed (dmg, zip), schema-engine/libquery_engine OK, VERIFY1..3 EXIT 0
+
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.5.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=42.11.16 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=42.11.16 appOutDir=electron-dist/mac-arm64
+Normalizing packaged terminal native resources...
+  Normalized execute bits on 3 node-pty spawn-helper file(s)
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip.blockmap
+Build completed: [
+  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg.blockmap',
+  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg',
+  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip.blockmap',
+  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip'
+]
+## Verify bundled Prisma ARM64
+engines: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+schema-engine-darwin-arm64 OK
+libquery_engine-darwin-arm64 OK
+## Verify packaged terminal runtime
+[terminal-runtime] node-pty root: /private/tmp/api469/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/api469/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api469/fresh/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+VERIFY1 EXIT 0
+[terminal-runtime] node-pty root: /private/tmp/api469/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/api469/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api469/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+VERIFY2 EXIT 0
+[terminal-runtime] node-pty root: /private/tmp/api469/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/api469/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/api469/fresh/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+VERIFY3 EXIT 0
+
+## Build log excerpt
+3:> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-elect
+6:> autobyteus@1.5.13-beta.4 guard:web-boundary /private/tmp/api469/fresh/autobyteus-web
+7:> node ./scripts/guard-web-boundary.mjs
+9:[guard:web-boundary] Passed.
+11:> autobyteus@1.5.13-beta.4 guard:localization-boundary /private/tmp/api469/fresh/autobyteus-web
+12:> node ./scripts/guard-localization-boundary.mjs
+14:[guard:localization-boundary] Passed.
+66:[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 33.1s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 20.9s
+70:[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+71:[typecheck] PASS
+893:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg
+894:  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip
+896:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg.blockmap
+897:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip.blockmap
+898:Build completed: [
+899:  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg.blockmap',
+900:  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.dmg',
+901:  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip.blockmap',
+902:  '/private/tmp/api469/fresh/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.4.zip'

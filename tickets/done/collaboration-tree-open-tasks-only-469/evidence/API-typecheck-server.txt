@@ -1,0 +1,12 @@
+# Case: server typecheck after the test changes
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Code: 42652879b3 + this round test changes
+# Date: 2026-11-11
+# Look for: [typecheck] PASS, test-file errors 1180 = baseline
+
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.8s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 25.3s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS
+EXIT 0

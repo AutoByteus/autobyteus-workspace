@@ -17,6 +17,7 @@ import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication
 import { buildOrg, cleanupDirectories as cleanupOrgDirectories } from "../agent-org-execution/helpers/org-collaborator-harness.js";
 import { cleanupDirectories as cleanupTeamDirectories, harness as teamHarness } from "../agent-team-execution/helpers/team-root-collaborator-harness.js";
 import { HOST, buildManager, cleanupDirectories as cleanupStandaloneDirectories } from "../standalone-agent-run-root/helpers/standalone-root-harness.js";
+import { TaskExecutionTreeMembership } from "../../../src/agent-collaboration/execution/task/task-execution-tree-membership.js";
 
 /**
  * REQ-012 / DEC-005 through each real root (standalone, AgentOrg, Team): its port, its real persistence
@@ -242,8 +243,13 @@ describe.each([
     await write.writeStarted;
     const queued = s.send("Queued follow-up.");
     await flushMicrotasks();
-    await s.releaseTaskA();
+    // The release stops the copy, then waits for the root's persistence lock to drop it from the loaded tree
+    // (autobyteus-469 D-4): the held write finishes once the stop is done.
+    const dropping = vi.spyOn(TaskExecutionTreeMembership.prototype, "dropStopped");
+    const released = s.releaseTaskA();
+    await vi.waitFor(() => expect(dropping).toHaveBeenCalled());
     write.finish();
+    await released;
 
     await expect(first).resolves.toEqual(taskClosed);
     await expect(queued).resolves.toEqual(taskClosed);

@@ -21,9 +21,13 @@ import {
 } from "../projects/search/project-task-search-service.js";
 import { getEmbeddingIndex, shutdownEmbeddingIndex } from "../embeddings/embedding-index.js";
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
+import { bindOpenDelegatedRunSource, unbindOpenDelegatedRunSource } from "../run-history/store/open-delegated-run-source.js";
+import { bindClosedDelegatedRuns, unbindClosedDelegatedRuns } from "../run-history/services/closed-delegated-run-reader.js";
 
 /** The run links binding of the composed Task resources, released with them. */
 let projectRunLinks: Readonly<{ close(): void }> | null = null;
+/** The loaded Task records, bound as the tree stores' source of delegated runs (design D-1), released with them. */
+let openDelegatedRuns: TaskExecutionResourceService | null = null;
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -52,6 +56,10 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   const projectsLayout = new ProjectsLayout(path.join(deps.appDataDir, "projects"));
   const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasksLayout));
   await taskExecutionResources.load();
+  // Every composed tree read happens after this point; startup admission reads only a run's own parts (D-11).
+  if (openDelegatedRuns) unbindOpenDelegatedRunSource(openDelegatedRuns);
+  openDelegatedRuns = taskExecutionResources;
+  bindOpenDelegatedRunSource(taskExecutionResources);
   projectRunLinks?.close();
   projectRunLinks = await composeProjectRunLinks({ projectsLayout });
   const service = initializeProjectTaskServiceProcessInstance({
@@ -74,6 +82,8 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
     index: getEmbeddingIndex,
   });
   // The `/ws/projects` feed: views are built from the services' committed state, after `load()`.
+  // Readers of closed delegated runs (Team tab names, token totals) ask the same Task side (D-5, D-7).
+  bindClosedDelegatedRuns(service);
   getProjectChangePublisher().bind({
     readProject: (projectId) => getProjectService().getProject(projectId),
     readTask: (location) => service.readTaskChangeView(location),
@@ -86,6 +96,9 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
 export const releaseProjectTaskExecutionResources = (port: TaskExecutionResourcePort): void => {
   projectRunLinks?.close();
   projectRunLinks = null;
+  if (openDelegatedRuns) unbindOpenDelegatedRunSource(openDelegatedRuns);
+  openDelegatedRuns = null;
+  unbindClosedDelegatedRuns(port);
   getProjectChangePublisher().unbind();
   releaseProjectTaskSearchService();
   void shutdownEmbeddingIndex().catch((error: unknown) => console.warn("EMBEDDING_INDEX_SHUTDOWN_FAILED", error));

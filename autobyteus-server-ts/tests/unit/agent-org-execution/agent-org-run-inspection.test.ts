@@ -10,11 +10,12 @@ import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history
 import { projectAgentOrgExecutionSnapshot } from '../../../src/services/agent-streaming/agent-org-execution-view-projector.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgAgentCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const dirs: string[] = [];
 afterEach(async () => { for (const dir of dirs.splice(0)) await fs.rm(dir, { recursive: true, force: true }); });
 const fixture = async (taskExecutionResources?: InMemoryTaskExecutionResources) => {
-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'org-inspection-')); dirs.push(memoryDir);
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'org-inspection-')); dirs.push(memoryDir); openEveryOwnFileUnder(memoryDir);
   const dir = path.join(memoryDir, 'agent_orgs', 'org');
   const tree = structuredClone(testAgentOrgExecutionTree({ orgRunId: 'org', members: [
     { ...testOrgAgentNode('/assistant', 'configured'), platformAgentRunId: 'configured-provider' },

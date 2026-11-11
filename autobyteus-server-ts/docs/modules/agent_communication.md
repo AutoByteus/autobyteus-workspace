@@ -70,7 +70,12 @@ Team Communication projection:
 - `reference_files` become Team Communication child references persisted under
   the team run; and
 - frontend Team tab sent/received perspectives hydrate from that projection and
-  match the focused member by its AgentRun ID.
+  match the focused member by its AgentRun ID. `collaborationParticipantMessages`
+  returns the focused agent's messages whose other agent is in the root's tree, or
+  is an agent of a delegated run that left the tree when its Task closed: those are
+  listed in `pastParticipants` (`{ agentRunId, address }`, read from the run's own
+  file by `ClosedDelegatedRunReader`), and the web names them from the address
+  (identity kind `past`; autobyteus-469 D-5).
 
 Acceptance means the live AgentRun owns one ordered, at-most-once forwarding
 attempt. It does not mean a provider turn has completed and does not synchronously
@@ -466,17 +471,22 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `[Mentioned collaborators]` notes), so stored history displays unchanged.
 - **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
   stored read) carries `closed_task_executions` beside the unfiltered tree: the
-  task executions whose current Task is DONE or CANCELLED, read through the Task port
-  (`closedTaskExecutionsIn`) and the shared `listClosedTaskExecutions`. When DONE or
+  task executions whose current Task is DONE or CANCELLED and that the tree still holds,
+  read through the Task port (`closedTaskExecutionsIn`) and the shared
+  `listClosedTaskExecutions`, which keeps only references the tree contains. Since
+  autobyteus-469 a run leaves the tree once its last open Task closed and it is stopped,
+  so such a run is not in this list; a run whose stop is not confirmed yet is. When DONE or
   CANCELLED asks an active root to stop a Task's runs, `RootTaskExecutionResourceScope` first
   publishes the released runs that are closed and in the tree as the sequenced
   `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE or
   CANCELLED re-publishes them. The Workspaces tree leaves those executions and their
   subtrees out; messages and contexts keep them. A reactivation publishes the
-  reopened execution as `task_executions_reopened` (Team:
-  `TASK_EXECUTIONS_REOPENED`, same reference shape) after its Task-side commit;
-  clients remove it from their closed set, so it is listed again while its
-  still-closed helpers stay hidden. The same holds for a Task with
+  reopened execution as `task_executions_reopened` after its Task-side commit (Team:
+  `TASK_EXECUTIONS_REOPENED`, with each execution's record and host Team run, autobyteus-469
+  D-8); clients remove it from their closed set, so it is listed again while its
+  still-closed helpers stay hidden. A view that no longer holds the execution (it left the
+  tree when its Task closed) reloads itself (Agent run, Org) or inserts it from the record
+  (Team). The same holds for a Task with
   no Project: a description-only `delegate_task` by an unowned sender returns
   its `task_id`, and `update_task({task_id, status: "DONE"})` (for an agent that
   selected `update_task`) closes, stops and hides that copy and its sub-work (see

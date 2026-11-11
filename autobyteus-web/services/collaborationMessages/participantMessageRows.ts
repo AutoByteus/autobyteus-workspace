@@ -4,7 +4,10 @@ import type {
   CollaborationMessagePerspectiveRow,
   CollaborationMessagesContextView,
 } from '~/types/workspace/collaborationMessagesContextView'
-import { useCollaborationParticipantMessagesStore, type ParticipantMessage, type ParticipantMessagesKey } from './collaborationParticipantMessages'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+import {
+  useCollaborationParticipantMessagesStore, type ParticipantMessage, type ParticipantMessagesKey, type PastParticipant,
+} from './collaborationParticipantMessages'
 
 /**
  * One participant's loaded messages as Team-tab rows, newest first (then by ID), seen from that participant. Every
@@ -30,10 +33,17 @@ export const projectParticipantMessageRows = (input: Readonly<{
 
 const LOADED = Object.freeze({ state: 'loaded' as const, error: null })
 
+/** A counterpart the root's tree no longer holds, named by the address the server read from its run (autobyteus-469). */
+const pastIdentityOf = (pastParticipants: readonly PastParticipant[], agentRunId: string): CollaborationMessageMemberIdentity | null => {
+  const past = pastParticipants.find((participant) => participant.agentRunId === agentRunId)
+  return past ? Object.freeze({ kind: 'past', address: past.address, label: memberDisplayName(past.address) }) : null
+}
+
 /**
  * The Team-tab part of a root's `CollaborationMessagesContextView` for one focused participant: its rows, its
- * load state and the request to load it. A participant that is a run on another node gets no request: its
- * messages stay on its node, and its list is empty (AR-004).
+ * load state and the request to load it. A counterpart that is not in the root's tree is named from the list's past
+ * participants. A participant that is a run on another node gets no request: its messages stay on its node, and its
+ * list is empty (AR-004).
  */
 export const participantMessagesView = (input: Readonly<{
   key: ParticipantMessagesKey
@@ -43,7 +53,8 @@ export const participantMessagesView = (input: Readonly<{
   const owner = useCollaborationParticipantMessagesStore()
   return {
     listMessages: () => input.isRemote ? [] : projectParticipantMessageRows({
-      messages: owner.messagesOf(input.key), focusedAgentRunId: input.key.agentRunId, identityOf: input.identityOf,
+      messages: owner.messagesOf(input.key), focusedAgentRunId: input.key.agentRunId,
+      identityOf: (agentRunId) => input.identityOf(agentRunId) ?? pastIdentityOf(owner.pastParticipantsOf(input.key), agentRunId),
     }),
     messagesStatus: () => input.isRemote ? LOADED : owner.statusOf(input.key),
     loadMessages: () => { if (!input.isRemote) owner.load(input.key) },

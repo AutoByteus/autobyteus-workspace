@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import type { CollaborationParticipantMessageDto } from '@autobyteus/collaboration-stream-contracts'
 import { useCollaborationParticipantMessagesStore } from '../collaborationParticipantMessages'
 import { fetchParticipantMessages } from '../participantMessagesQuery'
+import { participantMessagesView } from '../participantMessageRows'
 
 // autobyteus-358 (REQ-002, AC-002, DS-002): the Team tab's lists load when shown; live messages are buffered from
 // before the request and merged by ID. A rebuild of the root reloads them, abandoning loads in flight, only when a
@@ -16,10 +17,12 @@ const message = (messageId: string, senderAgentRunId: string, receiverAgentRunId
   messageId, senderAgentRunId, receiverAgentRunId, content: messageId, messageType: 'agent_message', referenceFiles: [],
   createdAt: `2026-11-01T00:00:0${messageId.at(-1)}.000Z`,
 })
+/** The query's answer: the participant's messages and the agents of runs that left the tree they name (autobyteus-469). */
+const stored = (messages: readonly Message[], pastParticipants: { agentRunId: string; address: string }[] = []) => ({ messages: [...messages], pastParticipants })
 const deferred = () => {
   let resolve!: (messages: readonly Message[]) => void
   let reject!: (error: Error) => void
-  const promise = new Promise<readonly Message[]>((done, fail) => { resolve = done; reject = fail })
+  const promise = new Promise<ReturnType<typeof stored>>((done, fail) => { resolve = (messages) => done(stored(messages)); reject = fail })
   return { promise, resolve, reject }
 }
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
@@ -65,16 +68,16 @@ describe('CollaborationParticipantMessages', () => {
   })
 
   it('reloads loaded lists on a rebuild after a load whose latest message is past C (a gap reopen), so the missed message is shown', async () => {
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
     await settle()
     owner.advance('agent', 'hub', 'X', 5)
     const reload = deferred()
     vi.mocked(fetchParticipantMessages).mockReturnValueOnce(reload.promise)
 
-    owner.reloadRoot('agent', 'hub', live('X', 7, 6))
+    owner.reloadRoot('agent', 'hub', live('X', 7, 6), () => true)
     // The loaded messages stay shown while the list loads again.
     expect(owner.statusOf(key).state).toBe('loading')
     expect(ids(owner.messagesOf(key))).toEqual(['m1'])
@@ -91,9 +94,9 @@ describe('CollaborationParticipantMessages', () => {
     const fresh = deferred()
     vi.mocked(fetchParticipantMessages).mockReturnValueOnce(stale.promise).mockReturnValueOnce(fresh.promise)
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
-    owner.reloadRoot('agent', 'hub', live('X', 6, 5))
+    owner.reloadRoot('agent', 'hub', live('X', 6, 5), () => true)
     owner.append('agent', 'hub', message('m3', 'copy', 'host'))
 
     stale.resolve([message('m1', 'host', 'copy')])
@@ -111,9 +114,9 @@ describe('CollaborationParticipantMessages', () => {
     const request = deferred()
     vi.mocked(fetchParticipantMessages).mockReturnValueOnce(request.promise)
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     request.resolve([message('m1', 'host', 'copy')])
     await settle()
 
@@ -123,55 +126,55 @@ describe('CollaborationParticipantMessages', () => {
   })
 
   it('keeps the list on a checkpoint reconnect whose base is the checkpoint event it saw (a new child, a Save)', async () => {
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
     await settle()
     owner.append('agent', 'hub', message('m2', 'copy', 'host'))
     owner.advance('agent', 'hub', 'X', 5)
     // The single `checkpoint_required` event at 6 was seen; the reconnect's snapshot is based on it.
     owner.advance('agent', 'hub', 'X', 6)
-    owner.reloadRoot('agent', 'hub', live('X', 6))
+    owner.reloadRoot('agent', 'hub', live('X', 6), () => true)
 
     expect(fetchParticipantMessages).toHaveBeenCalledOnce()
     expect(owner.statusOf(key).state).toBe('loaded')
     expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2'])
     // A message in the reconnect window moves the base past what the lists saw: they load again.
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy'), message('m2', 'copy', 'host'), message('m3', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy'), message('m2', 'copy', 'host'), message('m3', 'host', 'copy')]))
     owner.advance('agent', 'hub', 'X', 7)
-    owner.reloadRoot('agent', 'hub', live('X', 8, 8))
+    owner.reloadRoot('agent', 'hub', live('X', 8, 8), () => true)
     await settle()
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
     expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2', 'm3'])
   })
 
   it('keeps the lists when the base moved without a message past C (a new copy\'s output before a reconnect, L-002); C becomes the base', async () => {
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4, 3))
+    owner.reloadRoot('agent', 'hub', live('X', 4, 3), () => true)
     owner.load(key)
     await settle()
     owner.advance('agent', 'hub', 'X', 5)
     // The new copy published 15 presentation events before the snapshot: the base moved, the latest message did not.
-    owner.reloadRoot('agent', 'hub', live('X', 20, 3))
+    owner.reloadRoot('agent', 'hub', live('X', 20, 3), () => true)
     expect(fetchParticipantMessages).toHaveBeenCalledOnce()
     expect(owner.statusOf(key).state).toBe('loaded')
     // The lists now hold every message through 20: a message at 21 missed before the next snapshot reloads them.
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')])
-    owner.reloadRoot('agent', 'hub', live('X', 22, 21))
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')]))
+    owner.reloadRoot('agent', 'hub', live('X', 22, 21), () => true)
     await settle()
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
     expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2'])
   })
 
   it('reloads on every rebuild from a stored view, which names no live sequence', async () => {
-    vi.mocked(fetchParticipantMessages).mockResolvedValue([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValue(stored([message('m1', 'host', 'copy')]))
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', STORED)
+    owner.reloadRoot('agent', 'hub', STORED, () => true)
     owner.load(key)
     await settle()
-    owner.reloadRoot('agent', 'hub', STORED)
+    owner.reloadRoot('agent', 'hub', STORED, () => true)
     await settle()
 
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
@@ -179,17 +182,17 @@ describe('CollaborationParticipantMessages', () => {
   })
 
   it('reloads after a stop and resume, so a message the resumed root produced before the attach is shown', async () => {
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 9))
+    owner.reloadRoot('agent', 'hub', live('X', 9), () => true)
     owner.load(key)
     await settle()
     // Stopped: the stored view; resumed: another publisher, which produced m2 (its sequence 1) before the attach.
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
-    owner.reloadRoot('agent', 'hub', STORED)
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
+    owner.reloadRoot('agent', 'hub', STORED, () => true)
     await settle()
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')])
-    owner.reloadRoot('agent', 'hub', live('Y', 1, 1))
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')]))
+    owner.reloadRoot('agent', 'hub', live('Y', 1, 1), () => true)
     await settle()
 
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(3)
@@ -197,22 +200,22 @@ describe('CollaborationParticipantMessages', () => {
   })
 
   it('reloads on a reconnect to another publisher (a server restart) although its base is at or below the old C', async () => {
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
     await settle()
     owner.advance('agent', 'hub', 'X', 500)
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')])
-    owner.reloadRoot('agent', 'hub', live('Y', 3))
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')]))
+    owner.reloadRoot('agent', 'hub', live('Y', 3), () => true)
     await settle()
 
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
     expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2'])
     // An event of the old publisher's stream does not move the new sequence.
     owner.advance('agent', 'hub', 'X', 900)
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')])
-    owner.reloadRoot('agent', 'hub', live('Y', 4, 4))
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')]))
+    owner.reloadRoot('agent', 'hub', live('Y', 4, 4), () => true)
     await settle()
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(3)
   })
@@ -225,7 +228,7 @@ describe('CollaborationParticipantMessages', () => {
     expect(owner.statusOf(key)).toEqual({ state: 'error', error: "Message 'm9' must use distinct AgentRun endpoints." })
     expect(owner.messagesOf(key)).toEqual([])
 
-    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'copy')]))
     owner.load(key)
     await settle()
     expect(owner.statusOf(key).state).toBe('loaded')
@@ -236,7 +239,7 @@ describe('CollaborationParticipantMessages', () => {
     const request = deferred()
     vi.mocked(fetchParticipantMessages).mockReturnValueOnce(request.promise)
     const owner = useCollaborationParticipantMessagesStore()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
     owner.releaseRoot('agent', 'hub')
     request.resolve([message('m1', 'host', 'copy')])
@@ -244,11 +247,55 @@ describe('CollaborationParticipantMessages', () => {
     expect(owner.statusOf(key)).toEqual({ state: 'idle', error: null })
     expect(owner.messagesOf(key)).toEqual([])
     // Its live sequence went with it: the next context of the root loads its lists again.
-    vi.mocked(fetchParticipantMessages).mockResolvedValue([message('m1', 'host', 'copy')])
+    vi.mocked(fetchParticipantMessages).mockResolvedValue(stored([message('m1', 'host', 'copy')]))
     owner.load(key)
     await settle()
-    owner.reloadRoot('agent', 'hub', live('X', 4))
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     await settle()
     expect(fetchParticipantMessages).toHaveBeenCalledTimes(3)
+  })
+
+  it('keeps the agents of runs that left the tree with the list, and names such a counterpart from its address (autobyteus-469 D-5, AC-011)', async () => {
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'closed-run'), message('m2', 'copy', 'host')],
+      [{ agentRunId: 'closed-run', address: '/solution_designer' }]))
+    const owner = useCollaborationParticipantMessagesStore()
+    owner.load(key)
+    await settle()
+    expect(owner.pastParticipantsOf(key)).toEqual([{ agentRunId: 'closed-run', address: '/solution_designer' }])
+    const rows = participantMessagesView({ key, isRemote: false,
+      identityOf: (agentRunId) => agentRunId === 'copy' ? { kind: 'configured', address: '/copy', label: 'copy' } : null }).listMessages()
+    expect(rows.map((row) => [row.messageId, row.counterpart])).toEqual([
+      ['m2', { kind: 'configured', address: '/copy', label: 'copy' }],
+      ['m1', { kind: 'past', address: '/solution_designer', label: 'solution designer' }],
+    ])
+    // A root that drops its lists drops them too.
+    owner.releaseRoot('agent', 'hub')
+    expect(owner.pastParticipantsOf(key)).toEqual([])
+  })
+
+  it('re-fetches a kept list when the rebuilt view no longer holds an agent it names, so that agent is named again (autobyteus-469 CR-002)', async () => {
+    // Loaded while the worker was in the tree: the server named no past participant.
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'worker')]))
+    const owner = useCollaborationParticipantMessagesStore()
+    owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
+    owner.load(key)
+    await settle()
+    expect(fetchParticipantMessages).toHaveBeenCalledOnce()
+    // A rebuild in the same live sequence that missed no message, while the view still holds the worker: kept.
+    owner.reloadRoot('agent', 'hub', live('X', 5, 4), () => true)
+    await settle()
+    expect(fetchParticipantMessages).toHaveBeenCalledOnce()
+    // The worker's Task closed and the rebuilt view no longer holds it: the list loads again, keeping its rows meanwhile.
+    vi.mocked(fetchParticipantMessages).mockResolvedValueOnce(stored([message('m1', 'host', 'worker')], [{ agentRunId: 'worker', address: '/worker' }]))
+    owner.reloadRoot('agent', 'hub', live('X', 6, 4), (agentRunId) => agentRunId === 'host')
+    expect(ids(owner.messagesOf(key))).toEqual(['m1'])
+    await settle()
+    expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
+    expect(ids(owner.messagesOf(key))).toEqual(['m1'])
+    expect(owner.pastParticipantsOf(key)).toEqual([{ agentRunId: 'worker', address: '/worker' }])
+    // Named now by its past participant: a later such rebuild keeps the list.
+    owner.reloadRoot('agent', 'hub', live('X', 7, 4), (agentRunId) => agentRunId === 'host')
+    await settle()
+    expect(fetchParticipantMessages).toHaveBeenCalledTimes(2)
   })
 })

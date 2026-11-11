@@ -145,7 +145,7 @@ See [Project Task agent run resources](projects.md#saved-id-delegation-and-agent
 memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
-    collaboration_tree.json        # subjectKind "agent", host, taskExecutions (a link per task agent)
+    collaboration_tree.json        # subjectKind "agent", host, taskExecutions (links to runs on another node only)
     communication_messages_active.jsonl  # the host's own message log, one message per line
     communication_messages_000001.jsonl  # sealed files once the log has rotated (4 MiB each)
 memory/agents/<childRunId>/        # a delegated Agent copy: a run of its own
@@ -158,11 +158,16 @@ memory/agent_teams/<teamRunId>/    # a delegated Team copy: a run of its own
   <agentRunId>/...                 # its members' memory
 ```
 
-Trees are read tolerantly and written exactly, like the Team and Org trees. On disk the tree
-holds links; `StandaloneRootPackageStore` composes each delegated copy's record from its own file
-on load and splits it again on save (design D-1 of task-agent-own-run). A message between the
-host and a copy is stored in both logs (receiver's first); the stored view composes them once
-each. Deleting the host's run keeps its copies' folders (detached). The location service
+Trees are read tolerantly and written exactly, like the Team and Org trees. The tree file stores
+nothing of a local delegated copy (autobyteus-469, CM-8): `StandaloneRootPackageStore` asks the Task
+records (`OpenDelegatedRunSource`, bound once the Task records are loaded) for the host's copies with
+an open Task entry and composes each record from its own file; a save writes changed own files and a
+tree file whose list holds only links to runs on another node (an older file's local entries are
+left out). A copy whose Task closed leaves the loaded tree once it is stopped and comes back from its
+own file when its assigner continues it or gives it another Task (`TaskExecutionTreeMembership`,
+memory only). A message between the host and a copy is stored in both logs (receiver's first); the
+stored view composes the host's log with its open copies' logs and keeps a message when both agents
+are in the tree or one is the host (`isMessageOfView`). Deleting the host's run keeps its copies' folders (detached). The location service
 (`StandaloneRootLocationService`) resolves a child through the third root family `agents`.
 
 ## Surfaces

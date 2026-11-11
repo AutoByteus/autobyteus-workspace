@@ -1,15 +1,18 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
-import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import { isMessageOfView } from "./task-agent-message-logs.js";
 import type { RemoteTaskExecution, TaskExecution } from "../domain/run-execution-tree-shared-records.js";
 import type { DelegatedFrom } from "./agent-run-metadata-types.js";
-import type { TaskAgentCoordinatingRun, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
+import type { TaskAgentCoordinatingRun } from "./agent-run-metadata-types.js";
 import type { TaskAgentRunMetadataReadState } from "./agent-run-metadata-store.js";
 import type { RunPackageFileWriteResult } from "./atomic-run-package-file-commit-writer.js";
-import { isRemoteTaskExecutionEntry, objectRecord, parseTaskExecutionLink } from "./run-execution-tree-shared-record-schemas.js";
-import { appendRemoteLinks, attachRemoteLinks, withoutRemoteEntries } from "./remote-task-execution-links.js";
+import { isRemoteTaskExecutionEntry, objectRecord } from "./run-execution-tree-shared-record-schemas.js";
+import { appendRemoteLinks, attachRemoteLinks } from "./remote-task-execution-links.js";
 import { ROOT_TASK_LIST_KEY } from "./coordinating-tree-shapes.js";
+import type { OpenDelegatedRun } from "./open-delegated-run-source.js";
 import type { TaskAgentOwnFiles, TaskAgentTeamTreeReadState } from "./task-agent-own-files.js";
 import { parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
 import {
@@ -18,20 +21,19 @@ import {
   isTaskExecutionLinkEntry,
   taskAgentOwnMetadata,
   taskAgentTeamOwnTree,
-  taskExecutionLinkOf,
   taskExecutionRunId,
 } from "./task-agent-own-records.js";
 import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.js";
 
 /**
- * Compose at load, split at save (design D-1) for the three coordinating tree families. On disk a
- * coordinating tree holds links; each task agent's facts live in its own file. In memory every caller
- * keeps today's composed records.
+ * Compose at load, split at save for the three coordinating tree families (design D-1 … D-3, CM-8). A coordinating
+ * run stores nothing of a local delegated run: its tree file holds its own parts and its links to runs on another
+ * node. Which local delegated runs are in its tree is asked of the Task records (`OpenDelegatedRunSource`); each one's
+ * record is composed from its own file. In memory every caller keeps today's composed records.
  *
- * - L4: a record becomes a link only when its own file exists; any other record is written back unchanged.
- * - L5: one task agent never fails a load: one without a readable own file is left out and reported.
- * - L6: only available task agents are loaded; a save is computed against the files on disk and never
- *   removes what it did not load.
+ * - One delegated run never fails a load: one whose own file is missing (when it started), unreadable, or names
+ *   another coordinating run is left out and reported (DESIGN.md rule 7).
+ * - Local entries that an older tree file still lists are ignored, and the next save leaves them out (D-3).
  * - Remote links (entries with `nodeId`, CM-10) have no own file: they are loaded into the root's own
  *   `remoteTaskExecutions` list, never composed, and written back whole (`remote-task-execution-links.ts`).
  */
@@ -58,41 +60,7 @@ export type CoordinatingTreeShape<TTree> = Readonly<{
   storedBackLink(tree: TTree): DelegatedFrom | null;
 }>;
 
-type OwnFileStates = Readonly<{
-  agents: ReadonlyMap<string, TaskAgentRunMetadataReadState>;
-  teams: ReadonlyMap<string, TaskAgentTeamTreeReadState>;
-}>;
-
-const entryRecord = (entry: unknown, label: string): Record<string, unknown> => objectRecord(entry, label);
-const entryRunId = (entry: Record<string, unknown>): string =>
-  typeof entry.agentRunId === "string" ? entry.agentRunId : String(entry.teamRunId);
-
-/** Every task agent named by a tree file's lists, by kind, so their own files can be read (sync or async). */
-export const listTaskAgentRunIds = <TTree>(shape: CoordinatingTreeShape<TTree>, raw: Record<string, unknown>) => {
-  const agents: string[] = [];
-  const teams: string[] = [];
-  for (const [key, entries] of shape.rawTaskLists(raw)) {
-    entries.forEach((entry, index) => {
-      const record = entryRecord(entry, `${key}[${index}]`);
-      // A remote link has no own file on this node.
-      if (isRemoteTaskExecutionEntry(record)) return;
-      if (typeof record.agentRunId === "string") agents.push(record.agentRunId);
-      else if (typeof record.teamRunId === "string") teams.push(record.teamRunId);
-      else throw new Error(`${key}[${index}] names no AgentRun or TeamRun.`);
-    });
-  }
-  return { agents, teams };
-};
-
-export const readOwnFileStates = async (files: TaskAgentOwnFiles, ids: ReturnType<typeof listTaskAgentRunIds>): Promise<OwnFileStates> => ({
-  agents: new Map(await Promise.all(ids.agents.map(async (id) => [id, await files.readAgent(id)] as const))),
-  teams: new Map(await Promise.all(ids.teams.map(async (id) => [id, await files.readTeam(id)] as const))),
-});
-
-export const readOwnFileStatesSync = (files: TaskAgentOwnFiles, ids: ReturnType<typeof listTaskAgentRunIds>): OwnFileStates => ({
-  agents: new Map(ids.agents.map((id) => [id, files.readAgentSync(id)] as const)),
-  teams: new Map(ids.teams.map((id) => [id, files.readTeamSync(id)] as const)),
-});
+type OwnFileState = TaskAgentRunMetadataReadState | TaskAgentTeamTreeReadState;
 
 const sameRun = (left: TaskAgentCoordinatingRun, right: TaskAgentCoordinatingRun): boolean =>
   left.kind === right.kind && left.runId === right.runId;
@@ -101,69 +69,70 @@ const reportUnavailable = (coordinating: TaskAgentCoordinatingRun, runId: string
   console.warn(`Task agent '${runId}' of ${coordinating.kind} run '${coordinating.runId}' is not available: ${reason}`);
 };
 
+const readOwnFile = (files: TaskAgentOwnFiles, run: TaskExecutionReference): Promise<OwnFileState> =>
+  "agentRunId" in run ? files.readAgent(run.agentRunId) : files.readTeam(run.teamRunId);
+const readOwnFileSync = (files: TaskAgentOwnFiles, run: TaskExecutionReference): OwnFileState =>
+  "agentRunId" in run ? files.readAgentSync(run.agentRunId) : files.readTeamSync(run.teamRunId);
+
 /**
- * Composes a tree file's task lists into today's records from the task agents' own files. A link or
- * full record whose own file is missing, unreadable or names another coordinating run is left out
- * (L5, L6); so is one whose delegator is not in the composed tree, so the tree stays consistent. The
- * result is the tree file object with composed lists, for the family's validator.
+ * One delegated run's record from its own file (the one mapping for a load and for adding a run back, D-4), or why it
+ * is not available. A missing own file is expected while the run's start is pending or after it failed.
  */
-export const composeTaskExecutions = <TTree>(
+export type ComposedTaskExecution =
+  | Readonly<{ kind: "composed"; record: TaskExecution }>
+  | Readonly<{ kind: "unavailable"; reason: string; expected: boolean }>;
+
+export const composeTaskExecution = (
+  coordinating: TaskAgentCoordinatingRun,
+  run: TaskExecutionReference,
+  state: OwnFileState,
+): ComposedTaskExecution => {
+  if (state.kind === "missing") return { kind: "unavailable", reason: "its own file is missing.", expected: true };
+  if (state.kind === "unreadable") return { kind: "unavailable", reason: state.error.message, expected: false };
+  const own = "metadata" in state ? state.metadata : state.tree;
+  if (!sameRun(own.taskAgent.coordinatingRun, coordinating)) {
+    const named = own.taskAgent.coordinatingRun;
+    return { kind: "unavailable", reason: `its own file names ${named.kind} run '${named.runId}'.`, expected: false };
+  }
+  return { kind: "composed", record: "metadata" in state ? composeTaskAgentRecord(state.metadata) : composeTaskTeamRecord(state.tree) };
+};
+
+/**
+ * Composes a tree file with its open delegated runs (D-2): the file's local entries are dropped, every composed record
+ * goes into the root list sorted by start, and one whose delegator is not in the composed tree is left out too, so the
+ * tree stays consistent. The result is the tree file object with composed lists, for the family's validator.
+ */
+const composeTaskExecutions = <TTree>(
   shape: CoordinatingTreeShape<TTree>,
   raw: Record<string, unknown>,
-  owns: OwnFileStates,
+  open: readonly OpenDelegatedRun[],
+  states: readonly OwnFileState[],
 ): Record<string, unknown> => {
   const coordinating = shape.coordinatingRunOfRaw(raw);
-  const composed = new Map<TaskExecutionListKey, TaskExecution[]>();
-  for (const [key, entries] of shape.rawTaskLists(raw)) {
-    const records: TaskExecution[] = [];
-    entries.forEach((entry, index) => {
-      const record = entryRecord(entry, `${key}[${index}]`);
-      if (isRemoteTaskExecutionEntry(record)) return;
-      const runId = entryRunId(record);
-      const link = parseTaskExecutionLink(isTaskExecutionLinkEntry(record) ? record : {
-        address: record.address,
-        ...("agentRunId" in record ? { agentRunId: record.agentRunId } : { teamRunId: record.teamRunId }),
-        ...(record.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: record.delegatorAgentRunId }),
-        startedAt: record.startedAt,
-      }, `${key}[${index}]`);
-      const state = "agentRunId" in link ? owns.agents.get(runId) : owns.teams.get(runId);
-      if (!state || state.kind === "missing") {
-        // A full record whose migration has not finished is silently not loaded (L6); a link without its file is reported.
-        if (isTaskExecutionLinkEntry(record)) reportUnavailable(coordinating, runId, "its own file is missing.");
-        return;
-      }
-      if (state.kind === "unreadable") { reportUnavailable(coordinating, runId, state.error.message); return; }
-      const own = "metadata" in state ? state.metadata : state.tree;
-      if (!sameRun(own.taskAgent.coordinatingRun, coordinating)) {
-        reportUnavailable(coordinating, runId, `its own file names ${own.taskAgent.coordinatingRun.kind} run '${own.taskAgent.coordinatingRun.runId}'.`);
-        return;
-      }
-      records.push("agentRunId" in link
-        ? composeTaskAgentRecord(link, own as TaskAgentRunMetadata)
-        : composeTaskTeamRecord(link, own as TaskAgentTeamTreeFile));
-    });
-    composed.set(key, records);
-  }
+  let records: TaskExecution[] = [];
+  open.forEach(({ run, started }, index) => {
+    const composed = composeTaskExecution(coordinating, run, states[index]!);
+    if (composed.kind === "composed") records.push(composed.record);
+    else if (started || !composed.expected) reportUnavailable(coordinating, taskExecutionRunId(run), composed.reason);
+  });
+  records.sort((left, right) => left.startedAt.localeCompare(right.startedAt)
+    || taskExecutionRunId(left).localeCompare(taskExecutionRunId(right)));
   // A task whose delegator is not loaded is left out too, until the tree is consistent.
   for (let changed = true; changed;) {
-    changed = false;
     const known = new Set(shape.ownAgentRunIdsOfRaw(raw));
-    for (const records of composed.values()) {
-      for (const record of records) {
-        if ("agentRunId" in record) known.add(record.agentRunId);
-        else record.members.forEach((member) => known.add(member.agentRunId));
-      }
+    for (const record of records) {
+      if ("agentRunId" in record) known.add(record.agentRunId);
+      else record.members.forEach((member) => known.add(member.agentRunId));
     }
-    for (const [key, records] of composed) {
-      const kept = records.filter((record) => record.delegatorAgentRunId === undefined || known.has(record.delegatorAgentRunId));
-      if (kept.length === records.length) continue;
-      records.filter((record) => !kept.includes(record)).forEach((record) =>
-        reportUnavailable(coordinating, taskExecutionRunId(record), `its delegator '${record.delegatorAgentRunId}' is not available.`));
-      composed.set(key, kept);
-      changed = true;
-    }
+    const kept = records.filter((record) => record.delegatorAgentRunId === undefined || known.has(record.delegatorAgentRunId));
+    records.filter((record) => !kept.includes(record)).forEach((record) =>
+      reportUnavailable(coordinating, taskExecutionRunId(record), `its delegator '${record.delegatorAgentRunId}' is not available.`));
+    changed = kept.length !== records.length;
+    records = kept;
   }
-  return shape.withRawTaskLists(raw, composed);
+  const lists = new Map<TaskExecutionListKey, readonly unknown[]>([...shape.rawTaskLists(raw).keys()].map((key) => [key, []]));
+  lists.set(ROOT_TASK_LIST_KEY, records);
+  return shape.withRawTaskLists(raw, lists);
 };
 
 export type SplitTreeResult =
@@ -172,11 +141,13 @@ export type SplitTreeResult =
   | Readonly<{ kind: "own_file_failed"; result: Exclude<RunPackageFileWriteResult, { outcome: "committed" }> }>;
 
 /**
- * Splits a composed tree for saving, computed against the files on disk (inside the coordinating run's
- * persistence lock): each loaded task agent's own file is written only when it differs from the file on
- * disk (a new one at L1 before its link exists); the tree keeps links for loaded task agents, every
- * on-disk entry it did not load unchanged and in place, and new ones appended. Returns the tree file to
- * write, or `unchanged` when it equals the file on disk.
+ * Splits a composed tree for saving, computed against the files on disk (inside the coordinating run's persistence
+ * lock, D-3): each loaded task agent's own file is written only when it differs from the file on disk (a new one at
+ * its activation); the tree file keeps its links to runs on another node, the stored ones unchanged and in place, new
+ * ones appended. A local entry an older file still lists is left out only when it is a link and its run's own file
+ * exists (its facts are there); every other one is kept byte-for-byte and in place, so a save never deletes facts
+ * stored nowhere else (an own-file migration not finished yet; DESIGN.md rule 7). Returns the tree file to write, or `unchanged` when it equals
+ * the file on disk.
  */
 export const splitTaskExecutions = async <TTree>(input: Readonly<{
   shape: CoordinatingTreeShape<TTree>;
@@ -201,21 +172,33 @@ export const splitTaskExecutions = async <TTree>(input: Readonly<{
   }
   const diskLists = input.rawOnDisk ? shape.rawTaskLists(input.rawOnDisk) : new Map<string, readonly unknown[]>();
   const lists = new Map<TaskExecutionListKey, unknown[]>();
-  for (const [key, records] of memoryLists) {
-    const loaded = new Map(records.map((record) => [taskExecutionRunId(record), record]));
-    const output: unknown[] = [];
+  for (const key of memoryLists.keys()) {
+    const stored: unknown[] = [];
     for (const entry of diskLists.get(key) ?? []) {
-      const runId = entryRunId(entryRecord(entry, key));
-      const record = loaded.get(runId);
-      output.push(record ? taskExecutionLinkOf(record) : entry);
-      loaded.delete(runId);
+      if (isRemoteEntry(entry) || !await isLinkWithOwnFile(files, entry)) stored.push(entry);
     }
-    for (const record of loaded.values()) output.push(taskExecutionLinkOf(record));
-    lists.set(key, key === ROOT_TASK_LIST_KEY ? appendRemoteLinks(output, shape.remoteLinks(tree)) : output);
+    lists.set(key, key === ROOT_TASK_LIST_KEY ? appendRemoteLinks(stored, shape.remoteLinks(tree)) : stored);
   }
   const treeFile = JSON.parse(JSON.stringify(
     shape.withRemoteLinks(shape.withRawTaskLists(input.treeFile, lists), null))) as Record<string, unknown>;
   return input.rawOnDisk && isDeepStrictEqual(treeFile, input.rawOnDisk) ? { kind: "unchanged" } : { kind: "write", treeFile };
+};
+
+const isRemoteEntry = (entry: unknown): boolean =>
+  Boolean(entry) && typeof entry === "object" && isRemoteTaskExecutionEntry(entry as Record<string, unknown>);
+
+/**
+ * Whether a save may leave out a stored local entry (D-3, SR-008): it is a link by its exact key set, and its run's own
+ * file exists at the standard place, so every fact of the entry is on disk outside the tree file. An existence check by
+ * the link's run ID; the own file is not read. Any other entry (a full record, possibly holding nested runs) is kept.
+ */
+const isLinkWithOwnFile = async (files: () => TaskAgentOwnFiles, entry: unknown): Promise<boolean> => {
+  if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+  const record = entry as Record<string, unknown>;
+  if (!isTaskExecutionLinkEntry(record)) return false;
+  if (typeof record.agentRunId === "string") return files().exists({ agentRunId: record.agentRunId });
+  if (typeof record.teamRunId === "string") return files().exists({ teamRunId: record.teamRunId });
+  return false;
 };
 
 const writeAgentIfChanged = async (
@@ -255,29 +238,46 @@ export const readRawTreeFileSync = (filePath: string): Record<string, unknown> |
   catch (error) { if (isMissingFile(error)) return null; throw error; }
 };
 
-/** Composes a parsed tree file from its task agents' own files; a tree without task agents reads no own file. */
+/**
+ * Composes a parsed tree file (DS-001): its own parts, its links to runs on another node, and the open delegated runs
+ * the Task records name for it, from their own files. A tree without open delegated runs reads no own file.
+ */
 export const composeTreeFile = async <TTree>(
   shape: CoordinatingTreeShape<TTree>,
   raw: Record<string, unknown>,
+  open: readonly OpenDelegatedRun[],
   files: () => TaskAgentOwnFiles,
 ): Promise<Record<string, unknown>> => {
-  const ids = listTaskAgentRunIds(shape, raw);
-  const composed = ids.agents.length === 0 && ids.teams.length === 0
-    ? withoutRemoteEntries(shape, raw)
-    : composeTaskExecutions(shape, raw, await readOwnFileStates(files(), ids));
-  return attachRemoteLinks(shape, raw, composed);
+  const states = open.length === 0 ? [] : await Promise.all(open.map(({ run }) => readOwnFile(files(), run)));
+  return attachRemoteLinks(shape, raw, composeTaskExecutions(shape, raw, open, states));
 };
 
 export const composeTreeFileSync = <TTree>(
   shape: CoordinatingTreeShape<TTree>,
   raw: Record<string, unknown>,
+  open: readonly OpenDelegatedRun[],
   files: () => TaskAgentOwnFiles,
 ): Record<string, unknown> => {
-  const ids = listTaskAgentRunIds(shape, raw);
-  const composed = ids.agents.length === 0 && ids.teams.length === 0
-    ? withoutRemoteEntries(shape, raw)
-    : composeTaskExecutions(shape, raw, readOwnFileStatesSync(files(), ids));
-  return attachRemoteLinks(shape, raw, composed);
+  const states = open.length === 0 ? [] : open.map(({ run }) => readOwnFileSync(files(), run));
+  return attachRemoteLinks(shape, raw, composeTaskExecutions(shape, raw, open, states));
+};
+
+/**
+ * A root run's own parts (design D-11): the tree file with every list of delegated runs empty, local or on another
+ * node. It reads nothing else and asks no Task record, so startup admission and the maintenance repair can use it.
+ */
+export const ownPartsOfTreeFile = <TTree>(shape: CoordinatingTreeShape<TTree>, raw: Record<string, unknown>): Record<string, unknown> =>
+  shape.withRemoteLinks(shape.withRawTaskLists(raw, new Map([...shape.rawTaskLists(raw).keys()].map((key) => [key, []]))), null);
+
+/** One delegated run's record for adding it back to a loaded tree (D-4); throws with the reason when it is not available. */
+export const readTaskExecutionRecord = async (
+  coordinating: TaskAgentCoordinatingRun,
+  run: TaskExecutionReference,
+  files: TaskAgentOwnFiles,
+): Promise<TaskExecution> => {
+  const composed = composeTaskExecution(coordinating, run, await readOwnFile(files, run));
+  if (composed.kind === "composed") return composed.record;
+  throw new Error(`Task agent '${"agentRunId" in run ? run.agentRunId : run.teamRunId}' of ${coordinating.kind} run '${coordinating.runId}' is not available: ${composed.reason}`);
 };
 
 /**
@@ -324,4 +324,15 @@ export const agentRunIdsOfTree = <TTree>(
     }
   }
   return ids;
+};
+
+/** The message view rule (`isMessageOfView`) bound to one composed or loaded tree: its own agents and its agents. */
+export const messageViewOfTree = <TTree>(
+  shape: CoordinatingTreeShape<TTree>,
+  tree: TTree,
+  backLink: DelegatedFrom | null = shape.storedBackLink(tree),
+): ((message: Pick<CollaborationCommunicationMessage, "senderAgentRunId" | "receiverAgentRunId">) => boolean) => {
+  const own = new Set(shape.ownAgentRunIdsOfRaw(tree as unknown as Record<string, unknown>));
+  const agents = agentRunIdsOfTree(shape, tree, backLink);
+  return (message) => isMessageOfView(message, own, agents);
 };

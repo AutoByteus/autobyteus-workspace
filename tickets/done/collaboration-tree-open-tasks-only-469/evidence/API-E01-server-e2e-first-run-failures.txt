@@ -1,0 +1,1070 @@
+# Case: API-E01 (first run): every failure with its assertion
+# Command: as API-E01-server-e2e-first-run-summary.txt
+# Code under test: 42652879b3
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources
+# Date: 2026-11-11
+# Look for: each 'FAIL' block; the classification of each is in the execution report's 'API-E01 triage' table
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 47 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts > append-only message logs: the built server converts a faithful released install at startup > AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing
+AssertionError: expected [] to deeply equal [ { messageId: 'm1', …(6) }, …(4) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "content": "content m1",
+-     "createdAt": "2026-10-01T08:10:00.000Z",
+-     "messageId": "m1",
+-     "messageType": "agent_message",
+-     "receiverAgentRunId": "c1-reviewer",
+-     "referenceFiles": [
+-       "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/append-only-logs-e2e-HC8NA9/workspace/refs/m1.md",
+-     ],
+-     "senderAgentRunId": "hub",
+-   },
+-   {
+-     "content": "content m2",
+-     "createdAt": "2026-10-01T08:11:00.000Z",
+-     "messageId": "m2",
+-     "messageType": "agent_message",
+-     "receiverAgentRunId": "c2a-designer",
+-     "referenceFiles": [
+-       "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/append-only-logs-e2e-HC8NA9/workspace/refs/m2.md",
+-     ],
+-     "senderAgentRunId": "c2a-lead",
+-   },
+-   {
+-     "content": "content m3",
+-     "createdAt": "2026-10-01T08:12:00.000Z",
+-     "messageId": "m3",
+-     "messageType": "agent_message",
+-     "receiverAgentRunId": "c2a-lead",
+-     "referenceFiles": [
+-       "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/append-only-logs-e2e-HC8NA9/workspace/refs/m3.md",
+-     ],
+-     "senderAgentRunId": "c1-reviewer",
+-   },
+-   {
+-     "content": "content m4",
+-     "createdAt": "2026-10-01T08:13:00.000Z",
+-     "messageId": "m4",
+-     "messageType": "agent_message",
+-     "receiverAgentRunId": "c2a-lead",
+-     "referenceFiles": [
+-       "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/append-only-logs-e2e-HC8NA9/workspace/refs/m4.md",
+-     ],
+-     "senderAgentRunId": "c7-helper",
+-   },
+-   {
+-     "content": "content m5",
+-     "createdAt": "2026-10-01T08:14:00.000Z",
+-     "messageId": "m5",
+-     "messageType": "agent_message",
+-     "receiverAgentRunId": "c2a-lead",
+-     "referenceFiles": [
+-       "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/append-only-logs-e2e-HC8NA9/workspace/refs/m5.md",
+-     ],
+-     "senderAgentRunId": "hub",
+-   },
+- ]
++ []
+
+ ❯ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts:308:35
+    306|     // AC-004 / REQ-009: the converted runs are admitted and serve exa…
+    307|     const view = views(first);
+    308|     expect(await view.hub("hub")).toEqual(byCreatedAt(released.hub));
+       |                                   ^
+    309|     const team = await view.team("team-r");
+    310|     expect(team.map(({ referenceIds: _ids, ...entry }) => entry)).toEq…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/47]⎯
+
+ FAIL  tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > collaborators → delegated runs: the built server upgrades released app data at startup > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing
+Error: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ StandaloneRootPackageStore.openRunsOf src/standalone-agent-run-root/persistence/standalone-root-package-store.ts:81:39
+ ❯ StandaloneRootPackageStore.readTree src/standalone-agent-run-root/persistence/standalone-root-package-store.ts:65:45
+ ❯ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts:246:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/47]⎯
+
+ FAIL  tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "c1-reviewer",
+-   "c2-team-a",
+-   "c2-team-b",
+-   "never-ran",
+- ]
++ []
+
+ ❯ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts:215:44
+    213|     }
+    214|     // AC-006: the runs open with all their task agents; a task agent'…
+    215|     expect(await hubTaskAgents(first.gql)).toEqual(expect.arrayContain…
+       |                                            ^
+    216|     const teamView = JSON.stringify((await first.gql(`query($id:String…
+    217|     for (const id of ["c3-writer-copy", "nd-copy", "c4-qa"]) expect(te…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/47]⎯
+
+ FAIL  tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)
+AssertionError: {"success":false,"outcome":"VALIDATION_FAILED","message":"A delegated model change names no editable copy.","fieldErrors":[{"path":"changes[0]","message":"'nd-copy' is not an open delegated copy of this run."}]}: expected { success: false, …(3) } to match object { success: true }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "success": true,
++   "success": false,
+  }
+
+ ❯ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts:283:46
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/47]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+AssertionError: expected { Object (root_subject_kind, root_run_id, ...) } to match object { Object (root_subject_kind, root_run_id, ...) }
+(22 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -13,11 +13,11 @@
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "runtimeKind": "autobyteus",
+          "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace",
+        },
+        "members": [
+-         {
++         ObjectContaining {
+            "address": "/lead",
+            "agentDefinitionId": "autobyteus-memory-compactor",
+            "agentRunId": "team-v1-supported-root-lead-run",
+            "launchConfiguration": {
+              "autoExecuteTools": false,
+@@ -37,10 +37,11 @@
+              "llmConfig": null,
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "runtimeKind": "autobyteus",
+              "workspaceRootPath": "/tmp/autobyteus-team-v1-nested-workspace",
+            },
++           "description": "Nested released-shape team",
+            "members": [
+              {
+                "address": "/research/reviewer",
+                "agentDefinitionId": "autobyteus-memory-compactor",
+                "agentRunId": "team-v1-supported-root-reviewer-run",
+@@ -54,16 +55,13 @@
+                },
+                "platformAgentRunId": null,
+                "role": "Synthetic migration member",
+              },
+            ],
+-           "taskExecutions": [
+-             ObjectContaining {
+-               "address": "/research/reviewer",
+-               "agentRunId": "team-v1-supported-root-task-reviewer-run",
+-             },
+-           ],
++           "role": "Research",
++           "taskExecutions": [],
++           "teamDefinitionId": "synthetic-released-child-definition",
+            "teamRunId": "team-v1-supported-root-explicit-child-team-run",
+          },
+        ],
+        "orgRunId": "team-v1-supported-root",
+      },
+
+ ❯ exerciseHistoryAndNewWork tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1117:42
+    1115|     }
+    1116|   `, { orgRunId });
+    1117|   expect(history.getAgentOrgRootHistory).toMatchObject({
+       |                                          ^
+    1118|     root_subject_kind: "agent_org",
+    1119|     root_run_id: orgRunId,
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1413:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/47]⎯
+
+ FAIL  tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts > imported Team memory GraphQL e2e > uses one tree read per admitted root in each imported GraphQL request without changing any source file
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "memberMemoryCount": 1,
+-     "teamDefinitionId": "imported-team-definition",
+-     "teamRunCount": 2,
+-   },
+- ]
++ []
+
+ ❯ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts:127:54
+    125|         }
+    126|       }`);
+    127|       expect(cards.listAgentTeamsWithMemory.entries).toEqual([
+       |                                                      ^
+    128|         expect.objectContaining({ teamDefinitionId: definitionId, team…
+    129|       ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ AgentOrgRunExecutionTreeStore.openRunsOf src/run-history/store/agent-org-run-execution-tree-store.ts:85:39
+ ❯ AgentOrgRunExecutionTreeStore.read src/run-history/store/agent-org-run-execution-tree-store.ts:46:43
+ ❯ AgentOrgExecutionTreeLocationService.findAgent src/agent-org-execution/services/agent-org-execution-tree-location-service.ts:54:20
+ ❯ RecordedDelegatorNames.nameOf src/agent-memory/services/team-memory-explorer-service.ts:44:9
+ ❯ TeamMemoryExplorerService.startedByOfDefinitions src/agent-memory/services/team-memory-explorer-service.ts:125:15
+ ❯ TeamMemoryExplorerService.listAgentTeamsWithMemory src/agent-memory/services/team-memory-explorer-service.ts:79:23
+ ❯ MemoryExplorerResolver.listAgentTeamsWithMemory src/api/graphql/types/memory-explorer.ts:82:12
+ ❯ execGraphql tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:154:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011)
+AssertionError: expected [] to deeply equal [ 'gql-team-run-2', 'gql-team-run-1' ]
+
+- Expected
++ Received
+
+- [
+-   "gql-team-run-2",
+-   "gql-team-run-1",
+- ]
++ []
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:303:58
+    301|     const all = await execGraphql<TeamRunsData>(teamRunsQuery, { id: "…
+    302|     const page = all.listAgentTeamRunsWithMemory;
+    303|     expect(page.entries.map((entry) => entry.teamRunId)).toEqual(["gql…
+       |                                                          ^
+    304|     expect(page.entries[0]).toMatchObject({
+    305|       teamDefinitionName: "Writing Team",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > opens team member memory for a configured member and its task instance; unknown and non-admitted roots return empty views (AC-006, AC-011)
+AssertionError: promise rejected "GraphQLError{ …(10) }" instead of resolving
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:331:65
+    329|       execGraphql<ViewData<"getTeamMemberRunMemoryView">>(teamMemberVi…
+    330|         .then((data) => data.getTeamMemberRunMemoryView);
+    331|     await expect(view("gql-team-run-2", "gql-team-run-2-writer")).reso…
+       |                                                                 ^
+    332|     await expect(view("gql-team-run-2", "gql-team-run-2-task-writer"))…
+    333|     for (const [teamRunId, agentRunId] of [["gql-team-unadmitted", "gq…
+
+Caused by: GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamRunExecutionTreeLocationService.listAgents src/run-history/services/team-run-execution-tree-location-service.ts:89:62
+ ❯ AgentMemoryLocationService.resolveTeamMemberLocation src/agent-memory/services/agent-memory-location-service.ts:69:24
+ ❯ MemoryViewResolver.getTeamMemberRunMemoryView src/api/graphql/types/memory-view.ts:179:22
+ ❯ execGraphql tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:154:20
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:331:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { locations: [ { line: 3, column: 7 } ], path: [ 'getTeamMemberRunMemoryView' ] }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > skips a team tree corrupted after admission with a warning while other roots still list (AC-003)
+AssertionError: expected +0 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:346:54
+    344|     resetTeamRunHistoryCatalogState(memoryDir);
+    345|     const before = await execGraphql<TeamRunsData>(teamRunsQuery, { id…
+    346|     expect(before.listAgentTeamRunsWithMemory.total).toBe(3);
+       |                                                      ^
+    347|
+    348|     fs.writeFileSync(teamDir("gql-team-corrupt-later", "team_run_execu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists org definitions with member memory, using the history index name (AC-007)
+AssertionError: expected { total: +0, totalPages: 1, …(1) } to deeply equal { total: 1, totalPages: 1, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "entries": [
+-     {
+-       "latestMemoryAt": "2026-09-02T01:00:00Z",
+-       "memberMemoryCount": 2,
+-       "memory": {
+-         "hasRawTraces": true,
+-         "hasWorkJournal": false,
+-       },
+-       "orgDefinitionId": "gql-org-a",
+-       "orgDefinitionName": "Alpha Org",
+-       "orgRunCount": 2,
+-     },
+-   ],
+-   "total": 1,
++   "entries": [],
++   "total": 0,
+    "totalPages": 1,
+  }
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:361:42
+    359|   it("lists org definitions with member memory, using the history inde…
+    360|     const data = await execGraphql<{ listAgentOrgsWithMemory: unknown …
+    361|     expect(data.listAgentOrgsWithMemory).toEqual({
+       |                                          ^
+    362|       total: 1,
+    363|       totalPages: 1,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > lists org runs with address-path labels and own run IDs, includes task-team members under their task group, searches and pages (AC-008, AC-010, AC-011, AC-014)
+AssertionError: expected [] to deeply equal [ 'gql-org-a-2', 'gql-org-a-1' ]
+
+- Expected
++ Received
+
+- [
+-   "gql-org-a-2",
+-   "gql-org-a-1",
+- ]
++ []
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:380:57
+    378|     const all = await execGraphql<OrgRunsData>(orgRunsQuery, { id: "gq…
+    379|     const page = all.listAgentOrgRunsWithMemory;
+    380|     expect(page.entries.map((entry) => entry.orgRunId)).toEqual(["gql-…
+       |                                                         ^
+    381|     expect(page.entries[0]).toMatchObject({ orgDefinitionName: "Alpha …
+    382|     expect(page.entries[1]).toMatchObject({ summary: "first alpha run"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > opens org member memory for a team-hosted member, a task instance and a task-team member; unknown members get an empty view (AC-009, AC-011, AC-014)
+AssertionError: promise rejected "GraphQLError{ …(10) }" instead of resolving
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:410:61
+    408|       execGraphql<ViewData<"getAgentOrgMemberRunMemoryView">>(orgMembe…
+    409|         .then((data) => data.getAgentOrgMemberRunMemoryView);
+    410|     await expect(view("gql-org-a-1", "gql-org-a-1-designer")).resolves…
+       |                                                             ^
+    411|     await expect(view("gql-org-a-1", "gql-org-a-1-task-ceo")).resolves…
+    412|     await expect(view("gql-org-a-1", "gql-org-a-1-task-team-designer")…
+
+Caused by: GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+ ❯ AgentOrgRunExecutionTreeStore.openRunsOf src/run-history/store/agent-org-run-execution-tree-store.ts:85:39
+ ❯ AgentOrgRunExecutionTreeStore.read src/run-history/store/agent-org-run-execution-tree-store.ts:46:43
+ ❯ AgentOrgExecutionTreeLocationService.findAgent src/agent-org-execution/services/agent-org-execution-tree-location-service.ts:54:20
+ ❯ AgentMemoryLocationService.resolveAgentOrgMemberLocation src/agent-memory/services/agent-memory-location-service.ts:96:21
+ ❯ MemoryViewResolver.getAgentOrgMemberRunMemoryView src/api/graphql/types/memory-view.ts:203:22
+ ❯ execGraphql tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:154:20
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:410:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { locations: [ { line: 3, column: 7 } ], path: [ 'getAgentOrgMemberRunMemoryView' ] }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/47]⎯
+
+ FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts > Memory collaboration (team + org) GraphQL e2e > serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate)
+AssertionError: expected [] to deeply equal [ [ 'gql-writing-team', 1 ] ]
+
+- Expected
++ Received
+
+- [
+-   [
+-     "gql-writing-team",
+-     1,
+-   ],
+- ]
++ []
+
+ ❯ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts:438:113
+    436|
+    437|     const teams = await execGraphql<{ listAgentTeamsWithMemory: { tota…
+    438|     expect(teams.listAgentTeamsWithMemory.entries.map((entry) => [entr…
+       |                                                                                                                 ^
+    439|     const orgs = await execGraphql<{ listAgentOrgsWithMemory: { total:…
+    440|     expect(orgs.listAgentOrgsWithMemory).toMatchObject({ total: 0, ent…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/47]⎯
+
+ FAIL  tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+Error: [{"message":"AgentRun 'aht_reviewer_75d5ed_f8370fab11094d5eac4254d71ef2086e' at '/aht_reviewer_75d5ed' was not found among the delegated copies of Agent run 'aht_manager_75d5ed_ea5d0a4195284dbc8e00aa5ef8815282'.","locations":[{"line":1,"column":41}],"path":["agentRunCollaborationMemberProjection"]}]
+ ❯ graphql tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:83:66
+     81|       headers: { "content-type": "application/json" }, body: JSON.stri…
+     82|     const body = await response.json() as { data?: T; errors?: unknown…
+     83|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+     84|     return body.data;
+     85|   };
+ ❯ conversationOf tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:243:37
+ ❯ rootScenario tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:369:26
+ ❯ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:515:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/47]⎯
+
+ FAIL  tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+Error: [{"message":"AgentRun 'aht_reviewer_75d5ed_e0e396cb314f4092b79fbb7468d98f39' was not found in root TeamRun 'aht_team_75d5ed_5dc57bfa5a9b4ecc9b6f62d1811346a3'.","locations":[{"line":1,"column":31}],"path":["getTeamMemberRunProjection"]}]
+ ❯ graphql tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:83:66
+     81|       headers: { "content-type": "application/json" }, body: JSON.stri…
+     82|     const body = await response.json() as { data?: T; errors?: unknown…
+     83|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+     84|     return body.data;
+     85|   };
+ ❯ conversationOf tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:245:36
+ ❯ rootScenario tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:369:26
+ ❯ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:519:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/47]⎯
+
+ FAIL  tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts > @ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: same journey through the Org stream
+Error: [{"message":"AgentRun 'aht_reviewer_75d5ed_9b3ea7a014684f70bb89d83a35786354' at '/aht_reviewer_75d5ed' was not found in AgentOrg 'aht_org_75d5ed_f6105f7d42e04a80a8905f746727e599'.","locations":[{"line":1,"column":42}],"path":["getAgentOrgMemberRunProjection"]}]
+ ❯ graphql tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:83:66
+     81|       headers: { "content-type": "application/json" }, body: JSON.stri…
+     82|     const body = await response.json() as { data?: T; errors?: unknown…
+     83|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+     84|     return body.data;
+     85|   };
+ ❯ conversationOf tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:247:15
+ ❯ rootScenario tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:369:26
+ ❯ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts:523:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/47]⎯
+
+ FAIL  tests/e2e/projects/collaboration-model-contract.e2e.test.ts > Collaboration model: message inside, delegate outside (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID
+AssertionError: expected '{"error":{"code":"COLLABORATION_SELF_…' to contain 'send_message_to'
+
+Expected: "send_message_to"
+Received: "{"error":{"code":"COLLABORATION_SELF_TARGET_REJECTED","message":"/manager is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team."},"isError":true}"
+
+ ❯ expectRefused tests/e2e/projects/collaboration-model-contract.e2e.test.ts:199:36
+    197|     expect(JSON.stringify(result), JSON.stringify(result)).toContain("…
+    198|     expect(JSON.stringify(result)).toContain(address);
+    199|     expect(JSON.stringify(result)).toContain("send_message_to");
+       |                                    ^
+    200|     expect(result).not.toHaveProperty("target_agent_run_id");
+    201|   };
+ ❯ tests/e2e/projects/collaboration-model-contract.e2e.test.ts:278:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/47]⎯
+
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values
+AssertionError: expected [ …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "agent: AssertionError: expected { origin: 'inherited', …(1) } to deeply equal { origin: 'inherited', …(1) }
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:369:56)
++     at processTicksAndRejections (node:internal/process/task_queues:103:5)
++     at async Promise.allSettled (index 0)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:509:21
++   "team: AssertionError: expected { origin: 'inherited', …(1) } to deeply equal { origin: 'inherited', …(1) }
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:369:56)
++     at processTicksAndRejections (node:internal/process/task_queues:103:5)
++     at async Promise.allSettled (index 1)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:509:21
++   "org: AssertionError: expected { origin: 'inherited', …(1) } to deeply equal { origin: 'inherited', …(1) }
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:369:56)
++     at processTicksAndRejections (node:internal/process/task_queues:103:5)
++     at async Promise.allSettled (index 2)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469/autobyteus-server-ts/tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:509:21
++ ]
+
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:511:22
+    509|     const settled = await Promise.allSettled((["agent", "team", "org"]…
+    510|     const failures = settled.flatMap((result, index) => result.status …
+    511|     expect(failures).toEqual([]);
+       |                      ^
+    512|   }, 600_000);
+    513|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/47]⎯
+
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)
+AssertionError: expected '{"delegated":false,"message":"DLC wor…' to contain 'DLC worker 07f414 cannot be delegated…'
+
+Expected: "DLC worker 07f414 cannot be delegated to: The model 'dlc-retiring-model' is not available on Antigravity CLI."
+Received: "{"delegated":false,"message":"DLC worker 07f414 cannot be delegated to: 'dlc-retiring-model' is not offered by Antigravity CLI now. Refresh the model list and choose again."}"
+
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:525:39
+    523|     const delegated = await root.managerCalls(callTool("delegate_task"…
+    524|     expect(delegated.delegated ?? false, JSON.stringify(delegated)).to…
+    525|     expect(JSON.stringify(delegated)).toContain(`${names.worker} canno…
+       |                                       ^
+    526|     const team = await root.managerCalls(callTool("delegate_task", { r…
+    527|     expect(team.delegated ?? false, JSON.stringify(team)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/47]⎯
+
+ FAIL  tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts > get_project_task worker scope through real roots and runtimes (built server, scripted AGY, emulated LM Studio) > SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope
+AssertionError: expected '{"code":"INVALID_TARGET","message":"A…' to contain 'TASK_AGENT_RESOURCES_UNAVAILABLE'
+
+Expected: "TASK_AGENT_RESOURCES_UNAVAILABLE"
+Received: "{"code":"INVALID_TARGET","message":"AgentRun 'scope_native_helper_e09b6e_5ea1bff9eb014e81816ea067971fcedc' is not in root 'scope_root_e09b6e_745dfaa94e684021a98a2a28cdd6a85a'.","error_scope":null,"error_effect":null,"turn_id":null,"change_sequence":null,"agent_run_id":"scope_native_helper_e09b6e_5ea1bff9eb014e81816ea067971fcedc"}"
+
+ ❯ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts:409:46
+    407|     await until(() => Boolean(refusal = view.frames.slice(frames).find…
+    408|     receipt.results.push({ who: "native helper (damaged)", route: "nat…
+    409|     expect(JSON.stringify(refusal!.payload)).toContain("TASK_AGENT_RES…
+       |                                              ^
+    410|     await new Promise((resolve) => setTimeout(resolve, 3_000));
+    411|     expect(nativeRequests.slice(mark).filter((request) => request.syst…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/47]⎯
+
+ FAIL  tests/e2e/projects/task-closure-root-visibility.e2e.test.ts > Task DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:trc_assistant_6e3e0c_d4624ae248bb48ab879d5e7c843b8f75",
+-   "agent:trc_helper_6e3e0c_8f61e5eecfb84c778ff1e46647de3b76",
+-   "agent:trc_worker_6e3e0c_568395ba4db04c6980fca4332a60a529",
+- ]
++ []
+
+ ❯ rootScenario tests/e2e/projects/task-closure-root-visibility.e2e.test.ts:314:32
+    312|     view = await openView();
+    313|     const after = snapshotOf(view.frames);
+    314|     expect(keys(after.closed)).toEqual(keys(taskARefs));
+       |                                ^
+    315|     expect(keys(taskNodes(after.tree).map(refOf))).toEqual(keys(allBef…
+    316|     const aMessageIdsAfter = (await managerMessages()).filter(touchesT…
+ ❯ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts:393:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/47]⎯
+
+ FAIL  tests/e2e/projects/task-closure-root-visibility.e2e.test.ts > Task DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:trc_assistant_6e3e0c_19afa9c662ea41e0b09fea004ed559a0",
+-   "agent:trc_helper_6e3e0c_e3238cc4a8a846eebc4ae950e329c08e",
+-   "agent:trc_worker_6e3e0c_44d15b6a477c48bc8644fc324383d7e3",
+- ]
++ []
+
+ ❯ rootScenario tests/e2e/projects/task-closure-root-visibility.e2e.test.ts:314:32
+    312|     view = await openView();
+    313|     const after = snapshotOf(view.frames);
+    314|     expect(keys(after.closed)).toEqual(keys(taskARefs));
+       |                                ^
+    315|     expect(keys(taskNodes(after.tree).map(refOf))).toEqual(keys(allBef…
+    316|     const aMessageIdsAfter = (await managerMessages()).filter(touchesT…
+ ❯ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts:397:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/47]⎯
+
+ FAIL  tests/e2e/projects/task-closure-root-visibility.e2e.test.ts > Task DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:trc_assistant_6e3e0c_0f388a83c4b74e01bb24dfde057324b8",
+-   "agent:trc_helper_6e3e0c_8e82224bb0ee486498e46e9740a09894",
+-   "agent:trc_worker_6e3e0c_f571d86712ab4fd9b0e944927bcdbde0",
+- ]
++ []
+
+ ❯ rootScenario tests/e2e/projects/task-closure-root-visibility.e2e.test.ts:314:32
+    312|     view = await openView();
+    313|     const after = snapshotOf(view.frames);
+    314|     expect(keys(after.closed)).toEqual(keys(taskARefs));
+       |                                ^
+    315|     expect(keys(taskNodes(after.tree).map(refOf))).toEqual(keys(allBef…
+    316|     const aMessageIdsAfter = (await managerMessages()).filter(touchesT…
+ ❯ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts:401:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/47]⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_worker_63d3b1_663f6714397846eaaea5e361c69d7b03 is a member of task agent team exc_squad_63d3b1_623196ded5aa4faaa30047ad80881fb0; to give that team a Task, use target_team_run_id \"exc_squad_63d3b1_623196ded5aa4faaa30047ad80881fb0\".",
++   "message": "exc_worker_63d3b1_663f6714397846eaaea5e361c69d7b03 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:465:38
+    463|     expect(idRefusals.coordinatorAsAgent).toEqual({ delegated: false,
+    464|       message: `${coordinator} is the coordinator of task agent team $…
+    465|     expect(idRefusals.memberAsAgent).toEqual({ delegated: false, messa…
+       |                                      ^
+    466|       + `to give that team a Task, use target_team_run_id "${team}".` …
+    467|     expect(idRefusals.teamRunAsAgent).toEqual({ delegated: false, mess…
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:714:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/47]⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_worker_63d3b1_d25b87ecfa6b48c5a9d3ef68c8d284c2 is a member of task agent team exc_squad_63d3b1_03cbc4b18bff41678fd04be8e757c4ad; to give that team a Task, use target_team_run_id \"exc_squad_63d3b1_03cbc4b18bff41678fd04be8e757c4ad\".",
++   "message": "exc_worker_63d3b1_d25b87ecfa6b48c5a9d3ef68c8d284c2 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:465:38
+    463|     expect(idRefusals.coordinatorAsAgent).toEqual({ delegated: false,
+    464|       message: `${coordinator} is the coordinator of task agent team $…
+    465|     expect(idRefusals.memberAsAgent).toEqual({ delegated: false, messa…
+       |                                      ^
+    466|       + `to give that team a Task, use target_team_run_id "${team}".` …
+    467|     expect(idRefusals.teamRunAsAgent).toEqual({ delegated: false, mess…
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:718:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/47]⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_worker_63d3b1_fd171ae783214ae3b9630d1c5e0b1a32 is a member of task agent team exc_squad_63d3b1_10f145ccd99441ddaf431e8f9caa784a; to give that team a Task, use target_team_run_id \"exc_squad_63d3b1_10f145ccd99441ddaf431e8f9caa784a\".",
++   "message": "exc_worker_63d3b1_fd171ae783214ae3b9630d1c5e0b1a32 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
+  }
+
+ ❯ rootScenario tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:465:38
+    463|     expect(idRefusals.coordinatorAsAgent).toEqual({ delegated: false,
+    464|       message: `${coordinator} is the coordinator of task agent team $…
+    465|     expect(idRefusals.memberAsAgent).toEqual({ delegated: false, messa…
+       |                                      ^
+    466|       + `to give that team a Task, use target_team_run_id "${team}".` …
+    467|     expect(idRefusals.teamRunAsAgent).toEqual({ delegated: false, mess…
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:722:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/47]⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+AssertionError: expected 'The task agent can\'t continue: its s…' to match /cannot be restored: it has no saved c…/
+
+- Expected:
+/cannot be restored: it has no saved conversation to continue\. Start a new delegation/
+
++ Received:
+"The task agent can't continue: its saved run could not be read (Task agent 'exc_helper_63d3b1_7c40ce974c374797a5e55509ee664bd3' of agent_org run 'exc_org_63d3b1_190c1682d3dc46d390169729cde64a14' is not available: its own file is missing.)."
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:835:26
+    833|     const lost = await root.managerCalls(callTool("delegate_task", { t…
+    834|     expect(lost).toMatchObject({ delegated: false });
+    835|     expect(lost.message).toMatch(/cannot be restored: it has no saved …
+       |                          ^
+    836|     expect(await projectFiles(projectId)).toEqual(files);
+    837|     expect(root.reopenedSince(from)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/47]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED
+AssertionError: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:tra_worker_958b5f_efee371765de49c3bfc38cea0fd7caff",
+- ]
++ []
+
+ ❯ cancelledScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:584:50
+    582|     expect((await closedAtByKey(cDir))[`agent:${worker}`]).toEqual(exp…
+    583|     await until(() => liveAgyCwds().every((cwd) => !cwd.includes(worke…
+    584|     expect(keys((await root.snapshot()).closed)).toEqual([`agent:${wor…
+       |                                                  ^
+    585|     await until(() => upserts(taskC, feedFrom).some((t) => t.status ==…
+    586|       "feed: CANCELLED view with a closed, Offline root", 30_000);
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:693:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/47]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)
+AssertionError: expected [] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:tra_worker_958b5f_ce78e576b16f433f8a5606b8609fb8bf",
+- ]
++ []
+
+ ❯ cancelledScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:584:50
+    582|     expect((await closedAtByKey(cDir))[`agent:${worker}`]).toEqual(exp…
+    583|     await until(() => liveAgyCwds().every((cwd) => !cwd.includes(worke…
+    584|     expect(keys((await root.snapshot()).closed)).toEqual([`agent:${wor…
+       |                                                  ^
+    585|     await until(() => upserts(taskC, feedFrom).some((t) => t.status ==…
+    586|       "feed: CANCELLED view with a closed, Offline root", 30_000);
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:697:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/47]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:tra_assistant_958b5f_11b97775e5dc4f15944faa23dd8cb264",
+-   "agent:tra_helper_958b5f_b27adffd952a4eab916223d420a11d9e",
+-   "agent:tra_worker_958b5f_3d51c73545f443a3ad79048d48221017",
+- ]
++ []
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:373:50
+    371|     expect(await readBytes(path.join(aDir, "task.json"))).toBe(taskDon…
+    372|     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(fals…
+    373|     expect(keys((await root.snapshot()).closed)).toEqual(keys(aRefs));
+       |                                                  ^
+    374|     expect(JSON.stringify(await root.conversationOf(worker, workerNode…
+    375|
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:701:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/47]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:tra_assistant_958b5f_c873d250d47d45e18376950e3d5e0976",
+-   "agent:tra_helper_958b5f_ba14151114f44428b028127724f76092",
+-   "agent:tra_worker_958b5f_889b20cce29247db9ffa9aebbbf848fd",
+- ]
++ []
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:373:50
+    371|     expect(await readBytes(path.join(aDir, "task.json"))).toBe(taskDon…
+    372|     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(fals…
+    373|     expect(keys((await root.snapshot()).closed)).toEqual(keys(aRefs));
+       |                                                  ^
+    374|     expect(JSON.stringify(await root.conversationOf(worker, workerNode…
+    375|
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:705:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/47]⎯
+
+ FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent Org root: the same journey through the Org stream; an Org member cannot reactivate
+AssertionError: expected [] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+- [
+-   "agent:tra_assistant_958b5f_55fa5ed497154251a8bae540bcd6223c",
+-   "agent:tra_helper_958b5f_e993270afd3c41efac5ba184dcca7a6e",
+-   "agent:tra_worker_958b5f_9dab7a91363a44a884b846b4cdfc0219",
+- ]
++ []
+
+ ❯ rootScenario tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:373:50
+    371|     expect(await readBytes(path.join(aDir, "task.json"))).toBe(taskDon…
+    372|     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(fals…
+    373|     expect(keys((await root.snapshot()).closed)).toEqual(keys(aRefs));
+       |                                                  ^
+    374|     expect(JSON.stringify(await root.conversationOf(worker, workerNode…
+    375|
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:709:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/47]⎯
+
+ FAIL  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > agent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+Error: [{"message":"AgentRun 'tdr_worker_2c27f4_237a35e80e48442f97577639040d700e' at '/tdr_squad_2c27f4/lead' was not found among the delegated copies of Agent run 'tdr_manager_2c27f4_00d32fde63d64ed99f0928cd3389568d'.","locations":[{"line":1,"column":41}],"path":["agentRunCollaborationMemberProjection"]}]
+ ❯ graphql tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:162:66
+    160|       headers: { "content-type": "application/json" }, body: JSON.stri…
+    161|     const body = await response.json() as { data?: T; errors?: unknown…
+    162|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+    163|     return body.data;
+    164|   };
+ ❯ conversationOf tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:346:37
+ ❯ Object.conversationText tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:369:104
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:456:12
+ ❯ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:527:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/47]⎯
+
+ FAIL  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > team root: Task closure during and before a teammate message save; the root keeps working and restores its history
+Error: [{"message":"AgentRun 'tdr_worker_2c27f4_8444fa8c5a8345cc8619f220532f0307' was not found in root TeamRun 'tdr_team_2c27f4_f2ab8beb602f4e54be2d56616502888e'.","locations":[{"line":1,"column":31}],"path":["getTeamMemberRunProjection"]}]
+ ❯ graphql tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:162:66
+    160|       headers: { "content-type": "application/json" }, body: JSON.stri…
+    161|     const body = await response.json() as { data?: T; errors?: unknown…
+    162|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+    163|     return body.data;
+    164|   };
+ ❯ conversationOf tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:348:36
+ ❯ Object.conversationText tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:369:104
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:456:12
+ ❯ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:527:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/47]⎯
+
+ FAIL  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > org root: Task closure during and before a teammate message save; the root keeps working and restores its history
+Error: [{"message":"AgentRun 'tdr_worker_2c27f4_9b5be6cc183043f9ac46962b0a15df89' at '/squad/lead' was not found in AgentOrg 'tdr_org_2c27f4_7431e67541e344909e5325cd8b21ea67'.","locations":[{"line":1,"column":42}],"path":["getAgentOrgMemberRunProjection"]}]
+ ❯ graphql tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:162:66
+    160|       headers: { "content-type": "application/json" }, body: JSON.stri…
+    161|     const body = await response.json() as { data?: T; errors?: unknown…
+    162|     if (!response.ok || !body.data || body.errors?.length) throw new E…
+       |                                                                  ^
+    163|     return body.data;
+    164|   };
+ ❯ conversationOf tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:350:15
+ ❯ Object.conversationText tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:369:104
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:456:12
+ ❯ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:527:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/47]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:57:35
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:128:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:320:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:441:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/47]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:57:35
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:128:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:320:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:518:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/47]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:57:35
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:128:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:320:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:657:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/47]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamMemberRunViewProjectionService.getProjection src/run-history/services/team-member-run-view-projection-service.ts:57:35
+ ❯ TeamRunHistoryResolver.getTeamMemberRunProjection src/api/graphql/types/team-run-history.ts:128:24
+ ❯ execGraphql tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:320:20
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:755:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/47]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha
+AssertionError: /fragile: expected 'The Agent Fragile on node "beta-node"…' to be 'The Agent Fragile on node "beta-node"…' // Object.is equality
+
+Expected: "The Agent Fragile on node "beta-node" cannot run there: The model 'no-such-model' is not available on Antigravity CLI, and Model Routing is off on node "beta-node"."
+Received: "The Agent Fragile on node "beta-node" cannot run there: 'no-such-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "beta-node"."
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:888:69
+    886|       results[address] = { text: textOf(result), answer: remoteRequest…
+    887|       expect(result.delegated, `${address}: ${JSON.stringify(result)}`…
+    888|       if (typeof text === "string") expect(textOf(result), address).to…
+       |                                                                     ^
+    889|       expect((results[address].answer as Rec)?.code, `${address}: beta…
+    890|       expect((results[address].answer as Rec)?.target, `${address}: be…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/47]⎯
+
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies) > RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways
+AssertionError: expected 'The Agent Publisher on node "beta-nod…' to be 'The Agent Publisher on node "beta-nod…' // Object.is equality
+
+Expected: "The Agent Publisher on node "beta-node" cannot run there: The model 'retired-model' is not available on Antigravity CLI, and Model Routing is off on node "beta-node"."
+Received: "The Agent Publisher on node "beta-node" cannot run there: 'retired-model' is not offered by Antigravity CLI now. Refresh the model list and choose again, and Model Routing is off on node "beta-node"."
+
+ ❯ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:2284:29
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/47]⎯
+
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamRunHistoryService.listTeamRunHistory src/run-history/services/team-run-history-service.ts:51:20
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:35:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:336:20
+ ❯ queryHistory tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:348:20
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:465:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/47]⎯
+
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > rejects active and unsafe archive IDs without writing archive state or creating files
+Error: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:603:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/47]⎯
+
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamRunHistoryService.listTeamRunHistory src/run-history/services/team-run-history-service.ts:51:20
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:35:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:336:20
+ ❯ listAgentGroups tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:723:22
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:793:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/47]⎯
+
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamRunHistoryService.listTeamRunHistory src/run-history/services/team-run-history-service.ts:51:20
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:35:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:336:20
+ ❯ listAgentGroups tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:723:22
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:839:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/47]⎯
+
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > reports a run that started after the running-run check as failed and archives the rest (AC-010)
+GraphQLError: A collaboration tree was read before the Task records were loaded.
+ ❯ getOpenDelegatedRunSource src/run-history/store/open-delegated-run-source.ts:28:21
+     26| /** The bound source; a composed tree read before the Task records are…
+     27| export const getOpenDelegatedRunSource = (): OpenDelegatedRunSource =>…
+     28|   if (!bound) throw new Error("A collaboration tree was read before th…
+       |                     ^
+     29|   return bound;
+     30| };
+ ❯ TeamRunExecutionTreeStore.openRunsOf src/run-history/store/team-run-execution-tree-store.ts:92:39
+ ❯ TeamRunExecutionTreeStore.read src/run-history/store/team-run-execution-tree-store.ts:44:38
+ ❯ TeamRunHistoryService.listTeamRunHistory src/run-history/services/team-run-history-service.ts:51:20
+ ❯ WorkspaceRunHistoryService.listWorkspaceRunHistory src/run-history/services/workspace-run-history-service.ts:35:46
+ ❯ execGraphql tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:336:20
+ ❯ listAgentGroups tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:723:22
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:865:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/47]⎯
+
+
+ Test Files  17 failed | 164 passed | 71 skipped (252)
+      Tests  47 failed | 799 passed | 334 skipped (1180)
+   Start at  00:00:48
+   Duration  2623.44s (transform 14.08s, setup 5.09s, import 290.27s, tests 2305.36s, environment 13ms)
+
+EXIT 1

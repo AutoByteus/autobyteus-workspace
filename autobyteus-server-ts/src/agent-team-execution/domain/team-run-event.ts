@@ -1,6 +1,7 @@
 import type { TeamAgentExecutionBinding } from "./team-agent-execution-binding.js";
 import type { TeamAgentEvent } from "./team-agent-event.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { LocatedTeamTaskExecution } from "./team-task-execution-lookup.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { DelegatedLaunchSelectionRecord } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
@@ -53,9 +54,12 @@ export type TeamRunEvent =
       taskExecutions: readonly TaskExecutionReference[];
     }>
   | Readonly<{
-      /** These closed task executions were reactivated by their assigner; published after the Task-side reopen. */
+      /**
+       * These closed task executions were reactivated by their assigner, or given another Task; published after the
+       * Task-side commit, with each record and host as the loaded tree holds it after the add-back (D-8).
+       */
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_REOPENED;
-      taskExecutions: readonly TaskExecutionReference[];
+      executions: readonly LocatedTeamTaskExecution[];
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.COMMUNICATION;

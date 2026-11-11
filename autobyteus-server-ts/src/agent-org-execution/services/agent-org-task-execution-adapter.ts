@@ -41,7 +41,14 @@ import type { AgentOrgExecutionIndex, AgentOrgIndexedTaskExecution } from "./age
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
-import { addAgentOrgRemoteTaskExecution, addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding } from "./agent-org-run-execution-tree-mutator.js";
+import {
+  addAgentOrgRemoteTaskExecution, addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding, removeAgentOrgTaskExecutions,
+} from "./agent-org-run-execution-tree-mutator.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import { AGENT_ORG_RUN_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
+import { taskExecutionRunId } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionContextUnavailable } from "../../agent-collaboration/execution/task/task-execution-tree-membership.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -73,6 +80,8 @@ export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
   /** Suppresses teardown status events of the retiring agents until the returned release. */
   beginTaskExecutionEventRetirement(reference: TaskExecutionReference): () => void;
   replaceTree(tree: AgentOrgRunExecutionTreeSnapshot): void;
+  /** Keeps only the loaded messages still in the view (D-4, D-5). */
+  retainMessages(keep: (message: CollaborationCommunicationMessage) => boolean): void;
   publishTaskExecutionStarted(host: TaskExecutionHostIdentity, taskExecution: TaskExecutionReference): void;
   publishTaskExecutionsClosed(taskExecutions: readonly TaskExecutionReference[]): void;
   publishTaskExecutionsReopened(taskExecutions: readonly TaskExecutionReference[]): void;
@@ -205,6 +214,25 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     else if (entry.kind === "agent") this.options.rootAgents.discardReleasedTask(entry.agentRunId);
     // A task TeamRun is registered in the directory wherever it is hosted.
     if (entry.kind === "team") this.options.teams.discardReleasedTask(entry.teamRunId);
+  }
+  async dropTaskExecutions(references: readonly TaskExecutionReference[]): Promise<void> {
+    const runIds = new Set(references.map(taskExecutionRunId));
+    await this.options.persistence.commitTreeMutation({ prepareAgainstCurrent: () => {
+      const nextTree = removeAgentOrgTaskExecutions({ tree: this.options.getTree(), runIds });
+      return { nextTree, cancelBeforeDurability: () => undefined, commitAfterDurability: () => {
+        // Their released authority goes with them (looked up in the index before it is replaced).
+        references.forEach((reference) => this.discardReleasedExecution(reference));
+        this.options.replaceTree(nextTree);
+        this.options.retainMessages(messageViewOfTree(AGENT_ORG_RUN_TREE_SHAPE, nextTree));
+      } };
+    } });
+  }
+  async addTaskExecution(reference: TaskExecutionReference): Promise<void> {
+    const execution = await this.options.persistence.readTaskExecution(reference).catch((error) => { throw taskExecutionContextUnavailable(error); });
+    await this.options.persistence.commitTreeMutation({ prepareAgainstCurrent: () => {
+      const nextTree = addAgentOrgTaskExecution({ tree: this.options.getTree(), execution });
+      return { nextTree, cancelBeforeDurability: () => undefined, commitAfterDurability: () => this.options.replaceTree(nextTree) };
+    } });
   }
   reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
     return reachingAddressOf(this.options.getIndex(), null, agent);

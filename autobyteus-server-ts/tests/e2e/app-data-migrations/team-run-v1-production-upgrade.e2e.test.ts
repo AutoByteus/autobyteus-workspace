@@ -1143,15 +1143,15 @@ const exerciseHistoryAndNewWork = async (
               agentRunId: `${orgRunId}-reviewer-run`,
               launchConfiguration: nestedLaunch,
             })],
-            taskExecutions: [expect.objectContaining({
-              address: "/research/reviewer",
-              agentRunId: scenario.supported.taskAgentRunId,
-            })],
+            // autobyteus-469 DEC-008: the task reviewer was delegated before Task records existed (this shape keeps
+            // `task_delegation_records.json`); a run with no Task record is in no tree. Its folder stays (below).
+            taskExecutions: [],
           }),
         ],
       },
     },
   });
+  expect(JSON.stringify(history.getAgentOrgRootHistory), "the run with no Task record is in no tree").not.toContain(scenario.supported.taskAgentRunId);
 
   const memberReads = await executeGraphql<{
     getAgentOrgMemberRunProjection: { agentRunId: string; memberAddress: string };

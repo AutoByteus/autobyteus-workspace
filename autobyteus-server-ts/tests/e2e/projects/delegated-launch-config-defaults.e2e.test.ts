@@ -346,7 +346,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     ({ layer, runtimeKind, model, reason, detail });
   const squadFallbacks = () => ({
     offline: fallback("runtime_unavailable", "codex_app_server", "gpt-5.5", `Codex App Server command '${missingCodex}' is not available.`),
-    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`),
+    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `'${NOT_OFFERED}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`),
     badsettings: fallback("model_settings_invalid", GROK, GROK_MODEL, "Its model settings are invalid: Value is not one of the supported options."),
     incomplete: fallback("incomplete", AGY, null, "It names no model."),
   });
@@ -362,7 +362,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     // DLC-001 (AC-001, AC-002 member layer, AC-005, AC-015 shape, REQ-002): a catalog Team copy, each agent resolved alone.
     const squad = await delegateTeam(root, "squad");
     const reasons = squadFallbacks();
-    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `The model '${TEAM_NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, "team_default");
+    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `'${TEAM_NOT_OFFERED}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`, "team_default");
     const source = f(squad.copy, "source");
     record.squadSource = source;
     expect(launchOf(f(source, "defaultLaunchConfiguration"))).toEqual(inheritedLaunch());
@@ -518,7 +518,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     root.sendToManager("Hello. Marker ROOT-STARTED.");
     await until(async () => /ROOT-STARTED[\s\S]*OK/.test(await root.conversationText({ address: "/", agentRunId: root.managerRunId })), "root answered", 60_000);
     process.env["AGY_FAKE_EXTRA_MODELS"] = ALT;
-    const reason = `The model '${RETIRING}' is not available on ${agentRuntimeName(AGY)}.`;
+    const reason = `'${RETIRING}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`;
     const before = await root.liveTree();
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker!)}`, description: "Plain work." }));
     expect(delegated.delegated ?? false, JSON.stringify(delegated)).toBe(false);

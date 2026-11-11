@@ -1,12 +1,17 @@
 import { defineStore } from 'pinia'
 import { shallowReactive } from 'vue'
-import type { CollaborationParticipantMessageDto, CollaborationRootKind } from '@autobyteus/collaboration-stream-contracts'
+import type { CollaborationParticipantMessageDto, CollaborationPastParticipantDto, CollaborationRootKind } from '@autobyteus/collaboration-stream-contracts'
 import { fetchParticipantMessages } from './participantMessagesQuery'
 
 export type ParticipantMessage = CollaborationParticipantMessageDto
+export type PastParticipant = CollaborationPastParticipantDto
 export type ParticipantMessagesKey = Readonly<{ rootKind: CollaborationRootKind; rootRunId: string; agentRunId: string }>
 export type ParticipantMessagesStatus = Readonly<{ state: 'idle' | 'loading' | 'loaded' | 'error'; error: string | null }>
-type ParticipantMessagesList = ParticipantMessagesStatus & Readonly<{ key: ParticipantMessagesKey; messages: readonly ParticipantMessage[] }>
+type ParticipantMessagesList = ParticipantMessagesStatus & Readonly<{
+  key: ParticipantMessagesKey; messages: readonly ParticipantMessage[]
+  /** The agents of delegated runs that left the tree, named in these messages (autobyteus-469). */
+  pastParticipants: readonly PastParticipant[]
+}>
 /**
  * Where a rebuilt root context starts: the live sequence its view counts in, its base, and the sequence of the root's
  * latest message through that base (live sequence and latest message are null for a stored view; SR-005, SR-007).
@@ -21,10 +26,18 @@ type RootPosition = { readonly liveSequenceId: string; through: number }
 
 const IDLE: ParticipantMessagesStatus = Object.freeze({ state: 'idle', error: null })
 const NO_MESSAGES: readonly ParticipantMessage[] = Object.freeze([])
+const NO_PAST_PARTICIPANTS: readonly PastParticipant[] = Object.freeze([])
 const rootKeyOf = (rootKind: CollaborationRootKind, rootRunId: string) => `${rootKind}:${rootRunId}`
 const listKeyOf = (key: ParticipantMessagesKey) => `${rootKeyOf(key.rootKind, key.rootRunId)}:${key.agentRunId}`
 const isParticipant = (message: ParticipantMessage, agentRunId: string) =>
   message.senderAgentRunId === agentRunId || message.receiverAgentRunId === agentRunId
+
+/** A loaded list names an agent the view does not hold and the list's past participants do not name. */
+const namesUnknownAgent = (list: ParticipantMessagesList, holdsAgent: (agentRunId: string) => boolean): boolean =>
+  list.messages.some((message) => {
+    const other = message.senderAgentRunId === list.key.agentRunId ? message.receiverAgentRunId : message.senderAgentRunId
+    return !holdsAgent(other) && !list.pastParticipants.some((participant) => participant.agentRunId === other)
+  })
 
 /** Stored messages, then live ones not in them yet, in arrival order: one entry per message ID. */
 const mergeById = (stored: readonly ParticipantMessage[], live: readonly ParticipantMessage[]): readonly ParticipantMessage[] => {
@@ -51,23 +64,25 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
   const positions = new Map<string, RootPosition>()
   const generationOf = (rootKey: string) => generations.get(rootKey) ?? 0
 
-  const start = (key: ParticipantMessagesKey, previous: readonly ParticipantMessage[]) => {
+  const start = (key: ParticipantMessagesKey, previous: readonly ParticipantMessage[], pastParticipants: readonly PastParticipant[]) => {
     const listKey = listKeyOf(key)
     const rootKey = rootKeyOf(key.rootKind, key.rootRunId)
     const generation = generationOf(rootKey)
     // Buffering starts before the request is sent: an event that arrives while it is in flight is kept.
     const buffer: ParticipantMessage[] = []
     buffers.set(listKey, buffer)
-    lists.set(listKey, Object.freeze({ key, state: 'loading', error: null, messages: previous }))
+    lists.set(listKey, Object.freeze({ key, state: 'loading', error: null, messages: previous, pastParticipants }))
     const isCurrent = () => generationOf(rootKey) === generation && buffers.get(listKey) === buffer
     void fetchParticipantMessages(key).then((stored) => {
       if (!isCurrent()) return
       buffers.delete(listKey)
-      lists.set(listKey, Object.freeze({ key, state: 'loaded', error: null, messages: mergeById(stored, buffer) }))
+      lists.set(listKey, Object.freeze({ key, state: 'loaded', error: null, messages: mergeById(stored.messages, buffer),
+        pastParticipants: Object.freeze(stored.pastParticipants) }))
     }, (cause: unknown) => {
       if (!isCurrent()) return
       buffers.delete(listKey)
-      lists.set(listKey, Object.freeze({ key, state: 'error', error: cause instanceof Error ? cause.message : String(cause), messages: NO_MESSAGES }))
+      lists.set(listKey, Object.freeze({ key, state: 'error', error: cause instanceof Error ? cause.message : String(cause),
+        messages: NO_MESSAGES, pastParticipants: NO_PAST_PARTICIPANTS }))
     })
   }
 
@@ -75,7 +90,7 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
   const load = (key: ParticipantMessagesKey): void => {
     const current = lists.get(listKeyOf(key))
     if (current?.state === 'loading' || current?.state === 'loaded') return
-    start(key, NO_MESSAGES)
+    start(key, NO_MESSAGES, NO_PAST_PARTICIPANTS)
   }
 
   /** A live message of one root: added to each loaded list of its two participants, or kept for their loads in flight. */
@@ -100,15 +115,22 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
 
   /**
    * The root's context was rebuilt. Its lists stay, with their loads in flight, when no message could have been
-   * missed: the same live sequence, and no message past C; they then hold every message through the base. Otherwise
-   * loads in flight are abandoned and every loaded or loading list loads again.
+   * missed: the same live sequence, and no message past C; they then hold every message through the base. A kept list
+   * that names an agent the rebuilt view no longer holds (`holdsAgent`) and its past participants do not name loads
+   * again, so that agent is named from the server's answer (autobyteus-469 D-5, CR-002): it left the tree when its
+   * Task closed. Otherwise loads in flight are abandoned and every loaded or loading list loads again.
    */
-  const reloadRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild): void => {
+  const reloadRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild,
+    holdsAgent: (agentRunId: string) => boolean): void => {
     const rootKey = rootKeyOf(rootKind, rootRunId)
     const kept = positions.get(rootKey)
     if (rebuild.liveSequenceId !== null && kept?.liveSequenceId === rebuild.liveSequenceId
       && rebuild.lastMessageChangeSequence !== null && rebuild.lastMessageChangeSequence <= kept.through) {
       kept.through = rebuild.baseChangeSequence
+      for (const list of [...lists.values()]) {
+        if (list.key.rootKind === rootKind && list.key.rootRunId === rootRunId && list.state === 'loaded'
+          && namesUnknownAgent(list, holdsAgent)) start(list.key, list.messages, list.pastParticipants)
+      }
       return
     }
     if (rebuild.liveSequenceId === null) positions.delete(rootKey)
@@ -116,7 +138,7 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     generations.set(rootKey, generationOf(rootKey) + 1)
     for (const list of [...lists.values()]) {
       if (list.key.rootKind !== rootKind || list.key.rootRunId !== rootRunId) continue
-      if (list.state === 'loaded' || list.state === 'loading') start(list.key, list.messages)
+      if (list.state === 'loaded' || list.state === 'loading') start(list.key, list.messages, list.pastParticipants)
     }
   }
 
@@ -133,10 +155,12 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
   }
 
   const messagesOf = (key: ParticipantMessagesKey): readonly ParticipantMessage[] => lists.get(listKeyOf(key))?.messages ?? NO_MESSAGES
+  const pastParticipantsOf = (key: ParticipantMessagesKey): readonly PastParticipant[] =>
+    lists.get(listKeyOf(key))?.pastParticipants ?? NO_PAST_PARTICIPANTS
   const statusOf = (key: ParticipantMessagesKey): ParticipantMessagesStatus => {
     const list = lists.get(listKeyOf(key))
     return list ? Object.freeze({ state: list.state, error: list.error }) : IDLE
   }
 
-  return { load, append, advance, reloadRoot, releaseRoot, messagesOf, statusOf }
+  return { load, append, advance, reloadRoot, releaseRoot, messagesOf, pastParticipantsOf, statusOf }
 })

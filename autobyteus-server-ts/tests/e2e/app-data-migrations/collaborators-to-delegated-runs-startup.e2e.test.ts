@@ -18,6 +18,7 @@ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-ru
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data
@@ -243,6 +244,9 @@ describe("collaborators → delegated runs: the built server upgrades released a
     for (const [name, json] of [["agent", agentRaw], ["team", teamRaw], ["org", orgRaw]] as const) {
       expect(objectsIn(json).some((record) => "collaborators" in record), `${name} tree has no collaborators`).toBe(false);
     }
+    // These reads check what the migration wrote into each run's own file, through the current stores. This test process has
+    // no Task side: every converted run under this root counts as open here (autobyteus-469 test stand-in).
+    openEveryOwnFileUnder(memory);
     const agentJson = await new StandaloneRootPackageStore().readTree(dirs.agentDir, "agent-host");
     const teamJson = await new TeamRunExecutionTreeStore().read(dirs.teamDir, "team-root");
     const orgJson = await new AgentOrgRunExecutionTreeStore().read(dirs.orgDir, "org-root");
@@ -266,14 +270,17 @@ describe("collaborators → delegated runs: the built server upgrades released a
     expect(reviewerCopy!["source"], "agent sourceless copy stamped").toBeTruthy();
     expect(designerCopy!["source"], "org sourceless copy stamped").toBeTruthy();
 
-    // The roots open through the public API with their delegated runs.
+    // The roots open through the public API. autobyteus-469 DEC-008: a converted collaborator is no Task's root and has no
+    // Task record, so it is in no tree; its own folder and file stay (above).
     const agentView = (await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "agent-host" })).agentRunCollaboration.root_agent.execution_tree;
-    expect(objectsIn(agentView).filter((record) => record["startedAt"] || record["started_at"]).map((record) => record["agentRunId"] ?? record["agent_run_id"] ?? record["teamRunId"] ?? record["team_run_id"]))
-      .toEqual(expect.arrayContaining(["agent-writer", "agent-squad", "agent-reviewer", "agent-reviewer-copy"]));
+    expect(agentView, "the Agent root opens").toBeTruthy();
+    for (const runId of ["agent-writer", "agent-squad", "agent-reviewer", "agent-reviewer-copy"]) expect(JSON.stringify(agentView)).not.toContain(runId);
     const teamView = (await first.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: "team-root" })).getTeamRunResumeConfig.executionTree;
-    expect(JSON.stringify(teamView)).toContain("team-qa");
+    expect(teamView, "the Team root opens").toBeTruthy();
+    expect(JSON.stringify(teamView)).not.toContain("team-qa");
     const orgView = (await first.gql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: "org-root" })).getAgentOrgRunConfig.executionTree;
-    expect(JSON.stringify(orgView)).toContain("org-designer");
+    expect(orgView, "the Org root opens").toBeTruthy();
+    expect(JSON.stringify(orgView)).not.toContain("org-designer");
     await first.stop();
 
     // Second start: nothing changes (idempotent), the migration stays done. The one new file is the standalone run history

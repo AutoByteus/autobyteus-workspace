@@ -79,7 +79,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
-    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id, rebuildOfView(candidate.view))
+    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id, rebuildOfView(candidate.view), (agentRunId) => candidate.holdsAgent(agentRunId))
     ensureMemberLoaded(id, selectedAgentRunIdOf(candidate))
     // autobyteus-278: the runs this Org delegated to other nodes; Retry (the store's rule) acts through this Org.
     candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(id)))

@@ -84,7 +84,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     errors[hostRunId] = null
     // Every publication is a rebuilt view (inspect, attach, reopen): the Team tab's lists load again when a message
     // could have been missed meanwhile (SR-004, SR-005).
-    participantMessages.reloadRoot('agent', hostRunId, rebuildOfView(context.view))
+    participantMessages.reloadRoot('agent', hostRunId, rebuildOfView(context.view), (agentRunId) => context.holdsAgent(agentRunId))
     // autobyteus-278: the runs this root delegated to other nodes; Retry (the store's rule) acts through this root.
     context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(hostRunId)))
     returnToHostWhenUnlisted(hostRunId, context)

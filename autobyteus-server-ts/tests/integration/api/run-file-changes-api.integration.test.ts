@@ -20,6 +20,7 @@ import {
   bindProcessRunFileChangeService,
   releaseProcessRunFileChangeService,
 } from "../../../src/services/run-file-changes/run-file-change-service.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const toPosix = (value: string): string => value.replace(/\\/g, "/");
 
@@ -137,7 +138,7 @@ describe("Run file changes API integration", () => {
 
   beforeAll(async () => {
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
-    appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "run-file-changes-api-appdata-"));
+    appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "run-file-changes-api-appdata-")); openEveryOwnFileUnder(path.join(appDataDir, "memory"));
     workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "run-file-changes-api-workspace-"));
     externalOutputsDir = await fs.mkdtemp(path.join(os.tmpdir(), "run-file-changes-api-outputs-"));
 

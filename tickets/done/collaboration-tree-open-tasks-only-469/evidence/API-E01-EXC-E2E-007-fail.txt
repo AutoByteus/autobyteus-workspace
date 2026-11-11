@@ -1,0 +1,29 @@
+# Case: API-E01 EXC-E2E-007 (fails)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts -t EXC-E2E-007 --no-watch
+# Code under test: 42652879b3
+# Environment: as API-E01
+# Date: 2026-11-11
+# Look for: the expected and received refusal text; the temporary diagnostic run shows the rest of the outcome holds
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+AssertionError: expected 'The task agent can\'t continue: its s…' to match /cannot be restored: it has no saved c…/
+
+- Expected:
+/cannot be restored: it has no saved conversation to continue\. Start a new delegation/
+
++ Received:
+"The task agent can't continue: its saved run could not be read (Task agent 'exc_helper_0239b1_d66b942beae5418f8be514150f1633dd' of agent_org run 'exc_org_0239b1_b9ffb0a14bef4e17b033d6dfada3bd6a' is not available: its own file is missing.)."
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:837:26
+    835|     const lost = await root.managerCalls(callTool("delegate_task", { t…
+    836|     expect(lost).toMatchObject({ delegated: false });
+    837|     expect(lost.message).toMatch(/cannot be restored: it has no saved …
+       |                          ^
+    838|     expect(await projectFiles(projectId)).toEqual(files);
+    839|     expect(root.reopenedSince(from)).toEqual([]);
+
+
+## Temporary diagnostic (assertion replaced by a print, reverted): every other assertion of EXC-E2E-007 passed
+DIAG469-LOST {"delegated":false,"message":"The task agent can't continue: its saved run could not be read (Task agent 'exc_helper_e3b84a_4dc926b85fc84a52b2b84c86656fc497' of agent_org run 'exc_org_e3b84a_a08cf68e1b7844d6bb7a5edf3ebc4e01' is not available: its own file is missing.)."}
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 8 skipped) 1534ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1136ms

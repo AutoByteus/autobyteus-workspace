@@ -12,6 +12,7 @@ import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/st
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * Run history written before the run-level skill access mode was removed still carries
@@ -76,7 +77,7 @@ const orgTree = () => testAgentOrgExecutionTree({
 
 describe("run history stored with the removed skillAccessMode field", () => {
   let memoryDir: string;
-  beforeEach(async () => { memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "removed-skill-access-mode-")); });
+  beforeEach(async () => { memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "removed-skill-access-mode-")); openEveryOwnFileUnder(memoryDir); });
   afterEach(async () => { await fs.rm(memoryDir, { recursive: true, force: true }); });
 
   it.each(STORED_MODES)("loads agent run metadata stored with %s and drops the value on the next save", async (mode) => {

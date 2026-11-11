@@ -1,0 +1,10 @@
+entries 145 closed 134
+    83  listed runs' logs only:   between two different runs
+  2141  listed runs' logs only:   inside one delegated team
+  2098  listed runs' logs only:   log of a run of closed Tasks
+   126  listed runs' logs only:   log of a run whose Task is open or that has no Task
+  2224  listed runs' logs only: shown today
+   139  own log:   with a listed run whose Task is open or that has no Task
+     1  own log:   with a run not in the tree
+  1957  own log:   with a run of closed Tasks
+  2097  own log: messages

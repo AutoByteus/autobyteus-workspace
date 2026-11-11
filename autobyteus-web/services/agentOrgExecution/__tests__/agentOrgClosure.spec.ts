@@ -77,10 +77,10 @@ describe('Agent Org closed task executions', () => {
     expect(context.isListed('agent-task-lead')).toBe(true)
   })
 
-  it('requires a fresh view when a reopened reference is a configured member', () => {
+  it('reloads the view for a reopened execution it does not hold as a task execution (autobyteus-469 D-8)', () => {
     const context = buildContext()
-    expect(() => context.applyEvent(9, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'agent-director' }] })).toThrow()
-    expect(context.phase).toBe('reopen_required')
+    expect(context.applyEvent(9, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'left-the-tree' }] })).toBe('checkpoint_required')
+    expect(context.phase).not.toBe('reopen_required')
   })
 
   it('requires a fresh view when a closed reference is a configured member', () => {

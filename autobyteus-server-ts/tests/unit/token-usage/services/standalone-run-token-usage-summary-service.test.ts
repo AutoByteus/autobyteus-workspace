@@ -9,6 +9,7 @@ import type { StandaloneRootTreeSnapshot } from "../../../../src/standalone-agen
 import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { StandaloneRootLocationService } from "../../../../src/standalone-agent-run-root/services/standalone-root-location-service.js";
 import { StandaloneRunTokenUsageSummaryService } from "../../../../src/token-usage/services/standalone-run-token-usage-summary-service.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 const HOST = "research_assistant_host";
 const launch = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/ws" };
@@ -58,7 +59,7 @@ const serviceOver = (locations: StandaloneRootLocationService) => {
 
 describe("StandaloneRunTokenUsageSummaryService (REQ-006)", () => {
   it("rolls up over the stored package of an existing run: delegated Agents, Team members and copies, once each", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-"));
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-")); openEveryOwnFileUnder(memoryDir);
     roots.push(memoryDir);
     const dir = new AgentMemoryLayout(memoryDir).getAgentRunCollaborationDirPath(HOST);
     expect((await new StandaloneRootPackageStore().writeTree(dir, tree())).outcome).toBe("committed");
@@ -70,7 +71,7 @@ describe("StandaloneRunTokenUsageSummaryService (REQ-006)", () => {
   });
 
   it("uses the live root's tree when the root is active", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-live-"));
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-live-")); openEveryOwnFileUnder(memoryDir);
     roots.push(memoryDir);
     const { service, childIds } = serviceOver(new StandaloneRootLocationService({
       memoryDir,
@@ -81,7 +82,7 @@ describe("StandaloneRunTokenUsageSummaryService (REQ-006)", () => {
   });
 
   it("is the host alone for a run without a collaboration package", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-none-"));
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-token-rollup-none-")); openEveryOwnFileUnder(memoryDir);
     roots.push(memoryDir);
     const { service, store } = serviceOver(new StandaloneRootLocationService({ memoryDir }));
     await service.getSummary(HOST);

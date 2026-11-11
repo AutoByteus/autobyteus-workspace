@@ -1,6 +1,8 @@
 import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type {
   StandaloneRootMessagesFile,
@@ -139,6 +141,11 @@ export class StandaloneRootPersistenceCoordinator {
   }
 
   readConsistent<T>(reader: () => T): Promise<T> { return this.withLock(async () => reader()); }
+
+  /** A delegated run's record from its own file, for adding it back to the loaded tree (D-4); throws with the reason. */
+  readTaskExecution(run: TaskExecutionReference): Promise<TaskExecution> {
+    return this.options.store.readTaskExecution(this.options.collaborationDir, this.options.hostRunId, run);
+  }
 
   private async recordPackageCreated(): Promise<void> {
     await this.options.onPackageCreated().catch((error: unknown) => {

@@ -10,6 +10,7 @@ import { AgentOrgCommunicationMessagesStore } from "../../../../../src/agent-org
 import { TeamCommunicationStore } from "../../../../../src/services/team-communication/team-communication-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../../fixtures/current-agent-org-run-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../../fixtures/open-delegated-run-sources.js";
 
 const source = vi.hoisted(() => ({ rootDir: "" }));
 
@@ -34,7 +35,7 @@ describe("MemoryViewResolver member run views", () => {
   let layout: AgentMemoryLayout;
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "memory-view-member-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "memory-view-member-")); openEveryOwnFileUnder(memoryDir);
     source.rootDir = memoryDir;
     layout = new AgentMemoryLayout(memoryDir);
 

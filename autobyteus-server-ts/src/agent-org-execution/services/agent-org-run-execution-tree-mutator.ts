@@ -39,6 +39,18 @@ export const addAgentOrgTaskExecution = (input: {
   }, rootOrg.orgRunId);
 };
 
+/** Removes these delegated runs (by run ID) from the loaded tree, wherever they are listed (D-4). */
+export const removeAgentOrgTaskExecutions = (input: {
+  tree: AgentOrgRunExecutionTreeSnapshot;
+  runIds: ReadonlySet<string>;
+}): AgentOrgRunExecutionTreeSnapshot => {
+  const kept = (tasks: readonly TaskExecution[]) => tasks.filter((task) => !input.runIds.has("agentRunId" in task ? task.agentRunId : task.teamRunId));
+  const rootOrg = input.tree.rootOrg;
+  return validateAgentOrgRunExecutionTreePayload({ ...input.tree, rootOrg: { ...rootOrg, taskExecutions: kept(rootOrg.taskExecutions),
+    members: rootOrg.members.map((member) => isConfiguredTeamExecution(member) ? { ...member, taskExecutions: kept(member.taskExecutions) } : member) },
+  }, rootOrg.orgRunId);
+};
+
 /** Records a remote run an agent of this Org delegated to (CM-10), once, at its delegation's commit. */
 export const addAgentOrgRemoteTaskExecution = (input: {
   tree: AgentOrgRunExecutionTreeSnapshot;

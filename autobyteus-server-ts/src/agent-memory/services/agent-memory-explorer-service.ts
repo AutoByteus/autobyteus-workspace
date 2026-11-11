@@ -10,7 +10,7 @@ import type { MemoryFileStore } from "../store/memory-file-store.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
-import { TaskAgentLinkChecker } from "../../run-history/store/task-agent-link-check.js";
+import { CoordinatingRunPresence } from "../../run-history/store/coordinating-run-presence.js";
 import {
   getInternalAgentVisibility,
   type InternalAgentVisibility,
@@ -134,7 +134,7 @@ export class AgentMemoryExplorerService {
   private async buildGroups(): Promise<AgentGroup[]> {
     const [catalogRows, hidden] = await Promise.all([this.readCatalogRowsByRunId(), this.visibility.hiddenDefinitionIds()]);
     const groups = new Map<string, AgentGroup>();
-    const links = new TaskAgentLinkChecker(this.memoryDir);
+    const coordinatingRuns = new CoordinatingRunPresence(this.memoryDir);
 
     for (const runId of this.store.listRunDirs()) {
       const memory = this.summaryBuilder.build(runId);
@@ -143,8 +143,8 @@ export class AgentMemoryExplorerService {
       }
       const metadata = await this.metadataStore.readMetadata(runId);
       const taskAgent = metadata ? null : await this.metadataStore.readTaskAgentMetadata(runId);
-      // A detached task agent (its coordinating run deleted) is not listed (contract §4, §10).
-      if (taskAgent && !await links.isLinked(taskAgent.taskAgent.coordinatingRun, runId)) continue;
+      // A detached task agent (its coordinating run deleted) is not listed (contract §4, §10); a closed one is (D-6).
+      if (taskAgent && !await coordinatingRuns.exists(taskAgent.taskAgent.coordinatingRun)) continue;
       const catalogRow = catalogRows.get(runId) ?? null;
       const run: AgentRunRecord = { runId, metadata, taskAgent, catalogRow, memory };
       const agentDefinitionId = definitionOf(run);

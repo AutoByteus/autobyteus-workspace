@@ -17,6 +17,7 @@ import { buildFinalContextFileLocator, type ContextFileFinalOwnerDescriptor } fr
 import * as records from "../../../src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.js";
 import { assertContainedContextFile, assertContainedContextFileSync } from "../../../src/context-files/services/context-file-path-validation.js";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -29,8 +30,8 @@ const put = async (file: string, value: unknown) => {
 };
 const filename = "ctx_test__file.txt";
 const fixture = async (family: "team" | "org" | "standalone") => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "targeted-context-")); roots.push(root);
-  const memoryDir = path.join(root, "memory");
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "targeted-context-")); roots.push(root); openEveryOwnFileUnder(root);
+  const memoryDir = path.join(root, "memory"); openEveryOwnFileUnder(memoryDir);
   let directory: string;
   let owner: ContextFileFinalOwnerDescriptor;
   if (family === "team") {

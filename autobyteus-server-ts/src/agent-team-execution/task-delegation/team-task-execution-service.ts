@@ -62,6 +62,7 @@ export class TeamTaskExecutionService {
     return this.lifecycle.assignToExistingCopy(context, input, deliverWork);
   }
   teamCoordinatorOf(teamRunId: string): string | null { return this.lifecycle.teamCoordinatorOf(teamRunId); }
+  knowsRunId(agentRunId: string): boolean { return this.lifecycle.knowsRunId(agentRunId); }
   isDelegatedRun(agentRunId: string): boolean { return this.lifecycle.isDelegatedRun(agentRunId); }
   ownedTaskOf(agentRunId: string) { return this.lifecycle.ownedTaskOf(agentRunId); }
 

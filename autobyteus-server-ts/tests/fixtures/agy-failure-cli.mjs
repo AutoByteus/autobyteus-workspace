@@ -84,8 +84,12 @@ if (arg === "--version") {
   const daemonStep = (step_index) => emit({ event: "step_update", step_update: { conversation_id, step_index,
     step_type: "tool", state: "ACTIVE", tool_name: "run_command",
     tool_info: { parameters: { CommandLine: "python3 -m http.server 5199", IsDaemon: true } } } });
+  // AGY_FAKE_REPLY_USAGE (a JSON AGY `usage` object, e.g. {"input_tokens":100,"output_tokens":7,"thinking_tokens":0,
+  // "cache_read_tokens":0,"total_tokens":107}) puts that usage on every reply step, so each turn records token usage
+  // as a real AGY model call does (autobyteus-469 AC-006: a run's token total over its delegated runs).
+  const replyUsage = process.env.AGY_FAKE_REPLY_USAGE ? { usage: JSON.parse(process.env.AGY_FAKE_REPLY_USAGE) } : {};
   const reply = (step_index, text_delta) => emit({ event: "step_update", step_update: { conversation_id, step_index,
-    step_type: "agent_response", state: "DONE", text_delta } });
+    step_type: "agent_response", state: "DONE", text_delta, ...replyUsage } });
   // linked_skills: reads the capsule's skills from this process's cwd (as AGY does) or calls the
   // AutoByteus agent-tools MCP server named in the capsule's mcp_config.json (as an AGY agent does).
   const readCapsuleSkills = () => {

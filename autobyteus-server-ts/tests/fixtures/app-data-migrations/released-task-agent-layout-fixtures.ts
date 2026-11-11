@@ -172,3 +172,39 @@ export const snapshot = async (root: string, dir = root): Promise<Record<string,
 };
 
 export type ReleasedJson = Json;
+
+/**
+ * The Task records that name each task agent of the released data root as delegated by its coordinating run, one open
+ * ad-hoc Task each (autobyteus-469: a top run's tree is built from its open Tasks, so a run of such an install is in its
+ * tree while a Task names it; a run with no Task record is in no tree, DEC-008). The released installs this fixture
+ * stands for already kept these records (`<appData>/ad-hoc-tasks/<taskId>/`); their shape is the current one, which
+ * this change did not alter. `appDataDir` is the data root (the parent of `memory/`).
+ */
+export const writeOpenTaskRecordsOfReleasedData = async (appDataDir: string): Promise<void> => {
+  type Run = { kind: "agent"; agentRunId: string } | { kind: "team"; teamRunId: string; coordinatorAgentRunId: string };
+  const agent = (agentRunId: string): Run => ({ kind: "agent", agentRunId });
+  const team = (teamRunId: string, coordinatorAgentRunId: string): Run => ({ kind: "team", teamRunId, coordinatorAgentRunId });
+  const entries: Array<{ host: { kind: string; runId: string }; run: Run; assignedBy: string }> = [
+    { host: { kind: "agent", runId: "hub" }, run: agent("c1-reviewer"), assignedBy: "hub" },
+    { host: { kind: "agent", runId: "hub" }, run: team("c2-team-a", "c2a-lead"), assignedBy: "hub" },
+    { host: { kind: "agent", runId: "hub" }, run: agent("c7-helper"), assignedBy: "c2a-lead" },
+    { host: { kind: "agent", runId: "hub" }, run: team("c2-team-b", "c2b-lead"), assignedBy: "hub" },
+    { host: { kind: "agent", runId: "hub" }, run: agent("never-ran"), assignedBy: "hub" },
+    { host: { kind: "agent_team", runId: "team-r" }, run: agent("c3-writer-copy"), assignedBy: "lead-r" },
+    // F-ND has no recorded delegator; its Task names the team run's coordinator as the assigner.
+    { host: { kind: "agent_team", runId: "team-r" }, run: agent("nd-copy"), assignedBy: "lead-r" },
+    { host: { kind: "agent_team", runId: "team-r" }, run: team("c4-qa", "c4-qa-lead"), assignedBy: "lead-r" },
+    { host: { kind: "agent_org", runId: "org-o" }, run: agent("c5-analyst"), assignedBy: "director-o" },
+    { host: { kind: "agent_org", runId: "org-o" }, run: team("c5-review", "c5-review-lead"), assignedBy: "director-o" },
+    { host: { kind: "agent_org", runId: "org-o" }, run: agent("ns-director-copy"), assignedBy: "director-o" },
+    { host: { kind: "agent_org", runId: "org-o" }, run: agent("c6-helper"), assignedBy: "eng-lead-o" },
+  ];
+  for (const [index, entry] of entries.entries()) {
+    const taskId = `ad_hoc_task_00000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`;
+    const dir = path.join(appDataDir, "ad-hoc-tasks", taskId);
+    await put(path.join(dir, "task.json"), { taskId, description: `Released work ${index + 1}.`, referenceFiles: [], status: "IN_PROGRESS",
+      createdAt: T0, updatedAt: T0 });
+    await put(path.join(dir, "agent_run_resources.json"), { taskId, agentRunResources: [{ role: "assigned", assignedBy: entry.assignedBy,
+      hostRoot: entry.host, agentRun: entry.run, linkedAt: T0, start: "started", closedAt: null }] });
+  }
+};
