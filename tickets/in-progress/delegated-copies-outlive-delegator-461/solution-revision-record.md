@@ -912,3 +912,21 @@
 - Done: the design's DS-8 (the rule, the session's order, and the Team tests: a stopped team run, a change racing a snapshot, duplicate and unknown rows). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-022)
 - ARCH-REV-019 (2026-11-11): Pass. AR-001 … AR-022 are resolved. Its residual is added to DS-8's tests: held events are flushed in published order (FIFO), each once.
+
+### SR-045 — A view's stream lives with the open view (answers CR-461-006, Design Impact)
+
+- Triggering: code review round 2 (CRR-005) failed with CR-461-006 (Design Impact). The web keeps no view stream for a stopped run:
+  - the agent-run client detaches on a stop, and ends a stream at an inactive snapshot;
+  - a child command's `whenReady` rejects;
+  - the org client attaches only an active run.
+
+  Under a stopped delegator, the ticket's own case, the view gets no live child rows or output, and the user cannot message a child. That fails SCN-005 / AC-007 and its alternate, REQ-002, and DS-8 / SR-042's "active or not". The server supports all of it.
+- The Solution Designer's gap: the web's stream lifetime and readiness are derived consumers of "a stopped host's children are stopped", the assumption SR-040 removed for the poll. The design never inventoried them.
+- Decision (on the data model's merits): **a view's stream lives with the open view, not with the run's activity**, for every client and the phone layout.
+  - A stopped run's snapshot is an ordinary snapshot.
+  - Readiness is the stream's own (open, with its snapshot applied).
+  - A child command goes to the child's own root, so it never starts the delegator (REQ-004). A message to the delegator itself starts it on its first input, on the same stream.
+- Done: the design's DS-8 (the rule, the readiness, each client, the server, the tests). FU-012 is withdrawn into CR-461-007, as the code review placed it. FU-013 is recorded by the code reviewer. The contract is unchanged (views are not in the model), and `walkthrough.py --check` passes.
+- The Local Fixes of CRR-005 (CR-461-001 residual, CR-461-005 residual, CR-461-007) are the Implementation Engineer's, as the code review states them.
+- Next action: architecture review (narrow); then implementation
+
