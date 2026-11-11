@@ -26,3 +26,9 @@
 | 2026-11-11T20:36:00Z | API-06 | Started | — | round 3: AC-005 live in the app on the merged state |
 | 2026-11-11T20:50:22Z | API-06 | Completed | Fail (F-2) | round 3 live on the merged state: image keeps zoom+position across 452's refresh (new blob URL 736 ms); PDF reloads in the same viewer (601-779 ms) and keeps zoom 2x but its scroll goes to (0,0), twice |
 | 2026-11-11T20:50:22Z | — | Round result | Fail | round 3 (API-REV-003): duplicate ID fixed (MSP-43, 43/43 probe Pass); F-2 (AC-005 PDF position); 86% |
+| 2026-11-11T21:04:30Z | — | Round 4 plan | — | IR-003 code 43ef1748da: PdfViewer.vue (touch-only generation rule) + spec. Rerun: API-06 live refresh in the app (PDF x2 + image), phone probe file cases incl. MSP-43 and 452's MSP-39..42; desktop untouched (touchZoom guard) |
+| 2026-11-11T21:05:06Z | API-06 | Started | — | round 4: live refresh in the app, merged state + IR-003 |
+| 2026-11-11T21:25:15Z | API-06 | Completed | Fail (F-3) | round 4: image keeps zoom+pan across 2 refreshes; PDF keeps zoom always and position in most refreshes (double redraw incl.), but the position is put back against a partial layout when only the first page(s) are sized: traced 2861->846 (height 3496, 2/12 canvases sized), 1702->384 (2664, 1/12), and the earlier 751->486 |
+| 2026-11-11T21:25:15Z | API-08 | Started | — | round 4: phone probe file cases on the merged state |
+| 2026-11-11T21:33:57Z | API-08 | Completed | Pass | round 4: 11/11 file cases incl. MSP-43, MSP-39..42 |
+| 2026-11-11T21:33:57Z | — | Round result | Fail | round 4 (API-REV-004): F-2 path fixed; F-3 partial-layout restore (traced); 87% |

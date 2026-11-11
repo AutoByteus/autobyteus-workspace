@@ -7,6 +7,7 @@
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-001 Pass, round 1 | SR-003, ARCH-REV-002, IR-001, CRR-001 | N/A | Fail / 87% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-003 Pass (delta, IR-002), round 2 | SR-004, IR-002, CRR-003 | Fail / 87% | Pass / 94% |
 | API-REV-003 | Delivery Engineer, `delivery-revision-record.md` DR-001 blocked (merged state with autobyteus-452), round 3 | SR-004, CRR-004, DR-001 | Pass / 94% | Fail / 86% |
+| API-REV-004 | Code Reviewer, `code-review-report.md` CRR-006 Pass (delta, IR-003), round 4 | IR-003, CRR-006, API-REV-003 | Fail / 86% | Fail / 87% |
 
 ## Revision Entries
 
@@ -77,3 +78,27 @@ None
 - New or remaining failure IDs: F-2 (AC-005: a zoomed PDF loses its position on 452's live refresh)
 - Recommended owner: Code Reviewer (failure-origin review), then Implementation Engineer
 - Remaining risks, blocked evidence, or untested scope: Android 8–9 and real-phone memory (accepted by the user)
+
+### API-REV-004 — Recheck of F-2 in the app: a partial-layout restore remains (F-3)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-006 (delta review of IR-003), round 4; code `43ef1748da`
+- Triggering finding or case IDs: F-2 (CR-002); CRR-006's recheck list (API-06 PDF and image, including a rewrite that redraws twice; MSP-43)
+- Related revision IDs: IR-003, CRR-006, API-REV-003
+- Why this revision was recorded: the recheck finished; F-2's path is fixed, a related failure remains
+- Coverage decisions or durable test paths changed: none (temporary traced probes in `scripts/`: `restore-trace.mjs`, `fling-after-pinch.mjs`, `refresh-soon-after-scroll.mjs`, `deep-restore-trace.mjs`)
+- Cases added, changed, removed, or rechecked: API-06 r4 (about 40 refreshes, traced), API-08 r4 (11 file cases)
+- Commands, environment, fixture, or broader-validation delta: AVD recreated; phone bundle rebuilt; frame-by-frame recorders in the page
+
+#### Prior Failure Resolution
+
+| Prior Failure ID | Resolution | Evidence |
+| --- | --- | --- |
+| F-2 | Resolved for its cause (the in-place reload now puts the position back; a double redraw too) | `r4-android/restore-trace.json`, `r4-android/journey.md` |
+| F-3 (new) | Open: the restore can land on a partial layout | `r4-android/late-trials.json` trials 2 and 4 |
+
+- Canonical artifacts and sections updated: execution report, test progress log, evidence
+- Prior result and confidence: Fail, 86%
+- Current result and confidence: Fail, 87%
+- New or remaining failure IDs: F-3
+- Recommended owner: Code Reviewer (failure-origin review), then Implementation Engineer
+- Remaining risks, blocked evidence, or untested scope: as round 3
