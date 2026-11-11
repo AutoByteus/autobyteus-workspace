@@ -155,8 +155,11 @@ message ID (CM-9); the run's view shows the messages of its own log.
 - **View stream** `/ws/agent-collaboration/:runId`: `connect` resolves the root without starting its
   host, then sends the snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
   host's live state; the children are the runs it delegated to, from their Task entries), events
-  (`agent_presentation` of a child while viewed, `communication`, the peer children's
-  `remote_task_execution_*`) and lifecycle. A command to a local child row goes to that child's own
+  and lifecycle. While someone views the run, `LocalChildObservation` follows its local children
+  (the same for Team and Org views): a new child is `task_execution_started`, a child whose Task
+  closed is `task_executions_closed`, and each child's statuses and output are `agent_presentation`
+  (the path a peer child's output takes); peer children are `remote_task_execution_*`; messages are
+  `communication`. A command to a local child row goes to that child's own
   run (`DelegatedRunCommands`: a message restores a stopped child, as any message does); a peer
   child's goes through the root to its node. A run that is not a collaboration run closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.

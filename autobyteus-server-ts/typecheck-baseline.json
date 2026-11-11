@@ -191,7 +191,6 @@
   "tests/unit/agent-team-execution/member-team-context-builder.test.ts": 2,
   "tests/unit/agent-team-execution/root-team-run-termination.test.ts": 1,
   "tests/unit/agent-team-execution/services/team-member-input-event-builder.test.ts": 2,
-  "tests/unit/agent-team-execution/task-delegation/task-execution-identity-capabilities.test.ts": 1,
   "tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts": 1,
   "tests/unit/agent-team-execution/team-agent-file-change-admission.test.ts": 1,
   "tests/unit/agent-team-execution/team-agent-token-usage-event-transport.test.ts": 2,

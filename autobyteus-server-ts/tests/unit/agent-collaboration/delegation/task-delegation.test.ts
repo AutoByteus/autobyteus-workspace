@@ -26,13 +26,29 @@ const harness = () => {
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating });
+  const folders: (string | null)[] = [];
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
-    senderRun, delegatorAddress: null, spawn: spawn as never, resolvePlacement: async () => placement });
-  return { tasks, tree, starter, deliverWorkPacket, discard, recordCollaborating, delegate };
+    senderRun, delegatorAddress: null, spawn: spawn as never, resolvePlacement: async (_work, folder) => { folders.push(folder); return placement; } });
+  return { tasks, tree, starter, deliverWorkPacket, discard, recordCollaborating, delegate, folders };
 };
 
 describe("TaskDelegation.toNewRun", () => {
+  it("CM-6: a new run of a Project Task works in the Project's first linked folder; a missing link refuses before anything starts", async () => {
+    const h = harness();
+    h.tasks.addTask("project_task_440e", "Build it", "abc-1");
+    h.tasks.projectFolders.set("project_fixture", "/projects/linked");
+    await h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", task_id: "abc-1" });
+    expect(h.folders).toEqual(["/projects/linked"]);
+    h.tasks.addTask("project_task_441f", "More", "abc-2");
+    h.tasks.projectFolders.set("project_fixture", Object.assign(new Error("The Project's first linked folder is missing."), { code: "TASK_PROJECT_FOLDER_UNAVAILABLE" }));
+    await expect(h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", task_id: "abc-2" })).resolves.toMatchObject({ delegated: false });
+    expect(h.folders).toHaveLength(1);
+    // Described work of a sender with no Task (a Task with no Project) takes the top-level run's folder: no Project folder.
+    await h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", description: "Draw." });
+    expect(h.folders.at(-1)).toBeNull();
+  });
+
   it("D1: a sender with no Task assigns described work to a new Task with no Project; the run carries its origin; the entry, then the packet, then markStarted", async () => {
     const h = harness();
     const outcome = await h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", description: "Draw the logo." });
