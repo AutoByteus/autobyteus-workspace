@@ -3,9 +3,10 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/phone-viewer-pinch-zoom-472/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-005`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 4; Code Reviewer CRR-006 Pass (delta review of IR-003, CR-002 = F-2) on the merged state; code `43ef1748da`, docs `e81240959a`. Rerun by impact: `git diff 22f4806207 43ef1748da` changes `PdfViewer.vue` (a touch-only generation rule) and `MobileFileViewer.zoom.spec.ts`; desktop PDF viewing is untouched (the new watch returns without `touchZoom`). Rerun: API-06 live refresh in the app (PDF and image), API-08 phone file cases.
+- Round and trigger: round 5; Code Reviewer CRR-008 Pass (delta review of IR-004, CR-003 = F-3) on the merged state; code `bb9b300c4a`, docs `1d2d2d9de3`. Rerun by impact: `git diff 3ecfdda33b bb9b300c4a` changes `PdfViewer.vue` (restore and pinch anchor only against the whole layout), `usePdfPinchZoom.ts` (`setZoom` reports whether the layout is whole) and specs; touch mode only. Rerun: API-06 (traced PDF refreshes, image refresh), anchors on a lower page (API-01), API-08 file cases.
+- Round 4 trigger (kept for reference): round 4; Code Reviewer CRR-006 Pass (delta review of IR-003, CR-002 = F-2) on the merged state; code `43ef1748da`, docs `e81240959a`. Rerun by impact: `git diff 22f4806207 43ef1748da` changes `PdfViewer.vue` (a touch-only generation rule) and `MobileFileViewer.zoom.spec.ts`; desktop PDF viewing is untouched (the new watch returns without `touchZoom`). Rerun: API-06 live refresh in the app (PDF and image), API-08 phone file cases.
 - Round 3 trigger (kept for reference): round 3; Delivery Engineer DR-001 blocked at the re-integration: `origin/personal` moved `ed481ae4ca` → `8641bc393a` (autobyteus-452, merged as `965a6b43c4`), and the phone probe stopped on a duplicate case ID MSP-39 (this ticket's zoom case and 452's live-refresh case). Merged-state code `3eebc0b7a4` (the renumber below on `1eca27d1c3`). Round 3 also proves AC-005 live, which 452's refresh now makes possible.
 - Round 2 trigger (kept for reference): round 2; Code Reviewer CRR-003 Pass (delta review of IR-002, CR-001 = F-1); code `1b5b7f5b0e`, docs `dbf487d57c`. Round 1: code `d2b9f99603` (CRR-001), Fail (F-1), `24be7a06bb`.
 - Prior round reviewed: round 1 (API-REV-001); F-1 rechecked first. U-1 closed by the Solution Designer (SR-004: REQ-006 covers reloads while the file stays open; reopening after Back starts at 1× by design).
@@ -50,7 +51,17 @@
 | API-06 r3 | AC-005, REQ-006 (SR-004: reloads while the file stays open) live | the app on the merged state; `live-472.pdf` and `live-472.png` in the run's folder (452 watches it) | `r3-android/journey.md`: `live-files.mjs setup`; `open live-472.pdf`, `pinch` to 2×, `swipe`, `live-reload pdf` (rewrite on the node, sample 150 ms) ×2; `open live-472.png`, `pinch`, `swipe`, `live-reload png`, `image-content` | ENV-1 (round 3), ENV-2 | **Fail (F-2)** for the PDF; Pass for the image | `r3-android/journey.md`, `r3-android/shots/API-06-*`, `r3/node-and-data.log` | **PDF: reloaded (viewer element replaced) at 779 ms and 601 ms; zoom kept (`pagesCssWidth` 759 = 2×), position lost: scroll (190, 933) → (0, 0) and (0, 599) → (0, 0), still (0, 0) seconds later**; image: a new blob URL at 736 ms (content refreshed: red 120 = the rewrite's colour), `translate(-437.374px, -595.373px) scale(2.49968)` unchanged | one rewrite also remounted the PDF's pages twice (the element was gone at ~1 s and back at 1.3 s) |
 | API-06 r4 | AC-005, REQ-006 live (F-2 recheck) | the app on the merged state with IR-003 | `r4-android/journey.md`: `live-472.pdf` zoomed to 2× and scrolled, rewritten on the node 5 times; fresh opens (A, B), the exact round-3 sequence (C–E), first refresh after an app restart (F, G); traced trials `restore-trace` (6), `fling-after-pinch` (8), `refresh-soon-after-scroll` (3 + 3 + 5 late), `deep-restore-trace` (6, programmatic positions); `live-472.png` zoomed, panned, rewritten twice | ENV-1 (round 4), ENV-2 | **Fail (F-3)** for the PDF; Pass for the image | `r4-android/journey.md`, `r4-android/late-trials.json`, `r4-android/restore-trace.json`, `r4-android/fling-after-pinch.json`, `r4-android/shots/` | zoom kept in every refresh; position kept in most (rewrite 2 (189, 1142) → (189, 1142); a double redraw kept it, `restore-trace` trial 1); **position wrong when the restore lands on a partial layout: `late-trials` trial 2 frame `[5399 ms, top 0, height 3496, 12 canvases, 2 sized]` → top 846 (= 2861 / 11816 × 3496), trial 4 `[4828, 0, 2664, 12, 1]` → 384 (= 1702 / 11816 × 2664); rewrite 1 751 → 486**; image: red 230 → 120, new blob URLs, `translate(-434.776px, -595.373px) scale(2.49968)` kept twice | `fling-after-pinch` trial 4 (4609 → 5697) was a measurement artifact: the scroll moved late and the restore matched the position at the refresh |
 | API-08 r4 | AC-004, MSP-43 | phone probe file cases on the merged state with IR-003 | `--cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37,MSP-39,MSP-40,MSP-41,MSP-42,MSP-43` | ENV-3 | Pass | `r4-API-08-mobile-shell.log` | 11 of 11 Pass; cleanup clean; 0 unknown browser errors | — |
+| API-06 r5 | AC-005, REQ-006 live (F-3 recheck) | the app on the merged state with IR-004 | `r5-android/journey.md`; `refresh-soon-after-scroll.mjs 6 late` (touch drags, the mode that failed in round 4) and `restore-trace.mjs 4`, both traced per frame; `live-472.png` zoomed, panned, rewritten twice | ENV-1 (round 5), ENV-2 | Pass | `r5-android/late-trials.json`, `r5-android/restore-trace.json`, `r5-android/journey.md`, `r5-android/shots/` | 10 of 10 PDF refreshes: the restore frame is `height 11816, 12 canvases, 12 sized` and the position exact (784, 1219, 1666, 2109, 2544, 3001, 3298, 3595, 4007, 4225); partial frames (1832, 2664, 9320) occurred and were waited out; image: red 230 → 120, new blob URLs, `translate(-430.359px, -595.373px) scale(2.49968)` kept twice | — |
+| API-01 r5 | REQ-001 anchor on a lower page | the app | `pinch 206 500` 1×→2× on page 8, `dtap` out and in, `pinch 206 450` 2×→3×; `scripts/anchor.py` | ENV-1, ENV-2 | Pass | `r5-android/journey.md`, `r5-android/shots/API-01-r5-anchor-*` | the point under the fingers moved ≤ 5 px (y 0.6671 → 0.6675, 0.6759 → 0.6756, 0.6756 → 0.6753, 0.6626 → 0.6629), page 8 throughout, `allBitmapsMatch: true` | at 1× the page fits the width, so the double tap out cannot keep the horizontal point |
+| API-08 r5 | AC-004, MSP-43 | phone file cases on the merged state with IR-004 | `--cases=MSP-16,MSP-28,…,MSP-43` | ENV-3 | Pass | `r5-API-08-mobile-shell.log` | 11 of 11 Pass; cleanup clean; 0 unknown browser errors | — |
 | C-08 | REQ-004 Android 8–9 Save dialog | — | — | — | Not Tested | — | — | no Android 8–9 system image installed (only 29, 34, 35); installing one changes the user's SDK. The forced Save-dialog path ran on Android 10 and 15 (IMP-08, IMP-10) |
+
+## Round 4 Failure Resolution
+
+| Failure ID | Fix (IR-004, CRR-008) | Round 5 recheck |
+| --- | --- | --- |
+| F-3 | the place is put back, and a zoom's anchor scrolled, only once every page canvas has the current zoom's width (a 10 s bound gives up without scrolling) | 10/10 traced refreshes restore at the whole height; anchors hold on page 8 — Resolved |
+| F-2 | (round 4) | still holds (10/10) — Resolved |
 
 ## Round 4 Failures
 
@@ -78,10 +89,26 @@
 | AC-001 | Yes | API-01 (rounds 1 and 2), R-IMP (MSP-39) | Proven in the app: pinch in/out to 3×, sharp redraw, two-finger and one-finger pan, page scroll, double tap, the back arrow, the run screen never zooms | a real phone's fingers |
 | AC-002 | Yes | API-02, R-IMP | Proven | — |
 | AC-003 | Yes | API-03, API-05, R-IMP (IMP-07, IMP-08, IMP-10) | Proven (Android 10+ path; Android 8–9 only by the forced-path instrumented test) | — |
-| AC-005 | Yes | API-06 r4, API-06 r3, R-IMP (IMP-09, IR-003's spec) | **Not Proven**: the image keeps zoom and position across 452's live refresh; the PDF keeps its zoom, and its position in most refreshes, but not when the restore lands on a partial layout (F-3) | — |
+| AC-005 | Yes | API-06 r5 (live, merged state), R-IMP (IMP-09, IR-003/IR-004 specs) | Proven live: across 452's refresh a zoomed, scrolled PDF keeps zoom and position (10/10 traced, against the whole layout) and an image keeps zoom and pan | — |
 | AC-004 | Yes | API-08 (merged state), API-07, R-IMP | Proven: 43/43 phone cases on the merged state | — |
 
 ## Validation Confidence Scorecard (Mandatory)
+
+Round 5 (merged state with IR-004):
+
+| Confidence Category | Final Score | What Supports It | Residual Uncertainty |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 96% | AC-001…005 proven in the app or by their stated verification; AC-004 suites | — |
+| Changed-boundary execution directness | 96% | the app, real input, 452's watcher and refresh, frame traces | — |
+| Cross-boundary integration realism and mock gap | 95% | page → bridge → Downloads; 472 × 452 run for real | Android 8–9 dialog (accepted by the user) |
+| Environment, configuration, identity, and fixture fidelity | 93% | merged-state builds, real pairing, own AVD | emulator, software GPU |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | partial layouts waited out, double redraws, refused saves, 25 MB, 3× | real-phone memory (user-only, accepted) |
+| User-surface, browser, and desktop-shell confidence | 96% | gestures, anchors, Download, refresh in the app; phone probe | — |
+| Durable regression coverage quality and relevance | 94% | `PdfViewer.touchLayout.spec.ts` (pages sized one by one), in-place reload spec, MSP-43, drag/cap specs | the in-app journeys are temporary probes |
+
+- Overall final confidence: 95% (95.0%, simple average)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
 
 Round 4 (merged state with IR-003): the same as round 3 except: requirement proof 80% (AC-005 PDF position intermittent, F-3), failure/edge evidence 88% (traced cause), user surface 88%; overall 87%; not a Pass.
 
@@ -139,8 +166,8 @@ Round 3: `autobyteus-web/tests/e2e/mobile-file-zoom-cases.mjs` and `mobile-shell
 
 ## Latest Authoritative Result
 
-- Result: `Fail` (round 4, merged state with IR-003)
-- Failing cases and criteria: API-06 r4 (F-3; AC-005, REQ-006): a refreshed PDF's position is put back against a partial layout when only the first page(s) are sized
-- Resolved: F-2's in-place path (the position comes back in most refreshes, including a double redraw); the duplicate case ID (MSP-43); 11/11 phone file cases pass
-- Next recipient: Code Reviewer — focused failure-origin review (then the test review of `3eebc0b7a4`)
-- Notes: the user accepted the Android 8–9 and real-phone memory gaps. A new Android APK is needed for Download; release only on the user's word.
+- Result: `Pass` (round 5, merged state with IR-004)
+- Criteria not proven, or parts only the user can check: memory at 3× on a real low-end phone (user-only); not tested: the Android 8–9 Save dialog on a real 8–9 system (both accepted by the user, DR-001)
+- Durable test changes for the proportional test-code review: `3eebc0b7a4` (`mobile-file-zoom-cases.mjs`, `mobile-shell-probe.mjs`: MSP-39 → MSP-43, API/E2E); the implementation's `MobileFileViewer.zoom.spec.ts` (in-place reload), `PdfViewer.touchLayout.spec.ts`, `usePdfPinchZoom.spec.ts`
+- Next recipient: Code Reviewer — proportional test-code review
+- Notes: a new Android APK is needed for Download; release only on the user's word.

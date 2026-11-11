@@ -8,6 +8,7 @@
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-003 Pass (delta, IR-002), round 2 | SR-004, IR-002, CRR-003 | Fail / 87% | Pass / 94% |
 | API-REV-003 | Delivery Engineer, `delivery-revision-record.md` DR-001 blocked (merged state with autobyteus-452), round 3 | SR-004, CRR-004, DR-001 | Pass / 94% | Fail / 86% |
 | API-REV-004 | Code Reviewer, `code-review-report.md` CRR-006 Pass (delta, IR-003), round 4 | IR-003, CRR-006, API-REV-003 | Fail / 86% | Fail / 87% |
+| API-REV-005 | Code Reviewer, `code-review-report.md` CRR-008 Pass (delta, IR-004), round 5 | IR-004, CRR-008, API-REV-004 | Fail / 87% | Pass / 95% |
 
 ## Revision Entries
 
@@ -102,3 +103,27 @@ None
 - New or remaining failure IDs: F-3
 - Recommended owner: Code Reviewer (failure-origin review), then Implementation Engineer
 - Remaining risks, blocked evidence, or untested scope: as round 3
+
+### API-REV-005 — Recheck of F-3: every restore against the whole layout
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-008 (delta review of IR-004), round 5; code `bb9b300c4a`
+- Triggering finding or case IDs: F-3 (CR-003); CRR-008's recheck list (traced PDF refreshes at height 11816, an anchor on a lower page, the image refresh, MSP-43)
+- Related revision IDs: IR-004, CRR-008, API-REV-004
+- Why this revision was recorded: the result changed (Fail → Pass)
+- Coverage decisions or durable test paths changed: none this round (`3eebc0b7a4` from round 3 is still to be reviewed); a temporary `anchor.py`
+- Cases added, changed, removed, or rechecked: API-06 r5, API-01 r5 (anchors), API-08 r5
+- Commands, environment, fixture, or broader-validation delta: AVD recreated; phone bundle rebuilt
+
+#### Prior Failure Resolution
+
+| Prior Failure ID | Resolution | Evidence |
+| --- | --- | --- |
+| F-3 | Resolved: 10/10 traced refreshes restore at height 11816 with all pages sized; partial frames waited out | `r5-android/late-trials.json`, `r5-android/restore-trace.json` |
+| F-2 | Still resolved | same |
+
+- Canonical artifacts and sections updated: execution report, test progress log, evidence
+- Prior result and confidence: Fail, 87%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: Code Reviewer (proportional test-code review)
+- Remaining risks, blocked evidence, or untested scope: Android 8–9 and real-phone memory (accepted by the user)

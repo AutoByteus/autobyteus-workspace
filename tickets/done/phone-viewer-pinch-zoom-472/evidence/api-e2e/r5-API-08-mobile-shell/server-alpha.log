@@ -1,0 +1,359 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60790
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60790
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:95051) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+{"level":40,"time":1794434417653,"pid":95051,"hostname":"MacBookPro","reqId":"req-4y","method":"GET","url":"/rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-6aXNVg%2Falpha%2Foutside-427%2Fgone-436.md","statusCode":404,"elapsedMs":1.0501250000088476,"msg":"http request completed"}
+{"level":40,"time":1794434418386,"pid":95051,"hostname":"MacBookPro","reqId":"req-51","method":"GET","url":"/rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-6aXNVg%2Falpha%2Foutside-427%2Freports-436.md","statusCode":400,"elapsedMs":1.0673750000132713,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+{"level":40,"time":1794434632340,"pid":95051,"hostname":"MacBookPro","reqId":"req-he","method":"GET","url":"/rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-6aXNVg%2Falpha%2Foutside-471%2Fgone-471.md","statusCode":404,"elapsedMs":0.7004159999778494,"msg":"http request completed"}
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+{"level":40,"time":1794434663083,"pid":95051,"hostname":"MacBookPro","reqId":"req-i3","method":"GET","url":"/rest/node-files/content?path=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fmobile-shell-probe-6aXNVg%2Falpha%2Foutside-471%2Freports-471.md","statusCode":400,"elapsedMs":0.6459579999791458,"msg":"http request completed"}
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_60e3227d18224cfcafce34e7f1a6feb9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_60e3227d18224cfcafce34e7f1a6feb9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_60e3227d18224cfcafce34e7f1a6feb9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_60e3227d18224cfcafce34e7f1a6feb9/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434704587,"pid":95051,"hostname":"MacBookPro","reqId":"req-ov","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.5460420000017621,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434704851,"pid":95051,"hostname":"MacBookPro","reqId":"req-p4","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":6.816249999974389,"msg":"http request completed"}
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/approver_b12ba043d7d04c2daf442fb9a86b3c6b/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_60e3227d18224cfcafce34e7f1a6feb9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_d4d4ff9b26244f769698b6b632e75cdf/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a50fab347d824741a41b896e0bf402b0/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_574b33f147b1461a8381f288b7c153db/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_da4aa66be43b407ba7b4d06661e5a31f/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_a565b76328ba4b1490a06e0444e50b76/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/project_task_manager_6f95861ff57942a590aa58fd873a9f59/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agent_teams/delivery_team_2cbb0379c0bc400a8dd09251f8a71c5e/fact_checker_5759bea8b49f42c995b7276047cfacf9/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434705064,"pid":95051,"hostname":"MacBookPro","reqId":"req-qn","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.28870800003642216,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-6aXNVg/alpha/data/memory/agents/fact_checker_60e3227d18224cfcafce34e7f1a6feb9/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434705083,"pid":95051,"hostname":"MacBookPro","reqId":"req-qr","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2590419999905862,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434705315,"pid":95051,"hostname":"MacBookPro","reqId":"req-qz","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.18433299998287112,"msg":"http request completed"}
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434716116,"pid":95051,"hostname":"MacBookPro","reqId":"req-rh","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.5161250000237487,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434716415,"pid":95051,"hostname":"MacBookPro","reqId":"req-rm","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2947500000009313,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434718613,"pid":95051,"hostname":"MacBookPro","reqId":"req-rp","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.305584000016097,"msg":"http request completed"}
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434718958,"pid":95051,"hostname":"MacBookPro","reqId":"req-ry","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.43279200000688434,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434721352,"pid":95051,"hostname":"MacBookPro","reqId":"req-s1","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3105000000214204,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794434721666,"pid":95051,"hostname":"MacBookPro","reqId":"req-s6","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.20187499996973202,"msg":"http request completed"}
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'publisher_5f401b436fc543c496071a1c55a3c657' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.
+Task agent 'studio_team_d817305dc63b498dbe19e98669e8b712' of agent run 'project_task_manager_6f95861ff57942a590aa58fd873a9f59' is not available: its own file is missing.

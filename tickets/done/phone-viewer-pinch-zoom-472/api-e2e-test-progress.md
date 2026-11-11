@@ -32,3 +32,8 @@
 | 2026-11-11T21:25:15Z | API-08 | Started | — | round 4: phone probe file cases on the merged state |
 | 2026-11-11T21:33:57Z | API-08 | Completed | Pass | round 4: 11/11 file cases incl. MSP-43, MSP-39..42 |
 | 2026-11-11T21:33:57Z | — | Round result | Fail | round 4 (API-REV-004): F-2 path fixed; F-3 partial-layout restore (traced); 87% |
+| 2026-11-11T21:51:46Z | — | Round 5 plan | — | IR-004 code bb9b300c4a: PdfViewer.vue (restore and pinch anchor only against the whole layout) + usePdfPinchZoom.ts + specs. Rerun: API-06 traced live refreshes (PDF), pinch/double-tap anchor on a lower page, image refresh; phone file cases incl. MSP-43 |
+| 2026-11-11T21:57:58Z | API-06 | Completed | Pass | round 5: 10/10 traced PDF refreshes restored at height 11816 (partial frames 1832/2664/9320 waited out), positions exact; anchors on page 8 within 5 px for pinch 1->2, dtap out, dtap in, pinch 2->3; image zoom+pan kept across 2 refreshes |
+| 2026-11-11T21:57:58Z | API-08 | Started | — | round 5: phone file cases |
+| 2026-11-11T22:06:36Z | API-08 | Completed | Pass | round 5: 11/11 file cases incl. MSP-43 |
+| 2026-11-11T22:06:36Z | — | Round result | Pass | round 5 (API-REV-005): F-3 resolved; 95% |
