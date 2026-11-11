@@ -23,7 +23,8 @@
 | SR-017 | Requirements and design | The user widens the scope: team and org runs in this ticket (TC-4 revised) | N/A | Design Draft (SR-016) | Requirements Ready for Approval; design Draft, for the user's review | REQ-001, REQ-002, REQ-010, REQ-011, BEH-002, BEH-004, AC-006, AC-012, SCN-002; TC-4 | Presented to the user; not sent to review |
 | SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | Architecture review ARCH-REV-002: Fail (AR-004, AR-005, AR-008, AR-011 … AR-015) |
 | SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Architecture review ARCH-REV-003: Fail (AR-005, narrowed) |
-| SR-020 | Design | Architecture review ARCH-REV-003 (round 3) on SR-019 | AR-005 (narrowed); residual | Design Ready, review Fail | Design Ready | DS-10; `TaskRunIndex` | Back to architecture review |
+| SR-020 | Design | Architecture review ARCH-REV-003 (round 3) on SR-019 | AR-005 (narrowed); residual | Design Ready, review Fail | Design Ready | DS-10; `TaskRunIndex` | Architecture review ARCH-REV-004: Fail (AR-005, narrowed again) |
+| SR-021 | Design | Architecture review ARCH-REV-004 (round 4) on SR-020 | AR-005 (narrowed) | Design Ready, review Fail | Design Ready | DS-10 | Back to architecture review |
 
 ## Revision Entries
 
@@ -466,3 +467,22 @@
 - Classification: `Large`, `High`, unchanged
 - Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
 - Next action: architecture review, round 4
+
+### SR-021 — No prerequisite hold; a predecessor's unfinished items are preserved
+
+- Phase and classification: Design, `Design Impact` resolved
+- Triggering report: `design-review-report.md`, ARCH-REV-004, decision `Fail`, AR-005 narrowed again. The reviewer corrected its own round-2 recommendation of the hold.
+- Prior status / current status: design Ready (SR-020), reviewed Fail → design Ready (SR-021); requirements Approved, unchanged
+- What changed: the Solution Designer traced the status rule of each of the four predecessor migrations. Each records `FAILED` as soon as one item fails and is retried at every start, and none reads Task records. A hold on them could keep this migration from ever running, and with a runtime that reads only the target shape that is a node-wide lockout. DS-10 now:
+  - declares no prerequisites and is registered after the four;
+  - always converts every Task entry;
+  - preserves each predecessor's unfinished items per item, with a warning (a table per predecessor);
+  - describes what happens when a predecessor finishes an item later;
+  - states availability in checklist item 2;
+  - adds tests for each predecessor `FAILED` and for a later finish.
+
+  Route (a) of the review, extended to all four predecessors.
+- Intended behavior changed: `No`
+- Classification: `Large`, `High`, unchanged
+- Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
+- Next action: architecture review, round 5

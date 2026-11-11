@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-020` (answers architecture review ARCH-REV-003: AR-005, narrowed). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Current solution revision ID: `SR-021` (answers architecture review ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
 - Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
@@ -173,19 +173,39 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 | 7 | Busy-run record left by an interrupted update | Each entry under its own run's root | No entry with `place: "delegated"` |
 | 8 | No history row for a delegated run (196) | A history row for each, built from its own file | The row exists |
 
-**Prerequisites** (`prerequisiteMigrationIds`): `20261015_collaborators_to_delegated_runs_v1`, `20261017_task_agent_own_run_v1`, `20261018_append_only_message_logs_v1` and `20261019_delegated_copy_own_file_complete_v1`. The runner holds this migration until each is `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS` (`app-data-migration-runner.ts:145-157`).
+**No prerequisite hold; registered after its predecessors** (AR-005, ARCH-REV-004). The four released migrations that wrote the shapes this migration reads each record `FAILED` as soon as one item fails, and the runner retries a `FAILED` migration at every start (`app-data-migration-runner.ts:190`):
+- `20261015_collaborators_to_delegated_runs_v1` (`collaborators-to-delegated-runs-v1-app-data-migration.ts:90-103`);
+- `20261017_task_agent_own_run_v1` (`task-agent-own-run-v1-app-data-migration.ts:41-44, 129-132`);
+- `20261018_append_only_message_logs_v1` (`append-only-message-logs-v1-app-data-migration.ts:38-40, 100-105`);
+- `20261019_delegated_copy_own_file_complete_v1` (`delegated-copy-own-file-complete-v1-app-data-migration.ts:46, 216-222`).
 
-**Released partial states are preserved** (AR-005). A warning success of `20261017_task_agent_own_run_v1` can leave a tree with a stored local entry that is not a link (a full record not yet reduced), or a link whose run has no own file at the standard place. That is the rule 469 keeps on save (`task-execution-tree-split.ts:191`); the review's MP-A traces how it arises. For such a tree (route (a) of ARCH-REV-003):
-- **Task entries are converted all the same (step 1).** Every Task file ends in the target shape, so no Task is damaged by one old entry. The record parse is strict per entry (`task-execution-resource-schema.ts:19-66`), and a damaged Task contributes nothing (`task-execution-resource-service.ts:56-63, 207-246`). A preserved run's `delegatedFrom` comes from its kept full record (step 1's row).
-- **The tree file is left untouched** (steps 5 and 6 skip it). It holds the only copy of the kept record, and current code does not read it, so it is inert residue, kept and never deleted (Data Migration Guideline).
-- **The own files of the runs named in the kept entry are left untouched** (step 4 skips them, nested runs included). Current code reads a run file tolerantly and ignores the old `taskAgent` field, so such a run with an own file is an ordinary run without a stored address (derived from its definition, contract §2.3). A run with no own file is reported missing when its row is composed, as since 469.
-- The item is reported as a preserved warning (`PRESERVED_UNMIGRATED_DELEGATION`), and the migration completes `SUCCEEDED_WITH_WARNINGS`. `20261017_task_agent_own_run_v1` is terminal at that point (the runner's prerequisite), so nothing will retry it; the kept residue is for recovery by hand only.
+A persistent item failure, such as "target already exists", keeps such a migration `FAILED` for good. A hold on it would keep this migration from ever running. The runtime reads only the target shape, so every Task record would then be damaged node-wide (the review's MP-C): a lockout. So this migration declares no `prerequisiteMigrationIds`. It is registered after the four, so in each start they run first, and it converts what it can recognize, item by item. None of the four reads or writes Task records (`grep agent_run_resources|projects/|ad-hoc-tasks` in their folders finds nothing). This migration does not touch message logs, so `20261018_append_only_message_logs_v1` is not a dependency at all.
+
+**A predecessor's unfinished items are preserved** (the premise reconciled with the predecessors' status rule: these states arrive with the predecessor `FAILED` and retried at every start, not with a warning success):
+
+| Predecessor's unfinished item | What this migration does |
+| --- | --- |
+| `20261017_…`: a tree holding a stored local entry that is not a link (a full record not yet reduced), or a link whose run has no own file at the standard place (469's save rule, `task-execution-tree-split.ts:191`; the review's MP-A) | Step 1 converts the Task entries of the runs named there, with the delegator from the kept record. Steps 5 and 6 leave the tree untouched. Step 4 leaves the own files of those runs untouched |
+| `20261019_…`: an own file still in the shape before completion (`taskAgent.origin`) | Step 1 converts its Task entries (the delegator is in that shape too). Step 4 leaves the own file untouched |
+| `20261015_…`: a tree still holding `collaborators` | Steps 5 and 6 leave the tree untouched. Those runs have no Task record (contract E7) |
+| `20261018_…`: a JSON message log not converted | Not read: no effect |
+
+- Every preserved item is reported (`PRESERVED_UNFINISHED_PREDECESSOR`, naming the predecessor and the item), and this migration completes `SUCCEEDED_WITH_WARNINGS`.
+- Every Task entry is converted in every case, so no Task is damaged by a predecessor's state.
+- The current runtime reads a preserved own file tolerantly and ignores `taskAgent`; such a run is an ordinary run with a derived address. A preserved tree is not read.
+
+**When a predecessor later finishes an item** (it is retried at every start), it writes its released shape:
+- `20261017_…` writes an own file with `taskAgent` and a link into the kept tree. The child's Task entry is already in the target shape; the own file's `taskAgent` is ignored; the tree is not read.
+- `20261019_…` completes an own file, still with `taskAgent`, which is ignored.
+- `20261015_…` converts collaborators inside a kept tree, which is not read.
+
+This migration is terminal by then and does not run again. The residue is inert, as with any preserved item.
 
 **Order.** All Task records first (steps 1 … 3: they need each run's `taskAgent`), then the run files (step 4), then the trees (steps 5, 6), the busy-run record (7) and the history rows (8). A run whose Task record cannot be read keeps its `taskAgent` and is reported; the others go on.
 
 **Guideline §2 checklist.**
 1. **Need:** a stored name changes meaning (`hostRoot` → `delegatedFrom`, one hop), a field is renamed (`delegated` → `subWork`), and facts move (peer links, address). A tolerant reader cannot do this.
-2. **Availability:** startup admission reads own files only (469 D-11). A run or Task that cannot be converted is left intact and reported; the app starts.
+2. **Availability:** this migration never waits for a predecessor (no hold), and every Task entry is converted in every case, so the runtime that reads only the target shape always finds readable Task records. Startup admission reads own files only (469 D-11). A run or Task that cannot be converted is left intact and reported. The app starts and stays usable, also while a predecessor is `FAILED`.
 3. **Source and target:** contract §5, E1 … E10, measured on the user's data; plus the released partial states above.
 4. **Disposition:** converted; already current (recognized per the table); preserved with a warning (partial states, unreadable records); never deleted. **Every Task entry is converted, also the entries of preserved runs, so a Task file never mixes shapes.** Only a preserved run's own file and its tree stay as they were. A Task record that cannot be read at all is left as it was and reported; its runs keep their `taskAgent`.
 5. **Commit and retry:** one atomic write per file; each step is recognized as done by structure, so a retry continues where it stopped. No journal.
@@ -198,7 +218,14 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
    - a link without an own file;
    - an unreadable Task record;
    - an interrupted run with half the runs converted;
-   - a busy-run record.
+   - a busy-run record;
+   - **each predecessor `FAILED`**, with this migration's start and the node usable afterwards (Tasks readable; views, messages, delegation and closure working):
+     - `20261017_…` with one failed child under an owned parent;
+     - `20261019_…` with one own file not completed;
+     - `20261015_…` with one tree still holding `collaborators`;
+     - `20261018_…` with one JSON log left;
+   - **a predecessor finishing its item after this migration**: the node stays usable;
+   - a preserved own file that keeps `taskAgent`, read as an ordinary run (asserted).
 
    Plus a start on the converted data.
 10. **Lessons:** 469's AR-002 and SR-007 (partial states of released migrations); no startup pass over history.
@@ -360,6 +387,7 @@ Nothing of the hosting machinery is kept.
 | AR-015 Stale requirements doc | Corrected (supplements, follow-ups, scenarios, REQ-005, REQ-009, unknowns, ASM-003) |
 | AR-005, round 3 (a preserved run's Task entry would damage its Task) | DS-10: every Task entry is converted, a preserved run's `delegatedFrom` from its kept full record; only its own file and its tree stay; checklist item 4; a fixture for a Task with a preserved run beside converted ones |
 | Round 3 residual (an org's agents can grow) | `TaskRunIndex`: on a miss, the org runs' own files are re-read |
+| AR-005, round 4 (the hold vs. the predecessors' `FAILED` status) | DS-10: no prerequisite hold; registered after the four; each predecessor's unfinished items preserved with a warning; every Task entry always converted; tests per predecessor `FAILED` and per later finish |
 | Residuals | DS-1: role and owned-sender refusal from the Task side; the history row at creation. The team gate is named |
 
 ## Change Sequence
