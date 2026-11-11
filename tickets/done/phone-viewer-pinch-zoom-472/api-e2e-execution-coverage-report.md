@@ -3,15 +3,17 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/phone-viewer-pinch-zoom-472/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2; Code Reviewer CRR-003 Pass (delta review of IR-002, CR-001 = F-1); code `1b5b7f5b0e`, docs `dbf487d57c`. Round 1: code `d2b9f99603` (CRR-001), Fail (F-1), `24be7a06bb`.
+- Round and trigger: round 3; Delivery Engineer DR-001 blocked at the re-integration: `origin/personal` moved `ed481ae4ca` → `8641bc393a` (autobyteus-452, merged as `965a6b43c4`), and the phone probe stopped on a duplicate case ID MSP-39 (this ticket's zoom case and 452's live-refresh case). Merged-state code `3eebc0b7a4` (the renumber below on `1eca27d1c3`). Round 3 also proves AC-005 live, which 452's refresh now makes possible.
+- Round 2 trigger (kept for reference): round 2; Code Reviewer CRR-003 Pass (delta review of IR-002, CR-001 = F-1); code `1b5b7f5b0e`, docs `dbf487d57c`. Round 1: code `d2b9f99603` (CRR-001), Fail (F-1), `24be7a06bb`.
 - Prior round reviewed: round 1 (API-REV-001); F-1 rechecked first. U-1 closed by the Solution Designer (SR-004: REQ-006 covers reloads while the file stays open; reopening after Back starts at 1× by design).
 - Rerun plan (rerun by impact): `git diff --stat 24be7a06bb 1b5b7f5b0e` changes `composables/usePdfPinchZoom.ts` (+11), its spec and `tests/e2e/mobile-file-zoom-cases.mjs` (MSP-39) only; no Android, server or other web file. Rerun: API-01 (the PDF gestures, incl. `pan2-hold` and a moving pinch held at the 3× cap) in the app, on a rebuilt phone bundle; the phone probe's file cases (MSP-16, 28…31, 37, 39). Still valid from round 1: API-02 (image viewer), API-03 and API-05 (Download, bridge, saver), API-04 (3× memory; the redraw path is unchanged), API-07's desktop probes and full phone probe except the file cases (the composable runs only in the phone viewer's touch mode).
 - Deviations from the investigation's plan, and why:
   - Real touches go through the emulator's touchscreen device (`sendevent`, which needs `adb root` on the google_apis image). A double tap is written to the device in one write: one `sendevent` process per event made the two taps more than 300 ms apart (the composable's double-tap window), so the page saw two single taps (recorded in the transcript, then rerun).
   - The toast is read from the accessibility event it raises (`uiautomator events`): Android 15 does not list a toast in `uiautomator dump` (first image Download step, recorded and rerun).
   - API-06 (AC-005 live): the live refresh could not be triggered from outside the run (see its row); AC-005 rests on its stated verification, the component tests (IMP-09).
+- Round 3 changes: this ticket's phone zoom case renumbered MSP-39 → MSP-43 (`3eebc0b7a4`: `mobile-file-zoom-cases.mjs` header, `runCase`, four screenshot names; the case list in `mobile-shell-probe.mjs`); MSP-43 was used by no case or document. Earlier records of this ticket (implementation handoff, code reviews, rounds 1–2 here) name the case MSP-39, its ID at the time.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/tickets/in-progress/phone-viewer-pinch-zoom-472/evidence/api-e2e/`
   - `android/journey.md` (round 1) and `r2-android/journey.md` (round 2): every in-app step's exact command and output; `android/shots/`: screenshots; `android/logcat-scan.json`, `android/logcat-app-process-and-downloads.txt`; `scripts/`: the temporary journey tools (`node-and-data.mjs`, `droid.mjs`, `step.mjs`, `state.mjs`, `download.mjs`, `refused-saves.mjs`, `say.mjs`, `watch-reload.mjs`, `logcat-scan.py`, `run-step.sh`).
 
@@ -43,7 +45,15 @@
 | API-05 | RSK-002 | a 25 MB PDF over the bridge | steps `open big-472.pdf`, `download big-472.pdf`, `meminfo` | ENV-1, ENV-2 | Pass | `android/journey.md` API-05 | open 6.7 s; toast "Saved to Downloads: big-472.pdf" 3.3 s after the tap; 25239558 bytes, sha256 = the node's; app PSS 120 → 206 MB, renderer 220 → 291 MB; no crash | one base64 message holds |
 | API-06 | AC-005, REQ-006 (live) | reload of the open file | (1) `pinch` to 2×, `back`, `open resume-472.pdf` again; (2) `say.mjs` puts `inside-472.pdf` in the run's folder, the phone opens it, zooms to 2× and scrolls, `live-refresh` rewrites it on the node and samples the viewer for 15 s | ENV-1, ENV-2 | (1) starts at 1×, as SR-004 decided (U-1 closed); (2) Not reproducible | `android/journey.md` API-06 | (1) reopened at `pagesCssWidth 380`, scroll 0 (the holder lives while the file is open); (2) `sawLoading: false`, no reload in 15 s, zoom unchanged | a change from outside the run raises no live refresh (452 follows the run's own file changes); AC-005 is proven by its stated verification (IMP-09) |
 | API-07 | AC-004 | preserved phone and desktop behavior (round 2: the phone probe's file cases `--cases=MSP-16,MSP-28,MSP-29,MSP-30,MSP-31,MSP-37,MSP-39`, all Pass, cleanup clean, 0 unknown browser errors: `r2-API-07-mobile-shell.log`) | `env -i … pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…`; `… test:e2e:search-pdf-preview`; `… test:e2e:file-explorer-pending-save-draft` | ENV-3 | Pass for this ticket's cases; 3 out-of-scope failures | `API-07-mobile-shell.log`, `API-07-mobile-shell/mobile-shell-probe.json`, `API-07-search-pdf-preview*`, `API-07-file-explorer-pending-save-draft*` | 36 of 39 MSP `Pass` incl. MSP-39, MSP-16, MSP-28…31, MSP-37; cleanup `rootRemoved: true`, `unknownBrowserErrors: 0`; `{"API-002":"Pass","API-003":"Pass"}`; `PSD-001…011 Pass` | MSP-24/34/35 (Task rows after TODO) are autobyteus-471's FU-003 (same failures; nothing of this ticket). VNC zoom: `MobileNodeDesktop.spec.ts` (20) and `usePictureZoom.spec.ts` (IMP-02); the same composable ran in the app in API-02 |
+| API-08 | AC-004 on the merged state; the renumber | full phone probe after `pnpm -C autobyteus-server-ts build` and `build:mobile-web` on the merged state | `env -i … pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…` | ENV-3 (round 3, `3eebc0b7a4`) | Pass | `r3-API-08-mobile-shell.log`, `r3-API-08-mobile-shell/mobile-shell-probe.json`, `r3-builds.log` | 43 of 43 `Pass`: this ticket's MSP-43; 452's MSP-39…42; the baseline-fixed MSP-22, MSP-24/34/35, MSP-32; cleanup `rootRemoved: true`, `unknownBrowserErrors: 0` | the duplicate-ID guard passes; the merged state no longer has round 1–2's MSP-24/34/35 failures (fixed by 452's baseline fixes) |
+| API-06 r3 | AC-005, REQ-006 (SR-004: reloads while the file stays open) live | the app on the merged state; `live-472.pdf` and `live-472.png` in the run's folder (452 watches it) | `r3-android/journey.md`: `live-files.mjs setup`; `open live-472.pdf`, `pinch` to 2×, `swipe`, `live-reload pdf` (rewrite on the node, sample 150 ms) ×2; `open live-472.png`, `pinch`, `swipe`, `live-reload png`, `image-content` | ENV-1 (round 3), ENV-2 | **Fail (F-2)** for the PDF; Pass for the image | `r3-android/journey.md`, `r3-android/shots/API-06-*`, `r3/node-and-data.log` | **PDF: reloaded (viewer element replaced) at 779 ms and 601 ms; zoom kept (`pagesCssWidth` 759 = 2×), position lost: scroll (190, 933) → (0, 0) and (0, 599) → (0, 0), still (0, 0) seconds later**; image: a new blob URL at 736 ms (content refreshed: red 120 = the rewrite's colour), `translate(-437.374px, -595.373px) scale(2.49968)` unchanged | one rewrite also remounted the PDF's pages twice (the element was gone at ~1 s and back at 1.3 s) |
 | C-08 | REQ-004 Android 8–9 Save dialog | — | — | — | Not Tested | — | — | no Android 8–9 system image installed (only 29, 34, 35); installing one changes the user's SDK. The forced Save-dialog path ran on Android 10 and 15 (IMP-08, IMP-10) |
+
+## Round 3 Failures
+
+| Failure ID | Case / Criteria | Expected | Observed | Preliminary Classification | Recommended Owner |
+| --- | --- | --- | --- | --- | --- |
+| F-2 | API-06 r3; AC-005, REQ-006 (as SR-004 words it: a live refresh, autobyteus-452, keeps zoom and position) | A zoomed, scrolled PDF that is refreshed while open keeps its zoom and its position | The zoom stays (2×) but the position goes to the top-left (twice, reproducible). Cause (`components/fileExplorer/viewers/PdfViewer.vue`): 452 refreshes an open PDF in the same `PdfViewer` instance (`url` / `contentRevision` change; no "Opening…" state, no remount of the viewer), so `zoom` survives; the pages are drawn again and the scroller collapses to the top; `onTouchLoaded` runs again but returns at `if (placed) return`, so the remembered position is never put back, and `onScroll` (placed) then remembers the top as the position. The design's "Zoom state across reloads" and the AC-005 component tests assume every reload passes through `isLoading` (viewer unmounted and mounted again); 452's in-place refresh, merged after the design, takes the other path. The image keeps its place because its zoom state lives in the same instance and only the image's src changes. | Local Fix (implementation): a reload of the same file in the same `PdfViewer` (url / contentRevision change) must put the remembered position back after the new layout and must not remember positions while the pages are being redrawn; a `MobileFileViewer`/`PdfViewer` spec for a same-instance reload | Implementation Engineer, through failure-origin review |
 
 ## Round 1 Failures And Their Resolution
 
@@ -59,26 +69,26 @@
 | AC-001 | Yes | API-01 (rounds 1 and 2), R-IMP (MSP-39) | Proven in the app: pinch in/out to 3×, sharp redraw, two-finger and one-finger pan, page scroll, double tap, the back arrow, the run screen never zooms | a real phone's fingers |
 | AC-002 | Yes | API-02, R-IMP | Proven | — |
 | AC-003 | Yes | API-03, API-05, R-IMP (IMP-07, IMP-08, IMP-10) | Proven (Android 10+ path; Android 8–9 only by the forced-path instrumented test) | — |
-| AC-005 | Yes | R-IMP (IMP-09) | Proven by its stated verification (component tests); live reproduction not possible from outside the run (API-06); REQ-006 scope settled by SR-004 | — |
-| AC-004 | Yes | API-07, R-IMP | Proven; MSP-24/34/35 are outside this ticket (autobyteus-471 FU-003) | — |
+| AC-005 | Yes | API-06 r3 (live, merged state), R-IMP (IMP-09) | **Not Proven**: the image keeps zoom and position across 452's live refresh; the PDF keeps its zoom but loses its position (F-2). The component tests cover only the reload through the loading state | — |
+| AC-004 | Yes | API-08 (merged state), API-07, R-IMP | Proven: 43/43 phone cases on the merged state | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
-| Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
-| --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 85% | 95% | every critical AC in the app (AC-001…003) or by its stated verification (AC-005), AC-004 suites | — | — |
-| Changed-boundary execution directness | 80% | 96% | the app's WebView, real MotionEvents, the real bridge, MediaStore | — | — |
-| Cross-boundary integration realism and mock gap | 80% | 92% | page → bridge → saver → Downloads → toast end to end; 25 MB message | Android 8–9 Save dialog only by the forced-path instrumented test | an Android 8–9 system image |
-| Environment, configuration, identity, and fixture fidelity | 80% | 93% | real pairing, node, phone bundle, own AVD | emulator, software GPU | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 80% | 94% | refused saves, text file, 3× long PDF, cap and drag gestures | — (real-phone memory is a user-only part) | — |
-| User-surface, browser, and desktop-shell confidence | 85% | 96% | all gestures and Download in the app; screenshots looked at | — | — |
-| Durable regression coverage quality and relevance | 88% | 93% | composable spec cases for drag and cap, MSP-39 with a real-touch two-finger pan, JVM and instrumented saver tests | the Android in-app journey is a temporary probe (needs an emulator, APK and node) | — |
+Round 3 (merged state):
 
-- Overall final confidence: 94% (94.1%, simple average)
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
-- Any final applicable category below `90%`: `No`
-- Default final confidence target met: `No` (94%). Gap: the Android 8–9 Save dialog on a real 8–9 system. Surface that would close it: an Android 28 emulator image, which is not installed; installing it changes the user's SDK, so it is left for the user's word (or a device). The rest of the save path (bytes, names, toast, refusals) is proven end to end on Android 15 and by the saver tests on 10 and 15.
-- Only the user can check: memory at 3× on a real (low-end) phone (RSK-001): the emulator's software GPU hides canvas memory; the WebView kept 139 Mpx at 3× without failing (API-04)
+| Confidence Category | Final Score | What Supports It | Residual Uncertainty |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 75% | AC-001…004 proven; AC-005 live proven for the image | AC-005 PDF position (F-2) |
+| Changed-boundary execution directness | 96% | the app, real input, 452's real watcher and refresh | — |
+| Cross-boundary integration realism and mock gap | 85% | the 472 × 452 interplay run for real | the component tests mock the reload path that 452 does not take |
+| Environment, configuration, identity, and fixture fidelity | 93% | merged-state builds, real pairing, own AVD | emulator |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | live refresh twice, image and PDF | F-2 |
+| User-surface, browser, and desktop-shell confidence | 85% | phone probe 43/43, app journeys | F-2 is visible: a refreshed PDF jumps to its top |
+| Durable regression coverage quality and relevance | 85% | MSP-43, specs | no test of a same-instance PDF reload with zoom memory |
+
+- Overall final confidence: 86% (simple average); not a Pass: F-2 fails a critical criterion
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-005)
+- Round 2's scorecard (94%, Pass) applied to the pre-merge state.
 
 ## Broader Validation Decision (Mandatory)
 
@@ -96,7 +106,7 @@
 
 ## Durable Coverage Changed In The Codebase
 
-None by API/E2E. IR-002 added `usePdfPinchZoom.spec.ts` cases (drag, cap) and MSP-39's real-touch two-finger pan; they go to the proportional test-code review.
+Round 3: `autobyteus-web/tests/e2e/mobile-file-zoom-cases.mjs` and `mobile-shell-probe.mjs` (`3eebc0b7a4`, the MSP-39 → MSP-43 renumber, API/E2E). Before: none by API/E2E. IR-002 added `usePdfPinchZoom.spec.ts` cases (drag, cap) and MSP-39's real-touch two-finger pan; they go to the proportional test-code review.
 
 ## Dependencies Mocked Or Emulated
 
@@ -118,7 +128,8 @@ None by API/E2E. IR-002 added `usePdfPinchZoom.spec.ts` cases (drag, cap) and MS
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Criteria not proven, or parts only the user can check: memory at 3× on a real low-end phone (RSK-001, user-only); not tested: the Android 8–9 Save dialog on a real 8–9 system (no image installed)
-- Next recipient: Code Reviewer — proportional test-code review (`mobile-file-zoom-cases.mjs`, `mobile-shell-probe.mjs`, `usePdfPinchZoom.spec.ts`)
-- Notes: MSP-24/34/35 are autobyteus-471's FU-003 (outside this ticket). A new Android APK is needed for Download; release only on the user's word.
+- Result: `Fail` (round 3, merged state)
+- Failing cases and criteria: API-06 r3 (F-2; AC-005, REQ-006): a zoomed PDF loses its position when 452 refreshes it in place; its zoom is kept; the image keeps both
+- Fixed in this round: the duplicate case ID (MSP-39 → MSP-43, `3eebc0b7a4`); the phone probe passes 43/43 on the merged state
+- Next recipient: Code Reviewer — focused failure-origin review (then the test review of the renumber)
+- Notes: the user accepted the Android 8–9 and real-phone memory gaps (delivery DR-001). A new Android APK is needed for Download; release only on the user's word.

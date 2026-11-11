@@ -20,3 +20,9 @@
 | 2026-11-11T18:49:08Z | API-07 | Started | — | round 2: mobile-shell file cases MSP-16,28,29,30,31,37,39 |
 | 2026-11-11T18:57:37Z | API-07 | Completed | Pass | round 2: MSP-16, 28-31, 37, 39 Pass; cleanup clean |
 | 2026-11-11T18:57:37Z | — | Round result | Pass | round 2 (API-REV-002): F-1 resolved; 94% (gap: Android 8-9 image) |
+| 2026-11-11T20:08:57Z | — | Round 3 | — | delivery DR-001 blocked: duplicate MSP-39 after the merge with 452 (965a6b43c4); renumbered ours to MSP-43 (3eebc0b7a4); plan: server + phone bundle rebuild, full phone probe on the merged state, AC-005 live in the app |
+| 2026-11-11T20:09:50Z | API-08 | Started | — | full mobile-shell probe on the merged state, clean env |
+| 2026-11-11T20:36:00Z | API-08 | Completed | Pass | merged state: 43/43 MSP Pass incl. MSP-43 (this ticket) and 452's MSP-39..42, MSP-22/24/32/34/35; cleanup clean, 0 unknown browser errors |
+| 2026-11-11T20:36:00Z | API-06 | Started | — | round 3: AC-005 live in the app on the merged state |
+| 2026-11-11T20:50:22Z | API-06 | Completed | Fail (F-2) | round 3 live on the merged state: image keeps zoom+position across 452's refresh (new blob URL 736 ms); PDF reloads in the same viewer (601-779 ms) and keeps zoom 2x but its scroll goes to (0,0), twice |
+| 2026-11-11T20:50:22Z | — | Round result | Fail | round 3 (API-REV-003): duplicate ID fixed (MSP-43, 43/43 probe Pass); F-2 (AC-005 PDF position); 86% |

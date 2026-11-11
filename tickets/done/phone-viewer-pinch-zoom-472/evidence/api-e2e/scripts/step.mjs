@@ -26,6 +26,8 @@ const steps = {
   'live-refresh': async () => JSON.parse(childProcess.execFileSync('node', [new URL('./watch-reload.mjs', import.meta.url).pathname], { encoding: 'utf8' }).split('\n').slice(1).join('\n')),
   'download': async (name, label) => JSON.parse(childProcess.execFileSync('node', [new URL('./download.mjs', import.meta.url).pathname, name, label], { encoding: 'utf8' })),
   'refused-saves': async () => JSON.parse(childProcess.execFileSync('node', [new URL('./refused-saves.mjs', import.meta.url).pathname], { encoding: 'utf8' })),
+  'live-reload': async (kind) => { const r = JSON.parse(childProcess.execFileSync('node', [new URL('./live-refresh.mjs', import.meta.url).pathname, kind], { encoding: 'utf8' })); shot(`live-reload-${kind}`); return r; },
+  'image-content': async () => { const r = JSON.parse(childProcess.execFileSync('node', [new URL('./image-content.mjs', import.meta.url).pathname], { encoding: 'utf8' })); shot('image-content'); return r; },
   'pdf': async () => ({ page: await evaluate(PAGE), pdf: await evaluate(PDF) }),
   'image': async () => ({ page: await evaluate(PAGE), image: await evaluate(IMAGE) }),
   // A pinch around (cx, cy) CSS px from d0 to d1; reads the live state right after the fingers lift and after the redraw.
