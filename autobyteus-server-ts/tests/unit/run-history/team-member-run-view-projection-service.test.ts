@@ -52,40 +52,6 @@ const harness = (located: unknown = location) => {
   };
 };
 
-const taskAgentTree = {
-  ...executionTree,
-  rootTeam: {
-    ...executionTree.rootTeam,
-    taskExecutions: [{
-      address: "/reviewer", agentRunId: "reviewer-copy", platformAgentRunId: null, delegatorAgentRunId: "professor-run",
-      startedAt: "2026-08-15T00:00:00.000Z",
-      source: { kind: "agent", agentDefinitionId: "reviewer", launchConfiguration: { ...configured.launchConfiguration, workspaceRootPath: "/ws/review" } },
-    }],
-  },
-};
-const taskAgentLocation = {
-  ...location, agentRunId: "reviewer-copy", memberAddress: "/reviewer", configuredPlacement: null, executionKind: "task",
-  memoryDir: "/memory/agents/reviewer-copy", tree: taskAgentTree,
-};
-/** A copy of the configured member itself: same address, its own snapshot and its own runtime session. */
-const copyOfMemberTree = {
-  ...executionTree,
-  rootTeam: {
-    ...executionTree.rootTeam,
-    members: [{ ...configured, platformAgentRunId: "slot-session" }],
-    taskExecutions: [{
-      address: "/professor", agentRunId: "professor-copy", platformAgentRunId: "copy-session", delegatorAgentRunId: "professor-run",
-      startedAt: "2026-08-15T00:00:00.000Z",
-      source: { kind: "agent", agentDefinitionId: "professor", launchConfiguration: { ...configured.launchConfiguration, llmModelIdentifier: "started-model" },
-        launchSource: { origin: "configured", fallbacks: [] } },
-    }],
-  },
-};
-const copyOfMemberLocation = {
-  ...location, agentRunId: "professor-copy", configuredPlacement: { ...configured, platformAgentRunId: "slot-session" }, executionKind: "task",
-  memoryDir: "/memory/agents/professor-copy", tree: copyOfMemberTree,
-};
-
 describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
   it("resolves and projects a member by root TeamRun plus concrete AgentRun ID", async () => {
     const { service, locations, agentViews } = harness();
@@ -129,31 +95,15 @@ describe("TeamMemberRunViewProjectionService exact AgentRun identity", () => {
     await expect(service.getProjection("team-1", "professor-run"))
       .rejects.toThrow(new CollaborationMemberNotFoundError("AgentRun 'professor-run' has no configured launch placement or recorded source."));
   });
-
-  it("projects a copy of a configured member with its own settings and runtime session, never the member's (AC-004)", async () => {
-    const { service, agentViews } = harness(copyOfMemberLocation);
-    await service.getProjection("team-1", "professor-copy");
-    expect(agentViews.getProjectionFromMetadata).toHaveBeenCalledWith(expect.objectContaining({
-      metadata: expect.objectContaining({ runId: "professor-copy", llmModelIdentifier: "started-model", platformAgentRunId: "copy-session" }),
-    }));
-  });
-
-  it("projects a team task agent from its catalog source", async () => {
-    const { service, agentViews } = harness(taskAgentLocation);
-    await service.getProjection("team-1", "reviewer-copy");
-    expect(agentViews.getProjectionFromMetadata).toHaveBeenCalledWith(expect.objectContaining({
-      metadata: expect.objectContaining({ agentDefinitionId: "reviewer", workspaceRootPath: "/ws/review", memoryDir: "/memory/agents/reviewer-copy" }),
-    }));
-  });
 });
 
 describe("TeamMemberRunViewProjectionService file changes", () => {
   it("serves a member's file list and entry through the team-scoped, tagged location", async () => {
-    const { service, locations, fileChanges } = harness(taskAgentLocation);
-    await expect(service.getFileChanges("team-1", "reviewer-copy")).resolves.toEqual([{ path: "src/a.ts" }]);
-    await expect(service.resolveFileChangeEntry("team-1", "reviewer-copy", "src/a.ts")).resolves.toMatchObject({ absolutePath: "/ws/class/src/a.ts" });
-    expect(locations.findAgent).toHaveBeenCalledWith({ rootTeamRunId: "team-1", agentRunId: "reviewer-copy" });
-    const tagged = expect.objectContaining({ rootSubjectKind: "agent_team", rootRunId: "team-1", agentRunId: "reviewer-copy" });
+    const { service, locations, fileChanges } = harness(location);
+    await expect(service.getFileChanges("team-1", "professor-run")).resolves.toEqual([{ path: "src/a.ts" }]);
+    await expect(service.resolveFileChangeEntry("team-1", "professor-run", "src/a.ts")).resolves.toMatchObject({ absolutePath: "/ws/class/src/a.ts" });
+    expect(locations.findAgent).toHaveBeenCalledWith({ rootTeamRunId: "team-1", agentRunId: "professor-run" });
+    const tagged = expect.objectContaining({ rootSubjectKind: "agent_team", rootRunId: "team-1", agentRunId: "professor-run" });
     expect(fileChanges.getLocatedCollaborationMemberProjection).toHaveBeenCalledWith(tagged);
     expect(fileChanges.resolveLocatedCollaborationMemberEntry).toHaveBeenCalledWith(tagged, "src/a.ts");
   });

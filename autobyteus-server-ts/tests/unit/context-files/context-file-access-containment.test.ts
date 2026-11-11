@@ -108,18 +108,13 @@ it("uses the configured root, rejects an outside physical path and accepts a sym
   expect(() => assertContainedContextFileSync(linkedRoot, linkedFile)).not.toThrow();
 });
 
-it("uses the containing nested Team ID, never its root ID, for async and sync attachment access", async () => {
+it("reads a delegated team run's member by that team run's own ID, never the delegator's", async () => {
   const f = await fixture("team");
-  const team = path.dirname(f.directory);
-  const treePath = path.join(team, "team_run_execution_tree.json");
-  const tree = JSON.parse(await fs.readFile(treePath, "utf8"));
-  // A Team copy (a catalog copy, as every Team copy of a flat team run), written as the app writes it:
-  // its own tree at `agent_teams/nested/`, its link in the team tree.
-  tree.rootTeam.taskExecutions = [{address: "/nested", teamRunId: "nested", members: [{address: "/nested/worker", agentRunId: "nested-worker", platformAgentRunId: null}], taskExecutions: [], delegatorAgentRunId: "worker", startedAt: "2026-09-01T00:00:00.000Z",
-    source: {kind: "agent_team", teamDefinitionId: "nested-team", coordinatorAddress: "/nested/worker", members: [{address: "/nested/worker", agentDefinitionId: "nested-def", launchConfiguration: tree.rootTeam.defaultLaunchConfiguration, followsTeam: true}], handoffs: [], defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration}}];
-  await new TeamRunExecutionTreeStore().write(team, validateTeamRunExecutionTreePayload(tree, "team"));
-  // A task agent team member keeps its memory inside the task team's own folder (contract L1).
-  const nestedFile = path.join(path.dirname(team), "nested", "nested-worker", "context_files", filename);
+  // A team run one of the team's members delegated to is its own team run, with its own package (autobyteus-461).
+  const nested = path.join(path.dirname(path.dirname(f.directory)), "nested");
+  await put(path.join(nested, "team_run_execution_tree.json"), testExecutionTree({rootTeamRunId: "nested", children: [testAgentNode("/worker", {agentRunId: "nested-worker"})], coordinatorAddress: "/worker"}));
+  await fs.writeFile(path.join(nested, "team_communication_messages_active.jsonl"), "");
+  const nestedFile = path.join(nested, "nested-worker", "context_files", filename);
   await put(nestedFile, "nested bytes");
   const owner = {kind: "team_member_final" as const, teamRunId: "nested", agentRunId: "nested-worker"};
   expect(await f.read.getFinalFilePath(owner, filename)).toBe(nestedFile);
@@ -128,3 +123,4 @@ it("uses the containing nested Team ID, never its root ID, for async and sync at
   await expect(f.read.getFinalFilePath(wrong, filename)).rejects.toThrow("Unable to resolve");
   expect(f.local.resolve(buildFinalContextFileLocator(wrong, filename))).toBeNull();
 });
+
