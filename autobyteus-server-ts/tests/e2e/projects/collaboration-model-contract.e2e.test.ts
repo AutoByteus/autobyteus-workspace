@@ -193,10 +193,12 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
 
-  const expectRefused = (result: Rec, address: string) => {
+  // The guidance: a teammate or the own Team is messaged (`send_message_to`); the sender's own address has words of its own
+  // (small-follow-ups-batch-435 REQ-013).
+  const expectRefused = (result: Rec, address: string, guidance = "send_message_to") => {
     expect(JSON.stringify(result), JSON.stringify(result)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
     expect(JSON.stringify(result)).toContain(address);
-    expect(JSON.stringify(result)).toContain("send_message_to");
+    expect(JSON.stringify(result)).toContain(guidance);
     expect(result).not.toHaveProperty("target_agent_run_id");
   };
   const expectNotFound = (result: Rec) => {
@@ -275,7 +277,8 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
     // AC-001: a teammate is messaged, not delegated.
     expectRefused(await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/mate", description: "Reply OK." })), "/mate");
     // The member itself.
-    expectRefused(await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." })), "/manager");
+    expectRefused(await root.calls(root.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." })), "/manager",
+      "you can't delegate to yourself");
     expect((await root.copies()).length, "the refusals start nothing").toBe(before);
     // The teammate is reached by messaging (AC-006).
     expect(await root.calls(root.managerRunId, "/manager", callTool("send_message_to", { recipient_address: "/mate", content: "Hello mate." })))
