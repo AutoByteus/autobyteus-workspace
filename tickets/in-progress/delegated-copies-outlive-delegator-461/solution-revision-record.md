@@ -708,7 +708,7 @@
     - stop, restore, `update_task` close and reopen, Task deletion;
     - the `DelegationTree`, derived.
     Refusals use the code's exact texts.
-  - `stories.py`: the three stories of §5, 36 steps: the Project Task Manager with a peer node (S0 … S19), a team (U0 … U7) and an org (O0 … O8).
+  - `stories.py`: the three stories of §5, 37 steps: the Project Task Manager with a peer node (S0 … S19), a team (U0 … U7) and an org (O0 … O8).
   - `walkthrough.py` generates `collaboration-walkthrough.md`: every state, with the call, the result, the receiver's header, every created, changed or removed file in full (new rows and log lines), the unchanged files, and the tree. It also generates the step lists of the contract's §5.1 … §5.3.
   - `--check` fails when the walkthrough, the step lists or any JSON example of §3 … §4 differs from the model. Three tamperings were each caught.
   - `validate_contract_examples.py` on the walkthrough: 107 JSON blocks, 0 findings.
