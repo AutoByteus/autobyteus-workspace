@@ -17,6 +17,7 @@ import { createRootExecutionIdentity, type RootSubjectKind } from "../../../../s
 import type { TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { CreateTaskTool, UpdateTaskTool, ListProjectTasksTool, createBoundGetProjectTaskTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 const mcp = async (name: string, args: Record<string, unknown>) => {
   const result = await new ProjectTaskToolsMcpAdapterProvider().getAdapters().find(a => a.definition.name === name)!
@@ -31,8 +32,8 @@ let dir: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTa
 let releases: ReleaseTracker;
 let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
 const service = async (storeOverride?: object) => {
-  const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
-    adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) });
+  const created = new ProjectTaskService(withTaskRunResources({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
+    adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) }));
   await created.load();
   return created;
 };

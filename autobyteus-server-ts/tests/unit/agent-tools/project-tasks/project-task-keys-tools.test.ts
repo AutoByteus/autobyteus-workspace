@@ -13,6 +13,7 @@ import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-stor
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 /** SR-002 / SR-003: the key is the agent-facing Task ID; tools take keys or long IDs and record "depends on". */
 const tool = async (name: string, args: Record<string, unknown>) => {
@@ -31,9 +32,9 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   const changes = { taskChanged() {}, taskRemoved() {}, workerStatusChanged() {}, projectChanged() {}, projectRemoved() {} };
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
-  tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
+  tasks = new ProjectTaskService(withTaskRunResources({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: (releases = trackReleases()).request });
+    requestRelease: (releases = trackReleases()).request }));
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;

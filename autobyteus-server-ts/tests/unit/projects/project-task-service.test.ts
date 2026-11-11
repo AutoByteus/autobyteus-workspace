@@ -9,6 +9,7 @@ import { ProjectError } from "../../../src/projects/domain/project-errors.js";
 
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 const createHarness = async () => {
   const appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "project-tasks-service-"));
@@ -25,7 +26,7 @@ const createHarness = async () => {
     now,
     createId: () => `project_${++projectCounter}`,
   });
-  const tasks = new ProjectTaskService({ store, contextStore, now, createId: () => `project_task_${++taskCounter}` });
+  const tasks = new ProjectTaskService(withTaskRunResources({ store, contextStore, now, createId: () => `project_task_${++taskCounter}` }));
   /** Every persisted `project.json`, with its Tasks' `task.json` contents. */
   const readFile = async () => {
     const dirs = await fs.readdir(layout.root).catch(() => [] as string[]);
@@ -155,11 +156,11 @@ describe("ProjectTaskService", () => {
   });
 
   it("orders Tasks with equal update times by taskId", async () => {
-    const fixed = new ProjectTaskService({
+    const fixed = new ProjectTaskService(withTaskRunResources({
       store: harness.store,
       now: () => new Date(Date.UTC(2026, 8, 27)),
       createId: (() => { let n = 0; return () => `project_task_z${++n}`; })(),
-    });
+    }));
     await fixed.createTask({ projectId, title: "b", description: "b" });
     await fixed.createTask({ projectId, title: "a", description: "a" });
 

@@ -27,6 +27,7 @@ import {
 } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ANY_TASK_READ_SCOPE, taskReadScopeOf } from "../../../../src/agent-tools/project-tasks/project-task-read-scope.js";
 import { buildProjectTaskToolSchema } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
+import { withTaskRunResources } from "../../../helpers/task-run-resources.js";
 
 /**
  * autobyteus-260: `get_project_task` (REQ-014, REQ-015, REQ-016; AC-012–AC-014), short `list_project_tasks` entries
@@ -56,9 +57,9 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   const changes = { taskChanged() {}, taskRemoved() {}, workerStatusChanged() {}, projectChanged() {}, projectRemoved() {} };
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
-  tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
+  tasks = new ProjectTaskService(withTaskRunResources({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: (releases = trackReleases()).request });
+    requestRelease: (releases = trackReleases()).request }));
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;

@@ -9,6 +9,7 @@ import { TaskExecutionResourceService } from "../../../../src/projects/services/
 import { TaskExecutionResourceStore } from "../../../../src/projects/stores/task-execution-resource-store.js";
 import { DelegationTree, type RunAgentsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { taskRunResources } from "../../../helpers/task-run-resources.js";
 
 /**
  * autobyteus-461, contract §2.6 (TC-11), §10.2, §10.5, §12 and the cases of §13.1: the in-memory relationships between
@@ -52,7 +53,7 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
   };
   const boot = async (tasks: Record<string, unknown> = MAIN, reader?: RunAgentsReader) => {
     for (const [taskId, entries] of Object.entries(tasks)) await write(taskId, entries);
-    service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
+    service = taskRunResources(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
     await service.load();
     tree = new DelegationTree(() => service, () => reader ?? null);
     tree.build();

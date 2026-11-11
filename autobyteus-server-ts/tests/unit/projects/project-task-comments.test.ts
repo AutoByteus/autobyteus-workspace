@@ -9,13 +9,13 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import type { ProjectChangeMessage } from "../../../src/projects/changes/project-change-messages.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -43,7 +43,7 @@ describe("Project Task comments (services)", () => {
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
-      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),

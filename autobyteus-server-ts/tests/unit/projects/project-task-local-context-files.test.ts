@@ -15,6 +15,7 @@ import { ProjectTaskContextStore } from "../../../src/projects/context/project-t
 import { CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "host-root" });
 const originalCopyFile = fs.copyFile.bind(fs);
@@ -47,8 +48,8 @@ describe("Project Task local context files", () => {
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
-    tasks = new ProjectTaskService({ store, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
-      adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) });
+    tasks = new ProjectTaskService(withTaskRunResources({ store, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
+      adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) }));
     await tasks.load();
     drafts = new ProjectTaskContextDrafts({ store, contextStore: context });
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;

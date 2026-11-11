@@ -12,12 +12,12 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/task-execution-resource-schema.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "manager-root" });
 const team: TaskExecutionReference = { teamRunId: "review-team" };
@@ -32,7 +32,7 @@ describe("existing-copy assignment on the Task side", () => {
   const boot = async () => {
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await service.load();
     return service;
   };

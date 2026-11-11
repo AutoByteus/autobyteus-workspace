@@ -6,6 +6,7 @@ import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js"
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 /**
  * autobyteus-461 (contract §2.6, design "Ordering Without A Shared Queue", AR-017): the Task side gives `DelegationTree`
@@ -24,7 +25,7 @@ describe("Task side: entries for the DelegationTree (autobyteus-461)", () => {
     await fs.writeFile(file, typeof agentRunResources === "string" ? agentRunResources : JSON.stringify({ taskId, agentRunResources }));
   };
   const boot = async () => {
-    service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
+    service = taskRunResources(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
     await service.load();
   };
 
@@ -35,7 +36,7 @@ describe("Task side: entries for the DelegationTree (autobyteus-461)", () => {
   afterEach(async () => { vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   it("throws before the Task records are loaded", () => {
-    service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
+    service = taskRunResources(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
     expect(() => service.taskIdsWithEntries()).toThrow("not loaded");
   });
 
@@ -77,5 +78,16 @@ describe("Task side: entries for the DelegationTree (autobyteus-461)", () => {
     service.forget({ projectId: "project_P", taskId: "T1" });
     expect(forgotten).toEqual(["T1"]);
     expect(service.entriesOf("T1")).toEqual([]);
+  });
+
+  it("a Task change with no entries listener set fails before it writes (SR-047, ARCH-REV-022)", async () => {
+    await write("T1", [entry({ kind: "agent", agentRunId: "worker" })]);
+    const file = layout.taskExecutionResourcesFile("project_P", "T1");
+    const before = await fs.readFile(file, "utf8");
+    service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
+    await service.load();
+    await expect(service.closeTask({ projectId: "project_P", taskId: "T1" }, async () => undefined)).rejects.toThrow("TASK_ENTRIES_LISTENER_UNSET");
+    expect(await fs.readFile(file, "utf8")).toBe(before);
+    expect(service.isOpen({ agentRunId: "worker" })).toBe(true);
   });
 });

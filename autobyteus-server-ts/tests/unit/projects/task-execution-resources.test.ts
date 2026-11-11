@@ -8,12 +8,12 @@ import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/task-execution-resource-schema.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
@@ -26,7 +26,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   let releases: ReleaseTracker;
   const boot = async () => {
     const service = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request,
-      taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout)) });
+      taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout)) });
     await service.load();
     return service;
   };
@@ -282,7 +282,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("serializes assignment linking and DONE per Task, without blocking other Tasks", async () => {
-    const service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout));
+    const service = taskRunResources(new TaskExecutionResourceStore(layout));
     const gate = latch(), order: string[] = [];
     const first = service.serialize("t", async () => { order.push("first:start"); await gate.promise; order.push("first:end"); });
     const second = service.serialize("t", async () => { order.push("second"); });

@@ -7,6 +7,7 @@ import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js"
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const host = { kind: "agent_team", runId: "manager-root" };
 const entry = (agentRun: Record<string, string>, linkedAt: string, closedAt: string | null, extra: Record<string, unknown> = {}) => ({
@@ -22,7 +23,7 @@ describe("TaskExecutionResourceService current entry", () => {
     await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources }));
   };
   const boot = async () => {
-    service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
+    service = taskRunResources(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
     await service.load();
     return service;
   };

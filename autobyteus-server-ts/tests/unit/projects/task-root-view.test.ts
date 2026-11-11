@@ -8,12 +8,12 @@ import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.j
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import { buildTaskRootView, latestAssignedEntry } from "../../../src/projects/services/task-root-view-builder.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
 const stored = (extra: Record<string, unknown> = {}) => ({
@@ -67,7 +67,7 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
       const layout = new ProjectsLayout(path.join(appData, "projects"));
       adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
       tasks = new ProjectTaskService({ store: new ProjectStore(layout), adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-        taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)),
+        taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)),
         changes: new ProjectChangePublisher(), workerStatus: () => "running" });
       await tasks.load();
     });

@@ -10,13 +10,13 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectChangePublisher } from "../../../src/projects/changes/project-change-publisher.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const agent: TaskExecutionReference = { agentRunId: "writer" };
@@ -37,7 +37,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     projectId = (await projects.createProject({ name: "Desktop App" })).projectId;
     const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), changes,
-      requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: taskRunResources(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });
   afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });

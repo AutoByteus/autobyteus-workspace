@@ -13,6 +13,7 @@ import {
   type ProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex, fakeModel } from "../../helpers/fake-embedding-model.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 // SR-007: Settings' index status caches only inputs (fingerprints) and is computed fresh at every read; Task writes
 // index their Project in the background when the active model is on disk (REQ-011). Real Project files and Task
@@ -63,9 +64,9 @@ describe("Project index status and index after writes", () => {
     active = MODEL_A;
     listFailure = null;
     fake = await createFakeEmbeddingIndex({ model: () => active, catalog: [MODEL_A, MODEL_B] });
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+    tasks = new ProjectTaskService(withTaskRunResources({ searchCleanup: processProjectTaskSearchCleanup, changes: {
       ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
-    } });
+    } }));
     start();
     listed.length = 0;
   });

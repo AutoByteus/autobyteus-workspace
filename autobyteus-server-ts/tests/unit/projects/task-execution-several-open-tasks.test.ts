@@ -14,6 +14,7 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 
@@ -48,7 +49,7 @@ describe("a task agent with several open Tasks", () => {
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     release = vi.fn<TaskExecutionReleaseRequest>(async (execution) => ({ execution, stopped: true }));
-    resources = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout));
+    resources = taskRunResources(new TaskExecutionResourceStore(layout));
     tasks = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: resources });
     await tasks.load();
   });

@@ -22,6 +22,7 @@ import {
   type ProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 const env = process.env;
 const enabled = env["RUN_PROJECT_INDEX_STATUS_LOAD"] === "1";
@@ -49,9 +50,9 @@ describe.runIf(enabled)("Embedding section status load (QR-001)", () => {
     reset();
     fake = await createFakeEmbeddingIndex({ rootDir: path.join(root, "embeddings"), filesPresent: true });
     // As composed in production (index-after-write kept out of the measurement).
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+    tasks = new ProjectTaskService(withTaskRunResources({ searchCleanup: processProjectTaskSearchCleanup, changes: {
       ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
-    } });
+    } }));
     startSearch();
     const started = Date.now();
     for (let p = 0; p < PROJECTS; p++) {

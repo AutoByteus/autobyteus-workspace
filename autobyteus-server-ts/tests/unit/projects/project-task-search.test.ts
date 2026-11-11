@@ -12,6 +12,7 @@ import {
   releaseProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
+import { withTaskRunResources } from "../../helpers/task-run-resources.js";
 
 const reset = () => { resetProjectServiceForTests(); releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 const ids = (result: { matches: Array<{ task: { description: string }; match: string }> }) =>
@@ -34,9 +35,9 @@ describe("ProjectTaskSearchService", () => {
     projectId = (await getProjectService().createProject({ name: "Search fixture" })).projectId;
     fake = await createFakeEmbeddingIndex();
     // As composed in production: search follows the Task service's post-commit marks (index-after-write kept out of the way here).
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+    tasks = new ProjectTaskService(withTaskRunResources({ searchCleanup: processProjectTaskSearchCleanup, changes: {
       ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
-    } });
+    } }));
     search = initializeProjectTaskSearchService({
       listProjects: () => getProjectService().listProjectSummaries(), listTasks: (id) => tasks.listTasks(id), index: () => fake.index, indexAfterWriteMs: 60_000,
     });

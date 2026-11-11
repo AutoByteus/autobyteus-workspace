@@ -37,7 +37,7 @@ export class TaskExecutionResourceService {
   private readonly entriesByExecution = new Map<string, Map<string, TaskExecutionResource>>();
   /** Per copy: its current entry and that Task. */
   private readonly currentByExecution = new Map<string, Current>();
-  /** The `DelegationTree`, told of each Task whose entries changed (bound by the composition). */
+  /** The `DelegationTree`, told of each Task whose entries changed (set by the composition root once the tree is built). */
   private entriesListener: TaskEntriesListener | null = null;
   private readonly damaged = new Map<string, string>();
   private readonly chains = new Map<string, Promise<unknown>>();
@@ -51,8 +51,9 @@ export class TaskExecutionResourceService {
   /** Bound once by the composition (the change publisher's mark). */
   setCommitListener(listener: (location: TaskLocation) => void): void { this.onCommitted = listener; }
   /**
-   * Bound once by the composition: the `DelegationTree`. It is told synchronously after each committed change of a
-   * Task's entries, inside that Task's ordered change, before the change resolves (AR-017).
+   * Set once by the composition root after the tree is built from the loaded records: the `DelegationTree`. It is told
+   * synchronously after each committed change of a Task's entries, inside that Task's ordered change, before the change
+   * resolves (AR-017). A Task change with no listener set fails before it writes (SR-047, ARCH-REV-022).
    */
   setEntriesListener(listener: TaskEntriesListener): void { this.entriesListener = listener; }
 
@@ -114,7 +115,7 @@ export class TaskExecutionResourceService {
   async assignExisting(location: TaskLocation, input: ExistingTaskExecutionAssignInput): Promise<void> {
     const recipientAddress = this.currentOf(input.execution)?.entry.recipientAddress;
     if (!recipientAddress) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
-    await this.store.update(location, file => linkExistingTaskExecution(file, {
+    await this.update(location, file => linkExistingTaskExecution(file, {
       delegatedFrom: input.delegatedFrom, execution: input.execution,
       ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
       recipientAddress,
@@ -134,7 +135,7 @@ export class TaskExecutionResourceService {
       this.assertTaskReadable(location.taskId);
       // No file and no view entry: no agent run was ever linked, and none can be in flight (assignments are serialized).
       if (this.files.has(location.taskId) || await this.store.exists(location)) {
-        await this.store.update(location, file => closeTaskExecutionResources(file, this.now().toISOString()), next => this.commit(location, next));
+        await this.update(location, file => closeTaskExecutionResources(file, this.now().toISOString()), next => this.commit(location, next));
       }
       await afterClose();
     });
@@ -182,7 +183,7 @@ export class TaskExecutionResourceService {
     this.assertReopenable(location, execution, requestedBy);
     if (this.isOpen(execution)) return false;
     let reopened = false;
-    await this.store.update(location, (file) => {
+    await this.update(location, (file) => {
       const next = reopenTaskExecution(file, execution, requestedBy);
       reopened = next !== file;
       return next;
@@ -248,6 +249,7 @@ export class TaskExecutionResourceService {
   /** Task deletion (contract T-3): the record goes with its Task; its runs become runs of their own. */
   async removeRecord(location: TaskLocation): Promise<void> {
     await this.serialize(location.taskId, async () => {
+      this.requireEntriesListener();
       await this.store.remove(location);
       this.forget(location);
     });
@@ -284,7 +286,7 @@ export class TaskExecutionResourceService {
     if (this.entriesByExecution.has(taskExecutionReferenceKey(link.execution))) {
       throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run already belongs to a Task.");
     }
-    await this.store.update(location, file => linkNewTaskExecution(file, link, this.now().toISOString()), next => this.commit(location, next));
+    await this.update(location, file => linkNewTaskExecution(file, link, this.now().toISOString()), next => this.commit(location, next));
   }
   /** Settles the start of the copy's last entry in its current Task. */
   private async settle(execution: TaskExecutionReference, outcome: Parameters<typeof settleTaskExecutionStart>[2]): Promise<void> {
@@ -292,7 +294,7 @@ export class TaskExecutionResourceService {
     const taskId = this.currentOf(execution)?.taskId;
     if (!taskId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is not linked to a Task.");
     const { location } = this.files.get(taskId)!;
-    await this.store.update(location, file => settleTaskExecutionStart(file, execution, outcome), next => this.commit(location, next));
+    await this.update(location, file => settleTaskExecutionStart(file, execution, outcome), next => this.commit(location, next));
   }
   private currentOf(execution: TaskExecutionReference): Current | undefined {
     return this.currentByExecution.get(taskExecutionReferenceKey(execution));
@@ -316,9 +318,18 @@ export class TaskExecutionResourceService {
     affected.forEach(key => this.deriveCurrent(key));
     if (this.loaded) this.tellEntriesChanged(location.taskId);
   }
+  private requireEntriesListener(): TaskEntriesListener {
+    if (!this.entriesListener) throw new Error("TASK_ENTRIES_LISTENER_UNSET: a Task change needs the delegation tree, which the composition sets.");
+    return this.entriesListener;
+  }
+  /** A Task's write; it fails before writing when no entries listener is set. */
+  private update(...args: Parameters<TaskExecutionResourceStore["update"]>): ReturnType<TaskExecutionResourceStore["update"]> {
+    this.requireEntriesListener();
+    return this.store.update(...args);
+  }
   /** Synchronous, inside the Task's ordered change; a listener failure never fails the committed write. */
   private tellEntriesChanged(taskId: string): void {
-    try { this.entriesListener?.entriesChanged(taskId); } catch (error) { console.warn("DELEGATION_TREE_UPDATE_FAILED", { taskId, error }); }
+    try { this.requireEntriesListener().entriesChanged(taskId); } catch (error) { console.warn("DELEGATION_TREE_UPDATE_FAILED", { taskId, error }); }
   }
   /** Removes the Task's current file content from the per-copy entries; returns the affected copy keys. */
   private unindex(taskId: string): Set<string> {
