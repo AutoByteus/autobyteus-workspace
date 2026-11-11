@@ -8,7 +8,6 @@ import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/tea
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
@@ -23,7 +22,7 @@ describe("RunOwnAgentsReader", () => {
   it("a team run's members from its own file; a standalone run is its one agent; a missing run is null", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-agents-"));
     roots.push(memory);
-    openEveryOwnFileUnder(memory);
+   
     const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-b", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "team-b", coordinatorAddress: "/lead",
       children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] }), "team-b"));
@@ -37,7 +36,7 @@ describe("RunOwnAgentsReader", () => {
   it("standingOf (contract §2.3, model.py standing): a team's members and coordinator; an agent run's stored address; an org's agents, mounted members and mounted team addresses", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-standing-"));
     roots.push(memory);
-    openEveryOwnFileUnder(memory);
+   
     const layout = new AgentMemoryLayout(memory);
     await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "team-b", ancestorTeamRunIds: [] }), validateTeamRunExecutionTreePayload(testExecutionTree({
       rootTeamRunId: "team-b", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] }), "team-b"));

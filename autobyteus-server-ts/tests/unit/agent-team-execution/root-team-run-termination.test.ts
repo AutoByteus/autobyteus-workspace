@@ -137,7 +137,7 @@ describe("RootTeamRun termination stabilization", () => {
     expect(onTerminated).toHaveBeenCalledOnce();
   });
 
-  it("completes the Agent fence before task drain, persistence drain, and local finish", async () => {
+  it("completes the Agent fence before the persistence drain and local finish", async () => {
     const order: string[] = [];
     const scope: FrozenTeamRunTerminationScope = {
       fenceAgentRunsForRootShutdown: vi.fn(async () => {
@@ -150,19 +150,12 @@ describe("RootTeamRun termination stabilization", () => {
       }),
     };
     const { root, persistence } = buildRoot({ scope });
-    const taskExecutions = (root as never as {
-      taskExecutions: { drain(): Promise<void> };
-    }).taskExecutions;
-    vi.spyOn(taskExecutions, "drain").mockImplementation(async () => {
-      order.push("task-drain");
-    });
     persistence.drain.mockImplementation(async () => { order.push("persistence-drain"); });
 
     await expect(root.terminate()).resolves.toEqual({ accepted: true });
 
     expect(order).toEqual([
       "agent-fence",
-      "task-drain",
       "persistence-drain",
       "local-finish",
     ]);

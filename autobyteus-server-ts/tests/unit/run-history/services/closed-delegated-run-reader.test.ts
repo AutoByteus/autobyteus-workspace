@@ -12,7 +12,6 @@ import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * autobyteus-461 (REQ-009 token roll-up; the Team tab's past participants): the runs delegated from a run, open and
@@ -27,7 +26,7 @@ const E: RootExecutionIdentity = { rootSubjectKind: "agent_team", rootRunId: "en
 
 const world = async () => {
   const memory = await fs.mkdtemp(path.join(os.tmpdir(), "delegated-runs-")); roots.push(memory);
-  openEveryOwnFileUnder(memory);
+ 
   await new AgentRunMetadataStore(memory).writeMetadata("image", { runId: "image", agentDefinitionId: "image-maker", address: "/image_maker",
     workspaceRootPath: "/w", memoryDir: path.join(memory, "agents", "image"), llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true,
     runtimeKind: "autobyteus", platformAgentRunId: null } as never);

@@ -12,7 +12,7 @@ import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 describe("AgentOrgRun termination stabilization", () => {
-  it("freezes and fences every direct/mounted Agent scope before task and persistence drain", async () => {
+  it("freezes and fences every direct/mounted Agent scope before the persistence drain", async () => {
     const orgRunId = "org-termination-run";
     const order: string[] = [];
     const directHandle = {
@@ -73,12 +73,6 @@ describe("AgentOrgRun termination stabilization", () => {
       taskExecutionIdentity: {} as never,
     });
     run.activate();
-    const taskExecutions = (run as never as {
-      taskExecutions: { drain(): Promise<void> };
-    }).taskExecutions;
-    vi.spyOn(taskExecutions, "drain").mockImplementation(async () => {
-      order.push("task-drain");
-    });
 
     await expect(run.terminate()).resolves.toEqual({ accepted: true });
 
@@ -87,7 +81,6 @@ describe("AgentOrgRun termination stabilization", () => {
       "freeze-mounted-teams",
       "direct-agent-fence",
       "mounted-team-fence",
-      "task-drain",
       "persistence-drain",
       "mounted-team-finish",
       "direct-agent-finish",
@@ -121,12 +114,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       onTerminated,
     });
     run.activate();
-    const taskExecutions = (run as never as {
-      taskExecutions: { drain(): Promise<void>; enterRootFailStop(): void };
-    }).taskExecutions;
-    const drain = vi.spyOn(taskExecutions, "drain").mockResolvedValue(undefined);
-    vi.spyOn(taskExecutions, "enterRootFailStop").mockImplementation(() => undefined);
-    return { run, handle, onTerminated, drain };
+    return { run, handle, onTerminated, drain: persistence.drain };
   };
 
   it("retries a termination whose local finish rejected (dead member) instead of replaying the failure", async () => {
@@ -225,7 +213,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
     await vi.waitFor(() => expect((f.run as never as { termination: unknown }).termination).toBeNull());
 
     await expect(f.run.terminate()).resolves.toEqual({ accepted: true });
-    // Delegated-child shutdown is runtime-only: both attempts drain the lifecycle queue; nothing settles.
+    // Both attempts drain the run's own persistence; nothing settles.
     expect(f.drain).toHaveBeenCalledTimes(2);
     expect(f.onTerminated).toHaveBeenCalledOnce();
   });

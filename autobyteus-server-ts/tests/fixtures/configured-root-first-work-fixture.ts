@@ -20,7 +20,6 @@ import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-
 import type { RunPackageFileWriteResult } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { testAgentNode, testTeamRunConfig } from "./current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "./current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "./open-delegated-run-sources.js";
 
 export type Placement = "standalone_team" | "direct_org" | "mounted_team";
 export const placements: readonly Placement[] = ["standalone_team", "direct_org", "mounted_team"];
@@ -39,7 +38,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
   /** autobyteus-348: the second member (the Worker) was saved on `runtimeKind` with this pending switch and no session ID. */
   pendingSwitch?: PendingRuntimeSwitch;
 } = {}) => {
-  const memoryDir = mkdtempSync(join(tmpdir(), "configured-first-work-")); openEveryOwnFileUnder(memoryDir);
+  const memoryDir = mkdtempSync(join(tmpdir(), "configured-first-work-"));
   const mode = options.mode ?? "restore";
   const runtimeKind = options.runtimeKind ?? RuntimeKind.CODEX_APP_SERVER;
   const initialBinding = options.binding === undefined ? "old-thread" : options.binding;

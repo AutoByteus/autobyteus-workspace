@@ -36,7 +36,6 @@ export const testOrgTeamNode = (input: {
   coordinatorAddress: assertAgentTeamAddress(input.coordinatorAddress),
   defaultLaunchConfiguration: testOrgLaunchConfiguration(),
   members: input.members,
-  taskExecutions: [],
 });
 
 export const testAgentOrgExecutionTree = (input: {
@@ -57,7 +56,6 @@ export const testAgentOrgExecutionTree = (input: {
     orgRunId: input.orgRunId,
     defaultLaunchConfiguration: testOrgLaunchConfiguration(),
     members: input.members,
-    taskExecutions: [],
   },
 }, input.orgRunId);
 

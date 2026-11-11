@@ -27,7 +27,6 @@ import {
   testOrgLaunchConfiguration,
   testOrgTeamNode,
 } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * Owner-scoped file-change reads of team and org members (REQ-002, REQ-003, REQ-006, REQ-008,
@@ -47,7 +46,7 @@ afterEach(async () => {
 });
 
 const tempDir = async (prefix: string) => {
-  const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), prefix))); openEveryOwnFileUnder(dir);
+  const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), prefix)));
   directories.push(dir);
   return dir;
 };

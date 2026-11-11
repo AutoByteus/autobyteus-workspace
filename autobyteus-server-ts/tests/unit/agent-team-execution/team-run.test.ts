@@ -24,14 +24,6 @@ const createBackend = (): TeamRunBackend => ({
   reserveDirectAgentInput: vi.fn(),
   deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
   executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
-  prepareTaskAgent: vi.fn(),
-  prepareTaskTeam: vi.fn(),
-  restoreTaskAgent: vi.fn(),
-  restoreTaskTeam: vi.fn(),
-  hasLiveDirectTaskExecution: vi.fn(() => true),
-  tryShutDownDirectTaskExecutionIfQuiet: vi.fn(async () => true),
-  shutDownDirectTaskExecutionForUser: vi.fn(async () => true),
-  getRetainedAgentControl: vi.fn(() => null),
   prepareTermination: vi.fn(),
   freezeForRootTermination: vi.fn(),
   terminate: vi.fn(async () => ({ accepted: true })),
@@ -39,7 +31,6 @@ const createBackend = (): TeamRunBackend => ({
 
 const createRun = (backend: TeamRunBackend): TeamRun => new TeamRun(
   new TeamRunContext({
-    teamKind: "configured",
     physicalScope: createRootExecutionPhysicalScope({
       root: createTeamRootExecutionIdentity("team-run-1"),
       ancestorTeamRunIds: [],
@@ -71,15 +62,11 @@ describe("TeamRun", () => {
     expect(backend.executeDirectAgentCommand).toHaveBeenCalledWith("coordinator-run-1", command);
   });
 
-  it("keeps status/open-work, liveness, and quiet shutdown at the one local backend boundary", async () => {
+  it("keeps status and open work at the one local backend boundary", async () => {
     const backend = createBackend();
     const run = createRun(backend);
 
-    expect(run.hasLiveDirectTaskExecution({ agentRunId: "task-agent-run-1" })).toBe(true);
-    await expect(run.tryShutDownDirectTaskExecutionIfQuiet({ agentRunId: "task-agent-run-1" })).resolves.toBe(true);
     expect(run.getLeafAgentStatusSnapshots()).toEqual([]);
     expect(run.hasOpenExecutionWork()).toBe(false);
-    expect(backend.hasLiveDirectTaskExecution).toHaveBeenCalledWith({ agentRunId: "task-agent-run-1" });
-    expect(backend.tryShutDownDirectTaskExecutionIfQuiet).toHaveBeenCalledWith({ agentRunId: "task-agent-run-1" });
   });
 });

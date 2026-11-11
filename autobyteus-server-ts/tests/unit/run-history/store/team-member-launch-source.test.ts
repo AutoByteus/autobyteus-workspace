@@ -7,7 +7,6 @@ import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree }
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * autobyteus-461 (contract §3.3; SR-038): a delegated team member's launch source is recorded on the member, kept by its
@@ -22,7 +21,7 @@ describe("a team member's launch source", () => {
   it("goes from the run's config into its own file and back", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "member-launch-source-"));
     roots.push(memory);
-    openEveryOwnFileUnder(memory);
+   
     const routed = { origin: "model_router" as const, fallbacks: [], choiceReason: "Careful review.", taskKind: "review" };
     const lead = { ...testAgentNode("/lead", { agentRunId: "lead_1" }), launchSource: routed };
     const config = testTeamRunConfig({ rootTeamRunId: "team_b", coordinatorAddress: "/lead", children: [lead, testAgentNode("/writer", { agentRunId: "writer_1" })] });

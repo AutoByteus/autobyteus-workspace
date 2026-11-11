@@ -18,7 +18,6 @@ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-ru
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data
@@ -246,7 +245,7 @@ describe("collaborators → delegated runs: the built server upgrades released a
     }
     // These reads check what the migration wrote into each run's own file, through the current stores. This test process has
     // no Task side: every converted run under this root counts as open here (autobyteus-469 test stand-in).
-    openEveryOwnFileUnder(memory);
+   
     const agentJson = await new StandaloneRootPackageStore().readTree(dirs.agentDir, "agent-host");
     const teamJson = await new TeamRunExecutionTreeStore().read(dirs.teamDir, "team-root");
     const orgJson = await new AgentOrgRunExecutionTreeStore().read(dirs.orgDir, "org-root");

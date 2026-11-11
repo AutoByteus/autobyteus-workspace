@@ -12,7 +12,6 @@ import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collabor
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { applyAgentOrgRunSelectionPatches, listAgentOrgRunSelectionScopes, resolveAgentOrgRunSelectionTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -23,7 +22,7 @@ const select = (scopeKind: 'CONFIGURED_ORG'|'CONFIGURED_TEAM'|'CONFIGURED_AGENT'
   ({ scopeKind, scopeAddress, runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: model, llmConfig: { temperature: 0, enabled: false } });
 
 async function setup() {
-  const memoryDir = await fs.mkdtemp(join(tmpdir(), 'org-whole-config-')); roots.push(memoryDir); openEveryOwnFileUnder(memoryDir);
+  const memoryDir = await fs.mkdtemp(join(tmpdir(), 'org-whole-config-')); roots.push(memoryDir);
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
   const root = testAgentOrgExecutionTree({ orgRunId: 'org', members: [
     testOrgAgentNode('/worker', 'worker'),
@@ -167,8 +166,6 @@ describe('stopped AgentOrg Team workspace composition', () => {
     team.members.push({ ...testOrgAgentNode('/team/custom', 'custom'),
       launchConfiguration: { ...team.members[0].launchConfiguration, workspaceRootPath: '/distinct', llmModelIdentifier: 'larger', llmConfig: { enabled: false } } });
     tree.rootOrg.members.push(testOrgTeamNode({ address: '/sibling', teamRunId: 'sibling', coordinatorAddress: '/sibling/lead', members: [testOrgAgentNode('/sibling/lead', 'sibling-lead')] }));
-    team.taskExecutions = [{ address: '/team/lead', agentRunId: 'old-task', platformAgentRunId: null,
-      delegatorAgentRunId: 'lead', startedAt: '2026-09-01T00:00:00.000Z', source: testOrgAgentCopySource('lead') }];
     await h.store.write(h.dir, tree);
     const write = vi.spyOn(h.store, 'write'), validate = vi.spyOn(h.validator, 'validateMany');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org',
@@ -184,12 +181,9 @@ describe('stopped AgentOrg Team workspace composition', () => {
     expect(saved.defaultLaunchConfiguration.workspaceRootPath).toBe('/destination');
     expect(saved.members.map((agent: any) => agent.launchConfiguration.workspaceRootPath)).toEqual(['/destination', '/destination']);
     expect(saved.members[1].launchConfiguration).toEqual({ ...team.members[1].launchConfiguration, workspaceRootPath: '/destination' });
-    // A copy written under a configured team composes into the root list (autobyteus-469 D-2); the team's list is empty.
-    expect(saved.taskExecutions).toEqual([]);
     expect(next.rootOrg.defaultLaunchConfiguration).toEqual(tree.rootOrg.defaultLaunchConfiguration);
     expect(next.rootOrg.members[0]).toEqual(tree.rootOrg.members[0]);
     expect(next.rootOrg.members[2]).toEqual(tree.rootOrg.members[2]);
-    expect(next.rootOrg.taskExecutions).toEqual([...tree.rootOrg.taskExecutions, ...team.taskExecutions]);
     expect((await h.manager.getRunConfig('org')).executionTree).toEqual(next);
   });
 
@@ -256,45 +250,6 @@ describe('stopped AgentOrg Team workspace composition', () => {
     expect((h.build.mock.calls[0]![0] as any).state.executionTree.rootOrg.members[1].members[0].launchConfiguration.workspaceRootPath).toBe('/B');
     await h.manager.terminate('org'); const write = vi.spyOn(h.store, 'write');
     expect((await h.manager.updateStoppedRunConfig(input)).outcome).toBe('UNCHANGED'); expect(write).not.toHaveBeenCalled();
-  });
-});
-
-describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
-  const withTeamCopy = async (h: Awaited<ReturnType<typeof setup>>) => {
-    const tree = { ...h.tree, rootOrg: { ...h.tree.rootOrg, taskExecutions: [{
-      address: '/team', teamRunId: 'team-copy', startedAt: '2026-10-13T00:00:00.000Z', delegatorAgentRunId: 'worker', taskExecutions: [],
-      members: [{ address: '/team/lead', agentRunId: 'copy-lead', platformAgentRunId: null }],
-      source: { ...testOrgTeamCopySource({ teamDefinitionId: 'team', coordinatorAddress: '/team/lead', memberAddresses: ['/team/lead'],
-        launchConfiguration: (h.tree.rootOrg.members[1] as { defaultLaunchConfiguration: never }).defaultLaunchConfiguration }),
-        defaultLaunchSource: { origin: 'configured', fallbacks: [] } },
-    }] } };
-    await h.store.write(h.dir, tree as never);
-    return tree;
-  };
-
-  it('records a Team choice on a configured-placement copy in the same write as configured patches', async () => {
-    const h = await setup(); h.failStop(); await withTeamCopy(h);
-    const write = vi.spyOn(h.store, 'write');
-    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
-      selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
-      delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
-    expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
-    expect(write).toHaveBeenCalledTimes(1);
-    const saved = (await h.store.read(h.dir, 'org'))!;
-    expect(saved.rootOrg.taskExecutions[0]).toMatchObject({ teamRunId: 'team-copy',
-      userTeamLaunchSelection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } });
-    expect((saved.rootOrg.members[0] as { launchConfiguration: { llmModelIdentifier: string } }).launchConfiguration.llmModelIdentifier).toBe('equal');
-  });
-
-  it('refuses the whole Save when a delegated model is unavailable and writes nothing', async () => {
-    const h = await setup(); h.failStop(); await withTeamCopy(h);
-    const write = vi.spyOn(h.store, 'write');
-    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
-      selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
-      delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
-    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false,
-      message: expect.stringContaining("'not-offered' is not offered by AutoByteus now") });
-    expect(write).not.toHaveBeenCalled();
   });
 });
 

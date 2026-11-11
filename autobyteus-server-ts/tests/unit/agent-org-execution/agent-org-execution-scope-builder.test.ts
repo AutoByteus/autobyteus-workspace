@@ -11,7 +11,6 @@ import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execut
 import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(() => { while (roots.length) rmSync(roots.pop()!, { recursive: true, force: true }); });
@@ -40,7 +39,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       communicationMessages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
     });
     const publicationOrder: string[] = [];
-    const orgMemoryDir = mkdtempSync(join(tmpdir(), "agent-org-idle-restore-")); openEveryOwnFileUnder(orgMemoryDir);
+    const orgMemoryDir = mkdtempSync(join(tmpdir(), "agent-org-idle-restore-"));
     roots.push(orgMemoryDir);
     const executionTreeStore = new AgentOrgRunExecutionTreeStore();
     expect((await executionTreeStore.write(orgMemoryDir, executionTree)).outcome).toBe("committed");

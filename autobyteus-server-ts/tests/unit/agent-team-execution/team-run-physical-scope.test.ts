@@ -7,7 +7,6 @@ import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-ru
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamExecutionIndex } from "../../../src/agent-team-execution/services/team-execution-index.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { address, testAgentCopySource, testAgentNode, testAgentTeamNode, testCatalogTeamCopy, testExecutionTree, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 describe("TeamRunPhysicalScope", () => {
@@ -53,7 +52,6 @@ describe("TeamRunPhysicalScope", () => {
       children: [testAgentNode("/lead")],
     });
     expect(() => new TeamRunContext({
-      teamKind: "configured",
       physicalScope: createRootExecutionPhysicalScope({
         root: createTeamRootExecutionIdentity("root-run"),
         ancestorTeamRunIds: [],
@@ -64,7 +62,6 @@ describe("TeamRunPhysicalScope", () => {
       runtimeContext: null,
     })).toThrow("Physical scope contains TeamRun 'root-run', not 'child-run'");
     expect(() => new TeamRunContext({
-      teamKind: "configured",
       physicalScope: createRootExecutionPhysicalScope({
         root: createTeamRootExecutionIdentity("root-run"),
         ancestorTeamRunIds: [childNode.teamRunId],
@@ -74,53 +71,5 @@ describe("TeamRunPhysicalScope", () => {
       teamNode: config.rootTeam,
       runtimeContext: null,
     })).toThrow("does not own TeamRun");
-  });
-});
-
-describe("TeamExecutionIndex physical scope", () => {
-  it("derives one root-exclusive recursive task TeamRun chain", () => {
-    const baseTree = testExecutionTree({
-      rootTeamRunId: "root-run",
-      coordinatorAddress: "/lead",
-      children: [testAgentNode("/lead", { agentRunId: "root-agent" })],
-    });
-    let withTasks = addTaskExecutionToTree({
-      tree: baseTree,
-      execution: {
-        address: address("/lead"), agentRunId: "task-agent", platformAgentRunId: null,
-        delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:00:00.000Z",
-        source: testAgentCopySource("lead"),
-      },
-    });
-    withTasks = addTaskExecutionToTree({
-      tree: withTasks,
-      execution: testCatalogTeamCopy({
-        node: testAgentTeamNode({
-          address: "/task-team", coordinatorAddress: "/task-team/worker", teamRunId: "task-team-run",
-          children: [testAgentNode("/task-team/worker", { agentRunId: "task-team-agent" })],
-        }),
-        delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:01:00.000Z",
-      }),
-    });
-    // A task team nested in a task team: no longer created (task agents are linked at the top level, U-5),
-    // but the index still derives its released physical scope (the frozen location derivation reads it).
-    const deep = testCatalogTeamCopy({
-      node: testAgentTeamNode({
-        address: "/task-team/deep", coordinatorAddress: "/task-team/deep/worker", teamRunId: "deep-run",
-        children: [testAgentNode("/task-team/deep/worker", { agentRunId: "deep-agent" })],
-      }),
-      delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:02:00.000Z",
-    });
-    withTasks = { ...withTasks, rootTeam: { ...withTasks.rootTeam, taskExecutions: withTasks.rootTeam.taskExecutions.map((task) =>
-      "teamRunId" in task && task.teamRunId === "task-team-run" ? { ...task, taskExecutions: [deep] } : task) } };
-    const index = new TeamExecutionIndex(withTasks);
-
-    expect(index.getTeamRunPhysicalScope("root-run").ancestorTeamRunIds).toEqual([]);
-    expect(index.getTeamRunPhysicalScope("deep-run").ancestorTeamRunIds)
-      .toEqual(["task-team-run", "deep-run"]);
-    expect(index.getTeamRunPhysicalScope(index.requireAgent("task-agent").containingTeamRunId)
-      .ancestorTeamRunIds).toEqual([]);
-    expect(index.getTeamRunPhysicalScope(index.requireAgent("task-team-agent").containingTeamRunId)
-      .ancestorTeamRunIds).toEqual(["task-team-run"]);
   });
 });

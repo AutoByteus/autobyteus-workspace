@@ -10,7 +10,6 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /** autobyteus-461 SR-038 (design DS-8): a peer child's launches are read from the run's own file on its node when asked. */
 const roots: string[] = [];
@@ -23,7 +22,7 @@ describe("PeerStartedRunLaunches (node B)", () => {
   it("an agent run's own launch and a team's members' launches, from their own files; a changed launch reads changed", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "peer-launches-"));
     roots.push(memory);
-    openEveryOwnFileUnder(memory);
+   
     const metadata = (model: string) => ({ runId: "writer_1", agentDefinitionId: "writer", address: "/writer", workspaceRootPath: "/w", memoryDir: path.join(memory, "agents", "writer_1"),
       llmModelIdentifier: model, llmConfig: null, autoExecuteTools: true, runtimeKind: "autobyteus", platformAgentRunId: null, launchSource: routed }) as never;
     await new AgentRunMetadataStore(memory).writeMetadata("writer_1", metadata("sonnet"));

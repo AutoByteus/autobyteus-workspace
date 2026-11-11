@@ -26,7 +26,6 @@ import {
   testMemberExecutionContext,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const loggingConfig = Object.freeze({
   pinoLogLevel: "silent" as const,
@@ -113,7 +112,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
     const memoryDir = await fs.mkdtemp(
       path.join(os.tmpdir(), "team-agent-tools-lifecycle-"),
     );
-    tempDirs.push(memoryDir); openEveryOwnFileUnder(memoryDir);
+    tempDirs.push(memoryDir);
 
     const host = createAgentToolsMcpHost({ loggingConfig });
     const authority = host.sessionAuthorities.begin({

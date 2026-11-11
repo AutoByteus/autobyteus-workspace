@@ -31,7 +31,6 @@ import { TeamCommunicationStore } from "../../../src/services/team-communication
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { T0, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { InMemoryMigrationLedger, runStart } from "../../helpers/migration-start-harness.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * `20261018_append_only_message_logs_v1` (design DS-005; AC-004, AC-006, AC-007) on faithful synthesized
@@ -50,7 +49,7 @@ afterEach(async () => {
 });
 
 const dataRoot = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "append-only-logs-migration-")); roots.push(root); openEveryOwnFileUnder(path.join(root, "memory"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "append-only-logs-migration-")); roots.push(root);
   return { root, memory: path.join(root, "memory") };
 };
 const ledgerWith = (pending: readonly string[] = []) => ({

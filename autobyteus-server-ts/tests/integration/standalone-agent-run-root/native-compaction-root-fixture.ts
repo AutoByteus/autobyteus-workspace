@@ -20,7 +20,6 @@ import { AgentMemoryLayout } from '../../../src/agent-memory/store/agent-memory-
 import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 import type { TaskExecution } from '../../../src/run-history/domain/run-execution-tree-shared-records.js';
 import { createRecoveryFixture } from '../../unit/agent-execution/recovery-native-fixture.js';
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 export const HOST = 'native-compaction-host';
 
@@ -51,7 +50,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
     if (errors.length) throw new AggregateError(errors, 'Native root fixture cleanup failed');
   };
   try {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'native-root-compaction-')); openEveryOwnFileUnder(memoryDir);
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'native-root-compaction-'));
     const agents = ['host', 'reviewer', 'lead', 'peer'].map(id =>
       new AgentDefinition({ id, name: id, description: id, instructions: 'Keep scope.' }));
     const team = new AgentTeamDefinition({

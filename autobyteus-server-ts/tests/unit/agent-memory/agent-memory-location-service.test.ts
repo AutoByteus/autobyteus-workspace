@@ -14,7 +14,6 @@ import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execu
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentCopySource, testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
@@ -38,7 +37,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
   let layout: AgentMemoryLayout;
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-current-")); openEveryOwnFileUnder(memoryDir);
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-memory-location-current-"));
     layout = new AgentMemoryLayout(memoryDir);
     const baseTree = withTaskAgent(testExecutionTree({
       rootTeamRunId: "root-team-run",

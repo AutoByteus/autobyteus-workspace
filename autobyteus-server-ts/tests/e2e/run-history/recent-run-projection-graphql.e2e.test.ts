@@ -25,7 +25,6 @@ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -270,7 +269,7 @@ describe("recent run projection GraphQL e2e", () => {
     memoryDir = appConfigProvider.config.getMemoryDir();
     // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
     // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
-    openEveryOwnFileUnder(memoryDir);
+   
     // This file runs in its own Vitest worker. Never borrow or replace another
     // process instance: initialize explicitly and release only these instances.
     ownedAgentRunManager = AgentRunManager.initializeProcessInstance({

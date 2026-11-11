@@ -25,7 +25,6 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { bindTestOpenDelegatedRuns } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -84,7 +83,6 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   let run: AgentOrgRun | undefined;
   const resources = new InMemoryTaskExecutionResources();
   // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
-  bindTestOpenDelegatedRuns(resources);
   const callbacks: FlatTeamExecutionCallbacks = {
     buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
     publishAgentEvent: (identity, event) => run?.onAgentExecutionEvent(identity, event),

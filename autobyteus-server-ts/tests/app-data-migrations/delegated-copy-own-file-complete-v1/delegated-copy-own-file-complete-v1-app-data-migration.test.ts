@@ -28,7 +28,6 @@ import {
   T0, agentFile, configuredAgent, edit, fallback, launch, link, mountedTeam, otherLaunch, projected, put, readJson,
   releasedAgentOwnFile, releasedTeamOwnTree, slotLaunch, teamFile, writeHub, writeOrgRun, writeTeamRun,
 } from "../../fixtures/app-data-migrations/released-delegated-copy-own-file-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 import { AtomicRunPackageFileCommitWriter as FrozenWriter } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
 
 /**
@@ -42,7 +41,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
 const memoryRoot = async (): Promise<string> => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "delegated-copy-own-file-")); openEveryOwnFileUnder(path.join(root, "memory"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "delegated-copy-own-file-"));
   roots.push(root);
   return path.join(root, "memory");
 };

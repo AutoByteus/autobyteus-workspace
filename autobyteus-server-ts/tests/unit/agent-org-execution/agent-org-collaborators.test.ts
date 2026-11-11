@@ -27,7 +27,7 @@ describe("`@` mentions of an AgentOrg run", () => {
     // REQ-002: the note tells the focused agent to delegate to the address.
     expect(posted.content).toMatch(/\n- Product Team \(agent team\) at \/product_team: delegate the task to it with delegate_task; it returns a run id to follow up with\.$/);
     expect(posted.content).not.toMatch(/create_or_update_task|update_task|task_id/);
-    expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual([]);
+    expect(JSON.stringify(await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))).not.toContain("taskExecutions");
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "accepted" } });
 
     await stream.handleMessage(session!, JSON.stringify({ type: "SEND_MESSAGE", payload: {

@@ -125,8 +125,6 @@ describe("Team communication API integration", () => {
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
 
     vi.resetModules();
-    // Bound in the module graph the app uses after the reset (autobyteus-469: a tree read needs its source).
-    (await import("../../fixtures/open-delegated-run-sources.js")).openEveryOwnFileUnder(path.join(appDataDir, "memory"));
     const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir });

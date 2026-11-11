@@ -7,7 +7,6 @@ import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-d
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { writeRun } from "../../helpers/memory-search-fixtures.js";
-import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const turn = [{ day: "2026-08-25", user: "hello", agent: "hi" }];
 const launch = (runtimeKind: RuntimeKind, workspaceRootPath: string | null) =>
@@ -39,7 +38,7 @@ const writeTaskTeam = (memoryDir: string, teamRunId: string, hostRunId: string, 
 
 describe("MemoryRunDiscovery", () => {
   let memoryDir: string;
-  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-discovery-")); openEveryOwnFileUnder(memoryDir); });
+  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-discovery-")); });
   afterEach(() => { fs.rmSync(memoryDir, { recursive: true, force: true }); vi.restoreAllMocks(); });
 
   it("finds every run kind with names, workspace and runtime as recorded, and folders no record attributes", async () => {
@@ -179,7 +178,7 @@ describe("MemoryRunDiscovery", () => {
 
 describe("TaskTeamRootMemorySource", () => {
   let memoryDir: string;
-  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "task-team-source-")); openEveryOwnFileUnder(memoryDir); });
+  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "task-team-source-")); });
   afterEach(() => fs.rmSync(memoryDir, { recursive: true, force: true }));
 
   it("lists the task teams whose coordinating run still exists, with members, launch and delegator, from their own trees", async () => {

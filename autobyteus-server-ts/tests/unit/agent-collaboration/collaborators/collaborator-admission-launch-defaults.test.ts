@@ -4,7 +4,6 @@ import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-defi
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../../../src/agent-collaboration/collaborators/collaborator-root-port.js";
-import { projectTaskExecutionSource } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -99,9 +98,10 @@ describe("admission honors definition launch defaults", () => {
     const recorded = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     run.state.agents.find((item) => item.id === "implementation_engineer")!.defaultLaunchConfig =
       { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-model", llmConfig: null };
-    const restored = projectTaskExecutionSource("/software_engineering_team" as never, recorded!.source);
-    expect(restored.kind === "agent_team" && restored.node.children.find((child) => child.address === "/software_engineering_team/implementation_engineer"))
-      .toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" });
+    // The started team's source is its own snapshot: a later definition change does not reach it (AC-008).
+    const member = recorded!.source.kind === "agent_team"
+      ? recorded!.source.members.find((candidate) => candidate.address === "/software_engineering_team/implementation_engineer") : null;
+    expect(member?.launchConfiguration).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" });
     const fresh = await run.admission.catalogTaskSource(port(), { address: "/implementation_engineer", senderRunId: "pm", workspaceRootPath: null });
     expect(fresh?.source).toMatchObject({ kind: "agent", launchConfiguration: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-model" } });
   });

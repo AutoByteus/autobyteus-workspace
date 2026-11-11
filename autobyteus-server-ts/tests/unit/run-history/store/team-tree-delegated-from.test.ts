@@ -4,18 +4,13 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
-import { STANDALONE_ROOT_TREE_SHAPE, TEAM_RUN_TREE_SHAPE } from "../../../../src/run-history/store/coordinating-tree-shapes.js";
-import { agentRunIdsOfTree } from "../../../../src/run-history/store/task-execution-tree-split.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * autobyteus-247 design § On-Disk Data Model: a Team run a peer started carries `delegatedFrom` on its tree (tolerant
- * read: absent means not peer-started; exact write), and `agentRunIdsOfTree` is the one message-endpoint rule: it adds
- * every member of a remote Team link, and the delegator of a back-link (stored on a Team tree; given for a standalone
- * run, whose back-link is in `run_metadata.json`).
+ * read: absent means not peer-started; exact write).
  */
 
 const roots: string[] = [];
@@ -27,7 +22,7 @@ const delegatedFrom = { delegatingRun: { kind: "agent_team" as const, runId: "te
 const base = () => testExecutionTree({ rootTeamRunId: "team-b", coordinatorAddress: "/lead",
   children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] });
 const teamDir = async () => {
-  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "team-delegated-from-")); openEveryOwnFileUnder(memory);
+  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "team-delegated-from-"));
   roots.push(memory);
   return new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-b", ancestorTeamRunIds: [] });
 };
@@ -56,17 +51,4 @@ describe("delegatedFrom on a Team run tree", () => {
     // A peer-started run always records its delegator.
     expect(() => validateTeamRunExecutionTreePayload({ ...base(), delegatedFrom: { nodeId: "n", delegatingRun: { kind: "agent", runId: "r" } } }, "team-b")).toThrow(/delegatorAgentRunId/);
   });
-});
-
-describe("agentRunIdsOfTree: the one message-endpoint rule", () => {
-  it("adds every member of a remote Team link, and the delegator of the Team tree's own back-link", () => {
-    const linked = validateTeamRunExecutionTreePayload({ ...base(), delegatedFrom, rootTeam: { ...base().rootTeam, remoteTaskExecutions: [{
-      kind: "agent_team", address: "/studio_team", teamRunId: "studio-c", nodeId: "srv_node_c", coordinatorAddress: "/studio_team/lead",
-      members: [{ address: "/studio_team/lead", agentRunId: "studio-lead" }, { address: "/studio_team/writer", agentRunId: "studio-writer" }],
-      delegatorAgentRunId: "lead-b", startedAt: T0,
-    }] } }, "team-b");
-    expect([...agentRunIdsOfTree(TEAM_RUN_TREE_SHAPE, linked)].sort()).toEqual(["lead-b", "lead_a", "studio-lead", "studio-writer", "writer-b"]);
-    expect(agentRunIdsOfTree(TEAM_RUN_TREE_SHAPE, validateTeamRunExecutionTreePayload(base(), "team-b")).has("lead_a")).toBe(false);
-  });
-
 });

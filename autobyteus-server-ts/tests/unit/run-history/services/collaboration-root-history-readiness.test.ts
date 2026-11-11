@@ -25,7 +25,6 @@ import { TeamRunHistoryService } from "../../../../src/run-history/services/team
 import { WorkspaceRunHistoryService } from "../../../../src/run-history/services/workspace-run-history-service.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -40,7 +39,7 @@ afterEach(async () => {
 
 describe("first mixed collaboration history after restart", () => {
   it("awaits one complete readiness generation and retains Team workspace history and Restore", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "mixed-history-readiness-")); openEveryOwnFileUnder(memoryDir);
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "mixed-history-readiness-"));
     roots.push(memoryDir);
     const layout = new AgentMemoryLayout(memoryDir);
     const teamRunId = "retained-team-run";

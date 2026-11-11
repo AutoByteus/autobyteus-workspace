@@ -22,7 +22,6 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { bindTestOpenDelegatedRuns } from "../../../fixtures/open-delegated-run-sources.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -61,7 +60,6 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   let allocation = 0;
   // The root's Task side also answers which delegated runs are in its tree (autobyteus-469 D-1).
   const taskExecutionResources = new InMemoryTaskExecutionResources();
-  bindTestOpenDelegatedRuns(taskExecutionResources);
   const dependencies = {
     factory: new FlatTeamExecutionFactory(),
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({

@@ -47,7 +47,6 @@ import {
   testCopyLaunch,
   testExecutionTree,
 } from "../../../fixtures/current-team-run-fixtures.js";
-import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 type MultipartPart =
   | { name: string; value: string }
@@ -183,7 +182,7 @@ describe("REST context-files routes", () => {
 
   beforeEach(async () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-context-files-"));
-    memoryDir = path.join(tempDir, "memory"); openEveryOwnFileUnder(memoryDir);
+    memoryDir = path.join(tempDir, "memory");
     appConfigState.root = tempDir;
     for (const id of ["run-A", "run-display"]) writeAttachmentAgentMetadata(memoryDir, id);
     app = fastify();
