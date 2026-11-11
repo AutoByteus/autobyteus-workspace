@@ -111,6 +111,8 @@
 //                  alpha's desktop window, last). MSP-37 autobyteus-471: a desktop window that is not the embedded one opens
 //                  files outside the run's folder read-only in the Files panel, with plain reasons for a missing path and
 //                  a folder (same file, after MSP-31).
+//   MSP-39 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
+//                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
@@ -152,6 +154,7 @@ import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeN
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
+import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -1686,6 +1689,9 @@ const runCases = async () => {
       page.off('console', onConsole);
     }
   });
+
+  // autobyteus-472: touch zoom and Download in the phone viewer (`mobile-file-zoom-cases.mjs`).
+  await runFileZoomCases({ runCase, page, stack, sel, toList, openRow, shot, sendOver, waitFor, sleep, assert, outputDir });
 
   await runCase('MSP-14', async () => {
     await toList(page);
