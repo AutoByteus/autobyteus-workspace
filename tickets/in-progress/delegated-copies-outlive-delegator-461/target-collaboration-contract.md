@@ -235,6 +235,20 @@ Each one is also in its own run's log (or logs), with the same `messageId`. The 
 | `taskAgent`, `hostRoot`, `assignedBy`, `coordinatingRun`, `collaboration_tree.json`, `taskExecutions`, `remoteTaskExecutions`, `followsTeam`, team `userLaunchSelection` | — | Removed | §6 |
 | `DelegationTree` | Memory | Added, not stored | Derived (§4) |
 
+### 3.7 Each record and its one owner in code
+
+The code mirrors this model: one owner writes each record, and the others only read it (the design's Ownership Map).
+
+| Record | Written by (one owner) | Read by |
+| --- | --- | --- |
+| Task entry, with its `delegatedFrom` and `recipientAddress` (§3.1) | The Task side (`TaskExecutionResourceService`), in the Task's ordered change | `DelegationTree`, `CrossRunMessageDelivery`, the views, the run list |
+| A delegated run's own file, with its `delegatedFrom` (§3.2) | `DelegatedRunStarter`, once, at creation; afterwards the ordinary run services for the run's own fields | The run's own root, the run list label, the Memory page; the peer back-link only when `isPeerStarted` |
+| A run's own file, when the user started the run (RUN-1 … RUN-3) | The ordinary run services | That run's root |
+| `address` in `run_metadata.json` (§3.3) | The agent run's own root, when it first collaborates; `DelegatedRunStarter` for a delegated run | Address resolution, headers |
+| A run's message log (§3.4) | That run's own root, and only its own log; `CrossRunMessageDelivery` asks each of the two roots to append | That run's view |
+| A run list row | The run history services; `DelegatedRunStarter` for a delegated run | The run list |
+| `DelegationTree` (§4) | Collaboration, from the Task side's change notices | `CrossRunMessageDelivery`, views, token totals, the restart notice |
+
 ## 4. In memory: the `DelegationTree`
 
 Collaboration owns it (TC-11). It holds the relationships between runs for communication and views, as the old root's tree did, but holds no run's life (P6).
