@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { TaskTeamRootMemorySource } from "../../../src/agent-memory/services/task-team-root-memory-source.js";
 import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
@@ -14,27 +13,6 @@ const launch = (runtimeKind: RuntimeKind, workspaceRootPath: string | null) =>
 
 /** A task agent team's own tree, linked from a standalone host's collaboration tree when `linked`. */
 /** `linked`: its coordinating run still exists (its own file; autobyteus-469 D-6), else it is detached. */
-const writeTaskTeam = (memoryDir: string, teamRunId: string, hostRunId: string, linked: boolean, overrides: Readonly<{ member?: object; taskAgent?: object }> = {}): void => {
-  const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
-  fs.mkdirSync(teamDir, { recursive: true });
-  fs.writeFileSync(getTeamRunExecutionTreePath(teamDir), JSON.stringify({
-    createdAt: "2026-08-20T10:00:00.000Z",
-    handoffs: [],
-    rootTeam: {
-      address: "/Research_Crew", teamDefinitionId: "research-crew", teamRunId, coordinatorAddress: "/Research_Crew/lead",
-      defaultLaunchConfiguration: launch(RuntimeKind.CODEX_APP_SERVER, "/w/research"),
-      members: [{
-        address: "/Research_Crew/lead", agentDefinitionId: "lead-def", agentRunId: `lead_${teamRunId}`, platformAgentRunId: null,
-        launchConfiguration: launch(RuntimeKind.CLAUDE_AGENT_SDK, "/w/research"), followsTeam: true, ...overrides.member,
-      }],
-      taskExecutions: [],
-    },
-    taskAgent: { coordinatingRun: { kind: "agent", runId: hostRunId }, delegatorAgentRunId: hostRunId, address: "/Research_Crew", ...overrides.taskAgent },
-  }));
-  if (!linked) return;
-  fs.mkdirSync(path.join(memoryDir, "agents", hostRunId), { recursive: true });
-  fs.writeFileSync(path.join(memoryDir, "agents", hostRunId, "run_metadata.json"), "{}");
-};
 
 describe("MemoryRunDiscovery", () => {
   let memoryDir: string;
@@ -54,10 +32,10 @@ describe("MemoryRunDiscovery", () => {
     const discovery = new MemoryRunDiscovery(memoryDir, {
       agentCatalog: { listCatalogRows: async () => [{ runId: "codex_45ce0001", agentDefinitionId: "codex-def", agentName: "Codex", workspaceRootPath: "/w/catalog" }] as never },
       agentMetadata: {
+        // A delegated agent run is an ordinary run with its own run_metadata.json (autobyteus-461).
         readMetadata: async (runId: string) => runId === "codex_45ce0001"
-          ? { agentDefinitionId: "codex-def", workspaceRootPath: "/w/mcps", runtimeKind: RuntimeKind.CODEX_APP_SERVER } as never : null,
-        readTaskAgentMetadata: async (runId: string) => runId === "helper_9a11"
-          ? { agentDefinitionId: "helper-def", workspaceRootPath: null, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, taskAgent: {} } as never : null,
+          ? { agentDefinitionId: "codex-def", workspaceRootPath: "/w/mcps", runtimeKind: RuntimeKind.CODEX_APP_SERVER } as never
+          : runId === "helper_9a11" ? { agentDefinitionId: "helper-def", workspaceRootPath: null, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK } as never : null,
       },
       teamLocations: { listAgents: async () => [{
         rootTeamRunId: "team_1", agentRunId: "solution_designer_77aa", memberAddress: "/Engineering/solution_designer", executionKind: "configured",
@@ -68,7 +46,6 @@ describe("MemoryRunDiscovery", () => {
         rootRunId: "org_1", agentRunId: "reviewer_5555", memberAddress: "/team_a/reviewer", groupPath: [], memoryDir: orgMember,
         tree: { rootOrg: { orgDefinitionName: "Product Org" } }, configuredPlacement: null,
       }] as never },
-      taskTeams: { listTaskTeams: async () => [] },
     });
     const runs = await discovery.findRuns();
     const byKey = new Map(runs.map((run) => [run.runKey, run]));
@@ -103,16 +80,15 @@ describe("MemoryRunDiscovery", () => {
           ...(runId === "switched_1" ? { pendingRuntimeSwitch: { switchId: "2026-10-30T10:00:00.000Z",
             from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "m", llmConfig: null, platformAgentRunId: "s" } } } : {}),
         }) as never,
-        readTaskAgentMetadata: async () => null,
       },
-      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
     });
     const runs = new Map((await discovery.findRuns()).map((run) => [run.runId, run]));
     expect(runs.get("switched_1")?.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
     expect(runs.get("plain_1")?.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
   });
 
-  it("targets a Team or Org member's journal with the previous agent runtime while its switch is pending, and a task agent with its choice's runtime (autobyteus-348)", async () => {
+  it("targets a Team or Org member's journal with the previous agent runtime while its switch is pending (autobyteus-348)", async () => {
     const pending = { switchId: "2026-11-01T10:00:00.000Z",
       from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "m", llmConfig: null, platformAgentRunId: "s" } };
     const located = (memoryDir: string, agentRunId: string, runtimeKind: RuntimeKind, pendingRuntimeSwitch?: object) => ({
@@ -123,32 +99,20 @@ describe("MemoryRunDiscovery", () => {
     const teamSwitched = writeRun(memoryDir, "agent_teams/team_1/switched_t", turn);
     const teamPlain = writeRun(memoryDir, "agent_teams/team_1/plain_t", turn);
     const orgSwitched = writeRun(memoryDir, "agent_orgs/org_1/switched_o", turn);
-    writeRun(memoryDir, "agents/copy_1", turn);
-    writeRun(memoryDir, "agents/copy_2", turn);
-    const copy = (userLaunchSelection: object | undefined, pendingRuntimeSwitch: object | undefined) => ({
-      agentDefinitionId: "d", workspaceRootPath: null, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      taskAgent: { ...(userLaunchSelection ? { userLaunchSelection } : {}), ...(pendingRuntimeSwitch ? { pendingRuntimeSwitch } : {}) },
-    });
     const discovery = new MemoryRunDiscovery(memoryDir, {
       agentCatalog: { listCatalogRows: async () => [] },
       agentMetadata: {
         readMetadata: async () => null,
-        readTaskAgentMetadata: async (runId: string) => (runId === "copy_1"
-          ? copy({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "m2", llmConfig: null }, { ...pending, from: { ...pending.from, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK } })
-          : copy({ llmModelIdentifier: "m2", llmConfig: null }, undefined)) as never,
       },
       teamLocations: { listAgents: async () => [
         located(teamSwitched, "switched_t", RuntimeKind.CODEX_APP_SERVER, pending), located(teamPlain, "plain_t", RuntimeKind.CODEX_APP_SERVER),
       ] as never },
       orgLocations: { listAgents: async () => [located(orgSwitched, "switched_o", RuntimeKind.AUTOBYTEUS, pending)] as never },
-      taskTeams: { listTaskTeams: async () => [] },
     });
     const runs = new Map((await discovery.findRuns()).map((run) => [run.runId, run]));
     expect(runs.get("switched_t")?.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
     expect(runs.get("plain_t")?.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
     expect(runs.get("switched_o")?.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
-    expect(runs.get("copy_1")?.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
-    expect(runs.get("copy_2")?.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
   });
 
   it("leaves a source that cannot be read to the folder rule, with one warning", async () => {
@@ -156,7 +120,7 @@ describe("MemoryRunDiscovery", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const runs = await new MemoryRunDiscovery(memoryDir, {
       teamLocations: { listAgents: async () => { throw new Error("tree unreadable"); } },
-      orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+      orgLocations: { listAgents: async () => [] },
       agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
     }).findRuns();
     expect(runs.map((run) => run.subject)).toEqual([{ kind: "RUN_FOLDER", runKey: "agent_teams/team_1/member_1" }]);
@@ -169,59 +133,9 @@ describe("MemoryRunDiscovery", () => {
     writeRun(memoryDir, "imports/docker-node-1/agents/imported_run_1", turn);
     writeRun(memoryDir, "imports/docker-node-1/agent_teams/team_9/member_9", turn);
     const runs = await new MemoryRunDiscovery(memoryDir, {
-      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
-      agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
-    }).findRuns();
-    expect(runs.map((run) => run.runKey)).toEqual(["agents/local_run_1"]);
-  });
-});
-
-describe("TaskTeamRootMemorySource", () => {
-  let memoryDir: string;
-  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "task-team-source-")); });
-  afterEach(() => fs.rmSync(memoryDir, { recursive: true, force: true }));
-
-  it("lists the task teams whose coordinating run still exists, with members, launch and delegator, from their own trees", async () => {
-    writeTaskTeam(memoryDir, "crew_linked", "host_a", true);
-    writeTaskTeam(memoryDir, "crew_detached", "host_b", false);
-    const source = new TaskTeamRootMemorySource(memoryDir);
-    const teams = await source.listTaskTeams();
-    expect(teams).toEqual([{
-      teamRunId: "crew_linked", teamDefinitionId: "research-crew", displayName: "Research_Crew", createdAt: "2026-08-20T10:00:00.000Z",
-      coordinatingRun: { kind: "agent", runId: "host_a" }, delegatorAgentRunId: "host_a",
-      members: [{
-        memberAddress: "/Research_Crew/lead", displayName: "lead", agentRunId: "lead_crew_linked", agentDefinitionId: "lead-def",
-        launchConfiguration: launch(RuntimeKind.CLAUDE_AGENT_SDK, "/w/research"),
-        memoryDir: path.join(memoryDir, "agent_teams", "crew_linked", "lead_crew_linked"),
-      }],
-    }]);
-    expect(await source.listRootRunIds()).toEqual(["crew_linked"]);
-
-    // autobyteus-348: a task team member runs with its own choice, else the followed Team choice; a pending switch rides along.
-    const pending = { switchId: "2026-11-01T10:00:00.000Z",
-      from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "m", llmConfig: null, platformAgentRunId: "s" } };
-    writeTaskTeam(memoryDir, "crew_own", "host_c", true, { member: { userLaunchSelection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "x", llmConfig: null, selectedAt: "2026-11-01T10:00:00.000Z" }, pendingRuntimeSwitch: pending } });
-    writeTaskTeam(memoryDir, "crew_team", "host_d", true, { taskAgent: { userLaunchSelection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "y", llmConfig: null, selectedAt: "2026-11-01T10:00:00.000Z" } } });
-    const byTeam = new Map((await source.listTaskTeams()).map((team) => [team.teamRunId, team.members[0]!]));
-    expect(byTeam.get("crew_own")?.launchConfiguration.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
-    expect(byTeam.get("crew_own")?.pendingRuntimeSwitch).toEqual(pending);
-    expect(byTeam.get("crew_team")?.launchConfiguration.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
-    expect(byTeam.get("crew_team")?.pendingRuntimeSwitch).toBeUndefined();
-    fs.rmSync(path.join(memoryDir, "agent_teams", "crew_own"), { recursive: true, force: true });
-    fs.rmSync(path.join(memoryDir, "agent_teams", "crew_team"), { recursive: true, force: true });
-    expect(await source.readTaskTeam("crew_detached")).toBeNull();
-    expect((await source.readRoot("crew_linked"))?.members.map((member) => member.executionKind)).toEqual(["TASK_TEAM_MEMBER"]);
-
-    // Discovery attributes a linked task team's member; a detached one is still found, by its folder (R-012).
-    writeRun(memoryDir, "agent_teams/crew_linked/lead_crew_linked", turn);
-    writeRun(memoryDir, "agent_teams/crew_detached/lead_crew_detached", turn);
-    const runs = await new MemoryRunDiscovery(memoryDir, {
       teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] },
       agentCatalog: { listCatalogRows: async () => [] }, agentMetadata: { readMetadata: async () => null, readTaskAgentMetadata: async () => null },
     }).findRuns();
-    expect(runs.map((run) => [run.runKey, run.teamName, run.runtimeKind, run.subject.kind])).toEqual([
-      ["agent_teams/crew_detached/lead_crew_detached", null, null, "RUN_FOLDER"],
-      ["agent_teams/crew_linked/lead_crew_linked", "Research_Crew", RuntimeKind.CLAUDE_AGENT_SDK, "TEAM_MEMBER"],
-    ]);
+    expect(runs.map((run) => run.runKey)).toEqual(["agents/local_run_1"]);
   });
 });
