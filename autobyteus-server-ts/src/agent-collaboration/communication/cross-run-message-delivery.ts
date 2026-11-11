@@ -34,6 +34,8 @@ export type CrossRunMessageInput = Readonly<{
   content: string;
   messageType: string;
   referenceFiles: readonly string[];
+  /** How the sender named the receiver: its address (§2.3 step 2), else its run ID. */
+  shownAs?: string;
 }>;
 
 /** The refusal of a message between two runs of different Tasks (contract §2.2), as today. */
@@ -98,7 +100,7 @@ export class CrossRunMessageDelivery {
       return reactivated ? { ...accepted, message: `${accepted.message ?? "The message was not delivered."} ${input.targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` } : accepted;
     }
     await sender.commitSentToRun(prepared.message);
-    const delivered = accepted.message ?? `Delivered message to ${input.targetAgentRunId}.`;
+    const delivered = accepted.message ?? `Delivered message to ${input.shownAs ?? input.targetAgentRunId}.`;
     return { ...accepted, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
   }
 

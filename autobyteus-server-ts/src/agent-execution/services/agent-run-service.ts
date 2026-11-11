@@ -296,6 +296,13 @@ export class AgentRunService {
     return this.provisioningService.getRunMetadata(runId);
   }
 
+  /** The run collaborates (contract §3.3, §3.5): its own address is fixed, once, and its history row says so. */
+  async recordCollaborating(runId: string, address: AgentTeamAddress): Promise<void> {
+    const metadata = await this.metadataService.readMetadata(runId);
+    if (metadata && !metadata.address) await this.metadataService.writeMetadata(runId, { ...metadata, address });
+    await this.historyCatalogService.recordCollaborationPackageCreated({ runId });
+  }
+
   async recordRunActivity(
     run: AgentRun,
     input: {

@@ -8,6 +8,8 @@ import type { TeamRunService } from "../agent-team-execution/services/team-run-s
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { bindCrossRunMessageDelivery, CrossRunMessageDelivery, unbindCrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import { bindCrossRunAddressResolution, CrossRunAddressResolution, unbindCrossRunAddressResolution } from "../agent-collaboration/communication/cross-run-address-resolution.js";
+import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
 
 /**
  * The process `TaskDelegation` (autobyteus-461 DS-1): every root delegates through it. A new run is created by
@@ -16,13 +18,17 @@ import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/ex
  */
 export const composeTaskDelegation = (deps: Readonly<{
   tasks: TaskExecutionResourcePort;
-  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "cancelPreparedAgentRun">;
+  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "cancelPreparedAgentRun" | "recordCollaborating">;
   teamRuns: Pick<TeamRunService, "createTeamRun" | "terminateTeamRun">;
   rootResolver: CollaborationRootResolver;
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve">;
+  memoryDir: string;
 }>): Readonly<{ release(): void }> => {
+  // Contract §2.3 step 2: an address of the run that assigned the sender's Task; §2.4: the sender's address the receiver may use.
+  const addresses = new CrossRunAddressResolution({ tree: () => getDelegationTree(), standing: new RunOwnAgentsReader(deps.memoryDir) });
   // DS-2: messages between two runs of this node; the sender is active, the receiver is restored when stopped.
   const crossRun = new CrossRunMessageDelivery({
+    senderAddress: (input) => addresses.reachingAddress(input.sender, input.receiverRun),
     tree: () => getDelegationTree(),
     tasks: () => deps.tasks,
     senderRoot: (run) => {
@@ -42,6 +48,7 @@ export const composeTaskDelegation = (deps: Readonly<{
       if (!resolved || resolved.kind === "agent_org") return { accepted: false, code: "TARGET_NOT_FOUND", message: `Run '${run.rootRunId}' is not available.` };
       return resolved.root.acceptWorkPacket(packet);
     },
+    recordCollaborating: (agentRunId, address) => deps.agentRuns.recordCollaborating(agentRunId, address),
     discard: async (run) => {
       if ("agentRunId" in run) await deps.agentRuns.cancelPreparedAgentRun(run.agentRunId);
       else await deps.teamRuns.terminateTeamRun(run.teamRunId);
@@ -49,5 +56,6 @@ export const composeTaskDelegation = (deps: Readonly<{
   });
   bindTaskDelegation(delegation);
   bindCrossRunMessageDelivery(crossRun);
-  return Object.freeze({ release: () => { unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); } });
+  bindCrossRunAddressResolution(addresses);
+  return Object.freeze({ release: () => { unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); unbindCrossRunAddressResolution(addresses); } });
 };

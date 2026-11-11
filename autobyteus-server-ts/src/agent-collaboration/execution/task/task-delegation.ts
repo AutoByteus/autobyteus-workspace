@@ -77,6 +77,8 @@ export class TaskDelegation {
     discard(run: TaskExecutionReference): Promise<void>;
     /** The peer channel; by default the process's (none where remote collaboration is not composed). */
     channel?(): RemoteRunChannel | null;
+    /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
+    recordCollaborating?(agentRunId: string, address: AgentTeamAddress): Promise<void>;
   }>) {}
 
   /**
@@ -123,6 +125,7 @@ export class TaskDelegation {
       if (refusal && !refusal.delegated) return refused(refusal.message);
       throw error;
     }
+    await this.recordCollaborating(input);
     const delivered = await channel.deliverMessage({ nodeId: placement.peer.nodeId, kind: "work_packet", senderAgentRunId: input.sender.agentRunId,
       targetRoot: team ? { kind: "agent_team", runId: started.teamRunId } : { kind: "agent", runId: entryAgentRunId }, targetAgentRunId: entryAgentRunId,
       content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString() })
@@ -200,6 +203,7 @@ export class TaskDelegation {
       if (refusal) return refusal;
       throw error;
     }
+    await this.recordCollaborating(input);
     // 5. The work packet starts the run in its own root.
     const run = copy.kind === "agent" ? { rootSubjectKind: "agent" as const, rootRunId: copy.agentRunId } : { rootSubjectKind: "agent_team" as const, rootRunId: copy.teamRunId };
     let delivered: AgentOperationResult;
@@ -220,6 +224,10 @@ export class TaskDelegation {
     const createdTaskId = work.join.role === "assigned" && "adHocTask" in work.join ? link.taskId : null;
     return { delegated: true, copy, ...(createdTaskId ? { taskId: createdTaskId } : {}),
       ...(placement.launchNotes?.length ? { launchNotes: placement.launchNotes } : {}) };
+  }
+
+  private async recordCollaborating(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderRun: RootExecutionIdentity }>): Promise<void> {
+    if (input.senderRun.rootSubjectKind === "agent") await this.dependencies.recordCollaborating?.(input.senderRun.rootRunId, input.sender.memberAddress);
   }
 
   /**

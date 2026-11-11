@@ -140,8 +140,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     this.hostContexts = new StandaloneHostMemberContextBuilder({
       definitions: options.definitions,
       getActiveRoot: (hostRunId) => this.getActive(hostRunId),
-      readStoredHostAddress: async (hostRunId) =>
-        (await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId))?.host.address ?? null,
+      readStoredHostAddress: async (hostRunId) => (await this.options.host.readMetadata(hostRunId))?.address ?? null, // contract §3.3
     });
   }
 

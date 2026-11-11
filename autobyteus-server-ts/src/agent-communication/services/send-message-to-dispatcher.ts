@@ -13,6 +13,7 @@ import {
 } from "./send-message-to-tool-argument-parser.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "./send-message-to-tool-contract.js";
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { findCrossRunAddressResolution, type CrossRunAddressResolution } from "../../agent-collaboration/communication/cross-run-address-resolution.js";
 
 export type SendMessageToDispatcherInput = {
   toolName?: string | null;
@@ -36,6 +37,7 @@ export class SendMessageToDispatcher {
 
   constructor(private readonly deps: {
     globalRouter?: GlobalAgentRunMessageRouter;
+    crossRunAddresses?: Pick<CrossRunAddressResolution, "resolve"> | null;
   } = {}) {}
 
   async dispatch(input: SendMessageToDispatcherInput): Promise<AgentOperationResult> {
@@ -78,19 +80,19 @@ export class SendMessageToDispatcher {
       };
     }
 
+    const recipientAddress = parsed.target.recipientAddress;
     let result: AgentOperationResult;
     try {
-      result = await delivery({
-      recipientAddress: assertAgentTeamAddress(parsed.target.recipientAddress),
-      content,
-      messageType: parsed.messageType,
-      referenceFiles: parsed.referenceFiles,
-      });
+      result = await delivery({ recipientAddress: assertAgentTeamAddress(recipientAddress), content, messageType: parsed.messageType, referenceFiles: parsed.referenceFiles });
     } catch (error) {
       if (!isCollaborationContractError(error)) {
         throw error;
       }
-      return { accepted: false, code: error.code, message: collaborationErrorTextForAgent(error, "send_message_to") };
+      result = { accepted: false, code: error.code, message: collaborationErrorTextForAgent(error, "send_message_to") };
+    }
+    if (!result.accepted && result.code === "COLLABORATION_TARGET_NOT_FOUND") {
+      result = await this.beyondOwnRun({ sender: input.sender, address: recipientAddress, content, messageType: parsed.messageType,
+        referenceFiles: parsed.referenceFiles }) ?? result;
     }
     if (!result.accepted) {
       return result;
@@ -100,6 +102,25 @@ export class SendMessageToDispatcher {
       code: result.code ?? "DELIVERED",
       message: result.message ?? `Delivered message to ${describeSendMessageTargetSelector(parsed.target)}.`,
     };
+  }
+
+  /** Contract §2.3 step 2 and the old-address correction, for a run that works on a Task; `null`: not found there either. */
+  private async beyondOwnRun(input: Readonly<{ sender: AgentRunMessageSenderContext; address: string; content: string;
+    messageType: string | null | undefined; referenceFiles: string[] | null | undefined }>): Promise<AgentOperationResult | null> {
+    const identity = input.sender.memberExecutionContext!.identity;
+    let agentRunId: string | null | undefined;
+    try {
+      agentRunId = await this.crossRunAddresses?.resolve(identity, input.address);
+    } catch (error) {
+      if (!isCollaborationContractError(error)) throw error;
+      return { accepted: false, code: error.code, message: error.message };
+    }
+    return agentRunId ? this.globalRouter.deliver({ sender: input.sender, targetAgentRunId: agentRunId, content: input.content,
+      messageType: input.messageType, referenceFiles: input.referenceFiles, shownAs: input.address }) : null;
+  }
+
+  private get crossRunAddresses(): Pick<CrossRunAddressResolution, "resolve"> | null {
+    return this.deps.crossRunAddresses === undefined ? findCrossRunAddressResolution() : this.deps.crossRunAddresses;
   }
 
   private get globalRouter(): GlobalAgentRunMessageRouter {

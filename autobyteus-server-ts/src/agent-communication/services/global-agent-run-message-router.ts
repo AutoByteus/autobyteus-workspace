@@ -20,6 +20,8 @@ export type GlobalAgentRunMessageDeliveryInput = {
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
+  /** How the sender named the receiver, when by address (the result's "Delivered message to …"). */
+  shownAs?: string;
 };
 
 type ActiveRunLookup = Pick<AgentRunManager, "getActiveRun">;
@@ -92,7 +94,7 @@ export class GlobalAgentRunMessageRouter {
     const crossRun = input.sender.memberExecutionContext ? (this.deps.crossRun ?? findCrossRunMessageDelivery()) : null;
     if (crossRun) {
       const routed = await crossRun.route({ sender: input.sender.memberExecutionContext!.identity, senderDisplayName: input.sender.senderName,
-        targetAgentRunId, content, messageType, referenceFiles });
+        targetAgentRunId, content, messageType, referenceFiles, ...(input.shownAs ? { shownAs: input.shownAs } : {}) });
       if (routed) return routed;
     }
 

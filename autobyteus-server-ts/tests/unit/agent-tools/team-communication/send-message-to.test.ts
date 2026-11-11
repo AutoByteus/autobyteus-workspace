@@ -109,6 +109,41 @@ describe("AutoByteus server-owned send_message_to", () => {
     });
   });
 
+  describe("autobyteus-461 contract §2.3: after the sender's own run misses", () => {
+    const notFound = () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "No agent or agent team you can talk with has the address /x."); };
+    const toolWith = (resolve: (identity: unknown, address: string) => Promise<string | null>) => {
+      const memberExecutionContext = createMemberExecutionContext(vi.fn(async () => notFound()));
+      const globalRouter = { deliver: vi.fn(async () => ({ accepted: true, code: "DELIVERED", message: "Delivered message to /project_task_manager.", agentRunId: "manager" })) };
+      const crossRunAddresses = { resolve: vi.fn(resolve) };
+      const dispatcher = new SendMessageToDispatcher({ globalRouter: globalRouter as unknown as GlobalAgentRunMessageRouter, crossRunAddresses });
+      const tool = createBoundAutoByteusSendMessageToTool(buildAgentRunMessageSenderContext({ senderRunId: "run-professor", senderName: "professor",
+        runtimeKind: RuntimeKind.AUTOBYTEUS, memberExecutionContext }), dispatcher);
+      return { tool, globalRouter, crossRunAddresses, memberExecutionContext };
+    };
+
+    it("B-1: step 2 finds the assigner's agent; the message goes between the two runs, shown as the address written", async () => {
+      const h = toolWith(async () => "manager");
+      const result = parseEnvelope(await h.tool.execute({}, { recipient_address: "/project_task_manager", content: "Done." }));
+      expect(result).toEqual({ accepted: true, code: "DELIVERED", message: "Delivered message to /project_task_manager.", target_agent_run_id: "manager" });
+      expect(h.crossRunAddresses.resolve).toHaveBeenCalledWith(h.memberExecutionContext.identity, "/project_task_manager");
+      expect(h.globalRouter.deliver).toHaveBeenCalledWith(expect.objectContaining({ targetAgentRunId: "manager", content: "Done.", shownAs: "/project_task_manager" }));
+    });
+
+    it("A-6: the correction is the refusal the agent reads", async () => {
+      const h = toolWith(async () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "/team/x is no longer an address: your team is addressed from its own root. Use /x."); });
+      expect(parseEnvelope(await h.tool.execute({}, { recipient_address: "/team/x", content: "Hi" }))).toMatchObject({
+        accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: "/team/x is no longer an address: your team is addressed from its own root. Use /x." });
+      expect(h.globalRouter.deliver).not.toHaveBeenCalled();
+    });
+
+    it("C-4: not found there either (or a run that works on no Task): the root's refusal stands", async () => {
+      const h = toolWith(async () => null);
+      expect(parseEnvelope(await h.tool.execute({}, { recipient_address: "/x", content: "Hi" }))).toMatchObject({
+        accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: "No agent or agent team you can talk with has the address /x." });
+      expect(h.globalRouter.deliver).not.toHaveBeenCalled();
+    });
+  });
+
   it("preserves exact-run operation codes unchanged in the public envelope", async () => {
     const { dispatcher, globalRouter } = createDispatcher({
       accepted: true,

@@ -24,11 +24,12 @@ const harness = () => {
     startTeam: vi.fn(async () => ({ teamRunId: "product_team_e03d", coordinatorAddress: "/designer" as never, coordinatorAgentRunId: "designer_1", members: [] })) };
   const deliverWorkPacket = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
-  const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard });
+  const recordCollaborating = vi.fn(async () => undefined);
+  const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating });
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
     senderRun, delegatorAddress: null, spawn: spawn as never, resolvePlacement: async () => placement });
-  return { tasks, tree, starter, deliverWorkPacket, discard, delegate };
+  return { tasks, tree, starter, deliverWorkPacket, discard, recordCollaborating, delegate };
 };
 
 describe("TaskDelegation.toNewRun", () => {
@@ -44,6 +45,8 @@ describe("TaskDelegation.toNewRun", () => {
       expect.objectContaining({ description: "Draw the logo.", referenceFiles: [] }));
     // The tree follows the record: the new run is under the manager.
     expect(h.tree.openChildrenOf(M).map((child) => child.run)).toEqual([{ agentRunId: "image_maker_33f0" }]);
+    // The delegating agent run collaborates: its own address is fixed (contract §3.3, model.py delegate).
+    expect(h.recordCollaborating).toHaveBeenCalledWith(M.rootRunId, `/${M.rootRunId}`);
   });
 
   it("a saved Task by task_id is assigned to the new team run, with its coordinator (D3-like)", async () => {
@@ -66,6 +69,8 @@ describe("TaskDelegation.toNewRun", () => {
     expect(outcome).not.toHaveProperty("taskId");
     expect(h.tasks.entry({ teamRunId: "product_team_e03d" })).toMatchObject({ taskId: "T1", role: "subWork",
       delegatedFrom: { delegatingRun: E, delegatorAgentRunId: "solution_designer_65a9" } });
+    // A team run's address is its own file's (`/`): nothing to fix.
+    expect(h.recordCollaborating).not.toHaveBeenCalled();
     // A closed Task: no new work.
     h.tasks.close("T1");
     await expect(h.delegate(E, "solution_designer_65a9", { recipient_address: "/image_maker", description: "More." }))
