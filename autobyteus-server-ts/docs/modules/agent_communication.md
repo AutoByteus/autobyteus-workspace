@@ -471,8 +471,11 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `[Mentioned collaborators]` notes), so stored history displays unchanged.
 - **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
   stored read) carries `closed_task_executions` beside the unfiltered tree: the
-  task executions whose current Task is DONE or CANCELLED, read through the Task port
-  (`closedTaskExecutionsIn`) and the shared `listClosedTaskExecutions`. When DONE or
+  task executions whose current Task is DONE or CANCELLED and that the tree still holds,
+  read through the Task port (`closedTaskExecutionsIn`) and the shared
+  `listClosedTaskExecutions`, which keeps only references the tree contains. Since
+  autobyteus-469 a run leaves the tree once its last open Task closed and it is stopped,
+  so such a run is not in this list; a run whose stop is not confirmed yet is. When DONE or
   CANCELLED asks an active root to stop a Task's runs, `RootTaskExecutionResourceScope` first
   publishes the released runs that are closed and in the tree as the sequenced
   `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE or
