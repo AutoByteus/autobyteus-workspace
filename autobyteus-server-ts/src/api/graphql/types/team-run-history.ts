@@ -1,3 +1,4 @@
+import { delegatedChildrenDtos } from "../../../services/agent-streaming/delegated-children-dtos.js";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
@@ -110,7 +111,7 @@ export class TeamRunHistoryResolver {
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
-      executionTree: projectExecutionTree(config.executionTree),
+      executionTree: projectExecutionTree(config.executionTree, await delegatedChildrenDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId })),
       closedTaskExecutions: config.closedTaskExecutions,
       remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId }),
       modelConfigEditability: config.modelConfigEditability,

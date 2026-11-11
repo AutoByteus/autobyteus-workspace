@@ -1,3 +1,10 @@
+import { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
+import { findDelegationTree } from "../../agent-collaboration/delegation/delegation-tree-binding.js";
+import { getProcessStandaloneRunCommandPort } from "../../agent-execution/services/standalone-run-ports.js";
+import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
+import { delegatedChildrenDtos } from "./delegated-children-dtos.js";
 import { randomUUID } from "node:crypto";
 import {
   parseTeamStreamClientMessage,
@@ -58,6 +65,11 @@ export class AgentTeamStreamHandler {
     private readonly sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
     private readonly teamRunService: TeamRunService = getTeamRunService(),
     private readonly teamRunManager: Pick<AgentTeamRunManager, "getLifecycleSnapshot" | "subscribeToLifecycle"> = AgentTeamRunManager.getInstance(),
+    private readonly children: DelegatedRunCommands = new DelegatedRunCommands({
+      tree: findDelegationTree, standaloneRuns: getProcessStandaloneRunCommandPort,
+      activeAgentRun: (agentRunId) => AgentRunManager.getInstance().getActiveRun(agentRunId),
+      teamRun: (teamRunId, restore) => restore ? getTeamRunService().resolveManagedTeamRun(teamRunId) : Promise.resolve(getTeamRunService().getActiveTeamRun(teamRunId)),
+    }),
   ) {}
 
   async connect(connection: WebSocketConnection, teamRunId: string): Promise<string | null> {
@@ -100,17 +112,20 @@ export class AgentTeamStreamHandler {
       const root = await this.resolveSessionTeamRun(sessionId, session.runId);
       if (!root) return;
       const sink = this.sessionEgresses.get(sessionId) ?? null;
+      // AR-011: a child row's command goes to the child's own run; a member's to this team.
+      const routed = { executeAgentCommand: async (agentRunId: string, command: TeamMemberExecutionCommand) =>
+        await this.children.execute(createTeamRootExecutionIdentity(root.teamRunId), agentRunId, command) ?? root.executeAgentCommand(agentRunId, command) };
       if (message.type === "SEND_MESSAGE") {
-        await this.handleSendMessage(root, message.payload, sink);
+        await this.handleSendMessage(root, message.payload, sink, routed);
       } else if (message.type === "INTERRUPT_GENERATION") {
-        await handleTeamInterruptGenerationCommand({ teamRunId: root.teamRunId, payload: message.payload, sink, activeRun: root });
+        await handleTeamInterruptGenerationCommand({ teamRunId: root.teamRunId, payload: message.payload, sink, activeRun: routed });
       } else if (message.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
         // Retry (autobyteus-278): the answers arrive as messages on this stream.
         await root.remoteChildren.refresh();
       } else {
         await handleTeamToolApprovalCommand({
           teamRunId: root.teamRunId, payload: message.payload,
-          approved: message.type === "APPROVE_TOOL", sink, activeRun: root,
+          approved: message.type === "APPROVE_TOOL", sink, activeRun: routed,
         });
       }
     } catch (error) {
@@ -139,7 +154,8 @@ export class AgentTeamStreamHandler {
       egress.send(parseTeamStreamServerMessage({
         type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: root.teamRunId },
       }));
-      egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection, remoteTaskExecutions));
+      egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection, remoteTaskExecutions,
+        await delegatedChildrenDtos({ rootSubjectKind: "agent_team", rootRunId: root.teamRunId })));
       const unsubscribeEvents = connection.subscribe((event) => {
         try { egress.send(projectSequencedTeamRunEvent(root, event)); }
         catch (error) { console.error(`Error projecting TeamRun event: ${String(error)}`); }
@@ -176,6 +192,7 @@ export class AgentTeamStreamHandler {
     root: RootTeamRun,
     payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"],
     sink: TeamStreamSink | null,
+    routed: Pick<RootTeamRun, "executeAgentCommand"> = root,
   ): Promise<void> {
     const agentRunId = parseCommandAgentRunId(payload);
     if (!agentRunId) return this.sendInvalidTarget(sink, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
@@ -210,7 +227,7 @@ export class AgentTeamStreamHandler {
     });
     let result;
     try {
-      result = await root.executeAgentCommand(agentRunId, { kind: "post_message", message });
+      result = await routed.executeAgentCommand(agentRunId, { kind: "post_message", message });
     } catch (error) {
       sink?.send(errorMessage(
         TEAM_SEND_MESSAGE_FAILED,

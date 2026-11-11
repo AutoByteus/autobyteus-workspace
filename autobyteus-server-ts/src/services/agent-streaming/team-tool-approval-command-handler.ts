@@ -25,7 +25,7 @@ export const handleTeamToolApprovalCommand = async (input: {
   teamRunId: string;
   payload: TeamToolApprovalPayload;
   approved: boolean;
-  activeRun: RootTeamRun | null;
+  activeRun: Pick<RootTeamRun, "executeAgentCommand"> | null;
   sink: TeamToolApprovalSink;
 }): Promise<void> => {
   const invocationId = typeof input.payload.invocation_id === "string"

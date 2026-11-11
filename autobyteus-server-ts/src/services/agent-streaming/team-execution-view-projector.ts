@@ -1,3 +1,4 @@
+import type { CollaborationTaskExecutionDto, CollaborationLaunchConfigurationSourceDto } from "@autobyteus/collaboration-stream-contracts";
 import {
   parseTeamStreamServerMessage,
   type AgentLaunchConfigurationDto,
@@ -50,6 +51,8 @@ export const projectTeamExecutionViewSnapshot = (
   }>,
   /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
+  /** autobyteus-461 DS-8: the runs on this node it delegated to (`delegatedChildrenDtos`). */
+  delegated: readonly CollaborationTaskExecutionDto[] = [],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
   payload: {
@@ -57,7 +60,7 @@ export const projectTeamExecutionViewSnapshot = (
     base_change_sequence: baseChangeSequence,
     live_sequence_id: liveSequenceId,
     last_message_change_sequence: lastMessageChangeSequence,
-    execution_tree: projectExecutionTree(snapshot.tree),
+    execution_tree: projectExecutionTree(snapshot.tree, delegated),
     closed_task_executions: snapshot.closedTaskExecutions.map(projectTaskExecutionReference),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
@@ -147,7 +150,7 @@ const projectTaskExecutionStarted = (
   } });
 };
 
-export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTreeDto => ({
+export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot, delegated: readonly CollaborationTaskExecutionDto[] = []): TeamRunExecutionTreeDto => ({
   created_at: tree.createdAt,
   archived_at: tree.archivedAt,
   application_binding: tree.applicationBinding ? {
@@ -163,9 +166,48 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
     coordinator_address: tree.rootTeam.coordinatorAddress,
     default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
     members: tree.rootTeam.members.map(projectConfiguredMember),
-    task_executions: tree.rootTeam.taskExecutions.map(projectTaskExecution),
+    // DS-8: its child rows are the runs it delegated to; nothing is hosted.
+    task_executions: delegated.map(teamTaskExecutionOf),
   },
 });
+
+const sourceOf = (source: CollaborationLaunchConfigurationSourceDto | undefined): LaunchConfigurationSourceDto | undefined => {
+  if (!source) return undefined;
+  const fallbacks = source.fallbacks.map((fallback) => ({ layer: fallback.layer, runtime_kind: fallback.runtimeKind,
+    llm_model_identifier: fallback.llmModelIdentifier, reason: fallback.reason, detail: fallback.detail }));
+  return source.origin === "model_router"
+    ? { origin: source.origin, fallbacks, choice_reason: source.choiceReason, task_kind: source.taskKind } as LaunchConfigurationSourceDto
+    : { origin: source.origin, fallbacks } as LaunchConfigurationSourceDto;
+};
+const launchOf = (launch: Readonly<{ runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown; autoExecuteTools: boolean;
+  workspaceRootPath: string | null }>): AgentLaunchConfigurationDto => ({
+  runtime_kind: launch.runtimeKind as AgentLaunchConfigurationDto["runtime_kind"], llm_model_identifier: launch.llmModelIdentifier,
+  llm_config: launch.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
+  auto_execute_tools: launch.autoExecuteTools, workspace_root_path: launch.workspaceRootPath,
+});
+/** A child row of the team view, from the shared child-row DTO (the team stream's snake-case shape). */
+const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutionDto => {
+  if ("agentRunId" in child) {
+    const source = child.source as Extract<CollaborationTaskExecutionDto, { agentRunId: string }>["source"];
+    const launchSource = sourceOf(source.launchSource);
+    return { kind: "task_agent", address: child.address, agent_run_id: child.agentRunId, platform_agent_run_id: child.platformAgentRunId,
+      delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
+      source: { kind: "agent", agent_definition_id: source.agentDefinitionId, launch_configuration: launchOf(source.launchConfiguration),
+        ...(launchSource ? { launch_source: launchSource } : {}) } };
+  }
+  const source = child.source;
+  return { kind: "task_team", address: child.address, team_run_id: child.teamRunId,
+    members: child.members.map((member) => ({ kind: "task_team_agent", address: member.address, agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId })),
+    task_executions: [], delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
+    source: { kind: "agent_team", team_definition_id: source.teamDefinitionId, coordinator_address: source.coordinatorAddress,
+      members: source.members.map((member) => {
+        const memberSource = sourceOf(member.launchSource);
+        return { address: member.address, agent_definition_id: member.agentDefinitionId, launch_configuration: launchOf(member.launchConfiguration),
+          follows_team: member.followsTeam, ...(memberSource ? { launch_source: memberSource } : {}) };
+      }),
+      handoffs: source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
+      default_launch_configuration: launchOf(source.defaultLaunchConfiguration) } } as TaskExecutionDto;
+};
 
 const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => {
   const fallbacks = source.fallbacks.map((fallback) => ({

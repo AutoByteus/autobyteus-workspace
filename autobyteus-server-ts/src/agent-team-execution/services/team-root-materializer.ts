@@ -69,7 +69,8 @@ export const materializeTeamRoot = async (
     ownedTaskOf: (caller) => requireActiveRoot().ownedTaskOf({ identity: caller }),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
-    assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
+    // A member takes input while its run is active; nothing hosted is fenced here (autobyteus-461).
+    assertExecutionInputAllowed: () => { requireActiveRoot(); },
     teamContext: new TeamRunContext({
       physicalScope,
       teamKind: "configured",
@@ -122,7 +123,6 @@ export const materializeTeamRoot = async (
       messages: input.messages,
       persistence,
       publisher,
-      taskExecutionIdentity: input.taskExecutionIdentity,
       taskExecutionResources: input.taskExecutionResources,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
