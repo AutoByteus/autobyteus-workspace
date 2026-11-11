@@ -23,6 +23,7 @@ import { TeamCommunicationStore } from "../../../src/services/team-communication
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * Team and AgentOrg memory explorer + member memory view through the built GraphQL schema
@@ -170,6 +171,9 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
       usingTemp = true;
     }
     memoryDir = config.getMemoryDir();
+    // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
+    // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
+    openEveryOwnFileUnder(memoryDir);
 
     // Team roots (admitted): two writing-team runs; the second has a task instance with memory.
     await writeTeamRoot(memoryDir, writingTeamTree("gql-team-run-1", "2026-08-14T00:00:00.000Z"));
@@ -420,6 +424,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   it("serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate)", async () => {
     const importRoot = path.join(memoryDir, "imports", "gql-collab-import");
     fs.mkdirSync(importRoot, { recursive: true });
+    openEveryOwnFileUnder(importRoot);
     fs.writeFileSync(path.join(importRoot, "memory-sync-source.json"), JSON.stringify({
       schemaVersion: 1,
       memorySyncSourceId: "gql-collab-import",

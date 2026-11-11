@@ -16,7 +16,7 @@ import {
 } from "../../../src/app-data-migrations/frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
 import { MESSAGE_LOG_ROTATION_LIMIT_BYTES } from "../../../src/run-history/store/message-log.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
-import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
+import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeOpenTaskRecordsOfReleasedData, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
@@ -158,6 +158,8 @@ const faithfulRoot = async () => {
 
   const memory = path.join(root, "memory");
   await writeReleasedDataRoot(memory);
+  // autobyteus-469: the installs this stands for keep a Task record per task agent; a top run's tree is built from them.
+  await writeOpenTaskRecordsOfReleasedData(root);
   const withReference = (entry: Message): Message => ({ ...entry, referenceFiles: [path.join(root, "workspace", "refs", `${entry.messageId}.md`)] });
   const released = {
     hub: (HUB_MESSAGES as Message[]).map(withReference),

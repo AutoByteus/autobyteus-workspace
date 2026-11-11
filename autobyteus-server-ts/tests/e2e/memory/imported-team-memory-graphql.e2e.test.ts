@@ -18,6 +18,7 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const hashesOf = async (root: string): Promise<Map<string, string>> => {
   const hashes = new Map<string, string>();
@@ -55,6 +56,9 @@ describe("imported Team memory GraphQL e2e", () => {
     resetMemoryImportCatalogServiceForTests();
     resetMemoryExplorerSourceServiceForTests();
     importRoot = path.join(config.getMemoryDir(), "imports", memorySyncSourceId);
+    // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
+    // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
+    openEveryOwnFileUnder(importRoot);
     await fs.mkdir(importRoot, { recursive: true });
     await fs.writeFile(path.join(importRoot, "memory-sync-source.json"), JSON.stringify({
       schemaVersion: 1, memorySyncSourceId, displayName: "Imported Team E2E",

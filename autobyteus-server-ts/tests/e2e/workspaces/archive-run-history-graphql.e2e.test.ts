@@ -18,6 +18,7 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const harness = vi.hoisted(() => ({
   agentRunManager: {
@@ -245,6 +246,9 @@ describe("Archive run history GraphQL e2e", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "archive-history-graphql-e2e-"));
+    // autobyteus-469: no Task records are written here and this process composes no Task side; every delegated run under
+    // this root counts as open (the tests' Task-side stand-in; which runs are in a tree is not this suite's subject).
+    openEveryOwnFileUnder(memoryDir);
     agentMetadataStore = new AgentRunMetadataStore(memoryDir);
     teamExecutionTreeStore = new TeamRunExecutionTreeStore();
     memoryLayout = new AgentMemoryLayout(memoryDir);

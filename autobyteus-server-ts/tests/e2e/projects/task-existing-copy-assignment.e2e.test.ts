@@ -102,6 +102,20 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
     return body.data;
   };
+  /**
+   * autobyteus-469 (a top run's tree is built from its open Tasks): a closed run leaves the root's tree once its stop is
+   * confirmed, so a fresh snapshot lists it neither in the tree nor among the closed runs. Waits for that.
+   */
+  const leftTree = async (root: { snapshot: () => Promise<{ tree: unknown; closed: Record<string, any>[] }> }, out: string[]) => {
+    let last: unknown;
+    await until(async () => {
+      const s = await root.snapshot();
+      const inTree = keys(taskNodes(s.tree));
+      const closed = keys(s.closed ?? []);
+      last = { inTree, closed };
+      return out.every((key) => !inTree.includes(key) && !closed.includes(key));
+    }, `closed runs left the tree: ${out.join(", ")}`, 30_000).catch((error) => { throw new Error(`${error}: ${JSON.stringify(last)}`); });
+  };
   const config = (overrides: Record<string, unknown> = {}) => ({ workspaceRootPath: workspace, llmModelIdentifier: "gemini-3.8-flash-low",
     llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli", ...overrides });
   const agentDefinition = async (name: string, toolNames: string[]) => (await graphql(
@@ -462,8 +476,10 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     };
     expect(idRefusals.coordinatorAsAgent).toEqual({ delegated: false,
       message: `${coordinator} is the coordinator of task agent team ${team}; use target_team_run_id "${team}".` });
-    expect(idRefusals.memberAsAgent).toEqual({ delegated: false, message: `${mate} is a member of task agent team ${team}; `
-      + `to give that team a Task, use target_team_run_id "${team}".` });
+    // autobyteus-469 DEC-006: the Team copy left the tree at Task A DONE, and its Task record names only its coordinator,
+    // so a member's run ID is not one of this run's task agents.
+    expect(idRefusals.memberAsAgent).toEqual({ delegated: false, message: `${mate} is not one of your task agents. `
+      + "Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address." });
     expect(idRefusals.teamRunAsAgent).toEqual({ delegated: false, message: `${team} is a task agent team's run id; use target_team_run_id "${team}".` });
     expect(idRefusals.agentAsTeam).toEqual({ delegated: false, message: `${worker} is a task agent's run id; use target_agent_run_id "${worker}".` });
     expect(idRefusals.subWork).toMatchObject({ delegated: false });
@@ -622,7 +638,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     await root.managerCalls(callTool("update_task", { task_id: taskB, status: "DONE" }));
     await until(() => root.closedSince(from).includes(teamKey), "closure of the Team copy at Task B DONE", 60_000);
     await until(() => !processLive(coordinator), "coordinator process stopped at Task B DONE", 30_000);
-    expect(keys((await root.snapshot()).closed)).toContain(teamKey);
+    await leftTree(root, [teamKey]);
     const bFileAtDone = await fs.readFile(resourcesFile(projectId, taskB), "utf8");
 
     // AC-010: the Manager reopens Task A and messages the coordinator: refused; the hint names Task B and the next step.
@@ -689,8 +705,10 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(workerConversation.indexOf(`PRE-C-${kind}`)).toBeLessThan(workerConversation.indexOf(`New Task assigned to you: ${k(taskD)}`));
     expect(await launchesOf(worker, argvFrom)).toEqual([{ resumed: true, conversation: expect.any(String) }]);
     const afterD = await root.snapshot();
-    expect(keys(afterD.closed)).toContain(`agent:${subWork}`);
-    expect(keys(afterD.closed)).not.toContain(`agent:${worker}`);
+    // autobyteus-469: the worker is in the tree again; its closed sub-work stays out of it.
+    expect(keys(afterD.closed)).toEqual([]);
+    expect(keys(taskNodes(afterD.tree))).toContain(`agent:${worker}`);
+    expect(keys(taskNodes(afterD.tree))).not.toContain(`agent:${subWork}`);
     await until(async () => (await taskOf(projectId, taskD)).root?.start === "started", "Task D root started", 30_000);
     expect((await taskOf(projectId, taskD)).root).toMatchObject({ kind: "agent", ingressAgentRunId: worker, teamRunId: null, closed: false });
     // AC-004 for the Agent copy: Task C DONE again does not stop it; AC-005 with CANCELLED: Task D CANCELLED does.

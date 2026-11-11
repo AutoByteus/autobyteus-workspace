@@ -160,6 +160,23 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
   }, 120000);
 
   /** One root kind: a Manager in that root drives Task-linked work, closes a Task, reopens it, and stops. */
+  /** autobyteus-469 AC-001: the root's tree file on disk, and every stored entry without `nodeId` in a `taskExecutions` list. */
+  const treeFileOf = (kind: Kind, rootId: string) => path.join(dataDir, "memory", ...(kind === "agent" ? ["agents", rootId, "collaboration", "collaboration_tree.json"]
+    : kind === "team" ? ["agent_teams", rootId, "team_run_execution_tree.json"] : ["agent_orgs", rootId, "agent_org_run_execution_tree.json"]));
+  const storedLocalEntries = async (kind: Kind, rootId: string): Promise<Record<string, any>[]> => {
+    const found: Record<string, any>[] = [];
+    const visit = (value: unknown): void => {
+      if (Array.isArray(value)) { value.forEach(visit); return; }
+      if (!value || typeof value !== "object") return;
+      for (const [key, inner] of Object.entries(value as Record<string, unknown>)) {
+        if (key === "taskExecutions" && Array.isArray(inner)) found.push(...inner.filter((entry: Record<string, any>) => !("nodeId" in entry)));
+        visit(inner);
+      }
+    };
+    visit(JSON.parse(await fs.readFile(treeFileOf(kind, rootId), "utf8")));
+    return found;
+  };
+
   const rootScenario = async (kind: Kind) => {
     const { projectId, task } = await createProjectWithTasks(kind);
     // Task A's worker sub-delegates to the helper; that copy sub-delegates to a catalog assistant with
@@ -307,12 +324,17 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     // No second closure for the other Task or the non-Task run.
     expect(view.frames.slice(doneFrom).filter(closedFrame)).toHaveLength(1);
 
-    // 3. Fresh snapshot (reload): closed refs listed; the tree and the Manager's messages are kept (AC-007/008).
-    view.socket.close();
-    view = await openView();
-    const after = snapshotOf(view.frames);
-    expect(keys(after.closed)).toEqual(keys(taskARefs));
-    expect(keys(taskNodes(after.tree).map(refOf))).toEqual(keys(allBefore.map(refOf)));
+    // 3. Fresh snapshot (reload). autobyteus-469: once stopped, Task A's runs leave the tree (none is listed as closed);
+    // the other runs stay; the Manager's messages with Task A's runs are kept (AC-007/008); the tree file holds no local run.
+    const stillOpen = allBefore.map(refOf).filter((ref) => !taskARefs.some((closed) => keyOf(closed) === keyOf(ref)));
+    let after = snapshotOf(view.frames);
+    await until(async () => {
+      view.socket.close();
+      view = await openView();
+      after = snapshotOf(view.frames);
+      return keys(after.closed).length === 0 && keys(taskNodes(after.tree).map(refOf)).join() === keys(stillOpen).join();
+    }, "Task A's runs left the tree once stopped", 30_000).catch((error) => { throw new Error(`${error}: ${JSON.stringify({ closed: keys(after.closed), tree: keys(taskNodes(after.tree).map(refOf)) })}`); });
+    expect(await storedLocalEntries(kind, rootId), "no local delegated run is stored in the tree file").toEqual([]);
     const aMessageIdsAfter = (await managerMessages()).filter(touchesTaskA).map((m) => m.messageId);
     expect(aMessageIdsAfter).toEqual(aMessageIdsBefore);
     const memoryHits = spawnSync("grep", ["-rl", aAssigned.agentRunId, path.join(dataDir, "memory")], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);
@@ -322,13 +344,18 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     send(callTool("update_task", { task_id: taskA, status: "IN_PROGRESS" }));
     await until(async () => (await statusOf(projectId, taskA)) === "IN_PROGRESS", "Task A reopened");
     send(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskA }));
-    const reopened = await waitForNodes("redelegated Task A run", (nodes) => nodes.filter((n) => n.delegatorAgentRunId === managerRunId).length >= 4);
+    // autobyteus-469: the closed Task A runs are no longer in the tree; wait for the new run itself.
+    const reopened = await waitForNodes("redelegated Task A run", (nodes) => nodes.some((n) => n.delegatorAgentRunId === managerRunId
+      && !allBefore.some((old) => keyOf(refOf(old)) === keyOf(refOf(n)))));
     const fresh = reopened.filter((node) => !allBefore.some((old) => keyOf(refOf(old)) === keyOf(refOf(node))) && node.delegatorAgentRunId === managerRunId);
     expect(fresh.length).toBeGreaterThanOrEqual(1);
     view.socket.close();
     view = await openView();
     const afterReopen = snapshotOf(view.frames);
-    expect(keys(afterReopen.closed)).toEqual(keys(taskARefs));
+    expect(keys(afterReopen.closed)).toEqual([]);
+    const afterReopenTree = keys(taskNodes(afterReopen.tree).map(refOf));
+    for (const ref of taskARefs) expect(afterReopenTree).not.toContain(keyOf(ref));
+    for (const node of fresh) expect(afterReopenTree).toContain(keyOf(refOf(node)));
 
     // 4b. Repeated DONE on the reopened Task: the live event carries the new run; the closed set is the union.
     const redoneFrom = view.frames.length;
@@ -338,9 +365,13 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     const redonePayload = kind === "team" ? redone.payload.task_executions : redone.payload.event.task_executions;
     for (const node of fresh) expect(keys(redonePayload)).toContain(keyOf(refOf(node)));
     const closedA = [...taskARefs, ...fresh.map(refOf)];
-    view.socket.close();
-    view = await openView();
-    expect(keys(snapshotOf(view.frames).closed)).toEqual(keys(closedA));
+    await until(async () => {
+      view.socket.close();
+      view = await openView();
+      const snap = snapshotOf(view.frames);
+      const inTree = keys(taskNodes(snap.tree).map(refOf));
+      return keys(snap.closed).length === 0 && closedA.every((ref) => !inTree.includes(keyOf(ref)));
+    }, "the re-delegated run left the tree once stopped", 30_000);
 
     // 5. Stop the root; stored reads carry the closure (AC-004).
     view.socket.close();
@@ -363,7 +394,14 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
       expect(keys(listed.closed_task_executions)).toEqual(keys(item.closed_task_executions));
       return item.closed_task_executions;
     };
-    expect(keys(await storedClosed())).toEqual(keys(closedA));
+    // autobyteus-469: a stored tree holds no closed run, so its closed list is empty; the open runs are listed.
+    const storedTree = async () => kind === "agent"
+      ? (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration.root_agent.execution_tree
+      : kind === "team" ? (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree
+        : (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
+    expect(keys(await storedClosed())).toEqual([]);
+    expect(keys(taskNodes(await storedTree()).map(refOf))).toEqual(keys([refOf(bNodes[0]!), ...plain.map(refOf)]));
+    const treeFileBeforeB = await fs.readFile(treeFileOf(kind, rootId), "utf8");
 
     // 6. DONE while the host root is stopped (SCN-003): another Manager closes Task B.
     const other = (await graphql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
@@ -376,14 +414,17 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     await until(async () => (await statusOf(projectId, taskB)) === "DONE", "Task B DONE by another Manager", 60_000);
     otherInput.socket.close();
     await terminate("agent", other.runId);
-    expect(keys(await storedClosed())).toEqual(keys([...closedA, refOf(bNodes[0]!)]));
+    // autobyteus-469 AC-001 (root not loaded at the closure): no file is written; the tree built afterwards lacks Task B's run.
+    expect(await fs.readFile(treeFileOf(kind, rootId), "utf8"), "the stopped root's tree file is untouched by the closure").toBe(treeFileBeforeB);
+    expect(keys(await storedClosed())).toEqual([]);
+    expect(keys(taskNodes(await storedTree()).map(refOf))).toEqual(keys(plain.map(refOf)));
 
     // 7. Task delete keeps the closure (AC-004); the open re-delegated run and the non-Task run stay listed.
     expect((await graphql(`mutation($input:DeleteProjectTaskInput!){deleteProjectTask(input:$input)}`,
       { input: { projectId, taskId: taskA } })).deleteProjectTask).toBe(true);
     const finalClosed = await storedClosed();
-    expect(keys(finalClosed)).toEqual(keys([...closedA, refOf(bNodes[0]!)]));
-    for (const open of plain) expect(keys(finalClosed)).not.toContain(keyOf(refOf(open)));
+    expect(keys(finalClosed)).toEqual([]);
+    expect(keys(taskNodes(await storedTree()).map(refOf))).toEqual(keys(plain.map(refOf)));
     evidence[kind] = { rootId, managerRunId, projectId, taskA, taskB, taskARefs, taskBRef: refOf(bNodes[0]!), plain: plain.map(refOf),
       redelegated: fresh.map(refOf), redonePayload, closedPayload, closedIndex, stopIndex, storedClosedAfterDelete: finalClosed,
       aMessageIds: aMessageIdsAfter, memoryHits: memoryHits.length };

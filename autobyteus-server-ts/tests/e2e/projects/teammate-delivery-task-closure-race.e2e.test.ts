@@ -162,6 +162,10 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
     return body.data;
   };
+  /** A closed Team copy member's saved conversation, read as the Memory page reads it: the copy is in no tree (autobyteus-469). */
+  const closedMemberText = async (teamRunId: string, agentRunId: string) => JSON.stringify((await graphql(
+    `query($t:String!,$a:String!){getTeamMemberRunMemoryView(teamRunId:$t,agentRunId:$a,includeRawTraces:true){rawTraces{content}}}`,
+    { t: teamRunId, a: agentRunId })).getTeamMemberRunMemoryView);
   const config = () => ({ workspaceRootPath: workspace, llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" });
   const agentDefinition = async (name: string, toolNames: string[]) => (await graphql(
     `mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
@@ -453,7 +457,9 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     await until(async () => contents(await savedHistory(rootAgents())).includes(race1), `${kind}: TDR-001 record saved`, 15_000);
     expect(await root.snapshotMessages(), `${kind} TDR-001 record shown in the root view`).toContain(race1);
     await wait(2_000);
-    expect(await root.conversationText(copyC.members.lead), `${kind} TDR-001 recipient never processes`).not.toContain(race1);
+    const leadMemoryC = await closedMemberText(copyC.teamRunId, copyC.members.lead.agentRunId);
+    expect(JSON.parse(leadMemoryC).rawTraces?.length, `${kind} TDR-001 recipient's saved memory is read`).toBeGreaterThan(0);
+    expect(leadMemoryC, `${kind} TDR-001 recipient never processes`).not.toContain(race1);
 
     // TDR-002 (CR-001): copy A's lead is writing a teammate message; the Manager's message to B waits for the lock;
     // B's Task closes; then A's write finishes.
@@ -490,7 +496,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     const afterRace = contents(await savedHistory(rootAgents()));
     expect(afterRace, `${kind} history after the races`).toEqual(expect.arrayContaining([race1, blocker]));
     expect(afterRace).not.toContain(raceB);
-    expect(await root.conversationText(copyB.members.lead)).not.toContain(raceB);
+    expect(await closedMemberText(copyB.teamRunId, copyB.members.lead.agentRunId)).not.toContain(raceB);
 
     // TDR-003: the root keeps working; stop and restore read the history back; messaging continues.
     const after = `AFTER-${kind}-${randomUUID().slice(0, 6)}`;

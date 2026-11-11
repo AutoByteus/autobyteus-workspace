@@ -14,6 +14,10 @@
 // target_team_run_id / target_agent_run_id brings its row back live (tree and board), a repeated close of the earlier Task
 // never removes it, real backend restarts keep the assignment (BR-015), and damaged Task data detected at load refuses the
 // assignment until the file is restored (BR-016). BR-015 and BR-016 need BR-012..BR-014 in the same run.
+// autobyteus-469 (a top run's tree is built from its open Tasks): BR-001..BR-003 also check that the root's tree file on
+// disk holds no local delegated run after a closure (AC-001), and that the Manager's Team/Org tab shows the same message
+// rows with the same counterpart names before and after each closure, sampling it per frame while Task B closes (AC-011);
+// BR-005 compares those rows again after a reload and after a real backend restart.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
 // them in finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -227,6 +231,22 @@ const storedTree = async (root) => {
   if (root.kind === 'team') return (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree;
   return (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory.org;
 };
+/** autobyteus-469 AC-001: the root's tree file on disk; every stored entry without `nodeId` in a `taskExecutions` list. */
+const storedTreeFile = (root) => path.join(stack.dataRoot, 'memory', ...(root.kind === 'agent' ? ['agents', root.rootId, 'collaboration', 'collaboration_tree.json']
+  : root.kind === 'team' ? ['agent_teams', root.rootId, 'team_run_execution_tree.json'] : ['agent_orgs', root.rootId, 'agent_org_run_execution_tree.json']));
+const storedLocalEntries = async (root) => {
+  const found = [];
+  const visit = (v) => {
+    if (Array.isArray(v)) return v.forEach(visit);
+    if (!v || typeof v !== 'object') return;
+    for (const [key, inner] of Object.entries(v)) {
+      if (key === 'taskExecutions' && Array.isArray(inner)) found.push(...inner.filter((entry) => !('nodeId' in entry)));
+      visit(inner);
+    }
+  };
+  visit(JSON.parse(await fsp.readFile(storedTreeFile(root), 'utf8')));
+  return found;
+};
 const terminate = async (root) => Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}'
   : root.kind === 'team' ? 'mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}'
     : 'mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
@@ -342,6 +362,35 @@ const analyzeLeave = (frames) => {
     moveClassAtLeaveStart: firstHidden ? firstHidden.rows.map((r) => !!r && r.cls.includes('tree-row-move')) : null,
     activeAtFirstHidden: firstHidden?.active ?? null };
 };
+/**
+ * autobyteus-469 AC-011: the selected agent's Team/Org tab. Each message row as `direction | "to/from <counterpart name>" |
+ * content` (the timestamp is left out). `startCommSampler` records the rows every frame, so a row that drops out or loses
+ * its counterpart name while the view rebuilds after a closure is seen (code review residual risk C-06).
+ */
+const openCommTab = (page, kind) => page.locator('[data-test="right-side-tab-list"]').getByText(kind === 'org' ? 'Org' : 'Team', { exact: true }).click();
+const COMM_ROWS = `() => [...document.querySelectorAll('[data-test="workspace-right-panel"] [data-test="team-communication-message-summary"]')]
+  .map((row) => [row.querySelector('[data-test="team-communication-direction-icon"]')?.getAttribute('data-icon') ?? '',
+    ...[...row.querySelectorAll('p')].map((p) => p.textContent.replace(/\\s+/g, ' ').trim())].join(' | '))`;
+const commRows = (page) => page.evaluate(`(${COMM_ROWS})()`);
+const startCommSampler = (page) => page.evaluate(`(() => { const rows = ${COMM_ROWS}; window.__comm = []; const t0 = performance.now();
+  const tick = () => { window.__comm.push({ t: Math.round(performance.now() - t0), rows: rows() }); if (performance.now() - t0 < 5000) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick); })()`);
+const commSamples = (page, expected) => page.evaluate((exp) => {
+  const key = JSON.stringify(exp);
+  const off = window.__comm.filter((f) => JSON.stringify(f.rows) !== key);
+  return { frames: window.__comm.length, framesDiffering: off.length, firstDiffering: off[0] ?? null,
+    unknownTeammateFrames: window.__comm.filter((f) => f.rows.some((r) => r.includes('Unknown teammate'))).length };
+}, expected);
+/** Selects the Manager (agent root: its run row) and opens its Team/Org tab; returns its rows once `ready` holds. */
+const managerCommRows = async (page, kind, root, runRow, ready) => {
+  const managerRow = kind === 'team' ? page.locator(`[data-test="workspace-team-member-${root.rootId}-/manager"]`)
+    : kind === 'org' ? page.locator(`[data-test="agent-org-agent-row-${root.managerRunId}"]`) : runRow;
+  await managerRow.click();
+  await openCommTab(page, kind);
+  let rows = [];
+  await until('Manager Team tab rows', async () => ready(rows = await commRows(page)), 20000);
+  return rows;
+};
 const goneAll = (page, selectors) => async () => { for (const sel of selectors) if (await page.locator(sel).count()) return false; return true; };
 const runs = {};
 
@@ -356,6 +405,8 @@ const liveDone = async (kind, label) => {
     for (const sel of aSel) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
     if (kind === 'org' && (await page.locator(rowSelector(kind, s.bRef)).getAttribute('aria-expanded')) === 'false') await page.locator(rowSelector(kind, s.bRef)).click();
     s.input.send(callTool('send_message_to', { target_agent_run_id: s.aAssigned.agentRunId, content: 'Status of the release notes?' }));
+    // autobyteus-469 AC-011, before Task A closes: the Manager's Team/Org tab rows, the message to the worker among them.
+    const commBeforeA = await managerCommRows(page, kind, s.root, runRow, (rows) => rows.some((row) => row.includes('Status of the release notes?')));
     const worker = page.locator(rowSelector(kind, { agentRunId: s.aAssigned.agentRunId }));
     await worker.click();
     await until('worker conversation open', async () => /You have a new task from/.test(await page.locator('[data-test="workspace-center-pane"]').innerText()), 30000);
@@ -384,6 +435,13 @@ const liveDone = async (kind, label) => {
     // The root's communication tab is "Team" for Agent and Team roots and "Org" for Agent Org roots.
     await page.locator('[data-test="right-side-tab-list"]').getByText(kind === 'org' ? 'Org' : 'Team', { exact: true }).click();
     await until('Team tab message kept', async () => /Status of the release notes\?/.test(await page.locator('[data-test="workspace-right-panel"]').innerText()), 10000);
+    // autobyteus-469 AC-011: the same rows, each with the same counterpart name, after the closure; AC-001: the tree file
+    // on disk holds no local delegated run.
+    await until('Team tab rows as before the closure', async () => JSON.stringify(await commRows(page)) === JSON.stringify(commBeforeA), 10000).catch(() => undefined);
+    const commAfterA = await commRows(page);
+    assert(JSON.stringify(commAfterA) === JSON.stringify(commBeforeA), 'Team tab rows changed by the closure of Task A (AC-011)', { commBeforeA, commAfterA });
+    const storedAfterA = await storedLocalEntries(s.root);
+    assert(storedAfterA.length === 0, 'the tree file holds local delegated runs after the closure (AC-001)', storedAfterA);
     await shot(page, `${kind}-team-tab-after`);
     // Reopen + delegate again: the new run appears; the closed ones stay hidden (AC-006).
     s.input.send(callTool('update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
@@ -399,22 +457,33 @@ const liveDone = async (kind, label) => {
     if ((await bRow.getAttribute('aria-expanded')) === 'false') await (kind === 'org' ? bRow : bRow.locator('[data-test="workspace-team-transient-disclosure"]')).click();
     const memberSel = s.bMembers.map((id) => rowSelector(kind, { agentRunId: id }));
     await until('Task B members visible', async () => { for (const sel of memberSel) if (!(await page.locator(sel).count())) return false; return true; }, 30000);
-    await (managerRow ?? runRow).click();
+    // autobyteus-469 AC-011, before Task B closes: the Manager's rows (a delegation adds none: it is not a Team-tab message).
+    const commBeforeB = await managerCommRows(page, kind, s.root, runRow, (rows) => rows.length >= commAfterA.length);
     await sleep(800);
     const composer = page.locator('[data-test="workspace-center-pane"] textarea').first();
     await composer.fill(callTool('update_task', { task_id: s.taskB, status: 'DONE' }));
     await startSampler(page, [bSel, ...memberSel]);
+    await startCommSampler(page);
     await composer.press('Enter');
     await until('Task B Team and members gone', goneAll(page, [bSel, ...memberSel]), 60000);
     await sleep(400);
     const bLeave = analyzeLeave(await page.evaluate(() => window.__samples));
+    // The rows stay, with the Docs Review Team still named, after its run leaves the tree; any frame that differed while the
+    // view rebuilt is recorded (C-06).
+    await until('Team tab rows as before Task B closed', async () => JSON.stringify(await commRows(page)) === JSON.stringify(commBeforeB), 10000).catch(() => undefined);
+    const commAfterB = await commRows(page);
+    assert(JSON.stringify(commAfterB) === JSON.stringify(commBeforeB), 'Team tab rows changed by the closure of Task B (AC-011)', { commBeforeB, commAfterB });
+    await sleep(4000);
+    const commDuringB = await commSamples(page, commBeforeB);
     assert(bLeave.hiddenAndInertAtOnce && bLeave.midOpacityFrames >= 3, 'Task Team rows did not leave with motion', bLeave);
     assert((await taskStatus(s.projectId, s.taskB)) === 'DONE', 'Task B not DONE through the composer');
     assert(await page.locator(rowSelector(kind, s.plainRef)).count() === 1, 'non-Task row left with Task B');
     await shot(page, `${kind}-task-team-closed-via-composer`);
     assert(errors.length === 0, 'browser errors', errors);
-    runs[kind] = { root: s.root, names: s.names, aRefs: s.aRefs, bRef: s.bRef, bMembers: s.bMembers, plainRef: s.plainRef, redelegated: { agentRunId: fresh.agentRunId } };
-    return { root: s.root, latencyMs, leave, bLeave, selection, active };
+    runs[kind] = { root: s.root, names: s.names, aRefs: s.aRefs, bRef: s.bRef, bMembers: s.bMembers, plainRef: s.plainRef, redelegated: { agentRunId: fresh.agentRunId },
+      comm: commAfterB };
+    return { root: s.root, latencyMs, leave, bLeave, selection, active, storedLocalEntriesAfterA: storedAfterA.length,
+      teamTab: { beforeA: commBeforeA, afterA: commAfterA, beforeB: commBeforeB, afterB: commAfterB, duringB: commDuringB } };
   } finally { s.input.close(); await context.close(); }
 };
 /** AC-010 reduced motion: removed without a fade; focus still moves to the run row. */
@@ -484,15 +553,21 @@ const reloadAndRestart = async () => {
       const r = runs[kind];
       const { page, errors, context } = await newPage({ initScript: watchClosed(closedIdsOf(r)) });
       try {
-        await openRoot(page, r.root, r.names);
+        const runRow = await openRoot(page, r.root, r.names);
         await page.locator(rowSelector(kind, r.plainRef)).waitFor({ state: 'visible', timeout: 30000 });
         await page.locator(rowSelector(kind, r.redelegated)).waitFor({ state: 'visible', timeout: 30000 });
         await sleep(1500);
         const seen = await page.evaluate(() => window.__closedSeen);
         assert(seen.length === 0, `${kind}: closed rows rendered (${label})`, { seen });
         await shot(page, `${kind}-${label}`);
+        // autobyteus-469 AC-011: the Manager's Team/Org tab shows the same rows and names as right after the closures.
+        let comm = [];
+        await until('Team tab rows as after the closures', async () => JSON.stringify(comm = await managerCommRows(page, kind, r.root, runRow, (rows) => rows.length >= r.comm.length)) === JSON.stringify(r.comm), 20000)
+          .catch(() => undefined);
+        assert(JSON.stringify(comm) === JSON.stringify(r.comm), `${kind}: Team tab rows differ (${label}, AC-011)`, { expected: r.comm, comm });
+        await shot(page, `${kind}-${label}-team-tab`);
         assert(errors.length === 0, `${kind}: browser errors`, errors);
-        out[kind] = { closedIds: closedIdsOf(r).length, seen };
+        out[kind] = { closedIds: closedIdsOf(r).length, seen, teamTabRows: comm.length };
       } finally { await context.close(); }
     }
     return out;
