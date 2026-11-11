@@ -205,8 +205,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
     const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
-    // Only a run a peer started has a delegator endpoint on a peer (AR-016, `isPeerStarted`).
-    const delegatedFrom = peerDelegatedFromOf(metadata);
+    const delegatedFrom = peerDelegatedFromOf(metadata); // AR-016: only a run a peer started has a peer delegator
     return storedRemoteLinkCheck({
       remoteRuns: () => tree?.remoteTaskExecutions ?? [],
       backLink: delegatedFrom ? { pairedAgentRunIds: () => [hostRunId], delegatedFrom } : null,

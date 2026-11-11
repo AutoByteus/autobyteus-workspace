@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { StandaloneHostIdleShutdown } from "../../../src/standalone-agent-run-root/services/standalone-host-idle-shutdown.js";
+import { DelegatedRunIdleShutdown } from "../../../src/standalone-agent-run-root/services/delegated-run-idle-shutdown.js";
 
 /**
  * DS-006 (REQ-107): the host of a run a peer started shuts down after the idle grace period, only when it is
@@ -39,7 +39,7 @@ const setup = (options: { quiet?: boolean; openChildWork?: boolean } = {}) => {
   const host = fakeRun();
   const finish = vi.fn(async () => ({ accepted: true }));
   const tryPrepare = vi.fn(async () => (options.quiet === false ? null : { commit: () => ({ finish }) }));
-  const shutdown = new StandaloneHostIdleShutdown({
+  const shutdown = new DelegatedRunIdleShutdown({
     hostRunId: "host-run",
     agentRunManager: { tryPrepareAgentRunTerminationIfQuiescent: tryPrepare } as never,
     runInGate: (operation) => operation(),
@@ -53,7 +53,7 @@ const setup = (options: { quiet?: boolean; openChildWork?: boolean } = {}) => {
 
 const settle = () => new Promise((resolve) => setImmediate(resolve));
 
-describe("StandaloneHostIdleShutdown", () => {
+describe("DelegatedRunIdleShutdown", () => {
   it("arms on watch and shuts the quiet host down when the grace period ends", async () => {
     const { clock, tryPrepare, finish } = setup();
     expect(clock.pendingCount()).toBe(1);

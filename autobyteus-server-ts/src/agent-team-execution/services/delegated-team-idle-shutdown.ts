@@ -6,14 +6,14 @@ import { resolveTaskExecutionIdleShutdownGraceMs } from "../../config/task-execu
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 
 /**
- * The idle schedule of a Team run a peer node started on this node (autobyteus-247 DS-004, AR-301): a quiet
- * shutdown, never the user Stop. It arms on the delegated-child schedule's signals and grace setting: an agent
+ * The idle schedule of a delegated team run, local or started by a peer (autobyteus-461 DS-7, AC-013; it is
+ * `isDelegated`; autobyteus-247 DS-004, AR-301): a quiet shutdown, never the user Stop. It arms on the delegated-child schedule's signals and grace setting: an agent
  * of the root reports idle, offline or error, a background task ends, or a live lease is released; an agent
  * running or initializing cancels it. It also arms once when the root opens, so a Team never given work stops.
  * On fire it asks the root for `shutDownIfQuiet()`, which decides in its gate with the Team's own all-or-nothing
  * quiescent preparation; when that is not quiet, nothing happens and a later quiet signal re-arms.
  */
-export class RemoteTeamIdleShutdown {
+export class DelegatedTeamIdleShutdown {
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
   private readonly reference: Readonly<{ teamRunId: string }>;
 

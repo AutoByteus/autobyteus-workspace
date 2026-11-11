@@ -12,6 +12,7 @@ import { RemoteMessageReceiver, type RemoteRootDirectory } from "../remote-colla
 import { RemoteRunViewProvider } from "../remote-collaboration/inbound/remote-run-view-provider.js";
 import { getAgentRunViewProjectionService } from "../run-history/services/agent-run-view-projection-service.js";
 import { getTeamMemberRunViewProjectionService } from "../run-history/services/team-member-run-view-projection-service.js";
+import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RemoteTeamRunStarter } from "../remote-collaboration/inbound/remote-team-run-starter.js";
 import { RemoteCatalogLister } from "../remote-collaboration/inbound/remote-catalog-lister.js";
 import {
@@ -69,8 +70,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     ownNodeId: () => getNodeIdentityService().getNodeId(),
     tempWorkspaceDir: input.tempWorkspaceDir,
     handlers: (services) => ({
-      delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns,
-        teams: new RemoteTeamRunStarter({ teamRuns: input.teamRuns }), decisions: peerStartedRunDecisions }),
+      delegatedRuns: ((starter) => new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, starter,
+        teams: new RemoteTeamRunStarter({ starter }), decisions: peerStartedRunDecisions }))(new DelegatedRunStarter({ agentRuns: input.agentRuns, teamRuns: input.teamRuns })),
       messages: new RemoteMessageReceiver(roots, {
         // autobyteus-269: an accepted work packet's content is the run's title (a peer never starts an Org).
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)

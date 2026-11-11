@@ -4,7 +4,7 @@ import { projectAgentCollaborationEvent } from "../../../src/services/agent-stre
 import { projectAgentOrgExecutionEvent } from "../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { projectTeamRemoteEvent } from "../../../src/services/agent-streaming/team-remote-event-projector.js";
 import type { RemoteRunRootEvent } from "../../../src/agent-collaboration/execution/remote/remote-run-observation.js";
-import { RemoteTeamIdleShutdown } from "../../../src/agent-team-execution/services/remote-team-idle-shutdown.js";
+import { DelegatedTeamIdleShutdown } from "../../../src/agent-team-execution/services/delegated-team-idle-shutdown.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
@@ -43,7 +43,7 @@ describe("remote children in the root streams", () => {
 
   it("the Team root's own consumers do not take a remote frame for a local agent's status", () => {
     const timers = { setTimeout: vi.fn(() => "timer"), clearTimeout: vi.fn() };
-    const idle = new RemoteTeamIdleShutdown({ teamRunId: "team-run", shutDownIfQuiet: async () => false, gracePeriodMs: () => 1000, timers });
+    const idle = new DelegatedTeamIdleShutdown({ teamRunId: "team-run", shutDownIfQuiet: async () => false, gracePeriodMs: () => 1000, timers });
     expect(timers.setTimeout).toHaveBeenCalledTimes(1);
     idle.onRootEvent({ eventSourceType: TeamRunEventSourceType.REMOTE, event: frame });
     expect(timers.clearTimeout).not.toHaveBeenCalled();

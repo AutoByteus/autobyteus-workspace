@@ -1,3 +1,4 @@
+import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import fs from "node:fs/promises";
 import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
@@ -234,7 +235,8 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   network.set(B_ID, new PeerGateway({
     ownNodeId: async () => B_ID, capability: { isEnabled: () => true }, peers: peerDirectory(B_PEERS),
     delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort,
-      agentRuns: { prepareAgentRun: vi.fn(async () => { throw new Error("not an Agent"); }) }, teams: new RemoteTeamRunStarter({ teamRuns }), decisions: new PeerStartedRunDecisions() }),
+      ...((starter) => ({ starter, teams: new RemoteTeamRunStarter({ starter }) }))(new DelegatedRunStarter({ agentRuns: { prepareAgentRun: vi.fn(async () => { throw new Error("not an Agent"); }) }, teamRuns })),
+      decisions: new PeerStartedRunDecisions() }),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort }),
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found",
@@ -274,7 +276,7 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     // B: an ordinary Team run with `delegatedFrom` on its tree; only the coordinator started, with the task notification.
     const bTree = JSON.parse(await fs.readFile(path.join(new AgentMemoryLayout(b.dir).getTeamDirPath({ rootTeamRunId: "studio_team_b", ancestorTeamRunIds: [] }),
       "team_run_execution_tree.json"), "utf8"));
-    expect(bTree.delegatedFrom).toEqual({ nodeId: A_ID, coordinatingRun: { kind: "agent", runId: DELEGATOR }, delegatorAgentRunId: DELEGATOR });
+    expect(bTree.delegatedFrom).toEqual({ nodeId: A_ID, delegatingRun: { kind: "agent", runId: DELEGATOR }, delegatorAgentRunId: DELEGATOR });
     expect(bTree.rootTeam.members.map((member: { address: string; launchConfiguration: { workspaceRootPath: string; autoExecuteTools: boolean } }) =>
       [member.address, member.launchConfiguration.workspaceRootPath, member.launchConfiguration.autoExecuteTools]))
       .toEqual([["/lead", path.join(b.dir, "temp_workspace"), true], ["/writer", path.join(b.dir, "temp_workspace"), true]]);

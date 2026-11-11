@@ -38,7 +38,7 @@ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/executio
 import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { teamRunRemoteLinks } from "./team-run-remote-links.js";
-import { RemoteTeamIdleShutdown } from "../services/remote-team-idle-shutdown.js";
+import { DelegatedTeamIdleShutdown } from "../services/delegated-team-idle-shutdown.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
@@ -94,7 +94,7 @@ export class RootTeamRun {
   /** autobyteus-278: the live facts of the runs this Team delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
   private readonly remoteDelegation: RemoteDelegation;
-  private readonly remoteIdle: RemoteTeamIdleShutdown | null; // DS-004: only on a Team run a peer started
+  private readonly delegatedIdle: DelegatedTeamIdleShutdown | null; // DS-7: on every delegated team run (`isDelegated`: its tree has `delegatedFrom`)
   private readonly unsubscribeTaskExecutionEvents: () => void;
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
@@ -155,7 +155,7 @@ export class RootTeamRun {
       retainMessages: (keep) => this.communication.retainMessages(keep),
       idleShutdown: options.taskExecutionIdleShutdown,
       taskExecutionResources: options.taskExecutionResources,
-      onLiveLeaseReleased: () => this.remoteIdle?.arm(),
+      onLiveLeaseReleased: () => this.delegatedIdle?.arm(),
     });
     this.communication = new RootCommunicationEngine(createTeamCommunicationPort({
       rootTeamRunId: this.teamRunId,
@@ -198,11 +198,11 @@ export class RootTeamRun {
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
     });
-    this.remoteIdle = this.tree.delegatedFrom ? new RemoteTeamIdleShutdown({ teamRunId: this.teamRunId,
+    this.delegatedIdle = this.tree.delegatedFrom ? new DelegatedTeamIdleShutdown({ teamRunId: this.teamRunId,
       shutDownIfQuiet: () => this.shutDownIfQuiet(), ...options.taskExecutionIdleShutdown }) : null;
     this.unsubscribeTaskExecutionEvents = options.publisher.subscribe(({ event }) => {
       this.taskExecutions.onRootEvent(event);
-      this.remoteIdle?.onRootEvent(event);
+      this.delegatedIdle?.onRootEvent(event);
     });
     this.assertRootCorrelation();
   }
@@ -443,7 +443,7 @@ export class RootTeamRun {
   terminate(quiet: PreparedLocalExecutionTermination | null = null): Promise<AgentOperationResult> {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) { quiet?.cancel(); return this.termination; }
-    this.remoteIdle?.dispose();
+    this.delegatedIdle?.dispose();
     this.remoteChildren.dispose();
     this.lifecycle = "terminating";
     this.taskExecutions.closeExternalAdmission();

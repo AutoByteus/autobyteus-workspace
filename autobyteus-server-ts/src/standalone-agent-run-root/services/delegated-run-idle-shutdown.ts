@@ -10,13 +10,13 @@ import {
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../config/task-execution-idle-shutdown-setting.js";
 
 /**
- * The host idle schedule of a run a peer node delegated to this node (DS-006; REQ-107 "shut down for being
- * idle"). It watches the host's status: idle, offline or error arms the grace timer (the delegated copies'
+ * The idle schedule of a delegated agent run, local or started by a peer (autobyteus-461 DS-7, AC-013; it is
+ * `isDelegated`): the run's own idle shutdown, never the user Stop. It watches the run's agent status: idle, offline or error arms the grace timer (the delegated copies'
  * schedule and grace setting); running or initializing cancels it; a background task that ends re-arms it.
  * When it fires, the root runs `shutDownIfQuiet` inside its gate: the host shuts down only when it is quiet and
  * the root's own children have no open work. The next inbound message restores it with its conversation.
  */
-export class StandaloneHostIdleShutdown {
+export class DelegatedRunIdleShutdown {
   private readonly schedule: TaskExecutionIdleShutdownSchedule;
   private watched: AgentRun | null = null;
   private unsubscribe: (() => void) | null = null;

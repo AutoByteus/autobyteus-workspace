@@ -76,7 +76,7 @@ import { REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.
 import { peerDelegatedFromOf, type DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import { StandaloneHostIdleShutdown } from "../services/standalone-host-idle-shutdown.js";
+import { DelegatedRunIdleShutdown } from "../services/delegated-run-idle-shutdown.js";
 
 export type StandaloneRootPackageSnapshot = Readonly<{
   tree: StandaloneRootTreeSnapshot;
@@ -106,7 +106,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this root delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
-  private readonly hostIdle: StandaloneHostIdleShutdown | null;
+  private readonly delegatedIdle: DelegatedRunIdleShutdown | null;
   private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
   private termination: Promise<AgentOperationResult> | null = null;
   private failStopped = false;
@@ -144,15 +144,13 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       throw new Error("Agent root authorities do not correlate to one exact host run.");
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
-    const peerDelegatedFrom = peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom });
     this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
-      // Only a run a peer started has a delegator endpoint on a peer (AR-016, `isPeerStarted`).
-      backLink: peerDelegatedFrom ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peerDelegatedFrom } : null,
+      backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016: `isPeerStarted`
       channel: options.remoteRunChannel });
     const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel });
     this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.remoteTaskExecutions ?? [],
       publish: (event) => options.publisher.publish(event), channel: options.remoteRunChannel });
-    this.hostIdle = options.delegatedFrom && options.agentRunManager ? new StandaloneHostIdleShutdown({
+    this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
       runInGate: (operation) => this.operationGate.run(operation), hasOpenChildWork: () => this.hasOpenExecutionWork(),
       ...options.taskExecutionIdleShutdown,
@@ -218,7 +216,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       remoteLinks: this.remoteLinks,
       remoteDelegation,
       remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
-      onHostReady: (run) => { this.hostIdle?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
+      onHostReady: (run) => { this.delegatedIdle?.watch(run); this.hostReadyListeners.forEach((listener) => listener(run)); },
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
     this.communication = new RootCommunicationEngine(createStandaloneRootCommunicationPort({
@@ -446,7 +444,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
-    this.hostIdle?.dispose();
+    this.delegatedIdle?.dispose();
     this.remoteChildren.dispose();
     this.communication.closeAdmission();
     this.taskExecutions.closeExternalAdmission();

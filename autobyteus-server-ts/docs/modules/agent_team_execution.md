@@ -401,7 +401,7 @@ pair rule use. Its message log and package validation include the delegator
 through `agentRunIdsOfTree`.
 
 Such a root has an idle shutdown, which local Team runs do not have:
-`RemoteTeamIdleShutdown` (`services/remote-team-idle-shutdown.ts`). It is a
+`DelegatedTeamIdleShutdown` (`services/delegated-team-idle-shutdown.ts`). It is a
 **quiet** shutdown, never the user Stop:
 
 - it arms on the delegated-child schedule's signals and grace setting
@@ -991,7 +991,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/local/registries/task-team-execution-registry.ts`
 - `src/agent-team-execution/services/flat-team-topology-planner.ts`
 - `src/agent-team-execution/services/team-run-service.ts`
-- `src/agent-team-execution/services/remote-team-idle-shutdown.ts`
+- `src/agent-team-execution/services/delegated-team-idle-shutdown.ts`
 - `src/agent-team-execution/domain/team-run-remote-links.ts`
 - `src/remote-collaboration/inbound/remote-team-run-starter.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts`

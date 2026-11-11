@@ -1,3 +1,5 @@
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -39,8 +41,12 @@ export interface CreateAgentRunInput {
     bindingId: string;
     displayName: string | null;
   } | null;
-  /** A run a peer node delegated to this node: its back-link (DEC-112), written once at creation. */
+  /** A delegated run (local or peer-started): its origin, written once at creation (contract §2.2). */
   delegatedFrom?: DelegatedFrom;
+  /** The run's own address when it is fixed at creation (a delegated run: its delegation address, contract §2.3). */
+  address?: AgentTeamAddress;
+  /** How the run's launch was resolved (a delegated run's resolved launch, contract §2.2). */
+  launchSource?: LaunchConfigurationSource;
   /** autobyteus-32: the server service that owns the run (never a collaboration member). */
   systemRunOwner?: SystemRunOwner;
   /** The Project the run is started under (REQ-004); refused with `PROJECT_NOT_FOUND` when it does not exist. */

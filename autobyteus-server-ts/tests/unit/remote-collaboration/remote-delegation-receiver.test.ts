@@ -1,3 +1,4 @@
+import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { describe, expect, it, vi } from "vitest";
 import type { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import type { ModelRouterPort } from "../../../src/model-routing/domain/model-routing-types.js";
@@ -83,11 +84,11 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string; modelRo
     members: [{ address: "/studio_team/publisher", agentRunId: "publisher_t1" }] };
   const startTeam = vi.fn(async () => teamAnswer);
   const decisions = { hold: vi.fn<PeerStartedRunDecisions["hold"]>() };
-  const receiver = new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(TEMP), agentRuns: { prepareAgentRun },
+  const receiver = new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(TEMP), starter: new DelegatedRunStarter({ agentRuns: { prepareAgentRun }, teamRuns: {} as never }),
     teams: { start: startTeam }, decisions });
   const start = (address: string) => receiver.start({
     fromNodeId: "srv_node_a", toNodeId: "srv_node_b", address,
-    delegator: { agentRunId: "lead_run" }, coordinatingRun: { kind: "agent_team", runId: "team_a" }, task: { text: "Publish it.", title: "Publish it.", taskKey: null, projectId: null, taskId: null },
+    delegator: { agentRunId: "lead_run" }, delegatingRun: { kind: "agent_team", runId: "team_a" }, task: { text: "Publish it.", title: "Publish it.", taskKey: null, projectId: null, taskId: null },
   }, { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z", paired: true });
   return { start, prepareAgentRun, startTeam, teamAnswer, decisions };
 };
@@ -101,7 +102,9 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
     expect(node.prepareAgentRun).toHaveBeenCalledExactlyOnceWith({
       agentDefinitionId: "publisher", workspaceRootPath: TEMP, autoExecuteTools: true,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: { thinking: "on" },
-      delegatedFrom: { nodeId: "srv_node_a", coordinatingRun: { kind: "agent_team", runId: "team_a" }, delegatorAgentRunId: "lead_run" },
+      // The run's own address and launch source (contract §2.2, §2.3), through DelegatedRunStarter (autobyteus-461).
+      address: "/publisher", launchSource: { origin: "agent_default", fallbacks: [] },
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team_a" }, delegatorAgentRunId: "lead_run", nodeId: "srv_node_a" },
     });
   });
 
@@ -142,7 +145,7 @@ describe("RemoteDelegationReceiver resolves through the shared catalog admission
       launches: [expect.objectContaining({ address: "/studio_team/publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus" })] });
     expect(node.startTeam).toHaveBeenCalledExactlyOnceWith({
       address: "/studio_team", name: "Studio Team",
-      delegatedFrom: { nodeId: "srv_node_a", coordinatingRun: { kind: "agent_team", runId: "team_a" }, delegatorAgentRunId: "lead_run" },
+      delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team_a" }, delegatorAgentRunId: "lead_run", nodeId: "srv_node_a" },
       source: expect.objectContaining({ kind: "agent_team", teamDefinitionId: "studio", coordinatorAddress: "/studio_team/publisher",
         members: [expect.objectContaining({ address: "/studio_team/publisher", agentDefinitionId: "publisher",
           launchConfiguration: expect.objectContaining({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus",

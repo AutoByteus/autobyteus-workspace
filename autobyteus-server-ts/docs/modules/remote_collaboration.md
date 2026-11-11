@@ -195,12 +195,12 @@ each offers, then delegates with `delegate_task` without being told an address.
   `delegatedFrom` `{nodeId, coordinatingRun, delegatorAgentRunId}`. Its root admits the work packet (link
   check, host made ready, system task notification naming the node), knows the delegator as its back-link
   endpoint, creates its `collaboration/` package with the first message, and shuts the host down after the
-  idle grace period (`StandaloneHostIdleShutdown`); the next message restores it.
+  idle grace period (`DelegatedRunIdleShutdown`); the next message restores it.
 - **Receiving node, an Agent Team.** The run is an ordinary top-level Team run (history, open, watch, stop);
   its `team_run_execution_tree.json` carries the same `delegatedFrom`. Its root pairs the delegator with every
   member, admits the work packet for the coordinator (link check, then the coordinator's input with the
   system task notification naming the node, which starts it), and has a quiet idle shutdown
-  (`RemoteTeamIdleShutdown`, see [Agent Team Execution](agent_team_execution.md)); the next message restores
+  (`DelegatedTeamIdleShutdown`, see [Agent Team Execution](agent_team_execution.md)); the next message restores
   it.
 - **Endpoints.** `RemoteRunLinks` holds a root's remote endpoints, of three kinds (`remote-endpoint.ts`).
   Each endpoint has one representation of the pair rule, `pairedAgentRunIds` (the local agents it pairs

@@ -1,3 +1,4 @@
+import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
@@ -19,7 +20,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
  */
 
 const TEMP = "/data/temp_workspace";
-const delegatedFrom = { nodeId: "srv_node_a", coordinatingRun: { kind: "agent" as const, runId: "assistant_a1" }, delegatorAgentRunId: "assistant_a1" };
+const delegatedFrom = { nodeId: "srv_node_a", delegatingRun: { kind: "agent" as const, runId: "assistant_a1" }, delegatorAgentRunId: "assistant_a1" };
 const agent = (id: string, defaultLaunchConfig: AgentDefinition["defaultLaunchConfig"] = null) =>
   new AgentDefinition({ id, name: id, description: id, instructions: "x", ownershipScope: "shared", defaultLaunchConfig });
 
@@ -76,7 +77,7 @@ const setup = () => {
     tokenUsageReadiness: { assertCurrentSchemaReady: vi.fn(), assertExistingRunRestoreReady: vi.fn() },
     definitionAdmissionService: { requireAvailable: vi.fn(async (_kind: string, id: string) => ({ status: "available", subjectKind: "agent_team", definition: definitions.get(id) })) } as never,
   });
-  const starter = new RemoteTeamRunStarter({ teamRuns });
+  const starter = new RemoteTeamRunStarter({ starter: new DelegatedRunStarter({ agentRuns: {} as never, teamRuns }) });
   const start = async (address = "/studio_team") => starter.start({ source: await resolve(address), address: address as never, name: "Studio Team", delegatedFrom });
   return { start, resolve, created, roots, manager, definitions, team, override, starter, teamRuns, delegatedFrom };
 };

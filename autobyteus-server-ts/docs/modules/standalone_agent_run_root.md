@@ -264,7 +264,7 @@ A run a peer node delegated to this node (CM-10) is an ordinary eligible standal
 knows the delegator as its `delegator` endpoint (`RemoteRunLinks`), admits the work packet (the prepared
 host is activated, then the system task notification naming the delegator's node is posted), creates
 its `collaboration/` package with the first message, and shuts the host down after the idle grace period
-(`StandaloneHostIdleShutdown`); the next message restores it. A standalone host that delegated to a peer
+(`DelegatedRunIdleShutdown`); the next message restores it. A standalone host that delegated to a peer
 records the link in its tree (`taskExecutions` entry with `nodeId`). See
 [Remote Collaboration](remote_collaboration.md).
 

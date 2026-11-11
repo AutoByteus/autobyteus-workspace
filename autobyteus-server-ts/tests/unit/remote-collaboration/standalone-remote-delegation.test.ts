@@ -1,3 +1,4 @@
+import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { remoteTaskExecutionDtos } from "../../../src/services/agent-streaming/remote-task-execution-dto-projection.js";
 import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
@@ -192,14 +193,14 @@ const buildNode = async (input: Readonly<{
   const gateway = new PeerGateway({
     ownNodeId: async () => input.nodeId, capability: { isEnabled: enabled }, peers: peerDirectory,
     delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")),
-      agentRuns: { prepareAgentRun: vi.fn(async (request) => {
+      starter: new DelegatedRunStarter({ teamRuns: {} as never, agentRuns: { prepareAgentRun: vi.fn(async (request) => {
       const runId = `publisher_r${++prepared}`;
       metadata.set(runId, { runId, agentDefinitionId: request.agentDefinitionId, workspaceRootPath: request.workspaceRootPath,
         memoryDir: path.join(memoryDir, "agents", runId), llmModelIdentifier: request.llmModelIdentifier, llmConfig: request.llmConfig ?? null,
         autoExecuteTools: request.autoExecuteTools, runtimeKind: request.runtimeKind as RuntimeKind, platformAgentRunId: null,
         preparedAt: T0, preparedExpiresAt: T0, startedAt: null, delegatedFrom: request.delegatedFrom });
       return { runId, activationState: "PREPARED" as const, preparedExpiresAt: T0 };
-    }) }, decisions: new PeerStartedRunDecisions() }),
+    }) } }), decisions: new PeerStartedRunDecisions() }),
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId),
@@ -254,7 +255,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     // `delegatedFrom`, activated by the packet.
     expect(b.metadata.get("publisher_r1")).toMatchObject({ agentDefinitionId: "publisher", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet",
       workspaceRootPath: path.join(b.memoryDir, "temp_workspace"), autoExecuteTools: true, startedAt: T0,
-      delegatedFrom: { nodeId: A_ID, coordinatingRun: { kind: "agent", runId: DELEGATOR }, delegatorAgentRunId: DELEGATOR } });
+      delegatedFrom: { delegatingRun: { kind: "agent", runId: DELEGATOR }, delegatorAgentRunId: DELEGATOR, nodeId: A_ID } });
     // autobyteus-269: the run's title is the packet's description, recorded once the packet was accepted.
     expect(b.titles.get("publisher_r1")).toBe("Publish the video draft.")
     expect(b.runOf("publisher_r1").posted).toEqual([[
