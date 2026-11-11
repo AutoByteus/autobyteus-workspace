@@ -15,7 +15,7 @@ const frame: RemoteRunRootEvent = { kind: "remote_agent_presentation", nodeId: "
 const started: RemoteRunRootEvent = { kind: "remote_task_execution_started", execution: {
   kind: "agent", address: "/researcher" as never, agentRunId: "researcher-run", nodeId: "srv_docker", nodeName: "docker",
   delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:00:00.000Z" } };
-const summary: RemoteRunRootEvent = { kind: "remote_task_execution_summary", summary: { nodeId: "srv_docker", runId: "researcher-run", reachable: false, title: null, statuses: [] } };
+const summary: RemoteRunRootEvent = { kind: "remote_task_execution_summary", summary: { nodeId: "srv_docker", runId: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } };
 
 describe("remote children in the root streams", () => {
   it("the Agent and Org projectors present a remote frame as the stream's agent_presentation at the stored address", () => {
@@ -24,7 +24,7 @@ describe("remote children in the root streams", () => {
       event: { kind: "agent_presentation", member_address: "/marketing/lead", agent_run_id: "lead-run", message: running } });
     const org = projectAgentOrgExecutionEvent({ orgRunId: "org-run" } as never, { event: summary, changeSequence: 10 });
     expect(org).toEqual({ root_subject_kind: "agent_org", root_run_id: "org-run", change_sequence: 10,
-      event: { kind: "remote_task_execution_summary", node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [] } });
+      event: { kind: "remote_task_execution_summary", node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } });
     expect(projectAgentCollaborationEvent("manager-run", {} as never, { event: started, changeSequence: 11 })?.event).toEqual({
       kind: "remote_task_execution_started", execution: { kind: "agent", address: "/researcher", agent_run_id: "researcher-run", node_id: "srv_docker",
         node_name: "docker", delegator_agent_run_id: "manager-run", started_at: "2026-10-23T08:00:00.000Z" } });
@@ -37,7 +37,7 @@ describe("remote children in the root streams", () => {
     expect(projectTeamRemoteEvent({ ...frame, message: input } as RemoteRunRootEvent, 5)).toEqual({ type: "MEMBER_INPUT_MESSAGE",
       payload: { change_sequence: 5, recipient_agent_run_id: "lead-run", ...input.payload } });
     expect(projectTeamRemoteEvent(summary, 6)).toEqual({ type: "REMOTE_TASK_EXECUTION_SUMMARY", payload: {
-      change_sequence: 6, node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [] } });
+      change_sequence: 6, node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } });
     expect(projectTeamRemoteEvent(started, 7)).toMatchObject({ type: "REMOTE_TASK_EXECUTION_STARTED", payload: { change_sequence: 7, execution: { node_name: "docker" } } });
   });
 

@@ -48,6 +48,8 @@ export type RemoteRunSummary = RemoteStartedRunRef & Readonly<{
   title: string | null;
   /** Only the run's live agents (an Agent's host, a Team's members); an agent without one is offline. */
   statuses: readonly Readonly<{ agentRunId: string; status: RemoteAgentStatus }>[];
+  /** Each agent's launch, from the run's own file on its node (SR-038). */
+  launches: readonly RemoteAgentLaunch[];
 }>;
 export type RemoteRunSummaries = Readonly<{ accepted: true; runs: readonly RemoteRunSummary[] }> | RemoteChannelRefusal;
 

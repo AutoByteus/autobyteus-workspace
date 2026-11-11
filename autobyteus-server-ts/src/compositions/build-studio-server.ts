@@ -364,7 +364,7 @@ export const buildStudioServer = async (input: {
     const rootResolver = createCollaborationRootResolver({ standaloneRoots: getStandaloneAgentRunRootManager(),
       teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService });
     const remoteCollaboration = composeStudioRemoteCollaboration({
-      appDataDir: input.appConfig.getAppDataDir(),
+      appDataDir: input.appConfig.getAppDataDir(), memoryDir: input.appConfig.getMemoryDir(),
       tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
       agentRuns: generalProcessRunSupervisor.agentRunService,
       teamRuns: generalProcessRunSupervisor.teamRunService,

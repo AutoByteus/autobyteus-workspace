@@ -1,3 +1,4 @@
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { AgentTeamDefinition } from "../../agent-team-definition/domain/agent-team-definition.js";
 import {
@@ -29,6 +30,8 @@ import {
 export type TeamAgentLaunchInput = Omit<TeamAgentLaunchSettings, "memberAddress" | "agentDefinitionId"> & {
   memberAddress: string;
   agentDefinitionId?: string | null;
+  /** A delegated team member's resolved launch source (autobyteus-461), recorded on the member. */
+  launchSource?: LaunchConfigurationSource;
 };
 
 export type TeamScopeLaunchInput = Omit<TeamScopeLaunchSettings, "teamAddress"> & {
@@ -195,6 +198,7 @@ export class FlatTeamTopologyPlanner {
         role: null,
         description: null,
         ...launchValue(launch),
+        ...(launch.launchSource ? { launchSource: launch.launchSource } : {}),
       });
     }
     return {

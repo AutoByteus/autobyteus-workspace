@@ -1,3 +1,4 @@
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
@@ -37,6 +38,8 @@ export interface TeamRunPresetInput {
 }
 export type TeamRunMemberConfigInput = {
   memberAddress: string;
+  /** A delegated team member's resolved launch source (autobyteus-461). */
+  launchSource?: LaunchConfigurationSource;
   agentDefinitionId?: string | null;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;

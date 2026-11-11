@@ -284,7 +284,7 @@ const remoteDelegatedRows = computed<readonly RunMemberNode[]>(() => {
   const deps = { schemaFor, sameWorkspace: sameRunWorkspaceChoice }
   if (current.kind === 'agent') {
     const view = current.isActive ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot
-    return remoteDelegatedLaunchNodes(view?.remote_task_executions ?? [], deps)
+    return remoteDelegatedLaunchNodes((view?.remote_task_executions ?? []).map(useRemoteRunsStore().withLaunches), deps)
   }
   return remoteDelegatedLaunchNodes(useRemoteRunsStore().executionsDelegatedBy(agentRunIdsOf(current.executionTree)), deps)
 })

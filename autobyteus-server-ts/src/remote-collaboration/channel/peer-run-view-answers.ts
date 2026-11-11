@@ -1,13 +1,30 @@
 import { agentPresentationMessageSchema, remoteAgentStatusSchema, type AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
-import type { RemoteAgentProjection, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import { parseLaunchConfigurationSource } from "../../run-history/store/launch-configuration-source-schema.js";
 
 const nonEmpty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 const record = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
 
+/** Each agent's launch as a peer resolved or stored it (autobyteus-32 REQ-009), read strictly; `null` when malformed. */
+export const remoteAgentLaunchesOf = (value: unknown): readonly RemoteAgentLaunch[] | null => {
+  if (!Array.isArray(value)) return null;
+  try {
+    return Object.freeze(value.map((item: unknown, index): RemoteAgentLaunch => {
+      const entry = record(item);
+      if (!entry || !nonEmpty(entry.address) || !nonEmpty(entry.runtimeKind) || !nonEmpty(entry.llmModelIdentifier)) throw new Error("launch");
+      return Object.freeze({ address: entry.address, runtimeKind: entry.runtimeKind, llmModelIdentifier: entry.llmModelIdentifier,
+        source: parseLaunchConfigurationSource(entry.source, `launches[${index}].source`) });
+    }));
+  } catch {
+    return null;
+  }
+};
+
 /**
  * A peer's run summaries, read strictly (autobyteus-278): each run is an Agent or a Team run by ID, with a title or
- * `null` and statuses of known values. Anything else makes the whole answer malformed (`null`).
+ * `null`, statuses of known values and its agents' launches (SR-038; absent from a peer that does not send them).
+ * Anything else makes the whole answer malformed (`null`).
  */
 export const remoteRunSummariesOf = (answer: Readonly<Record<string, unknown>>): readonly RemoteRunSummary[] | null => {
   if (!Array.isArray(answer.runs)) return null;
@@ -22,8 +39,10 @@ export const remoteRunSummariesOf = (answer: Readonly<Record<string, unknown>>):
       return status && nonEmpty(status.agentRunId) && parsed.success ? Object.freeze({ agentRunId: status.agentRunId, status: parsed.data }) : null;
     });
     if (statuses.some((status) => status === null)) return null;
+    const launches = run.launches === undefined ? Object.freeze([]) : remoteAgentLaunchesOf(run.launches);
+    if (!launches) return null;
     return Object.freeze({ kind: run.kind, runId: run.runId, title: run.title as string | null,
-      statuses: Object.freeze(statuses as NonNullable<(typeof statuses)[number]>[]) });
+      statuses: Object.freeze(statuses as NonNullable<(typeof statuses)[number]>[]), launches });
   });
   return runs.some((run) => run === null) ? null : Object.freeze(runs as RemoteRunSummary[]);
 };

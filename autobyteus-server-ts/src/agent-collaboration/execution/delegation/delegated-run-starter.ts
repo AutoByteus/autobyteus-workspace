@@ -86,6 +86,8 @@ export class DelegatedRunStarter {
       memberAddress: unmounted(member.address, input.address),
       agentDefinitionId: member.agentDefinitionId,
       ...launchInput(member.launchConfiguration),
+      // Recorded on the member, as an agent run records its own (contract §3.3; shown to a peer's owner, SR-038).
+      ...((member.launchSource ?? input.source.defaultLaunchSource) ? { launchSource: member.launchSource ?? input.source.defaultLaunchSource } : {}),
     }));
     const request: CreateTeamRunInput = {
       teamDefinitionId: input.source.teamDefinitionId,

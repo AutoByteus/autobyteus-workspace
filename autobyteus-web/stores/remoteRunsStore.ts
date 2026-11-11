@@ -51,6 +51,14 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
   const adapters = new Map<string, RemoteRunRetryAdapter>()
   /** autobyteus-32: each run's link as its root registered it (its launches feed the run's Settings rows). */
   const executions = shallowReactive(new Map<string, RemoteTaskExecutionDto>())
+  /** autobyteus-461 SR-038: each run's agents' launches as its node last answered them (nothing is stored here). */
+  const launches = shallowReactive(new Map<string, NonNullable<RemoteTaskExecutionSummaryDto['launches']>>())
+
+  /** The execution with the launches its node last answered (a node that has not answered: as it came). */
+  const withLaunches = (execution: RemoteTaskExecutionDto): RemoteTaskExecutionDto => {
+    const answered = launches.get(remoteTaskExecutionRunIdOf(execution))
+    return answered ? { ...execution, launches: answered } : execution
+  }
 
   /** A root's remote execution, with the way to ask its node again; an answer it already had stays. */
   const register = (execution: RemoteTaskExecutionDto, adapter: RemoteRunRetryAdapter): void => {
@@ -68,16 +76,20 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
 
   /** The remote runs delegated by these agent runs (a root's agents), as their links were registered. */
   const executionsDelegatedBy = (agentRunIds: ReadonlySet<string>): RemoteTaskExecutionDto[] =>
-    [...executions.values()].filter((execution) => agentRunIds.has(execution.delegator_agent_run_id))
+    [...executions.values()].filter((execution) => agentRunIds.has(execution.delegator_agent_run_id)).map(withLaunches)
 
   const update = (runId: string, change: Partial<Pick<RemoteRunInfo, 'reachable' | 'checking' | 'title'>>): void => {
     const current = runs.get(runId)
     if (current) runs.set(runId, Object.freeze({ ...current, ...change }))
   }
 
-  /** The node's answer about the run: it answered (with its title) or it did not. */
-  const applySummary = (summary: RemoteTaskExecutionSummaryDto): void =>
+  /** The node's answer about the run: it answered (with its title and launches) or it did not. */
+  const applySummary = (summary: RemoteTaskExecutionSummaryDto): void => {
+    // A node that did not answer gives no launches, as it gives no statuses (SR-038).
+    if (summary.reachable && summary.launches) launches.set(summary.run_id, summary.launches)
+    else launches.delete(summary.run_id)
     update(summary.run_id, { reachable: summary.reachable, checking: false, title: summary.reachable ? summary.title : runs.get(summary.run_id)?.title ?? null })
+  }
 
   /** A read of the run's conversation reached its node, or did not (the opened view's notice); it answers a Retry. */
   const markReachable = (runId: string, reachable: boolean): void => update(runId, { reachable, checking: false })
@@ -110,8 +122,9 @@ export const useRemoteRunsStore = defineStore('remoteRuns', () => {
     runOfAgent.clear()
     adapters.clear()
     executions.clear()
+    launches.clear()
   }
   watch(() => useWindowNodeContextStore().bindingRevision, clear, { flush: 'sync' })
 
-  return { register, applySummary, markReachable, retry, run, runOfAgentRun, executionsDelegatedBy, clear }
+  return { register, applySummary, markReachable, retry, run, runOfAgentRun, executionsDelegatedBy, withLaunches, clear }
 })

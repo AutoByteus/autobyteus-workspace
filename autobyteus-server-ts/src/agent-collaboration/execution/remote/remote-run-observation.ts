@@ -1,6 +1,7 @@
 import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
 import { peerRunIdOf, type PeerRunLink } from "./peer-run-link.js";
 import {
+  type RemoteAgentLaunch,
   resolveRemoteRunChannel,
   type RemoteRunChannel,
   type RemoteRunObservationStream,
@@ -17,6 +18,8 @@ export type RemoteRunSummaryEvent = Readonly<{
   reachable: boolean;
   title: string | null;
   statuses: readonly Readonly<{ agentRunId: string; status: RemoteAgentStatus }>[];
+  /** Each agent's launch as its node has it (SR-038); none when it did not answer. */
+  launches: readonly RemoteAgentLaunch[];
 }>;
 
 /**
@@ -162,8 +165,8 @@ export class RemoteRunObservation {
         const runId = peerRunIdOf(link);
         const run = answer?.accepted ? answer.runs.find((entry) => entry.kind === link.kind && entry.runId === runId) : undefined;
         const summary: RemoteRunSummaryEvent = !answer?.accepted
-          ? { nodeId, runId, reachable: false, title: null, statuses: [] }
-          : { nodeId, runId, reachable: true, title: run?.title ?? null, statuses: run?.statuses ?? [] };
+          ? { nodeId, runId, reachable: false, title: null, statuses: [], launches: [] }
+          : { nodeId, runId, reachable: true, title: run?.title ?? null, statuses: run?.statuses ?? [], launches: run?.launches ?? [] };
         if (!this.disposed) this.options.publish({ kind: "remote_task_execution_summary", summary: Object.freeze(summary) });
       }
     }));

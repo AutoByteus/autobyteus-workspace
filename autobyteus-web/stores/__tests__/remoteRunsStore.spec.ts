@@ -33,6 +33,21 @@ const adapter = (input: { refreshed: boolean; selected?: string | null; loaded?:
 describe('remoteRunsStore', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
+  it("autobyteus-461 SR-038: a peer child's launches come from its node's summary; a changed launch shows on the next one; none while unreachable", () => {
+    const store = useRemoteRunsStore()
+    store.register(team, streamOnlyRetryAdapter())
+    expect(store.executionsDelegatedBy(new Set(['manager-run']))[0]!.launches).toBeUndefined()
+    const launch = (model: string) => ({ address: '/lead', runtime_kind: 'autobyteus', llm_model_identifier: model,
+      source: { origin: 'team_default' as const, fallbacks: [] } })
+    store.applySummary({ node_id: 'srv_docker', run_id: 'marketing-run', reachable: true, title: null, statuses: [], launches: [launch('sonnet')] })
+    expect(store.executionsDelegatedBy(new Set(['manager-run']))[0]!.launches).toEqual([launch('sonnet')])
+    store.applySummary({ node_id: 'srv_docker', run_id: 'marketing-run', reachable: true, title: null, statuses: [], launches: [launch('opus')] })
+    expect(store.withLaunches(team).launches).toEqual([launch('opus')])
+    // A node that did not answer gives no launches, as it gives no statuses.
+    store.applySummary({ node_id: 'srv_docker', run_id: 'marketing-run', reachable: false, title: null, statuses: [] })
+    expect(store.withLaunches(team).launches).toBeUndefined()
+  })
+
   it("registers a root's remote run; an answer it had stays when the view republishes", () => {
     const store = useRemoteRunsStore()
     store.register(team, streamOnlyRetryAdapter())

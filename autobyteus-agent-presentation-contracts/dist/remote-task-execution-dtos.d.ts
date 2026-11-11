@@ -206,9 +206,10 @@ export declare const remoteAgentStatusSchema: z.ZodEnum<{
     running: "running";
 }>;
 /**
- * What the run's node answered about one remote run: its title and the statuses of its own agents (an Agent's
- * run, or a Team's members). `reachable: false` when the node did not answer; then there is no title and no
- * status, and the window shows "Couldn't reach {node}." with Retry. `run_id` is the Agent run or the Team run.
+ * What the run's node answered about one remote run: its title, the statuses of its own agents (an Agent's
+ * run, or a Team's members) and their launches (runtime, model and launch source, read from the run's own file
+ * there; SR-038). `reachable: false` when the node did not answer; then there is no title, no status and no
+ * launch, and the window shows "Couldn't reach {node}." with Retry. `run_id` is the Agent run or the Team run.
  */
 export declare const remoteTaskExecutionSummaryDtoSchema: z.ZodObject<{
     node_id: z.ZodString;
@@ -225,6 +226,63 @@ export declare const remoteTaskExecutionSummaryDtoSchema: z.ZodObject<{
             running: "running";
         }>;
     }, z.core.$strict>>;
+    launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        address: z.ZodString;
+        runtime_kind: z.ZodString;
+        llm_model_identifier: z.ZodString;
+        source: z.ZodUnion<readonly [z.ZodObject<{
+            origin: z.ZodEnum<{
+                agent_default: "agent_default";
+                team_default: "team_default";
+                inherited: "inherited";
+                configured: "configured";
+            }>;
+            fallbacks: z.ZodArray<z.ZodObject<{
+                layer: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                    model_router: "model_router";
+                }>;
+                runtime_kind: z.ZodNullable<z.ZodString>;
+                llm_model_identifier: z.ZodNullable<z.ZodString>;
+                reason: z.ZodEnum<{
+                    incomplete: "incomplete";
+                    runtime_unavailable: "runtime_unavailable";
+                    signed_out: "signed_out";
+                    model_unavailable: "model_unavailable";
+                    blocked: "blocked";
+                    model_settings_invalid: "model_settings_invalid";
+                    router_not_active: "router_not_active";
+                    router_failed: "router_failed";
+                }>;
+                detail: z.ZodString;
+            }, z.core.$strict>>;
+        }, z.core.$strict>, z.ZodObject<{
+            origin: z.ZodLiteral<"model_router">;
+            fallbacks: z.ZodArray<z.ZodObject<{
+                layer: z.ZodEnum<{
+                    agent_default: "agent_default";
+                    team_default: "team_default";
+                    model_router: "model_router";
+                }>;
+                runtime_kind: z.ZodNullable<z.ZodString>;
+                llm_model_identifier: z.ZodNullable<z.ZodString>;
+                reason: z.ZodEnum<{
+                    incomplete: "incomplete";
+                    runtime_unavailable: "runtime_unavailable";
+                    signed_out: "signed_out";
+                    model_unavailable: "model_unavailable";
+                    blocked: "blocked";
+                    model_settings_invalid: "model_settings_invalid";
+                    router_not_active: "router_not_active";
+                    router_failed: "router_failed";
+                }>;
+                detail: z.ZodString;
+            }, z.core.$strict>>;
+            choice_reason: z.ZodString;
+            task_kind: z.ZodString;
+        }, z.core.$strict>]>;
+    }, z.core.$strict>>>;
 }, z.core.$strict>;
 export type RemoteTaskExecutionDto = Readonly<z.infer<typeof remoteTaskExecutionDtoSchema>>;
 export type RemoteTaskExecutionSummaryDto = Readonly<z.infer<typeof remoteTaskExecutionSummaryDtoSchema>>;

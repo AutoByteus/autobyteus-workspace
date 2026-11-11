@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { DelegatedRunStartError, DelegatedRunStarter } from "../../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
 /** autobyteus-461 design DS-1, contract §2.2 (D2): a local delegation creates an ordinary run carrying its own origin. */
 const source = { kind: "agent" as const, agentDefinitionId: "image-maker",
@@ -24,5 +25,23 @@ describe("DelegatedRunStarter (local delegation)", () => {
       .rejects.toMatchObject({ name: "DelegatedRunStartError", message: "No model is set.", changedWhileStarting: false });
     await expect(starter.startAgent({ source: { ...source, launchConfiguration: { ...source.launchConfiguration, workspaceRootPath: null } },
       address: "/image_maker" as never, delegatedFrom })).rejects.toBeInstanceOf(DelegatedRunStartError);
+  });
+
+  it("a team run rooted at `/`: each member's launch and its resolved launch source are recorded on it (SR-038, contract §3.3)", async () => {
+    const launch = source.launchConfiguration;
+    const routed = { origin: "model_router" as const, fallbacks: [], choiceReason: "Careful review.", taskKind: "review" };
+    const team = { kind: "agent_team" as const, teamDefinitionId: "product-team", coordinatorAddress: "/product_team/lead" as never, handoffs: [],
+      defaultLaunchConfiguration: launch, defaultLaunchSource: { origin: "team_default" as const, fallbacks: [] },
+      members: [{ address: "/product_team/lead" as never, agentDefinitionId: "lead", launchConfiguration: launch, launchSource: routed },
+        { address: "/product_team/writer" as never, agentDefinitionId: "writer", launchConfiguration: launch }] };
+    const tree = testExecutionTree({ rootTeamRunId: "product_team_e03d", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead_1" }), testAgentNode("/writer", { agentRunId: "writer_1" })] });
+    const createTeamRun = vi.fn(async () => ({ teamRunId: "product_team_e03d", getExecutionTreeSnapshot: () => tree }));
+    const starter = new DelegatedRunStarter({ agentRuns: {} as never, teamRuns: { createTeamRun, terminateTeamRun: vi.fn() } as never });
+    await expect(starter.startTeam({ source: team as never, address: "/product_team" as never, delegatedFrom }))
+      .resolves.toMatchObject({ teamRunId: "product_team_e03d", coordinatorAgentRunId: "lead_1" });
+    expect((createTeamRun.mock.calls[0] as unknown[])[0]).toMatchObject({ memberConfigs: [
+      { memberAddress: "/lead", agentDefinitionId: "lead", launchSource: routed },
+      { memberAddress: "/writer", agentDefinitionId: "writer", launchSource: { origin: "team_default", fallbacks: [] } }] });
   });
 });

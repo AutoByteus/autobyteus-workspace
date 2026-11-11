@@ -75,10 +75,10 @@ describe("RemoteRunObservation", () => {
     ]);
     const summaries = f.events.flatMap((event) => event.kind === "remote_task_execution_summary" ? [event.summary] : []);
     expect(summaries).toEqual([
-      { nodeId: DOCKER, runId: "researcher-run", reachable: true, title: "Title of researcher-run", statuses: [{ agentRunId: "researcher-run", status: "running" }] },
-      // Omitted by the node: answered, without a title or live agents.
-      { nodeId: DOCKER, runId: "marketing-run", reachable: true, title: null, statuses: [] },
-      { nodeId: OFFICE, runId: "analyst-run", reachable: false, title: null, statuses: [] },
+      { nodeId: DOCKER, runId: "researcher-run", reachable: true, title: "Title of researcher-run", statuses: [{ agentRunId: "researcher-run", status: "running" }], launches: [] },
+      // Omitted by the node: answered, without a title, live agents or launches.
+      { nodeId: DOCKER, runId: "marketing-run", reachable: true, title: null, statuses: [], launches: [] },
+      { nodeId: OFFICE, runId: "analyst-run", reachable: false, title: null, statuses: [], launches: [] },
     ]);
     f.observation.viewerAttached();
     await f.flush();

@@ -1,3 +1,4 @@
+import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
@@ -36,6 +37,8 @@ export type TeamRunAgentNode = Readonly<{
   workspaceRootPath: string | null;
   /** autobyteus-348: the member's pending agent runtime switch, until its next input makes it real; absent means none. */
   pendingRuntimeSwitch?: PendingRuntimeSwitch;
+  /** autobyteus-461: where a delegated team member's launch came from (recorded at its start; display provenance). */
+  launchSource?: LaunchConfigurationSource;
 }>;
 
 /** A team of a run. Teams are flat: its children are agents. */
@@ -116,6 +119,7 @@ const cloneTeamRunAgentNode = (node: TeamRunAgentNode): TeamRunAgentNode => {
     autoExecuteTools: Boolean(node.autoExecuteTools),
     workspaceRootPath: optional(node.workspaceRootPath),
     ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: structuredClone(node.pendingRuntimeSwitch) } : {}),
+    ...(node.launchSource ? { launchSource: structuredClone(node.launchSource) } : {}),
   });
 };
 

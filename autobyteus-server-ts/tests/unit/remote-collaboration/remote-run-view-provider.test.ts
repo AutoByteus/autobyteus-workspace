@@ -31,7 +31,8 @@ const harness = () => {
     return query.targetAgentRunId === null || query.targetAgentRunId === "lead-run" ? "proceed" as const : "not_linked" as const;
   });
   const roots = { storedLinkCheck, pairedAgents: () => access } as unknown as RemoteRootDirectory;
-  const views = { runTitle: vi.fn(async () => "Plan the October campaign"), agentProjection: vi.fn(async () => ({
+  const launches = [{ address: "/lead", runtimeKind: "autobyteus", llmModelIdentifier: "sonnet", source: { origin: "team_default" as const, fallbacks: [] } }];
+  const views = { runTitle: vi.fn(async () => "Plan the October campaign"), runLaunches: vi.fn(async () => launches), agentProjection: vi.fn(async () => ({
     agentRunId: "lead-run", conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: true,
   })) };
   const provider = new RemoteRunViewProvider(roots, views);
@@ -53,7 +54,8 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     const f = harness();
     const response = await f.gateway.runSummaries({ ...envelope(), runs: [TEAM, { kind: "agent", runId: "unknown-run" }] }, peerCallerOfBody({ ...envelope(), runs: [TEAM, { kind: "agent", runId: "unknown-run" }] }));
     expect(response).toEqual({ status: 200, answer: { accepted: true, nodeId: SELF,
-      runs: [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running" }] }] } });
+      runs: [{ kind: "agent_team", runId: "team-run", title: "Plan the October campaign", statuses: [{ agentRunId: "lead-run", status: "running" }],
+        launches: [{ address: "/lead", runtimeKind: "autobyteus", llmModelIdentifier: "sonnet", source: { origin: "team_default", fallbacks: [] } }] }] } });
     expect(f.storedLinkCheck).toHaveBeenCalledWith(TEAM, { kind: "owner", fromNodeId: ALPHA.nodeId, targetAgentRunId: null });
     const other = await f.gateway.runSummaries({ ...envelope(OTHER), runs: [TEAM] }, peerCallerOfBody({ ...envelope(OTHER), runs: [TEAM] }));
     expect(other.answer).toEqual({ accepted: true, nodeId: SELF, runs: [] });

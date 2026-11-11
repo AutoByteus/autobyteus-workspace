@@ -43,6 +43,7 @@ export const projectRemoteTaskExecutionSummary = (summary: RemoteRunSummaryEvent
   reachable: summary.reachable,
   title: summary.title,
   statuses: summary.statuses.map((status) => ({ agent_run_id: status.agentRunId, status: status.status })),
+  launches: summary.launches.map(projectRemoteLaunch),
 });
 
 /**

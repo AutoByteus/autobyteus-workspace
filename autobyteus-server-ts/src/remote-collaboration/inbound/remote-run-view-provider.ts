@@ -2,6 +2,7 @@ import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-co
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import type {
+  RemoteAgentLaunch,
   RemoteAgentProjection,
   RemoteRunSummary,
   RemoteStartedRunRef,
@@ -22,6 +23,8 @@ import type { RemoteRootDirectory } from "./remote-message-receiver.js";
 export type PeerStartedRunViews = Readonly<{
   /** The run's title from its history catalog; `null` when it has none yet. */
   runTitle(run: RemoteStartedRunRef): Promise<string | null>;
+  /** Each agent's launch, from the run's own file (SR-038): the run's own facts, read when the peer asks. */
+  runLaunches(run: RemoteStartedRunRef): Promise<readonly RemoteAgentLaunch[]>;
   /** One agent's stored conversation projection (the run-view projection this node's window reads). */
   agentProjection(run: RemoteStartedRunRef, agentRunId: string): Promise<RemoteAgentProjection>;
 }>;
@@ -61,6 +64,7 @@ export class RemoteRunViewProvider {
         runId: run.runId,
         title: await this.views.runTitle(run).catch(() => null),
         statuses: this.roots.pairedAgents(run.kind).pairedAgentStatuses(run.runId),
+        launches: await this.views.runLaunches(run).catch(() => Object.freeze([])),
       }));
     }
     return Object.freeze({ accepted: true as const, runs: Object.freeze(runs) });

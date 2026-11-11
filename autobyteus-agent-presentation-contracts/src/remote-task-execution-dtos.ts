@@ -65,9 +65,10 @@ export const remoteTaskExecutionDtoSchema = z.discriminatedUnion("kind", [
 export const remoteAgentStatusSchema = z.enum(["offline", "initializing", "idle", "running", "error"]);
 
 /**
- * What the run's node answered about one remote run: its title and the statuses of its own agents (an Agent's
- * run, or a Team's members). `reachable: false` when the node did not answer; then there is no title and no
- * status, and the window shows "Couldn't reach {node}." with Retry. `run_id` is the Agent run or the Team run.
+ * What the run's node answered about one remote run: its title, the statuses of its own agents (an Agent's
+ * run, or a Team's members) and their launches (runtime, model and launch source, read from the run's own file
+ * there; SR-038). `reachable: false` when the node did not answer; then there is no title, no status and no
+ * launch, and the window shows "Couldn't reach {node}." with Retry. `run_id` is the Agent run or the Team run.
  */
 export const remoteTaskExecutionSummaryDtoSchema = z.object({
   node_id: nonEmptyStringSchema,
@@ -75,6 +76,7 @@ export const remoteTaskExecutionSummaryDtoSchema = z.object({
   reachable: z.boolean(),
   title: z.string().nullable(),
   statuses: z.array(z.object({ agent_run_id: nonEmptyStringSchema, status: remoteAgentStatusSchema }).strict()),
+  launches: z.array(remoteAgentLaunchDtoSchema).optional(),
 }).strict();
 
 export type RemoteTaskExecutionDto = Readonly<z.infer<typeof remoteTaskExecutionDtoSchema>>;

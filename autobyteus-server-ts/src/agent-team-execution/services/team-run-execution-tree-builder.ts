@@ -28,6 +28,7 @@ const toAgent = (node: TeamRunAgentNode): ConfiguredAgentExecutionNode => ({
   platformAgentRunId: node.platformAgentRunId,
   launchConfiguration: launchConfiguration(node),
   ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: node.pendingRuntimeSwitch } : {}),
+  ...(node.launchSource ? { launchSource: node.launchSource } : {}),
 });
 
 
@@ -62,6 +63,7 @@ const fromConfiguredAgent = (node: ConfiguredAgentExecutionNode): TeamRunAgentNo
   description: node.description,
   ...launchConfiguration(node.launchConfiguration),
   ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: node.pendingRuntimeSwitch } : {}),
+  ...(node.launchSource ? { launchSource: node.launchSource } : {}),
 });
 
 

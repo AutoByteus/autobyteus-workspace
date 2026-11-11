@@ -9,19 +9,17 @@ import type {
   RemoteRunObservationStream,
   RemoteRunObserver,
   RemoteRunSummaries,
-  RemoteAgentLaunch,
   RemoteStartedRun,
   RemoteStartedRunRef,
   RemoteTargetRoot,
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import { remoteAgentProjectionOf, remoteRunSummariesOf } from "./peer-run-view-answers.js";
+import { remoteAgentLaunchesOf as launchesOf, remoteAgentProjectionOf, remoteRunSummariesOf } from "./peer-run-view-answers.js";
 import { openPeerRunObservation, type OpenWebSocket } from "./peer-run-observation-client.js";
 import type { DelegatingRunRef } from "../../run-history/store/agent-run-metadata-types.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import type { PeerRefusal } from "../domain/peer-refusal.js";
 import { RemoteCollaborationSettingsError } from "../domain/remote-collaboration-settings-error.js";
 import { localRefusalText, peerRefusalText, REMOTE_REFUSAL, type PeerRefusalRouting } from "../domain/remote-refusals.js";
-import { parseLaunchConfigurationSource } from "../../run-history/store/launch-configuration-source-schema.js";
 import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import {
   REMOTE_AGENT_PROJECTION_PATH,
@@ -69,19 +67,6 @@ const nonEmpty = (value: unknown): value is string => typeof value === "string" 
  * whose coordinator is one of its members. Anything else is `null` (a malformed answer).
  */
 /** The peer's launches, read strictly: each agent's address, runtime, model and a valid launch source; null when malformed. */
-const launchesOf = (value: unknown): readonly RemoteAgentLaunch[] | null => {
-  if (!Array.isArray(value)) return null;
-  try {
-    return Object.freeze(value.map((item: unknown, index): RemoteAgentLaunch => {
-      const entry = item as Record<string, unknown> | null;
-      if (!entry || !nonEmpty(entry.address) || !nonEmpty(entry.runtimeKind) || !nonEmpty(entry.llmModelIdentifier)) throw new Error("launch");
-      return Object.freeze({ address: entry.address, runtimeKind: entry.runtimeKind, llmModelIdentifier: entry.llmModelIdentifier,
-        source: parseLaunchConfigurationSource(entry.source, `launches[${index}].source`) });
-    }));
-  } catch {
-    return null;
-  }
-};
 
 const startedRunOf = (answer: PeerAnswer): Exclude<RemoteStartedRun, { accepted: false }> | null => {
   const launches = launchesOf(answer.launches);
