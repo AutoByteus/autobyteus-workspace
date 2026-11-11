@@ -62,7 +62,6 @@ export class AgentRunCollaborationStreamingService {
     hostRunId: string
     isCurrent(): boolean
     publish(context: AgentRunCollaborationContext): void
-    onInactive(): void
     reportError(message: string): void
   }>) {}
 
@@ -226,8 +225,8 @@ export class AgentRunCollaborationStreamingService {
       this.context = candidate
       this.phase = 'ready'
       this.reconnect.connected()
-      if (candidate.isActive) this.settleReadiness()
-      else { this.options.onInactive(); this.disconnect() }
+      // SR-045: the stream lives with the open view, active or stopped; it is ready once its snapshot is applied.
+      this.settleReadiness()
       return
     }
     if (!this.context || this.phase !== 'ready') throw new Error('Agent collaboration event arrived before the snapshot.')
@@ -252,11 +251,8 @@ export class AgentRunCollaborationStreamingService {
       if (this.context.applyChildRunsChanged(message.payload.event) === 'checkpoint_required') this.reload()
       return
     }
+    // The run's own agent started or stopped: the view says so and its stream continues (SR-045).
     this.context.setActive(message.payload.is_active)
-    if (!message.payload.is_active) {
-      this.options.onInactive()
-      this.disconnect()
-    }
   }
 
   /** Reconnects for a fresh snapshot (the view only); a selected child that left returns the focus to the run (publish). */

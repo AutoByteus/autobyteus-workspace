@@ -385,6 +385,7 @@ async function inactive(id = 'agent-director') {
     ? projectionResult(variables) : inspectionResult())
   const store = useAgentOrgContextsStore()
   await store.openForInspection('org-run')
+  await connectStored()
   store.select('org-run', { kind: 'agent_execution', agentRunId: id })
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
@@ -393,32 +394,43 @@ async function inactive(id = 'agent-director') {
   mocks.historyRefresh.mockClear()
   return { store, active, context: active.activeAgentContext! }
 }
-async function readyRestored() {
+/** The stopped Org's open view keeps its stream (autobyteus-461 SR-045): its stored-mode snapshot, then its lifecycle (SR-046). */
+async function connectStored() {
   await vi.waitFor(() => expect(Socket.instances).toHaveLength(1))
   socket = Socket.instances[0]!
+  const view = inspectionResult().data.getAgentOrgRunInspection.root_org
+  socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'stored' } })
+  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run',
+    root_org: { ...view, base_change_sequence: 0, live_sequence_id: 'stored-1', last_message_change_sequence: 0 } } })
+  socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: false } })
+  await flushPromises()
+}
+/** The Org started on the message: the server's in-band live snapshot on the same stream, then its lifecycle (SR-046). */
+async function liveInBand() {
   const view = taskBearingView(); sequence = view.base_change_sequence
-  socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'restore' } })
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } })
-  await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
+  socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: true } })
+  await vi.waitFor(() => expect(useAgentOrgContextsStore().contextFor('org-run')?.phase).toBe('live'))
 }
 
 describe('observational Org history, exact deliberate continuation and retained stop', () => {
-  it.each(['agent-director', 'agent-team-worker-configured'])('restores only on deliberate %s Send, preserves real input/identity through readiness and sends once', async (id) => {
+  it.each(['agent-director', 'agent-team-worker-configured'])('a deliberate %s Send to the stopped Org goes over its view\'s stream; the Org starts on it and the view continues live after one in-band snapshot that keeps the input state (SR-045, SR-046, ARCH-REV-021)', async (id) => {
     const { store, active, context } = await inactive(id)
     workspace = mount(AgentOrgWorkspaceView, { global: { stubs: { Icon: true, AgentEventMonitor: true } } })
     await flushPromises()
     expect(workspace.find('[role="alert"]').exists()).toBe(false)
-    expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(0)
+    expect(Socket.instances).toHaveLength(1); expect(socket.sent).toEqual([])
     expect(active.activeWorkspaceTarget?.access).toBe('continuable')
     expect('interaction' in active.activeWorkspaceTarget!).toBe(false)
-    let release!: () => void
-    mocks.mutate.mockImplementationOnce(() => new Promise((resolve) => { release = () => resolve({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } }) }))
     context.contextFilePaths = [attachment()]
     await wrapper!.get('textarea').setValue('resume exact')
     const sent = active.send()
     expect(context.requirement).toBe(''); expect(context.contextFilePaths).toEqual([]); expect(context.submissionPending).toBe(true)
     await wrapper!.get('textarea').setValue('next while restoring')
-    store.select('org-run', { kind: 'agent_execution', agentRunId: id === 'agent-director' ? 'agent-team-worker-configured' : 'agent-director' })
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
+    expect(socket.sent[0].payload).toMatchObject({ target_agent_run_id: id, content: 'resume exact', context_file_paths: ['/workspace/submitted.txt'] })
+    const otherId = id === 'agent-director' ? 'agent-team-worker-configured' : 'agent-director'
+    store.select('org-run', { kind: 'agent_execution', agentRunId: otherId })
     const other = active.activeAgentContext!
     other.requirement = 'not consumed'
     await flushPromises()
@@ -426,59 +438,79 @@ describe('observational Org history, exact deliberate continuation and retained 
     await expect(active.send()).rejects.toThrow('Cannot send')
     await expect(store.stopAndInspect('org-run')).rejects.toThrow('pending')
     expect(other.requirement).toBe('not consumed')
-    release(); await readyRestored()
+    store.select('org-run', { kind: 'agent_execution', agentRunId: id })
+    // The server posts the message (its answer), then starts the Org's live view on the same stream: the member's
+    // projection holds the posted message.
+    const command = socket.sent[0].payload
+    mocks.query.mockImplementation(async ({ variables }: any) => {
+      if (!variables.agentRunId) return inspectionResult(true)
+      const result = projectionResult(variables)
+      if (variables.agentRunId === id) result.data.getAgentOrgMemberRunProjection.conversation = [{ kind: 'message', role: 'user',
+        content: 'resume exact', messageId: command.message_id, dedupeKey: command.dedupe_key, ts: 1_789_000_000 }] as never
+      return result
+    })
+    ack(); await sent
+    await liveInBand()
     expect(workspace.find('[role="alert"]').exists()).toBe(false)
     expect(mocks.routeReplace).toHaveBeenCalledWith({ path: '/workspace', query: { ...mocks.route.query, mode: 'active' } })
     expect(store.contextFor('org-run')!.getAgentContext(id)).toBe(context)
-    expect(active.activeAgentContext).toBe(other)
+    expect(active.activeAgentContext).toBe(context)
     expect(context.requirement).toBe('next while restoring')
     expect(context.submissionPending).toBe(true)
-    expect(context.conversation.messages.filter((m) => m.type === 'user')).toHaveLength(1)
-    expect(socket.sent[0].payload).toMatchObject({ target_agent_run_id: id, content: 'resume exact', context_file_paths: ['/workspace/submitted.txt'] })
-    echo(); ack(); status('idle'); await sent; await flushPromises()
+    await vi.waitFor(() => expect(context.conversation.messages.filter((m) => m.type === 'user')).toHaveLength(1))
+    echo(); status('idle'); await flushPromises()
     expect(context.conversation.messages.filter((m) => m.type === 'user')).toHaveLength(1)
     expect(context.submissionPending).toBe(false)
-    expect(mocks.mutate).toHaveBeenCalledOnce(); expect(mocks.historyRefresh).toHaveBeenCalledTimes(3) // Restore fact, snapshot, accepted Send summary.
+    expect(store.activeTargetFor('org-run')?.access).toBe('live')
+    expect(Socket.instances).toHaveLength(1); expect(socket.sent).toHaveLength(1)
+    expect(mocks.query.mock.calls.some(([request]: any) => request.query?.definitions?.[0]?.name?.value === 'GetAgentOrgExecutionCheckpoint')).toBe(false)
+    expect(mocks.mutate).not.toHaveBeenCalled()
     expect(mocks.navigation).not.toHaveBeenCalled()
   })
 
-  it('keeps stopped exact tasks read-only, not continuable configured lookalikes', async () => {
+  it('a stopped Org\'s task child is a run of its own: it takes a message over the view\'s stream and the Org stays stopped (SR-045)', async () => {
     const { store, active, context } = await inactive('agent-task-worker')
-    context.requirement = 'cannot resurrect'
-    expect(active.activeWorkspaceTarget?.access).toBe('read_only')
-    await expect(active.send()).rejects.toThrow('No active workspace target')
-    expect(context.requirement).toBe('cannot resurrect')
-    expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(0)
+    expect(active.activeWorkspaceTarget?.access).toBe('live')
+    await wrapper!.get('textarea').setValue('to the child')
+    const sent = active.send()
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
+    expect(socket.sent[0].payload).toMatchObject({ target_agent_run_id: 'agent-task-worker', content: 'to the child' })
+    ack(); await sent
+    expect(context.conversation.messages.filter((m) => m.type === 'user')).toHaveLength(1)
+    const org = store.contextFor('org-run')!
+    expect(org.isActive).toBe(false); expect(org.phase).toBe('historical')
+    expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(1)
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-team-worker-configured' })
     expect(active.activeWorkspaceTarget?.access).toBe('continuable')
   })
 
-  it('restores untouched input on failed restore, keeps deliberate discard and releases the root guard', async () => {
+  it('a rejected Send to the stopped Org keeps untouched input, keeps a deliberate discard and releases the root guard', async () => {
     const { store, active, context } = await inactive()
-    mocks.mutate.mockRejectedValueOnce(new Error('restore rejected'))
     context.contextFilePaths = [attachment()]
     await wrapper!.get('textarea').setValue('untouched')
-    await expect(active.send()).rejects.toThrow('restore rejected')
+    const first = active.send(); const rejected = expect(first).rejects.toThrow('Input was rejected')
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
+    ack('rejected'); await rejected
     expect(context.requirement).toBe('untouched'); expect(context.contextFilePaths).toEqual([attachment()])
     expect(context.submissionPending).toBe(false); expect(store.operations).toEqual({})
-    let reject!: (error: Error) => void
-    mocks.mutate.mockImplementationOnce(() => new Promise((_, fail) => { reject = fail }))
-    const sent = active.send(); const failure = expect(sent).rejects.toThrow('restore rejected again')
+    const sent = active.send(); const failure = expect(sent).rejects.toThrow('Input was rejected')
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(2))
     await wrapper!.get('textarea').setValue('next'); await wrapper!.get('textarea').setValue('')
-    reject(new Error('restore rejected again')); await failure; await flushPromises()
+    ack('rejected'); await failure; await flushPromises()
     expect(context.requirement).toBe(''); expect(context.contextFilePaths).toEqual([])
-    expect(wrapper!.get('textarea').element.value).toBe(''); expect(Socket.instances).toHaveLength(0)
+    expect(wrapper!.get('textarea').element.value).toBe(''); expect(Socket.instances).toHaveLength(1)
+    expect(store.operations).toEqual({})
+    expect(mocks.mutate).not.toHaveBeenCalled()
     expect(mocks.historyRefresh).not.toHaveBeenCalled()
   })
 
   it('does not dispose an explicit continuation on view/root departure before prepared Send completes', async () => {
     const { store, active, context } = await inactive()
-    mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
     context.requirement = 'continue after leaving'
     const sent = active.send()
     store.releaseContext('org-run')
     expect(store.contextFor('org-run')?.getAgentContext('agent-director')).toBe(context)
-    await readyRestored(); ack(); await sent
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(1)); ack(); await sent
     expect(socket.sent).toHaveLength(1); expect(socket.readyState).toBe(3)
     expect(store.contextFor('org-run')).toBeNull()
     expect(mocks.navigation).not.toHaveBeenCalled()
@@ -544,44 +576,44 @@ describe('Org strict candidate and terminal boundaries', () => {
     expect(org.phase).toBe('reopen_required'); expect(socket.sent).toEqual([])
   })
 
-  it('retains selection/identity and terminal truth after a correlated inactive event, ignoring retired-generation frames', async () => {
+  it('a correlated inactive event stops the Org\'s own agents; its task child keeps its state and the view keeps its stream (SR-045)', async () => {
     const { org, context } = await open('agent-task-worker')
+    const childStatus = context.state.currentStatus
     socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: false } })
     await flushPromises()
     const store = useAgentOrgContextsStore()
     expect(org.phase).toBe('historical'); expect(org.selectedTarget()?.context).toBe(context)
-    expect(context.state.currentStatus).toBe('offline'); expect(store.activeTargetFor('org-run')?.access).toBe('read_only')
+    expect(context.state.currentStatus).toBe(childStatus); expect(store.activeTargetFor('org-run')?.access).toBe('live')
+    expect(org.getAgentContext('agent-director')!.state.currentStatus).toBe('offline')
+    expect(socket.readyState).toBe(Socket.OPEN)
     socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: true } })
     await flushPromises()
-    expect(org.isActive).toBe(false); expect(Socket.instances).toHaveLength(1)
+    expect(org.isActive).toBe(true); expect(Socket.instances).toHaveLength(1)
     expect(mocks.mutate).not.toHaveBeenCalled()
   })
 
-  it.each(['en', 'zh-CN'] as const)('renders truthful %s recovery on the retained history route after Restore succeeds but readiness exhausts', async (locale) => {
+  it.each(['en', 'zh-CN'] as const)('renders truthful %s recovery on the retained history route when the stopped Org\'s stream is lost and cannot reopen', async (locale) => {
     await localizationRuntime.setPreference(locale)
     const { store, active, context } = await inactive()
     const org = store.contextFor('org-run')!
-    const savedView = JSON.stringify(org.view)
     workspace = mount(AgentOrgWorkspaceView, { global: { stubs: { Icon: true, AgentEventMonitor: true } } })
     await flushPromises()
     expect(workspace.find('[role="alert"]').exists()).toBe(false)
     expect(mocks.route.query.mode).toBe('history')
     expect(active.activeWorkspaceTarget?.access).toBe('continuable')
+    const savedView = JSON.stringify(org.view)
     vi.useFakeTimers()
     try {
-      mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
       vi.stubGlobal('WebSocket', class { static OPEN = 1; static CONNECTING = 0; constructor() { throw new Error('socket unavailable') } })
       context.requirement = 'not sent'
-      const sent = active.send(); const failure = expect(sent).rejects.toThrow('socket unavailable')
-      // The fifth consecutive failure (the open, then attempts after 1, 2, 4 and 8 s) reports; retrying goes on.
-      await vi.advanceTimersByTimeAsync(15_500); await failure
-      expect(mocks.mutate).toHaveBeenCalledOnce()
+      socket.close()
+      // The fifth consecutive failure (the loss, then attempts after 1, 2, 4 and 8 s) reports; retrying goes on.
+      await vi.advanceTimersByTimeAsync(15_500)
       expect(context.requirement).toBe('not sent'); expect(context.submissionPending).toBe(false)
       expect(store.contextFor('org-run')?.phase).toBe('reopen_required')
       expect(store.activeTargetFor('org-run')?.access).toBe('read_only')
       expect(store.errorFor('org-run')).toBe('socket unavailable')
-      expect(store.operations).toEqual({}); expect(Socket.instances).toHaveLength(0)
-      expect(mocks.historyRefresh).toHaveBeenCalledOnce() // Restore succeeded, even though stream readiness failed.
+      expect(store.operations).toEqual({})
       await workspace.vm.$nextTick()
       expect(workspace.get('[role="alert"]').text()).toBe(localizationRuntime.translate('workspace.agentOrg.recovery.exhausted'))
       expect(workspace.text()).not.toContain(localizationRuntime.translate('workspace.agentOrg.inspectionUnavailable'))
@@ -590,8 +622,7 @@ describe('Org strict candidate and terminal boundaries', () => {
       expect(active.activeAgentContext).toBe(context)
       expect(org.selectedAddress).toBe('/director')
       expect(JSON.stringify(org.view)).toBe(savedView) // No invented live snapshot or rollback.
-      expect(mocks.activity).toHaveBeenLastCalledWith('org-run', true)
-      expect(context.conversation.messages.at(-1)).toMatchObject({ segments: [expect.objectContaining({ code: 'LOCAL_SUBMISSION_ERROR' })] })
+      expect(mocks.mutate).not.toHaveBeenCalled()
     } finally { vi.useRealTimers() }
   })
 })

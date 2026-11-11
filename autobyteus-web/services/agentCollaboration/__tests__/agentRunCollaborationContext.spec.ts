@@ -95,14 +95,16 @@ describe('AgentRunCollaborationContext', () => {
     expect(context.phase).toBe('reopen_required')
   })
 
-  it('rejects a live message from an AgentRun outside the run and goes historical on stop', () => {
+  it('rejects a live message from an AgentRun outside the run; a stop of its own agent leaves the children and the stream (SR-045)', () => {
     const context = build()
     expect(() => context.applyEvent(5, { kind: 'communication', message: { ...agentRootMessages[0]!, messageId: 'm-stranger', senderAgentRunId: 'stranger' } }))
       .toThrow('identity mismatch')
     expect(useCollaborationParticipantMessagesStore().messagesOf({ rootKind: 'agent', rootRunId: 'host-run', agentRunId: 'host-run' })).toEqual([])
+    const before = context.getAgentContext('pp-run')?.state.currentStatus
     context.setActive(false)
-    expect(context.phase).toBe('historical')
-    expect(context.getAgentContext('pp-run')?.state.currentStatus).toBe(AgentStatus.Offline)
+    expect(context.isActive).toBe(false)
+    expect(context.phase).toBe('live')
+    expect(context.getAgentContext('pp-run')?.state.currentStatus).toBe(before)
     expect(parseAgentTeamAddress(context.index.hostAddress)).toBe('/research_assistant')
   })
 })
@@ -244,11 +246,11 @@ describe('AgentRunCollaborationContext task Team status', () => {
     expect(team()).toBe(AgentStatus.Offline)
   })
 
-  it('reads gray when the run is not alive, whatever the members last reported', () => {
+  it('a child Team reads its own agents\' state while the run\'s own agent is stopped (autobyteus-461: a run of its own)', () => {
     const view = agentRootView()
     view.is_active = false
     const context = build(view)
     expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Running)
-    expect(teamStatusOf(context.listTaskRows(() => true), 'product team')).toBe(AgentStatus.Offline)
+    expect(teamStatusOf(context.listTaskRows(() => true), 'product team')).toBe(AgentStatus.Running)
   })
 })

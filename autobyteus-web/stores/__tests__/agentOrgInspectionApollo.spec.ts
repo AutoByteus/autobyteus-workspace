@@ -118,7 +118,9 @@ describe.each(['/director', '/team/lead'])('installed Apollo final inspection %s
     if (!oldFirst) { first.respond(inspectionData(true)); await old }
     expect(orgs.contextFor('org-run')?.phase).toBe('historical')
     expect(observedRow().isActive).toBe(false)
-    expect(OrgTestSocket.instances).toHaveLength(0)
+    // The stopped Org's open view keeps one stream (autobyteus-461 SR-045); an earlier one is closed.
+    expect(OrgTestSocket.instances.filter(socket => socket.readyState === OrgTestSocket.OPEN)).toHaveLength(1)
+    expect(OrgTestSocket.instances.flatMap(socket => socket.sent)).toEqual([])
   })
 })
 

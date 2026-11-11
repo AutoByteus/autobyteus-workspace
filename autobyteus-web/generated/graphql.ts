@@ -4834,13 +4834,6 @@ export type CreateAgentOrgRunMutationVariables = Exact<{
 
 export type CreateAgentOrgRunMutation = { __typename?: 'Mutation', createAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
 
-export type RestoreAgentOrgRunMutationVariables = Exact<{
-  agentOrgRunId: Scalars['String']['input'];
-}>;
-
-
-export type RestoreAgentOrgRunMutation = { __typename?: 'Mutation', restoreAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
-
 export type TerminateAgentOrgRunMutationVariables = Exact<{
   agentOrgRunId: Scalars['String']['input'];
 }>;
@@ -8027,37 +8020,6 @@ export function useCreateAgentOrgRunMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>(CreateAgentOrgRunDocument, options);
 }
 export type CreateAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>;
-export const RestoreAgentOrgRunDocument = gql`
-    mutation RestoreAgentOrgRun($agentOrgRunId: String!) {
-  restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) {
-    success
-    message
-    agentOrgRunId
-  }
-}
-    `;
-
-/**
- * __useRestoreAgentOrgRunMutation__
- *
- * To run a mutation, you first call `useRestoreAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRestoreAgentOrgRunMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRestoreAgentOrgRunMutation({
- *   variables: {
- *     agentOrgRunId: // value for 'agentOrgRunId'
- *   },
- * });
- */
-export function useRestoreAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>(RestoreAgentOrgRunDocument, options);
-}
-export type RestoreAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>;
 export const TerminateAgentOrgRunDocument = gql`
     mutation TerminateAgentOrgRun($agentOrgRunId: String!) {
   terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) {

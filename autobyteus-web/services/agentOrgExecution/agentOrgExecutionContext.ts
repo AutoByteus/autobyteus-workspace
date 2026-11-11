@@ -216,7 +216,8 @@ export class AgentOrgExecutionContext {
 
   /** Applies one root event, or a content batch covering `[changeSequence, changeSequenceThrough]`. */
   applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto, changeSequenceThrough = changeSequence): AgentOrgEventApplication {
-    if (this.phase !== 'live') throw new Error('AgentOrg context is not accepting stream events.')
+    // A stopped Org's view streams too (autobyteus-461 SR-045): its children's output and rows.
+    if (this.phase !== 'live' && this.phase !== 'historical') throw new Error('AgentOrg context is not accepting stream events.')
     const following = advanceSequencedStream(this.nextChangeSequence, { first: changeSequence, through: changeSequenceThrough })
     if (following === null) {
       this.requireReopen(`Expected change sequence ${this.nextChangeSequence}, received ${changeSequence}.`)
@@ -277,11 +278,14 @@ export class AgentOrgExecutionContext {
     }
   }
 
+  /** The Org's own agents start or stop; its children are runs of their own and keep their states (autobyteus-461 SR-045). */
   setActive(active: boolean): void {
     this.view = { ...this.view, is_active: active }
     if (!active) {
-      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline', recoverableBlock: null })) })
-      this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
+      const own = (agentRunId: string) => !this.index.agents.get(agentRunId)?.delegation
+      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) =>
+        own(status.agent_run_id) ? { ...status, status: 'offline', recoverableBlock: null } : status) })
+      this.contexts.forEach((context, agentRunId) => { if (own(agentRunId)) applyOfflineOrTerminalCleanup(context) })
       this.phase = 'historical'
     }
   }
