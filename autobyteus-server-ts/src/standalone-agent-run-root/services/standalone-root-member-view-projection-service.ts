@@ -1,3 +1,4 @@
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../../run-history/projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../../run-history/projection/run-projection-types.js";
@@ -63,7 +64,7 @@ export class StandaloneRootMemberViewProjectionService {
 
   async getProjection(hostRunId: string, memberAddress: string, agentRunId: string): Promise<StandaloneRootMemberRunProjection> {
     // N-403: a remote child's conversation is read from its node (autobyteus-278).
-    const remote = remoteChildOf((await this.locations.readTree(required(hostRunId, "hostRunId")))?.remoteTaskExecutions ?? [], agentRunId.trim());
+    const remote = remoteChildOf(peerRunLinksOf({ rootSubjectKind: "agent", rootRunId: required(hostRunId, "hostRunId") }), agentRunId.trim());
     if (remote) return await remoteMemberProjection(remote, memberAddress) as StandaloneRootMemberRunProjection;
     const location = await this.requireLocation(hostRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({ runId: location.agentRunId, metadata: metadataFor(location) });

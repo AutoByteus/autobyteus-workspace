@@ -1,8 +1,5 @@
 import type { AgentPresentationMessage, RemoteAgentStatus } from "@autobyteus/agent-presentation-contracts";
-import {
-  remoteTaskExecutionRunId,
-  type RemoteTaskExecution,
-} from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import { peerRunIdOf, type PeerRunLink } from "./peer-run-link.js";
 import {
   resolveRemoteRunChannel,
   type RemoteRunChannel,
@@ -11,7 +8,7 @@ import {
 } from "./remote-run-channel.js";
 
 /** A remote link with this owner's label for its node, as a root view lists it. */
-export type RemoteTaskExecutionView = RemoteTaskExecution & Readonly<{ nodeName: string }>;
+export type RemoteTaskExecutionView = PeerRunLink & Readonly<{ nodeName: string }>;
 
 /** What a remote run's node answered about it; `reachable: false` when it did not answer (no title, no status). */
 export type RemoteRunSummaryEvent = Readonly<{
@@ -40,21 +37,21 @@ export type RemoteRunRootEvent =
     }>;
 
 /** The root a remote link names on its node: the Agent run, or the Team run. */
-export const remoteTargetRootOf = (link: RemoteTaskExecution): RemoteTargetRoot =>
-  Object.freeze({ kind: link.kind, runId: remoteTaskExecutionRunId(link) });
+export const remoteTargetRootOf = (link: PeerRunLink): RemoteTargetRoot =>
+  Object.freeze({ kind: link.kind, runId: peerRunIdOf(link) });
 
 /** The agent's address under this root, by its run ID on the link (the Agent run, or a Team member); `null` otherwise. */
-export const remoteAgentAddressOf = (link: RemoteTaskExecution, agentRunId: string): string | null => link.kind === "agent"
+export const remoteAgentAddressOf = (link: PeerRunLink, agentRunId: string): string | null => link.kind === "agent"
   ? (link.agentRunId === agentRunId ? link.address : null)
   : link.members.find((member) => member.agentRunId === agentRunId)?.address ?? null;
 
 /** The remote link that has this agent run (an Agent run, or a Team member); `null` for a local agent. */
-export const remoteChildLinkOf = (links: readonly RemoteTaskExecution[], agentRunId: string): RemoteTaskExecution | null =>
+export const remoteChildLinkOf = (links: readonly PeerRunLink[], agentRunId: string): PeerRunLink | null =>
   links.find((link) => remoteAgentAddressOf(link, agentRunId) !== null) ?? null;
 
 /** A root's remote links with their node names, in delegation order (the root views list them). */
 export const describeRemoteTaskExecutions = async (
-  links: readonly RemoteTaskExecution[],
+  links: readonly PeerRunLink[],
   channel: RemoteRunChannel | null,
 ): Promise<readonly RemoteTaskExecutionView[]> => {
   const names = new Map<string, string>();
@@ -78,7 +75,7 @@ export class RemoteRunObservation {
 
   constructor(private readonly options: Readonly<{
     /** The root's remote links, read at call time. */
-    links(): readonly RemoteTaskExecution[];
+    links(): readonly PeerRunLink[];
     publish(event: RemoteRunRootEvent): void;
     channel?(): RemoteRunChannel | null;
   }>) {}
@@ -106,7 +103,7 @@ export class RemoteRunObservation {
   }
 
   /** A delegation recorded a new remote link: the root's viewers learn it, and it is observed while viewed. */
-  linkCommitted(link: RemoteTaskExecution): void {
+  linkCommitted(link: PeerRunLink): void {
     if (this.disposed) return;
     void describeRemoteTaskExecutions([link], this.channel()).then(([execution]) => {
       if (!this.disposed && execution) this.options.publish({ kind: "remote_task_execution_started", execution });
@@ -124,8 +121,8 @@ export class RemoteRunObservation {
     this.closeStreams();
   }
 
-  private open(link: RemoteTaskExecution): void {
-    const key = remoteTaskExecutionRunId(link);
+  private open(link: PeerRunLink): void {
+    const key = peerRunIdOf(link);
     const channel = this.channel();
     if (this.disposed || !channel || this.streams.has(key)) return;
     let current: RemoteRunObservationStream | null = null;
@@ -143,26 +140,26 @@ export class RemoteRunObservation {
     this.streams.set(key, current);
   }
 
-  private frame(link: RemoteTaskExecution, agentRunId: string, message: AgentPresentationMessage): void {
+  private frame(link: PeerRunLink, agentRunId: string, message: AgentPresentationMessage): void {
     const memberAddress = remoteAgentAddressOf(link, agentRunId);
     if (!memberAddress) {
       // AR-402: the node sends its run's own agents only; anything else is not in this root's tree.
-      console.debug(`A frame for agent run '${agentRunId}' is not of remote run '${remoteTaskExecutionRunId(link)}'; it was dropped.`);
+      console.debug(`A frame for agent run '${agentRunId}' is not of remote run '${peerRunIdOf(link)}'; it was dropped.`);
       return;
     }
     if (!this.disposed) this.options.publish({ kind: "remote_agent_presentation", nodeId: link.nodeId, agentRunId, memberAddress, message });
   }
 
-  private async fetchSummaries(links: readonly RemoteTaskExecution[]): Promise<void> {
+  private async fetchSummaries(links: readonly PeerRunLink[]): Promise<void> {
     const channel = this.channel();
     if (!channel) return;
-    const byNode = new Map<string, RemoteTaskExecution[]>();
+    const byNode = new Map<string, PeerRunLink[]>();
     links.forEach((link) => byNode.set(link.nodeId, [...byNode.get(link.nodeId) ?? [], link]));
     await Promise.all([...byNode].map(async ([nodeId, nodeLinks]) => {
       const answer = await channel.runSummaries(nodeId, nodeLinks.map(remoteTargetRootOf).map((root) => ({ kind: root.kind as "agent" | "agent_team", runId: root.runId })))
         .catch(() => null);
       for (const link of nodeLinks) {
-        const runId = remoteTaskExecutionRunId(link);
+        const runId = peerRunIdOf(link);
         const run = answer?.accepted ? answer.runs.find((entry) => entry.kind === link.kind && entry.runId === runId) : undefined;
         const summary: RemoteRunSummaryEvent = !answer?.accepted
           ? { nodeId, runId, reachable: false, title: null, statuses: [] }

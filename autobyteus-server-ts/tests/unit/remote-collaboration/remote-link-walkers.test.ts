@@ -51,6 +51,9 @@ import type { CollaborationCommunicationMessage } from "../../../src/agent-colla
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
+import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { bindDelegationTree, unbindDelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree-binding.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
 /**
  * The AR-001 guard (design § Remote Links In Memory): per root kind, a tree with one local and one remote link.
@@ -64,7 +67,23 @@ const LOCAL = "local-copy-run";
 const REMOTE = "remote-publisher-run";
 const launch = testOrgLaunchConfiguration("/workspace");
 const roots: string[] = [];
+/** autobyteus-461: a run's peer runs are its Task entries with `nodeId`; each root kind's builder binds its own tree. */
+let delegationTree: DelegationTree | null = null;
+let peerLinked: Promise<unknown> = Promise.resolve();
+const bindPeerEntry = (rootSubjectKind: "agent" | "agent_team" | "agent_org", rootRunId: string, delegator: string): void => {
+  const tasks = new InMemoryTaskExecutionResources();
+  if (delegationTree) unbindDelegationTree(delegationTree);
+  delegationTree = new DelegationTree(() => tasks);
+  delegationTree.build();
+  tasks.setEntriesListener(delegationTree);
+  tasks.addTask("T1");
+  peerLinked = tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/publisher", nodeId: "srv_peer_b",
+    delegatedFrom: { delegatingRun: { rootSubjectKind, rootRunId } as never, delegatorAgentRunId: delegator }, execution: { agentRunId: REMOTE } });
+  bindDelegationTree(delegationTree);
+};
 afterEach(async () => {
+  if (delegationTree) unbindDelegationTree(delegationTree);
+  delegationTree = null;
   vi.restoreAllMocks();
   await Promise.all(roots.splice(0).map((root) => { resetRootRunPackageReadinessIndex(root); return fs.rm(root, { recursive: true, force: true }); }));
 });
@@ -73,6 +92,7 @@ const memoryRoot = async () => { const root = await fs.mkdtemp(path.join(os.tmpd
 const localCopy = (delegator: string) => ({ address: "/code_reviewer", agentRunId: LOCAL, platformAgentRunId: null, delegatorAgentRunId: delegator,
   startedAt: T0, source: { kind: "agent", agentDefinitionId: "code-reviewer", launchConfiguration: launch } });
 const remoteLink = (delegator: string) => ({ kind: "agent" as const, address: "/publisher", agentRunId: REMOTE, nodeId: "srv_peer_b", delegatorAgentRunId: delegator, startedAt: T0 });
+const peerLink = (delegator: string) => ({ ...remoteLink(delegator), address: "/publisher" as never, open: true });
 const messages = (delegator: string): CollaborationCommunicationMessage[] => [
   { messageId: "collabmsg_out", senderAgentRunId: delegator, receiverAgentRunId: REMOTE, content: "to remote", messageType: "agent_message", referenceFiles: [], createdAt: T0 },
   { messageId: "collabmsg_in", senderAgentRunId: REMOTE, receiverAgentRunId: delegator, content: "from remote", messageType: "agent_message", referenceFiles: [], createdAt: "2026-10-20T10:01:00.000Z" },
@@ -94,12 +114,13 @@ type Walkers = Readonly<{
 
 const HOST = "assistant-host";
 const standalone = (): Walkers => {
+  bindPeerEntry("agent", HOST, HOST);
   const tree = validateStandaloneRootTreePayload({
     ...emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: HOST, agentDefinitionId: "assistant" }, createdAt: T0 }),
     taskExecutions: [localCopy(HOST)], remoteTaskExecutions: [remoteLink(HOST)],
   }, HOST);
   const index = new StandaloneRootExecutionIndex(tree);
-  const links = () => new RemoteRunLinks({ remoteRuns: () => tree.remoteTaskExecutions ?? [] });
+  const links = () => new RemoteRunLinks({ peerRuns: () => [peerLink(HOST)] });
   return {
     delegator: HOST,
     indexAgents: () => index.listAgents().map((agent) => agent.agentRunId),
@@ -135,6 +156,7 @@ const orgTree = (taskExecutions: unknown[], remote: unknown[]) => {
 };
 
 const team = (): Walkers => {
+  bindPeerEntry("agent_team", "team-root", "lead-run");
   const config = teamConfig();
   const tree = teamTree([localCopy("lead-run")], [remoteLink("lead-run")]);
   const index = new TeamExecutionIndex(tree);
@@ -145,7 +167,7 @@ const team = (): Walkers => {
     publisher: new TeamRunEventPublisher({ isMessageEvent: isTeamRunMessageEvent }),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "x" }),
   });
-  const links = () => new RemoteRunLinks({ remoteRuns: () => tree.rootTeam.remoteTaskExecutions ?? [] });
+  const links = () => new RemoteRunLinks({ peerRuns: () => [peerLink("lead-run")] });
   return {
     delegator: "lead-run",
     indexAgents: () => index.listAgentExecutions().map((agent) => agent.agentRunId),
@@ -167,6 +189,7 @@ const team = (): Walkers => {
 };
 
 const org = (): Walkers => {
+  bindPeerEntry("agent_org", "org-root", "director-run");
   const tree = orgTree([localCopy("director-run")], [remoteLink("director-run")]);
   const index = new AgentOrgExecutionIndex(tree);
   const root = new AgentOrgRun({
@@ -176,7 +199,7 @@ const org = (): Walkers => {
     teams: { get: vi.fn(), list: vi.fn(() => []) } as never,
     callbacks: {} as never, persistence: {} as never, publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }), taskExecutionIdentity: {} as never,
   });
-  const links = () => new RemoteRunLinks({ remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] });
+  const links = () => new RemoteRunLinks({ peerRuns: () => [peerLink("director-run")] });
   return {
     delegator: "director-run",
     indexAgents: () => index.listAgents().map((agent) => agent.agentRunId),
@@ -218,6 +241,7 @@ describe.each([
 
   it("run-ID membership, Task ownership and the stored message view include the remote run", async () => {
     const w = build();
+    await peerLinked;
     expect(w.hasAgentExecution(REMOTE)).toBe(true);
     expect(w.hasAgentExecution("unrelated-run")).toBe(false);
     expect(w.adapter(w.links()).ownershipChainFor(REMOTE)).toEqual([{ agentRunId: REMOTE }]);

@@ -78,7 +78,7 @@ export class AgentCollaborationStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
-    const remoteTaskExecutions = await remoteTaskExecutionDtos(root.getExecutionTreeSnapshot().remoteTaskExecutions);
+    const remoteTaskExecutions = await remoteTaskExecutionDtos(root.rootIdentity);
     const barrier = await root.openPackageSnapshotConnection();
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({

@@ -9,16 +9,16 @@ import {
   stopRemoteChild,
 } from "../../../src/agent-collaboration/execution/remote/remote-child-commands.js";
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
-import type { RemoteTaskExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
+import type { PeerRunLink } from "../../../src/agent-collaboration/execution/remote/peer-run-link.js";
 
 /** autobyteus-278 DS-003 / DS-004, N-403: a root's commands and stored reads for its remote children. */
 
 const DOCKER = "srv_docker_000000000000000000000000000";
-const agentLink: RemoteTaskExecution = { kind: "agent", address: "/researcher" as never, agentRunId: "researcher-run", nodeId: DOCKER,
-  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:00:00.000Z" };
-const teamLink: RemoteTaskExecution = { kind: "agent_team", address: "/marketing" as never, teamRunId: "marketing-run", nodeId: DOCKER,
+const agentLink: PeerRunLink = { kind: "agent", address: "/researcher" as never, agentRunId: "researcher-run", nodeId: DOCKER,
+  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:00:00.000Z", open: true };
+const teamLink: PeerRunLink = { kind: "agent_team", address: "/marketing" as never, teamRunId: "marketing-run", nodeId: DOCKER,
   coordinatorAddress: "/marketing/lead" as never, members: [{ address: "/marketing/lead" as never, agentRunId: "lead-run" }],
-  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:01:00.000Z" };
+  delegatorAgentRunId: "manager-run", startedAt: "2026-10-23T08:01:00.000Z", open: true };
 
 const channel = (accepted = true) => ({
   ownerCommand: vi.fn(async () => accepted ? { accepted: true as const } : { accepted: false as const, code: "PEER_UNREACHABLE", message: "docker isn't reachable." }),
@@ -26,7 +26,7 @@ const channel = (accepted = true) => ({
     summary: "Plan", lastActivityAt: null, hasEarlierActiveTraceEvents: true } })),
 });
 const links = (current: ReturnType<typeof channel>) =>
-  new RemoteRunLinks({ remoteRuns: () => [agentLink, teamLink], channel: () => current as unknown as RemoteRunChannel });
+  new RemoteRunLinks({ peerRuns: () => [agentLink, teamLink], channel: () => current as unknown as RemoteRunChannel });
 const userMessage = (metadata: Record<string, unknown>) => AgentInputUserMessage.fromDict({ content: "status?", context_files: null, metadata });
 
 describe("remote child commands", () => {
@@ -78,13 +78,13 @@ describe("remote child commands", () => {
 });
 
 describe("RemoteRunLinks.admitsOwner (the running node's link rule for a peer's owner)", () => {
-  const back = new RemoteRunLinks({ remoteRuns: () => [], backLink: { pairedAgentRunIds: () => ["lead-run", "writer-run"],
+  const back = new RemoteRunLinks({ peerRuns: () => [], backLink: { pairedAgentRunIds: () => ["lead-run", "writer-run"],
     delegatedFrom: { nodeId: "srv_alpha", coordinatingRun: { kind: "agent", runId: "manager-run" }, delegatorAgentRunId: "manager-run" } } });
   it("admits only the node whose delegation started the run, about its paired agents or the whole run", () => {
     expect(back.admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: null })).toBe(true);
     expect(back.admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: "writer-run" })).toBe(true);
     expect(back.admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: "b-local-copy" })).toBe(false);
     expect(back.admitsInbound({ kind: "owner", fromNodeId: "srv_other", targetAgentRunId: null })).toBe(false);
-    expect(new RemoteRunLinks({ remoteRuns: () => [] }).admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: null })).toBe(false);
+    expect(new RemoteRunLinks({ peerRuns: () => [] }).admitsInbound({ kind: "owner", fromNodeId: "srv_alpha", targetAgentRunId: null })).toBe(false);
   });
 });

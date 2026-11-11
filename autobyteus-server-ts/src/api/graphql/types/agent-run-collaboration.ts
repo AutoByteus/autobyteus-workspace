@@ -95,7 +95,7 @@ export class AgentRunCollaborationResolver {
   async agentRunCollaboration(@Arg("runId", () => String) runId: string): Promise<unknown> {
     const inspection = await getStandaloneAgentRunRootManager().getInspection(runId);
     return inspection ? projectAgentCollaborationView({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.remoteTaskExecutions) }) : null;
+      remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent", rootRunId: inspection.snapshot.tree.host.agentRunId }) }) : null;
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)

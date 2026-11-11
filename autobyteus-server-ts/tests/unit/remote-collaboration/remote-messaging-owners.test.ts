@@ -11,7 +11,7 @@ import { RemoteMessageSend } from "../../../src/agent-collaboration/execution/re
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import type { RemoteTaskAgentExecution, RemoteTaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
+import type { PeerAgentRunLink, PeerTeamRunLink } from "../../../src/agent-collaboration/execution/remote/peer-run-link.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
 /**
@@ -24,10 +24,10 @@ const DELEGATOR = "agent_delegator";
 const REMOTE = "publisher_7f3";
 const HOST = "publisher_host";
 const PEER_NODE = "srv_peer_b";
-const link: RemoteTaskAgentExecution = Object.freeze({ kind: "agent", address: "/publisher", agentRunId: REMOTE, nodeId: PEER_NODE, delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z" });
-const teamLink: RemoteTaskTeamExecution = Object.freeze({ kind: "agent_team", address: "/studio", teamRunId: "team_b", nodeId: PEER_NODE,
+const link: PeerAgentRunLink = Object.freeze({ kind: "agent", address: "/publisher", agentRunId: REMOTE, nodeId: PEER_NODE, delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z", open: true });
+const teamLink: PeerTeamRunLink = Object.freeze({ kind: "agent_team", address: "/studio", teamRunId: "team_b", nodeId: PEER_NODE,
   coordinatorAddress: "/studio/lead" as never, members: [{ address: "/studio/lead" as never, agentRunId: "lead_b" }, { address: "/studio/writer" as never, agentRunId: "writer_b" }],
-  delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z" });
+  delegatorAgentRunId: DELEGATOR, startedAt: "2026-10-20T10:00:00.000Z", open: true });
 const delegatedFrom = Object.freeze({ nodeId: "srv_node_a", coordinatingRun: Object.freeze({ kind: "agent_team" as const, runId: "team_a" }), delegatorAgentRunId: DELEGATOR });
 const message = (sender: string, receiver: string): CollaborationCommunicationMessage => Object.freeze({
   messageId: "collabmsg_1", senderAgentRunId: sender, receiverAgentRunId: receiver, content: "hello", messageType: "agent_message",
@@ -82,7 +82,7 @@ describe("remote endpoint kinds (AR-006)", () => {
   });
 
   it("RemoteRunLinks holds membership only: both kinds by run ID, and the inbound link check by node, sender and target", () => {
-    const links = new RemoteRunLinks({ remoteRuns: () => [link, teamLink], backLink: { pairedAgentRunIds: () => [HOST], delegatedFrom } });
+    const links = new RemoteRunLinks({ peerRuns: () => [link, teamLink], backLink: { pairedAgentRunIds: () => [HOST], delegatedFrom } });
     expect(links.endpointFor(REMOTE)?.kind).toBe("delegated_run");
     expect(links.endpointFor(DELEGATOR)?.kind).toBe("delegator");
     expect(links.has(HOST)).toBe(false);
@@ -118,7 +118,7 @@ describe("RemoteMessageSend: the one owner of the outbound sequence (AR-005, AR-
       peerName: vi.fn(async () => "docker"),
       deliverMessage: vi.fn(async () => { calls.push("deliver"); return options.receipt ?? { accepted: true as const }; }),
     };
-    const send = new RemoteMessageSend({ engine: () => engine as never, links: new RemoteRunLinks({ remoteRuns: () => [link], channel: () => channel }) });
+    const send = new RemoteMessageSend({ engine: () => engine as never, links: new RemoteRunLinks({ peerRuns: () => [link], channel: () => channel }) });
     return { send, engine, channel, calls };
   };
 
@@ -208,7 +208,7 @@ describe("Task closure of a remote run (AR-007)", () => {
     const channel = { peerName: async () => "docker" } as unknown as RemoteRunChannel;
     // The root's lifecycle orders the closure release: the remote fence outside its queue, the hosted release in it.
     const lifecycle = new RootTaskExecutionLifecycle(adapter as never, { taskExecutionResources: resources,
-      remoteRunLinks: new RemoteRunLinks({ remoteRuns: () => [link], channel: () => channel }) });
+      remoteRunLinks: new RemoteRunLinks({ peerRuns: () => [link], channel: () => channel }) });
     const closed = resources.close("task-1");
 
     const results = await lifecycle.releaseTaskExecutions(closed);

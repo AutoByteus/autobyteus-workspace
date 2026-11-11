@@ -21,6 +21,7 @@ import {
 import { launchNotesOf } from "../../collaborators/launch-configuration-notes.js";
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import { beginRemoteTaskActivation } from "./remote-task-activation.js";
+import { peerRunIdOf, peerRunLinksOf, type PeerRunLink } from "./peer-run-link.js";
 
 /** Notes for a peer's launches: one line per agent the peer's Model Router chose for, one per skipped layer. */
 const remoteLaunchNotes = (launches: readonly RemoteAgentLaunch[]): string[] => launchNotesOf(launches.map((launch) => ({
@@ -65,6 +66,8 @@ export class RemoteDelegation {
   constructor(private readonly options: Readonly<{
     root: RootExecutionIdentity;
     channel?(): RemoteRunChannel | null;
+    /** The root's view learns the new peer run (its Task entry's link). */
+    onPeerRunLinked?(link: PeerRunLink): void;
   }>) {}
 
   /**
@@ -96,6 +99,9 @@ export class RemoteDelegation {
     const { outcome, launches } = await getTaskDelegation().toPeerRun({ sender: context.identity, senderRun: context.identity.root,
       spawn: local as SpawnTaskInput, placement });
     if (!outcome.delegated) return outcome;
+    const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;
+    const link = peerRunLinksOf(this.options.root).find((candidate) => peerRunIdOf(candidate) === runId);
+    if (link) this.options.onPeerRunLinked?.(link);
     const notes = remoteLaunchNotes(launches);
     return { ...outcome, ...(notes.length ? { launchNotes: notes } : {}) };
   }

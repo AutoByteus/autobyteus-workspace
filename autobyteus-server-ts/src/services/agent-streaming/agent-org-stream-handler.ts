@@ -58,7 +58,7 @@ export class AgentOrgStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
-    const remoteTaskExecutions = await remoteTaskExecutionDtos(run.getExecutionTreeSnapshot().rootOrg.remoteTaskExecutions);
+    const remoteTaskExecutions = await remoteTaskExecutionDtos({ rootSubjectKind: "agent_org", rootRunId: run.getExecutionTreeSnapshot().rootOrg.orgRunId });
     const barrier = await run.openPackageSnapshotConnection();
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({

@@ -1,3 +1,4 @@
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { isDeepStrictEqual } from "node:util";
 import { closedTaskExecutionsDigest, taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -203,10 +204,9 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (query.kind !== "owner" && this.hasRoot(hostRunId)) return "proceed";
     const metadata = await this.options.host.readMetadata(hostRunId);
     if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
-    const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
     const delegatedFrom = peerDelegatedFromOf(metadata); // AR-016: only a run a peer started has a peer delegator
     return storedRemoteLinkCheck({
-      remoteRuns: () => tree?.remoteTaskExecutions ?? [],
+      peerRuns: () => peerRunLinksOf({ rootSubjectKind: "agent", rootRunId: hostRunId }),
       backLink: delegatedFrom ? { pairedAgentRunIds: () => [hostRunId], delegatedFrom } : null,
     }, query);
   }

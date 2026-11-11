@@ -27,7 +27,7 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   /** Remote placements: planning and activation (DS-001). */
   remoteDelegation: RemoteDelegation;
   /** autobyteus-278: a remote link was recorded (the root's remote children observe it). */
-  onRemoteLinkCommitted(link: RemoteTaskExecution): void;
+  onRemoteLinkCommitted?(link: RemoteTaskExecution): void;
   isRootOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   requireTeamRun(teamRunId: string): Promise<TeamRun>;

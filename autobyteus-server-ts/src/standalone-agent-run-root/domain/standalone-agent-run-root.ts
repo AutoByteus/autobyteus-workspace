@@ -67,6 +67,7 @@ import {
   commitStandaloneRootRuntimeSwitch,
   replaceStandaloneRootPlatformBindingWithoutConversation,
 } from "../services/standalone-root-tree-mutator.js";
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
@@ -144,11 +145,12 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       throw new Error("Agent root authorities do not correlate to one exact host run.");
     }
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
-    this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.remoteTaskExecutions ?? [],
+    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root),
       backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016: `isPeerStarted`
       channel: options.remoteRunChannel });
-    const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel });
-    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.remoteTaskExecutions ?? [],
+    const remoteDelegation = new RemoteDelegation({ root: options.root, channel: options.remoteRunChannel,
+      onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event), channel: options.remoteRunChannel });
     this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
       hostRunId: this.hostRunId, agentRunManager: options.agentRunManager,
@@ -175,7 +177,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
       remoteDelegation,
-      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       replaceTree: (tree) => this.replaceTree(tree),

@@ -220,7 +220,7 @@ export class AgentOrgRunService {
   async getInspection(orgRunId: string) {
     const inspection = await this.dependencies.manager.getInspection(orgRunId);
     return projectAgentOrgExecutionSnapshot({ ...inspection,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.rootOrg.remoteTaskExecutions) });
+      remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_org", rootRunId: inspection.snapshot.tree.rootOrg.orgRunId }) });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

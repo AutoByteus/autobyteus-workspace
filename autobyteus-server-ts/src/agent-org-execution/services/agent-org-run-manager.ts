@@ -147,7 +147,7 @@ export class AgentOrgRunManager {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     if (this.active.has(orgRunId)) return "proceed";
     const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
-    return storedRemoteLinkCheck(tree ? { remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] } : null, query);
+    return storedRemoteLinkCheck(tree ? { run: { rootSubjectKind: "agent_org", rootRunId: orgRunId } } : null, query);
   }
   /**
    * The run's messages: the live run's, else the stored log composed with its task agents' logs (D-4) and

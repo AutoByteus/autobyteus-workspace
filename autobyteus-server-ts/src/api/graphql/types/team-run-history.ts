@@ -112,7 +112,7 @@ export class TeamRunHistoryResolver {
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree),
       closedTaskExecutions: config.closedTaskExecutions,
-      remoteTaskExecutions: await remoteTaskExecutionDtos(config.executionTree.rootTeam.remoteTaskExecutions),
+      remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId }),
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,
       baseChangeSequence: config.baseChangeSequence,

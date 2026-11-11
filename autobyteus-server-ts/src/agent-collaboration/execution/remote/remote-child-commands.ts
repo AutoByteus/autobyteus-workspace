@@ -1,10 +1,6 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
-import {
-  remoteTaskExecutionRunId,
-  remoteTeamCoordinatorRunId,
-  type RemoteTaskExecution,
-} from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import { peerRunIdOf, peerTeamCoordinatorRunId, type PeerRunLink } from "./peer-run-link.js";
 import type { DelegatedStopResult } from "../../collaborators/delegated-launch-selection-command.js";
 import type { DelegatedRunReference } from "../../domain/delegated-launch-selection.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
@@ -61,7 +57,7 @@ export const stopRemoteChild = async (links: RemoteRunLinks, target: DelegatedRu
     ? links.agentLinkFor(target.agentRunId)
     : links.teamLinkFor(target.teamRunId);
   if (!link) return null;
-  const agentRunId = link.kind === "agent" ? link.agentRunId : remoteTeamCoordinatorRunId(link);
+  const agentRunId = link.kind === "agent" ? link.agentRunId : peerTeamCoordinatorRunId(link);
   const answer = await links.ownerCommand(agentRunId, { kind: "terminate" });
   if (!answer.accepted) throw new Error(answer.message);
   return Object.freeze({ outcome: "STOPPED" as const, message: "Stopped on its node.", notStoppedUnattributed: 0 });
@@ -69,7 +65,7 @@ export const stopRemoteChild = async (links: RemoteRunLinks, target: DelegatedRu
 
 /** A remote child of a root: its link, its address under the root, and its stored conversation on its node. */
 export type RemoteChild = Readonly<{
-  link: RemoteTaskExecution;
+  link: PeerRunLink;
   memberAddress: string;
   readProjection(): Promise<RemoteAgentProjection>;
 }>;
@@ -80,7 +76,7 @@ export type RemoteChild = Readonly<{
  * its node. `null` for a local child. A refusal throws (the window shows "Couldn't reach {node}.").
  */
 export const remoteChildOf = (
-  links: readonly RemoteTaskExecution[],
+  links: readonly PeerRunLink[],
   agentRunId: string,
   channel: () => RemoteRunChannel | null = findProcessRemoteRunChannel,
 ): RemoteChild | null => {
@@ -133,5 +129,5 @@ export const remoteMemberProjection = async (remote: RemoteChild, memberAddress:
   });
 };
 
-/** The run ID a remote link names, for callers that key remote children by run. */
-export { remoteTaskExecutionRunId };
+/** The run ID a peer link names, for callers that key remote children by run. */
+export { peerRunIdOf };

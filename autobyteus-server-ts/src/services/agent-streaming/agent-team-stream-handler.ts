@@ -133,7 +133,7 @@ export class AgentTeamStreamHandler {
     if (this.subscribedRunsBySessionId.get(sessionId) === root) return;
     if (this.subscribedRunsBySessionId.has(sessionId)) egress.flush();
     this.unsubscribeSession(sessionId);
-    const remoteTaskExecutions = await remoteTaskExecutionDtos(root.getExecutionTreeSnapshot().rootTeam.remoteTaskExecutions);
+    const remoteTaskExecutions = await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: root.teamRunId });
     const connection = await root.openPackageSnapshotConnection();
     try {
       egress.send(parseTeamStreamServerMessage({

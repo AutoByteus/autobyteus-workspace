@@ -5,14 +5,15 @@ import {
   type RemoteRunSummaryEvent,
   type RemoteTaskExecutionView,
 } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import type { RemoteAgentLaunch, RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { RemoteAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
+import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** A remote link with its node's name as the root views list it (autobyteus-278). */
 export const projectRemoteTaskExecution = (execution: RemoteTaskExecutionView): RemoteTaskExecutionDto => {
   const common = {
     address: execution.address, node_id: execution.nodeId, node_name: execution.nodeName,
     delegator_agent_run_id: execution.delegatorAgentRunId, started_at: execution.startedAt,
-    ...(execution.launches ? { launches: execution.launches.map(projectRemoteLaunch) } : {}),
   };
   return execution.kind === "agent"
     ? { kind: "agent", agent_run_id: execution.agentRunId, ...common }
@@ -45,8 +46,9 @@ export const projectRemoteTaskExecutionSummary = (summary: RemoteRunSummaryEvent
 });
 
 /**
- * A root view's remote executions: its stored links with this owner's node names. The view never waits for a peer
- * (only this node's peer list is read); the summaries follow as events.
+ * A run view's peer children: the open peer runs it delegated to (their Task entries, one hop) with this owner's node
+ * names. The view never waits for a peer (only this node's peer list is read); the summaries follow as events.
  */
-export const remoteTaskExecutionDtos = async (links: readonly RemoteTaskExecution[] | undefined): Promise<readonly RemoteTaskExecutionDto[]> =>
-  (await describeRemoteTaskExecutions(links ?? [], findProcessRemoteRunChannel())).map(projectRemoteTaskExecution);
+export const remoteTaskExecutionDtos = async (run: RootExecutionIdentity): Promise<readonly RemoteTaskExecutionDto[]> =>
+  (await describeRemoteTaskExecutions(peerRunLinksOf(run).filter((link) => link.open), findProcessRemoteRunChannel()))
+    .map(projectRemoteTaskExecution);

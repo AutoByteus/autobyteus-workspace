@@ -36,6 +36,7 @@ import {
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { teamRunRemoteLinks } from "./team-run-remote-links.js";
 import { DelegatedTeamIdleShutdown } from "../services/delegated-team-idle-shutdown.js";
@@ -127,9 +128,9 @@ export class RootTeamRun {
       canEnter: () => this.isAdmitting(),
     });
     this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree));
-    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.rootTeam.remoteTaskExecutions ?? [],
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(createTeamRootExecutionIdentity(this.teamRunId)).filter((link) => link.open),
       publish: (event) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event }) });
-    const remoteDelegation = new RemoteDelegation({ root: createTeamRootExecutionIdentity(this.teamRunId) });
+    const remoteDelegation = new RemoteDelegation({ root: createTeamRootExecutionIdentity(this.teamRunId), onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
     this.remoteDelegation = remoteDelegation;
     this.teamRunResolver = new TeamRunResolver({
       rootTeamRun: options.rootRun,
@@ -141,7 +142,6 @@ export class RootTeamRun {
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
       remoteDelegation,
-      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isRootOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),

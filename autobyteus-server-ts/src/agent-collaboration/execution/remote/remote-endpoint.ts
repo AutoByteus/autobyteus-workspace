@@ -1,7 +1,4 @@
-import type {
-  RemoteTaskAgentExecution,
-  RemoteTaskTeamExecution,
-} from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { PeerAgentRunLink, PeerTeamRunLink } from "./peer-run-link.js";
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import { getAgentTeamAddressBasename } from "../../domain/agent-team-address.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
@@ -35,12 +32,12 @@ type RemoteEndpointCore = Readonly<{
 }>;
 
 /**
- * On the delegating node (A): an Agent run this root delegated to a peer, built from a `remoteTaskExecutions` link.
+ * On the delegating node (A): an Agent run this root delegated to a peer, built from its Task entry (`PeerRunLink`).
  * Only its delegator messages it; it belongs to the Task the link was recorded under (item 5).
  */
 export type DelegatedRunEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegated_run";
-  link: RemoteTaskAgentExecution;
+  link: PeerAgentRunLink;
   /** AR-007: the Task closed. Nothing is released here; the run stops on its node when it goes idle (S3 stops it). */
   closureFence(execution: TaskExecutionReference, peerName: string): TaskExecutionStopResult;
 }>;
@@ -52,7 +49,7 @@ export type DelegatedRunEndpoint = RemoteEndpointCore & Readonly<{
  */
 export type DelegatedTeamEndpoint = RemoteEndpointCore & Readonly<{
   kind: "delegated_team";
-  link: RemoteTaskTeamExecution;
+  link: PeerTeamRunLink;
   /** AR-007 for the Team: the same fence and text as for a remote Agent. */
   closureFence(execution: TaskExecutionReference, peerName: string): TaskExecutionStopResult;
 }>;
@@ -99,7 +96,7 @@ const closureFenceFor = (address: string) => (execution: TaskExecutionReference,
   execution, outcome: "fenced_remote" as const, stopped: false as const, message: remoteRunClosureText(address, peerName),
 });
 
-export const delegatedRunEndpoint = (link: RemoteTaskAgentExecution): DelegatedRunEndpoint => {
+export const delegatedRunEndpoint = (link: PeerAgentRunLink): DelegatedRunEndpoint => {
   const targetRoot: RemoteTargetRoot = Object.freeze({ kind: "agent", runId: link.agentRunId });
   return Object.freeze({
     kind: "delegated_run" as const,
@@ -115,7 +112,7 @@ export const delegatedRunEndpoint = (link: RemoteTaskAgentExecution): DelegatedR
 };
 
 /** The endpoints of a remote Team link: one per member (the coordinator included). */
-export const delegatedTeamEndpoints = (link: RemoteTaskTeamExecution): readonly DelegatedTeamEndpoint[] => {
+export const delegatedTeamEndpoints = (link: PeerTeamRunLink): readonly DelegatedTeamEndpoint[] => {
   const targetRoot: RemoteTargetRoot = Object.freeze({ kind: "agent_team", runId: link.teamRunId });
   const rule = pairRule([link.delegatorAgentRunId]);
   return Object.freeze(link.members.map((member): DelegatedTeamEndpoint => Object.freeze({

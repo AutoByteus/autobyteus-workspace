@@ -6,6 +6,9 @@ let bound: DelegationTree | null = null;
 export const bindDelegationTree = (tree: DelegationTree): void => { bound = tree; };
 export const unbindDelegationTree = (tree: DelegationTree): void => { if (bound === tree) bound = null; };
 
+/** The process tree, or `null` where collaboration is not composed (nothing is related to anything). */
+export const findDelegationTree = (): DelegationTree | null => bound;
+
 /** The process tree; asking before the Task records are loaded is a programming error. */
 export const getDelegationTree = (): DelegationTree => {
   if (!bound) throw new Error("The delegation tree was read before the Task records were loaded.");

@@ -1,8 +1,5 @@
-import type {
-  RemoteTaskAgentExecution,
-  RemoteTaskExecution,
-  RemoteTaskTeamExecution,
-} from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import { peerRunLinksOf, type PeerAgentRunLink, type PeerRunLink, type PeerTeamRunLink } from "./peer-run-link.js";
+import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
 import type { CollaborationCommunicationMessage } from "../communication/collaboration-communication-message.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
@@ -58,18 +55,22 @@ export type RemoteInboundQuery = Readonly<{
  */
 export type StoredRemoteLinkCheck = "proceed" | "not_linked" | "not_found";
 
-/** The stored check, by the same rules as the restored root: the root managers pass their stored links. */
+/**
+ * The stored check, by the same rules as the restored root: the root managers pass the run's links, or the run alone
+ * when it has no back-link (its peer runs are its Task entries).
+ */
 export const storedRemoteLinkCheck = (
-  stored: Omit<RemoteRunLinksOptions, "channel"> | null,
+  stored: Omit<RemoteRunLinksOptions, "channel"> | Readonly<{ run: RootExecutionIdentity }> | null,
   query: RemoteInboundQuery,
-): StoredRemoteLinkCheck => !stored ? "not_found" : new RemoteRunLinks(stored).admitsInbound(query) ? "proceed" : "not_linked";
+): StoredRemoteLinkCheck => !stored ? "not_found"
+  : new RemoteRunLinks("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run) } : stored).admitsInbound(query) ? "proceed" : "not_linked";
 
 /** The peer accepted the message; `peerName` is this owner's label for it, named in the sender's result. */
 export type RemoteDeliveryAnswer = Readonly<{ accepted: true; peerName: string }> | RemoteChannelRefusal;
 
 export type RemoteRunLinksOptions = Readonly<{
-  /** Delegating node: the root's remote links (the tree's in-memory `remoteTaskExecutions`), read at call time. */
-  remoteRuns(): readonly RemoteTaskExecution[];
+  /** Delegating node: the peer runs this run delegated to, from their Task entries (`peerRunLinksOf`), read at call time. */
+  peerRuns(): readonly PeerRunLink[];
   /**
    * Receiving node: the back-link of a root a peer delegated to (`delegatedFrom`) and the local agents it pairs
    * with (a standalone root's host; every member of a Team root); `null` otherwise.
@@ -88,7 +89,7 @@ export class RemoteRunLinks {
   constructor(private readonly options: RemoteRunLinksOptions) {}
 
   endpoints(): readonly RemoteEndpoint[] {
-    const delegated = this.options.remoteRuns().flatMap((link): readonly RemoteEndpoint[] =>
+    const delegated = this.options.peerRuns().flatMap((link): readonly RemoteEndpoint[] =>
       link.kind === "agent" ? [delegatedRunEndpoint(link)] : delegatedTeamEndpoints(link));
     const back = this.options.backLink;
     return back ? [...delegated, delegatorEndpoint(back.pairedAgentRunIds(), back.delegatedFrom)] : delegated;
@@ -98,13 +99,13 @@ export class RemoteRunLinks {
    * The remote Team link with this team run ID (autobyteus-247): the existing-copy refusal (G-3), the closure fence
    * (G-4) and the team-run-ID guidance (G-6) look Teams up by their team run ID, as local Team copies are.
    */
-  teamLinkFor(teamRunId: string): RemoteTaskTeamExecution | null {
-    return this.options.remoteRuns().find((link): link is RemoteTaskTeamExecution => link.kind === "agent_team" && link.teamRunId === teamRunId) ?? null;
+  teamLinkFor(teamRunId: string): PeerTeamRunLink | null {
+    return this.options.peerRuns().find((link): link is PeerTeamRunLink => link.kind === "agent_team" && link.teamRunId === teamRunId) ?? null;
   }
 
   /** The remote Agent link with this agent run ID (autobyteus-278: the user's Stop of a remote Agent copy). */
-  agentLinkFor(agentRunId: string): RemoteTaskAgentExecution | null {
-    return this.options.remoteRuns().find((link): link is RemoteTaskAgentExecution => link.kind === "agent" && link.agentRunId === agentRunId) ?? null;
+  agentLinkFor(agentRunId: string): PeerAgentRunLink | null {
+    return this.options.peerRuns().find((link): link is PeerAgentRunLink => link.kind === "agent" && link.agentRunId === agentRunId) ?? null;
   }
 
   /** The remote endpoint with this run ID; `null` when the run ID is not one (today's local path). */

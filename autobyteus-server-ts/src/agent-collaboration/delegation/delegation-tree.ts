@@ -134,6 +134,25 @@ export class DelegationTree implements TaskEntriesListener {
     return children.sort((a, b) => a.firstLinkedAt.localeCompare(b.firstLinkedAt)).map(({ firstLinkedAt: _first, ...child }) => child);
   }
 
+  /**
+   * The runs on peer nodes this run delegated to, one hop, open or closed (their endpoints, and the closure fence of a
+   * closed one, AR-020): each run's newest entry, in the order the runs were first delegated.
+   */
+  peerChildrenOf(run: RootExecutionIdentity): readonly (DelegatedChild & { open: boolean; nodeId: string })[] {
+    const children: Array<DelegatedChild & { open: boolean; nodeId: string; firstLinkedAt: string }> = [];
+    for (const childKey of this.childrenOfRun.get(keyOf(run)) ?? []) {
+      const entries = [...this.byRun.get(childKey)?.values() ?? []];
+      const current = newest(entries);
+      if (!current || current.nodeId === undefined || keyOf(current.delegatedFrom.delegatingRun) !== keyOf(run)) continue;
+      children.push({ firstLinkedAt: entries.reduce((first, entry) => entry.linkedAt < first ? entry.linkedAt : first, current.linkedAt),
+        run: current.run, taskId: current.taskId, delegatorAgentRunId: current.delegatedFrom.delegatorAgentRunId,
+        entryAgentRunId: current.entryAgentRunId, started: current.start === "started", linkedAt: current.linkedAt,
+        recipientAddress: current.recipientAddress, nodeId: current.nodeId, ...(current.members ? { members: current.members } : {}),
+        open: entries.some((entry) => entry.open) });
+    }
+    return children.sort((a, b) => a.firstLinkedAt.localeCompare(b.firstLinkedAt)).map(({ firstLinkedAt: _first, ...child }) => child);
+  }
+
   /** Every local run this run delegated to, one hop, open or closed (past participants of its log; AR-012). */
   childrenOf(run: RootExecutionIdentity): readonly TaskExecutionReference[] {
     return [...this.childrenOfRun.get(keyOf(run)) ?? []].flatMap((childKey) => {

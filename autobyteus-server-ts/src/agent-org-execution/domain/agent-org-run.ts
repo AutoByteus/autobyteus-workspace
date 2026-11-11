@@ -1,4 +1,5 @@
 import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
@@ -103,9 +104,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       const agent = this.index.getAgent(agentRunId);
       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
     });
-    this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.rootOrg.remoteTaskExecutions ?? [] });
-    const remoteDelegation = new RemoteDelegation({ root: options.root });
-    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.rootOrg.remoteTaskExecutions ?? [],
+    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root) });
+    const remoteDelegation = new RemoteDelegation({ root: options.root, onPeerRunLinked: (link) => this.remoteChildren.linkCommitted(link) });
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event) });
     this.taskExecutions = new RootTaskExecutionLifecycle(new AgentOrgTaskExecutionAdapter({
       root: options.root,
@@ -118,7 +119,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       getIndex: () => this.index,
       remoteLinks: this.remoteLinks,
       remoteDelegation,
-      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
