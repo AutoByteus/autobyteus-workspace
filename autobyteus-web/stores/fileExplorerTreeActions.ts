@@ -7,6 +7,8 @@ import {
   recordRecentStructuralChangeEchoes,
 } from '~/utils/fileExplorer/stateSync'
 import { replaceFolderChildren } from '~/utils/fileExplorer/openFolderRefresh'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { OpenFileState } from '~/stores/fileExplorerState'
 
 export interface FetchFolderChildrenOptions {
   generation?: number
@@ -86,13 +88,11 @@ export const fileExplorerTreeActions = {
     applyTreeChanges(wsState.tree, wsState.nodeIdToNode, effectiveEvent)
     effectiveEvent.changes.forEach((change) => {
       if (change.type !== 'modify') return
-      const node = wsState.nodeIdToNode[change.node_id]
-      if (!node?.is_file) return
-      if (wsState.filesToIgnoreNextModify.has(node.path)) {
-        wsState.filesToIgnoreNextModify.delete(node.path)
-        return
+      if (wsState.filesToIgnoreNextModify.delete(change.path)) return
+      const openFile = wsState.openFiles.find((file: OpenFileState) => file.path === change.path)
+      if (openFile) {
+        this._reloadOpenFile(openFile, change.path, workspaceId, useWindowNodeContextStore())
       }
-      this.invalidateFileContent(node.path, workspaceId)
     })
   },
 

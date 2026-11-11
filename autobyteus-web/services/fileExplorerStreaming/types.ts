@@ -36,6 +36,8 @@ export interface FileSystemChangePayload {
     old_parent_id?: string;
     new_parent_id?: string;
     node_id?: string;
+    /** Set on `modify`: the changed file's workspace-relative path. */
+    path?: string;
     node?: {
       id: string;
       name: string;
