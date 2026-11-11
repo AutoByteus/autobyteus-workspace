@@ -30,11 +30,11 @@ export class RunOwnAgentsReader implements RunAgentsReader {
     switch (run.rootSubjectKind) {
       case "agent": return [run.rootRunId];
       case "agent_team": {
-        const tree = await this.stores.team.readOwnParts(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
+        const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
         return tree ? agentRunIdsOfMembers(tree.rootTeam.members as readonly MemberNode[]) : null;
       }
       case "agent_org": {
-        const tree = await this.stores.org.readOwnParts(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
+        const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
         return tree ? agentRunIdsOfMembers(tree.rootOrg.members as readonly MemberNode[]) : null;
       }
     }
@@ -53,12 +53,12 @@ export class RunOwnAgentsReader implements RunAgentsReader {
         return { agents: new Map(metadata.address ? [[metadata.address as string, run.rootRunId]] : []), coordinatorAddress: null };
       }
       case "agent_team": {
-        const tree = await this.stores.team.readOwnParts(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
+        const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
         return tree ? { agents: new Map(tree.rootTeam.members.map((member) => [member.address as string, member.agentRunId])),
           coordinatorAddress: tree.rootTeam.coordinatorAddress } : null;
       }
       case "agent_org": {
-        const tree = await this.stores.org.readOwnParts(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
+        const tree = await this.stores.org.read(this.layout.getOrgDirPath(run.rootRunId), run.rootRunId);
         if (!tree) return null;
         const agents = new Map<string, string>();
         for (const member of tree.rootOrg.members as readonly MemberNode[]) {

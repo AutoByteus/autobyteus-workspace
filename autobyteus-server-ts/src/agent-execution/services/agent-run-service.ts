@@ -347,6 +347,11 @@ export class AgentRunService {
   }
 
   /** Saves a stopped run's selection; a registered root of the run then follows it (FU-008), and a failed follow never fails the saved edit. */
+  /** The ordinary stopped-run Save checked without writing (SR-039: a delegator's Settings checks every run first). */
+  checkStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null> | null> {
+    return this.lifecycleService.checkStoppedSelection(input);
+  }
+
   async updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     const result = await this.lifecycleService.updateStoppedSelection(input);
     if (result.outcome === "UPDATED") {

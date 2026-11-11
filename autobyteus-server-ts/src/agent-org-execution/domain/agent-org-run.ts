@@ -7,9 +7,7 @@ import { RemoteDelegation } from "../../agent-collaboration/execution/remote/rem
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import type { DelegatedStopResult } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type { DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -32,7 +30,6 @@ import {
   commitAgentOrgRuntimeSwitch,
   replaceAgentOrgPlatformBindingWithoutConversation,
 } from "../services/agent-org-run-execution-tree-mutator.js";
-import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-retirement.js";
 import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
 import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
 import { AgentOrgRunMessageDelivery } from "../services/agent-org-run-message-delivery.js";
@@ -52,7 +49,6 @@ import { projectAgentOrgAgentStatusSnapshots } from "../services/agent-org-agent
 export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
-  closedTaskExecutions: readonly TaskExecutionReference[];
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -70,7 +66,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   /** autobyteus-278: the live facts of the runs this Org delegated to other nodes (its stream viewers drive it). */
   readonly remoteChildren: RemoteRunObservation;
   private readonly collaborators: AgentOrgRunCollaborators;
-  private readonly eventRetirement: AgentOrgTaskEventRetirement;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
   private failStopped = false;
@@ -83,10 +78,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.operationGate = new RootOperationGate({
       rootLabel: `AgentOrg '${this.orgRunId}'`,
       canEnter: () => this.isAdmitting(),
-    });
-    this.eventRetirement = new AgentOrgTaskEventRetirement({
-      getIndex: () => this.index,
-      identityFor: (agentRunId, address) => this.identityFor(agentRunId, address as AgentTeamAddress),
     });
     this.presentation = new CollaborationAgentPresentationEventAdapter((agentRunId) => {
       const agent = this.index.getAgent(agentRunId);
@@ -262,7 +253,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
 
   onAgentExecutionEvent(identity: CollaborationMemberExecutionIdentity, event: CollaborationAgentExecutionEvent): void {
     if (!sameRootExecutionIdentity(identity.root, this.options.root)) throw new Error("AgentOrg event belongs to another root.");
-    if (this.eventRetirement.isCommittedTeardownStatus(identity, event)) return;
     const adapted = this.presentation.adapt(identity, event);
     if (adapted.kind === "rejected") {
       this.enterFailStop();
@@ -280,7 +270,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<AgentOrgRunPackageSnapshot, AgentOrgRunEvent>> {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
-      closedTaskExecutions: [],
       statuses: this.getAgentStatusSnapshots(),
       inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
         ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]

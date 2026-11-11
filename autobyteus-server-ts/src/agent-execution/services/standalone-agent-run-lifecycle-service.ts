@@ -124,6 +124,12 @@ export class StandaloneAgentRunLifecycleService {
     return Object.freeze({ outcome: "terminated", runtimeKind: active.runtimeKind });
   }
 
+  /** A stopped run's Save checked without writing: the refusal, or `null` (SR-039). */
+  checkStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null> | null> {
+    const runId = requiredRunId(input.agentRunId);
+    return this.withTransition(runId, () => this.selectionUpdater.check(runId, input));
+  }
+
   /** Saves a stopped run's model settings, serialized with its activation in the transition lane. */
   updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     const runId = requiredRunId(input.agentRunId);

@@ -1,5 +1,4 @@
-import type { DelegatedStopResult } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type { DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";

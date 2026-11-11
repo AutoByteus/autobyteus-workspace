@@ -16,16 +16,10 @@ import {
   objectRecord,
   parseApplicationBinding,
   parseConfiguredAgent,
-  collectTaskExecutionRunIds,
   parseLaunchConfiguration,
-  parseRemoteTaskExecutions,
-  parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCopyLayouts,
-  validateRemoteTaskExecutions,
-  validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
 
@@ -60,9 +54,6 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
-    // No stored list since autobyteus-461 (E9): an absent list reads as none.
-    taskExecutions: root.taskExecutions === undefined ? [] : parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
-    ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
 
@@ -82,15 +73,12 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     // A `to` outside the team (TC-12: a delegated team copied from an org hands off to `/Teacher`) is an external
     // target, kept as stored and resolved when sent (contract §2.3).
   }
-  validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
-  validateCopyLayouts([tree.rootTeam]);
-  validateRemoteTaskExecutions(new Set([...tree.rootTeam.members.map((member) => member.agentRunId),
-    ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)]), tree.rootTeam.remoteTaskExecutions);
 };
 
 /**
  * Reads a TeamRun execution tree tolerantly (REQ-018): known fields are required and
- * validated; `schemaVersion`, `settledAt` and any other unknown field are ignored. The
+ * validated; `schemaVersion`, `settledAt` and any other unknown field are ignored (the `taskExecutions` lists are
+ * gone since autobyteus-461, E9: the Task entries hold who delegated to whom). The
  * result holds only current fields, so writing it produces the exact current shape.
  */
 export const validateTeamRunExecutionTreePayload = (

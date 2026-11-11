@@ -54,7 +54,6 @@ export type ConfiguredTeamExecutionNode = Readonly<{
   coordinatorAddress: AgentTeamAddress;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
   members: readonly ConfiguredAgentExecutionNode[];
-  taskExecutions: readonly TaskExecution[];
 }>;
 
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;

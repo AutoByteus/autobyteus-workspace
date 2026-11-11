@@ -190,7 +190,7 @@ export class TeamRunExecutionTreeLocationService {
         teamRunId: team.teamRunId,
         address: team.address,
         executionKind: team.executionKind,
-        startedAt: "startedAt" in team.source ? team.source.startedAt : null,
+        startedAt: null,
       }));
     return Object.freeze({
       rootTeamRunId: scope.root.rootRunId,
@@ -200,7 +200,7 @@ export class TeamRunExecutionTreeLocationService {
       memberAddress: agent.address,
       configuredPlacement,
       executionKind: agent.executionKind,
-      startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
+      startedAt: null,
       groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getAgentRunMemoryDirPath(index.getMemoryPlacementForAgent(agent.agentRunId), agent.agentRunId),
       tree,

@@ -5,17 +5,12 @@ import {
   type AtomicRunPackageFileCommitWriter,
   type RunPackageFileWriteResult,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { AGENT_ORG_RUN_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
 import { MessageLog } from "../../run-history/store/message-log.js";
 import {
   appendMessageToOwnerLogs,
-  composeMessageLogs,
-  taskAgentLogOwners,
   TaskAgentMessageLogs,
   type StoredMessageLogOwner,
 } from "../../run-history/store/task-agent-message-logs.js";
-import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
-import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgCommunicationMessagesFile } from "./agent-org-communication-messages.js";
 
 /**
@@ -39,19 +34,6 @@ export class AgentOrgCommunicationMessagesStore {
   async readLog(orgDir: string, orgRunId: string): Promise<AgentOrgCommunicationMessagesFile | null> {
     const messages = await this.ownLog(orgDir).read();
     return messages ? Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages }) : null;
-  }
-
-  /** The stored view for a composed tree: the run's log and its open delegated runs' logs (D-5); `null` without a log. */
-  async read(orgDir: string, tree: AgentOrgRunExecutionTreeFile): Promise<AgentOrgCommunicationMessagesFile | null> {
-    const orgRunId = tree.rootOrg.orgRunId;
-    const own = await this.readLog(orgDir, orgRunId);
-    if (!own) return null;
-    const owners = taskAgentLogOwners(AGENT_ORG_RUN_TREE_SHAPE.taskLists(tree).values());
-    const logs = owners.length === 0 ? [] : await Promise.all(owners.map((owner) => this.taskLogs(orgDir).read(owner)));
-    return Object.freeze({
-      schemaVersion: 1, subjectKind: "agent_org", orgRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], messageViewOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree))),
-    });
   }
 
   /** Creates the run's log (its initial package; replaced on a retry). */

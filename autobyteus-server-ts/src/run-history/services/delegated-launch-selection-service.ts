@@ -1,21 +1,21 @@
 import type {
-  DelegatedLaunchModelOptions,
-  DelegatedLaunchUpdateOutcome,
-  DelegatedStopOutcome,
-} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type {
-  DelegatedLaunchSelectionValue,
   DelegatedLaunchChange,
+  DelegatedLaunchModelOptions,
+  DelegatedLaunchSelectionValue,
+  DelegatedLaunchUpdateOutcome,
   DelegatedRunReference,
+  DelegatedStopOutcome,
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { createRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { TeamRunSelectionPatch } from "../../agent-team-execution/services/team-run-selection-mutator.js";
 import type { AgentOrgRunSelectionPatch } from "../../agent-org-execution/domain/agent-org-run-config.js";
-import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { StandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import type { RunModelConfigFieldError } from "../domain/run-model-config.js";
+import type { DelegatedChildLaunches, OwnSaveResult } from "./delegated-child-launches.js";
 
 export type DelegatedLaunchRootKind = "AGENT" | "AGENT_TEAM" | "AGENT_ORG";
 
@@ -34,8 +34,8 @@ export type DelegatedLaunchServiceResult = Readonly<{
 }>;
 
 /**
- * The stopped root's own settings saved together with delegated choices (AR-004): configured
- * scopes of a Team or Org, or the Agent root's host model.
+ * The delegator's own settings saved in the same Save (AR-004): configured scopes of a Team or Org, or an Agent run's
+ * own model.
  */
 export type StoppedRootConfiguredPatches =
   | Readonly<{ kind: "team"; patches: readonly TeamRunSelectionPatch[] }>
@@ -51,30 +51,37 @@ const updateResult = (outcome: DelegatedLaunchUpdateOutcome, message: string, fi
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
 
 /**
- * API entry for the user Stop and model choice of delegated copies (DS-001,
- * DS-002). It finds the root by kind and ID and routes: a live root runs the command itself; a
- * stopped root's manager saves the stored tree, together with the root's own settings (AR-004).
- * It never mutates a tree or touches a handle.
+ * API entry for a delegator's Settings and Stop on the runs it delegated to (design DS-8, SR-039). A child row's Stop is
+ * that run's ordinary Stop; a peer child's goes to its node through the delegator. A Save checks every run it names first
+ * (each child stopped, every patch valid; the delegator's own patches need it stopped), then saves the delegator's own
+ * settings, then each child's own, in row order (`DelegatedChildLaunches`). It never writes one run's file for another.
  */
-const NO_COPIES = "A delegated run is configured as itself: open its own Settings.";
-
 export class DelegatedLaunchSelectionService {
   constructor(private readonly dependencies: Readonly<{
-    teams: Pick<AgentTeamRunManager, "getManagedTeamRun" | "updateStoppedRunLaunchChanges" | "delegatedLaunchModelOptions">;
-    orgs: Pick<AgentOrgRunManager, "getActive" | "updateStoppedRunConfig" | "delegatedLaunchModelOptions">;
+    teams: Pick<AgentTeamRunManager, "getManagedTeamRun" | "checkStoppedSelections" | "updateStoppedSelections">;
+    orgs: Pick<AgentOrgRunManager, "getActive" | "checkStoppedRunConfig" | "updateStoppedRunConfig">;
     agents: Pick<StandaloneAgentRunRootManager, "getActive">;
-    agentRuns: Pick<AgentRunService, "updateStoppedSelection">;
-    validator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptionsMany">;
+    agentRuns: Pick<AgentRunService, "checkStoppedSelection" | "updateStoppedSelection" | "terminateAgentRun">;
+    teamRuns: Pick<TeamRunService, "terminateTeamRun">;
+    children: DelegatedChildLaunches;
   }>) {}
 
   async stop(input: Readonly<{ rootKind: DelegatedLaunchRootKind; rootRunId: string; target: DelegatedRunReference }>): Promise<DelegatedStopServiceResult> {
-    const root = this.liveRoot(input.rootKind, input.rootRunId);
-    if (!root) return stopResult("ROOT_NOT_ACTIVE", "This run is not running; its copies are already stopped.");
+    const child = this.dependencies.children.localChild(identityOf(input.rootKind, input.rootRunId), input.target);
+    if (!child) return stopResult("NOT_FOUND", "This run did not delegate to that run.");
     try {
-      const result = await root.stopDelegatedExecution(input.target);
-      return stopResult(result.outcome, result.message, result.notStoppedUnattributed);
+      if (child.nodeId !== undefined) {
+        const root = this.liveRoot(input.rootKind, input.rootRunId);
+        if (!root) return stopResult("ROOT_NOT_ACTIVE", "This run is not running; a run on another node is stopped from a running run.");
+        const result = await root.stopDelegatedExecution(input.target);
+        return stopResult(result.outcome, result.message, result.notStoppedUnattributed);
+      }
+      const stopped = "agentRunId" in input.target
+        ? (await this.dependencies.agentRuns.terminateAgentRun(input.target.agentRunId)).success
+        : await this.dependencies.teamRuns.terminateTeamRun(input.target.teamRunId);
+      return stopped ? stopResult("STOPPED", `${child.recipientAddress} stopped.`) : stopResult("ALREADY_STOPPED", `${child.recipientAddress} is not running.`);
     } catch (error) {
-      return stopResult("INTERNAL_ERROR", `The copy could not be stopped: ${errorMessage(error)}`);
+      return stopResult("INTERNAL_ERROR", `The run could not be stopped: ${errorMessage(error)}`);
     }
   }
 
@@ -84,28 +91,38 @@ export class DelegatedLaunchSelectionService {
     changes: readonly DelegatedLaunchChange[];
     configured?: StoppedRootConfiguredPatches | null;
   }>): Promise<DelegatedLaunchServiceResult> {
-    const root = this.liveRoot(input.rootKind, input.rootRunId);
+    const configured = hasConfiguredPatches(input.configured) ? input.configured! : null;
+    if (configured && configured.kind !== expectedConfiguredKind(input.rootKind)) {
+      return updateResult("VALIDATION_FAILED", "The run's own settings do not match its kind.");
+    }
     try {
-      if (root) {
-        if (hasConfiguredPatches(input.configured)) {
-          return updateResult("RUN_ACTIVE", "The run is running: only its stopped copies' models can change. Stop the run to change its own settings.");
-        }
-        // A delegated run is configured as itself (autobyteus-461): a live run has no copies to change here.
-        return updateResult(input.changes.length ? "NOT_FOUND" : "UNCHANGED", NO_COPIES);
+      if (configured && this.liveRoot(input.rootKind, input.rootRunId)) {
+        return updateResult("RUN_ACTIVE", "The run is running: only the stopped runs it delegated to can change. Stop the run to change its own settings.");
       }
-      return await this.updateStopped(input);
+      const plan = await this.dependencies.children.plan(identityOf(input.rootKind, input.rootRunId), input.changes);
+      if (plan.kind === "refused") return updateResult(plan.refusal.outcome, plan.refusal.message, plan.refusal.fieldErrors);
+      const own = configured ? await this.ownSave(input.rootRunId, configured, true) : null;
+      if (own) return updateResult(own.outcome, own.message, own.fieldErrors);
+      const saved: string[] = [];
+      let changed = false;
+      if (configured) {
+        const result = (await this.ownSave(input.rootRunId, configured, false))!;
+        if (!result.success) return updateResult(result.outcome, result.message, result.fieldErrors);
+        changed = result.outcome === "UPDATED";
+        saved.push("this run");
+      }
+      const applied = await this.dependencies.children.apply(plan.saves, saved);
+      if (!applied.ok) return updateResult(applied.refusal.outcome, applied.refusal.message, applied.refusal.fieldErrors);
+      return changed || applied.changed
+        ? updateResult("UPDATED", "Saved. The new models are used when each run resumes.")
+        : updateResult("UNCHANGED", "These model settings are already saved.");
     } catch (error) {
       return updateResult("INTERNAL_ERROR", `The model change was not saved: ${errorMessage(error)}`);
     }
   }
 
   modelOptions(rootKind: DelegatedLaunchRootKind, rootRunId: string): Promise<readonly DelegatedLaunchModelOptions[]> {
-    const options = this.dependencies.validator;
-    switch (rootKind) {
-      case "AGENT_TEAM": return this.dependencies.teams.delegatedLaunchModelOptions(rootRunId, options);
-      case "AGENT_ORG": return this.dependencies.orgs.delegatedLaunchModelOptions(rootRunId, options);
-      case "AGENT": return Promise.resolve(Object.freeze([]));
-    }
+    return this.dependencies.children.modelOptions(identityOf(rootKind, rootRunId));
   }
 
   private liveRoot(rootKind: DelegatedLaunchRootKind, rootRunId: string) {
@@ -117,48 +134,27 @@ export class DelegatedLaunchSelectionService {
     }
   }
 
-  private async updateStopped(input: Parameters<DelegatedLaunchSelectionService["update"]>[0]): Promise<DelegatedLaunchServiceResult> {
-    const configured = input.configured ?? null;
-    if (configured && configured.kind !== expectedConfiguredKind(input.rootKind)) {
-      return updateResult("VALIDATION_FAILED", "The run's own settings do not match its kind.");
-    }
-    switch (input.rootKind) {
-      case "AGENT_TEAM": {
-        const result = await this.dependencies.teams.updateStoppedRunLaunchChanges({
-          teamRunId: input.rootRunId,
-          configuredPatches: configured?.kind === "team" ? configured.patches : [],
-          delegatedChanges: input.changes,
-        });
-        return updateResult(result.outcome, result.message, result.fieldErrors);
+  /** The delegator's own Save (`check`: without writing; the refusal or `null`). */
+  private async ownSave(rootRunId: string, configured: StoppedRootConfiguredPatches, check: boolean): Promise<OwnSaveResult | null> {
+    switch (configured.kind) {
+      case "team": {
+        const input = { teamRunId: rootRunId, selectionPatches: configured.patches };
+        return check ? this.dependencies.teams.checkStoppedSelections(input) : this.dependencies.teams.updateStoppedSelections(input);
       }
-      case "AGENT_ORG": {
-        const result = await this.dependencies.orgs.updateStoppedRunConfig({
-          orgRunId: input.rootRunId,
-          selectionPatches: configured?.kind === "org" ? configured.patches : [],
-          teamWorkspacePatches: [],
-          delegatedChanges: input.changes,
-        });
-        return updateResult(result.outcome, result.message, result.fieldErrors);
+      case "org": {
+        const input = { orgRunId: rootRunId, selectionPatches: configured.patches, teamWorkspacePatches: [] };
+        return check ? this.dependencies.orgs.checkStoppedRunConfig(input) : this.dependencies.orgs.updateStoppedRunConfig(input);
       }
-      case "AGENT": {
-        // A standalone run's delegated runs are configured as themselves (autobyteus-461); only its own agent is here.
-        if (input.changes.length) return updateResult("NOT_FOUND", NO_COPIES);
-        const hostSelection = configured?.kind === "agent" ? configured.selection : null;
-        if (!hostSelection) return updateResult("UNCHANGED", "These model settings are already saved.");
-        const host = await this.dependencies.agentRuns.updateStoppedSelection({
-          agentRunId: input.rootRunId,
-          runtimeKind: hostSelection.runtimeKind,
-          llmModelIdentifier: hostSelection.llmModelIdentifier,
-          llmConfig: hostSelection.llmConfig,
-        });
-        return host.success
-          ? updateResult(host.outcome === "UNCHANGED" ? "UNCHANGED" : "UPDATED",
-            host.outcome === "UNCHANGED" ? "These model settings are already saved." : "Saved. The new models are used when the run resumes.")
-          : updateResult(host.outcome, host.message, host.fieldErrors);
+      case "agent": {
+        const input = { agentRunId: rootRunId, ...configured.selection };
+        return check ? this.dependencies.agentRuns.checkStoppedSelection(input) : this.dependencies.agentRuns.updateStoppedSelection(input);
       }
     }
   }
 }
+
+const identityOf = (rootKind: DelegatedLaunchRootKind, rootRunId: string): RootExecutionIdentity => createRootExecutionIdentity({
+  rootSubjectKind: rootKind === "AGENT_TEAM" ? "agent_team" : rootKind === "AGENT_ORG" ? "agent_org" : "agent", rootRunId: rootRunId.trim() });
 
 const expectedConfiguredKind = (rootKind: DelegatedLaunchRootKind): StoppedRootConfiguredPatches["kind"] =>
   rootKind === "AGENT_TEAM" ? "team" : rootKind === "AGENT_ORG" ? "org" : "agent";

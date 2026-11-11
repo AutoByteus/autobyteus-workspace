@@ -1,15 +1,4 @@
 import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
-import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
-import {
-  interpretDelegatedLaunchValidation,
-  listDelegatedLaunchModelOptions,
-  planDelegatedLaunchValidation,
-  type DelegatedLaunchModelOptions,
-  type DelegatedLaunchUpdateResult,
-} from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
-import { delegatedLaunchSelections } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { agentOrgDelegatedLaunchForest, applyAgentOrgDelegatedLaunchSelections } from "./agent-org-run-execution-tree-mutator.js";
 import type { UpdateStoppedAgentOrgRunConfig } from "../domain/agent-org-run-config.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
@@ -35,7 +24,6 @@ import { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-c
 import type { AgentOrgExecutionScopeBuilder } from "./agent-org-execution-scope-builder.js";
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
 import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 export type AgentOrgRunManagerOptions = Readonly<{
@@ -159,7 +147,7 @@ export class AgentOrgRunManager {
     const dir = this.layout.getOrgDirPath(orgRunId);
     const tree = await this.executionTreeStore.read(dir, orgRunId);
     if (!tree) throw new Error(`AgentOrg collaboration records for '${orgRunId}' were not found.`);
-    const messages = await this.communicationStore.read(dir, tree);
+    const messages = await this.communicationStore.readLog(dir, orgRunId);
     if (!messages) throw new Error(`AgentOrg '${orgRunId}' has no communication messages.`);
     const state = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages: messages });
     return Object.freeze({ executionTree: state.executionTree, messages: state.communicationMessages });
@@ -204,16 +192,10 @@ export class AgentOrgRunManager {
       // inspection has none; retained contexts initialize as offline.
       const statuses = Object.freeze([]);
       return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
-        snapshot: Object.freeze({ tree, closedTaskExecutions: this.closedTaskExecutionsFor(orgRunId, tree),
-          statuses, inputStates: [] }) });
+        snapshot: Object.freeze({ tree, statuses, inputStates: [] }) });
     });
   }
 
-  /** Closed (Task DONE or CANCELLED) task executions of the given tree of this Org (stored, or the active snapshot's). */
-  closedTaskExecutionsFor(_orgRunIdInput: string, _tree: AgentOrgRunExecutionTreeFile): readonly TaskExecutionReference[] {
-    // Nothing is hosted (autobyteus-461): a run's children are runs of their own.
-    return [];
-  }
 
   getRunConfig(orgRunIdInput: string): Promise<AgentOrgRunConfig> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
@@ -226,6 +208,16 @@ export class AgentOrgRunManager {
   }
 
   updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig): Promise<AgentOrgRunConfigResult> {
+    return this.stoppedRunConfig(input, false);
+  }
+
+  /** The Save's checks without writing: the refusal, or `null` (SR-039: a delegator's Settings checks every run first). */
+  async checkStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig): Promise<AgentOrgRunConfigResult | null> {
+    const checked = await this.stoppedRunConfig(input, true);
+    return checked.success ? null : checked;
+  }
+
+  private stoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig, checkOnly: boolean): Promise<AgentOrgRunConfigResult> {
     const orgRunId = required(input.orgRunId, "orgRunId");
     return this.withTransition(orgRunId, async () => {
       let tree: AgentOrgRunExecutionTreeFile | null = null;
@@ -239,9 +231,6 @@ export class AgentOrgRunManager {
             : runModelConfigEditability({ isActive, archived: false, available: false }),
           fieldErrors: Object.freeze([...fieldErrors]) });
       };
-      // Planning and validation never report a running copy: every copy of a stopped root is stopped.
-      const delegatedRefusal = (refusal: DelegatedLaunchUpdateResult) =>
-        result(refusal.outcome === "COPY_RUNNING" ? "INTERNAL_ERROR" : refusal.outcome, refusal.message, tree, refusal.fieldErrors);
       try { tree = await this.readConfigTree(orgRunId); }
       catch (error) { return result(error instanceof AgentOrgRunConfigNotFound ? "NOT_FOUND" : "INTERNAL_ERROR",
         error instanceof Error ? error.message : String(error), null); }
@@ -250,8 +239,7 @@ export class AgentOrgRunManager {
       if (tree.applicationBinding) return result("VALIDATION_FAILED", "Application-owned AgentOrg runs cannot be edited here.");
       if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
       if (!this.modelSelectionValidator) return result("INTERNAL_ERROR", "Model selection capability is unavailable.");
-      const delegatedChanges = input.delegatedChanges ?? [];
-      if (!input.selectionPatches.length && !input.teamWorkspacePatches.length && !delegatedChanges.length) {
+      if (!input.selectionPatches.length && !input.teamWorkspacePatches.length) {
         return result("VALIDATION_FAILED", "At least one configuration patch is required.");
       }
       let modelTargets;
@@ -287,24 +275,17 @@ export class AgentOrgRunManager {
       }));
       const targets = listAgentOrgRunSelectionScopes(proposed).filter(scope =>
         modelAddresses.has(scope.scopeAddress) || workspaceAddresses.has(scope.scopeAddress));
-      const delegatedPlan = delegatedChanges.length
-        ? planDelegatedLaunchValidation({ ...this.delegatedLaunchReader(orgRunId, tree), changes: delegatedChanges })
-        : null;
-      if (delegatedPlan?.kind === "refused") return delegatedRefusal(delegatedPlan.result);
       let validations;
-      let delegatedValidations;
       try {
-        const all = await this.modelSelectionValidator.validateMany([...targets.map(({ scopeAddress, launchConfiguration }) => ({
+        validations = await this.modelSelectionValidator.validateMany(targets.map(({ scopeAddress, launchConfiguration }) => ({
           // The saved agent runtime of the scope is the current one; another runtime (or a pending switch) is a fresh selection.
           context: selectionContextFor({ ...originals.get(scopeAddress)!.launchConfiguration,
             workspaceRootPath: launchConfiguration.workspaceRootPath, pendingRuntimeSwitch: originals.get(scopeAddress)!.pendingRuntimeSwitch },
             { runtimeKind: launchConfiguration.runtimeKind }),
           selection: { llmModelIdentifier: launchConfiguration.llmModelIdentifier, llmConfig: launchConfiguration.llmConfig },
-        })), ...(delegatedPlan?.inputs ?? [])]);
-        validations = all.slice(0, targets.length);
-        delegatedValidations = all.slice(targets.length);
+        })));
       } catch { return result("INTERNAL_ERROR", "Model validation is unavailable."); }
-      if (validations.length !== targets.length || delegatedValidations.length !== (delegatedPlan?.inputs.length ?? 0)) {
+      if (validations.length !== targets.length) {
         return result("INTERNAL_ERROR", "Model validation returned an incomplete aggregate result.");
       }
       for (const [index, validation] of validations.entries()) {
@@ -323,13 +304,8 @@ export class AgentOrgRunManager {
         const validation = validations[targets.findIndex(scope => scope.scopeAddress === target.patch.scopeAddress)]!;
         return { ...target, patch: { ...target.patch, ...(validation.kind === 'valid' ? validation.selection : {}) } };
       });
-      const delegated = delegatedPlan ? interpretDelegatedLaunchValidation(delegatedPlan.targets, delegatedValidations) : null;
-      if (delegated?.kind === "refused") return delegatedRefusal(delegated.result);
-      const configured = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), normalized);
-      const expected = delegated
-        ? applyAgentOrgDelegatedLaunchSelections(configured, delegatedLaunchSelections(delegated.targets, new Date().toISOString()))
-        : configured;
-      if (isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg settings are already up to date.");
+      const expected = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), normalized);
+      if (checkOnly || isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg settings are already up to date.");
       if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
       let outcome: "committed" | "not_committed" | "finalization_indeterminate";
       try { outcome = (await this.executionTreeStore.write(this.layout.getOrgDirPath(orgRunId), expected)).outcome; }
@@ -342,24 +318,6 @@ export class AgentOrgRunManager {
       }
       return result("UPDATED", "AgentOrg settings saved.", readback);
     });
-  }
-
-  /** Model options of every editable delegated copy of the run (its current tree). */
-  async delegatedLaunchModelOptions(
-    orgRunIdInput: string,
-    modelOptions: Pick<RunModelSelectionService, "listOptionsMany">,
-  ): Promise<readonly DelegatedLaunchModelOptions[]> {
-    const orgRunId = required(orgRunIdInput, "orgRunId");
-    const tree = this.getActive(orgRunId)?.getExecutionTreeSnapshot() ?? await this.readConfigTree(orgRunId);
-    return listDelegatedLaunchModelOptions({ ...this.delegatedLaunchReader(orgRunId, tree), modelOptions });
-  }
-
-  private delegatedLaunchReader(orgRunId: string, tree: AgentOrgRunExecutionTreeFile) {
-    const closed = new Set(this.closedTaskExecutionsFor(orgRunId, tree).map(taskExecutionReferenceKey));
-    return {
-      forest: agentOrgDelegatedLaunchForest(tree),
-      isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
-    };
   }
 
   private async readConfigTree(orgRunId: string) {

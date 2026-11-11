@@ -210,8 +210,7 @@ export class AgentOrgStreamHandler {
             executionKind: null,
           });
       const result = outcome.result;
-      if (message.type === "SEND_MESSAGE" && result.accepted && outcome.executionKind !== null
-        && outcome.executionKind !== "task" && outcome.executionKind !== "task_team_member") {
+      if (message.type === "SEND_MESSAGE" && result.accepted && outcome.executionKind !== null) {
         const historyCommit = this.service.recordRunActivity(run, { summary: message.payload.content });
         try {
           await historyCommit;

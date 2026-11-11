@@ -56,7 +56,7 @@ export class TeamCommunicationProjectionService {
     const dir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
     const tree = await this.treeStore.read(dir, rootTeamRunId);
     if (!tree) throw new Error(`Team collaboration records for '${rootTeamRunId}' were not found.`);
-    const messages = await this.store.read(dir, tree);
+    const messages = await this.store.readLog(dir, rootTeamRunId);
     if (!messages) throw new Error(`TeamRun '${rootTeamRunId}' has no communication messages.`);
     const state = validateTeamRunStatePackage({ executionTree: tree, communicationMessages: messages });
     return Object.freeze({ executionTree: state.executionTree, messages: state.communicationMessages });

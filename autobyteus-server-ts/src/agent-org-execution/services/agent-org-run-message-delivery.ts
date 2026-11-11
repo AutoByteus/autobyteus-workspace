@@ -224,22 +224,12 @@ export class AgentOrgRunMessageDelivery {
     return operation();
   }
 
-  /**
-   * Runtime liveness (AR-005): the host is active and, for a delegated child Agent, its
-   * AgentRun is active. Configured Agents keep host membership (they
-   * activate lazily on their first message).
-   */
+  /** Runtime liveness (AR-005): a direct agent is registered; a mounted team's member is live with its team (lazy start). */
   isLiveAgent(agentRunId: string): boolean {
     const agent = this.options.getIndex().getAgent(agentRunId);
     if (!agent) return false;
-    if (agent.host.hostKind === "root") {
-      return agent.executionKind === "task"
-        ? this.options.rootAgents.isTaskLive(agentRunId)
-        : this.options.rootAgents.get(agentRunId) !== null;
-    }
-    const host = this.options.teams.get(agent.host.hostRunId);
-    if (!host) return false;
-    return agent.executionKind !== "task" || host.hasLiveDirectTaskExecution({ agentRunId });
+    if (agent.host.hostKind === "root") return this.options.rootAgents.get(agentRunId) !== null;
+    return this.options.teams.get(agent.host.hostRunId) !== null;
   }
 
   private identityFor(agentRunId: string, address: AgentTeamAddress): CollaborationMemberExecutionIdentity {

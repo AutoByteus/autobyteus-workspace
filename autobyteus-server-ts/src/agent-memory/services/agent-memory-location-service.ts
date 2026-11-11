@@ -15,7 +15,6 @@ import type {
   TeamMemberAgentMemoryLocation,
 } from "../domain/agent-memory-location.js";
 import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
-import { TaskTeamRootMemorySource } from "./task-team-root-memory-source.js";
 
 const optional = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim() ? value.trim() : null;
@@ -26,27 +25,23 @@ const required = (value: string, fieldName: string): string => {
 };
 
 type OrgLocations = Pick<AgentOrgExecutionTreeLocationService, "findAgent">;
-type TaskTeams = Pick<TaskTeamRootMemorySource, "readTaskTeam">;
 
 /** Resolves current Team and AgentOrg member memory locations from the authoritative execution trees. */
 export class AgentMemoryLocationService {
   private readonly layout: AgentMemoryLayout;
   private readonly locations: TeamRunExecutionTreeLocationService;
   private readonly orgLocations: OrgLocations;
-  private readonly taskTeams: TaskTeams;
 
   constructor(input: {
     layout?: AgentMemoryLayout;
     locationService?: TeamRunExecutionTreeLocationService;
     orgLocationService?: OrgLocations;
-    taskTeams?: TaskTeams;
     memoryDir?: string;
   } = {}) {
     const memoryDir = input.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.layout = input.layout ?? new AgentMemoryLayout(memoryDir);
     this.locations = input.locationService ?? createStoredTeamRunExecutionTreeLocationService(memoryDir);
     this.orgLocations = input.orgLocationService ?? new AgentOrgExecutionTreeLocationService({ memoryDir });
-    this.taskTeams = input.taskTeams ?? new TaskTeamRootMemorySource(memoryDir);
   }
 
   getStandaloneLocation(input: { agentRunId: string; storedMemoryDir?: string | null }): StandaloneAgentMemoryLocation {
@@ -71,20 +66,7 @@ export class AgentMemoryLocationService {
       (!agentRunId || item.agentRunId === agentRunId) &&
       (!memberAddress || item.memberAddress === assertAgentTeamAddress(memberAddress)));
     if (matches.length === 1) return toMemoryLocation(matches[0]!);
-    return matches.length ? null : this.resolveTaskTeamMember(teamRunId, agentRunId, memberAddress);
-  }
-
-  /** A member of a task team no root's tree holds (delegated by an agent root), read from the task team's own tree. */
-  private async resolveTaskTeamMember(teamRunId: string, agentRunId: string | null, memberAddress: string | null): Promise<TeamMemberAgentMemoryLocation | null> {
-    const team = await this.taskTeams.readTaskTeam(teamRunId);
-    const members = team?.members.filter((member) =>
-      (!agentRunId || member.agentRunId === agentRunId) && (!memberAddress || member.memberAddress === memberAddress)) ?? [];
-    if (members.length !== 1) return null;
-    const member = members[0]!;
-    return {
-      kind: "team_member", rootTeamRunId: teamRunId, ancestorTeamRunIds: [], memberAddress: member.memberAddress,
-      agentRunId: member.agentRunId, configuredPlacement: null, memoryDir: member.memoryDir,
-    };
+    return null;
   }
 
   async resolveAgentOrgMemberLocation(input: {

@@ -1,8 +1,7 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
 import { peerRunIdOf, peerTeamCoordinatorRunId, type PeerRunLink } from "./peer-run-link.js";
-import type { DelegatedStopResult } from "../../collaborators/delegated-launch-selection-command.js";
-import type { DelegatedRunReference } from "../../domain/delegated-launch-selection.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../domain/delegated-launch-selection.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "./remote-refusal-codes.js";
 import {
   findProcessRemoteRunChannel,

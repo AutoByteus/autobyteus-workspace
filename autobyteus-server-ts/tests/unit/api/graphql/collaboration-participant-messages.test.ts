@@ -1,7 +1,13 @@
 import "reflect-metadata";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { agentProjectionTree, orgProjectionTree, REMOTE_RUN_ID } from "../../../fixtures/collaboration-public-projection-fixtures.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { appConfigProvider } from "../../../../src/config/app-config-provider.js";
+import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
+import { bindClosedDelegatedRuns, unbindClosedDelegatedRuns } from "../../../../src/run-history/services/closed-delegated-run-reader.js";
 import { readCollaborationParticipantMessages } from "../../../../src/api/graphql/types/collaboration-participant-messages.js";
 import { AgentOrgRunManager } from "../../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import { TeamCommunicationProjectionService } from "../../../../src/services/team-communication/team-communication-projection-service.js";
@@ -18,6 +24,20 @@ const message = (messageId: string, senderAgentRunId: string, receiverAgentRunId
   referenceFiles: [`/tmp/${messageId}.md`], createdAt,
 });
 
+const REMOTE_RUN_ID = "remote-publisher-run";
+const host = { agentRunId: "manager", address: "/manager" };
+/** autobyteus-461: an agent run holds only its own agent; `solo` is a run delegated from it, with its own file. */
+const withDelegatedSolo = async <T>(run: () => Promise<T>): Promise<T> => {
+  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "participant-messages-"));
+  await new AgentRunMetadataStore(memory).writeMetadata("solo", { runId: "solo", agentDefinitionId: "solo-definition", address: "/solo",
+    workspaceRootPath: "/w", memoryDir: path.join(memory, "agents", "solo"), llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true,
+    runtimeKind: "autobyteus", platformAgentRunId: null } as never);
+  vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({ getMemoryDir: () => memory } as never);
+  const port = { childrenOf: () => [{ agentRunId: "solo" }], subtreeOf: () => [{ agentRunId: "solo" }] } as never;
+  bindClosedDelegatedRuns(port);
+  try { return await run(); } finally { unbindClosedDelegatedRuns(port); await fs.rm(memory, { recursive: true, force: true }); }
+};
+
 const withHubRecords = async <T>(records: () => Promise<unknown>, run: () => Promise<T>): Promise<T> => {
   const manager = { getCollaborationRecordsSnapshot: vi.fn(records) } as never;
   bindProcessStandaloneAgentRunRootManager(manager);
@@ -27,27 +47,22 @@ const withHubRecords = async <T>(records: () => Promise<unknown>, run: () => Pro
 afterEach(() => vi.restoreAllMocks());
 
 describe("collaborationParticipantMessages", () => {
-  it("returns a hub participant's sent and received messages between agents of the root, never a remote run's", async () => {
-    const tree = agentProjectionTree(false);
+  it("returns the run's own agent's messages, with the agents of runs delegated from it as past participants; never a remote run's", async () => {
     const messages = [
-      message("m1", "solo-copy", "manager"),
-      message("m2", "manager", "packet-lead"),
+      message("m1", "solo", "manager"),
+      message("m2", "manager", "not-delegated-from-this-run"),
       message("m3", "manager", REMOTE_RUN_ID),
-      message("m4", "packet-lead", "solo-copy"),
     ];
-    const result = await withHubRecords(async () => ({ tree, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "manager", messages } }),
-      () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId: "manager" }));
-    expect(result.messages.map((entry) => entry.messageId)).toEqual(["m1", "m2"]);
+    const result = await withDelegatedSolo(() => withHubRecords(async () => ({ host, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "manager", messages } }),
+      () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId: "manager" })));
+    expect(result.messages.map((entry) => entry.messageId)).toEqual(["m1"]);
     expect(result.messages[0]).toEqual(messages[0]);
-    const copy = await withHubRecords(async () => ({ tree, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "manager", messages } }),
-      () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId: "solo-copy" }));
-    expect(copy.messages.map((entry) => entry.messageId)).toEqual(["m1", "m4"]);
+    expect(result.pastParticipants).toEqual([{ agentRunId: "solo", address: "/solo" }]);
   });
 
-  it("rejects a non-participant: a remote run's agent and an unknown run (AR-004)", async () => {
-    const tree = agentProjectionTree(false);
-    const records = async () => ({ tree, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "manager", messages: [] } });
-    for (const agentRunId of [REMOTE_RUN_ID, "not-in-this-run"]) {
+  it("rejects a non-participant: a delegated run's agent (its own run), a remote run's agent and an unknown run (AR-004)", async () => {
+    const records = async () => ({ host, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "manager", messages: [] } });
+    for (const agentRunId of ["solo", REMOTE_RUN_ID, "not-in-this-run"]) {
       await expect(withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "manager", agentRunId })))
         .rejects.toThrow(`AgentRun '${agentRunId}' is not a participant of agent run 'manager'.`);
     }
@@ -56,16 +71,17 @@ describe("collaborationParticipantMessages", () => {
   });
 
   it("reads an Org participant's messages through the Org records owner", async () => {
-    const executionTree = orgProjectionTree(false);
+    const executionTree = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/manager", "manager"),
+      testOrgTeamNode({ address: "/configured", teamRunId: "configured-team", coordinatorAddress: "/configured/lead",
+        members: [testOrgAgentNode("/configured/lead", "configured-lead")] })] });
     const records = vi.spyOn(AgentOrgRunManager.prototype, "getCollaborationRecordsSnapshot").mockResolvedValue({
       executionTree, messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [
-        message("o1", "manager", "configured-lead"), message("o2", "configured-helper", "configured-lead"),
-        message("o3", "configured-lead", REMOTE_RUN_ID), message("o4", "solo-copy", "manager"),
+        message("o1", "manager", "configured-lead"), message("o2", "configured-lead", REMOTE_RUN_ID), message("o3", "solo", "manager"),
       ] },
     } as never);
     vi.spyOn(AgentOrgRunManager, "getInstance").mockReturnValue(Object.create(AgentOrgRunManager.prototype));
     const result = await readCollaborationParticipantMessages({ rootKind: "agent_org", rootRunId: "org-root", agentRunId: "configured-lead" });
-    expect(result.messages.map((entry) => entry.messageId)).toEqual(["o1", "o2"]);
+    expect(result.messages.map((entry) => entry.messageId)).toEqual(["o1"]);
     expect(records).toHaveBeenCalledWith("org-root");
   });
 

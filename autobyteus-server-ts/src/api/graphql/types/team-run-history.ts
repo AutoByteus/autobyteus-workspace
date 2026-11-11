@@ -112,7 +112,8 @@ export class TeamRunHistoryResolver {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree, await delegatedChildrenDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId })),
-      closedTaskExecutions: config.closedTaskExecutions,
+      // No closed copies: a run delegated to is its own run, and only open ones are child rows (autobyteus-461).
+      closedTaskExecutions: [],
       remoteTaskExecutions: await remoteTaskExecutionDtos({ rootSubjectKind: "agent_team", rootRunId: config.executionTree.rootTeam.teamRunId }),
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,

@@ -1,5 +1,5 @@
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
-import { projectAgentOrgExecutionTree, projectCollaborationTaskExecution, projectCollaborationSelectionsChanged } from "./collaboration-execution-tree-dto-projection.js";
+import { projectAgentOrgExecutionTree } from "./collaboration-execution-tree-dto-projection.js";
 import {
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
@@ -9,18 +9,9 @@ import {
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
-import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
-import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-
-const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
-  const execution = new AgentOrgExecutionIndex(run.getExecutionTreeSnapshot()).getTaskExecution(reference);
-  if (!execution) throw new Error("Started AgentOrg task execution is not in the current execution tree.");
-  return projectCollaborationTaskExecution(execution.source);
-};
 
 export const projectAgentOrgExecutionView = (
   run: AgentOrgRun,
@@ -56,7 +47,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     last_message_change_sequence: lastMessageChangeSequence,
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree, input.delegated ?? []),
-    closed_task_executions: snapshot.closedTaskExecutions,
+    closed_task_executions: [],
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
@@ -99,25 +90,8 @@ export const projectAgentOrgExecutionEvent = (
     case "remote_task_execution_started":
       event = { kind: "remote_task_execution_started" as const, execution: projectRemoteTaskExecution(source.execution) };
       break;
-    case "task_execution_started":
-      event = {
-        kind: "task_execution_started" as const,
-        host_kind: source.host.hostKind,
-        host_run_id: source.host.hostRunId,
-        execution: requireStartedExecution(run, source.taskExecution),
-      };
-      break;
     case "communication":
       event = { kind: "communication" as const, message: source.message };
-      break;
-    case "delegated_launch_selections_changed":
-      event = projectCollaborationSelectionsChanged(source.selections);
-      break;
-    case "task_executions_closed":
-      event = { kind: "task_executions_closed" as const, task_executions: source.taskExecutions };
-      break;
-    case "task_executions_reopened":
-      event = { kind: "task_executions_reopened" as const, task_executions: source.taskExecutions };
       break;
   }
   return RootExecutionEventDtoSchema.parse({

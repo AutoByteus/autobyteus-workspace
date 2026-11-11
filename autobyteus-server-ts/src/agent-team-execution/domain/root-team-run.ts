@@ -1,7 +1,6 @@
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
@@ -51,13 +50,11 @@ import type { CollaborationAgentPlatformBindingChange } from "../../agent-collab
 import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platform-binding-committer.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
-import type { DelegatedStopResult } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import type { DelegatedRunReference } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
   /** Nothing is hosted (autobyteus-461): always empty; a view's children are the runs it delegated to. */
-  closedTaskExecutions: readonly TaskExecutionReference[];
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -341,7 +338,6 @@ export class RootTeamRun {
     return this.options.publisher.openSnapshotConnection(() =>
       this.options.persistence.readConsistent(() => ({
         tree: this.tree,
-        closedTaskExecutions: [],
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
       })),
@@ -442,22 +438,17 @@ export class RootTeamRun {
   }
 
   /**
-   * Runtime liveness: the containing TeamRun is active and, for a task Agent, its handle is
-   * registered. Configured members are live with their TeamRun (lazy start).
+   * Runtime liveness: a member is live with its active TeamRun (lazy start).
    */
   private isLiveAgent(agentRunId: string): boolean {
     const agent = this.index.getAgent(agentRunId);
-    if (!agent) return false;
-    const containing = this.teamRunResolver.getActive(agent.containingTeamRunId);
-    if (!containing) return false;
-    return agent.executionKind !== "task" || containing.hasLiveDirectTaskExecution({ agentRunId });
+    return !!agent && this.teamRunResolver.getActive(agent.containingTeamRunId) !== null;
   }
 
   private async requireTeamRun(teamRunId: string): Promise<TeamRun> {
-    const indexed = this.index.requireTeam(teamRunId);
+    this.index.requireTeam(teamRunId);
     const active = this.teamRunResolver.getActive(teamRunId);
     if (active) return active;
-    if (indexed.executionKind !== "configured") throw new Error(`Task TeamRun '${teamRunId}' is not active.`);
     return this.teamRunResolver.requireConfigured(teamRunId);
   }
 

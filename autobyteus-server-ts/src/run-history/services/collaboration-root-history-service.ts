@@ -24,7 +24,7 @@ export class CollaborationRootHistoryService {
     memoryDir: string;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
     orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows" | "getCatalogRow">;
-    orgRuns: Pick<AgentOrgRunManager, "getActive" | "closedTaskExecutionsFor">;
+    orgRuns: Pick<AgentOrgRunManager, "getActive">;
     orgTrees?: AgentOrgRunExecutionTreeStore;
     /** An Org run's last activity over its agents. */
     lastActivity?: Pick<RunLastActivityReader, "forOrgRun">;
@@ -77,7 +77,7 @@ export class CollaborationRootHistoryService {
       is_active: Boolean(active),
       summary: row.summary,
       org: projectAgentOrgExecutionTree(tree),
-      closed_task_executions: this.dependencies.orgRuns.closedTaskExecutionsFor(row.orgRunId, tree),
+      closed_task_executions: [],
     });
   }
 }

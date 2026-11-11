@@ -1,5 +1,4 @@
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { TeamRunExecutionTreeFile } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import {
   getAtomicRunPackageFileCommitWriter,
@@ -7,13 +6,9 @@ import {
   type RunPackageFileWriteResult,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { TeamCommunicationMessagesFile } from "./team-communication-messages-file.js";
-import { TEAM_RUN_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
 import { MessageLog } from "../../run-history/store/message-log.js";
-import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
 import {
   appendMessageToOwnerLogs,
-  composeMessageLogs,
-  taskAgentLogOwners,
   TaskAgentMessageLogs,
   type StoredMessageLogOwner,
 } from "../../run-history/store/task-agent-message-logs.js";
@@ -41,20 +36,6 @@ export class TeamCommunicationStore {
   async readLog(teamMemoryDir: string, rootTeamRunId: string): Promise<TeamCommunicationMessagesFile | null> {
     const messages = await this.ownLog(teamMemoryDir).read();
     return messages ? Object.freeze({ schemaVersion: 1, rootTeamRunId, messages }) : null;
-  }
-
-  /** The stored view for a composed tree: the run's log and its open delegated runs' logs (D-5); `null` without a log. */
-  async read(teamMemoryDir: string, tree: TeamRunExecutionTreeFile): Promise<TeamCommunicationMessagesFile | null> {
-    const rootTeamRunId = tree.rootTeam.teamRunId;
-    const own = await this.readLog(teamMemoryDir, rootTeamRunId);
-    if (!own) return null;
-    const owners = taskAgentLogOwners(TEAM_RUN_TREE_SHAPE.taskLists(tree).values());
-    const logs = owners.length === 0 ? [] : await Promise.all(owners.map((owner) => this.taskLogs(teamMemoryDir).read(owner)));
-    return Object.freeze({
-      schemaVersion: 1,
-      rootTeamRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], messageViewOfTree(TEAM_RUN_TREE_SHAPE, tree))),
-    });
   }
 
   /** Creates the run's log (its initial package; replaced on a retry). */

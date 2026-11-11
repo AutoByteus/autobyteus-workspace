@@ -25,7 +25,7 @@ export const delegatedChildrenDtos = async (run: RootExecutionIdentity, memoryDi
         if (metadata) rows.push(projectDelegatedAgentRun(child, metadata));
       } else {
         const teamRunId = child.run.teamRunId;
-        const tree = await teams.readOwnParts(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId);
+        const tree = await teams.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId);
         if (tree) rows.push(projectDelegatedTeamRun(child, tree));
       }
     } catch (error) {

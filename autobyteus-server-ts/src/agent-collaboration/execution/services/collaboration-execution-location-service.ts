@@ -3,12 +3,7 @@ import type { AgentOrgExecutionTreeLocationService, LocatedAgentOrgAgentExecutio
 import { DelegatedChildLocations, type LocatedStandaloneRootAgentExecution } from "../delegation/delegated-child-locations.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
-import type { TaskExecution } from "../../../run-history/domain/run-execution-tree-shared-records.js";
-import {
-  copyExecutionSource,
-  taskExecutionListsOf,
-  type CollaboratorExecutionSource,
-} from "../../collaborators/collaborator-source-projector.js";
+import type { CollaboratorExecutionSource } from "../../collaborators/collaborator-source-projector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentOrgExecutionTreeLocationService as StoredAgentOrgExecutionTreeLocationService } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 
@@ -27,31 +22,12 @@ type Family = "findAgent" | "findAgentSync" | "listAgents";
 export const tagTeamAgentExecution = (item: LocatedTeamAgentExecution): LocatedTeamCollaborationAgentExecution =>
   Object.freeze({ ...item, rootSubjectKind: "agent_team", rootRunId: item.rootTeamRunId });
 
-/** Every task-execution list of the located tree: the lists its delegated copies are recorded in. */
-const taskExecutionListsOfLocatedTree = (location: LocatedCollaborationAgentExecution): readonly (readonly TaskExecution[])[] => {
-  switch (location.rootSubjectKind) {
-    case "agent_team":
-      return taskExecutionListsOf({ taskExecutions: location.tree.rootTeam.taskExecutions });
-    case "agent_org":
-      return taskExecutionListsOf({
-        taskExecutions: location.tree.rootOrg.taskExecutions,
-        teams: location.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member] : []),
-      });
-    case "agent":
-      return [];
-  }
-};
-
 /**
- * The definition and started launch a located execution runs with, decided by its execution kind: a
- * configured member's placement, or a delegated copy's own recorded source (never the placement at its
- * address). Reads only the located tree; null when the execution has neither.
+ * The definition and launch a located execution runs with: an agent run's own recorded source, or a team or
+ * organization member's configured placement. Reads only the located files; null when the execution has neither.
  */
 export const locatedExecutionSource = (location: LocatedCollaborationAgentExecution): CollaboratorExecutionSource | null =>
-  location.rootSubjectKind === "agent" ? location.source
-    : location.executionKind === "configured"
-      ? location.configuredPlacement
-      : copyExecutionSource(taskExecutionListsOfLocatedTree(location), location.agentRunId);
+  location.rootSubjectKind === "agent" ? location.source : location.configuredPlacement;
 
 /** The launch settings a located execution runs with (see `locatedExecutionSource`). */
 export const locatedLaunchConfiguration = (location: LocatedCollaborationAgentExecution): AgentLaunchConfiguration | null =>

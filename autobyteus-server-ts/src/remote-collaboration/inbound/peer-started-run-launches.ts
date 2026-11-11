@@ -27,7 +27,7 @@ export class PeerStartedRunLaunches {
       return metadata?.address ? Object.freeze([Object.freeze({ address: metadata.address, runtimeKind: metadata.runtimeKind,
         llmModelIdentifier: metadata.llmModelIdentifier, source: metadata.launchSource ?? UNRECORDED })]) : Object.freeze([]);
     }
-    const tree = await this.teams.readOwnParts(this.layout.getTeamDirPath({ rootTeamRunId: run.runId, ancestorTeamRunIds: [] }), run.runId);
+    const tree = await this.teams.read(this.layout.getTeamDirPath({ rootTeamRunId: run.runId, ancestorTeamRunIds: [] }), run.runId);
     return Object.freeze((tree?.rootTeam.members ?? []).map((member) => Object.freeze({ address: member.address, runtimeKind: member.launchConfiguration.runtimeKind,
       llmModelIdentifier: member.launchConfiguration.llmModelIdentifier, source: member.launchSource ?? UNRECORDED })));
   }

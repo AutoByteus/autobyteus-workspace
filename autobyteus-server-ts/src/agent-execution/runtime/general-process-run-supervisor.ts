@@ -1,4 +1,5 @@
 import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
+import { createDelegatedChildLaunches } from "../../run-history/services/delegated-child-launches.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -322,11 +323,9 @@ export class GeneralProcessRunSupervisor {
       teamRunServiceBound = true;
 
       this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
-        teams: agentTeamRunManager,
-        orgs: agentOrgRunManager,
-        agents: standaloneRootManager,
-        agentRuns: agentRunService,
-        validator: input.modelSelectionValidator,
+        teams: agentTeamRunManager, orgs: agentOrgRunManager, agents: standaloneRootManager, agentRuns: agentRunService, teamRuns: teamRunService,
+        children: createDelegatedChildLaunches({ memoryDir, agentRuns: agentRunService, teamManager: agentTeamRunManager,
+          activeAgentRun: (agentRunId) => agentRunManager!.getActiveRun(agentRunId), modelOptions: input.modelSelectionValidator }),
       });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
