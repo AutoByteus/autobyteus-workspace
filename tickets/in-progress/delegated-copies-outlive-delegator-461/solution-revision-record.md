@@ -998,4 +998,4 @@
 
   `walkthrough.py --check` passes (the model has no roots, and its rules are unchanged).
 - Next action: architecture review (narrow)
-
+- ARCH-REV-024 (2026-11-11): Pass, no finding. Its two notes are applied in the composition section: the tool path is stated (framework registry → the existing dispatcher and router initializers, installed at step 8), and the duplicate `GlobalAgentRunMessageRouter` bullet goes.

@@ -482,10 +482,11 @@ No other gap was found. Not validated: the code. The implementation verifies the
    - the `delegate_task` tool service gets `TaskDelegation`;
    - `GlobalAgentRunMessageRouter`, an older lazy singleton, is constructed by the composition root at this step with `CrossRunMessageDelivery`, and its existing getter returns that instance. Replacing the getter's callers is FU-011;
    - the `send_message_to` dispatcher gets `CrossRunAddressResolution`;
-   - `GlobalAgentRunMessageRouter` gets `CrossRunMessageDelivery`;
    - the three stream handlers get `DelegatedRunCommands`, `ChildRowsFeed` and `LocalChildObservation`;
    - `DelegatedRunAgentsReader`, `DelegatedWorkGuard` and the run list projection get `delegationTree` (they replace `bindDelegatedRuns`);
-   - `RunOwnTask`, `DelegatedChildLocations`, `PeerRunLink` and `TaskWorkerStatusNotice` get the tree or `runControl`.
+   - `RunOwnTask`, `DelegatedChildLocations` and `PeerRunLink` get the tree or `runControl`; `TaskWorkerStatusNotice` gets the Task side (step 3).
+
+**The tool path** (ARCH-REV-024): the agents' tools come from the framework's `defaultToolRegistry`. They reach their services through the existing initializers: `send-message-to.ts:40` → `getSendMessageToDispatcher()`, and the task-delegation router. This is the framework-edge case Principle 16 allows. At step 8 the composition root installs the dispatcher (with `CrossRunAddressResolution` and `CrossRunMessageDelivery`), the `delegate_task` tool service (with `TaskDelegation`) and `GlobalAgentRunMessageRouter` (with `CrossRunMessageDelivery`) through those initializers. That is before any run can call a tool, so there is no construction cycle: run services → agents → tools → tool services → `TaskDelegation` → run services is a call path at run time, not a construction order.
 
 **The rules:**
 - **No owner this ticket adds is reached through a process-wide lookup.**
