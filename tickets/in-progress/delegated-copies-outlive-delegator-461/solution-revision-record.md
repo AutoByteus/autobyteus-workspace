@@ -961,4 +961,4 @@
   - FU-011 is narrowed to the older lookups the change only uses.
 - Applying the updated skill: the template's "Dependency Rules" requirement is answered by that section, and the Structural Trigger "Hidden dependency" is recorded as fired, with its evidence and resolution.
 - Next action: architecture review (narrow); then implementation, in IR-003
-
+- ARCH-REV-022 (2026-11-11): Pass. Its two spec corrections are applied in "Dependency Rules And The Composition Root": `childRowsFeed.follow` moves to step 7, after the feed's creation, with the stream session registry as its own owner passed to the feed and the handlers; and a Task change with no entries listener set fails instead of skipping.

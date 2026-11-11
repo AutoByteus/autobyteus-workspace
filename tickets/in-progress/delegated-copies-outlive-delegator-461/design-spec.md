@@ -465,12 +465,12 @@ No other gap was found. Not validated: the code. The implementation verifies the
 **One composition root: `compositions/build-studio-server.ts`.** It creates the owners this ticket adds in this order and passes each one its collaborators, through its constructor or the call that needs it:
 
 1. `TaskExecutionResourceService`, loaded.
-2. `DelegationTree(taskExecutionResources, runOwnAgentsReader)`, built; then `taskExecutionResources.setEntriesListener(delegationTree)`; then `childRowsFeed.follow(delegationTree)`.
+2. `DelegationTree(taskExecutionResources, runOwnAgentsReader)`, built; then `taskExecutionResources.setEntriesListener(delegationTree)`. A Task change with no entries listener set fails; it is not skipped.
 3. The run services (agent, team, org), as today, given what they already take.
 4. `TaskRunControl({ agentRuns, teamRuns, tasks: taskExecutionResources })`.
 5. `ProjectTaskService({ …, runControl })`. Its `requestRelease` and `workerStatus` call `runControl` directly. `composeProjectTaskExecutionResources` is split: the Task records and the tree come at steps 1 and 2, and the service at step 5.
 6. `TaskDelegation`, `CrossRunMessageDelivery` and `CrossRunAddressResolution`, from the tree, the root resolver and the run services.
-7. `LocalChildPorts({ tree: delegationTree, agents })`, `LocalChildObservation`, `DelegatedRunCommands` (one instance), and `ChildRowsFeed`.
+7. `LocalChildPorts({ tree: delegationTree, agents })`, `LocalChildObservation` and `DelegatedRunCommands` (one instance). Then the stream session registry, its own owner. Then `ChildRowsFeed(streamSessions)`, then `childRowsFeed.follow(delegationTree)`. The registry is passed to the feed and to the stream handlers.
 8. Their consumers, each receiving them at construction:
    - the `send_message_to` dispatcher gets `CrossRunAddressResolution`;
    - `GlobalAgentRunMessageRouter` gets `CrossRunMessageDelivery`;
