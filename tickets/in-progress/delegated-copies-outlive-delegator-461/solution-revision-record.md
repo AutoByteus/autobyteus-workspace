@@ -20,6 +20,7 @@
 | SR-014 | Requirements (supplement) | PRE-001 delivered (`autobyteus-469`, verified Terminal 2026-11-11); the user: resume on the latest base and re-validate the contract | N/A | Blocked: Waiting For Prerequisite | Ready for Approval (contract revision 5 proposed; design Needs Revision) | Contract §1 … §12; TC-7 … TC-9; DEC-011 | Presented to the user |
 | SR-015 | Design | Contract revision 5 with TC-7, TC-8, DEC-011 decided; the user: redesign and show it to him before any review | N/A | Design Needs Revision (SR-010) | Design Draft, for the user's review | DS-1 … DS-10 | Presented to the user; not sent to review |
 | SR-016 | Design | The user: names by ownership; finish the open items, then stop for his review | N/A | Design Draft (SR-015) | Design Draft, for the user's review | DS-1 … DS-10; V-10, V-11, V-14, U-A, U-B | Presented to the user; not sent to review |
+| SR-017 | Requirements and design | The user widens the scope: team and org runs in this ticket (TC-4 revised) | N/A | Design Draft (SR-016) | Requirements Ready for Approval; design Draft, for the user's review | REQ-001, REQ-002, REQ-010, REQ-011, BEH-002, BEH-004, AC-006, AC-012, SCN-002; TC-4 | Presented to the user; not sent to review |
 
 ## Revision Entries
 
@@ -398,4 +399,17 @@
 - Applied handoff-rule outcome / result-file reference: none, at the user's request
 - Downstream and architecture-review impact: architecture review after the user's review
 - Remaining gaps, assumptions or blocked decisions: none open in the requirements; the user's review
+- Next action: the user's review
+
+### SR-017 — Team and org runs in this ticket (TC-4 revised)
+
+- Phase and classification: Requirements (scope change by the user) and Design
+- Triggering user feedback: 2026-11-11, "I think we can do the agent team and agent organization in this task as well. We don't have to separate because it's kind of not so easy to have like intermediary states."
+- Prior status: design draft SR-016 (standalone delegations only)
+- Current status: requirements `Ready for Approval` (the user's review of the design pending); design `Draft — for the user's review`
+- Affected IDs: REQ-001 (Stop of any run stops that run only), REQ-002, REQ-010 (now: application-owned termination and the inside of a team or org run unchanged), REQ-011; BEH-002, BEH-004; AC-006 (restored for team and org runs), AC-012; SCN-002; contract TC-4; follow-ups FU-003 … FU-005 withdrawn
+- Why: the user does not want the in-between state with two models. The design's scope, size, ordering consequence, removal plan, change sequence and risks now cover the three root kinds and remove all hosting machinery.
+- Intended behavior changed: `Yes` (approved by the user's decision): Stop of a team run or org run stops its own members only.
+- Approval impact: the user decided TC-4; his approval of the package follows his review
+- Applied handoff-rule outcome: none, at the user's request
 - Next action: the user's review

@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-016`. A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
-- Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-7, TC-8, TC-9, TC-10, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
+- Current solution revision ID: `SR-017` (scope widened by the user to team and org runs, TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: **`Pending`**. The user (2026-11-11): "after you finish your work, then tell me stop there and then I will review myself as well". Not sent to architecture review.
 - Design status: `Draft — for the user's review`.
@@ -40,22 +40,26 @@ The target shape already exists: a run a peer delegates to this node is an ordin
 | Independent delegated runs (peer-started) | An ordinary standalone run or top-level team run with `delegatedFrom`; idle shutdown (`StandaloneHostIdleShutdown`, `RemoteTeamIdleShutdown`); restored by an inbound message (`CollaborationRootResolver.resolveOrRestore`) | `remote-delegation-receiver.ts`, `remote-team-run-starter.ts`, `standalone-host-idle-shutdown.ts`, `remote-team-idle-shutdown.ts`, `compositions/collaboration-root-resolver.ts` |
 | A remote child in the manager's view | Its status from a summary; its live output becomes the view's `agent_presentation` while someone watches; its conversation is read from its own run | `services/agent-streaming/agent-collaboration-view-projector.ts:68-73` (N-402); CM-11 |
 
-## Scope (TC-4: in steps)
+## Scope
 
-| Part | This ticket | Later Tasks |
-| --- | --- | --- |
-| Data model (contract rev. 5), for all stored data, one migration | Yes | — |
-| Delegations made **from a standalone agent run**: the delegated agent or team run is its own run | Yes | — |
-| Messages centered on the Task, for every run that is its own root | Yes | — |
-| Delegations made from a team run or an org run | Still hosted by that run, as today | Next Tasks |
-| Removing the hosting code | What standalone delegation no longer uses | The last step |
+The user (2026-11-11): "I think we can do the agent team and agent organization in this task as well. We don't have to separate because it's kind of not so easy to have like intermediary states."
 
-Consequence: a team run delegated from the manager becomes a top-level team run. Delegations its members make are hosted by that team run, exactly as for a team run the user starts, until the team step (REQ-010).
+| Part | This ticket |
+| --- | --- |
+| Data model (contract rev. 5), for all stored data, one migration | Yes |
+| Delegations made from a **standalone agent run**, a **team run** (a team the user started, a delegated team run, a peer-started team run) and an **org run** (a direct agent, a member of a mounted team): the delegated agent or team run is its own run | Yes |
+| Messages centered on the Task, for every run | Yes |
+| Removing the hosting code | Yes, all of it: no run hosts another afterwards |
+| Inside one team run or org run (its members, handoff rules, messages by address) | Unchanged: they are parts of one run |
+| Termination of an application-owned run by its application | Unchanged (DEC-006) |
+
+There is no in-between state: after this ticket the codebase has one model.
 
 ## Task Size And Architectural Risk
 
-- Task size: `Large`. It touches the stored model of every run and Task, one migration, the standalone root, delegation, routing, Task closure, idle shutdown, restore, views, the web, and the documents.
-- Architectural risk: `High`. It changes persistence, ownership boundaries (no hosting), ordering (each run's own gate instead of one queue per top run), and shared contracts (the Task entry, the view and stream DTOs).
+- Task size: `Large`, and larger than the standalone-only scope. It also covers the team and org roots: `RootTeamRun` and `AgentOrgRun` delegation; the team side's task delegation (`agent-team-execution/task-delegation/`, about 1,100 lines with the org adapter); the registries of hosted copies (`task-agent-execution-registry.ts`, `task-team-execution-registry.ts`); the hosted-children part of the termination scopes (`flat-team-execution-manager.ts:275-296`, `agent-org-run.ts:380-384`); the web's team and org views of delegated children.
+- Architectural risk: `High`. It changes persistence, ownership boundaries (no hosting anywhere), ordering (each run's own gate), and shared contracts (the Task entry, the stream and view DTOs of all three kinds of run).
+- What the wider scope removes: the period with two models, and the duplicated hosting machinery of three root kinds.
 - Escalation trigger: a reader of a removed field not in the table "Readers Of Removed Or Renamed Fields"; a message route that works today and the Task rule refuses for a run that has a Task; an ordering guarantee in "Ordering Without A Shared Queue" that the code cannot give.
 
 ## Names, By Owner
@@ -67,7 +71,7 @@ Each new name says what its owner owns.
 | Task-side port methods `runOfAgent(agentRunId)`, `delegationOf(run)`, `assigningRunOf(taskId)`, `openRunsDelegatedFrom(run)` | The Task side (`TaskExecutionResourceService` behind `TaskExecutionResourcePort`) | The answers about the Task records. It loads them at startup and changes them on every delegation, closure and reopen, so it keeps the index. Callers only ask |
 | `TaskRunIndex` (private to `projects/services/`, only if the service file needs the split) | The Task side | The in-memory maps over the entries: by entry agent, by run, by delegating run, by Task. Built from the records at startup (whether or not any run runs), updated with each change. A non-coordinator team member is read once from that team's own file and kept (members never change) |
 | `TaskMessageScope` (`agent-collaboration/communication/`) | Collaboration messaging | The Task rule for a message between two runs (contract §10.2), and the route to the receiver. Named after the existing "Task-linked message scope" (`agent_communication.md`). It asks the Task side's port |
-| `TaskDelegation` (`agent-collaboration/execution/task/`) | Delegation | `delegate_task`'s order for a new run (Task entry, start, work packet, `markStarted`) and for an existing run (follow-up Task). Root-neutral; the standalone root uses it now, team and org roots in their steps |
+| `TaskDelegation` (`agent-collaboration/execution/task/`) | Delegation | `delegate_task`'s order for a new run (Task entry, start, work packet, `markStarted`) and for an existing run (follow-up Task). Root-neutral: the standalone, team and org roots all delegate through it |
 | `DelegatedRunStarter` (`agent-collaboration/execution/delegation/`) | Starting a delegated run | Creating an ordinary agent run or team run for a delegation, with its resolved launch, address and `launchSource`. Extracted from the peer path's two starters, which keep only peer concerns |
 | `DelegatedRunIdleShutdown`, `DelegatedTeamIdleShutdown` | The delegated run's own root | Its idle schedule. Today's `StandaloneHostIdleShutdown` and `RemoteTeamIdleShutdown`, renamed because they now serve every delegated run, not only peer-started ones |
 
@@ -75,7 +79,7 @@ Each new name says what its owner owns.
 
 | ID | Scope | Start → End | Governing owner |
 | --- | --- | --- | --- |
-| DS-1 | Primary | `delegate_task` in a standalone run → a new run working on the Task | `TaskDelegation` |
+| DS-1 | Primary | `delegate_task` by an agent of any run (standalone, team, org) → a new run working on the Task | `TaskDelegation` |
 | DS-2 | Primary | `send_message_to(run ID)` to another run → delivered, receiver woken | `GlobalAgentRunMessageRouter` with `TaskMessageScope` |
 | DS-3 | Primary | `send_message_to(address)` beyond the sender's own run → delivered | The sender's root resolution, then DS-2 |
 | DS-4 | Primary | The user stops a run → that run only | The run's own root |
@@ -88,9 +92,10 @@ Each new name says what its owner owns.
 
 ### DS-1 Delegate to a new run
 
-`agent: delegate_task(address) → sender's StandaloneAgentRunRoot (its gate) → TaskDelegation.toNewRun → Task side: linkNewTaskExecution (entry: delegatedFrom = {this run, the delegator}, start "starting") → DelegatedRunStarter: prepare an ordinary standalone run (agent) or create a top-level team run (team) → the new run's root registered in ActiveCollaborationRootDirectory → the work packet delivered to its entry agent (DS-2's delivery step, which starts it) → Task side: markStarted → tool result, same text as today`
+`agent: delegate_task(address) → the sender's root, whatever its kind: StandaloneAgentRunRoot, RootTeamRun or AgentOrgRun (its gate) → TaskDelegation.toNewRun → Task side: linkNewTaskExecution (entry: delegatedFrom = {this run, the delegator}, start "starting") → DelegatedRunStarter: prepare an ordinary standalone run (agent) or create a top-level team run (team) → the new run's root registered in ActiveCollaborationRootDirectory → the work packet delivered to its entry agent (DS-2's delivery step, which starts it) → Task side: markStarted → tool result, same text as today`
 
-- Refusals keep today's texts and order: CM-1, the Project folder, the target, the launch.
+- Refusals keep today's texts and order: CM-1 (never inside one's own team), the Project folder, the target, the launch.
+- `delegatedFrom.delegatingRun` is the sender's own run: for a member of a team run, that team run; for an agent of an org run, that org run (contract §2.1, cases D1 … D6).
 - A failure after the entry was written: `markFailed`, and the new run is terminated before the answer. That is today's order.
 - The work packet must name the delegator as today, because it is the record of the delegation that the run carries in its conversation (contract §6, "Delete a Task").
 
@@ -112,7 +117,7 @@ Each new name says what its owner owns.
 
 ### DS-4 Stop
 
-`user: Stop → AgentRunService.terminate(run) → that run's root.stop() in its gate → its own agent, or its own team members, only`
+`user: Stop → the run's service (agent run, team run or org run) → that run's root.stop() in its gate → its own agent, its own team members, or its own org units, only`
 
 Nothing else stops (TC-1). A delegated run's later report wakes its stopped delegator (DS-2).
 
@@ -180,7 +185,7 @@ Today one queue per top run orders every transition of every copy. Two owners ta
 | User Stop vs. a delegation's work packet | The Stop marks the copy stopping; queued wakes are refused | The Stop runs in the run's gate. The packet delivery that follows is refused while the run stops, then wakes it (DEC-001: a message wakes a stopped run) |
 | Activation commit vs. closure of the same new run | One queue | `TaskDelegation` keeps today's order (entry, start, packet, `markStarted`). A closure during the start finds the entry `starting` and stops the run once its root exists |
 
-Consequence for the code: `RootTaskExecutionLifecycle`'s per-copy queue, leases and idle schedule are not used for a standalone run's delegations. They stay for team and org runs until their steps.
+Consequence for the code: `RootTaskExecutionLifecycle`'s per-copy queue, leases and idle schedule are removed. They served hosted copies only, and nothing is hosted.
 
 ## Readers Of Removed Or Renamed Fields (was V-10, AR-003)
 
@@ -221,15 +226,20 @@ The implementation records the decision per file in its handoff. A reader not in
 
 | Removed | Why | Replaced by |
 | --- | --- | --- |
-| The hosting branch of `StandaloneRootTaskExecutionAdapter`; the standalone root's `RootTaskExecutionLifecycle` for copies; its `rootAgents` / `teams` registries for copies; `stopDelegatedExecution` and the delegated launch editing inside the standalone root | Nothing is hosted by a standalone run | `TaskDelegation`, each run's own root |
+| `RootTaskExecutionLifecycle` and its parts for hosted copies: the command queue, idle schedule, live holds, resource scope, dispatch, adapter interface (`agent-collaboration/execution/task/`) | Nothing is hosted | `TaskDelegation`; each run's own root, gate and idle shutdown |
+| The three task execution adapters: `StandaloneRootTaskExecutionAdapter` (hosting branch), `TeamTaskExecutionAdapter` with `team-task-execution-service.ts`, `AgentOrgTaskExecutionAdapter` | Same | `TaskDelegation` through each root |
+| The registries of hosted copies: `task-agent-execution-registry.ts`, `task-team-execution-registry.ts`; the copy parts of `RootAgentExecutionRegistry` and `RootTeamExecutionDirectory` | Same | `ActiveCollaborationRootDirectory` (each run a root) |
+| The hosted children in the termination scopes (`flat-team-execution-manager.ts:275-296`, `agent-org-run.ts:380-384`, `standalone-agent-run-root.ts:462-466`) | Stop ends a run's own parts only | — |
+| `stopDelegatedExecution` and the delegated launch editing inside the three roots | A delegated run is stopped and configured as itself | The ordinary run services |
 | `standalone-root-tree-schema.ts`, `standalone-root-tree-mutator.ts`, `standalone-root-tree-path.ts`, the tree part of `standalone-root-package-store.ts`, `emptyStandaloneRootTree` | The file is removed (TC-8) | `run_metadata.address`; Task entries |
-| `taskAgent`, `TaskAgentCoordinatingRun`, `coordinatingRun` (outside peer `delegatedFrom`) | Contract rev. 5 | Task entry `delegatedFrom`; the run's own fields |
+| The team and org trees' `taskExecutions` and `remoteTaskExecutions` (types, schemas, mutators, the org per-team lists) | No stored list | Task entries |
+| `taskAgent`, `TaskAgentCoordinatingRun`, `coordinatingRun` (outside a peer-started run's `delegatedFrom`) | Contract rev. 5 | Task entry `delegatedFrom`; the run's own fields |
 | `hostRoot`, `assignedBy` | Contract rev. 5 | `delegatedFrom` |
-| 469's `CoordinatingRunPresence`; the "task agent is never a root candidate" admission branch | A delegated run is an ordinary run | — |
+| 469's `CoordinatingRunPresence`; "a task agent is never a root candidate" in admission | A delegated run is an ordinary run | — |
 | `userLaunchSelection` and its readers | TC-5 | The ordinary stopped-run save |
-| `remoteTaskExecutions` as a stored list | Contract rev. 5 | Task entries with `nodeId` |
+| The "remote" in the names of the idle shutdowns and the run starters | They serve every delegated run | `DelegatedRunIdleShutdown`, `DelegatedTeamIdleShutdown`, `DelegatedRunStarter` |
 
-Kept for team and org runs until their Tasks (TC-4): `RootTaskExecutionLifecycle`, the team and org adapters, their hosting.
+Nothing of the hosting machinery is kept.
 
 ## Earlier Review Findings (ARCH-REV-001 on SR-010) and Their Answer Now
 
@@ -250,15 +260,16 @@ Kept for team and org runs until their Tasks (TC-4): `RootTaskExecutionLifecycle
 
 1. Data model and the Task side: `delegatedFrom` on entries, `subWork`, peer fields, the port questions and index. Migration with fixtures (DS-10).
 2. `DelegatedRunStarter` (extracted from the peer path) and the two idle shutdowns (renamed, generalized).
-3. `TaskDelegation`, and the standalone root's delegation through it. Remove the hosting branch.
+3. `TaskDelegation`, and every root (standalone, team, org) delegating through it.
 4. `TaskMessageScope`, the router's second step, and address step 3.
 5. Task closure, reopen and deletion by the run's own identity.
-6. Views: children from the Task entries; local children shown like remote children; the web.
-7. Restart resume.
-8. Remove the standalone tree file code, `taskAgent`, `hostRoot`, `assignedBy`, `userLaunchSelection` readers.
-9. Documents: `collaboration_model.md` (words, CM-6 … CM-8, §3, §5), `GLOSSARY.md`, the module docs.
+6. Stop of each root kind: its own parts only.
+7. Views of all three kinds: children from the Task entries; local children shown like remote children; the web.
+8. Restart resume.
+9. Removal of the hosting machinery and of the removed fields' code (table above).
+10. Documents: `collaboration_model.md` (words, CM-6 … CM-8, §3, §5), `GLOSSARY.md`, the module docs (standalone root, team execution, orgs, communication, projects, memory).
 
-Steps 1 … 8 ship together: the stored model and the runtime change at once.
+Steps 1 … 9 ship together: the stored model and the runtime change at once. Inside the ticket the implementation can land them as separate commits in this order, each with its tests.
 
 ## Risks
 
@@ -268,7 +279,7 @@ Steps 1 … 8 ship together: the stored model and the runtime change at once.
 | A run is unreachable while its Task record is unreadable | Reported (469 DEC-010) |
 | An ordering guarantee is lost without the shared queue | "Ordering Without A Shared Queue": each race has a named owner and a re-check at the gate head; a test per row |
 | The migration on real data | Fixtures per shape and partial state; never run on user data |
-| Two models during TC-4's steps | Team and org hosting is untouched; the next steps follow soon |
+| The size of one change over three root kinds | One shared delegation owner (`TaskDelegation`) and one Stop rule; the change sequence lands in commits with tests per step; the API/E2E round covers each kind |
 
 ## Guidance For Implementation
 

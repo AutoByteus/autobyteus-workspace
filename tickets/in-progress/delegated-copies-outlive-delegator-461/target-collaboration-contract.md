@@ -293,7 +293,7 @@ Message logs, memory and folders are not touched: each run already has its own (
 | TC-1 | Does Stop of a delegated run still stop the runs it delegated to? | No | The user | Decided, 2026-11-10 |
 | TC-2 | Archive or delete of a run whose delegated runs are working | Refused with the reason; its delegated runs are never deleted with it | Solution Designer | Decided |
 | TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own | The user | Decided, 2026-11-10 |
-| TC-4 | Delivery | In steps: delegations from a standalone run first; then team runs; then org runs; then removal of the remaining hosting code | The user | Decided, 2026-11-10 |
+| TC-4 | Delivery | All kinds of delegating run in this ticket: standalone agent runs, team runs, org runs; no hosting remains afterwards | The user | **Revised by the user, 2026-11-11**: "I think we can do the agent team and agent organization in this task as well. We don't have to separate because it's kind of not so easy to have like intermediary states." (earlier, 2026-11-10: in steps, standalone first) |
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's, subject to V-11 | Solution Designer | Decided, to verify |
 | TC-6 | The role name for sub-work | `subWork` | The user | Decided, 2026-11-10 |
 | **TC-7** | Where the delegation is stored | **Once, in the Task record (`delegatedFrom`), one hop; no back-link on the delegated run.** Revision 2 stored it on both ends. Since 469 the Task record is the index the views are built from, and a back-link would be a second copy to keep equal | The user | **Decided by the user, 2026-11-11**, with the Task-centered approach ("let's go with this approach") |
