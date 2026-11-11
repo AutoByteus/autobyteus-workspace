@@ -5,6 +5,7 @@ Prints counts per case ID; no message content and no user text. Usage: python3 -
         (delegatedFrom one hop, recipientAddress) and do they agree with the run's own file.
   A-*, B-*, C-*  messages by address: every send_message_to(recipient_address) in the agents' traces, replayed under the
         target address rules (own team, then the Task assigner's standing agents, then the own run's standing agents).
+  RUN-* runs the user starts: their shapes.
   M-*   message storage: within one run once in its log; between two runs in both logs, one message ID.
   E-*   sender address the receiver is given (reachingAddressOf) for every stored message.
 """
@@ -51,6 +52,29 @@ for p in glob.glob(os.path.join(mem, "agent_orgs", "*", "agent_org_run_execution
             for i in sub.values(): org_team[i] = (x["address"], sub, co)
     standing[k] = st
 delegated = {k for k, v in kind.items() if v.startswith("delegated")}
+# ---- runs the user starts (RUN-1 ... RUN-4)
+C["RUN-1 agent runs the user started (run_metadata.json without taskAgent)"] = sum(1 for k, v in kind.items() if v == "agent")
+for p in glob.glob(os.path.join(mem, "agent_teams", "*", "team_run_execution_tree.json")):
+    t = load(p)
+    if not t or t.get("taskAgent"): continue
+    rt = t["rootTeam"]; ms = {m.get("address") for m in rt.get("members", [])}
+    C["RUN-2 team runs the user started"] += 1
+    C["RUN-2 ... rooted at / with members as direct children of /"] += rt.get("address") == "/" and all(a and a.count("/") == 1 for a in ms)
+    C["RUN-2 ... with handoffs"] += bool(t.get("handoffs"))
+    C["RUN-2 ... every handoff from and to a member"] += all(h.get("from") in ms and h.get("to") in ms for h in t.get("handoffs", []))
+    C["RUN-2 ... with a nested sub-team"] += any("members" in m for m in rt.get("members", []))
+for p in glob.glob(os.path.join(mem, "agent_orgs", "*", "agent_org_run_execution_tree.json")):
+    t = load(p)
+    if not t: continue
+    ro = t["rootOrg"]; addrs = set()
+    for m in ro.get("members", []):
+        addrs.add(m["address"]); addrs.update(y["address"] for y in m.get("members", []))
+        C["RUN-3 ... mounted teams" if "members" in m else "RUN-3 ... direct agents"] += 1
+    C["RUN-3 org runs"] += 1; C["RUN-3 ... rooted at /"] += ro.get("address") == "/"
+    for h in t.get("handoffs", []): C["RUN-3 ... handoffs"] += 1; C["RUN-3 ... handoffs with from and to in the org"] += h["from"] in addrs and h["to"] in addrs
+for pat, name in ((os.path.join(mem, "agent_teams", "*", "task_delegation_records.json"), "team"), (os.path.join(mem, "agent_orgs", "*", "agent_org_task_delegation_records.json"), "org")):
+    fs = glob.glob(pat); C[f"RUN-4 retired {name} delegation record files"] = len(fs)
+    C["RUN-4 ... records in them"] += sum(len((load(f) or {}).get("records", [])) for f in fs)
 # ---- Task entries
 tasks_of = collections.defaultdict(set); assigners = collections.defaultdict(set); entries = []
 for p in glob.glob(os.path.join(root, "projects", "*", "tasks", "*", "agent_run_resources.json")) + glob.glob(os.path.join(root, "ad-hoc-tasks", "*", "agent_run_resources.json")):

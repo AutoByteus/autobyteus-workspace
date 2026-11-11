@@ -601,5 +601,26 @@
 - Intended behavior changed: `No` beyond SR-025 (TC-13 is a storage location; the user sees nothing)
 - Approval impact: the user's direction; TC-13 is the Solution Designer's decision within it, and the user is informed
 - Classification: `Large`, `High`, unchanged
+- Next action: superseded by SR-027
+
+### SR-027 — The contract starts from the runs themselves
+
+- Phase and classification: Requirements (supplement) and Design; no intended behavior changed
+- Triggering: the user (2026-11-11). The file is a collaboration contract, not a delegation contract. It starts with the runs the user starts (a standalone agent such as the Project Task Manager, a team such as the Software Engineering Team run on its own, an org), and with how agents talk inside one run ("if I run software engineering alone … what is the address to communicate"). Each case keeps its JSON on disk and its check.
+- Done:
+  - contract §5.1, the runs you start:
+    - RUN-1, a standalone agent: `run_metadata.json`, the run list row, its folder, its address space, and its one refusal (a message to itself);
+    - RUN-2, a team: its team file with handoffs, the members' folders, its log, the run list row;
+    - RUN-3, an org: its org file with direct agents, mounted teams and handoffs, the folders, its log, the run list row;
+    - RUN-4, the retired `task_delegation_records.json` files;
+  - contract §5.2, inside one run: IN-1 … IN-8, each with the exact call, `get_handoff_rules` output and log line, and a table of every address case inside one run (A-1 … A-6);
+  - the between-runs sections are renumbered §5.3 … §5.7;
+  - the case script checks RUN-1 … RUN-4.
+- Found: `task_delegation_records.json` (545 team folders) and `agent_org_task_delegation_records.json` (18 org folders) hold 4 records of the old submission model. Only released migrations read them, so they stay (RUN-4).
+- Measured (read-only):
+  - 485 agent runs the user started;
+  - 601 of 601 teams rooted at `/`, with every handoff inside the team (133 have handoffs) and 0 nested sub-teams;
+  - 24 orgs rooted at `/`, with 26 direct agents, 74 mounted teams and 625 of 625 handoffs inside the org.
+- Classification: `Large`, `High`, unchanged
 - Next action: the user reads the file; then architecture review, round 9 (TC-12, TC-13, the contract's §5)
 

@@ -72,11 +72,11 @@
    225  DL-7 another Task for a run that already exists: one hop equals today's coordinatingRun (else nested)
    225  DL-7 another Task for a run that already exists: recipientAddress present or fillable from taskAgent.address
    225  DL-7 another Task for a run that already exists: role assigned -> assigned
- 13206  E-1 same run: address given
+ 13207  E-1 same run: address given
    690  E-2 from the receiver's Task assigner: address given
    747  E-3 to the sender's Task assigner: run ID only
    167  E-4 other runs (one Task, or legacy): run ID only
-  2465  M-1 within one run (delegated team): in its own log True; extra copies elsewhere False
+  2466  M-1 within one run (delegated team): in its own log True; extra copies elsewhere False
   1011  M-1 within one run (delegated team): in its own log True; extra copies elsewhere True
   1015  M-1 within one run (org): in its own log True; extra copies elsewhere False
   8715  M-1 within one run (team): in its own log True; extra copies elsewhere False
@@ -88,3 +88,18 @@
    225  M-4 task_assignment (another Task for an existing run): in both logs True
      8  M-5 agent run logs at agents/<id>/collaboration/communication_messages_* (user-started)
     42  M-5 agent run logs at agents/<id>/communication_messages_* (delegated runs)
+   485  RUN-1 agent runs the user started (run_metadata.json without taskAgent)
+   601  RUN-2 ... every handoff from and to a member
+   601  RUN-2 ... rooted at / with members as direct children of /
+     0  RUN-2 ... with a nested sub-team
+   133  RUN-2 ... with handoffs
+   601  RUN-2 team runs the user started
+    26  RUN-3 ... direct agents
+   625  RUN-3 ... handoffs
+   625  RUN-3 ... handoffs with from and to in the org
+    74  RUN-3 ... mounted teams
+    24  RUN-3 ... rooted at /
+    24  RUN-3 org runs
+     4  RUN-4 ... records in them
+    18  RUN-4 retired org delegation record files
+   545  RUN-4 retired team delegation record files
