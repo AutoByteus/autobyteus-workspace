@@ -856,3 +856,15 @@
 - Done: the design's DS-8 (server, web, tests). FU-009 notes where it is designed. The contract is unchanged (views are not in the model), and `walkthrough.py --check` passes.
 - The four Local Fixes of CRR-003 (CR-461-001, -003, -004, -005) are the Implementation Engineer's. Each restores what the design already states: DS-5's closure re-check in the gate, race row 5, the readers table's unchanged token totals, and `DESIGN.md` rule 11 and Principle 15.
 
+### SR-041 — Hosting-only fields removed in this ticket (answers ARCH-REV-015 AR-021)
+
+- Triggering: ARCH-REV-015 failed SR-040 on AR-021 (Medium, Design Impact). SR-040 kept a constant `closedTaskExecutionsDigest` and a web rule comparing it, in files SR-040 changes. FU-008 deferred other fields this ticket makes dead, on the ground that "the web stays unchanged", although the web's stores and contexts are being changed. The ticket-scope rule (Principle 7) makes dead code in touched files this ticket's work, and server and web ship together (rule 9).
+- Checked (read-only, `git diff --name-only origin/personal...HEAD`, 613 files), item by item: the producer of every FU-008 item was removed or touched by this ticket.
+  - `closedTaskExecutionsDigest`: its resolver and its provider are touched.
+  - `closed_task_executions` / `closedTaskExecutions`: all three view projectors, both history services and a web reader are touched.
+  - The two events: their producers, the hosting lifecycle and the roots' launch editing, are removed; the server emits neither.
+  - The Memory explorer's flags: `team-memory-explorer-service.ts` is touched. The kinds share their schema.
+- Decision: all of them are removed here, with their contracts and readers (the design's removal plan lists the files). FU-008 is withdrawn. The poll answers no digest, and the web re-reads only on a difference in active state or local children, once per distinct answer.
+- The residual note is taken too: the `DelegationTree` keeps each run's agents by run ID **and address**, read once (contract §4; `model.py` `agents_with_addresses`), so the view and the poll read no file per request. The walkthrough is regenerated, the §4 example is a model state again, `walkthrough.py --check` passes, and the examples have 0 findings.
+- Next action: architecture review (AR-021); then the Implementation Engineer, with CRR-003's Local Fixes, and the code review's targeted re-review
+

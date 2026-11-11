@@ -95,6 +95,17 @@ class World:
             if "members" in m: out[m["address"]] = next(y["agentRunId"] for y in m["members"] if y["address"] == m["coordinatorAddress"])
         return out
     def agents_of(self, run): return sorted(set(self.standing(run).values()))
+    def agents_with_addresses(self, run):
+        """The tree's per-run agents: each agent by run ID with its own address in the run's space, read once from the run's own file."""
+        node, kind, run_id = run; f = self.file_of(run)
+        if kind == "agent": out = [(run_id, f.get("address") or addr_of_def(f["agentDefinitionId"]))]
+        elif kind == "agent_team": out = [(m["agentRunId"], m["address"]) for m in f["rootTeam"]["members"]]
+        else:
+            out = []
+            for m in f["rootOrg"]["members"]:
+                if "agentRunId" in m: out.append((m["agentRunId"], m["address"]))
+                out += [(y["agentRunId"], y["address"]) for y in m.get("members", [])]
+        return [{"agentRunId": i, "address": a} for i, a in sorted(out)]
     def entry_agent(self, run):
         node, kind, run_id = run; f = self.file_of(run)
         if kind == "agent": return run_id
@@ -133,7 +144,7 @@ class World:
         def ensure(k):
             if k not in nodes:
                 run = (node, k[0], k[1]); local = self.run_file(*run) in self.disk
-                nodes[k] = {"run": {"kind": k[0], "runId": k[1]}, "parent": None, "tasks": [], "agents": self.agents_of(run) if local else []}
+                nodes[k] = {"run": {"kind": k[0], "runId": k[1]}, "parent": None, "tasks": [], "agents": self.agents_with_addresses(run) if local else []}
             return nodes[k]
         for t, e in self.entries(node):
             dr = e["delegatedFrom"]["delegatingRun"]; ensure((dr["kind"], dr["runId"]))
@@ -142,7 +153,7 @@ class World:
             asg = sorted(self.assigners(node, t))
             n["tasks"].append({"taskId": t, "role": e["role"], "open": e["closedAt"] is None,
                                "assigner": {"kind": asg[0][0], "runId": asg[0][1]} if asg else None})
-            if "nodeId" in e: n["node"] = e["nodeId"]; n["agents"] = [m["agentRunId"] for m in e["members"]]
+            if "nodeId" in e: n["node"] = e["nodeId"]; n["agents"] = [{"agentRunId": m["agentRunId"], "address": m["address"]} for m in e["members"]]
         order = ["run", "parent", "delegatorAgentRunId", "node", "tasks", "agents"]
         return [{k: n[k] for k in order if k in n} for n in nodes.values()]
 

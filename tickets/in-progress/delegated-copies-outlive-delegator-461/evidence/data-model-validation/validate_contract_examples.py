@@ -77,7 +77,8 @@ for n in nodes:
         asg = [e["delegatedFrom"]["delegatingRun"] for e in by_task.get(t["taskId"], []) if e["role"] == "assigned"]
         if asg and t["assigner"] not in asg: F.append(f"node {k}: assigner of {t['taskId']} {t['assigner']} vs {asg}")
     ag = agents_of(("agent_team" if n["run"]["kind"] == "agent_team" else n["run"]["kind"], n["run"]["runId"]))
-    if ag is not None and "agents" in n and set(n["agents"]) != ag: F.append(f"node {k}: agents {n['agents']} vs file {sorted(ag)}")
+    nag = {a["agentRunId"] if isinstance(a, dict) else a for a in n.get("agents", [])}
+    if ag is not None and "agents" in n and nag != ag: F.append(f"node {k}: agents {sorted(nag)} vs file {sorted(ag)}")
 owner = {}
 for k in runs:
     for a in agents_of(k) or (): owner[a] = k

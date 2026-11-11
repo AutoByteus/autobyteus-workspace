@@ -353,7 +353,7 @@ Collaboration owns it (TC-11). It holds the relationships between runs for commu
 | Edge | Child → parent, one hop | `delegatedFrom.delegatingRun` |
 | A node's Tasks | Each Task it works on, open or closed, with its role | Its entries |
 | A Task's assigner | The `delegatingRun` of the Task's `assigned` entry | That entry |
-| A node's agents | Its standing agents; a peer team's members from its entry | The run's own file, read once; an org is re-read on a miss |
+| A node's agents | Its standing agents, each by run ID and its address in the run's own space; a peer team's members from its entry | The run's own file, read once; an org is re-read on a miss. The view and the history poll read addresses here, never a file per request (SR-041) |
 | A node's node | `nodeId` for a peer's run | Its entry |
 
 - **Built** at startup from the Task entries.
@@ -382,7 +382,10 @@ A node, as held in memory:
       "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
     }
   ],
-  "agents": ["product_designer_1a2b", "prototyper_4e11"]
+  "agents": [
+    {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+    {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+  ]
 }
 ```
 

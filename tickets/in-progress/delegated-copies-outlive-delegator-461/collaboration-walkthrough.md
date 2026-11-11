@@ -325,7 +325,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -340,10 +340,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   }
 ]
@@ -603,7 +603,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -618,10 +618,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -636,7 +636,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   }
 ]
 ```
@@ -753,7 +756,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -768,10 +771,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -786,7 +789,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -800,7 +806,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   }
 ]
 ```
@@ -1135,7 +1141,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -1150,10 +1156,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -1168,7 +1174,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -1182,7 +1191,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   }
 ]
 ```
@@ -1321,7 +1330,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -1336,10 +1345,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -1354,7 +1363,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -1368,7 +1380,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   }
 ]
 ```
@@ -1449,7 +1461,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -1470,10 +1482,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -1488,7 +1500,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -1502,7 +1517,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   }
 ]
 ```
@@ -1607,7 +1622,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -1628,10 +1643,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -1646,7 +1661,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -1660,7 +1678,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   },
   {
     "run": {"kind": "agent", "runId": "upscaler_e1a1"},
@@ -1674,7 +1692,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   }
 ]
 ```
@@ -1773,7 +1791,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -1794,10 +1812,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -1812,7 +1830,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -1826,7 +1847,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   },
   {
     "run": {"kind": "agent", "runId": "upscaler_e1a1"},
@@ -1840,7 +1861,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   }
 ]
 ```
@@ -1969,7 +1990,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -1990,10 +2011,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -2008,7 +2029,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+    "agents": [
+      {"agentRunId": "product_designer_1a2b", "address": "/product_designer"},
+      {"agentRunId": "prototyper_4e11", "address": "/prototyper"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_33f0"},
@@ -2022,7 +2046,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_33f0"]
+    "agents": [{"agentRunId": "image_maker_33f0", "address": "/image_maker"}]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_88e8"},
@@ -2036,7 +2060,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["image_maker_88e8"]
+    "agents": [{"agentRunId": "image_maker_88e8", "address": "/image_maker"}]
   },
   {
     "run": {"kind": "agent", "runId": "upscaler_e1a1"},
@@ -2050,7 +2074,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   }
 ]
 ```
@@ -2110,7 +2134,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -2125,10 +2149,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -2143,7 +2167,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   }
 ]
 ```
@@ -2256,7 +2280,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -2271,10 +2295,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -2289,7 +2313,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "research_team_77aa"},
@@ -2304,7 +2328,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["lead_0c11", "analyst_5d20"]
+    "agents": [{"agentRunId": "lead_0c11", "address": "/lead"}, {"agentRunId": "analyst_5d20", "address": "/analyst"}]
   }
 ]
 ```
@@ -2425,7 +2449,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -2440,10 +2464,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -2458,7 +2482,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "research_team_77aa"},
@@ -2473,7 +2497,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["lead_0c11", "analyst_5d20"]
+    "agents": [{"agentRunId": "lead_0c11", "address": "/lead"}, {"agentRunId": "analyst_5d20", "address": "/analyst"}]
   }
 ]
 ```
@@ -2564,7 +2588,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
     "parent": null,
     "tasks": [],
-    "agents": ["project_task_manager_7c8d"]
+    "agents": [{"agentRunId": "project_task_manager_7c8d", "address": "/project_task_manager"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
@@ -2579,10 +2603,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       }
     ],
     "agents": [
-      "architecture_reviewer_m_5c20",
-      "code_reviewer_m_3b10",
-      "implementation_engineer_m_7d31",
-      "solution_designer_65a9"
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
     ]
   },
   {
@@ -2597,7 +2621,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["upscaler_e1a1"]
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
   },
   {
     "run": {"kind": "agent_team", "runId": "research_team_77aa"},
@@ -2612,7 +2636,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["lead_0c11", "analyst_5d20"]
+    "agents": [{"agentRunId": "lead_0c11", "address": "/lead"}, {"agentRunId": "analyst_5d20", "address": "/analyst"}]
   },
   {
     "run": {"kind": "agent", "runId": "research_agent_9b10"},
@@ -2626,7 +2650,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
-    "agents": ["research_agent_9b10"]
+    "agents": [{"agentRunId": "research_agent_9b10", "address": "/research_agent"}]
   }
 ]
 ```
@@ -2988,7 +3012,12 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
     "parent": null,
     "tasks": [],
-    "agents": ["architecture_reviewer_cd34", "code_reviewer_2e4f", "implementation_engineer_864a", "solution_designer_7a33"]
+    "agents": [
+      {"agentRunId": "architecture_reviewer_cd34", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_2e4f", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_864a", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_7a33", "address": "/solution_designer"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_44a1"},
@@ -3002,7 +3031,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["image_maker_44a1"]
+    "agents": [{"agentRunId": "image_maker_44a1", "address": "/image_maker"}]
   }
 ]
 ```
@@ -3162,7 +3191,12 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
     "parent": null,
     "tasks": [],
-    "agents": ["architecture_reviewer_cd34", "code_reviewer_2e4f", "implementation_engineer_864a", "solution_designer_7a33"]
+    "agents": [
+      {"agentRunId": "architecture_reviewer_cd34", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_2e4f", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_864a", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_7a33", "address": "/solution_designer"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_44a1"},
@@ -3176,7 +3210,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["image_maker_44a1"]
+    "agents": [{"agentRunId": "image_maker_44a1", "address": "/image_maker"}]
   },
   {
     "run": {"kind": "agent", "runId": "upscaler_55b2"},
@@ -3190,7 +3224,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["upscaler_55b2"]
+    "agents": [{"agentRunId": "upscaler_55b2", "address": "/upscaler"}]
   }
 ]
 ```
@@ -3328,7 +3362,12 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
     "parent": null,
     "tasks": [],
-    "agents": ["architecture_reviewer_cd34", "code_reviewer_2e4f", "implementation_engineer_864a", "solution_designer_7a33"]
+    "agents": [
+      {"agentRunId": "architecture_reviewer_cd34", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_2e4f", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_864a", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_7a33", "address": "/solution_designer"}
+    ]
   },
   {
     "run": {"kind": "agent", "runId": "image_maker_44a1"},
@@ -3342,7 +3381,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["image_maker_44a1"]
+    "agents": [{"agentRunId": "image_maker_44a1", "address": "/image_maker"}]
   },
   {
     "run": {"kind": "agent", "runId": "upscaler_55b2"},
@@ -3356,7 +3395,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["upscaler_55b2"]
+    "agents": [{"agentRunId": "upscaler_55b2", "address": "/upscaler"}]
   },
   {
     "run": {"kind": "agent", "runId": "research_agent_8f80"},
@@ -3370,7 +3409,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
       }
     ],
-    "agents": ["research_agent_8f80"]
+    "agents": [{"agentRunId": "research_agent_8f80", "address": "/research_agent"}]
   }
 ]
 ```
@@ -3736,7 +3775,13 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent_org", "runId": "company_org_9d00"},
     "parent": null,
     "tasks": [],
-    "agents": ["Teacher_5c6d", "ceo_agent_1f2e", "cto_2a3b", "dev_lead_4c3d", "qa_8e9f"]
+    "agents": [
+      {"agentRunId": "Teacher_5c6d", "address": "/Teacher"},
+      {"agentRunId": "ceo_agent_1f2e", "address": "/ceo_agent"},
+      {"agentRunId": "cto_2a3b", "address": "/cto"},
+      {"agentRunId": "dev_lead_4c3d", "address": "/dev_team/dev_lead"},
+      {"agentRunId": "qa_8e9f", "address": "/dev_team/qa"}
+    ]
   },
   {
     "run": {"kind": "agent_team", "runId": "study_group_7a7a"},
@@ -3750,7 +3795,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_org", "runId": "company_org_9d00"}
       }
     ],
-    "agents": ["student_31aa", "tutor_31bb"]
+    "agents": [{"agentRunId": "student_31aa", "address": "/student"}, {"agentRunId": "tutor_31bb", "address": "/tutor"}]
   }
 ]
 ```
@@ -3931,7 +3976,13 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "run": {"kind": "agent_org", "runId": "company_org_9d00"},
     "parent": null,
     "tasks": [],
-    "agents": ["Teacher_5c6d", "ceo_agent_1f2e", "cto_2a3b", "dev_lead_4c3d", "qa_8e9f"]
+    "agents": [
+      {"agentRunId": "Teacher_5c6d", "address": "/Teacher"},
+      {"agentRunId": "ceo_agent_1f2e", "address": "/ceo_agent"},
+      {"agentRunId": "cto_2a3b", "address": "/cto"},
+      {"agentRunId": "dev_lead_4c3d", "address": "/dev_team/dev_lead"},
+      {"agentRunId": "qa_8e9f", "address": "/dev_team/qa"}
+    ]
   },
   {
     "run": {"kind": "agent_team", "runId": "study_group_7a7a"},
@@ -3945,7 +3996,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_org", "runId": "company_org_9d00"}
       }
     ],
-    "agents": ["student_31aa", "tutor_31bb"]
+    "agents": [{"agentRunId": "student_31aa", "address": "/student"}, {"agentRunId": "tutor_31bb", "address": "/tutor"}]
   },
   {
     "run": {"kind": "agent", "runId": "release_agent_66c3"},
@@ -3959,7 +4010,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_org", "runId": "company_org_9d00"}
       }
     ],
-    "agents": ["release_agent_66c3"]
+    "agents": [{"agentRunId": "release_agent_66c3", "address": "/release_agent"}]
   }
 ]
 ```
