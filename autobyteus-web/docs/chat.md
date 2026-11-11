@@ -500,7 +500,7 @@ target mode.
   delegated (task) row appears; it disappears once the agent marks that
   delegation's Task DONE (or CANCELLED) with `update_task` (for example when the user
   asks it to), live and after reopen. It returns (live, via
-  `task_executions_reopened`) when the agent sets that Task back to TODO or
+  `child_runs_changed`) when the agent sets that Task back to TODO or
   IN_PROGRESS and then messages the copy's run ID, which reactivates it. Notes saved by earlier releases still
   parse; `UserMessage` strips it and shows each `@Name` as an inline
   chip, and run summaries drop it (`utils/collaborators/collaboratorMentionText.ts`).
@@ -528,8 +528,8 @@ target mode.
   task DTO carries `source`, read by `services/collaborators/agentSourceSelectors.ts`. Runs that
   earlier releases recorded as collaborators were converted at startup into the same kind of
   row, so the web has no separate collaborator rows, `collaborator_added` event or collaborator
-  list. A new copy arrives as `task_execution_started` (Team: `TASK_EXECUTION_STARTED`), which
-  asks for a fresh view.
+  list. A new child arrives as `child_runs_changed` (Team: `CHILD_RUNS_CHANGED`, applied in
+  place), which asks the Agent run's view for a fresh read.
 - **Delegated-run Artifacts.**
   - A delegated run's recorded Agent Artifacts load when that run is opened,
     together with its projection, through the hub-scoped

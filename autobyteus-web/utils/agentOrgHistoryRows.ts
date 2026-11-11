@@ -10,10 +10,8 @@ import {
   isAgentOrgAgentNode,
   isAgentOrgTaskAgentNode,
   type AgentOrgTaskExecutionNode,
-  type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
 import { foldTeamAggregateStatus, type TeamStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
-import { collaborationTreeWalk, collectClosedSubtrees, type CollaborationTreeNode } from '~/utils/collaboration/taskExecutionClosure'
 
 export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
@@ -58,7 +56,6 @@ export type AgentOrgHistoryDisplayRow = Readonly<{
   hasFollowingSibling: boolean
 }>
 
-type TaskBranchNode = AgentOrgTaskExecutionNode | AgentOrgTaskTeamMember
 /** A delegated Team copy; Teams are flat, so its members are Agents. */
 type TaskTeamNode = Extract<AgentOrgTaskExecutionNode, { teamRunId: string }>
 type StatusSource = Readonly<{
@@ -68,8 +65,6 @@ type StatusSource = Readonly<{
   /** Null when the child was recorded before its delegator was stored (no starter shown). */
   delegatorFor(delegatorAgentRunId: string | undefined): AgentOrgHistoryDelegator | null
   isTaskTeamExpanded(teamRunId: string): boolean
-  /** False for a closed task execution (Task DONE) and everything under it. */
-  isListed(node: TaskBranchNode): boolean
 }>
 
 /** Root-level delegated children as the tree shows them. */
@@ -112,13 +107,9 @@ const statusSource = (
   )
   const tree = context?.executionTree ?? run.executionTree
   const addresses = collectAgentAddresses(tree)
-  // The closure facts belong to the tree being shown: the context's, else the history item's.
-  const hidden = collectClosedSubtrees<CollaborationTreeNode>([...tree.rootOrg.members, ...rootTaskExecutions(tree.rootOrg)],
-    context ? context.view.closed_task_executions : run.closedTaskExecutions, collaborationTreeWalk)
   return {
     authority: live ? 'live' : 'historical',
     isTaskTeamExpanded,
-    isListed: (node) => !hidden.has(collaborationTreeWalk.keyOf(node)),
     delegatorFor: (delegatorAgentRunId) => delegatorAgentRunId === undefined ? null : Object.freeze({
       agentRunId: delegatorAgentRunId,
       address: addresses.get(delegatorAgentRunId) ?? null,
@@ -142,14 +133,13 @@ const exactAgentStatus = (source: StatusSource, agentRunId: string): AgentStatus
 const teamStatusInput = <TTeam>(source: StatusSource, team: TTeam) => ({
   team,
   runAlive: source.authority === 'live',
-  isListed: source.isListed,
   statusForAgentRunId: source.statusForAgentRunId,
 })
 
 const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource): AgentOrgHistoryRow[] => {
   const coordinator = source.coordinatorFor(team)
-  const members = team.members.filter((member) => source.isListed(member))
-  const tasks = team.taskExecutions.filter((task) => source.isListed(task))
+  const members = team.members
+  const tasks = team.taskExecutions
   const hasChildren = members.length > 0 || tasks.length > 0
   const expanded = source.isTaskTeamExpanded(team.teamRunId)
   const rows: AgentOrgHistoryRow[] = [{
@@ -185,7 +175,7 @@ const flattenTask = (
   task: AgentOrgTaskExecutionNode,
   depth: number,
   source: StatusSource,
-): AgentOrgHistoryRow[] => !source.isListed(task) ? [] : isAgentOrgTaskAgentNode(task)
+): AgentOrgHistoryRow[] => isAgentOrgTaskAgentNode(task)
   ? [{
       key: `task-agent:${task.agentRunId}`,
       kind: 'task_agent',

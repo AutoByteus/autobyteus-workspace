@@ -97,20 +97,20 @@ describe('copy sources', () => {
     }
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, 
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
       createAgentContext: (agentRunId, address, nextTree) => createTeamAgentContext({ tree: nextTree, agentRunId, address, workspaceMetadata: null }),
     })
-    const started = state.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: { change_sequence: 1, parent_team_run_id: 'team-run', execution: {
+    const started = state.applyMessage({ type: 'CHILD_RUNS_CHANGED', payload: { run_id: 'team-run', removed: [], added: [{ parent_team_run_id: 'team-run', execution: {
       kind: 'task_team', address: '/product_team', team_run_id: 'copy-run',
       members: [
         { kind: 'task_team_agent', address: '/product_team/product_prototyper', agent_run_id: 'copy-prototyper', platform_agent_run_id: null },
         { kind: 'task_team_agent', address: '/product_team/prototype_bootstrapper', agent_run_id: 'copy-bootstrapper', platform_agent_run_id: null },
       ],
       task_executions: [], delegator_agent_run_id: 'researcher-run', started_at: created, source: productSource,
-    } } } as never)
+    } }] } } as never)
     expect(started.disposition).toBe('applied')
     expect(state.getAgentContext('copy-bootstrapper')?.config.agentDefinitionId).toBe('bootstrapper')
     const rows = state.listNavigationRows()
@@ -262,33 +262,6 @@ describe('what each copy agent runs with: its choice, else its Team\'s when it f
     const context = createTeamAgentContext({ tree, agentRunId: 'reviewer-run', address: parseAgentTeamAddress('/code_reviewer'), workspaceMetadata: null })!
     expect(context.config.llmModelIdentifier).toBe('chosen')
     expect(context.state.conversation.llmModelIdentifier).toBe('chosen')
-  })
-
-  it('a live Team view records a Save\'s choices in place and its member contexts take the model they now run on (CR-002)', () => {
-    const tree = teamTree()
-    rootOf(tree).task_executions = [reviewerCopy, productTeamCopy]
-    const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
-    const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
-      configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
-      initialFocusedAgentRunId: 'researcher-run',
-      agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
-      createAgentContext: (agentRunId, address, nextTree) => createTeamAgentContext({ tree: nextTree, agentRunId, address, workspaceMetadata: null }),
-    })
-    const applied = state.applyMessage({ type: 'DELEGATED_LAUNCH_SELECTIONS_CHANGED', payload: { change_sequence: 1, selections: [
-      { team_run_id: 'product-run', selection: choice('team-model') }, { agent_run_id: 'reviewer-run', selection: choice('mine') },
-    ] } } as never)
-    expect(applied).toMatchObject({ disposition: 'applied' })
-    const copies = state.getExecutionTree().root_team.task_executions
-    expect(copies.find((entry) => entry.address === '/product_team')).toMatchObject({ user_team_launch_selection: choice('team-model') })
-    expect(copies.find((entry) => entry.address === '/code_reviewer')).toMatchObject({ user_launch_selection: choice('mine') })
-    expect(state.getAgentContext('prototyper-run')?.config.llmModelIdentifier).toBe('team-model')
-    expect(state.getAgentContext('reviewer-run')?.state.conversation.llmModelIdentifier).toBe('mine')
-    expect(state.getAgentContext('researcher-run')?.config.llmModelIdentifier).toBe('root-model')
-    // A choice for a run the view does not know asks for a fresh view.
-    expect(state.applyMessage({ type: 'DELEGATED_LAUNCH_SELECTIONS_CHANGED', payload: { change_sequence: 2, selections: [
-      { agent_run_id: 'ghost', selection: choice('x') },
-    ] } } as never).disposition).toBe('rejected')
   })
 
   it('Org and Agent roots (camelCase): the same rule, with each member\'s recorded follower fact (D-5)', () => {

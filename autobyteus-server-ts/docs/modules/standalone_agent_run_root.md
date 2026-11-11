@@ -155,22 +155,26 @@ message ID (CM-9); the run's view shows the messages of its own log.
 - **View stream** `/ws/agent-collaboration/:runId`: `connect` resolves the root without starting its
   host, then sends the snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
   host's live state; the children are the runs it delegated to, from their Task entries), events
-  and lifecycle. While someone views the run, `LocalChildObservation` follows its local children
-  (the same for Team and Org views): a new child is `task_execution_started`, a child whose Task
-  closed is `task_executions_closed`, and each child's statuses and output are `agent_presentation`
-  (the path a peer child's output takes); peer children are `remote_task_execution_*`; messages are
-  `communication`. A command to a local child row goes to that child's own
+  and lifecycle. A change to its child rows (a new, reopened or peer delegation; a child whose
+  last open Task closed, or whose Task was deleted) arrives as the unsequenced `CHILD_RUNS_CHANGED`
+  from `ChildRowsFeed`, held while the snapshot is built and sent after it (the same for Team and
+  Org views; see [Live child rows](../design/agent_websocket_streaming_protocol.md#live-child-rows-autobyteus-461)).
+  While someone views the run, `LocalChildObservation` follows its local children: each child's
+  statuses and output are `agent_presentation` (the path a peer child's output takes, with the
+  addresses from the `DelegationTree`); a peer child's summaries are `remote_task_execution_summary`;
+  messages are `communication`. A command to a local child row goes to that child's own
   run (`DelegatedRunCommands`: a message restores a stopped child, as any message does); a peer
   child's goes through the root to its node. A run that is not a collaboration run closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stopped run's view and
   never restores. `agentRunCollaborationStatuses(runIds)` (at most 100 IDs, else `BAD_USER_INPUT`)
   is the small read the clients' history poll uses for listed runs that are not open: per run
-  `{ runId, isActive, statuses, closedTaskExecutionsDigest }`. An active run answers every agent of
-  its open local children (the agents of its view's rows) with its live status, `offline` when not
-  running (`localChildStatuses`), and the digest of the closed set its view lists (none). A stopped
-  run answers no statuses and the digest of its closed children (the Task entries), so a list
-  re-reads its view once when a child's Task closes or reopens. It never restores or starts a host. `agentRunCollaborationMemberProjection` and
+  `{ runId, isActive, statuses }`. Every run, active or stopped, answers every agent of its open
+  local children (the agents of its view's rows, with their addresses from the `DelegationTree`)
+  with its status from the child's own run, `offline` when not running (`localChildStatuses`), so a
+  stopped delegator's working child shows its status too. There is no closed-set digest: a child
+  whose Task closed has left the view (autobyteus-461 SR-040/041). It never restores or starts a
+  host. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation from its own
   run. `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` returns a
   child's Agent Artifacts, located among the runs this run delegated to (one hop, the Task entries),

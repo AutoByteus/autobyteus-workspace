@@ -477,9 +477,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   other open Task, each through its own ordinary Stop (`TaskRunControl`); a peer's
   run is fenced, not stopped. A delegating run's view lists its children with an
   open Task entry (`DelegationTree.openChildrenOf`), so a closed run leaves the view
-  and comes back when its assigner continues it. No root publishes a closed set any
-  more: `closed_task_executions` stays in the views' API, always empty
-  (follow-up). The same holds for a Task with no Project: a description-only
+  and comes back when its assigner continues it; an open view learns either from the
+  unsequenced `CHILD_RUNS_CHANGED`. There is no closed set in the views. The same holds for a Task with no Project: a description-only
   `delegate_task` by an unowned sender returns its `task_id`, and
   `update_task({task_id, status: "DONE"})` (for an agent that selected
   `update_task`) closes it and stops its runs (see

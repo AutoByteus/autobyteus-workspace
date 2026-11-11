@@ -5,17 +5,14 @@ import { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
 import { AgentRunCollaborationIndex } from '../agentRunCollaborationIndex'
 import { agentRootMessages, agentRootView, created, launch } from './agentRootFixture'
 
-/**
- * task-run-resources-workspace-cleanup REQ-001/004/008: a closed task execution (Task DONE) and
- * everything under it leave the listing; the tree, contexts and Team-tab messages keep them.
- */
+/** An Agent run's view with several child rows, one a delegated Team with work of its own (autobyteus-461 DS-8). */
 const agentSource = { kind: 'agent' as const, agentDefinitionId: 'computer-use', launchConfiguration: launch }
 const teamSource = { kind: 'agent_team' as const, teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
   members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch, followsTeam: true },
     { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', launchConfiguration: launch, followsTeam: true }],
   defaultLaunchConfiguration: launch }
 
-export const closureView = (closed: Array<{ agentRunId: string } | { teamRunId: string }> = []) => {
+export const childRunsView = () => {
   const view = agentRootView()
   view.execution_tree = {
     ...view.execution_tree,
@@ -34,11 +31,10 @@ export const closureView = (closed: Array<{ agentRunId: string } | { teamRunId: 
       { address: '/computer_use_agent', agentRunId: 'other-task-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created, source: agentSource },
     ],
   }
-  view.closed_task_executions = closed
   return view
 }
 
-export const buildClosureContext = (view = closureView()) => new AgentRunCollaborationContext({
+export const buildChildRunsContext = (view = childRunsView()) => new AgentRunCollaborationContext({
   hostRunId: 'host-run', view,
   entries: [...new AgentRunCollaborationIndex(view.execution_tree).agents.values()].map((agent) => {
     const state = new AgentRunState(agent.agentRunId, { id: agent.agentRunId, messages: [], createdAt: created, updatedAt: created, agentDefinitionId: 'x', agentName: agent.address })
@@ -48,7 +44,7 @@ export const buildClosureContext = (view = closureView()) => new AgentRunCollabo
   }),
 })
 
-/** The closure root's stored messages beside the base fixture's (autobyteus-358: loaded per participant). */
-export const closureMessages = Object.freeze([...agentRootMessages,
+/** The root's stored messages beside the base fixture's (autobyteus-358: loaded per participant). */
+export const childRunsMessages = Object.freeze([...agentRootMessages,
   { messageId: 'm-writer', senderAgentRunId: 'writer-run', receiverAgentRunId: 'host-run', content: 'Release notes drafted.',
     messageType: 'direct_message', referenceFiles: [], createdAt: created }])

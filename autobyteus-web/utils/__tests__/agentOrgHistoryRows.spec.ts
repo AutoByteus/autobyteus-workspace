@@ -9,7 +9,7 @@ type OrgTree = AgentOrgRunHistoryItem['executionTree']
 
 const runFor = (tree: OrgTree): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-  createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
+  createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, 
 })
 
 const fixtureTree = () => structuredClone(taskBearingView().execution_tree) as OrgTree
@@ -115,24 +115,22 @@ describe('projectAgentOrgHistoryRows delegated Team disclosure', () => {
   })
 })
 
-/** A live Org context as the projection reads it: its tree, closure facts and agent statuses. */
+/** A live Org context as the projection reads it: its tree and agent statuses. */
 const liveContext = (
   tree: OrgTree,
   statuses: Readonly<Record<string, AgentStatus>>,
-  closed: AgentOrgRunHistoryItem['closedTaskExecutions'] = [],
 ): AgentOrgExecutionContext => ({
   orgRunId: 'org-run', executionTree: tree, isActive: true, phase: 'live',
-  view: { closed_task_executions: closed },
   getAgentContext: (agentRunId: string) => ({ state: { currentStatus: statuses[agentRunId] ?? AgentStatus.Offline } }),
 }) as unknown as AgentOrgExecutionContext
 
 const projectLive = (
   tree: OrgTree,
   statuses: Readonly<Record<string, AgentStatus>>,
-  options: Readonly<{ closed?: AgentOrgRunHistoryItem['closedTaskExecutions']; isTaskTeamExpanded?: (teamRunId: string) => boolean }> = {},
+  options: Readonly<{ isTaskTeamExpanded?: (teamRunId: string) => boolean }> = {},
 ) => projectAgentOrgHistoryRows({
   run: { ...runFor(tree), isActive: true },
-  context: liveContext(tree, statuses, options.closed),
+  context: liveContext(tree, statuses),
   isTeamExpanded: () => true,
   isTaskTeamExpanded: options.isTaskTeamExpanded,
 })
@@ -165,7 +163,7 @@ describe('projectAgentOrgHistoryRows Team status', () => {
     expect(statusOf(projectLive(fixtureTree(), {}), 'task-team:team-task')).toBe(AgentStatus.Offline)
   })
 
-  it('does not count agents of closed work hidden from the tree', () => {
+  it('counts every agent of the work delegated under a Team (its child rows are the open ones, autobyteus-461)', () => {
     const tree = nestedTree()
     const configured = tree.rootOrg.members.find((member) => 'teamRunId' in member && member.teamRunId === 'team-configured')!
     ;(configured as { taskExecutions: unknown[] }).taskExecutions = [{
@@ -180,10 +178,6 @@ describe('projectAgentOrgHistoryRows Team status', () => {
     const open = projectLive(tree, statuses)
     expect(statusOf(open, 'task-team:team-task')).toBe(AgentStatus.Running)
     expect(statusOf(open, 'team:team-configured')).toBe(AgentStatus.Running)
-
-    const closed = projectLive(tree, statuses, { closed: [{ teamRunId: 'reviewers-task' }, { agentRunId: 'agent-configured-helper' }] })
-    expect(statusOf(closed, 'task-team:team-task')).toBe(AgentStatus.Idle)
-    expect(statusOf(closed, 'team:team-configured')).toBe(AgentStatus.Idle)
   })
 
   it('reads every Team gray when the Org run is not live', () => {

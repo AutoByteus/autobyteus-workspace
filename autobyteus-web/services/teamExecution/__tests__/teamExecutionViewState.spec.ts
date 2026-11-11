@@ -1,4 +1,3 @@
-import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure';
 import { describe, expect, it } from 'vitest';
 import { computed, isReactive, toRaw } from 'vue';
 import type {
@@ -102,7 +101,6 @@ const config = (executionTree: TeamRunExecutionTreeDto) => createTeamConfigurati
 const createStateFixture = (input: {
   rootActive?: boolean;
   executionTree?: TeamRunExecutionTreeDto;
-  closedTaskExecutions?: readonly TaskExecutionReference[];
   initialFocusedAgentRunId?: string;
 } = {}) => {
   const initialTree = input.executionTree ?? tree();
@@ -118,7 +116,7 @@ const createStateFixture = (input: {
   ]));
   const dynamicallyCreatedContexts = new Map<string, AgentContext>();
   const state = createTeamExecutionViewState({
-    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree, closedTaskExecutions: input.closedTaskExecutions ?? [],
+    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree,
     configuration: config(initialTree),
     initialFocusedAgentRunId: input.initialFocusedAgentRunId ?? 'teacher-run',
     agentContexts: initial.map(([agentRunId, memberAddress]) => ({
@@ -146,14 +144,18 @@ const taskAgent = (
   source: { kind: 'agent', agent_definition_id: 'student', launch_configuration: launch, launch_source: { origin: 'configured', fallbacks: [] } },
 });
 
-const started = (
-  changeSequence: number,
-  parentTeamRunId: string,
-  execution: TaskExecutionDto,
-): Extract<TeamStreamServerMessage, { type: 'TASK_EXECUTION_STARTED' }> => ({
-  type: 'TASK_EXECUTION_STARTED',
-  payload: { change_sequence: changeSequence, parent_team_run_id: parentTeamRunId, execution },
+type ChildRunsChanged = Extract<TeamStreamServerMessage, { type: 'CHILD_RUNS_CHANGED' }>;
+/** A child-row change of the root Team (autobyteus-461 SR-043): unsequenced, rows added under their parent Team run, runs removed. */
+const childRunsChanged = (input: Readonly<{ added?: ChildRunsChanged['payload']['added']; removed?: ChildRunsChanged['payload']['removed'] }>): ChildRunsChanged => ({
+  type: 'CHILD_RUNS_CHANGED', payload: { run_id: 'root-team-1', added: input.added ?? [], removed: input.removed ?? [] },
 });
+/** A new child row (formerly TASK_EXECUTION_STARTED). */
+const started = (parentTeamRunId: string, execution: TaskExecutionDto): ChildRunsChanged =>
+  childRunsChanged({ added: [{ parent_team_run_id: parentTeamRunId, execution }] });
+/** A sequenced member message (an agent status). */
+const agentStatus = (changeSequence: number, agentRunId: string) => ({ type: 'AGENT_STATUS', payload: {
+  change_sequence: changeSequence, agent_run_id: agentRunId, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+} }) as never;
 
 const expectApplied = (result: ReturnType<ReturnType<typeof createState>['applyMessage']>): void => {
   if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
@@ -194,7 +196,7 @@ describe('TeamExecutionViewState', () => {
     expect(toRaw(teacher)).toBe(initialContexts.get('teacher-run'));
     expect(state.getFocusedAgentContext()).toBe(teacher);
 
-    expectApplied(state.applyMessage(started(1, 'study-team-persistent', taskAgent('dynamic-student-run', 'coordinator-run', '/StudentStudyGroup/Student'))));
+    expectApplied(state.applyMessage(started('study-team-persistent', taskAgent('dynamic-student-run', 'coordinator-run', '/StudentStudyGroup/Student'))));
 
     const dynamic = state.getAgentContext('dynamic-student-run')!;
     const dynamicStatus = computed(() => dynamic.state.currentStatus);
@@ -222,7 +224,7 @@ describe('TeamExecutionViewState', () => {
         { kind: 'task_team_agent', address: '/StudentStudyGroup/Student', agent_run_id: 'task-student-run', platform_agent_run_id: null },
       ],
     };
-    const taskTeamResult = state.applyMessage(started(1, 'root-team-1', taskTeamExecution));
+    const taskTeamResult = state.applyMessage(started('root-team-1', taskTeamExecution));
     expectApplied(taskTeamResult);
     expect(taskTeamResult.effects).toEqual([
       { kind: 'invalidate_team_member_projection', agentRunIds: ['task-coordinator-run', 'task-student-run'] },
@@ -240,7 +242,7 @@ describe('TeamExecutionViewState', () => {
       kind: 'task_team_agent', displayName: 'Student', delegatedBy: null, currentStatus: AgentStatus.Offline,
     });
 
-    const activationResult = state.applyMessage(started(2, 'study-team-task-1', taskAgent('nested-student-run', 'task-coordinator-run', '/StudentStudyGroup/Student')));
+    const activationResult = state.applyMessage(started('study-team-task-1', taskAgent('nested-student-run', 'task-coordinator-run', '/StudentStudyGroup/Student')));
     expectApplied(activationResult);
     expect(activationResult.effects).toEqual([
       { kind: 'invalidate_team_member_projection', agentRunIds: ['nested-student-run'] },
@@ -289,11 +291,11 @@ describe('TeamExecutionViewState', () => {
       status('student-run', '/StudentStudyGroup/Student', AgentStatus.Idle),
     ];
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
+      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: executionTree,
       agent_input_states: [], remote_task_executions: [], agent_statuses: configuredStatuses,
     } })).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
+      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: executionTree,
       agent_input_states: [], remote_task_executions: [], agent_statuses: [...configuredStatuses, status('dormant-student-run', '/Student', AgentStatus.Offline)],
     } })).toMatchObject({ disposition: 'applied' });
     expect(state.getAgentContext('dormant-student-run')?.state.currentStatus).toBe(AgentStatus.Offline);
@@ -302,7 +304,7 @@ describe('TeamExecutionViewState', () => {
   it('rejects sequence gaps and invalid snapshots without partially replacing authoritative state', () => {
     const state = createState();
     const beforeTree = state.getExecutionTree();
-    const gap = state.applyMessage(started(2, 'root-team-1', taskAgent('unseen-run', 'teacher-run')));
+    const gap = state.applyMessage(agentStatus(2, 'teacher-run'));
     expect(gap).toMatchObject({
       disposition: 'rejected',
       code: 'TEAM_EXECUTION_CHANGE_SEQUENCE_GAP',
@@ -310,7 +312,7 @@ describe('TeamExecutionViewState', () => {
     });
     expect(state.needsStreamRecovery()).toBe(true);
 
-    const later = state.applyMessage(started(1, 'root-team-1', taskAgent('later-run', 'teacher-run')));
+    const later = state.applyMessage(started('root-team-1', taskAgent('later-run', 'teacher-run')));
     expect(later).toMatchObject({
       disposition: 'rejected',
       code: 'TEAM_EXECUTION_STREAM_RECOVERY_REQUIRED',
@@ -321,7 +323,7 @@ describe('TeamExecutionViewState', () => {
     const invalidSnapshot = {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
       payload: {
-        root_team_run_id: 'foreign-root', base_change_sequence: 9, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: beforeTree,
+        root_team_run_id: 'foreign-root', base_change_sequence: 9, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: beforeTree,
         agent_input_states: [], remote_task_executions: [], agent_statuses: [],
       },
     };
@@ -338,7 +340,7 @@ describe('TeamExecutionViewState', () => {
     const snapshot = state.applySnapshot({
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
       payload: {
-        root_team_run_id: 'root-team-1', base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: tree(),
+        root_team_run_id: 'root-team-1', base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: tree(),
         agent_input_states: [], remote_task_executions: [], agent_statuses: [
           { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
           { agent_run_id: 'root-student-run', member_address: '/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
@@ -384,7 +386,7 @@ describe('TeamExecutionViewState', () => {
       payload: {
         root_team_run_id: 'root-team-1',
         base_change_sequence: 7, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-        closed_task_executions: [], execution_tree: relocatedTree,
+        execution_tree: relocatedTree,
         agent_input_states: [], remote_task_executions: [], agent_statuses: [
           {
             agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Offline,
@@ -460,7 +462,7 @@ describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
       } } },
     ]);
     expect(state.getChangeSequence()).toBe(6);
-    expectApplied(state.applyMessage(started(7, 'root-team-1', taskAgent('after-batch-run', 'teacher-run'))));
+    expectApplied(state.applyMessage(agentStatus(7, 'teacher-run')));
     expect(state.getChangeSequence()).toBe(7);
   });
 
@@ -480,3 +482,103 @@ describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
     expect(state.getChangeSequence()).toBe(0);
   });
 });
+
+describe('CHILD_RUNS_CHANGED: child rows applied in place (autobyteus-461 SR-043, SR-044)', () => {
+  const statusOf = (agent_run_id: string, member_address: string) => ({
+    agent_run_id, member_address, status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+  });
+  const snapshot = (executionTree: TeamRunExecutionTreeDto, extra: Array<[string, string]> = []) => ({
+    type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const, payload: {
+      root_team_run_id: 'root-team-1', base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: executionTree,
+      agent_input_states: [], remote_task_executions: [], agent_statuses: [
+        statusOf('teacher-run', '/Teacher'), statusOf('root-student-run', '/Student'),
+        statusOf('coordinator-run', '/StudentStudyGroup/Coordinator'), statusOf('student-run', '/StudentStudyGroup/Student'),
+        ...extra.map(([id, address]) => statusOf(id, address)),
+      ],
+    },
+  });
+  const remoteWriter = { kind: 'agent' as const, address: '/far_writer', agent_run_id: 'far-run', node_id: 'node-b', node_name: 'B',
+    delegator_agent_run_id: 'teacher-run', started_at: createdAt };
+
+  it('a closure removes the child and everything under it, hands the focus back to its delegator, and needs no recovery', () => {
+    const { state } = createStateFixture({ initialFocusedAgentRunId: 'student-run' });
+    const result = state.applyMessage(childRunsChanged({ removed: [{ team_run_id: 'study-team-persistent' }] }));
+    expectApplied(result);
+    expect(result.effects).toEqual([{ kind: 'reconcile_focused_team_member_projection' }, { kind: 'reconcile_team_navigation' }]);
+    expect(state.hasAgentRun('student-run')).toBe(false);
+    expect(state.getAgentExecutionLocation('coordinator-run')).toBeNull();
+    expect(state.listNavigationRows().some((row) => row.teamRunId === 'study-team-persistent')).toBe(false);
+    expect(state.getFocusedAgentRunId()).toBe('teacher-run');
+    expect(state.needsStreamRecovery()).toBe(false);
+    expect(state.getChangeSequence()).toBe(0);
+    // The sequenced stream continues where it was.
+    expectApplied(state.applyMessage(agentStatus(1, 'teacher-run')));
+  });
+
+  it('a pending send and a pending tool approval survive a child-row change: same contexts, same stream, no recovery', () => {
+    const { state } = createStateFixture();
+    const teacher = state.getAgentContext('teacher-run')!;
+    teacher.requirement = 'Draft being written';
+    teacher.conversation.messages.push({ type: 'user', text: 'Please review', timestamp: new Date(createdAt), pendingInput: true } as never);
+    teacher.conversation.messages.push({ type: 'ai', text: '', timestamp: new Date(createdAt), isComplete: false, segments: [
+      { type: 'tool_call', invocationId: 'call-1', toolName: 'write_file', status: 'awaiting-approval' }] } as never);
+    for (const change of [started('root-team-1', taskAgent('new-run', 'teacher-run')), childRunsChanged({ removed: [{ agent_run_id: 'new-run' }] })]) {
+      const result = state.applyMessage(change);
+      expectApplied(result);
+      expect(result.effects.some((effect) => effect.kind === 'team_stream_recovery_required')).toBe(false);
+    }
+    expect(state.getAgentContext('teacher-run')).toBe(teacher);
+    expect(teacher.requirement).toBe('Draft being written');
+    expect(teacher.conversation.messages).toHaveLength(2);
+    expect(JSON.stringify(teacher.conversation.messages)).toContain('awaiting-approval');
+    expect(state.needsStreamRecovery()).toBe(false);
+  });
+
+  it('applies by membership: a duplicate added row and an unknown removed row are no-ops; a row removed and added ends listed', () => {
+    const state = createState();
+    expectApplied(state.applyMessage(started('root-team-1', taskAgent('writer-run', 'teacher-run'))));
+    const tree = state.getExecutionTree();
+    for (const noop of [started('root-team-1', taskAgent('writer-run', 'teacher-run')), childRunsChanged({ removed: [{ agent_run_id: 'unknown-run' }, { team_run_id: 'unknown-team' }] })]) {
+      const result = state.applyMessage(noop);
+      expectApplied(result);
+      expect(result.effects).toEqual([]);
+      expect(state.getExecutionTree()).toBe(tree);
+    }
+    const writer = state.getAgentContext('writer-run');
+    expectApplied(state.applyMessage(childRunsChanged({ removed: [{ agent_run_id: 'writer-run' }],
+      added: [{ parent_team_run_id: 'root-team-1', execution: taskAgent('writer-run', 'teacher-run') }] })));
+    expect(state.hasAgentRun('writer-run')).toBe(true);
+    expect(state.getAgentContext('writer-run')).toBe(writer);
+  });
+
+  it('a stopped team run\'s open view applies the change and stays stopped; a peer delegation appears and leaves', () => {
+    const { state } = createStateFixture({ rootActive: false });
+    expectApplied(state.applyMessage(childRunsChanged({ added: [remoteWriter] })));
+    expect(state.isRemoteAgent('far-run')).toBe(true);
+    expect(state.getAgentContext('far-run')).not.toBeNull();
+    expect(state.isRootTeamActive()).toBe(false);
+    expectApplied(state.applyMessage(childRunsChanged({ removed: [{ agent_run_id: 'far-run' }] })));
+    expect(state.isRemoteAgent('far-run')).toBe(false);
+    expect(state.hasAgentRun('far-run')).toBe(false);
+  });
+
+  it('a change racing a snapshot: held and sent after it, a no-op when the snapshot has the row, applied when it does not', () => {
+    const withWriter = tree();
+    withWriter.root_team.task_executions = [...withWriter.root_team.task_executions, taskAgent('writer-run', 'teacher-run')];
+    const change = started('root-team-1', taskAgent('writer-run', 'teacher-run'));
+
+    const fresh = createState();
+    expectApplied(fresh.applySnapshot(snapshot(withWriter, [['writer-run', '/Student']])));
+    const held = fresh.applyMessage(change);
+    expectApplied(held);
+    expect(held.effects).toEqual([]);
+
+    const stale = createState();
+    expectApplied(stale.applySnapshot(snapshot(tree())));
+    expectApplied(stale.applyMessage(change));
+    expect(stale.hasAgentRun('writer-run')).toBe(true);
+    expect(stale.getChangeSequence()).toBe(4);
+    expect(stale.needsStreamRecovery()).toBe(false);
+  });
+});
+

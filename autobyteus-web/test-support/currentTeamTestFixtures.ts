@@ -226,7 +226,6 @@ export const buildTestTeamContext = (input: {
   messages?: readonly TeamCommunicationMessageDto[];
   configuration?: Record<string, unknown>;
   baseChangeSequence?: number;
-  closedTaskExecutions?: readonly import('~/utils/collaboration/taskExecutionClosure').TaskExecutionReference[];
 }): AgentTeamContext => {
   const teamRunId = input.teamRunId ?? 'test-root-team-run';
   const coordinatorAddress = input.coordinatorAddress
@@ -286,7 +285,7 @@ export const buildTestTeamContext = (input: {
   const view = createTeamExecutionViewState({
     rootTeamRunId: teamRunId, rootActive: input.isActive ?? true,
     baseChangeSequence: input.baseChangeSequence ?? 0,
-    executionTree: tree, closedTaskExecutions: input.closedTaskExecutions ?? [], configuration,
+    executionTree: tree, configuration,
     initialFocusedAgentRunId: focusedAgentRunId, agentContexts: contexts,
     createAgentContext: (agentRunId, address, currentTree) => createTeamAgentContext({
       tree: currentTree, agentRunId, address, workspaceMetadata,

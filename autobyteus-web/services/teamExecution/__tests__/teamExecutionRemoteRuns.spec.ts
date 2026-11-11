@@ -20,7 +20,7 @@ const withRemoteSnapshot = () => {
     coordinatorAddress: coordinator.address, rootChildren: [coordinator] })
   const view = team.view
   const result = view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-    root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: view.getExecutionTree(), closed_task_executions: [],
+    root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: view.getExecutionTree(), 
     agent_statuses: view.listLiveAgentContextEntries().map((entry) => ({ agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
       status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
     agent_input_states: [], remote_task_executions: [remoteTeam],
@@ -58,7 +58,7 @@ describe('Team execution view with remote runs', () => {
       taskExecutions: [localCopy('first-copy', '/researcher', '2026-10-23T07:00:00.000Z'), localCopy('last-copy', '/editor', '2026-10-23T09:00:00.000Z')] })
     const view = team.view
     expect(view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: view.getExecutionTree(), closed_task_executions: [],
+      root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: view.getExecutionTree(), 
       agent_statuses: view.listLiveAgentContextEntries().map((entry) => ({ agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
         status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
       agent_input_states: [], remote_task_executions: [remoteTeam],
@@ -69,7 +69,7 @@ describe('Team execution view with remote runs', () => {
     ])
   })
 
-  it("applies a node's summary, dispatches a remote member's output, and reloads for a remote run it does not know", () => {
+  it("applies a node's summary, dispatches a remote member's output, and adds or skips a peer run's child row in place (SR-043)", () => {
     const view = withRemoteSnapshot()
     useRemoteRunsStore().register(remoteTeam, streamOnlyRetryAdapter())
     const summary = view.applyMessage({ type: 'REMOTE_TASK_EXECUTION_SUMMARY', payload: { change_sequence: 4, node_id: 'srv_docker',
@@ -79,11 +79,12 @@ describe('Team execution view with remote runs', () => {
     expect(useRemoteRunsStore().run('marketing-run')?.title).toBe('Plan the October campaign')
     const output = view.applyMessage({ type: 'TURN_STARTED', payload: { change_sequence: 5, agent_run_id: 'writer-run', turn_id: 't1' } } as never)
     expect(output.effects).toEqual([expect.objectContaining({ kind: 'dispatch_agent', agentRunId: 'writer-run' })])
-    const known = view.applyMessage({ type: 'REMOTE_TASK_EXECUTION_STARTED', payload: { change_sequence: 6, execution: remoteTeam } })
-    expect(known.effects).toEqual([])
-    const unknown = view.applyMessage({ type: 'REMOTE_TASK_EXECUTION_STARTED', payload: { change_sequence: 7,
-      execution: { ...remoteTeam, team_run_id: 'other-run', members: [{ address: '/marketing_team/lead', agent_run_id: 'other-lead' }] } } })
-    expect(unknown.effects).toEqual([{ kind: 'team_stream_recovery_required' }])
-    expect(view.needsStreamRecovery()).toBe(true)
+    const changed = (added: unknown[]) => view.applyMessage({ type: 'CHILD_RUNS_CHANGED', payload: { run_id: view.getRootTeamRunId(), added, removed: [] } } as never)
+    expect(changed([remoteTeam]).effects).toEqual([])
+    const other = changed([{ ...remoteTeam, address: '/other_team', team_run_id: 'other-run', coordinator_address: '/other_team/lead',
+      members: [{ address: '/other_team/lead', agent_run_id: 'other-lead' }] }])
+    expect(other.effects).toEqual([{ kind: 'invalidate_team_member_projection', agentRunIds: ['other-lead'] }, { kind: 'reconcile_team_navigation' }])
+    expect(view.isRemoteAgent('other-lead')).toBe(true)
+    expect(view.needsStreamRecovery()).toBe(false)
   })
 })

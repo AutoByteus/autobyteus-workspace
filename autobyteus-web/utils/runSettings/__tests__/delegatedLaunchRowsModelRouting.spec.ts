@@ -43,7 +43,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
 
 describe('run Settings rows with Model Routing (autobyteus-32)', () => {
   it('a routed member says "Model Router" with its task kind and reason, and where its decision is; its skipped default stays a note', () => {
-    const [team] = teamDelegatedLaunchNodes(tree(), [], deps)
+    const [team] = teamDelegatedLaunchNodes(tree(), deps)
     const ie = team!.children.find((child) => child.key === '/se/ie@ie-run')!
     expect(ie.sourceKey).toBe('model_router')
     expect(ie.routing).toEqual({ decision: { runId: 'pm-run', copy: '/se', agent: '/se/ie' }, taskKind: 'implementation', reason: 'Codex fits a server change.' })
@@ -54,7 +54,7 @@ describe('run Settings rows with Model Routing (autobyteus-32)', () => {
   it('a user\'s model choice hides the origin and the router\'s reason (SR-007)', () => {
     const control = { editable: true, isAgentLive: () => false, isStopping: () => false,
       draftOf: (target: string) => (target === 'agent:ie-run' ? { llmModelIdentifier: 'gpt-mini', llmConfig: null } : null) }
-    const [team] = teamDelegatedLaunchNodes(tree(), [], deps, control)
+    const [team] = teamDelegatedLaunchNodes(tree(), deps, control)
     const ie = team!.children.find((child) => child.key === '/se/ie@ie-run')!
     expect(ie.sourceKey).toBeUndefined()
     expect(ie.routing).toBeUndefined()

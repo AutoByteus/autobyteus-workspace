@@ -90,8 +90,7 @@
           }
         ]
       }
-    },
-    "closed_task_executions": []
+    }
   },
   {
     "root_subject_kind": "agent_org",
@@ -390,8 +389,7 @@
           }
         ]
       }
-    },
-    "closed_task_executions": []
+    }
   },
   {
     "root_subject_kind": "agent_org",
@@ -612,7 +610,6 @@
           }
         ]
       }
-    },
-    "closed_task_executions": []
+    }
   }
 ]

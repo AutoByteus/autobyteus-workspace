@@ -134,7 +134,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       },
       onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
-      onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
     })
     services.set(hostRunId, service)
     service.connect()

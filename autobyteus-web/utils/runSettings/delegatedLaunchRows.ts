@@ -16,7 +16,6 @@ import {
   type UserLaunchSelectionDto as CamelSelectionDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import type { RemoteAgentLaunchDto, RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts'
-import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import { teamMemberName } from '~/services/teamExecution/teamExecutionTreeSelectors'
 import { MEMBER_RUN_SETTING_FIELDS, type RunSettingFlags, type RunSettingsValues } from '~/types/runSettings/RunSettings'
@@ -42,8 +41,8 @@ import {
  * run"). A row with a choice shows no origin; others say where their launch came from, with recorded
  * fallbacks as notes (a Team-level one once, on the Team row).
  * Model, its settings and its agent runtime are editable only while the copy is stopped; approval and
- * workspace never are. The copy itself carries the stop target. Closed copies (Task
- * DONE or CANCELLED) are left out, with everything under one. Keys are `<address>@<run ID>`.
+ * workspace never are. The copy itself carries the stop target. The rows are the view's child rows, the open ones
+ * (autobyteus-461). Keys are `<address>@<run ID>`.
  */
 type Launch = Readonly<{
   runtimeKind: string
@@ -79,8 +78,6 @@ const NO_CONTROL: DelegatedRowControl = { editable: false, isAgentLive: () => fa
 const LOCKED: RunSettingFlags = { workspace: true, model: true, thinking: true, approval: true }
 const MODEL_EDITABLE: RunSettingFlags = { workspace: true, model: false, thinking: false, approval: true }
 
-const referenceKey = (reference: TaskExecutionReference): string =>
-  'agentRunId' in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`
 const valuesOf = (launch: Launch): RunSettingsValues => ({
   workspace: null,
   runtimeKind: launch?.runtimeKind ?? '',
@@ -223,18 +220,15 @@ const snakeChoice = (selection: UserLaunchSelectionDto | undefined): Selection |
 
 export const teamDelegatedLaunchNodes = (
   tree: TeamRunExecutionTreeDto,
-  closed: readonly TaskExecutionReference[],
   deps: RunMemberTreeDeps,
   control: DelegatedRowControl = NO_CONTROL,
 ): RunMemberNode[] => {
   const build = builders(deps, control, snakeRule, (address) => teamMemberName(tree, address))
   const live = (ids: readonly string[]) => ids.some((id) => control.isAgentLive(id))
-  const closedKeys = new Set(closed.map(referenceKey))
   const result: RunMemberNode[] = []
   const visit = (tasks: readonly TeamTaskExecutionDto[]): void => {
     for (const task of tasks) {
       if (task.kind === 'task_agent') {
-        if (closedKeys.has(`agent:${task.agent_run_id}`)) continue
         result.push(build.agent({ key: `${task.address}@${task.agent_run_id}`, address: task.address, agentRunId: task.agent_run_id,
           started: snakeLaunch(task.source.launch_configuration),
           recorded: { agent: snakeChoice(task.user_launch_selection) },
@@ -242,7 +236,6 @@ export const teamDelegatedLaunchNodes = (
           facts: factsOf(snakeSource(task.source.launch_source), true, 'delegated_copy', locatorOf(task.delegator_agent_run_id, task.address, task.address)) }))
         continue
       }
-      if (closedKeys.has(`team:${task.team_run_id}`)) continue
       const source = task.source
       const teamStarted = snakeLaunch(source.default_launch_configuration)
       const teamChoice = snakeChoice(task.user_team_launch_selection)
@@ -289,16 +282,13 @@ const camelChoice = (selection: CamelSelectionDto | undefined): Selection | null
 export const collaborationDelegatedLaunchNodes = (input: Readonly<{
   /** Every task-execution list of the root (see `collaborationTaskExecutionLists`). */
   taskExecutions: readonly CollaborationTaskExecutionDto[]
-  closed?: readonly TaskExecutionReference[]
 }>, deps: RunMemberTreeDeps, control: DelegatedRowControl = NO_CONTROL): RunMemberNode[] => {
   const build = builders(deps, control, camelRule, memberDisplayName)
   const live = (ids: readonly string[]) => ids.some((id) => control.isAgentLive(id))
-  const closedKeys = new Set((input.closed ?? []).map(referenceKey))
   const result: RunMemberNode[] = []
   const visit = (tasks: readonly CollaborationTaskExecutionDto[]): void => {
     for (const task of tasks) {
       if ('agentRunId' in task) {
-        if (closedKeys.has(`agent:${task.agentRunId}`)) continue
         result.push(build.agent({ key: `${task.address}@${task.agentRunId}`, address: task.address, agentRunId: task.agentRunId,
           started: camelLaunch(task.source.launchConfiguration),
           recorded: { agent: camelChoice(task.userLaunchSelection) },
@@ -306,7 +296,6 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
           facts: factsOf(camelSource(task.source.launchSource), true, 'delegated_copy', locatorOf(task.delegatorAgentRunId, task.address, task.address)) }))
         continue
       }
-      if (closedKeys.has(`team:${task.teamRunId}`)) continue
       const source = task.source
       const teamStarted = camelLaunch(source.defaultLaunchConfiguration)
       const teamChoice = camelChoice(task.userTeamLaunchSelection)

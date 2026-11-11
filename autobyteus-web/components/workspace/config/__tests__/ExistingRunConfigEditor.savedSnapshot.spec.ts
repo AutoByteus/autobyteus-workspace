@@ -19,7 +19,7 @@ const mocks = await vi.hoisted(async () => {
 })
 const launch = () => ({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'old', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null })
 const snapshot = () => ({ execution_tree: { taskExecutions: [{ address: '/writer', agentRunId: 'copy', platformAgentRunId: null, delegatorAgentRunId: 'host',
-  startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] }, closed_task_executions: [] })
+  startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] } })
 const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canonicalName: id, providerName: 'test', configSchema: null })
 const readableOptions = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
 const options = () => mocks.unreadable

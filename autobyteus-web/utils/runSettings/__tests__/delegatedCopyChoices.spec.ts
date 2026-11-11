@@ -53,7 +53,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
 const control = (overrides: Partial<DelegatedRowControl> = {}): DelegatedRowControl => ({
   editable: true, isAgentLive: () => false, isStopping: () => false, draftOf: () => null, ...overrides,
 })
-const rows = (input: Partial<DelegatedRowControl> = {}) => delegatedRowsByKey(teamDelegatedLaunchNodes(tree(), [], deps, control(input)))
+const rows = (input: Partial<DelegatedRowControl> = {}) => delegatedRowsByKey(teamDelegatedLaunchNodes(tree(), deps, control(input)))
 
 describe('copy rows with user choices (SR-007)', () => {
   it('show each row on its own choice, else its Team\'s when it follows the Team, else its started value', () => {

@@ -74,7 +74,7 @@ const emit = (
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
   base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-  closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
+  execution_tree: team.view.getExecutionTree(),
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
@@ -146,11 +146,11 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     admitReady(callbacks, team);
     vi.clearAllMocks();
 
-    emit(callbacks, 'TASK_EXECUTION_STARTED', {
-      change_sequence: 1, parent_team_run_id: rootTeamRunId,
+    emit(callbacks, 'CHILD_RUNS_CHANGED', {
+      run_id: rootTeamRunId, removed: [], added: [{ parent_team_run_id: rootTeamRunId,
       execution: {
         kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
+        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } } }],
     });
 
     expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);

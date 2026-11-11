@@ -385,8 +385,7 @@ Team and org explorers share one catalog policy owner,
 
 `TeamMemoryExplorerService` and `AgentOrgMemoryExplorerService` are thin
 family facades over that catalog. A delegated team run is listed as the team
-run it is (since autobyteus-461); every summary has `isTaskTeam: false` and
-`startedByAgentName: null` (fields kept in the API, follow-up). The catalog owns: iteration with **exactly
+run it is (since autobyteus-461); summaries carry no task-team flags. The catalog owns: iteration with **exactly
 one execution-tree read per root per list request** (linear in stored root
 runs; this replaced an O(N²) per-root all-root rescan), the skip-invalid-root
 rule (a corrupt tree is skipped with a warning while other roots still list),
@@ -402,9 +401,8 @@ timestamp, and merged availability.
 Member targets are built by `buildCollaborationMemberMemoryTargets`
 (`collaboration-member-memory-targets.ts`) from the same tree snapshot. Every
 agent execution located in the tree that has memory on disk becomes a target:
-the run's own agents (`CONFIGURED`). A Team or Org tree holds its own parts only
-(since autobyteus-461), so the `TASK_AGENT` and `TASK_TEAM_MEMBER` kinds stay in
-the API but no catalog produces them (follow-up). Each target carries its own `agentRunId` and a
+the run's own agents (`CONFIGURED`, the one execution kind): a Team or Org tree
+holds its own parts only (since autobyteus-461). Each target carries its own `agentRunId` and a
 `groupPath` of enclosing `CONFIGURED_TEAM` / `TASK_TEAM` groups so clients can
 render the run's execution structure. Groups have no memory of their own.
 Memory folders not referenced by the execution tree are not listed. Team

@@ -1995,7 +1995,7 @@ describe('RunSectionPanel', () => {
     const orgRun = {
       stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
-      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+      executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
           orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
@@ -2066,7 +2066,7 @@ describe('RunSectionPanel', () => {
     const orgRun = (rootRunId: string) => ({
       stableKey: `org-run:${rootRunId}`, rootSubjectKind: "agent_org", rootRunId,
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: rootRunId,
-      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+      executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
           orgDefinitionName: "Org", orgRunId: rootRunId, defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     });
@@ -2098,7 +2098,7 @@ describe('RunSectionPanel', () => {
     const orgRun = {
       stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
       createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
-      closedTaskExecutions: [], executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
+      executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def',
           orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
@@ -2137,7 +2137,7 @@ describe('RunSectionPanel', () => {
     const tree = structuredClone(taskBearingView().execution_tree) as any;
     const orgRun = {
       stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
+      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, 
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: 'org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [orgRun] }];
     (runHistoryStoreMock as any).agentOrgHistory = [orgRun];
@@ -2146,7 +2146,7 @@ describe('RunSectionPanel', () => {
     const orgContexts = useAgentOrgContextsStore();
     let opened = false;
     const inspected = {
-      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { closed_task_executions: [] }, selectedAddress: null, selection: null,
+      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { }, selectedAddress: null, selection: null,
       index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>(),
         addressOf: (agentRunId: string) => agentRunId === 'agent-task-lead' ? '/team/lead' : null },
     };

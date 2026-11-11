@@ -26,7 +26,7 @@ beforeEach(() => {
       configured: new Map([['/team', {}], ['/team/coordinator', {}]]) },
   }))
   mocks.history.agentOrgHistory = [{ rootRunId: 'org-run', isActive: true,
-    closedTaskExecutions: [], executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } }]
+    executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } }]
 })
 
 describe('Settings across a focus change in an Org (autobyteus-366, AC-005)', () => {

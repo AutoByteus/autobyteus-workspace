@@ -69,9 +69,10 @@ const snapshot = async (socket: Socket, snapshotView = multiTeamView()) => {
   socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: snapshotView } })
   await flush()
 }
-const startedExecution = (socket: Socket, change_sequence: number) => socket.frame({
-  type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence, event: {
-    kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: multiTeamView(8).execution_tree.taskExecutions.at(-1),
+/** A new child row (autobyteus-461 SR-042: unsequenced; the sequence argument is not sent). */
+const startedExecution = (socket: Socket, _changeSequence: number) => socket.frame({
+  type: 'CHILD_RUNS_CHANGED', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', event: {
+    kind: 'child_runs_changed', run_id: 'host-run', added: [multiTeamView(8).execution_tree.taskExecutions.at(-1)], removed: [],
   } },
 })
 const segment = { segment_id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' as const }

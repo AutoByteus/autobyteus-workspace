@@ -54,7 +54,7 @@ async function setup() {
   const snapshot = (ids: string[] = [], base = 0) => {
     const current = structuredClone(team.view.getExecutionTree());
     const tree = { ...current, root_team: { ...current.root_team, task_executions: ids.map(execution) } };
-    return { root_team_run_id: ROOT, base_change_sequence: base, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: tree,
+    return { root_team_run_id: ROOT, base_change_sequence: base, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: tree,
       agent_input_states: [], remote_task_executions: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
   };
   emit('CONNECTED', { session_id: 'initial', root_team_run_id: ROOT });
@@ -95,9 +95,10 @@ describe('strict flat Team publication with the selected shared composer mounted
     const { team, active, emit, recovery, ws, witnesses, stop, warn } = await setup();
     try {
       const lead = active.activeAgentContext!;
-      emit('TASK_EXECUTION_STARTED', { change_sequence: 1, parent_team_run_id: ROOT, execution: execution() });
-      emit('AGENT_STATUS', { ...status('fresh-verifier', 'running'), change_sequence: 2 });
-      expect(team.view.getChangeSequence()).toBe(2);
+      // autobyteus-461 SR-043: an unsequenced child-row change; the sequenced stream continues at 1.
+      emit('CHILD_RUNS_CHANGED', { run_id: ROOT, removed: [], added: [{ parent_team_run_id: ROOT, execution: execution() }] });
+      emit('AGENT_STATUS', { ...status('fresh-verifier', 'running'), change_sequence: 1 });
+      expect(team.view.getChangeSequence()).toBe(1);
       expect(team.view.needsStreamRecovery()).toBe(false);
       expect(recovery).not.toHaveBeenCalled(); expect(ws.disconnect).not.toHaveBeenCalled();
       expect(warn.mock.calls.some(call => String(call[0]).includes('Rejected Team'))).toBe(false);
@@ -106,7 +107,7 @@ describe('strict flat Team publication with the selected shared composer mounted
       expect(lead.requirement).toBe('next unsent draft');
       expect(team.view.listNavigationRows().find(row => row.agentRunId === 'fresh-verifier'))
         .toMatchObject({ kind: 'task_agent', currentStatus: AgentStatus.Running, delegatedBy: expect.any(String) });
-      emit('MEMBER_INPUT_MESSAGE', { change_sequence: 3, recipient_agent_run_id: 'fresh-verifier', message_id: 'input-1',
+      emit('MEMBER_INPUT_MESSAGE', { change_sequence: 2, recipient_agent_run_id: 'fresh-verifier', message_id: 'input-1',
         dedupe_key: 'input-1', content: 'Exact task input', input_origin: 'inter_agent_delivery',
         received_at: '2026-08-10T12:00:02.000Z', context_file_paths: [], sender_agent_run_id: 'lead', parent_communication_message_id: 'communication-1' });
       team.view.focusAgent('fresh-verifier'); await flushPromises();
@@ -155,8 +156,8 @@ describe('strict flat Team publication with the selected shared composer mounted
             { ...status('configured-verifier'), member_address: '/verifier' },
           ],
         } } as any)
-        : team.view.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: {
-          change_sequence: 1, parent_team_run_id: 'different-team', execution: execution(),
+        : team.view.applyMessage({ type: 'CHILD_RUNS_CHANGED', payload: {
+          run_id: ROOT, removed: [], added: [{ parent_team_run_id: 'different-team', execution: execution() }],
         } } as any);
       expect(result.disposition).toBe('rejected');
       expect(team.view.getExecutionTree()).toBe(before);

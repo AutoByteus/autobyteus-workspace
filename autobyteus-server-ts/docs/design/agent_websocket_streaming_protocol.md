@@ -97,22 +97,17 @@ include:
   task, task notification, artifact, and file change, each the root-neutral Agent
   payload plus `change_sequence` and the member's `agent_run_id`; reply text
   leaves as `SEGMENT_CONTENT_BATCH` (see Segment Contract);
-- Team-only events: `TASK_EXECUTION_STARTED {change_sequence, parent_team_run_id,
-  execution}` (a delegated task Agent or task Team committed under its host
-  TeamRun; the execution carries nullable `delegator_agent_run_id`),
-  `TASK_EXECUTIONS_CLOSED` (task executions whose Task became DONE or CANCELLED; see below),
-  `TASK_EXECUTIONS_REOPENED` (closed task executions their assigner
-  reactivated; see below), `DELEGATED_LAUNCH_SELECTIONS_CHANGED` (saved model
-  choices of delegated copies, by `agent_run_id` or `team_run_id`),
-  `TEAM_COMMUNICATION_MESSAGE` (a message between members, by
+- Team-only events: `TEAM_COMMUNICATION_MESSAGE` (a message between members, by
   `sender_agent_run_id` and `receiver_agent_run_id`), `MEMBER_INPUT_MESSAGE` (an
   input a member received, by `recipient_agent_run_id` and nullable
-  `sender_agent_run_id`), and `REMOTE_TASK_EXECUTION_STARTED` /
-  `REMOTE_TASK_EXECUTION_SUMMARY` (runs delegated to other nodes);
+  `sender_agent_run_id`), and `REMOTE_TASK_EXECUTION_SUMMARY` (what the node of a
+  run delegated to another node answered about it);
+- `CHILD_RUNS_CHANGED {run_id, added, removed}`: the Team run's child rows changed
+  (unsequenced; see below);
 - the view: `TEAM_EXECUTION_VIEW_SNAPSHOT` (`root_team_run_id`,
   `base_change_sequence`, `live_sequence_id`, `last_message_change_sequence`,
-  `execution_tree`, the required `closed_task_executions`, `agent_statuses`,
-  `agent_input_states`, `remote_task_executions`; no message log, autobyteus-358);
+  `execution_tree`, `agent_statuses`, `agent_input_states`,
+  `remote_task_executions`; no message log, autobyteus-358);
 - control: `CONNECTED {session_id, root_team_run_id}`, `TEAM_RUN_LIFECYCLE
   {is_active}`, `AGENT_COMMAND_ACK`; and
 - `ERROR`, with nullable `change_sequence` and `agent_run_id`: correlated to one
@@ -121,39 +116,36 @@ include:
 Unknown fields and invalid union combinations are rejected. The browser parses
 the same shared schema before mutating application state.
 
-### Closed task executions (Task DONE or CANCELLED)
+### Live child rows (autobyteus-461)
 
-The execution tree is never filtered: every task execution stays in
-`execution_tree`, so message participants and history keep their identities.
-Closure is a separate fact beside the tree:
+A run's child rows are the runs it delegated to that hold an open Task, one hop
+(`DelegationTree.openChildrenOf`): the snapshot's `task_executions` (runs on this
+node) and `remote_task_executions` (runs on peers). A child whose last open Task
+closes, or whose Task is deleted, leaves the view; a reopened one comes back. There
+is no closed set in the views or the stored reads.
 
-- `closed_task_executions` in the snapshot lists, as `{agent_run_id}` or
-  `{team_run_id}` references, the root's task executions whose Task is DONE or CANCELLED. It is
-  read at the same point as the tree, so it is consistent with
-  `base_change_sequence`.
-- `TASK_EXECUTIONS_CLOSED {change_sequence, task_executions}` is a sequenced
-  event (a non-empty list of the same references). When DONE asks an active root
-  to stop a Task's runs, the root publishes the released runs that are closed and
-  present in its tree **before** it stops them, whatever the stop outcome. A
-  repeated DONE re-publishes the same references; applying them again is a no-op.
-- `TASK_EXECUTIONS_REOPENED {change_sequence, executions: [{parent_team_run_id, execution}]}`
-  carries each reopened execution's record and host Team run, as
-  `TASK_EXECUTION_STARTED` does (autobyteus-469 D-8). After the Task is moved out of DONE or
-  CANCELLED, the run that assigned the work can reactivate one assignment by messaging its
-  run ID (a Team copy's coordinator), or give it another Task by its run ID. A run whose
-  stop was confirmed has left the root's tree; it is added back from its own file, and the
-  root publishes its record after the Task-side commit and before the message is delivered.
-  A Team view that does not hold the execution (it was loaded after the run left the tree)
-  inserts it from the record; one that holds it keeps it. Both remove it from their closed
-  set, so the execution is listed again. Its helpers keep their own closed references and
-  stay hidden. Snapshots and stored reads no longer include it in
-  `closed_task_executions`. See
-  [Reactivation](../modules/projects.md#reactivation).
-- The Workspaces tree leaves out each closed task execution and everything under
-  it. Other Team surfaces keep listing them.
-- Stored reads carry the same list: the Team resume config (`closedTaskExecutions`
-  beside `executionTree`). A root that was not active at DONE shows the closure on
-  its next read.
+- **Source.** Inside each Task change, after updating itself, the `DelegationTree`
+  reports each run X whose open children changed. `ChildRowsFeed`
+  (`agent-collaboration/delegation/child-rows-feed.ts`), the one listener, builds
+  the added rows with the view's own projection and publishes one event on every
+  open view stream of X, whether or not X is active; nothing is started.
+- **The event.** `CHILD_RUNS_CHANGED {run_id, added, removed}` on the Team stream:
+  `added` holds each new or reopened child's row (`{parent_team_run_id,
+  execution}` for a run on this node, a `RemoteTaskExecutionDto` for a peer's run),
+  `removed` the `{agent_run_id}` / `{team_run_id}` references of the runs that
+  left. The collaboration stream carries the same change as `CHILD_RUNS_CHANGED
+  {root_subject_kind, root_run_id, event: {kind: "child_runs_changed", run_id,
+  added, removed}}` (camelCase rows and references).
+- **Unsequenced.** It carries no `change_sequence`: child-row membership is the
+  tree's, not the run's ordered changes, and a stopped run has no loaded root to
+  own a sequence. The Team client applies it by membership (an added row it holds
+  is skipped, an unknown removed row ignored), in place, never through
+  `team_stream_recovery_required`; pending sends and approvals stay. The Agent and
+  Org clients read the view again unless the change is already in it.
+- **Order against the snapshot.** Each stream session opens on the feed before it
+  reads the tree for its snapshot; events published while the snapshot is built
+  are held and sent right after it, in published order. A change is then either in
+  the snapshot (its event is a no-op) or applied after it.
 
 ## Segment Contract
 

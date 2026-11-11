@@ -292,10 +292,7 @@ const localDelegatedRows = computed<readonly RunMemberNode[]>(() => {
   const current = draft.value
   if (!current) return []
   const deps = { schemaFor, sameWorkspace: sameRunWorkspaceChoice }
-  if (current.kind === 'team') {
-    const closed = useAgentTeamContextsStore().getTeamContextById(current.teamRunId)?.view.getClosedTaskExecutions() ?? []
-    return teamDelegatedLaunchNodes(current.executionTree, closed, deps, delegatedControl.value)
-  }
+  if (current.kind === 'team') return teamDelegatedLaunchNodes(current.executionTree, deps, delegatedControl.value)
   const view = current.kind === 'agent' ? (current.isActive
     ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot) : null
   if (current.kind === 'agent' && !view) return []
@@ -304,8 +301,6 @@ const localDelegatedRows = computed<readonly RunMemberNode[]>(() => {
     taskExecutions: collaborationTaskExecutionLists({
       taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [],
     }),
-    closed: current.kind === 'agent_org' ? history.agentOrgHistory.find((run) => run.rootRunId === current.orgRunId)?.closedTaskExecutions ?? []
-      : view!.closed_task_executions,
   }, deps, delegatedControl.value)
 })
 const delegatedByKey = computed(() => delegatedRowsByKey(delegatedRows.value))

@@ -55,13 +55,12 @@ const snapshot = async (socket: Socket, base: number, liveSequenceId = 'live-1',
 }
 const event = (socket: Socket, change_sequence: number, body: unknown) =>
   socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: HOST, change_sequence, event: body } })
-/** A new delegated copy (`checkpoint_required`): the stream reconnects for a fresh snapshot. */
-const newChild = (socket: Socket, change_sequence: number) => event(socket, change_sequence, {
-  kind: 'task_execution_started', host_kind: 'root', host_run_id: HOST, execution: {
+/** A new child row (autobyteus-461 SR-042, unsequenced): the stream reconnects for a fresh snapshot. */
+const newChild = (socket: Socket, _changeSequence: number) => socket.frame({ type: 'CHILD_RUNS_CHANGED', payload: {
+  root_subject_kind: 'agent', root_run_id: HOST, event: { kind: 'child_runs_changed', run_id: HOST, removed: [], added: [{
     address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: HOST, startedAt: created,
     source: agentRootView().execution_tree.taskExecutions[0]!.source,
-  },
-})
+  }] } } })
 const listed = () => useCollaborationParticipantMessagesStore().messagesOf(key).map((entry) => entry.messageId)
 const requests = () => io.participantRequests.mock.calls.length
 

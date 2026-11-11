@@ -6,6 +6,7 @@ import type {
   AgentOrgCommunicationMessageDto,
   AgentRunCollaborationEventDto,
   AgentRunCollaborationViewDto,
+  ChildRunsChangedEventDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import { AgentStatus } from '~/types/agent/AgentStatus'
@@ -23,16 +24,8 @@ import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntime
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
-import {
-  agentRunKey,
-  collaborationTreeWalk,
-  collectClosedSubtrees,
-  mergeClosedTaskExecutions,
-  removeReopenedTaskExecutions,
-  type CollaborationTreeNode,
-} from '~/utils/collaboration/taskExecutionClosure'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
-import { applyRemoteSummaryStatuses, isRemoteExecutionKnown, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
+import { applyRemoteSummaryStatuses, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
@@ -164,39 +157,8 @@ export class AgentRunCollaborationContext {
       this.dispatchPresentation([event])
     } else if (event.kind === 'agent_presentation_batch') {
       this.dispatchPresentation(event.items)
-    } else if (event.kind === 'task_execution_started') {
-      // A new child needs its own context; reload the view.
-      return 'checkpoint_required'
-    } else if (event.kind === 'remote_task_execution_started') {
-      // A new remote child needs its own context too (one the view already lists needs nothing).
-      if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
     } else if (event.kind === 'remote_task_execution_summary') {
       applyRemoteSummaryStatuses(event, (agentRunId) => this.contexts.get(agentRunId) ?? null, this.view.remote_task_executions)
-    } else if (event.kind === 'task_executions_closed') {
-      // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
-      const unknown = event.task_executions.find((reference) => 'agentRunId' in reference
-        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task_agent' : !this.index.teams.has(reference.teamRunId))
-      if (unknown) {
-        this.requireReopen('A closed task execution is not a task execution of this run.')
-        throw new Error(this.error!)
-      }
-      this.view = { ...this.view,
-        closed_task_executions: mergeClosedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
-    } else if (event.kind === 'task_executions_reopened') {
-      // Their assigner reactivated them: they are listed again (helpers under them stay closed). One the view does not
-      // hold left the run's tree when its Task closed (autobyteus-469 D-8): it is back in it, so reload the view.
-      const unknown = event.task_executions.find((reference) => 'agentRunId' in reference
-        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task_agent' : !this.index.teams.has(reference.teamRunId))
-      if (unknown) return 'checkpoint_required'
-      this.view = { ...this.view,
-        closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
-    } else if (event.kind === 'delegated_launch_selections_changed') {
-      // A Save on the live run (DS-001): reload so the records and the member contexts show the choice.
-      if (event.selections.some((entry) => 'agentRunId' in entry ? !this.index.agents.has(entry.agentRunId) : !this.index.teams.has(entry.teamRunId))) {
-        this.requireReopen('A saved model choice names no child of this run.')
-        throw new Error(this.error!)
-      }
-      return 'checkpoint_required'
     } else {
       // The Team tab's lists own the messages (autobyteus-358); the view holds none.
       this.assertMessagesCorrelated([event.message])
@@ -204,6 +166,19 @@ export class AgentRunCollaborationContext {
     }
     this.nextChangeSequence = following
     return 'applied'
+  }
+
+  /**
+   * The run's child rows changed (autobyteus-461 SR-042 … SR-044; unsequenced): a re-read of the view, unless the event
+   * changes nothing it holds (an added row it has, a removed row it does not have, as for a change already in its snapshot).
+   */
+  applyChildRunsChanged(event: ChildRunsChangedEventDto): AgentRunCollaborationEventApplication {
+    const holds = (reference: Readonly<{ agentRunId: string } | { teamRunId: string }>) => 'agentRunId' in reference
+      ? this.index.agents.has(reference.agentRunId) || this.index.remoteAgents.has(reference.agentRunId)
+      : this.index.teams.has(reference.teamRunId) || this.view.remote_task_executions.some((remote) => remote.kind === 'agent_team' && remote.team_run_id === reference.teamRunId)
+    const added = event.added.map((row) => 'node_id' in row
+      ? (row.kind === 'agent' ? { agentRunId: row.agent_run_id } : { teamRunId: row.team_run_id }) : row)
+    return added.every(holds) && !event.removed.some(holds) ? 'applied' : 'checkpoint_required'
   }
 
   /** Every identity is checked before any message is dispatched; batch items apply in order. */
@@ -285,15 +260,13 @@ export class AgentRunCollaborationContext {
     }
   }
 
-  /** A child is listed in the Workspaces tree unless it is in a closed task execution (Task DONE). */
+  /** A child is listed in the Workspaces tree: every child the view has (its child rows are the open ones, autobyteus-461). */
   isListed(agentRunId: string): boolean {
-    return this.index.remoteAgents.has(agentRunId)
-      || (this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId)))
+    return this.index.remoteAgents.has(agentRunId) || this.index.agents.has(agentRunId)
   }
 
-  /** The task rows under the run row: task Agents and task Teams with their members, without closed ones. */
+  /** The task rows under the run row: the runs it delegated to (task Agents and task Teams with their members). */
   listTaskRows(isTeamExpanded: (teamRunId: string) => boolean): AgentRunTaskTreeRow[] {
-    const hidden = this.closedSubtrees()
     const flat: { row: RunHistoryTransientExecutionRow; teamStatus: TeamStatus | null }[] = []
     const statusOf = (agentRunId: string) => this.contexts.get(agentRunId)?.state.currentStatus ?? AgentStatus.Offline
     const delegatorName = (agentRunId: string | null) => {
@@ -308,7 +281,6 @@ export class AgentRunCollaborationContext {
       currentStatus: statusOf(agent.agentRunId), delegatedBy: delegatorName(agent.delegatorAgentRunId), depth, hasChildren: false,
     })
     type TaskExecution = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
-    const listed = (node: CollaborationTreeNode) => !hidden.has(collaborationTreeWalk.keyOf(node))
     const visitAgent = (agentRunId: string, depth: number, shown: boolean): AgentStatus[] => {
       if (shown) flat.push({ row: agentRow(this.index.requireAgent(agentRunId), depth), teamStatus: null })
       return [statusOf(agentRunId)]
@@ -317,11 +289,10 @@ export class AgentRunCollaborationContext {
     // Returns the statuses of the listed agents in the task's subtree. Teams are flat: a task Team's members
     // are Agents; the Teams under it are the copies its members delegated (its own task executions).
     const visit = (task: TaskExecution, depth: number, shown: boolean): AgentStatus[] => {
-      if (!listed(task)) return []
       if ('agentRunId' in task) return visitAgent(task.agentRunId, depth, shown)
       const team = this.index.teams.get(task.teamRunId)!
-      const members = task.members.filter(listed)
-      const tasks = task.taskExecutions.filter(listed)
+      const members = task.members
+      const tasks = task.taskExecutions
       const entry: { row: RunHistoryTransientExecutionRow; teamStatus: TeamStatus | null } = { row: {
         kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${task.teamRunId}`, teamRunId: this.hostRunId,
         memberAddress: task.address, agentRunId: null, teamRunIdForNode: task.teamRunId, memberKind: 'agent_team',
@@ -403,9 +374,5 @@ export class AgentRunCollaborationContext {
   /** The root's delegated children. */
   private rootExecutionNodes() {
     return this.view.execution_tree.taskExecutions
-  }
-
-  private closedSubtrees() {
-    return collectClosedSubtrees<CollaborationTreeNode>(this.rootExecutionNodes(), this.view.closed_task_executions, collaborationTreeWalk)
   }
 }

@@ -352,6 +352,12 @@ export class AgentOrgStreamingService {
       if (application === 'checkpoint_required') await this.reopenOwned(generation)
       return
     }
+    if (message.type === 'CHILD_RUNS_CHANGED') {
+      // autobyteus-461 SR-042: its child rows changed (unsequenced): read the view again unless the change is already in it.
+      if (message.payload.root_subject_kind !== 'agent_org') throw new Error('AgentOrg stream supplied a non-Org event.')
+      if (this.context.applyChildRunsChanged(message.payload.event) === 'checkpoint_required') await this.reopenOwned(generation)
+      return
+    }
     this.context.setActive(message.payload.is_active)
     if (!message.payload.is_active) {
       this.options.onInactive?.()

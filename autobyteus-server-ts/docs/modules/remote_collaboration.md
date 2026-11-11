@@ -297,10 +297,9 @@ run's host, or a Team run's members.
   - An observation that ends without A closing it gets one summary fetch. There is no reconnect.
   - `refresh()` (the client's `REFRESH_REMOTE_TASK_EXECUTIONS`, Retry in the window) fetches the summaries again
     and reopens the ended observations.
-  - A newly linked peer run (`onPeerRunLinked` from `RemoteDelegation`) publishes
-    `remote_task_execution_started` with the node's name, and is observed when the root is being viewed.
-  - The root events are `RemoteRunRootEvent`s: `remote_task_execution_started`, `remote_task_execution_summary`
-    and `remote_agent_presentation`. They are published to the root's view stream only. Only the stream DTO
+  - A newly linked peer run (`onPeerRunLinked` from `RemoteDelegation`) is observed when the root is being
+    viewed; its row reaches the open views as a `CHILD_RUNS_CHANGED` from `ChildRowsFeed` (autobyteus-461).
+  - The root events are `RemoteRunRootEvent`s: `remote_task_execution_summary` and `remote_agent_presentation`. They are published to the root's view stream only. Only the stream DTO
     projectors map `remote_agent_presentation` to `agent_presentation`; the Team stream wraps them as source
     `REMOTE`.
 - **Views and commands on A.** The root views carry `remote_task_executions` (the links, with the node's name): the

@@ -1088,18 +1088,20 @@ different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
-For a newly delegated child, the root Team stream publishes
-`TASK_EXECUTION_STARTED` before every exact Agent frame. The server's
-registry-owned durability gate retains pre-activation Agent events, drains them
-FIFO after the durable tree write (including synchronous reentrant events), then
-forwards later status, turn, content, tool, and segment events exactly once
-through the unchanged root publisher before assignment work can start. Abort or
-disposal releases neither events nor work. The frontend inserts the child into
-the view's execution tree from that event, then routes all later frames by
+A newly delegated child is a run of its own (autobyteus-461). Its row reaches an
+open view as the unsequenced `CHILD_RUNS_CHANGED` (`{ run_id, added, removed }`),
+which the server holds while a snapshot is built and sends after it. The Team
+view applies it in place by membership (`teamChildRunsChange.ts`: an added row it
+holds is skipped, an unknown removed row ignored; then
+`invalidate_team_member_projection`, focus hand-back with
+`reconcile_focused_team_member_projection`, and `reconcile_team_navigation`),
+never through `team_stream_recovery_required`, so pending sends and approvals
+stay. The Agent-run and Org views read themselves again (`checkpoint_required`)
+unless the change is already in them. Later frames of the child are routed by
 `agent_execution`; an already-selected child therefore advances its
-conversation, Activity, and execution status without refocus or reload, and two
-same-address task runs cannot share updates. Snapshot/reconnect remains the
-recovery path rather than the normal live-update mechanism.
+conversation, Activity, and execution status without refocus or reload.
+Snapshot/reconnect remains the recovery path rather than the normal live-update
+mechanism.
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -1175,33 +1177,17 @@ compatible run-id fallback. The frontend must not recreate the removed
 as a routing authority. Idle shutdown does not remove delegated rows; they stay
 in the tree with `offline` status, in active and historical views alike.
 
-Task closure: when a Project Task becomes DONE, its task executions leave the
-Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),
-together with everything under them. The execution tree itself is never
-filtered, so message participants and history keep their identities. Closure is
-a separate fact beside the tree: the root snapshot and stored reads carry
-`closed_task_executions`, and the live `task_executions_closed` /
-`TASK_EXECUTIONS_CLOSED` event is published before the runs are stopped, so a
-failed stop does not keep them listed. `utils/collaboration/taskExecutionClosure.ts`
-owns the closed-subtree rule; the run-history row builders and
-`AgentRunTaskRows` / `WorkspaceTeamExecutionTree` /
-`WorkspaceAgentOrgHistoryCollection` apply it. Leaving rows use
-`useLeavingTreeRows` and `treeRowLeave.css`: a 200 ms ease-out fade and collapse
-while the remaining rows move up, at once under `prefers-reduced-motion`. New
-rows appear without motion. A selected closed run hands selection to the Agent
-run (Agent root), to the delegating Manager (Team root), or to the agent that
-delegated its outermost closed execution (Org root), and keyboard focus
-on a leaving row moves to that row. Messages with closed runs stay in the Team
-tab, and nothing is deleted from disk. Only the Workspaces tree and the main
-view follow closure; other Team surfaces still list closed members.
-Reactivation reverses closure for one execution. After the Task leaves DONE,
-the assigning run messages the execution's run ID. The root then publishes
-`task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
-`removeReopenedTaskExecutions` drops that reference from the closed set. The
-execution is listed again without a manual reload, and its still-closed helpers stay
-hidden. A view that no longer holds the execution (it left the tree when its Task
-closed, autobyteus-469) reloads itself through its checkpoint (Agent run, Org), or
-inserts it from the record the Team's `TASK_EXECUTIONS_REOPENED` carries. Snapshots and stored reads follow the same Task-side view.
+Task closure (autobyteus-461): a view's child rows are the runs it delegated to
+that hold an open Task. When a child's last open Task becomes DONE or CANCELLED,
+or its Task is deleted, it leaves the view through `CHILD_RUNS_CHANGED`
+(`removed`), with everything under it; when its assigner continues it after the
+Task leaves DONE, it comes back the same way (`added`). There is no closed set in
+the views or the stored reads. Leaving rows use `useLeavingTreeRows` and
+`treeRowLeave.css`: a 200 ms ease-out fade and collapse while the remaining rows
+move up, at once under `prefers-reduced-motion`. New rows appear without motion.
+A selected child that leaves hands selection to the Agent run (Agent root), to
+its delegator, else the coordinator (Team root), or clears it (Org root), and
+keyboard focus on a leaving row moves to that row. Nothing is deleted from disk.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -1664,14 +1650,12 @@ The saved-run view uses the start surfaces' visual language:
     before Save refuses the Save ("This copy is running. Stop it, then change its
     model."). Right after Save the rows show the saved choice: Settings reads the
     run's canonical settings again. A stopped Agent also rereads its collaboration
-    tree and closed-task list into the Settings snapshot; it does not depend on
-    an old live collaboration view. The current editor and expanded rows stay
-    mounted while the accepted model/config and Team followers are refreshed.
-    Save remains pending until that readback completes. A live run also publishes
-    the choice to its views (`DELEGATED_LAUNCH_SELECTIONS_CHANGED` on the Team stream,
-    `delegated_launch_selections_changed` on Org and Agent streams). The Team view
-    records it in place; Org and Agent views reload. Member conversations then
-    show the model the copy runs on.
+    tree into the Settings snapshot; it does not depend on an old live
+    collaboration view. The current editor and expanded rows stay mounted while
+    the accepted model/config and Team followers are refreshed. Save remains
+    pending until that readback completes. Each child's change is saved by that
+    child's own run (autobyteus-461 SR-039); no event announces it, and the editor
+    reloads its rows.
   - **Save recovery.** A rejected or failed write retains the edits for correction
     or retry. If the write succeeds but canonical readback fails, Settings says
     "Settings were saved, but could not be refreshed. Refresh before making more

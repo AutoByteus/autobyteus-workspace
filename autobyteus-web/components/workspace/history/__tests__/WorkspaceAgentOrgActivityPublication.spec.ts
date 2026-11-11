@@ -53,7 +53,7 @@ class Socket {
 const ORG_ROOT = '/org-workspace'
 const historyResponse = () => ({ data: { listCollaborationRootHistory: [{
   root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: '2026-09-01T00:00:00.000Z', last_activity_at: '2026-09-01T00:00:00.000Z',
-  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: withOrgRootWorkspace(taskBearingView().execution_tree, ORG_ROOT), closed_task_executions: [],
+  archived_at: null, is_active: true, summary: 'Keep this exact conversation', org: withOrgRootWorkspace(taskBearingView().execution_tree, ORG_ROOT), 
 }] } })
 let wrapper: ReturnType<typeof mount> | undefined
 let stopResult: Promise<void | WorkspaceSelectionOutcome>

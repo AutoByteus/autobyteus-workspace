@@ -64,8 +64,6 @@ export class AgentRunCollaborationStreamingService {
     publish(context: AgentRunCollaborationContext): void
     onInactive(): void
     reportError(message: string): void
-    /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
-    onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
 
   /** The store's connect: starts over (any wait is cancelled) and opens. */
@@ -245,13 +243,13 @@ export class AgentRunCollaborationStreamingService {
       if (application === 'applied' || through === undefined) {
         useCollaborationParticipantMessagesStore().advance('agent', this.options.hostRunId, this.context.view.live_sequence_id, through ?? first)
       }
-      if (application === 'checkpoint_required') {
-        // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
-        this.closeSocket('Agent collaboration reload')
-        this.openSocket()
-      } else if (message.payload.event.kind === 'task_executions_closed') {
-        this.options.onTaskExecutionsClosed?.(this.context)
-      }
+      if (application === 'checkpoint_required') this.reload()
+      return
+    }
+    if (message.type === 'CHILD_RUNS_CHANGED') {
+      // autobyteus-461 SR-042: its child rows changed (unsequenced): read the view again unless the change is already in it.
+      if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
+      if (this.context.applyChildRunsChanged(message.payload.event) === 'checkpoint_required') this.reload()
       return
     }
     this.context.setActive(message.payload.is_active)
@@ -259,6 +257,12 @@ export class AgentRunCollaborationStreamingService {
       this.options.onInactive()
       this.disconnect()
     }
+  }
+
+  /** Reconnects for a fresh snapshot (the view only); a selected child that left returns the focus to the run (publish). */
+  private reload(): void {
+    this.closeSocket('Agent collaboration reload')
+    this.openSocket()
   }
 
   private acknowledge(message: CommandAck): void {

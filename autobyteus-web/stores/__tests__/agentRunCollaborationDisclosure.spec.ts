@@ -34,6 +34,9 @@ const snapshot = async (socket: Socket, view = multiTeamView()) => {
 const event = (socket: Socket, change_sequence: number, value: unknown) => socket.frame({
   type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence, event: value },
 })
+/** An unsequenced child-row change (autobyteus-461 SR-042). */
+const childRuns = (socket: Socket, added: unknown[], removed: unknown[]) => socket.frame({ type: 'CHILD_RUNS_CHANGED', payload: {
+  root_subject_kind: 'agent', root_run_id: 'host-run', event: { kind: 'child_runs_changed', run_id: 'host-run', added, removed } } })
 const rowKeys = (store: ReturnType<typeof useAgentRunCollaborationStore>) => store.taskRows('host-run').map(item => item.row.rowKey)
 
 /** REQ-001..004/006: real store, context and stream; only hydration/transport boundaries are fixtures. */
@@ -96,8 +99,8 @@ describe('standalone delegated Team disclosure', () => {
     store.toggleTaskTeam('host-run', teamId(2)); store.selectChild('host-run', memberId(2, 0))
     expect(store.isTaskTeamExpanded('host-run', teamId(2))).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(2, 0))
-    // Starting a fresh execution follows the production checkpoint/reconnect snapshot path.
-    event(socket, 5, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: multiTeamView(8).execution_tree.taskExecutions.at(-1) }); await flush()
+    // A new child row (autobyteus-461 SR-042, unsequenced) follows the production checkpoint/reconnect snapshot path.
+    childRuns(socket, [multiTeamView(8).execution_tree.taskExecutions.at(-1)], []); await flush()
     expect(Socket.instances).toHaveLength(2)
     const refreshed = multiTeamView(8)
     refreshed.base_change_sequence = 5
@@ -107,7 +110,13 @@ describe('standalone delegated Team disclosure', () => {
     expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
     expect(rowKeys(store).length).toBeGreaterThanOrEqual(8)
     expect(store.selectedChild('host-run')).toBe(memberId(2, 0))
-    event(Socket.instances[1]!, 6, { kind: 'task_executions_closed', task_executions: [{ teamRunId: teamId(2) }] }); await flush()
+    // The child's Task closed: it leaves through a fresh view, and its selected member returns the focus to the run.
+    childRuns(Socket.instances[1]!, [], [{ teamRunId: teamId(2) }]); await flush()
+    expect(Socket.instances).toHaveLength(3)
+    const closed = multiTeamView(8)
+    closed.base_change_sequence = 5
+    closed.execution_tree = { ...closed.execution_tree, taskExecutions: closed.execution_tree.taskExecutions.filter((task) => !('teamRunId' in task && task.teamRunId === teamId(2))) }
+    await snapshot(Socket.instances[2]!, closed)
     expect(store.contextFor('host-run')!.phase).toBe('live')
     expect(store.selectedChild('host-run')).toBeNull()
     expect(rowKeys(store)).not.toContain(`team:${teamId(2)}`)

@@ -74,7 +74,7 @@ describe('AgentRunCollaborationContext', () => {
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 
-  it('applies sequenced events: messages to the Team tab lists, a started delegated run through a checkpoint, and a gap', async () => {
+  it('applies sequenced events: messages to the Team tab lists, and a gap; a new child row reads the view again (unsequenced)', async () => {
     storeParticipantMessages('agent', 'host-run', agentRootMessages)
     const context = build()
     context.messagesView('host-run').loadMessages()
@@ -84,11 +84,12 @@ describe('AgentRunCollaborationContext', () => {
     } })).toBe('applied')
     expect(context.messagesView('host-run').listMessages().map((row) => row.messageId)).toEqual(['m1', 'm2'])
     expect(context.view).not.toHaveProperty('communication_messages')
-    expect(context.applyEvent(6, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
+    expect(context.applyChildRunsChanged({ kind: 'child_runs_changed', run_id: 'host-run', removed: [], added: [{
       address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
       source: { kind: 'agent', agentDefinitionId: 'code-reviewer', launchConfiguration: launch },
-    } })).toBe('checkpoint_required')
-    expect(() => context.applyEvent(8, { kind: 'communication', message: {
+    }] })).toBe('checkpoint_required')
+    expect(context.changeSequence).toBe(5)
+    expect(() => context.applyEvent(7, { kind: 'communication', message: {
       messageId: 'm3', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'gap', messageType: 'direct_message', referenceFiles: [], createdAt: created,
     } })).toThrow('change sequence gap')
     expect(context.phase).toBe('reopen_required')

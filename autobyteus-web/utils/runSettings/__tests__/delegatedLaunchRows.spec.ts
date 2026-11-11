@@ -45,15 +45,13 @@ const tree = (): TeamRunExecutionTreeDto => ({
       // A copy of a configured placement records the placement's launch as its own source (REQ-001).
       { kind: 'task_agent', address: '/pm', agent_run_id: 'pm-copy', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
         source: { kind: 'agent', agent_definition_id: 'pm', launch_configuration: claude, launch_source: { origin: 'configured', fallbacks: [] } } },
-      { kind: 'task_agent', address: '/closed', agent_run_id: 'closed-run', platform_agent_run_id: null, delegator_agent_run_id: 'pm-run', started_at: created,
-        source: { kind: 'agent', agent_definition_id: 'x', launch_configuration: claude } },
     ],
   },
 })
 
 describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
-  it('Team root: one read-only row per open copy; a Team copy has its agents as child rows', () => {
-    const nodes = teamDelegatedLaunchNodes(tree(), [{ agentRunId: 'closed-run' }], deps)
+  it('Team root: one read-only row per child row (the open ones); a Team copy has its agents as child rows', () => {
+    const nodes = teamDelegatedLaunchNodes(tree(), deps)
     expect(flat(nodes)).toEqual([
       ['/writer@writer-run', 0, 'delegated_copy', 'not_recorded', 'claude_agent_sdk', 'opus'],
       ['/se@se-copy', 0, 'delegated_copy', 'inherited', 'claude_agent_sdk', 'opus'],
@@ -72,7 +70,7 @@ describe('delegated launch nodes (REQ-007, AC-010, SR-006)', () => {
   })
 
   it('a Team-level fallback is noted once, on the Team row; a member\'s own fallback stays on the member', () => {
-    const team = teamDelegatedLaunchNodes(tree(), [], deps).find((node) => node.key === '/se@se-copy')!
+    const team = teamDelegatedLaunchNodes(tree(), deps).find((node) => node.key === '/se@se-copy')!
     expect(team.launchNotes).toEqual([{ kind: 'fallback', layer: 'team_default', runtimeKind: 'grok_build', llmModelIdentifier: 'grok-4', detail: 'no grok' }])
     const notesOf = (key: string) => team.children.find((child) => child.key === key)!.launchNotes
     expect(notesOf('/se/lead@lead-run')).toEqual([])
@@ -136,7 +134,7 @@ describe('delegated row names follow the root\'s naming rule (autobyteus-208)', 
   })
 
   it('Team root: catalog copies (and a Team copy\'s members) by display name, a configured member\'s copy by basename, as the sidebar', () => {
-    const rows = names(teamDelegatedLaunchNodes(namingTree(), [], deps))
+    const rows = names(teamDelegatedLaunchNodes(namingTree(), deps))
     expect(rows).toEqual([
       ['/scribe_5083@scribe-run', 'scribe 5083'],
       ['/product_team@pt-run', 'product team'],

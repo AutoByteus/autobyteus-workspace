@@ -43,7 +43,7 @@ const tree: TeamRunExecutionTreeDto = {
     }],
   },
 }
-const nodes = (): RunMemberNode[] => teamDelegatedLaunchNodes(tree, [], { schemaFor: () => null, sameWorkspace: () => true })
+const nodes = (): RunMemberNode[] => teamDelegatedLaunchNodes(tree, { schemaFor: () => null, sameWorkspace: () => true })
 const root = { workspace: null, runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: null, autoExecuteTools: false }
 type Subject = Readonly<{ origin: 'delegated'; subject: RunMemberNode; group: RunMemberNode | null }>
 const copyOf = (rows: readonly RunMemberNode[], key: string): Subject => {
@@ -130,7 +130,7 @@ describe('RunMemberRow launch note (AC-011)', () => {
 })
 
 describe('Settings: stop and change a copy (SR-007)', () => {
-  const runningRows = (live: readonly string[]) => teamDelegatedLaunchNodes(tree, [], { schemaFor: () => null, sameWorkspace: () => true }, {
+  const runningRows = (live: readonly string[]) => teamDelegatedLaunchNodes(tree, { schemaFor: () => null, sameWorkspace: () => true }, {
     editable: true, isAgentLive: (id) => live.includes(id), isStopping: () => false, draftOf: () => null,
   })
   const running = (subject: Subject) => settings(subject, { isActive: true, canEdit: false, state: 'read_only', subjectActive: Boolean(subject.subject.delegated?.running) })
