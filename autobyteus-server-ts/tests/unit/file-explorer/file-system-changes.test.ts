@@ -86,17 +86,14 @@ describe("FileSystemChange", () => {
     expect(deserialized.newParentId).toBe("new_parent");
   });
 
-  it("serializes and deserializes ModifyChange", () => {
-    const modifyChange = new ModifyChange("123", "parent_456");
+  it("serializes and deserializes ModifyChange by path only", () => {
+    const modifyChange = new ModifyChange("deep/inner/a.md");
     const modifyDict = modifyChange.toDict();
 
-    expect(modifyDict.type).toBe("modify");
-    expect(modifyDict.node_id).toBe("123");
-    expect(modifyDict.parent_id).toBe("parent_456");
+    expect(modifyDict).toEqual({ type: "modify", path: "deep/inner/a.md" });
 
     const deserialized = ModifyChange.fromDict(modifyDict);
-    expect(deserialized.nodeId).toBe("123");
-    expect(deserialized.parentId).toBe("parent_456");
+    expect(deserialized.path).toBe("deep/inner/a.md");
   });
 
   it("serializes and deserializes FileSystemChangeEvent", () => {

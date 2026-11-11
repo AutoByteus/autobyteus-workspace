@@ -29,7 +29,7 @@ Stale or unsupported phone links such as `/mobile/workspace` stay inside the mob
       - a path attachment opens as a file link does;
       - a path of a run on another node shows "This file is on <node>, where this run runs." and opens nothing.
     - Back returns to the conversation.
-  - Each explicit open of a file reads it again, so it shows the file's current content (see [File Explorer](./file_explorer.md)).
+  - Each explicit open of a file reads it again, so it shows the file's current content. An open workspace file also refreshes by itself when it changes on disk, including images and PDFs and files in folders never expanded (autobyteus-452); see [File Explorer](./file_explorer.md). A node file opened by absolute path does not.
 - **New run** — an agent run only: Agent, Folder (with "Open a folder by path", an absolute path on the paired node; a path that is not an existing absolute folder there is refused with the reason under the field, such as "No folder at this path.", and nothing is registered), Runtime, Model and Auto approve tools, each choice a bottom sheet. Agent is preselected: the agent of the run opened before, else the Project Task Manager, else the first agent. **Create run** creates the run and opens its conversation for the first message.
 - **Connection sheet** — the paired node's name (no address, host or URL: autobyteus-433), its state with a refresh icon while it is reachable and **Retry** when it is not, **Switch node** in the Android app (it opens the app's node list; the shell bridge, below), and **Unpair from <node>**. The sheet lists no peer nodes; runs on other nodes keep their node chips in the run list.
 

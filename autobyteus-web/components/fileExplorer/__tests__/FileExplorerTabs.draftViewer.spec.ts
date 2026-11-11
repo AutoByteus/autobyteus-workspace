@@ -47,7 +47,7 @@ const addFile = (workspaceId = 'draft-a', path = 'notes.md') => {
   state.activeFile = path
   const file = state.openFiles.at(-1)!
   const peer = () => store.handleFileSystemChange(workspaceId, {
-    changes: [{ type: 'modify', node_id: node.id, parent_id: state.tree.id }],
+    changes: [{ type: 'modify', path }],
   })
   return { store, state, file, peer }
 }

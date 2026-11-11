@@ -1,0 +1,12 @@
+
+> autobyteus@1.5.13-beta.4 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-21,MSP-22,MSP-23 --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/tickets/in-progress/open-file-live-refresh-452/evidence/API-11-live-reconnect-rerun
+
+[mobile-shell] MSP-21 …
+[mobile-shell] MSP-21 Pass
+[mobile-shell] MSP-22 …
+[mobile-shell] MSP-22 Pass
+[mobile-shell] MSP-23 …
+[mobile-shell] MSP-23 Pass
+mobile-shell probe: Pass
+exit 0

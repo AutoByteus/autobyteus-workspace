@@ -1,9 +1,14 @@
+import path from "node:path";
 import { FileSystemChangeEvent, ModifyChange } from "../file-system-changes.js";
 import {
   BaseTreeStateSynchronizer,
   type FileExplorerTreeContext,
 } from "./base-tree-state-synchronizer.js";
 
+/**
+ * Reports a file's content change by its workspace-relative path. It does not consult the
+ * lazily loaded tree, so a change in a folder the client never expanded still reaches an open viewer.
+ */
 export class ModifyNodeSynchronizer extends BaseTreeStateSynchronizer {
   private targetPath: string;
 
@@ -13,13 +18,7 @@ export class ModifyNodeSynchronizer extends BaseTreeStateSynchronizer {
   }
 
   sync(): FileSystemChangeEvent {
-    const nodeToModify = this.fileExplorer.findNodeByPath(this.targetPath);
-
-    if (!nodeToModify || !nodeToModify.parent || !nodeToModify.isFile) {
-      return new FileSystemChangeEvent([]);
-    }
-
-    const change = new ModifyChange(nodeToModify.id, nodeToModify.parent.id);
-    return new FileSystemChangeEvent([change]);
+    const posixPath = this.targetPath.split(path.sep).join("/");
+    return new FileSystemChangeEvent([new ModifyChange(posixPath)]);
   }
 }
