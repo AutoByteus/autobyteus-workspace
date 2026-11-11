@@ -144,7 +144,7 @@ An explicit open of a file that is already open reads it again (autobyteus-450, 
 - **Text:** the cached `content` is cleared and fetched again (`network-only`). An `editorDraft` stays, and the link's read-only preview shows the new committed text.
 - **Other types** (image, PDF, audio, video, spreadsheet): `contentRevision` is bumped, and the viewer fetches the file again.
 
-So each open shows the file's current content. A viewer that is left open does not refresh by itself when the file changes later. Drafts are not persisted across
+So each open shows the file's current content. A workspace file that is already open also refreshes by itself while the workspace's live stream is open ([Open Files Follow The Disk](#open-files-follow-the-disk)). Files opened by absolute path outside the workspace do not (autobyteus-452 FU-001). Drafts are not persisted across
 application/page restarts. This does not add remote notifications, automatic
 merge, competing-write arbitration, or an outage-isolation guarantee.
 
@@ -975,6 +975,19 @@ The backend WebSocket route resolves the workspace and asks its file explorer fo
 Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend parent process logically stops the watcher: subscribers and pending timers are closed, the current watcher generation is detached, and a stop command is sent to a child watcher runtime process.
 
 The child watcher runtime owns native chokidar start/close and sends raw events back to the parent over IPC with `{ watcherId, generation }` identity. Physical chokidar close can block or be force-killed without blocking unrelated backend routes such as Terminal. Stale child messages from a previous generation are ignored after close/restart.
+
+#### Open Files Follow The Disk
+
+An open workspace file refreshes when it changes on disk, in the desktop window and on the phone (autobyteus-452). This holds whether or not its folder was ever expanded, and for text, images and PDFs alike.
+
+- **The node:**
+  - On a file `change`, `watchdog-handler` sends `modify` with the file's workspace-relative `path` (POSIX separators), whether or not the path is in its tree.
+  - On a file `add`, and on a file move (the watcher pairs a temp file's unlink with the add at its final path), it sends the structural change as before, plus `modify` for the destination path. So an atomic rewrite (write elsewhere, then rename over the file) also refreshes.
+- **The window (`fileExplorerTreeActions`):** structural changes apply as before. For each `modify`:
+  - a path marked as the window's own save is unmarked and nothing else happens;
+  - a path that is open is reloaded through `_reloadOpenFile`: text keeps an `editorDraft`, and other types bump `contentRevision`;
+  - any other path is ignored, so files that are not open cause no reads.
+- **Batching:** a burst of changes arrives in the stream's usual batched frames. In testing, 200 changes came as one frame of about 10 KB and caused no reads.
 
 Event delivery intentionally stays simple. The backend keeps the existing lightweight batching and bounded queues for `FILE_SYSTEM_CHANGE`. If the runtime fails or an event queue overflows, the stream closes with an error; the frontend reconnect path refreshes a snapshot instead of attempting semantic event reconciliation.
 

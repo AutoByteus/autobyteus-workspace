@@ -133,10 +133,14 @@
 //                  the sheet re-reads the runtime's model list once, the list is shown, and "Refresh models" (a touch-sized control)
 //                  re-reads it again without emptying the list and without an error. A change of the list itself (a CLI update)
 //                  is the desktop probe `model-list-journeys-probe.mjs`; this scripted Antigravity list does not change.
+//   MSP-39…42 autobyteus-452  An open file viewer (desktop window and phone) shows a workspace file's new content by
+//                  itself when it changes on disk in an unexpanded folder (in place, atomic, from another folder; text, image,
+//                  PDF); unsaved edits and own saves; no reads for files that are not open; stream volume of a 200-file
+//                  burst: `mobile-live-file-refresh-cases.mjs` (on alpha, last).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
-// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 19 minutes (MSP-21…23 about 5, MSP-24…27 about 4, MSP-28…31 about 4).
+// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 22 minutes (MSP-21…23 about 5, MSP-24…27 about 4, MSP-28…31 about 4, MSP-39…42 about 3).
 // `--hold` sets the stack up, pairs nothing, prints the phone URLs and a pairing link for the Android emulator
 // (`http://10.0.2.2:<alpha port>`) and, with `--bind=0.0.0.0`, for this machine's LAN address, and keeps the stack until
 // Ctrl+C (device checks); it runs no case.
@@ -155,6 +159,7 @@ import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
+import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -2441,6 +2446,7 @@ const runCases = async () => {
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runFileOpenCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+  await runLiveFileRefreshCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
 
   await runCase('MSP-32', async () => {
     // autobyteus-435 REQ-010 (c): MSP-13 revoked the open phone (label `phone`), whose Check took it to pairing; the page

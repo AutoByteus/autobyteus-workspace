@@ -50,6 +50,10 @@ export class WatchdogHandler {
       const isFile = !isDirectory;
       const synchronizer = new AddNodeSynchronizer(this.fileExplorer, relativePath, isFile);
       const changeEvent = synchronizer.sync();
+      if (isFile) {
+        // A file appearing at a path may replace one that is open (a rename from elsewhere).
+        changeEvent.changes.push(...this.contentChangeFor(relativePath).changes);
+      }
       if (changeEvent.changes.length > 0) {
         this.callback(changeEvent);
       }
@@ -92,6 +96,11 @@ export class WatchdogHandler {
     try {
       const synchronizer = new MoveNodeSynchronizer(this.fileExplorer, srcRelative, destRelative);
       const changeEvent = synchronizer.sync();
+      if (!isDirectory) {
+        // The watcher pairs a temp file's unlink with the add at its final path, so an atomic
+        // rewrite (write elsewhere, rename over) arrives here rather than as an add.
+        changeEvent.changes.push(...this.contentChangeFor(destRelative).changes);
+      }
       if (changeEvent.changes.length > 0) {
         this.callback(changeEvent);
       }
@@ -111,13 +120,13 @@ export class WatchdogHandler {
     logger.info(`Watcher detected modification: ${eventPath}`);
     const relativePath = path.relative(this.fileExplorer.workspaceRootPath, eventPath);
     try {
-      const synchronizer = new ModifyNodeSynchronizer(this.fileExplorer, relativePath);
-      const changeEvent = synchronizer.sync();
-      if (changeEvent.changes.length > 0) {
-        this.callback(changeEvent);
-      }
+      this.callback(this.contentChangeFor(relativePath));
     } catch (error) {
       logger.error(`Error generating modify event for ${relativePath}: ${String(error)}`);
     }
+  }
+
+  private contentChangeFor(relativePath: string): FileSystemChangeEvent {
+    return new ModifyNodeSynchronizer(this.fileExplorer, relativePath).sync();
   }
 }

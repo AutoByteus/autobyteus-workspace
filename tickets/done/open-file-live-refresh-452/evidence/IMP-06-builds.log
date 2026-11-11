@@ -1,0 +1,22 @@
+# Check: IMP-06
+# Command: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web
+# Commit: base 827f1e68dc + working tree = e0bb6399c7
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11
+
+## server build (tail)
+AgentFactory (Singleton) initialized.
+(node:61547) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+## mobile build (tail)
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-web/dist-mobile/public
+## built server emits path modify:
+autobyteus-server-ts/dist/file-explorer/tree-state-synchronizers/modify-node-synchronizer.js:15:        const posixPath = this.targetPath.split(path.sep).join("/");
+autobyteus-server-ts/dist/file-explorer/tree-state-synchronizers/modify-node-synchronizer.js:16:        return new FileSystemChangeEvent([new ModifyChange(posixPath)]);
+autobyteus-server-ts/dist/file-explorer/watcher/watchdog-handler.js:42:                changeEvent.changes.push(...this.contentChangeFor(relativePath).changes);
+autobyteus-server-ts/dist/file-explorer/watcher/watchdog-handler.js:85:                changeEvent.changes.push(...this.contentChangeFor(destRelative).changes);
+autobyteus-server-ts/dist/file-explorer/watcher/watchdog-handler.js:103:            this.callback(this.contentChangeFor(relativePath));
