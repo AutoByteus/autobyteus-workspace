@@ -33,7 +33,7 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
   const treeStore = { read: vi.fn(async () => input.storedTree === undefined ? tree : input.storedTree) };
   const livePosition = vi.fn(() => ({ liveSequenceId: "live-team-1", changeSequence: 12, lastMessageChangeSequence: 9 }));
   const manager = {
-    hasManagedTeamRun: vi.fn(() => Boolean(input.active)), closedTaskExecutionsFor: vi.fn(() => []),
+    hasManagedTeamRun: vi.fn(() => Boolean(input.active)),
     getManagedTeamRun: vi.fn(() => input.active ? { getLivePosition: livePosition } : null),
   };
   const live = { getCatalogListLiveProjection: vi.fn(() => ({
@@ -104,20 +104,16 @@ describe("TeamRunHistoryService current execution tree", () => {
 
   it("returns exact resume identity/tree and reports missing current packages", async () => {
     const active = harness({ active: true });
-    // The stored closure read goes through the root-kind manager, against the same stored tree.
-    active.manager.closedTaskExecutionsFor.mockReturnValue([{ agentRunId: "worker-run" }] as never);
     await expect(active.service.getTeamRunResumeConfig("team-1")).resolves.toEqual({
       teamRunId: "team-1",
       isActive: true,
       executionTree: tree,
-      closedTaskExecutions: [{ agentRunId: "worker-run" }],
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
       // The running Team's live sequence and change sequence, as its stream snapshot names them (autobyteus-358).
       liveSequenceId: "live-team-1",
       baseChangeSequence: 12,
       lastMessageChangeSequence: 9,
     });
-    expect(active.manager.closedTaskExecutionsFor).toHaveBeenCalledWith("team-1", tree);
     await expect(harness({ active: false }).service.getTeamRunResumeConfig("team-1"))
       .resolves.toMatchObject({ isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null });
     await expect(harness({ storedTree: null }).service.getTeamRunResumeConfig("missing"))
