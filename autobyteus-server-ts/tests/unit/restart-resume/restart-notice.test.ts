@@ -19,7 +19,7 @@ import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-sto
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 
 const entry = (place: BusyRunEntry["place"]): BusyRunEntry => ({
-  root: { rootSubjectKind: "agent", rootRunId: "host-1" }, agentRunId: place === "host" ? "host-1" : "copy-1", place,
+  root: { rootSubjectKind: "agent", rootRunId: "host-1" }, agentRunId: place === "host" ? "host-1" : "worker-1", place,
   status: "running", recordedAt: "2026-11-01T09:59:58.000Z", version: "1.5.11-beta.9",
 });
 const restartedAt = new Date("2026-11-01T10:00:30.000Z");
@@ -33,21 +33,21 @@ describe("buildRestartNotice", () => {
     ].join("\n"));
   });
 
-  it("lists the accepted delegated runs for a host or a member, never for a delegated run itself", () => {
-    const names = ["Researcher (copy-1)", "copy-2"];
+  it("lists the accepted runs it delegated to for any run: a host or a member (DS-9, every run is its own root)", () => {
+    const names = ["Researcher (child-1)", "child-2"];
     expect(buildRestartNoticeText({ entry: entry("host"), version: "2", restartedAt, resumedDelegated: names }))
-      .toContain("These runs you delegated were resumed too and are working: Researcher (copy-1), copy-2.");
-    expect(buildRestartNoticeText({ entry: entry("member"), version: "2", restartedAt, resumedDelegated: names })).toContain("Researcher (copy-1)");
-    expect(buildRestartNoticeText({ entry: entry("delegated"), version: "2", restartedAt, resumedDelegated: names })).not.toContain("delegated were resumed");
+      .toContain("These runs you delegated were resumed too and are working: Researcher (child-1), child-2.");
+    expect(buildRestartNoticeText({ entry: entry("member"), version: "2", restartedAt, resumedDelegated: names })).toContain("Researcher (child-1)");
+    expect(buildRestartNoticeText({ entry: entry("host"), version: "2", restartedAt, resumedDelegated: [] })).not.toContain("delegated were resumed");
   });
 
   it("is a notice-only SYSTEM input with the named message and dedupe keys", () => {
-    const message = buildRestartNotice({ entry: entry("delegated"), version: "2", restartedAt, resumedDelegated: [] });
+    const message = buildRestartNotice({ entry: entry("member"), version: "2", restartedAt, resumedDelegated: [] });
     expect(message.senderType).toBe(SenderType.SYSTEM);
     expect(message.metadata).toMatchObject({
       sender_id: RESTART_RESUME_NOTICE_SENDER_ID,
-      message_id: "restart-resume:2026-11-01T09:59:58.000Z:copy-1",
-      dedupe_key: "agent_run_input:copy-1:restart-resume:2026-11-01T09:59:58.000Z:copy-1",
+      message_id: "restart-resume:2026-11-01T09:59:58.000Z:worker-1",
+      dedupe_key: "agent_run_input:worker-1:restart-resume:2026-11-01T09:59:58.000Z:worker-1",
     });
     expect(shouldSuppressSystemTaskNotification(message.metadata)).toBe(true);
     expect(readPlatformInputPreface(message.metadata)).toEqual({ content: message.content, senderId: RESTART_RESUME_NOTICE_SENDER_ID, originalContent: null });

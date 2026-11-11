@@ -13,7 +13,7 @@ export type RestartNoticeInput = Readonly<{
   /** The release this server runs (the update's target). */
   version: string;
   restartedAt: Date;
-  /** Delegated runs of the same root accepted in the first wave; listed for its host or members. */
+  /** The resumed runs this run's root delegated to, one hop (their Task entries name it as `delegatingRun`, DS-9). */
   resumedDelegated: readonly string[];
 }>;
 
@@ -23,7 +23,7 @@ export const buildRestartNoticeText = (input: RestartNoticeInput): string => {
     "Your previous turn was interrupted.",
     "Tool calls that were running have unknown results; check before repeating any of them.",
   ];
-  if (input.entry.place !== "delegated" && input.resumedDelegated.length) {
+  if (input.resumedDelegated.length) {
     lines.push(`These runs you delegated were resumed too and are working: ${input.resumedDelegated.join(", ")}.`);
   }
   return lines.join("\n");

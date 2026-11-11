@@ -9,6 +9,7 @@ import type { AgentOrgRunHistoryCatalogService } from "../run-history/services/a
 import { getAgentRunHistoryCatalogService } from "../run-history/services/agent-run-history-catalog-service.js";
 import { getTeamRunHistoryCatalogService } from "../run-history/services/team-run-history-catalog-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { findDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
 
 export type RestartResume = Readonly<{ recorder: BusyRunRecorder; resumer: RestartResumer }>;
 
@@ -37,7 +38,7 @@ export const composeRestartResume = (input: Readonly<{
   return Object.freeze({
     recorder: new BusyRunRecorder({ liveRuns, roots: getActiveCollaborationRootDirectory(), recordPath, version: readReleaseIdentity }),
     resumer: new RestartResumer({
-      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver,
+      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: findDelegationTree,
     }),
   });
 };

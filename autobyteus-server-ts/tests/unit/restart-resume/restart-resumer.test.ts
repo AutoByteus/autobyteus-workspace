@@ -1,7 +1,8 @@
 /**
  * autobyteus-285 D3 (REQ-002 to REQ-006; AC-003 to AC-005; SR-005): after an update restart the recorded runs are
- * resumed once, through their roots, at most 3 posts at a time; a root's delegated runs first, then its host and
- * members. Each run is restored without posting, re-checked, then sent a notice it admits only as its first input.
+ * resumed once, through their roots, at most 3 posts at a time. Every run is its own root (autobyteus-461 DS-9): roots
+ * are resumed bottom-up along `delegatedFrom` (from the Task entries), and a run's notice lists the resumed runs it
+ * delegated to, one hop. Each run is restored without posting, re-checked, then sent a notice it admits only as its first input.
  * Temporary data root; roots and runs are doubles.
  */
 import fs from "node:fs/promises";
@@ -29,7 +30,8 @@ const exists = (target: string) => fs.access(target).then(() => true, () => fals
 type Post = { agentRunId: string; via: "host" | "root"; message: AgentInputUserMessage; options: AgentRunInputOptions; inFlight: number };
 
 /** Roots and runs as doubles: every post is recorded with its options and the in-flight count when it started. */
-const harness = (options: { current?: string | null; concurrency?: number; postDelayMs?: number } = {}) => {
+/** `parents`: child root key → the run that delegated to it (its Task entry's `delegatedFrom.delegatingRun`). */
+const harness = (options: { current?: string | null; concurrency?: number; postDelayMs?: number; parents?: Record<string, RootExecutionIdentity> } = {}) => {
   const live = new Set<string>();
   const history = new Map<string, RootHistoryState>();
   const posts: Post[] = [];
@@ -78,6 +80,10 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
     liveRuns: { getActiveRun: (id: string) => (live.has(id) ? runOf(id) : null) as never },
     rootHistory: async (root) => history.get(keyOf(root)) ?? "present",
     rootResolver,
+    tree: () => ({ parentOf: (run: { agentRunId?: string; teamRunId?: string }) => {
+      const parent = options.parents?.["agentRunId" in run ? `agent:${run.agentRunId}` : `agent_team:${run.teamRunId}`];
+      return parent ? { delegatingRun: parent, delegatorAgentRunId: parent.rootRunId } : null;
+    } }) as never,
     now: () => new Date("2026-11-01T10:00:30.000Z"),
     concurrency: options.concurrency,
   });
@@ -148,13 +154,13 @@ describe("RestartResumer: restore, re-check, post a first-input-only notice", ()
     await writeBusyRunRecord(recordPath, { entries: [
       entry(agentRoot("host-1"), "host-1", "host"),
       entry(teamRoot("team-1"), "worker-1", "member"),
-      entry(agentRoot("host-2"), "copy-1", "delegated"),
+      entry(agentRoot("copy-1"), "copy-1", "host"),
     ] });
     const h = harness();
 
     await expect(h.resumer.resumeAfterUpdate()).resolves.toEqual({ recorded: 3, notUpdate: 0, skipped: 0, resumed: 3, failed: 0 });
 
-    expect(h.posts.map((post) => [post.agentRunId, post.via]).sort()).toEqual([["copy-1", "root"], ["host-1", "host"], ["worker-1", "root"]]);
+    expect(h.posts.map((post) => [post.agentRunId, post.via]).sort()).toEqual([["copy-1", "host"], ["host-1", "host"], ["worker-1", "root"]]);
     for (const post of h.posts) {
       expect(post.options.onlyAsFirstInput).toBe(true);
       expect(post.message.senderType).toBe(SenderType.SYSTEM);
@@ -185,7 +191,7 @@ describe("RestartResumer: restore, re-check, post a first-input-only notice", ()
       entry(agentRoot("live"), "live", "host"),
       entry(agentRoot("stopped"), "stopped", "host"),
       entry(teamRoot("archived"), "member", "member"),
-      entry(agentRoot("deleted"), "copy", "delegated"),
+      entry(agentRoot("deleted"), "deleted", "host"),
       entry(agentRoot("ok"), "ok", "host"),
     ] });
     const h = harness();
@@ -223,13 +229,13 @@ describe("RestartResumer: restore, re-check, post a first-input-only notice", ()
     expect(h.published).toEqual([]);
   });
 
-  it("AR-003: resumes a root's delegated runs first; its host is told only the accepted ones", async () => {
+  it("DS-9: resumes a delegated run before the run that delegated to it; its delegator is told only the accepted ones", async () => {
     await writeBusyRunRecord(recordPath, { entries: [
       entry(agentRoot("host-1"), "host-1", "host"),
-      entry(agentRoot("host-1"), "copy-ok", "delegated"),
-      entry(agentRoot("host-1"), "copy-closed", "delegated"),
+      entry(agentRoot("copy-ok"), "copy-ok", "host"),
+      entry(agentRoot("copy-closed"), "copy-closed", "host"),
     ] });
-    const h = harness();
+    const h = harness({ parents: { "agent:copy-ok": agentRoot("host-1"), "agent:copy-closed": agentRoot("host-1") } });
     h.refuse.set("copy-closed", { code: "TASK_AGENT_RESOURCE_CLOSED", message: "Task 7 is DONE." });
 
     await expect(h.resumer.resumeAfterUpdate()).resolves.toMatchObject({ resumed: 2, failed: 1 });
@@ -240,17 +246,24 @@ describe("RestartResumer: restore, re-check, post a first-input-only notice", ()
     expect(h.posts.find((post) => post.agentRunId === "copy-ok")!.message.content).not.toContain("you delegated");
   });
 
-  it("tells every resumed member of a Team the delegated runs accepted in its root", async () => {
+  it("DS-9: every resumed member of a Team is told the runs its team run delegated to; a chain resumes deepest first", async () => {
     await writeBusyRunRecord(recordPath, { entries: [
       entry(teamRoot("team-1"), "coordinator", "member"),
       entry(teamRoot("team-1"), "worker", "member"),
-      entry(teamRoot("team-1"), "team-copy", "delegated"),
+      entry(teamRoot("team-copy"), "team-copy-lead", "member"),
+      entry(agentRoot("grandchild"), "grandchild", "host"),
     ] });
-    const h = harness();
+    const h = harness({ parents: { "agent_team:team-copy": teamRoot("team-1"), "agent:grandchild": teamRoot("team-copy") } });
     await h.resumer.resumeAfterUpdate();
     for (const member of ["coordinator", "worker"]) {
-      expect(h.posts.find((post) => post.agentRunId === member)!.message.content).toContain("Name team-copy (team-copy)");
+      expect(h.posts.find((post) => post.agentRunId === member)!.message.content).toContain("Name team-copy-lead (team-copy-lead)");
     }
+    // One hop only: the team run's members are not told of the grandchild; the delegated team is.
+    expect(h.posts.find((post) => post.agentRunId === "coordinator")!.message.content).not.toContain("grandchild");
+    expect(h.posts.find((post) => post.agentRunId === "team-copy-lead")!.message.content).toContain("Name grandchild (grandchild)");
+    const order = h.posts.map((post) => post.agentRunId);
+    expect(order.indexOf("grandchild")).toBeLessThan(order.indexOf("team-copy-lead"));
+    expect(order.indexOf("team-copy-lead")).toBeLessThan(order.indexOf("coordinator"));
   });
 
   it("DEC-002: runs at most 3 posts at a time", async () => {
@@ -260,13 +273,14 @@ describe("RestartResumer: restore, re-check, post a first-input-only notice", ()
     expect(h.maxInFlight()).toBe(3);
   });
 
-  it("N-7: three roots with delegated runs under the cap of 3 never deadlock (a waiting host holds no slot)", async () => {
+  it("N-7: three runs with delegated runs under the cap of 3 never deadlock (a waiting delegator holds no slot)", async () => {
     await writeBusyRunRecord(recordPath, { entries: ["h1", "h2", "h3"].flatMap((host) => [
       entry(agentRoot(host), host, "host"),
-      entry(agentRoot(host), `${host}-copy-a`, "delegated"),
-      entry(agentRoot(host), `${host}-copy-b`, "delegated"),
+      entry(agentRoot(`${host}-copy-a`), `${host}-copy-a`, "host"),
+      entry(agentRoot(`${host}-copy-b`), `${host}-copy-b`, "host"),
     ]) });
-    const h = harness({ postDelayMs: 10 });
+    const parents = Object.fromEntries(["h1", "h2", "h3"].flatMap((host) => [[`agent:${host}-copy-a`, agentRoot(host)], [`agent:${host}-copy-b`, agentRoot(host)]]));
+    const h = harness({ postDelayMs: 10, parents });
     const outcome = await Promise.race([
       h.resumer.resumeAfterUpdate(),
       new Promise((resolve) => setTimeout(() => resolve("deadlocked"), 3_000)),

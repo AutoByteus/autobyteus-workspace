@@ -22,14 +22,12 @@ export interface ActiveRootMessageBoundary {
   prepareSendToRun?(input: import("../communication/root-communication-engine.js").RunSendInput): import("../communication/root-communication-engine.js").PreparedRunSend;
   commitSentToRun?(message: import("../communication/collaboration-communication-message.js").CollaborationCommunicationMessage): Promise<void>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
-  /** The coordinator agent run of this root's Team copy with that team run ID; `null` when it hosts none. Reads only. */
+  /** The coordinator agent run of this team run, or of a peer team run it delegated to; `null` otherwise. Reads only. */
   teamCoordinatorOf?(teamRunId: string): string | null;
-  /** The agent run is inside one of this root's delegated copies (a task Agent, or a task Team's member). Reads only. */
-  isDelegatedRun?(agentRunId: string): boolean;
 }
 
-/** Where a live agent run sits in its root: the standalone host, a Team or Org member, or a delegated copy's run. */
-export type CollaborationRunPlace = "host" | "member" | "delegated";
+/** Where a live agent run sits in its own root: a standalone run's agent, or a Team or Org member (autobyteus-461 DS-9). */
+export type CollaborationRunPlace = "host" | "member";
 
 export type ActiveRootRegistrationReservation = Readonly<{
   root: RootExecutionIdentity;
@@ -83,8 +81,8 @@ export class ActiveCollaborationRootDirectory {
   }
 
   /**
-   * The coordinator agent run of the Team copy with this team run ID in any active root, for
-   * `send_message_to` guidance (it reaches agents only); `null` when no active root hosts it.
+   * The coordinator agent run of the team run with this ID, as an active root knows it (its own, or a peer team run it
+   * delegated to), for `send_message_to` guidance (it reaches agents only); `null` when no active root knows it.
    */
   findTeamCoordinator(teamRunId: string): string | null {
     for (const { boundary } of this.active.values()) {
@@ -97,7 +95,7 @@ export class ActiveCollaborationRootDirectory {
   /**
    * The active root holding this agent run and its place there (autobyteus-285, restart resume); `null` when no
    * active root holds it (application- or system-owned runs). Reads only. One root holds a run; if several boundaries
-   * claim it, that is logged and the host, then a delegated claim, wins.
+   * claim it, that is logged and the host claim wins.
    */
   placeOf(agentRunIdInput: string): Readonly<{ root: RootExecutionIdentity; place: CollaborationRunPlace }> | null {
     const agentRunId = agentRunIdInput.trim();
@@ -105,14 +103,13 @@ export class ActiveCollaborationRootDirectory {
       .filter(({ boundary }) => boundary.hasAgentExecution(agentRunId))
       .map(({ root, boundary }) => Object.freeze({
         root: cloneRootExecutionIdentity(root),
-        place: root.rootSubjectKind === "agent" && root.rootRunId === agentRunId ? "host" as const
-          : boundary.isDelegatedRun?.(agentRunId) ? "delegated" as const : "member" as const,
+        place: root.rootSubjectKind === "agent" && root.rootRunId === agentRunId ? "host" as const : "member" as const,
       }));
     if (claims.length > 1) {
       console.warn(`Agent run '${agentRunId}' is claimed by ${claims.length} active roots: `
         + claims.map((claim) => `${claim.root.rootSubjectKind}:${claim.root.rootRunId}`).join(", "));
     }
-    const rank = { host: 0, delegated: 1, member: 2 } as const;
+    const rank = { host: 0, member: 1 } as const;
     return [...claims].sort((a, b) => rank[a.place] - rank[b.place])[0] ?? null;
   }
 
