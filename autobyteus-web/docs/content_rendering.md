@@ -116,9 +116,9 @@ contract, while the rendered DOM contains only the render-scoped action ID and
 display label. Empty-authority absolute URIs such as `file:///tmp/report.md`
 can become actions; authorities, query strings, fragments, malformed escapes,
 relative/empty paths, and unsupported file types remain inert. A valid URI may
-still be unavailable in a browser/remote runtime, in which case the existing
-localized host-only/unavailable state is shown before Files, mobile, workspace,
-or filesystem access.
+still be unavailable: a path of a run on another node shows "This file is on
+<node>, where this run runs." before Files, mobile, workspace, or filesystem
+access.
 
 Path recognition rejects incomplete or placeholder components such as `.`, `..`,
 `...`, and the Unicode ellipsis `…` before action/type classification. Complete
@@ -165,10 +165,12 @@ contract is detailed in [Event Monitor Preview Requests](./file_explorer.md#even
 
 Runtime access remains environment-specific: an embedded node binding plus
 trusted Electron local-file bridge may use the native boundary, while
-browser/remote/mobile clients must map the host path inside the selected
-workspace to a workspace-relative locator. A remote-node Electron window must
-not use client-local reads even if a bridge exists. Unmapped
-paths remain copyable and show a localized host-only/unavailable state.
+browser/remote/mobile clients open a path inside the selected workspace as a
+workspace-relative locator and any other absolute path as a **node file**, read
+only, from the run's node (`GET /rest/node-files/content?path=`, autobyteus-436
+and autobyteus-471). A remote-node Electron window must not use client-local
+reads even if a bridge exists. A path of a run on another node shows "This file
+is on <node>, where this run runs." and opens nothing.
 `AgentEventMonitor` shows that status line (`filePreviewStatus`, a polite live
 region) in its own block, so a read-only conversation (a finished run, the
 phone's read-only run screen) shows the same text with no composer.

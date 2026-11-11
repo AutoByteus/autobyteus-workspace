@@ -99,8 +99,8 @@ const messages = {
     "Close diagram viewer",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
     "Open {{file}} in Files",
-  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
-    "This file is available only on the host workspace.",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node":
+    "This file is on {{node}}, where this run runs.",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "The file preview could not be opened.",
   "workspace.components.mobile.views.MobileFiles.node_file_not_found":

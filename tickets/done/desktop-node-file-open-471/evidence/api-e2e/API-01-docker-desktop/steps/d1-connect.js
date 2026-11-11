@@ -1,0 +1,23 @@
+// D1: in the main window, Nodes: add the Docker node by its address, enter the setup code (read from a file, never printed).
+const fs = await import('node:fs');
+const code = fs.readFileSync('/tmp/abtest471/setup-code.txt', 'utf8').trim().split(' ')[0];
+const main = pages.find(p => p.url().includes('renderer/index.html'));
+await main.waitForTimeout(2000);
+await main.evaluate(() => { location.hash = '#/nodes'; });
+await main.waitForTimeout(3000);
+await main.getByTestId('add-node-address').fill(`http://127.0.0.1:${state.pA}`);
+await main.getByTestId('add-node-name').fill('docker-a-471');
+await main.getByTestId('add-node-submit').click();
+await main.waitForTimeout(6000);
+const card = () => main.getByTestId('node-list-card').innerText();
+const before = await card();
+await main.screenshot({ path: '/tmp/abtest471/d1-before.png' });
+await main.getByLabel('Setup code for docker-a-471').fill(code);
+await main.locator('[data-testid^="node-access-connect-"]').first().click();
+await main.waitForTimeout(6000);
+const after = await card();
+await main.screenshot({ path: '/tmp/abtest471/d1-after.png' });
+const dialog = await main.locator('[role="dialog"]').count() ? (await main.locator('[role="dialog"]').innerText()).slice(0, 300) : null;
+const openButtons = await main.locator('[data-testid^="node-open-"]').evaluateAll(es => es.map(e => e.getAttribute('data-testid')));
+const slice = t => t.slice(t.indexOf('docker-a-471'), t.indexOf('docker-a-471') + 260);
+return { before: slice(before), after: slice(after), dialog, openButtons };

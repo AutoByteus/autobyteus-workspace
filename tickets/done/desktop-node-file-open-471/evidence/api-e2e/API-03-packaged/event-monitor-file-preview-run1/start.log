@@ -1,0 +1,98 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.13-beta.4 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+
+> autobyteus@1.5.13-beta.4 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.13-beta.4 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.13-beta.4 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:10516) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.5.13-beta.4 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.13-beta.4 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> pnpm -C ../autobyteus-server-ts prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 338ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 53.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.4s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.0s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.5s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+
+> autobyteus@1.5.13-beta.4 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+[0;32m=======================================[0m
+[0;32m   Preparing AutoByteus Server Files   [0m
+[0;32m=======================================[0m
+[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/resources/server
+
+[0;33mBuilding server and dependencies...[0m
+Scope: all 13 workspace projects
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 10.28.1 → 12.18.0.      │
+   │     Changelog: https://pnpm.io/v/12.18.0      │
+   │   To update, run: corepack use pnpm@12.18.0   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+ ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY  Aborted removal of modules directory due to no TTY
+
+If you are running pnpm in CI, set the CI environment variable to "true".
+Command failed (1): bash /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/scripts/prepare-server.sh
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

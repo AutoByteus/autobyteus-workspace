@@ -1,0 +1,35 @@
+{
+  "startedAt": "2026-11-11T13:19:45.211Z",
+  "platform": "darwin-arm64",
+  "boundaries": "GraphQL saved Org/member fixture + initial metadata failure; subsequent metadata/registration HTTP, native IPC/bytes, production renderer/shell real. Responsive device metrics explicitly emulated.",
+  "cases": {
+    "N-001": {
+      "title": "owned packaged launch and passive selected missing metadata",
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: {\"schemaVersion\":1,\"ok\":false,\"command\":\"start\",\"error\":{\"code\":\"BUILD_FAILED\",\"message\":\"pnpm build:electron:mac failed with exit code 1 in /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web\"}}\n\n3 !== 0\n\n    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:54:16)",
+      "finishedAt": "2026-11-11T13:21:28.167Z"
+    },
+    "N-008": {
+      "title": "owned resources cleaned and ports released",
+      "result": "Pass",
+      "details": {
+        "fixtureRemoved": true,
+        "instances": {
+          "instances": []
+        }
+      },
+      "finishedAt": "2026-11-11T13:21:28.249Z"
+    }
+  },
+  "requests": [],
+  "pageErrors": [],
+  "cleanup": {
+    "fixtureRemoved": true,
+    "instances": {
+      "instances": []
+    }
+  },
+  "fixture": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-tG1pFD",
+  "failure": "AssertionError [ERR_ASSERTION]: {\"schemaVersion\":1,\"ok\":false,\"command\":\"start\",\"error\":{\"code\":\"BUILD_FAILED\",\"message\":\"pnpm build:electron:mac failed with exit code 1 in /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web\"}}\n\n3 !== 0\n\n    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs:54:16)",
+  "finishedAt": "2026-11-11T13:21:28.249Z"
+}

@@ -34,7 +34,8 @@ const {
 }));
 
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => activeContextStoreMock }));
-vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => ({ runOfAgentRun: () => null }) }));
+const remoteRunsMock = vi.hoisted(() => ({ runOfAgentRun: vi.fn((_agentRunId?: string | null): { nodeName: string } | null => null) }));
+vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => remoteRunsMock }));
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
@@ -66,7 +67,7 @@ vi.mock('~/composables/useLocalization', () => ({
   }),
 }));
 
-const options = () => ({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => true });
+const options = () => ({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => true, originRunId: () => 'agent-task-lead' });
 
 describe('useEventMonitorFilePreview', () => {
   beforeEach(() => {
@@ -194,13 +195,25 @@ describe('selected execution preview identity', () => {
   });
 
   for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
-    it(`refuses outside-workspace in ${runtime} without native fallback`, async () => {
+    it(`opens a path outside the run's folder in ${runtime} as a node file, read-only, by its absolute path (autobyteus-471)`, async () => {
       windowNodeContextStoreMock.isEmbeddedWindow = runtime !== 'remote-electron';
       hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(runtime !== 'embedded-no-bridge');
-      expect((await useEventMonitorFilePreview(options()).openPath(action)).status).toBe('unavailable');
-      expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+      expect((await useEventMonitorFilePreview(options()).openPath(action)).status).toBe('opened');
+      expect(fileExplorerStoreMock.openFilePreview).toHaveBeenCalledWith(action.normalizedCandidate, 'B',
+        { accessIntent: { source: 'event-monitor', readOnly: true } });
     });
   }
+
+  it('says where a run another node runs keeps its file, and opens nothing (autobyteus-471 REQ-003)', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = false;
+    remoteRunsMock.runOfAgentRun.mockImplementation((id?: string | null) => (id === 'remote-run' ? { nodeName: 'studio' } : null));
+    expect(await useEventMonitorFilePreview({ ...options(), originRunId: () => 'remote-run' }).openPath(action)).toEqual({
+      status: 'unavailable', message: 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node' });
+    // The run whose conversation names the path decides, not the window's selected run.
+    expect(remoteRunsMock.runOfAgentRun).toHaveBeenCalledWith('remote-run');
+    expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+    expect(revealToolMock).not.toHaveBeenCalled();
+  });
 
   it('maps selected source root in a remote window without metadata', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow = false;
@@ -273,7 +286,7 @@ describe('bounded reveal acceptance and focus', () => {
       const button = document.createElement('button');
       button.dataset.eventMonitorActiveFileTab = 'true'; document.body.appendChild(button);
       const focus = vi.spyOn(button, 'focus');
-      expect((await useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current }).openPath(action)).status).toBe('failed');
+      expect((await useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current, originRunId: () => 'agent-task-lead' }).openPath(action)).status).toBe('failed');
       await new Promise(resolve => setTimeout(resolve, 0));
       expect(focus).not.toHaveBeenCalled(); button.remove();
     });
@@ -283,7 +296,7 @@ describe('bounded reveal acceptance and focus', () => {
     const button = document.createElement('button');
     button.dataset.eventMonitorActiveFileTab = 'true'; document.body.appendChild(button);
     const focus = vi.spyOn(button, 'focus');
-    const launch = useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current });
+    const launch = useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current, originRunId: () => 'agent-task-lead' });
     expect((await launch.openPath(action)).status).toBe('opened');
     current = false; await new Promise(resolve => setTimeout(resolve, 0));
     expect(focus).not.toHaveBeenCalled();

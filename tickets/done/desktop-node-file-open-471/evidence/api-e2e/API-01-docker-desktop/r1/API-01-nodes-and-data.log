@@ -1,0 +1,32 @@
+# API-01 nodes and data; commit 32dccf58fa; 2026-11-11T13:42:48.559Z
+node A: container abtest471-node-a, published 127.0.0.1:59343, shared /tmp/abtest471/shared -> /home/autobyteus/shared
+node B: dist/app.js on 127.0.0.1:59344, data root /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j
+server user in A: root; files in A:
+/home/autobyteus/shared:
+total 16
+drwxr-xr-x 4 root root  128 Nov 11 13:37 .
+drwxr-xr-x 1 root root 4096 Nov 11 13:42 ..
+-rw-r--r-- 1 root root   78 Nov 11 13:42 notes-471.md
+-rw-r--r-- 1 root root  255 Nov 11 13:42 picture-471.png
+
+/home/autobyteus/workspace/ws-471:
+total 12
+drwxr-xr-x 2 root root 4096 Nov 11 13:42 .
+drwxr-xr-x 1 root root 4096 Nov 11 13:42 ..
+-rw-r--r-- 1 root root   59 Nov 11 13:42 inside-471.md
+
+/srv/abtest471:
+total 32
+drwxr-xr-x 3 root root  4096 Nov 11 13:42 .
+drwxr-xr-x 1 root root  4096 Nov 11 13:42 ..
+lrwxrwxrwx 1 root root     9 Nov 11 13:42 device-471.txt -> /dev/null
+-rw-r--r-- 1 root root   589 Nov 11 13:42 plan-471.pdf
+drwxr-xr-x 2 root root  4096 Nov 11 13:42 reports-471.md
+-rw-r--r-- 1 root root 16044 Nov 11 13:42 tone-471.wav
+A paired with B: {"nodeId":"srv_EZp6WXDGATVlJp26GYtfxjq_n63dnNFZ","name":"host-b-471","baseUrl":"http://host.docker.internal:59344","paired":true}
+run on A: reporter_560df74af0f3481a93100860b8328dce in /home/autobyteus/workspace/ws-471
+A's run: its own message links the eight paths
+remote run on B: publisher_1a34f27934944fbc8c9bb3020fb83726; its own message links /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/workspace/b-notes-471.txt, and a message attaches it
+state written (/tmp/abtest471/state.json, not evidence). Waiting for /tmp/abtest471/stop
+container abtest471-node-a removed
+nodes-and-data done

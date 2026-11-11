@@ -1,0 +1,15 @@
+# API-03 event-monitor-file-preview (packaged app, --build); commit 08d804cbb9; 2026-11-11T13:19:43Z
+# env -i PATH HOME=<temp> TMPDIR USER LOGNAME pnpm -C autobyteus-web test:e2e:event-monitor-file-preview --output-dir <API-03-packaged/event-monitor-file-preview>
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:event-monitor-file-preview /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/event-monitor-file-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-03-packaged/event-monitor-file-preview
+
+{"ok":false,"evidence":"/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-03-packaged/event-monitor-file-preview/evidence.json","cases":{"N-001":"Fail","N-008":"Pass"},"cleanup":{"fixtureRemoved":true,"instances":{"instances":[]}}}
+ ELIFECYCLE  Command failed with exit code 1.
+
+# Review note (API/E2E): run 1 stopped before the app launched. `pnpm build:electron:mac` -> prepare-server.sh -> `pnpm install`
+# under the probe's temp HOME saw a different pnpm store than the worktree's node_modules (installed under the real HOME), so it
+# wanted to remove node_modules and aborted: "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY" (event-monitor-file-preview-run1/start.log
+# line 93). A harness environment cause, not the product: nothing was removed. The packaged app's embedded server receives only a
+# system-baseline environment (TESTING.md), so run 2 keeps the real HOME for the build.
