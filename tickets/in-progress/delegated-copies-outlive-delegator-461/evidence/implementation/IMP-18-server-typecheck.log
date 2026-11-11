@@ -1,0 +1,8 @@
+# IMP-18 server type gate
+# command: node autobyteus-server-ts/scripts/typecheck.mjs
+# commit: 4a3f221c72; macOS, Node v22.23.1; 2026-11-11T22:26Z
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.3s
+[typecheck] server tests (tsconfig.tests.json): 1014 errors, exit 2, 25.0s
+[typecheck] production errors: 0; test-file errors: 1014 in 318 files (baseline 1014 in 318 files)
+[typecheck] PASS

@@ -1,0 +1,43 @@
+import fs from "node:fs/promises";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { toDelegateTaskResult, toTaskDelegationToolErrorPayload } from "../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
+import { cleanupDirectories, harness } from "./helpers/team-root-collaborator-harness.js";
+
+// autobyteus-461 SR-052: base 827f1e68dc characterization. A member of an application-owned team calls delegate_task;
+// what the agent reads is the tool's result or its error payload, as the base tool builds them.
+vi.mock("../../../src/agent-team-execution/services/team-run-execution-tree-builder.js", async (importOriginal) => {
+  const original = await importOriginal<typeof import("../../../src/agent-team-execution/services/team-run-execution-tree-builder.js")>();
+  return {
+    ...original,
+    buildInitialTeamRunExecutionTree: (...args: Parameters<typeof original.buildInitialTeamRunExecutionTree>) => ({
+      ...original.buildInitialTeamRunExecutionTree(...args),
+      applicationBinding: { applicationId: "app-1", bindingId: "binding-1" },
+    }),
+  };
+});
+
+afterEach(async () => {
+  vi.restoreAllMocks();
+  await cleanupDirectories();
+});
+
+const answer = async (call: () => Promise<Parameters<typeof toDelegateTaskResult>[0]>) => {
+  try { return toDelegateTaskResult(await call()); } catch (error) { return toTaskDelegationToolErrorPayload(error); }
+};
+
+describe("base 827f1e68dc: delegate_task by a member of an application-owned team", () => {
+  it("records the exact answers", async () => {
+    const f = await harness({ withTeammate: true });
+    expect(f.root.getExecutionTreeSnapshot().applicationBinding).toEqual({ applicationId: "app-1", bindingId: "binding-1" });
+    (f.dependencies.taskExecutionResources as unknown as { addTask(id: string): void }).addTask("T1");
+    const sender = { identity: f.identity("/coordinator", "run-coordinator") };
+    const answers = {
+      ownAddress: await answer(() => f.root.delegateToNewCopy(sender, { recipient_address: "/coordinator", description: "Do it" })),
+      teammate: await answer(() => f.root.delegateToNewCopy(sender, { recipient_address: "/worker", description: "Do it" })),
+      catalogAddress: await answer(() => f.root.delegateToNewCopy(sender, { recipient_address: "/code_reviewer", description: "Review it" })),
+      withTaskId: await answer(() => f.root.delegateToNewCopy(sender, { recipient_address: "/code_reviewer", task_id: "T1" })),
+    };
+    await fs.writeFile(new URL("./application-owned-member-delegation.base-answers.json", import.meta.url), `${JSON.stringify(answers, null, 2)}\n`);
+    expect(f.handles.size).toBe(0);
+  });
+});

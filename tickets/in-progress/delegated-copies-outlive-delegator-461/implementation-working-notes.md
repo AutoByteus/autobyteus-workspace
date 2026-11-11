@@ -254,3 +254,115 @@ TODO SR-040 + SR-041 (design-spec "The history poll" ~line 168, Removal Plan ~li
    startedByAgentName, TASK_AGENT, TASK_TEAM_MEMBER. File lists in the design's Removal Plan.
 Then: web codegen, web typecheck + specs, server gates, IR-002 in revision record, handoff update, send to code
 reviewer (targeted re-review). FU-008 and FU-009 are withdrawn into the ticket.
+
+## IR-003 status (2026-11-11)
+
+Done and committed: 3636b9e2dc (CR-461-007, CR-461-005 residual), 812ff29b54 (CR-461-001 residual), e77d4f2faf
+(SR-046 server), 54858f3134 (SR-045 agent-run + Org web), ebff30f833 (SR-045 Team web; SR-048 server order),
+5df490f7d9 (Task change with no entries listener fails before writing; tests/helpers/task-run-resources.ts).
+
+### SR-047 + SR-049 (ARCH-REV-022/024 pass): owners passed in from one composition root
+Plan (design "Dependency Rules And The Composition Root"):
+- New `compositions/collaboration-composition.ts`, two calls from build-studio-server (file at 491 lines; no growth):
+  (A) steps 1-2: TaskExecutionResourceService loaded; DelegationTree built; setEntriesListener(tree).
+  step 3 in build-studio-server: run supervisor gets `delegationTree` (+ taskExecutionResources as today).
+  (B) steps 4-8: TaskRunControl({agentRuns, teamRuns, tasks}); ProjectTaskService via
+  initializeProjectTaskServiceProcessInstance({requestRelease/workerStatus -> runControl}); root resolver;
+  TaskDelegation, CrossRunMessageDelivery, CrossRunAddressResolution; LocalChildPorts/Observation; one
+  DelegatedRunCommands; stream session registry (own owner, before feed + handlers); ChildRowsFeed(registry) then
+  follow(tree); consumers: delegate_task tool service (TaskDelegation), send_message_to dispatcher (address
+  resolution), GlobalAgentRunMessageRouter constructed with CrossRunMessageDelivery (getter returns it), stream
+  handlers, GraphQL via configureStudioApplicationApiServices (framework edge container).
+- Remove: bind/find/unbind of CrossRunAddressResolution, CrossRunMessageDelivery, DelegatedRuns, DelegationTree,
+  LocalChildPorts, TaskDelegation (delegateThrough), TaskRunControl; TaskRunControl.statusChanged
+  (TaskWorkerStatusNotice gets the Task side). Release in reverse order.
+- SR-049: roots don't delegate. MemberTaskCapability: delegateToNewCopy/assignToExistingCopy -> delegationSource
+  (in gate: identity, delegatorAddress, resolvePlacement, own refusals); the tool service calls TaskDelegation
+  (toNewRun / toExistingRun / toPeerRun for `node`). remote-delegation without delegateThrough.
+Consumers of findDelegationTree to route: delegated-child-launches (supervisor), top-level-run-rule
+(workspace-run-history-service), team-member-run-view-projection-service (older singleton; REST/GraphQL/remote
+composition), delegated-work-guard, run-last-activity-reader (history services), run-own-task (roots),
+delegated-child-locations (supervisor, context-files REST, location service, member projection), peer-run-link
+(roots, projections, child-rows composition, remote-delegation), restart-resume-composition, delegated-children-dtos
+(GraphQL x2, AgentOrgRunService, stream sessions), stream handlers. localChildStatuses: root manager
+getAgentStatuses (move to the GraphQL read), view sessions. DelegatedRunAgentsReader: GraphQL x2.
+
+### SR-047/049/052 progress (uncommitted, in the worktree)
+Decisions from the designer: SR-049 (roots don't delegate; tool service + delegationSource), SR-050/051 replaced by
+SR-052 (application host composes the same steps 1-8 through the same composition file; tests: characterization at
+base 827f1e68dc of delegate answers (own address, teammate, catalog address, task_id), same texts on branch, a
+non-application run in the app host delegates and its Task closure stops it), ARCH-REV-027 (where the app host lacks
+a studio piece pass its real equivalent explicitly, e.g. empty stream session registry / absent peer channel).
+Done so far:
+- peerRunLinksOf(run, tree) / runOwnTaskOf(run, tree) take the tree; tests/helpers/no-delegations.ts (fake tree).
+- Roots (standalone, team, org): required `delegationTree` option; `delegationSource(context)` (gate) replaces
+  delegateToNewCopy/assignToExistingCopy; `publishLocalChildEvent(event)` replaces `localChildren`;
+  TaskWorkerStatusNotice(run, tasks) (TaskRunControl.statusChanged + bindings removed; TaskRunControl.tasks required).
+- LocalChildObservation ports required (no binding); new LocalChildFollowers (followLive(root) refcounted per root,
+  followStored(run, base, send), statuses(run)); followStoredChildren removed.
+- MemberTaskCapability.delegationSource + DelegationSource type; 3 capability builders updated.
+- RemoteDelegation is a tool-path owner ({delegation, tree, channel}); delegate(input, source).
+- TaskDelegationToolService({delegation, remote}) + setProcessTaskDelegationToolService/getter; router removed;
+  MCP provider reads the getter at use.
+- Supervisor input `delegationTree`; managers (team, org, scope builder, materializer, root builder/manager) pass it;
+  storedRemoteLinkCheck carries tree; application runtime -> scope input -> kernel builder team manager gets tree.
+- DelegatedChildLocations({.., tree}); createDelegatedChildLaunches({.., tree}); createStoredCollaborationExecution
+  LocationService(memoryDir, tree); createStoredRunMemberLocations (token capturer; dead agent-root branch removed ->
+  record FU for nothing); REST context files get tree via registerRestRoutes deps.delegationTree.
+- Projection services (standalone/team/org member) take `tree`; setProcess...Service + getter throws if unset.
+Remaining: DelegatedWorkGuard class + shared runOwnStatus; RunLastActivityReader tree; history services
+(agent/team/workspace/collaboration-root) + getters composed; top-level-run-rule; delegated-children-dtos (GraphQL,
+AgentOrgRunService, sessions); remote-task-execution-dto-projection (tree); root manager getAgentStatuses -> GraphQL
+via LocalChildFollowers.statuses; view sessions/handlers (LocalChildFollowers, DelegatedRunCommands passed, stream
+session registry owner); child-rows-feed-composition; restart-resume; dispatcher (CrossRunAddressResolution) and
+GlobalAgentRunMessageRouter (constructed with CrossRunMessageDelivery); DelegatedRunAgentsReader (bindDelegatedRuns);
+GraphQL container (configureStudioApplicationApiServices) for resolvers; new compositions/collaboration-composition.ts
+(two calls) used by build-studio-server AND application host; release order; delete binding modules
+(delegation-tree-binding, task-delegation-binding, task-delegation-composition, project-task-execution-resource-
+composition); tests (fakes via constructors); app-host tests (SR-052) + base characterization test.
+
+### Progress (later, same day)
+Production code for SR-047/049/052/053 compiles (tsc build config clean). Done since the list above:
+- RunTaskRecords (SR-053): `projects/services/run-task-records.ts` (isOpen from step-1 resources; statusChanged marks the
+  root Task's worker status); ProjectTaskService.taskExecutionsStatusChanged and the port method removed (dead);
+  roots/managers/supervisor take `taskRecords` (required); root manager's unused option removed.
+- DelegatedWorkGuard (owner) + shared `runOwnStatus`; built in the supervisor (step 3) and passed to the org service and
+  team history; exposed as `delegatedWorkGuard` for the composition (agent history).
+- RunViewChildren (rows, remote, statuses) replaces delegatedChildrenDtos / remoteTaskExecutionDtos; GraphQL reads it and
+  DelegatedRunAgentsReader through the studio container (`runViewChildren`, `delegatedRunAgents`); org inspection takes it
+  as a call argument; root manager getAgentStatuses moved into the resolver.
+- ChildRowsStreams registry (ARCH-REV-022 correction 1); ChildRowsFeed(projection, streams); handlers take sources
+  {streams, children, followers, registrations, readStoredTree} + one DelegatedRunCommands; createAgentTeamStreamHandler
+  removed; websocket registration takes teamRunService + standaloneRoots.
+- Router + dispatcher: composition sets process instances (setProcessInstance; getters throw if unset); crossRun /
+  crossRunAddresses / globalRouter required; send_message_to tool + MCP providers read getters at use.
+- compositions/collaboration-composition.ts: composeTaskSide (1-2) + composeCollaboration (4-8, reverse release);
+  studio host (485 lines) and app host (SR-052; remoteChannel () => null) both use it; restart-resume gets the tree;
+  REST context files get the tree. Removed: project-task-execution-resource-composition, task-delegation-composition,
+  child-rows-feed-composition, delegation-tree-binding, task-delegation-binding, cross-run bind/find, M-30 text.
+- Token capturer: dead agent-root branch removed; createStoredRunMemberLocations (teams+orgs by run ID).
+Tests: helpers no-delegations.ts (noDelegations, openTaskRecords, noWorkGuard), task-run-resources.ts, studio-reads.ts,
+task-side-binding.ts (testTaskSide: delegate/assign via tool path), child-rows-feed.ts (streams, noViewChildren,
+noFollowers, noChildCommands); /tmp/inject.py injected owners into ~50 test constructions.
+Remaining: full unit run → fix; integration (prepare first); type gate baseline; web unaffected; e2e helpers;
+SR-052 tests (base characterization at 827f1e68dc: own address, teammate, catalog address, task_id texts; branch same
+texts; app host: non-application run delegates + Task closure stops it); DS-8 per-client tests check; docs
+(protocol doc stored mode/child rows; module docs; web stream lifetime); FU-012 withdrawn mark; FU-011 narrowed; FU for
+token capturer? (removed dead code—no FU); IR-003 + handoff (choices with reasons: LocalChildFollowers moved out of
+roots (cycle), setProcess* getters (design ruling), MCP providers/tool read getters at use, app-host lifecycle test
+mocks steps 4-8); commit; send to code reviewer.
+
+### IR-003 wrap-up (2026-11-11, late)
+- Committed `dc4f73f5d5` (SR-047/049/052/053 server + tests) and `4a3f221c72` (SR-048 web residual test, stale comments).
+- Type gate: test fakes given the tree and Task records; REST context files take the tree; baseline 1015 → 1014 (router test gone).
+- Integration (on the uncommitted tree before `dc4f73f5d5`): `run-file-changes-api` needed the team history and member
+  projection services composed in the test (getters now throw when unset); watcher and auto-refresh failures were load
+  timing (a unit run reset the shared test DB mid-run; both files pass alone).
+- SR-052 base characterization at `827f1e68dc` in a detached worktree `../461-base-827f1e68` (deps linked from this
+  worktree; same lockfile): own address / teammate → `COLLABORATION_SELF_TARGET_REJECTED` errors; catalog address and
+  task_id → `delegated:false` "'/code_reviewer' is not the address of an available agent or agent team. …". The branch
+  test asserts the same through the real tool service. App host: real `startStandaloneApplicationHost` with real steps
+  1–8 over fake run services; delegation then `updateTaskById(DONE)` stops the child through `TaskRunControl`.
+- Unused team-root harness (its tests went with the hosting machinery) now serves the SR-052 test with a real tree.
+- FU-014: restore mutations left without a caller (public API; not removed).
+- Not verified: the agent-run root's reconnect after a WS 1000 close (noted mid-round; no test written).
