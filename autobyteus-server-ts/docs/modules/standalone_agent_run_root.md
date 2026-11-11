@@ -166,9 +166,11 @@ message ID (CM-9); the run's view shows the messages of its own log.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stopped run's view and
   never restores. `agentRunCollaborationStatuses(runIds)` (at most 100 IDs, else `BAD_USER_INPUT`)
   is the small read the clients' history poll uses for listed runs that are not open: per run
-  `{ runId, isActive, statuses, closedTaskExecutionsDigest }`. The statuses are empty (live child
-  statuses in this poll are a known gap); the digest is over the run's closed children, from the Task
-  entries (`DelegationTree`, no file read). It never restores or starts a host. `agentRunCollaborationMemberProjection` and
+  `{ runId, isActive, statuses, closedTaskExecutionsDigest }`. An active run answers every agent of
+  its open local children (the agents of its view's rows) with its live status, `offline` when not
+  running (`localChildStatuses`), and the digest of the closed set its view lists (none). A stopped
+  run answers no statuses and the digest of its closed children (the Task entries), so a list
+  re-reads its view once when a child's Task closes or reopens. It never restores or starts a host. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation from its own
   run. `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` returns a
   child's Agent Artifacts, located among the runs this run delegated to (one hop, the Task entries),

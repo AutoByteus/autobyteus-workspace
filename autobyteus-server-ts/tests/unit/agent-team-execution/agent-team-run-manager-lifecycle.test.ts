@@ -105,6 +105,18 @@ describe("AgentTeamRunManager root lifecycle", () => {
     expect(manager.getLifecycleSnapshot("team-run-1")).toEqual({ teamRunId: "team-run-1", isActive: true, ending: null });
   });
 
+  it("CR-461-001: a closure stop asks whether the Task entry is still closed right before the root's terminate; open again keeps it", async () => {
+    const manager = createManager();
+    const root = createRoot();
+    register(manager, root);
+    await expect(manager.terminateTeamRunForTaskClosure("team-run-1", () => false)).resolves.toBe("kept_open");
+    expect(root.terminate).not.toHaveBeenCalled();
+    expect(manager.getManagedTeamRun("team-run-1")).toBe(root);
+    await expect(manager.terminateTeamRunForTaskClosure("team-run-1", () => true)).resolves.toBe("stopped");
+    expect(root.terminate).toHaveBeenCalledTimes(1);
+    await expect(manager.terminateTeamRunForTaskClosure("team-run-1", () => true)).resolves.toBe("stopped");
+  });
+
   it("rejects duplicate root registration and makes exact unregister idempotent", () => {
     const manager = createManager();
     const root = createRoot();

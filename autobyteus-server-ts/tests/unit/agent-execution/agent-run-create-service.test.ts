@@ -174,10 +174,16 @@ describe("AgentRunService create", () => {
   it("autobyteus-461 DS-5 (model.py stop): a closed Task's run that is not running has its row record the stop, once", async () => {
     const { service, mocks } = createSubject();
     mocks.historyCatalogService.getCatalogRow.mockResolvedValueOnce({ runId: "image", terminatedAt: null });
-    await expect(service.stopForTaskClosure("image")).resolves.toBe(true);
+    await expect(service.stopForTaskClosure("image", () => true)).resolves.toBe("stopped");
     expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "image" });
     mocks.historyCatalogService.getCatalogRow.mockResolvedValueOnce({ runId: "image", terminatedAt: "2026-11-11T00:00:00.000Z" });
-    await expect(service.stopForTaskClosure("image")).resolves.toBe(true);
+    await expect(service.stopForTaskClosure("image", () => true)).resolves.toBe("stopped");
     expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(1);
+  });
+
+  it("CR-461-001: a run whose Task entry is open again when its stop comes keeps running, and nothing is recorded", async () => {
+    const { service, mocks } = createSubject();
+    await expect(service.stopForTaskClosure("image", () => false)).resolves.toBe("kept_open");
+    expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 });

@@ -243,6 +243,14 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   enterPersistenceFailStop(): void { this.enterFailStop(); }
 
   /** Stop, history delete or archive: this run's own agent only (DS-4, TC-1). */
+  /**
+   * A closed Task's stop (CR-461-001): `stillClosed` is asked right before the gate closes (`stop` closes it before its
+   * first await), so a reopen committed while the stop waited keeps the run: `null`, nothing stopped.
+   */
+  stopForTaskClosure(stillClosed: () => boolean): Promise<StandaloneHostTerminationResult> | null {
+    return stillClosed() ? this.stop() : null;
+  }
+
   async stop(): Promise<StandaloneHostTerminationResult> {
     const ended = await this.terminate();
     if (!ended.accepted) throw new Error(ended.message ?? `Agent root '${this.hostRunId}' did not finish stopping.`);

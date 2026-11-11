@@ -57,7 +57,7 @@ export class AgentRunCollaborationStatusesObject {
   @Field(() => Boolean) isActive!: boolean;
   @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
   /** The run's closed-set digest (autobyteus-446, -435); the description gives its meaning per state. */
-  @Field(() => String, { nullable: true, description: "The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed task executions of its root, as its live view. Inactive run: the closed task executions the Task index records as hosted by this run, not filtered by its stored execution tree." })
+  @Field(() => String, { nullable: true, description: "The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed set its view lists (none, autobyteus-461). Inactive run: the runs it delegated to whose Task is closed (the Task entries)." })
   closedTaskExecutionsDigest!: string | null;
 }
 
@@ -69,21 +69,21 @@ export class AgentRunCollaborationResolver {
    * no states and no digest. Never restores.
    */
   @Query(() => [AgentRunCollaborationStatusesObject])
-  agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): AgentRunCollaborationStatusesObject[] {
+  async agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): Promise<AgentRunCollaborationStatusesObject[]> {
     if (runIds.length > AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS) {
       throw new GraphQLError(`At most ${AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS} runs per status read.`, {
         extensions: { code: "BAD_USER_INPUT" },
       });
     }
-    return getStandaloneAgentRunRootManager().getAgentStatuses(runIds).map((answer) => ({
+    return (await getStandaloneAgentRunRootManager().getAgentStatuses(runIds)).map((answer) => ({
       runId: answer.runId,
       isActive: answer.isActive,
       closedTaskExecutionsDigest: answer.closedTaskExecutionsDigest,
       statuses: answer.statuses.map((status) => ({
-        agentRunId: status.execution.agentRunId,
-        memberAddress: status.execution.memberAddress,
-        status: status.details.status,
-        recoverableBlock: status.details.recoverableBlock,
+        agentRunId: status.agentRunId,
+        memberAddress: status.memberAddress,
+        status: status.status,
+        recoverableBlock: null,
       })),
     }));
   }

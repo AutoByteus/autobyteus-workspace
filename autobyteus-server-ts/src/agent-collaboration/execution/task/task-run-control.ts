@@ -15,7 +15,7 @@ export class TaskRunControl {
   constructor(private readonly runs: Readonly<{
     agentRuns: Pick<AgentRunService, "stopForTaskClosure" | "getAgentRun">;
     teamRuns: Pick<TeamRunService, "stopForTaskClosure" | "getActiveTeamRun">;
-    tasks?: () => Pick<TaskExecutionResourcePort, "taskExecutionsStatusChanged"> | null;
+    tasks?: () => Pick<TaskExecutionResourcePort, "taskExecutionsStatusChanged" | "isOpen"> | null;
   }>) {}
 
   /** The run's own status may have changed: the Task side announces its Tasks' worker status (it re-reads `ownStatus`). */
@@ -23,12 +23,19 @@ export class TaskRunControl {
     this.runs.tasks?.()?.taskExecutionsStatusChanged([execution]);
   }
 
+  /**
+   * The run's own Stop, unless its Task entry is open again where the run's gate closes (CR-461-001: a reopen or a new
+   * assignment committed while the stop waited): the Task side's `isOpen` is the authority, as at a delivery's gate head.
+   */
   async stopForTaskClosure(execution: TaskExecutionReference): Promise<TaskExecutionReleaseResult> {
-    const stopped = "agentRunId" in execution
-      ? await this.runs.agentRuns.stopForTaskClosure(execution.agentRunId)
-      : await this.runs.teamRuns.stopForTaskClosure(execution.teamRunId);
-    return stopped ? { execution, stopped }
-      : { execution, stopped, error: { code: "TASK_AGENT_RESOURCE_STOP_FAILED", message: "The run did not stop." } };
+    const stillClosed = () => !(this.runs.tasks?.()?.isOpen(execution) ?? false);
+    const outcome = "agentRunId" in execution
+      ? await this.runs.agentRuns.stopForTaskClosure(execution.agentRunId, stillClosed)
+      : await this.runs.teamRuns.stopForTaskClosure(execution.teamRunId, stillClosed);
+    if (outcome === "stopped") return { execution, stopped: true };
+    return { execution, stopped: false, error: outcome === "kept_open"
+      ? { code: "TASK_AGENT_RESOURCE_NOT_CLOSED", message: "The run's Task entry is open again; it keeps running." }
+      : { code: "TASK_AGENT_RESOURCE_STOP_FAILED", message: "The run did not stop." } };
   }
 
   /** `null` when the run is not running (the Task page shows it offline). */

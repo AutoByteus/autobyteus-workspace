@@ -25,9 +25,32 @@ export type LocalChildPorts = Readonly<{
   agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
 }>;
 
+/** One agent of a run's local child, as the history poll names it: its address in the view, and its live status. */
+export type LocalChildAgentStatus = Readonly<{ agentRunId: string; memberAddress: string; status: string }>;
+
 let bound: LocalChildPorts | null = null;
 export const bindLocalChildPorts = (ports: LocalChildPorts): void => { bound = ports; };
 export const unbindLocalChildPorts = (ports: LocalChildPorts): void => { if (bound === ports) bound = null; };
+
+/**
+ * Every agent of a run's open local children with its live status, `offline` when not running (CR-461-002: the
+ * history poll's answer, which names exactly the agents of the run's view rows). Reads each child's own file; starts
+ * nothing.
+ */
+export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts | null = bound): Promise<LocalChildAgentStatus[]> => {
+  if (!ports) return [];
+  const statuses: LocalChildAgentStatus[] = [];
+  for (const child of (ports.tree()?.openChildrenOf(run) ?? []).filter((candidate) => candidate.nodeId === undefined)) {
+    const row = await ports.rowOf(child).catch(() => null);
+    if (!row) continue;
+    const kind = "agentRunId" in child.run ? "agent" : "agent_team";
+    const live = new Map(ports.agents(kind).pairedAgentStatuses("agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId)
+      .map((entry) => [entry.agentRunId, entry.status as string]));
+    const agents = "agentRunId" in row ? [{ agentRunId: row.agentRunId, address: row.address }] : row.members;
+    for (const agent of agents) statuses.push({ agentRunId: agent.agentRunId, memberAddress: agent.address, status: live.get(agent.agentRunId) ?? "offline" });
+  }
+  return statuses;
+};
 
 const keyOf = (run: TaskExecutionReference): string => "agentRunId" in run ? `agent:${run.agentRunId}` : `team:${run.teamRunId}`;
 const statusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {

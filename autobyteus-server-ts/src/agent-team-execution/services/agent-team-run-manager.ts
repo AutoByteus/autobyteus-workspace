@@ -334,6 +334,22 @@ export class AgentTeamRunManager {
     }
   }
 
+  /**
+   * A closed Task's stop (CR-461-001): `stillClosed` is asked right before the run's gate closes (`terminate` closes it
+   * before its first await); a team run open again is kept. A team run that is not running is `stopped` (nothing runs).
+   */
+  async terminateTeamRunForTaskClosure(teamRunId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
+    const root = this.getManagedTeamRun(teamRunId);
+    if (!stillClosed()) return "kept_open";
+    if (!root) return "stopped";
+    try {
+      if (!(await root.terminate()).accepted) return "not_stopped";
+    } catch (error) {
+      throw new AgentTeamTerminationError(String(error));
+    }
+    return this.unregister(teamRunId, root, "stopped") || !this.managedRoots.has(teamRunId) ? "stopped" : "not_stopped";
+  }
+
   async stopAllTeamRuns(): Promise<void> {
     const errors: unknown[] = [];
     for (const teamRunId of this.listManagedTeamRunIds()) {

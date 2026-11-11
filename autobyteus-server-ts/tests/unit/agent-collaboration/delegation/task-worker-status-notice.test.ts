@@ -9,7 +9,7 @@ import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/dom
  * status (the Projects page) stays live, as the hosting root's task lifecycle told it before.
  */
 const bound = () => {
-  const tasks = { taskExecutionsStatusChanged: vi.fn() };
+  const tasks = { taskExecutionsStatusChanged: vi.fn(), isOpen: () => false };
   const control = new TaskRunControl({ agentRuns: {} as never, teamRuns: {} as never, tasks: () => tasks });
   bindTaskRunControl(control);
   return { tasks, release: () => unbindTaskRunControl(control) };

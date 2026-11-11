@@ -28,8 +28,13 @@ export type StandaloneRootStopResult = Readonly<{
 export type StandaloneRunLifecyclePort = Readonly<{
   /** Create, activate, restore and resolve: the run's root, then its host made ready with its member context. */
   resolveRootAndEnsureHost(runId: string): Promise<StandaloneAgentRunActivationResult | null>;
-  /** Explicit Stop: children, then the host. */
+  /** Explicit Stop: the run's own agent. */
   stopRoot(runId: string): Promise<StandaloneRootStopResult | null>;
+  /**
+   * A closed Task's stop (DS-5, CR-461-001): `stillClosed` is checked where the run's gate closes, so a reopen or a new
+   * assignment committed while the stop waited keeps the run (`kept_open`) and nothing is stopped or recorded.
+   */
+  stopRootForTaskClosure(runId: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null>;
   /** After the run's saved selection changed: a registered (or loading) root follows it; none registered: nothing. */
   refreshInheritedLaunch(runId: string): Promise<void>;
 }>;

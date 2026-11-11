@@ -900,7 +900,10 @@ both. DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE.
    `TeamRunService.stopForTaskClosure`. A run that has since been given another
    Task is never stopped by this Task's DONE, a repeated one included. A run on a
    peer node is fenced, not stopped (`TASK_AGENT_RESOURCE_FENCED_REMOTE`). The runs
-   it delegated to are not stopped by its Stop: each has its own Task.
+   it delegated to are not stopped by its Stop: each has its own Task. Where the run's
+   gate closes, the stop asks the Task side again (`isOpen`): a reopen or a new
+   assignment committed while the stop waited keeps the run running and records
+   nothing (`TASK_AGENT_RESOURCE_NOT_CLOSED`, logged).
 3. A closed run receives no input except its assigner's continuation, whatever
    happened to its stop. This holds after restart. It leaves its delegating run's
    view (the view lists children with an open entry); its own files,

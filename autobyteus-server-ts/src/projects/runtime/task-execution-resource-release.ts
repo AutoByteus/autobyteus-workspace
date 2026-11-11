@@ -23,7 +23,9 @@ export class TaskExecutionResourceRelease {
       // Not active: nothing runs, and its next message is refused by the closed Task.
       if (!pending) return;
       const result = await pending;
-      if (!result.stopped) console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, execution: run, error: result.error });
+      // A reopen or a new assignment committed while the stop waited: the run keeps running (CR-461-001).
+      if (!result.stopped && result.error?.code === "TASK_AGENT_RESOURCE_NOT_CLOSED") console.info("TASK_AGENT_RESOURCE_NOT_CLOSED", { taskId, execution: run });
+      else if (!result.stopped) console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, execution: run, error: result.error });
     } catch (error) {
       console.error("TASK_AGENT_RESOURCE_STOP_FAILED", { taskId, execution: run, error: error instanceof Error ? error.message : String(error) });
     }

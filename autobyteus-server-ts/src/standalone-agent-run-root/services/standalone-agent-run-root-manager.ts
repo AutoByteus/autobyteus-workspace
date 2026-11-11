@@ -1,3 +1,4 @@
+import { localChildStatuses, type LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import {
@@ -28,7 +29,6 @@ import { findDelegationTree } from "../../agent-collaboration/delegation/delegat
 import { StandaloneRootBuilder, type StandaloneRootBuilderDependencies } from "./standalone-root-builder.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
-import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 
 /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
 export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
@@ -63,8 +63,8 @@ export type StandaloneRootInspection = Readonly<{
 export type StandaloneRootAgentStatuses = Readonly<{
   runId: string;
   isActive: boolean;
-  statuses: readonly CollaborationAgentStatusSnapshot[];
-  /** A digest of the run's closed children (its Task entries), so a list sees a Task close or reopen. */
+  statuses: readonly LocalChildAgentStatus[];
+  /** Active: the digest of the closed set its view lists (none). Stopped: of its closed children (the Task entries). */
   closedTaskExecutionsDigest: string;
 }>;
 
@@ -127,14 +127,19 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     return this.active.has(hostRunId) || this.pending.has(hostRunId);
   }
 
-  /** Each listed run's live state for the history poll, and the digest of its closed children (no file read). */
-  getAgentStatuses(hostRunIds: readonly string[]): StandaloneRootAgentStatuses[] {
-    return hostRunIds.map((runId) => {
-      const root = this.getActive(runId);
-      const closed = (findDelegationTree()?.childrenOf(createAgentRootExecutionIdentity(runId)) ?? [])
-        .filter((child) => this.options.taskExecutionResources?.isOpen(child) === false);
-      return { runId, isActive: root !== null, statuses: [], closedTaskExecutionsDigest: closedTaskExecutionsDigest(closed) };
-    });
+  /**
+   * Each listed run's live state for the history poll (autobyteus-426 REQ-009; CR-461-002). An active run answers its
+   * view's children: every agent of its open local children with its status, and the digest of the closed set its view
+   * lists (none). A stopped run answers no statuses and the digest of its closed children (the Task entries), so a list
+   * re-reads its view once when a child's Task closes or reopens.
+   */
+  async getAgentStatuses(hostRunIds: readonly string[]): Promise<StandaloneRootAgentStatuses[]> {
+    return Promise.all(hostRunIds.map(async (runId) => {
+      const run = createAgentRootExecutionIdentity(runId);
+      if (this.getActive(runId)) return { runId, isActive: true, statuses: await localChildStatuses(run), closedTaskExecutionsDigest: closedTaskExecutionsDigest([]) };
+      const closed = (findDelegationTree()?.childrenOf(run) ?? []).filter((child) => this.options.taskExecutionResources?.isOpen(child) === false);
+      return { runId, isActive: false, statuses: [], closedTaskExecutionsDigest: closedTaskExecutionsDigest(closed) };
+    }));
   }
 
   /** The root of an eligible run: the registered one, else loaded from its own log and registered. Never starts its agent. */
@@ -212,6 +217,27 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
       return stopped;
     }
     const host = await root.stop();
+    this.unregister(root);
+    this.notifyEnded(hostRunId);
+    return Object.freeze({ rootEnded: true, host });
+  }
+
+  /** A closed Task's stop (CR-461-001): as `stopRoot`, unless the run's Task entry is open again where its gate closes. */
+  async stopRootForTaskClosure(hostRunIdInput: string, stillClosed: () => boolean): Promise<StandaloneRootStopResult | "kept_open" | null> {
+    const hostRunId = hostRunIdInput.trim();
+    await this.pending.get(hostRunId)?.catch(() => undefined);
+    const root = this.active.get(hostRunId);
+    if (!root) {
+      const metadata = await this.options.host.readMetadata(hostRunId);
+      if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
+      if (!stillClosed()) return "kept_open";
+      const stopped = Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
+      this.notifyEnded(hostRunId);
+      return stopped;
+    }
+    const stopping = root.stopForTaskClosure(stillClosed);
+    if (!stopping) return "kept_open";
+    const host = await stopping;
     this.unregister(root);
     this.notifyEnded(hostRunId);
     return Object.freeze({ rootEnded: true, host });

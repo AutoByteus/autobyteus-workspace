@@ -61,6 +61,16 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     expect(await h.manager.resolveRoot(HOST)).not.toBe(root);
   });
 
+  it("CR-461-001: a closure stop keeps a run whose Task entry is open again where its gate closes; else it stops as Stop does", async () => {
+    const h = await buildManager();
+    const root = (await h.manager.resolveRoot(HOST))!;
+    await expect(h.manager.stopRootForTaskClosure(HOST, () => false)).resolves.toBe("kept_open");
+    expect(root.isActive()).toBe(true);
+    expect(h.directory.resolve(root.rootIdentity)).toBe(root);
+    await expect(h.manager.stopRootForTaskClosure(HOST, () => true)).resolves.toMatchObject({ rootEnded: true, host: { outcome: "terminated" } });
+    expect(root.isActive()).toBe(false);
+  });
+
   it("a stopped run's view is its own agent, read without restoring it (DS-8)", async () => {
     const h = await buildManager();
     const inspection = await h.manager.getInspection(HOST);

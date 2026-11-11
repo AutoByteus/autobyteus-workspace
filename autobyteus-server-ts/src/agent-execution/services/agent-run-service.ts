@@ -298,13 +298,19 @@ export class AgentRunService {
 
   /**
    * DS-5 (contract T-1, `model.py` `stop`): a closed Task's run stops as for the user's Stop, and its row records the
-   * stop also when it was not running. `false` only when a running run did not stop.
+   * stop also when it was not running. `stillClosed` is asked where the run's gate closes (CR-461-001): a reopen or a new
+   * assignment committed while the stop waited keeps the run (`kept_open`), with nothing stopped or recorded.
    */
-  async stopForTaskClosure(runId: string): Promise<boolean> {
-    if ((await this.terminateAgentRun(runId)).success) return true;
-    if (this.agentRunManager.getActiveRun(runId)) return false;
+  async stopForTaskClosure(runId: string, stillClosed: () => boolean): Promise<"stopped" | "kept_open" | "not_stopped"> {
+    const stopped = await this.standaloneRuns?.stopRootForTaskClosure(runId, stillClosed) ?? null;
+    if (stopped === "kept_open") return "kept_open";
+    if (stopped?.host.outcome === "rejected") return "not_stopped";
+    if (!stopped) {
+      if (!stillClosed()) return "kept_open";
+      if (this.agentRunManager.getActiveRun(runId) && !(await this.agentRunManager.terminateAgentRun(runId))) return "not_stopped";
+    }
     if (!(await this.historyCatalogService.getCatalogRow(runId))?.terminatedAt) await this.historyCatalogService.recordRunTerminated({ runId });
-    return true;
+    return "stopped";
   }
 
   /** The run collaborates (contract §3.3, §3.5): its own address is fixed, once, and its history row says so. */
