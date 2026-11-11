@@ -1,0 +1,42 @@
+import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
+import { normalizeAgentApiStatus } from "../../../agent-execution/domain/agent-status-payload.js";
+import type { AgentRunService } from "../../../agent-execution/services/agent-run-service.js";
+import type { TeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
+import type { TaskExecutionReleaseResult } from "./task-execution-resource-port.js";
+
+/**
+ * What the Task side asks of a run by its own identity (design DS-5): a closed Task's run stops through its ordinary
+ * Stop (`model.py` `stop`: the run's own parts only, its history row records it, it stays restorable), and the Task
+ * page reads the run's own live status (an agent run's agent; a team run's members, folded), waking nothing.
+ */
+export class TaskRunControl {
+  constructor(private readonly runs: Readonly<{
+    agentRuns: Pick<AgentRunService, "stopForTaskClosure" | "getAgentRun">;
+    teamRuns: Pick<TeamRunService, "stopForTaskClosure" | "getActiveTeamRun">;
+  }>) {}
+
+  async stopForTaskClosure(execution: TaskExecutionReference): Promise<TaskExecutionReleaseResult> {
+    const stopped = "agentRunId" in execution
+      ? await this.runs.agentRuns.stopForTaskClosure(execution.agentRunId)
+      : await this.runs.teamRuns.stopForTaskClosure(execution.teamRunId);
+    return stopped ? { execution, stopped }
+      : { execution, stopped, error: { code: "TASK_AGENT_RESOURCE_STOP_FAILED", message: "The run did not stop." } };
+  }
+
+  /** `null` when the run is not running (the Task page shows it offline). */
+  ownStatus(execution: TaskExecutionReference): AgentExecutionStatus | null {
+    if ("agentRunId" in execution) {
+      const run = this.runs.agentRuns.getAgentRun(execution.agentRunId);
+      return run ? normalizeAgentApiStatus(run.getStatusSnapshot().status) : null;
+    }
+    const team = this.runs.teamRuns.getActiveTeamRun(execution.teamRunId);
+    return team ? foldTeamAggregateStatus(team.getLeafAgentStatusSnapshots().map((snapshot) => snapshot.details.status), "live") : null;
+  }
+}
+
+let bound: TaskRunControl | null = null;
+/** The composition binds it once the run services exist (the Task side is composed before them). */
+export const bindTaskRunControl = (control: TaskRunControl): void => { bound = control; };
+export const unbindTaskRunControl = (control: TaskRunControl): void => { if (bound === control) bound = null; };
+export const findTaskRunControl = (): TaskRunControl | null => bound;

@@ -296,6 +296,17 @@ export class AgentRunService {
     return this.provisioningService.getRunMetadata(runId);
   }
 
+  /**
+   * DS-5 (contract T-1, `model.py` `stop`): a closed Task's run stops as for the user's Stop, and its row records the
+   * stop also when it was not running. `false` only when a running run did not stop.
+   */
+  async stopForTaskClosure(runId: string): Promise<boolean> {
+    if ((await this.terminateAgentRun(runId)).success) return true;
+    if (this.agentRunManager.getActiveRun(runId)) return false;
+    if (!(await this.historyCatalogService.getCatalogRow(runId))?.terminatedAt) await this.historyCatalogService.recordRunTerminated({ runId });
+    return true;
+  }
+
   /** The run collaborates (contract §3.3, §3.5): its own address is fixed, once, and its history row says so. */
   async recordCollaborating(runId: string, address: AgentTeamAddress): Promise<void> {
     const metadata = await this.metadataService.readMetadata(runId);

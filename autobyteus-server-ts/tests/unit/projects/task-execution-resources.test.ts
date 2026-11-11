@@ -195,7 +195,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect((await resourcesFile(a.taskId)).agentRunResources.every((e: { closedAt: string | null }) => e.closedAt)).toBe(true);
   });
 
-  it("reopen lists only the new assignment; Delete keeps the records so closed stays closed after restart", async () => {
+  it("reopen lists only the new assignment; T-3: Delete closes and stops its open runs first, then its record goes with it", async () => {
     const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await assign(a.taskId, "old-worker");
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
@@ -204,11 +204,16 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect((await tasks.assignments([a.taskId])).get(a.taskId)).toEqual({
       open: [{ kind: "agent", agentRunId: "new-worker", assignedBy: "manager", outcome: "not_confirmed" }],
       closed: [{ kind: "agent", agentRunId: "old-worker", assignedBy: "manager", outcome: "not_confirmed" }] });
+    release.mockClear();
     await tasks.deleteTask({ projectId, taskId: a.taskId });
+    // Every run of the Task with no other open Task is asked to stop, by its own identity (model.py: a stop of a stopped run changes nothing).
+    expect(release.mock.calls.map(([execution]) => execution)).toEqual([{ agentRunId: "old-worker" }, { agentRunId: "new-worker" }]);
+    await expect(fs.access(layout.taskDir(projectId, a.taskId))).rejects.toMatchObject({ code: "ENOENT" });
+    // Its runs are runs of their own now, also after a restart (R-9).
+    expect(currentTaskOf(tasks, { agentRunId: "new-worker" })).toBeNull();
     const restarted = await boot();
-    expect(currentTaskOf(restarted, { agentRunId: "old-worker" })).toMatchObject({ taskId: a.taskId, open: false });
-    expect(currentTaskOf(restarted, { agentRunId: "new-worker" })).toMatchObject({ open: true });
-    expect(currentTaskOf(restarted, { agentRunId: "never-linked" })).toBeNull();
+    expect(currentTaskOf(restarted, { agentRunId: "old-worker" })).toBeNull();
+    expect(currentTaskOf(restarted, { agentRunId: "new-worker" })).toBeNull();
   });
 
   it("stored legacy `broughtIn` entries stay readable, count as owned work and close with their Task (DEC-007)", async () => {

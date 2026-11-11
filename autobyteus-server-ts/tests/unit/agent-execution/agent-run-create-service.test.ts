@@ -17,6 +17,8 @@ const createSubject = () => {
   const historyCatalogService = {
     recordRunSummary: vi.fn().mockResolvedValue(undefined),
     recordCollaborationPackageCreated: vi.fn().mockResolvedValue(undefined),
+    recordRunTerminated: vi.fn().mockResolvedValue(undefined),
+    getCatalogRow: vi.fn().mockResolvedValue(null),
   };
   const provisioningService = {
     prepareAgentRun: vi.fn().mockResolvedValue({
@@ -167,5 +169,15 @@ describe("AgentRunService create", () => {
     mocks.metadataService.readMetadata.mockResolvedValueOnce({ runId: "manager", address: "/project_task_manager" });
     await service.recordCollaborating("manager", "/other" as never);
     expect(mocks.metadataService.writeMetadata).toHaveBeenCalledTimes(1);
+  });
+
+  it("autobyteus-461 DS-5 (model.py stop): a closed Task's run that is not running has its row record the stop, once", async () => {
+    const { service, mocks } = createSubject();
+    mocks.historyCatalogService.getCatalogRow.mockResolvedValueOnce({ runId: "image", terminatedAt: null });
+    await expect(service.stopForTaskClosure("image")).resolves.toBe(true);
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "image" });
+    mocks.historyCatalogService.getCatalogRow.mockResolvedValueOnce({ runId: "image", terminatedAt: "2026-11-11T00:00:00.000Z" });
+    await expect(service.stopForTaskClosure("image")).resolves.toBe(true);
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(1);
   });
 });

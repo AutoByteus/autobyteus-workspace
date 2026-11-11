@@ -1,6 +1,6 @@
 import path from "node:path";
-import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import { runIdentityOf, type TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { findTaskRunControl } from "../agent-collaboration/execution/task/task-run-control.js";
 import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
 import { bindDelegationTree, unbindDelegationTree } from "../agent-collaboration/delegation/delegation-tree-binding.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
@@ -51,7 +51,6 @@ const taskChangeMarks: ProjectChangeMarks = {
  * neutral port roots receive.
  */
 export const composeProjectTaskExecutionResources = async (deps: Readonly<{
-  activeRootDirectory: ActiveCollaborationRootDirectory;
   appDataDir: string;
   memoryDir: string;
 }>): Promise<TaskExecutionResourcePort> => {
@@ -71,10 +70,9 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   const service = initializeProjectTaskServiceProcessInstance({
     taskExecutionResources,
     adHocTasks: new AdHocTaskStore(adHocTasksLayout),
-    // DS-5: a closed Task's run stops in its own root, by its own identity; a run that is not active has nothing to stop.
-    requestRelease: (run) => deps.activeRootDirectory.resolve(runIdentityOf(run))?.stopForTaskClosure?.() ?? null,
-    // A Task root's live status comes from its own root; a run that is not active answers null (offline).
-    workerStatus: (run) => deps.activeRootDirectory.resolve(runIdentityOf(run))?.ownStatus?.() ?? null,
+    // DS-5: a closed Task's run stops by its own identity, through its ordinary Stop; its live status is its own.
+    requestRelease: (run) => findTaskRunControl()?.stopForTaskClosure(run) ?? null,
+    workerStatus: (run) => findTaskRunControl()?.ownStatus(run) ?? null,
     searchCleanup: processProjectTaskSearchCleanup,
     changes: taskChangeMarks,
   });

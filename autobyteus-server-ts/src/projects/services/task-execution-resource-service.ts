@@ -245,6 +245,13 @@ export class TaskExecutionResourceService {
     return loaded && root && taskExecutionReferenceKey(root.execution) === taskExecutionReferenceKey(execution) ? loaded.location : null;
   }
   /** Drops a Task whose files were removed from the view (indexes included). Call under `serialize`. */
+  /** Task deletion (contract T-3): the record goes with its Task; its runs become runs of their own. */
+  async removeRecord(location: TaskLocation): Promise<void> {
+    await this.serialize(location.taskId, async () => {
+      await this.store.remove(location);
+      this.forget(location);
+    });
+  }
   forget(location: TaskLocation): void {
     const affected = this.unindex(location.taskId);
     this.files.delete(location.taskId);

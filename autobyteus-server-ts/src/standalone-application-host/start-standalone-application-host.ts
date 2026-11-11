@@ -64,7 +64,6 @@ import { getLlmProviderService } from "../llm-management/llm-providers/services/
 import { getCodexAppServerClientManager } from "../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
-import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
 import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
@@ -240,7 +239,7 @@ export const startStandaloneApplicationHost = async (
       assertExecutionCapabilitiesReady: () => undefined,
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
-      activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir(),
+      appDataDir: processResources.appConfig.getAppDataDir(),
       memoryDir: processResources.appConfig.getMemoryDir() });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,

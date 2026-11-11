@@ -272,4 +272,20 @@ describe("GlobalAgentRunMessageRouter", () => {
     });
     expect(target.postUserMessage).toHaveBeenCalledTimes(1);
   });
+
+  it("autobyteus-461 R-9: an agent of another run that no Task relates to the sender's run (legacy, a deleted Task's run) is refused, also when live", async () => {
+    const senderContext = testMemberExecutionContext({ rootTeamRunId: "eng", memberAddress: "/coder", agentRunId: "coder" });
+    const targetContext = testMemberExecutionContext({ rootTeamRunId: "legacy-team", memberAddress: "/lead", agentRunId: "legacy-lead" });
+    const target = createTargetRun({ runId: "legacy-lead" });
+    (target.run as unknown as { config: unknown }).config = { memberExecutionContext: targetContext };
+    const crossRun = { route: vi.fn(async () => null) };
+    const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun: vi.fn(() => target.run) },
+      activeRootDirectory: new ActiveCollaborationRootDirectory(), crossRun });
+    const collaborationSender = buildAgentRunMessageSenderContext({ senderRunId: "coder", senderName: "Coder",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER, memberExecutionContext: senderContext });
+    await expect(router.deliver({ sender: collaborationSender, targetAgentRunId: "legacy-lead", content: "Hi" })).resolves.toEqual({
+      accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: "You can't message this agent: it works on a different Task." });
+    expect(crossRun.route).toHaveBeenCalledOnce();
+    expect(target.postUserMessage).not.toHaveBeenCalled();
+  });
 });

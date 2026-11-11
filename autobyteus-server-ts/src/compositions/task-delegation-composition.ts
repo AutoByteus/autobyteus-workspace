@@ -10,6 +10,7 @@ import { bindCrossRunMessageDelivery, CrossRunMessageDelivery, unbindCrossRunMes
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { bindCrossRunAddressResolution, CrossRunAddressResolution, unbindCrossRunAddressResolution } from "../agent-collaboration/communication/cross-run-address-resolution.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
+import { bindTaskRunControl, TaskRunControl, unbindTaskRunControl } from "../agent-collaboration/execution/task/task-run-control.js";
 
 /**
  * The process `TaskDelegation` (autobyteus-461 DS-1): every root delegates through it. A new run is created by
@@ -18,8 +19,8 @@ import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.j
  */
 export const composeTaskDelegation = (deps: Readonly<{
   tasks: TaskExecutionResourcePort;
-  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "cancelPreparedAgentRun" | "recordCollaborating">;
-  teamRuns: Pick<TeamRunService, "createTeamRun" | "terminateTeamRun">;
+  agentRuns: Pick<AgentRunService, "prepareAgentRun" | "cancelPreparedAgentRun" | "recordCollaborating" | "stopForTaskClosure" | "getAgentRun">;
+  teamRuns: Pick<TeamRunService, "createTeamRun" | "terminateTeamRun" | "stopForTaskClosure" | "getActiveTeamRun">;
   rootResolver: CollaborationRootResolver;
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve">;
   memoryDir: string;
@@ -57,5 +58,10 @@ export const composeTaskDelegation = (deps: Readonly<{
   bindTaskDelegation(delegation);
   bindCrossRunMessageDelivery(crossRun);
   bindCrossRunAddressResolution(addresses);
-  return Object.freeze({ release: () => { unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); unbindCrossRunAddressResolution(addresses); } });
+  // DS-5: what the Task side asks of a run by its own identity (its closure stop, its own status).
+  const control = new TaskRunControl({ agentRuns: deps.agentRuns, teamRuns: deps.teamRuns });
+  bindTaskRunControl(control);
+  return Object.freeze({ release: () => {
+    unbindTaskDelegation(delegation); unbindCrossRunMessageDelivery(crossRun); unbindCrossRunAddressResolution(addresses); unbindTaskRunControl(control);
+  } });
 };

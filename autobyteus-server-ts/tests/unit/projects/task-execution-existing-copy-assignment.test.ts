@@ -144,13 +144,13 @@ describe("existing-copy assignment on the Task side", () => {
     await expect(assign(a)).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CONFLICT", message: "This task agent already works on this Task." });
   });
 
-  it("leaves a deleted open Task out of the names, never showing a long ID (AC-023, DEC-013)", async () => {
+  it("T-3: a run whose Task was deleted belongs to no Task; a follow-up Task by its run ID is refused (it has no assigner)", async () => {
     const { a, b } = await teamDidA();
     await setStatus(a, "IN_PROGRESS");
     await tasks.reopenAssignment({ execution: team, requestedBy: "manager" });
     await tasks.deleteTask({ projectId, taskId: a });
-    await tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b });
-    expect(await tasks.openTaskReferencesOf(team, b)).toEqual([]);
+    await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b })).rejects.toMatchObject({
+      code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining("This task agent has no Task") });
   });
 
   it("refuses unknown and ambiguous Tasks, a copy whose latest assignment is already B, a never-started copy, and sub-work (AC-008/009)", async () => {

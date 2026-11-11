@@ -245,6 +245,13 @@ export class TeamRunService {
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
     return success;
   }
+  /** DS-5 (contract T-1, `model.py` `stop`): as `AgentRunService.stopForTaskClosure`, for a team run. */
+  async stopForTaskClosure(teamRunId: string): Promise<boolean> {
+    if (await this.terminateTeamRun(teamRunId)) return true;
+    if (this.manager.getActiveTeamRun(teamRunId)) return false;
+    if (!(await this.catalog.getCatalogRow(teamRunId))?.terminatedAt) await this.catalog.recordTeamRunTerminated({ teamRunId });
+    return true;
+  }
   updateStoppedSelections(input: {
     teamRunId: string;
     selectionPatches: readonly TeamRunSelectionPatch[];

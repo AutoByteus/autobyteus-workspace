@@ -122,11 +122,11 @@ describe("Task agent run resource reactivation", () => {
     await expect(tasks.reopenAssignment({ execution: team, requestedBy: "manager" })).rejects.toMatchObject({ code: "TASK_REACTIVATION_UNAVAILABLE" });
     await expect(tasks.reopenAssignment({ execution: { agentRunId: "unknown" }, requestedBy: "manager" })).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CONFLICT" });
     expect(await resourcesFile(taskId)).toBe(before);
-    // AC-008: the Task was deleted after DONE; its resource records stay and stay closed.
+    // T-3: the Task was deleted after DONE; its record went with it, so its runs belong to no Task and nothing reopens them.
     await tasks.deleteTask({ projectId, taskId });
-    await expect(tasks.assertReopenable({ execution: worker, requestedBy: "manager" }))
-      .rejects.toMatchObject({ code: "TASK_NOT_FOUND", message: "The Task was deleted, so its task agent cannot continue." });
-    await expect(tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
+    const noTask = { code: "TASK_AGENT_RESOURCE_CONFLICT", message: "The agent run belongs to no Task." };
+    await expect(tasks.assertReopenable({ execution: worker, requestedBy: "manager" })).rejects.toMatchObject(noTask);
+    await expect(tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })).rejects.toMatchObject(noTask);
     expect(tasks.isOpen(worker)).toBe(false);
   });
 

@@ -214,8 +214,16 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       console.warn("AD_HOC_TASK_DELETE_FAILED", { run, error: error instanceof Error ? error.message : String(error) });
     }
   }
-  /** Removes metadata and context, then drops the Task from its dependents and its parts; its agent run resources stay, so closed work stays closed. */
+  /**
+   * Deletion (contract T-3, `model.py` `delete_task`): the Task's entries are closed and its runs with no other open
+   * Task are asked to stop, then its record, metadata and context go; its runs become runs of their own. Then the Task
+   * is dropped from its dependents and its parts.
+   */
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
+    if (!(await this.store.readTask(command.projectId, command.taskId))) return false;
+    const location = { projectId: command.projectId, taskId: command.taskId };
+    await this.closeAndWrite(location, async () => undefined);
+    await this.resources.removeRecord(location);
     if (!(await this.store.deleteTask(command.projectId, command.taskId))) return false;
     this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
     this.deps.searchCleanup?.forgetTask(command.projectId, command.taskId);
