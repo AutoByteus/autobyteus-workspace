@@ -831,3 +831,4 @@
 
   The model is unchanged: it stores nothing and does not model views. `walkthrough.py --check` passes.
 
+- ARCH-REV-013 (2026-11-11): Pass, no finding. The peer summary path is read-only (REQ-004 holds); the payload change is a clean cut between same-release nodes; `walkthrough.py --check` re-run by the reviewer: passes.
