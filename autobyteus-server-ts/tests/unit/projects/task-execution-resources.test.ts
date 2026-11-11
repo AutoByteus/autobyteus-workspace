@@ -32,7 +32,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   };
   const resourcesFile = (taskId: string) => fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8").then(JSON.parse);
   const assign = (taskId: string, agentRunId: string, root = hostRoot) =>
-    tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: root, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: root, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
 
   beforeEach(async () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-resources-"));
@@ -47,7 +47,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   const from = (delegatingRun: typeof hostRoot | ReturnType<typeof createRootExecutionIdentity>, delegatorAgentRunId: string) => ({ delegatingRun, delegatorAgentRunId });
   const teamOne = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-1" });
   const subWork = (delegatingRun: ReturnType<typeof createRootExecutionIdentity>, delegator: string, agentRunId: string) =>
-    tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: from(delegatingRun, delegator), execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: from(delegatingRun, delegator), execution: { agentRunId } });
 
   it("links `starting` before resources, writes the exact documented file (contract §2.1), and settles start once", async () => {
     const task = await tasks.createTask({ projectId, title: "A", description: "A" });
@@ -61,7 +61,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(await resourcesFile(task.taskId)).toEqual({ taskId: task.taskId, agentRunResources: [
       { role: "assigned", delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager-root" }, delegatorAgentRunId: "manager" }, recipientAddress: "/eng_team",
         agentRun: { kind: "team", teamRunId: "team-1", coordinatorAgentRunId: "lead-1" }, linkedAt: expect.any(String), start: "started", closedAt: null },
-      { role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-1" }, delegatorAgentRunId: "lead-1" },
+      { role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-1" }, delegatorAgentRunId: "lead-1" },
         agentRun: { kind: "agent", agentRunId: "helper-1" },
         linkedAt: expect.any(String), start: "failed", startError: { code: "TASK_DISPATCH_FAILED", message: "no newlines" }, closedAt: null },
     ] });
@@ -85,7 +85,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   });
 
   it("schema: the current shape only; an old-shape entry, a role `delegated`, misplaced address, members or startError are damage", () => {
-    const entry = { role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d" },
+    const entry = { role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "d" },
       agentRun: { kind: "agent", agentRunId: "a" }, linkedAt: "t", start: "starting", closedAt: null };
     const closed = { ...entry, closedAt: "t2" };
     const parse = (...entries: unknown[]) => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: entries }, "y");
@@ -95,12 +95,13 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(() => parse(entry, closed)).toThrow("is open but is not its agent run's last entry");
     expect(parse(closed, closed, entry).executionResources).toHaveLength(3);
     // The shapes this release converts (DS-10) are not read by the runtime.
-    expect(() => parse({ role: "assigned", assignedBy: "m", hostRoot: { kind: "agent", runId: "r" }, agentRun: entry.agentRun, linkedAt: "t", start: "started", closedAt: null }))
+    expect(() => parse({ role: "assigned", recipientAddress: "/worker", assignedBy: "m", hostRoot: { kind: "agent", runId: "r" }, agentRun: entry.agentRun, linkedAt: "t", start: "started", closedAt: null }))
       .toThrow("delegatedFrom");
     expect(() => parse({ ...entry, role: "delegated" })).toThrow("role");
     expect(() => parse({ ...entry, delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" } } })).toThrow("delegatedFrom");
     expect(() => parse({ ...entry, delegatedFrom: { ...entry.delegatedFrom, delegatingRun: { kind: "agent", runId: "r", extra: 1 } } })).toThrow("delegatedFrom");
-    expect(() => parse({ ...entry, recipientAddress: "/a" })).toThrow("recipientAddress");
+    const { recipientAddress: _absent, ...withoutAddress } = entry;
+    expect(() => parse(withoutAddress)).toThrow("recipientAddress");
     expect(parse({ ...entry, recipientAddress: "/a", nodeId: "n" }).executionResources[0]).toMatchObject({ recipientAddress: "/a", nodeId: "n" });
     expect(() => parse({ ...entry, members: [] })).toThrow("members");
     expect(() => parse({ ...entry, nodeId: "n", members: [] })).toThrow("members");
@@ -215,7 +216,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     await assign(task.taskId, "worker");
     const file = layout.taskExecutionResourcesFile(projectId, task.taskId);
     const stored = JSON.parse(await fs.readFile(file, "utf8"));
-    stored.agentRunResources.push({ role: "broughtIn", delegatedFrom: { delegatingRun: { kind: "agent", runId: "worker" }, delegatorAgentRunId: "worker" },
+    stored.agentRunResources.push({ role: "broughtIn", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { kind: "agent", runId: "worker" }, delegatorAgentRunId: "worker" },
       agentRun: { kind: "agent", agentRunId: "old-helper" }, linkedAt: new Date().toISOString(), start: "started", closedAt: null });
     await fs.writeFile(file, JSON.stringify(stored));
     const restarted = await boot();

@@ -142,7 +142,7 @@ describe("closedParts in the update_task result (AC-018, REQ-017)", () => {
     const b = await create("B", { part_of: parent.taskId });
     await create("C", { part_of: parent.taskId });
     await tool("update_task", { task_id: "autobyteus-4", status: "DONE" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: await idOfKey(b.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "b-worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: await idOfKey(b.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "b-worker" } });
     const result = await tool("update_task", { task_id: parent.taskId, status: "CANCELLED" });
     expect(result).toEqual({ task: { projectId, taskId: "autobyteus-1", title: "Parent", status: "CANCELLED", closedParts: [a.taskId, b.taskId] } });
     expect(tasks.isOpen({ agentRunId: "b-worker" })).toBe(false);

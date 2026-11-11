@@ -40,6 +40,7 @@ import { TaskAgentOwnRunV1AppDataMigration } from "./migrations/task-agent-own-r
 import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.js";
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports/remove-work-trace-exports-migration.js";
+import { DelegatedRunsOwnRunsV1AppDataMigration } from "./migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
 import { NodeIdentityFileNameMigration } from "./migrations/node-identity-file-name/node-identity-file-name-migration.js";
@@ -148,6 +149,8 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new RemoveWorkTraceExportsMigration(memoryDir),
     // Completes delegated copies' own files so each restores on its own, and removes their origin field.
     new DelegatedCopyOwnFileCompleteV1AppDataMigration(memoryDir, { ledger }),
+    // autobyteus-461: a delegated run becomes a run of its own; registered after its four predecessors, with no hold (AR-005).
+    new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
     // Deletes the removed Skill Improvement feature's data once (records, sessions, helper runs, built-in agent).
     new RemoveSkillImprovementDataMigration(
       memoryDir,

@@ -88,10 +88,10 @@ describe("get_project_task (REQ-014, AC-012)", () => {
     await fs.writeFile(source, "brief bytes");
     const a = await create("With files", "Body.", { context_files: [source] });
     const longId = await longIdOf(a.taskId);
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: longId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "earlier" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: longId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "earlier" } });
     await tool("update_task", { task_id: a.taskId, status: "DONE" }); await releases.settled();
     await tool("update_task", { task_id: a.taskId, status: "IN_PROGRESS" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: longId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "current" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: longId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId: "current" } });
     const read = await tool("get_project_task", { project_id: projectId, task_id: a.taskId });
     expect(read.contextFiles).toEqual([{ name: "brief.md", path: expect.stringContaining("brief.md") }]);
     expect(await fs.readFile(read.contextFiles[0].path, "utf8")).toBe("brief bytes");
@@ -157,7 +157,7 @@ describe("get_project_task caller scope (REQ-015, AC-013; AR-006, AR-008)", () =
   it("a copy holding two open Tasks reads only its current one, the latest given to it (AR-006)", async () => {
     const a = await create("A", "First Task."), b = await create("B", "Second Task.");
     const copy: TaskExecutionReference = { agentRunId: "copy" };
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: await longIdOf(a.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: copy });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: await longIdOf(a.taskId), delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: copy });
     await tasks.markStarted(copy);
     await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: copy, taskId: await longIdOf(b.taskId) });
     expect((await tool("get_project_task", { project_id: projectId, task_id: a.taskId })).status).toBe("TODO"); // A stays open

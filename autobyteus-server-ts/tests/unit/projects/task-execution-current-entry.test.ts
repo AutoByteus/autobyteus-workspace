@@ -10,7 +10,7 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 
 const host = { kind: "agent_team", runId: "manager-root" };
 const entry = (agentRun: Record<string, string>, linkedAt: string, closedAt: string | null, extra: Record<string, unknown> = {}) => ({
-  role: "assigned", delegatedFrom: { delegatingRun: host, delegatorAgentRunId: "manager" }, agentRun, linkedAt, start: "started", closedAt, ...extra });
+  role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: host, delegatorAgentRunId: "manager" }, agentRun, linkedAt, start: "started", closedAt, ...extra });
 const team = { kind: "team", teamRunId: "review-team", coordinatorAgentRunId: "lead" };
 
 /** The one owner of the current-entry rule: open entry, else the latest `linkedAt` (tie: greater Task ID). */
@@ -35,7 +35,7 @@ describe("TaskExecutionResourceService current entry", () => {
 
   it("a reused run's closed sub-work from its earlier Task is its own run's Task work, never a cross-Task conflict", async () => {
     await write("task_A", [entry(team, "2026-10-09T10:00:00.000Z", "2026-10-09T11:00:00.000Z"),
-      { role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "review-team" }, delegatorAgentRunId: "lead" },
+      { role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "review-team" }, delegatorAgentRunId: "lead" },
         agentRun: { kind: "agent", agentRunId: "sub-work" }, linkedAt: "2026-10-09T10:30:00.000Z", start: "started", closedAt: "2026-10-09T11:00:00.000Z" }]);
     await write("task_B", [entry(team, "2026-10-09T12:00:00.000Z", null)]);
     await boot();

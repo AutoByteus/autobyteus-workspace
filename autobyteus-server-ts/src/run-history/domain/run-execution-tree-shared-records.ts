@@ -41,6 +41,8 @@ export type ConfiguredAgentExecutionNode = Readonly<{
   agentRunId: string;
   platformAgentRunId: string | null;
   launchConfiguration: AgentLaunchConfiguration;
+  /** How its launch was resolved, when recorded (a delegated team's member, TC-12). */
+  launchSource?: LaunchConfigurationSource;
 }> & RecordedPendingRuntimeSwitch;
 
 export type ConfiguredTeamExecutionNode = Readonly<{

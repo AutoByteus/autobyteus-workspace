@@ -72,7 +72,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   let releases: ReleaseTracker;
   const resourcesFile = (taskId: string) => fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8");
   const assign = (taskId: string, agentRunId: string, root = hostRoot) =>
-    tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: root, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: root, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
   const setStatus = (taskId: string, status: ProjectTaskStatus) => tasks.updateTaskById({ taskId, status });
   const settle = () => releases.settled();
 
@@ -150,7 +150,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
 
   it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {
     const task = await tasks.createTask({ projectId, title: "A", description: "A" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: worker });
     await tasks.markStarted(worker);
     await setStatus(task.taskId, "CANCELLED");
     const closedFile = await resourcesFile(task.taskId);
@@ -168,7 +168,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   });
 
   it("a Task with no Project: CANCELLED closes and stops its copy like DONE; delegation by its ID stays refused (AC-004)", async () => {
-    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "delegator" }, execution: { agentRunId: "copy-1" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "delegator" }, execution: { agentRunId: "copy-1" },
       adHocTask: { description: "Review the plan", referenceFiles: [] } });
     expect(await setStatus(taskId, "CANCELLED")).toEqual({ projectId: null, taskId, taskReference: taskId, status: "CANCELLED" });
     await settle();

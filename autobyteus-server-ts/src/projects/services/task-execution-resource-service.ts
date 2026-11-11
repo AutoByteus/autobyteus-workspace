@@ -113,10 +113,11 @@ export class TaskExecutionResourceService {
    */
   async assignExisting(location: TaskLocation, input: ExistingTaskExecutionAssignInput): Promise<void> {
     const recipientAddress = this.currentOf(input.execution)?.entry.recipientAddress;
+    if (!recipientAddress) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
     await this.store.update(location, file => linkExistingTaskExecution(file, {
       delegatedFrom: input.delegatedFrom, execution: input.execution,
       ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
-      ...(recipientAddress ? { recipientAddress } : {}),
+      recipientAddress,
     }, this.now().toISOString()), next => this.commit(location, next));
   }
   async markStarted(execution: TaskExecutionReference): Promise<void> {
@@ -219,7 +220,7 @@ export class TaskExecutionResourceService {
     return [...last.values()].map((entry) => ({
       taskId, role: entry.role, delegatedFrom: entry.delegatedFrom, run: entry.execution, entryAgentRunId: ingressOf(entry),
       open: entry.closedAt === null, start: entry.start, linkedAt: entry.linkedAt,
-      ...(entry.recipientAddress ? { recipientAddress: entry.recipientAddress } : {}),
+      recipientAddress: entry.recipientAddress,
       ...(entry.nodeId !== undefined ? { nodeId: entry.nodeId } : {}), ...(entry.members ? { members: entry.members } : {}),
     }));
   }

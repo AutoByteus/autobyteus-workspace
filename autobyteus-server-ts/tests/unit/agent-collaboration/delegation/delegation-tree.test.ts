@@ -31,9 +31,9 @@ const MAIN = {
   T1: [
     { role: "assigned", delegatedFrom: from("agent", M.rootRunId, M.rootRunId), recipientAddress: "/software_engineering_team",
       agentRun: team(E.rootRunId, "solution_designer_65a9"), linkedAt: at(0), start: "started", closedAt: null },
-    { role: "subWork", delegatedFrom: from("agent_team", E.rootRunId, "solution_designer_65a9"),
+    { role: "subWork", recipientAddress: "/worker", delegatedFrom: from("agent_team", E.rootRunId, "solution_designer_65a9"),
       agentRun: team(P.rootRunId, "product_designer_1a2b"), linkedAt: at(10), start: "started", closedAt: null },
-    { role: "subWork", delegatedFrom: from("agent_team", P.rootRunId, "product_designer_1a2b"),
+    { role: "subWork", recipientAddress: "/worker", delegatedFrom: from("agent_team", P.rootRunId, "product_designer_1a2b"),
       agentRun: agent(I.rootRunId), linkedAt: at(20), start: "started", closedAt: null },
   ],
   T2: [
@@ -68,7 +68,7 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
     await boot();
     expect(tree.openChildrenOf(M).map((child) => child.run)).toEqual([{ teamRunId: E.rootRunId }, { agentRunId: R.rootRunId }]);
     expect(tree.openChildrenOf(E)).toEqual([{ run: { teamRunId: P.rootRunId }, taskId: "T1", delegatorAgentRunId: "solution_designer_65a9",
-      entryAgentRunId: "product_designer_1a2b", started: true, linkedAt: at(10) }]);
+      entryAgentRunId: "product_designer_1a2b", started: true, linkedAt: at(10), recipientAddress: "/worker" }]);
     expect(tree.openChildrenOf(P).map((child) => child.run)).toEqual([{ agentRunId: I.rootRunId }]);
     expect(tree.openChildrenOf(I)).toEqual([]);
     expect(tree.parentOf({ teamRunId: P.rootRunId })).toEqual({ delegatingRun: E, delegatorAgentRunId: "solution_designer_65a9" });
@@ -112,7 +112,7 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
       ...MAIN,
       T3: [{ role: "assigned", delegatedFrom: from("agent", M.rootRunId, M.rootRunId), recipientAddress: "/software_engineering_team",
         agentRun: team(E.rootRunId, "solution_designer_65a9"), linkedAt: at(40), start: "started", closedAt: null },
-      { role: "subWork", delegatedFrom: from("agent_team", E.rootRunId, "solution_designer_65a9"), agentRun: agent("helper_on_t3"),
+      { role: "subWork", recipientAddress: "/worker", delegatedFrom: from("agent_team", E.rootRunId, "solution_designer_65a9"), agentRun: agent("helper_on_t3"),
         linkedAt: at(41), start: "started", closedAt: null }],
     });
     const helper = run("agent", "helper_on_t3");

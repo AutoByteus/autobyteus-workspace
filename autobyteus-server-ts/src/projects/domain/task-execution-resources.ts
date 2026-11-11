@@ -13,11 +13,8 @@ export type TaskExecutionResource = Readonly<{
   role: TaskExecutionRole;
   /** Which run and which agent delegated the run (one hop). The same on every entry of one run. */
   delegatedFrom: RunDelegatedFrom;
-  /**
-   * The address the run was delegated to (e.g. `/product_team`), its display name: on `assigned` (absent on
-   * assignments recorded before it was kept), and on every entry of a peer's run.
-   */
-  recipientAddress?: string;
+  /** The address the run was delegated to (e.g. `/product_team`), its name under its delegating run; on every entry. */
+  recipientAddress: string;
   execution: TaskExecutionReference;
   /** Only for a Team copy: its coordinator agent run (the Team's ingress). */
   teamCoordinatorAgentRunId?: string;
@@ -71,17 +68,16 @@ export const boundedError = (error: { code: string; message: string }) => ({
 });
 
 const entryOf = (input: Readonly<{
-  role: TaskExecutionRole; recipientAddress?: string; delegatedFrom: RunDelegatedFrom;
+  role: TaskExecutionRole; recipientAddress: string; delegatedFrom: RunDelegatedFrom;
   execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string; nodeId?: string; members?: readonly PeerRunMember[];
 }>, now: string): TaskExecutionResource => {
   const team = "teamRunId" in input.execution;
   if (team && !input.teamCoordinatorAgentRunId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "A Team agent run needs its coordinator.");
   const { delegatingRun, delegatorAgentRunId } = input.delegatedFrom;
-  const addressed = input.role === "assigned" || input.nodeId !== undefined;
   return {
     role: input.role,
     delegatedFrom: { delegatingRun: { rootSubjectKind: delegatingRun.rootSubjectKind, rootRunId: delegatingRun.rootRunId } as typeof delegatingRun, delegatorAgentRunId },
-    ...(addressed && input.recipientAddress ? { recipientAddress: input.recipientAddress } : {}),
+    recipientAddress: input.recipientAddress,
     execution: "agentRunId" in input.execution ? { agentRunId: input.execution.agentRunId } : { teamRunId: input.execution.teamRunId },
     ...(team ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
     linkedAt: now, start: "starting", closedAt: null,
@@ -109,7 +105,7 @@ export const linkNewTaskExecution = (file: TaskExecutionResourceFile, link: NewT
  * this file is closed. Earlier entries of the copy are kept exactly as they are.
  */
 export const linkExistingTaskExecution = (file: TaskExecutionResourceFile, link: Readonly<{
-  delegatedFrom: RunDelegatedFrom; recipientAddress?: string; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
+  delegatedFrom: RunDelegatedFrom; recipientAddress: string; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
 }>, now: string): TaskExecutionResourceFile => {
   if (latestEntryOf(file, link.execution)?.closedAt === null) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "This task agent already works on this Task.");

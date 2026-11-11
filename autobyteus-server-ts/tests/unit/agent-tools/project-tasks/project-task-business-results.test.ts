@@ -56,7 +56,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const task = await tasks.createTask({ projectId, title: "Full saved work description", description: "Full saved work description",
       contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
     const assigned = (agentRun: { agentRunId: string } | { teamRunId: string }, kind: RootSubjectKind, coordinatorAgentRunId?: string) =>
-      tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: `manager-${kind}` }, execution: agentRun, ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
+      tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: `manager-${kind}` }, execution: agentRun, ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
     await assigned({ agentRunId: "closed-worker" }, "agent");
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await releases.settled();
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "TODO" });
@@ -64,8 +64,8 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     await assigned({ teamRunId: "failed-team" }, "agent_team", "failed-team-lead");
     await tasks.markFailed({ teamRunId: "failed-team" }, { code: "TASK_DISPATCH_FAILED", message: "Internal dispatch detail" });
     await assigned({ agentRunId: "starting-agent" }, "agent_org");
-    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "accepted-agent" }, delegatorAgentRunId: "accepted-agent" }, execution: { agentRunId: "internal-delegate" } });
-    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "accepted-agent" }, delegatorAgentRunId: "accepted-agent" }, execution: { agentRunId: "owned-helper" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "accepted-agent" }, delegatorAgentRunId: "accepted-agent" }, execution: { agentRunId: "internal-delegate" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "accepted-agent" }, delegatorAgentRunId: "accepted-agent" }, execution: { agentRunId: "owned-helper" } });
 
     const openAssignments = [
       { kind: "agent", agentRunId: "accepted-agent", assignedBy: "manager-agent", outcome: "accepted" },
@@ -148,7 +148,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
   it("marks a Task whose agent run resources can't be read as assignments unavailable, never as an empty list", async () => {
     const a = await tasks.createTask({ projectId, title: "A", description: "A" });
     await tasks.createTask({ projectId, title: "B", description: "B" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, delegatedFrom: { delegatingRun: root("agent"), delegatorAgentRunId: "manager" }, execution: { agentRunId: "w" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: a.taskId, delegatedFrom: { delegatingRun: root("agent"), delegatorAgentRunId: "manager" }, execution: { agentRunId: "w" } });
     await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "[]");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     tasks = await service();
@@ -169,9 +169,9 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const created = JSON.parse(await new CreateTaskTool().execute(null, { project_id: projectId, title: "A", description: "A" }));
     expect(created).toEqual({ task: { projectId, taskId: "business-fixture-1", title: "A", status: "TODO" } });
     const key = created.task.taskId, taskId = await idOfKey(key);
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: "manager" }, execution: { teamRunId: "A" }, teamCoordinatorAgentRunId: "A-lead" });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: "manager" }, execution: { teamRunId: "A" }, teamCoordinatorAgentRunId: "A-lead" });
     const b = await tasks.createTask({ projectId, title: "B protected", description: "B protected" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: "manager" }, execution: { agentRunId: "B" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: b.taskId, delegatedFrom: { delegatingRun: root(kind), delegatorAgentRunId: "manager" }, execution: { agentRunId: "B" } });
     const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
     release.mockResolvedValueOnce({ execution: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } });
     const done = { task: { projectId, taskId: key, title: "A", status: "DONE" } }, args = { task_id: key, status: "DONE" };
@@ -204,7 +204,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
 
   it.each(["native", "mcp"] as const)("returns truthful DONE postcommit uncertainty through %s: runs closed, status recorded, stop requested", async mode => {
     const task = await tasks.createTask({ projectId, title: "Saved", description: "Saved" });
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, delegatedFrom: { delegatingRun: root("agent"), delegatorAgentRunId: "manager" }, execution: { agentRunId: "owned" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: task.taskId, delegatedFrom: { delegatingRun: root("agent"), delegatorAgentRunId: "manager" }, execution: { agentRunId: "owned" } });
     tasks = await service(Object.assign(Object.create(store), {
       updateTask: async (...args: Parameters<ProjectStore["updateTask"]>) => { await store.updateTask(...args); throw new Error("private postcommit detail"); },
     }));

@@ -77,7 +77,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
   it("answers null for a sub-work copy, which is never its Task's root", async () => {
     const taskId = await create("Root work");
     await assign(taskId, agent);
-    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: runIdentityOf(agent), delegatorAgentRunId: "lead" }, execution: { agentRunId: "sub-work" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: runIdentityOf(agent), delegatorAgentRunId: "lead" }, execution: { agentRunId: "sub-work" } });
     expect(await tasks.currentTasksOfTaskWorkers([{ agentRunId: "sub-work" }, agent])).toEqual([
       { execution: { agentRunId: "sub-work" }, task: null },
       { execution: agent, task: expect.objectContaining({ taskId }) },

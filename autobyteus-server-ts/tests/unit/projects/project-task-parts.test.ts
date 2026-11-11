@@ -38,7 +38,7 @@ describe("Project Task parts (services)", () => {
   const stored = async (taskId: string) => (await store.readTask(projectId, taskId))!;
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
   const assign = (taskId: string, agentRunId: string) =>
-    tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: { agentRunId } });
 
   beforeEach(async () => {
     appData = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-parts-"));
@@ -162,7 +162,7 @@ describe("Project Task parts (services)", () => {
 
     it("a Temp task has no parent: part_of on it, or naming it, is refused (AC-003)", async () => {
       const a = await create("A");
-      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" },
+      const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" },
         execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
       await expect(tasks.updateTaskById({ taskId: temp, partOf: "autobyteus-1" })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });
       await expect(tasks.updateTaskById({ taskId: a.taskId, partOf: temp })).rejects.toMatchObject({ code: "TASK_PARENT_INVALID" });

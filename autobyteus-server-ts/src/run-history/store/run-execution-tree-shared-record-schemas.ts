@@ -126,6 +126,8 @@ export const parseConfiguredAgent = (value: unknown, label: string): ConfiguredA
     agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
     launchConfiguration: parseLaunchConfiguration(member.launchConfiguration, `${label}.launchConfiguration`),
+    // How its launch was resolved, when recorded (a delegated team's member, TC-12).
+    ...(member.launchSource === undefined ? {} : { launchSource: parseLaunchConfigurationSource(member.launchSource, `${label}.launchSource`) }),
     ...parseOptionalPendingRuntimeSwitch(member, label),
   };
 };

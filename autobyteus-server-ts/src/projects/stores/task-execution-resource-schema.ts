@@ -30,10 +30,8 @@ const parseEntry = (value: unknown, index: number): TaskExecutionResource => {
     || !text(from.delegatorAgentRunId) || Object.keys(from).length !== 2 || Object.keys(delegating).length !== 2) invalid(`${at}.delegatedFrom is invalid`);
   const peer = v!.nodeId !== undefined;
   if (peer && !text(v!.nodeId)) invalid(`${at}.nodeId is invalid`);
-  // Optional (absent before it was recorded); nonblank, on assigned and on a peer's run.
-  if (v!.recipientAddress !== undefined && ((role !== "assigned" && !peer) || !text(v!.recipientAddress) || !v!.recipientAddress.trim())) {
-    invalid(`${at}.recipientAddress must be a nonblank address on assigned or a peer's run only`);
-  }
+  // The run's name under its delegating run, on every entry (contract §3.1; the migration fills older entries, E5).
+  if (!text(v!.recipientAddress) || !v!.recipientAddress.trim()) invalid(`${at}.recipientAddress must be a nonblank address`);
   const run = v!.agentRun as Record<string, unknown> | null;
   let execution: TaskExecutionResource["execution"], teamCoordinatorAgentRunId: string | undefined;
   if (run?.kind === "agent" && text(run.agentRunId)) execution = { agentRunId: run.agentRunId };
@@ -62,7 +60,7 @@ const parseEntry = (value: unknown, index: number): TaskExecutionResource => {
       delegatingRun: createRootExecutionIdentity({ rootSubjectKind: delegating!.kind as RootSubjectKind, rootRunId: delegating!.runId as string }),
       delegatorAgentRunId: from!.delegatorAgentRunId as string,
     },
-    ...(v!.recipientAddress !== undefined ? { recipientAddress: v!.recipientAddress as string } : {}),
+    recipientAddress: v!.recipientAddress as string,
     execution,
     ...(teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId } : {}),
     linkedAt: v!.linkedAt as string,
@@ -101,7 +99,7 @@ export const serializeTaskExecutionResourceFile = (file: TaskExecutionResourceFi
       delegatingRun: { kind: r.delegatedFrom.delegatingRun.rootSubjectKind, runId: r.delegatedFrom.delegatingRun.rootRunId },
       delegatorAgentRunId: r.delegatedFrom.delegatorAgentRunId,
     } satisfies StoredDelegatedFrom,
-    ...((r.role === "assigned" || r.nodeId !== undefined) && r.recipientAddress ? { recipientAddress: r.recipientAddress } : {}),
+    recipientAddress: r.recipientAddress,
     agentRun: ("agentRunId" in r.execution ? { kind: "agent", agentRunId: r.execution.agentRunId }
       : { kind: "team", teamRunId: r.execution.teamRunId, coordinatorAgentRunId: r.teamCoordinatorAgentRunId! }) satisfies StoredAgentRun,
     ...(r.nodeId !== undefined ? { nodeId: r.nodeId, ...(r.members ? { members: r.members.map((m) => ({ address: m.address, agentRunId: m.agentRunId })) } : {}) } : {}),

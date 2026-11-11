@@ -32,7 +32,7 @@ describe("a task agent with several open Tasks", () => {
   const released = () => release.mock.calls.map(([run]) => [run]);
   /** The first Task: a new copy linked and started, as delegation does. */
   const assignFirst = async (taskId: string) => {
-    await tasks.linkNewTaskExecution({ role: "assigned", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead-1" });
+    await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, teamCoordinatorAgentRunId: "lead-1" });
     await tasks.markStarted(team);
   };
   /** Another Task to the same copy, as delegate_task with target_team_run_id does (advisory check, then the commit, then start). */
@@ -115,7 +115,7 @@ describe("a task agent with several open Tasks", () => {
     await assignFirst(a.taskId);
     await assignAnother(b.taskId);
     const helper = { agentRunId: "helper" };
-    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: runIdentityOf(team), delegatorAgentRunId: "lead" }, execution: helper });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: runIdentityOf(team), delegatorAgentRunId: "lead" }, execution: helper });
     await tasks.markStarted(helper);
     expect(currentTaskOf(tasks, helper)).toMatchObject({ taskId: b.taskId, role: "subWork", open: true });
     await setStatus(b.taskId, "DONE"); await releases.settled();

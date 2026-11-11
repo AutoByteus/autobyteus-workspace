@@ -40,10 +40,12 @@ export type TaskExecutionAssignmentTarget =
  */
 export type NewTaskExecutionLinkInput = Readonly<{
   delegatedFrom: RunDelegatedFrom; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string;
+  /** The address the run was delegated to: its name under its delegating run (contract §3.1, on every entry). */
+  recipientAddress: string;
 }> & PeerRunFields & (
-  | (Readonly<{ role: "assigned"; /** The address delegated to (the run's display name). */ recipientAddress: string }>
+  | (Readonly<{ role: "assigned" }>
     & TaskExecutionAssignmentTarget)
-  | Readonly<{ role: "subWork"; recipientAddress?: string }>
+  | Readonly<{ role: "subWork" }>
 );
 
 /** A follow-up Task for a run (DS-6): the run, (for a team) its coordinator, the Task and who gives it. */
@@ -65,7 +67,7 @@ export type TaskRunEntry = Readonly<{
   open: boolean;
   start: "starting" | "started" | "failed";
   linkedAt: string;
-  recipientAddress?: string;
+  recipientAddress: string;
   nodeId?: string;
   members?: readonly PeerRunMember[];
 }>;

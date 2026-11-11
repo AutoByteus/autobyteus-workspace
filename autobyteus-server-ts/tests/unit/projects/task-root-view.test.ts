@@ -17,31 +17,29 @@ import { createRootExecutionIdentity } from "../../../src/agent-collaboration/ex
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
 const stored = (extra: Record<string, unknown> = {}) => ({
-  role: "assigned", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-root" }, delegatorAgentRunId: "manager" },
+  role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { kind: "agent_team", runId: "team-root" }, delegatorAgentRunId: "manager" },
   agentRun: { kind: "agent", agentRunId: "worker" }, linkedAt: "t", start: "started", closedAt: null, ...extra,
 });
 
 describe("Task roots: recorded address, reader/writer, and views", () => {
-  it("reads old entries without the address and new ones with it; writes it exactly when present (Directly Usable)", () => {
+  it("every entry carries its address, on every role, and writes it exactly (contract §3.1, E5)", () => {
+    const helper = { role: "subWork", recipientAddress: "/helper", delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "r" }, agentRun: { kind: "agent", agentRunId: "h" }, linkedAt: "t", start: "starting", closedAt: null };
     const file = parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [
-      stored(),
-      { ...stored({ recipientAddress: "/product_team" }), agentRun: { kind: "team", teamRunId: "team-1", coordinatorAgentRunId: "lead" } },
+      { ...stored({ recipientAddress: "/product_team" }), agentRun: { kind: "team", teamRunId: "team-1", coordinatorAgentRunId: "lead" } }, helper,
     ] }, "t");
-    expect(file.executionResources.map((entry) => entry.recipientAddress)).toEqual([undefined, "/product_team"]);
-    const written = serializeTaskExecutionResourceFile(file).agentRunResources;
-    expect(Object.keys(written[0]!)).not.toContain("recipientAddress");
-    expect(written[1]).toMatchObject({ recipientAddress: "/product_team" });
+    expect(file.executionResources.map((entry) => entry.recipientAddress)).toEqual(["/product_team", "/helper"]);
+    expect(serializeTaskExecutionResourceFile(file).agentRunResources.map((entry) => entry.recipientAddress)).toEqual(["/product_team", "/helper"]);
     expect(parseTaskExecutionResourceFile(serializeTaskExecutionResourceFile(file), "t")).toEqual(file);
-    // Only a nonblank address, only on assigned (and on a peer's run).
-    const helper = { role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent", runId: "r" }, delegatorAgentRunId: "r" }, agentRun: { kind: "agent", agentRunId: "h" }, linkedAt: "t", start: "starting", closedAt: null };
-    expect(() => parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [{ ...helper, recipientAddress: "/x" }] }, "t")).toThrow("recipientAddress");
+    // Absent or blank: damage (the migration fills older entries, E5).
+    const { recipientAddress: _absent, ...withoutAddress } = helper;
+    expect(() => parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [withoutAddress] }, "t")).toThrow("recipientAddress");
     expect(() => parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [stored({ recipientAddress: " " })] }, "t")).toThrow("recipientAddress");
   });
 
   it("the root is the latest assigned entry; closed or failed roots are offline without asking the root", () => {
     const file = parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [
       stored({ recipientAddress: "/first", agentRun: { kind: "agent", agentRunId: "first" } }),
-      { role: "subWork", delegatedFrom: { delegatingRun: { kind: "agent", runId: "first" }, delegatorAgentRunId: "first" }, agentRun: { kind: "agent", agentRunId: "h" }, linkedAt: "t", start: "started", closedAt: null },
+      { role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { kind: "agent", runId: "first" }, delegatorAgentRunId: "first" }, agentRun: { kind: "agent", agentRunId: "h" }, linkedAt: "t", start: "started", closedAt: null },
       stored({ recipientAddress: "/second", agentRun: { kind: "agent", agentRunId: "second" }, start: "failed", startError: { code: "NO_MODEL", message: "No model is set." } }),
     ] }, "t");
     const resolve = vi.fn(() => "running" as const);

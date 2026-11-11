@@ -13,7 +13,7 @@ const rejection = (code: string, message: string) => Object.assign(new Error(mes
  * another Task while open keeps its earlier open Tasks in `otherOpenTaskIds` (oldest first).
  */
 type Entry = { taskId: string; delegatedFrom: RunDelegatedFrom; execution: TaskExecutionReference; role: TaskExecutionRole; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true; otherOpenTaskIds?: string[];
-  /** A Team copy's coordinator (its ingress). */ teamCoordinatorAgentRunId?: string; recipientAddress?: string; nodeId?: string; members?: readonly PeerRunMember[]; linkedAt: string };
+  /** A Team copy's coordinator (its ingress). */ teamCoordinatorAgentRunId?: string; recipientAddress: string; nodeId?: string; members?: readonly PeerRunMember[]; linkedAt: string };
 
 /**
  * Runtime-test double of the Task side's loaded agent run resources. It follows the reviewed
@@ -115,7 +115,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (this.entries.has(key)) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Already linked.");
     this.entries.set(key, { taskId, delegatedFrom: input.delegatedFrom, execution: input.execution, role: input.role, open: true, start: "starting",
       linkedAt: new Date(Date.UTC(2026, 0, 1, 0, 0, ++this.linkCount)).toISOString(),
-      ...(input.recipientAddress ? { recipientAddress: input.recipientAddress } : {}),
+      recipientAddress: input.recipientAddress,
       ...(input.nodeId !== undefined ? { nodeId: input.nodeId } : {}), ...(input.members ? { members: input.members } : {}),
       ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}) });
     this.links.push(input);
@@ -143,7 +143,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
       if (!current && !entry.otherOpenTaskIds?.includes(taskId)) return [];
       return [{ taskId, role: entry.role, delegatedFrom: entry.delegatedFrom, run: entry.execution, entryAgentRunId: entryAgentOf(entry),
         open: current ? entry.open : true, start: entry.start, linkedAt: entry.linkedAt,
-        ...(entry.recipientAddress ? { recipientAddress: entry.recipientAddress } : {}),
+        recipientAddress: entry.recipientAddress,
         ...(entry.nodeId !== undefined ? { nodeId: entry.nodeId } : {}), ...(entry.members ? { members: entry.members } : {}) }];
     });
   }

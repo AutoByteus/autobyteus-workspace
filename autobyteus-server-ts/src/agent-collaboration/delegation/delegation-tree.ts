@@ -22,7 +22,8 @@ export type DelegatedChild = Readonly<{
   entryAgentRunId: string;
   started: boolean;
   linkedAt: string;
-  recipientAddress?: string;
+  /** Its name under this run: the address it was delegated to. */
+  recipientAddress: string;
   nodeId?: string;
   members?: readonly PeerRunMember[];
 }>;
@@ -116,7 +117,7 @@ export class DelegationTree implements TaskEntriesListener {
       children.push({ firstLinkedAt,
         run: current.run, taskId: current.taskId, delegatorAgentRunId: current.delegatedFrom.delegatorAgentRunId,
         entryAgentRunId: current.entryAgentRunId, started: current.start === "started", linkedAt: current.linkedAt,
-        ...(current.recipientAddress ? { recipientAddress: current.recipientAddress } : {}),
+        recipientAddress: current.recipientAddress,
         ...(current.nodeId !== undefined ? { nodeId: current.nodeId } : {}), ...(current.members ? { members: current.members } : {}),
       });
     }

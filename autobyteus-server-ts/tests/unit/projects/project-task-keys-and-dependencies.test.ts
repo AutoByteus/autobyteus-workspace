@@ -103,7 +103,7 @@ describe("Project Task keys and dependencies (services)", () => {
 
     it("a Task worker's answer carries no key (task-keys-declutter REQ-004)", async () => {
       const execution = { agentRunId: "temp-worker" };
-      await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
+      await tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution, adHocTask: { description: "Temp", referenceFiles: [] } });
       const answer = (await tasks.currentTasksOfTaskWorkers([execution]))[0]?.task;
       expect(answer).toMatchObject({ projectId: null, description: "Temp" });
       expect(answer).not.toHaveProperty("taskKey");
@@ -214,7 +214,7 @@ describe("Project Task keys and dependencies (services)", () => {
       const a = await create("A");
       const b = await create("B", [a.taskId]);
       const execution = { agentRunId: "worker" };
-      await expect(tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution })).resolves.toEqual({ taskId: b.taskId });
+      await expect(tasks.linkNewTaskExecution({ role: "assigned", recipientAddress: "/worker", taskId: b.taskId, delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution })).resolves.toEqual({ taskId: b.taskId });
       await expect(tasks.updateTaskById({ taskId: b.taskId, status: "IN_PROGRESS" })).resolves.toMatchObject({ status: "IN_PROGRESS" });
       await expect(tasks.updateTaskById({ taskId: b.taskId, status: "DONE" })).resolves.toMatchObject({ status: "DONE" });
       expect((await tasks.listTasks(projectId)).find((t) => t.taskId === a.taskId)?.status).toBe("TODO");

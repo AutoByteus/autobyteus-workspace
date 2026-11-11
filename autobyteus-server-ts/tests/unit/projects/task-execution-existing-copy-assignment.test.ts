@@ -170,7 +170,7 @@ describe("existing-copy assignment on the Task side", () => {
     // Sub-work of a Task worker is not an assignment.
     await setStatus(a, "IN_PROGRESS");
     await tasks.reopenAssignment({ execution: team, requestedBy: "manager" });
-    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: runIdentityOf(team), delegatorAgentRunId: "lead" }, execution: subWork });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: runIdentityOf(team), delegatorAgentRunId: "lead" }, execution: subWork });
     await tasks.markStarted(subWork);
     await setStatus(a, "DONE");
     await expect(tasks.assertAssignable({ execution: subWork, requestedBy: "manager", taskId: b })).rejects.toMatchObject({

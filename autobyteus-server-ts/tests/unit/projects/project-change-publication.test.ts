@@ -105,7 +105,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
   it("status changes are published only for a Task's root (its latest assignment), never for helpers or older roots", async () => {
     const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, recipientAddress: "/a", execution: { agentRunId: "first" },
       adHocTask: { description: "Review it", referenceFiles: [] } });
-    await tasks.linkNewTaskExecution({ role: "subWork", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "first" }, delegatorAgentRunId: "first" }, execution: { agentRunId: "helper" } });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/worker", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "first" }, delegatorAgentRunId: "first" }, execution: { agentRunId: "helper" } });
     await publisher.idle(); emitted.length = 0;
     tasks.taskExecutionsStatusChanged([{ agentRunId: "helper" }, { agentRunId: "unknown" }]);
     await publisher.idle();

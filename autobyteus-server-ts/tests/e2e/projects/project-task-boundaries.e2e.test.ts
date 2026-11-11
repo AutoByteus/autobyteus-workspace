@@ -463,7 +463,7 @@ describe("Project Task production HTTP boundaries", () => {
     })).createProjectTask;
     // Minimum current-format persisted assignment; no model/run launch needed for preservation.
     const resources = path.join(root, "projects", old.projectId, "tasks", task.taskId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", assignedBy: "fixture-manager",
+    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", recipientAddress: "/worker", assignedBy: "fixture-manager",
       hostRoot: {kind: "agent", runId: "fixture-root"}, agentRun: {kind: "agent", agentRunId: "fixture-worker"},
       linkedAt: task.createdAt, start: "started", closedAt: null}]}, null, 2));
     // Opaque preservation sentinel: not inference/history replay certification.
@@ -646,7 +646,7 @@ describe("Project Task production HTTP boundaries", () => {
     // A current-format open run resource: DONE + an invalid file must not close it.
     const existingId = await idOf(projectId, existing.taskId);
     const resources = path.join(root, "projects", projectId, "tasks", existingId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: existingId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+    await fs.writeFile(resources, JSON.stringify({ taskId: existingId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", assignedBy: "fixture-manager",
       hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     const expectTaskError = async (args: Record<string, unknown>, code: string, named?: string) => {
@@ -731,7 +731,7 @@ describe("Project Task production HTTP boundaries", () => {
     // A current-format open run resource on the Task to be cancelled: CANCELLED must close it exactly like DONE.
     const cancelledId = await idOf(projectId, ids.cancelled!);
     const resources = path.join(root, "projects", projectId, "tasks", cancelledId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: cancelledId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+    await fs.writeFile(resources, JSON.stringify({ taskId: cancelledId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", assignedBy: "fixture-manager",
       hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     // An invalid context file with CANCELLED fails first and closes nothing (inputs are checked before closure).
@@ -987,7 +987,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await taskCall({ task_id: "parts-tools-14", status: "CANCELLED" })).toMatchObject({ status: "CANCELLED" });
     const runningId = await idOf(projectId, "parts-tools-3");
     const resources = path.join(projectsDir, projectId, "tasks", runningId, "agent_run_resources.json");
-    await fs.writeFile(resources, JSON.stringify({ taskId: runningId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+    await fs.writeFile(resources, JSON.stringify({ taskId: runningId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", assignedBy: "fixture-manager",
       hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-part-worker" },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     const closedBytes = async () => Promise.all(["parts-tools-13", "parts-tools-14"].map(async key => fs.readFile(path.join(projectsDir, projectId, "tasks", await idOf(projectId, key), "task.json"), "utf8")));
@@ -1032,7 +1032,7 @@ describe("Project Task production HTTP boundaries", () => {
   const openRunFixture = async (projectId: string, reference: string, agentRunId: string) => {
     const taskId = await idOf(projectId, reference);
     const file = path.join(root, "projects", projectId, "tasks", taskId, "agent_run_resources.json");
-    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+    await fs.writeFile(file, JSON.stringify({ taskId, agentRunResources: [{ role: "assigned", recipientAddress: "/worker", assignedBy: "fixture-manager",
       hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId },
       linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
     return file;

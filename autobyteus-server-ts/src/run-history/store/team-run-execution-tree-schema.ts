@@ -39,7 +39,6 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     "coordinatorAddress",
     "defaultLaunchConfiguration",
     "members",
-    "taskExecutions",
   ], "rootTeam");
   if (root.address !== "/") throw new Error("rootTeam.address must be '/'.");
   const coordinatorAddress = canonicalNonRootAddress(root.coordinatorAddress, "rootTeam.coordinatorAddress");
@@ -61,7 +60,8 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
-    taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
+    // No stored list since autobyteus-461 (E9): an absent list reads as none.
+    taskExecutions: root.taskExecutions === undefined ? [] : parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
     ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
@@ -77,9 +77,10 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
   }
   for (const handoff of tree.handoffs) {
     const from = assertAgentTeamAddress(handoff.from);
-    const to = assertAgentTeamAddress(handoff.to);
+    assertAgentTeamAddress(handoff.to);
     if (!byAddress.has(from)) throw new Error(`Handoff sender '${from}' is not a configured Agent.`);
-    if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
+    // A `to` outside the team (TC-12: a delegated team copied from an org hands off to `/Teacher`) is an external
+    // target, kept as stored and resolved when sent (contract §2.3).
   }
   validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
   validateCopyLayouts([tree.rootTeam]);
