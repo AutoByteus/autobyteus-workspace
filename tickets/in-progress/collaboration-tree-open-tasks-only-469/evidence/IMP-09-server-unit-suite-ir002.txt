@@ -1,0 +1,11 @@
+# IMP-09 server unit suite (IR-002)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts"
+# Code: the IR-002 working tree before the last two test fixes; the two failing files were then fixed and rerun on commit fa48d74a3e (below).
+# Environment: macOS (darwin 25.5); 2026-11-11
+
+full run: files: 988  tests: 8414  passed: 8403  failed: 2  skipped: 9
+  failed then: tests/architecture/tracked-imports.test.ts (new file team-task-execution-lookup.ts not yet staged; staged)
+  failed then: tests/unit/agent-collaboration/root-communication-baseline-contract.test.ts team taskWork (intended D-8 event change; normalized)
+rerun on fa48d74a3e: pnpm exec vitest run tests/unit/agent-collaboration/root-communication-baseline-contract.test.ts tests/architecture/tracked-imports.test.ts tests/unit/services/agent-streaming/team-execution-view-projector.test.ts
+ Test Files  3 passed (3)
+      Tests  23 passed (23)

@@ -16,19 +16,24 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collaborat
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `tickets/in-progress/collaboration-tree-open-tasks-only-469/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-005 … SR-008 (two Design Impacts raised by this implementation and decided: SR-006 for D-1, U-008; SR-007 and SR-008 for D-3, AR-002)
-- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-005
-- Related code-review revision IDs: CRR-001 (Pass; `code-review-report.md`; non-blocking CR-001 on `knowsRunId` naming, no action required)
-- Related API/E2E / delivery revision IDs: N/A
-- Triggering finding IDs: N/A
-- Code commits: `832f0a4572` (implementation and unit tests), `42652879b3` (integration-test updates); documents and evidence are in the commit that carries this handoff
+- Current implementation revision ID: `IR-002` (IR-001 initial; IR-002: CR-003 per SR-009 and CR-002)
+- Related solution revision IDs: SR-005 … SR-009 (two Design Impacts raised by this implementation and decided: SR-006 for D-1, U-008; SR-007 and SR-008 for D-3, AR-002)
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-005, ARCH-REV-006
+- Related code-review revision IDs: CRR-001 (Pass; non-blocking CR-001 on `knowsRunId` naming, no action required), CRR-002 (failure-origin review of API/E2E round 1: CR-002, CR-003)
+- Related API/E2E revision IDs: API-REV-001 (Fail: F-1 … F-3). Delivery: N/A
+- Triggering finding IDs: CR-003 (F-3; Design Impact resolved by SR-009), CR-002 (F-2; Local Fix). F-1 is API/E2E-owned (DEC-011) and unchanged here.
+- Code commits: `832f0a4572` (implementation and unit tests), `42652879b3` (integration-test updates), `fa48d74a3e` (IR-002: CR-003 and CR-002); documents and evidence are in the commit that carries this handoff
 
 No top run stores a list of its local delegated runs. A tree read asks the Task side, through `OpenDelegatedRunSource` (bound by the composition after the Task records load), for the runs whose current Task entry names the top run and is open, whatever their start (SR-006). It composes each run from its own file into the root list, by start time then run ID. A save writes changed own files and a tree file that keeps its links to runs on another node. It leaves out a stored local entry only when the entry is an exact-key link and its run's own file exists; every other entry is kept unchanged and in place (SR-008). The startup validator and the history-index repair read a Team or Org run's own parts only (D-11).
 
 In a loaded root, the release step drops a closed run once its stop is confirmed, and the reopen step adds it back from its own file, undone if the step fails (`TaskExecutionTreeMembership`). The Team tab, the Memory page and a standalone run's token total read closed runs through `ClosedDelegatedRunReader` and `CoordinatingRunPresence`. The web reloads a view for a "reopened" run it does not hold, and names a past participant from its address.
+
+IR-002 (SR-009, D-8 for the Team root; CR-002):
+- The Team stream's `TASK_EXECUTIONS_REOPENED` carries `executions: [{ parent_team_run_id, execution }]`. The Team adapter builds them from the loaded tree after the add-back (`taskExecutionsReopenedEvent(tree, references)`; the lookup is `agent-team-execution/domain/team-task-execution-lookup.ts`), and the projector maps them as for "started".
+- The Team view inserts a record it does not hold (`insertTaskExecution`, with the effects "started" has), keeps one it holds, and removes every reopened execution from its closed list. The branch to `team_stream_recovery_required` is gone. The Agent-run and Org views keep reloading through their checkpoint.
+- CR-002: `reloadRoot(kind, id, rebuild, holdsAgent)`. When a rebuild keeps a root's lists, a loaded list that names an agent the rebuilt view does not hold, and that its past participants do not name, loads again (its rows stay meanwhile; no message is missed or doubled).
 
 ## Routing Classification (Mandatory)
 
@@ -48,7 +53,9 @@ In a loaded root, the release step drops a closed run once its stop is confirmed
 | BEH-001 | A delegation writes the own file only; the Task entry exists before | `splitTaskExecutions` writes own files and remote links only (`run-history/store/task-execution-tree-split.ts`); activation unchanged | Done. Test: own-run store tests ("splits … into own files"), AC-009 store cases |
 | BEH-002 | A closed run is stopped, then dropped from a loaded tree; a tree built later does not hold it | `RootTaskExecutionLifecycle.releaseTaskExecutions` → `TaskExecutionTreeMembership.dropStopped` → adapter `dropTaskExecutions` (three adapters) → `remove…TaskExecutions` (three mutators) → `RootCommunicationEngine.retainMessages`; compose from `openDelegatedRunsOf` | Done. Unconfirmed stop: kept, hidden. Release while the root no longer admits commands: no drop. Tests: membership, standalone root (AC-001), reactivation backends (three kinds) |
 | BEH-003 | A load reads only the runs of open Tasks | `composeTreeFile(…, openRuns, …)`; message stores read the open runs' logs only | Done. Test: AC-010 read counts (three kinds) |
+| BEH-004 (IR-002) | A run in the tree again reaches every client without a manual step (D-8) | Team: `taskExecutionsReopenedEvent(tree, refs)` → projector → `TASK_EXECUTIONS_REOPENED { executions }` → `teamExecutionViewState` inserts a record it does not hold; Agent run and Org: checkpoint reload | Done. Tests: contracts, projector (record equals "started"), web Team spec (a never-held run is inserted with no recovery effect) |
 | BEH-004 | A reopen or a follow-up Task by run ID continues the run; it is in the tree again | `reactivateClosedTarget` / `assignToExistingCopy` → `inTreeAtHead` → `addAtHead` → adapter `addTaskExecution` (`readTaskExecution` from the own file); `knowsRunId` in each root's `hasAgentExecution`; `isDelegatedRun`, `teamCoordinatorOf` answer for closed copies; `resolveExistingCopy` covers closed copies | Done. Tests: reactivation backends (Agent and Team copy; three kinds), standalone existing-copy assignment, Team follow-up Task |
+| BEH-005 (IR-002) | Team-tab names stay current after a view rebuild (CR-002) | `collaborationParticipantMessages.reloadRoot(…, holdsAgent)`; callers in `agentRunCollaborationStore.ts`, `agentOrgContextsStore.ts`, `TeamStreamingService.ts`, `teamRunHydrationCommit.ts`; `holdsAgent` on the Agent-run and Org contexts | Done. Test: participant store spec (re-fetch when the view drops a named agent; kept otherwise) |
 | BEH-005 | Team tab: same rows and names | `isMessageOfView` / `messageViewOfTree` in the three message stores and the loaded roots; GraphQL `collaborationParticipantMessages` adds `pastParticipants` (`ClosedDelegatedRunReader`); web identity kind `past` | Done. Validators keep only the "one agent of this run" check. Tests: view-rule store case, reader test, contracts test, web store/rows spec, team-communication API integration |
 | BEH-006 | Memory page lists a closed run while its coordinating run exists | `CoordinatingRunPresence` in `agent-memory-explorer-service.ts`, `task-team-root-memory-source.ts`; `TaskAgentLinkChecker` removed | Done. Tests: explorer task-agent cases (closed listed, detached not), memory discovery |
 | BEH-007 | Token total, attachments, Team/Org load unchanged | Standalone total: tree agents + `ClosedDelegatedRunReader.agentRunIds`; attachments: view rule (U-006: readers do not filter); admission: `readOwnParts` | Done. Tests: reader test, admission test (AC-008 at admission level), context-file integration tests |
@@ -91,6 +98,7 @@ Tests: test sources in `tests/fixtures/open-delegated-run-sources.ts`. Root harn
 - **Older build.** It cannot be used on the same data afterwards; the release notes must say so (design guidance).
 - **Release-build gate.** `typecheck-baseline.json` and a contract package's `dist/` changed, so the fresh-start build (TESTING.md) applies before release. Not run here.
 - **AC-008 full server start.** Not run here. Admission is covered at the readiness-index level with no source bound; the full start belongs to API/E2E.
+- **IR-002:** the Team "reopened" payload is a changed shared contract (the team-stream contracts `dist/` is rebuilt; a build input). The server E2E helpers `task-existing-copy-assignment.e2e.test.ts` and `task-reactivation-root-visibility.e2e.test.ts` now read references from the records but were not run here.
 - **Org configured-team lists.** Every local run of an Org now composes into the root list, so the per-configured-Team list is always empty in memory (FU-003).
 
 ## Task Design Health Assessment Implementation Check
@@ -145,6 +153,12 @@ Evidence files are in `tickets/in-progress/collaboration-tree-open-tasks-only-46
 | IMP-06 | `pnpm -C autobyteus-server-ts exec vitest run tests/integration .integration.test.ts` (after `test:integration:prepare`) | `42652879b3` | Server integration incl. Team manager, delegation lifecycle, context files, Team-tab API | BEH-002, BEH-004, BEH-005, BEH-007 | Pass | `IMP-06-server-integration.txt` | `files: 110  tests: 593  passed: 524  failed: 0  skipped: 69` |
 | IMP-07 | `pnpm -C autobyteus-web test:nuxt` | `42652879b3` | All web unit and component tests | BEH-005, DS-R1 | Pass | `IMP-07-web-nuxt.txt` | `Tests  5660 passed \| 2 skipped (5662)` |
 
+| IMP-08 | `pnpm -C autobyteus-team-stream-contracts test` | `fa48d74a3e` | Team reopened payload with records; `dist/` rebuilt | BEH-004 | Pass | `IMP-08-team-stream-contracts.txt` | `# pass 22` / `# fail 0` |
+| IMP-09 | Server unit suite (the `test:unit` set), then the three files fixed after it rerun | full run: IR-002 tree before two test fixes; rerun `fa48d74a3e` | All server code; Team event, projector, baseline normalization | BEH-004 | Pass | `IMP-09-server-unit-suite-ir002.txt` | full run `failed: 2` (both explained in the file), rerun `Tests  23 passed (23)` |
+| IMP-10 | `pnpm -C autobyteus-web test:nuxt`, then the failed spec and the changed specs rerun | full run: before one spec fix; rerun `fa48d74a3e` | Team view handler, participant store, callers | BEH-004, BEH-005 | Pass | `IMP-10-web-ir002.txt` | full run `1 failed \| 5661 passed`, rerun `Tests  55 passed (55)` |
+| IMP-11 | Server and web type-check gates | `fa48d74a3e` | All | — | Pass | `IMP-11-typechecks-ir002.txt` | `[typecheck] PASS` (both) |
+
+- IMP-01 … IMP-07 ran on IR-001 (`832f0a4572` / `42652879b3`). IR-002 changes the Team event, its projector and adapter, the Team web view and the participant store. IMP-06 (server integration) was not rerun: none of its tests asserts the Team reopened payload, and the two server E2E helpers that read it were adapted but not run (API/E2E).
 - Not run, and why:
   - Server E2E (`pnpm test:e2e`), browser probes and the isolated desktop instance (AC-001 … AC-012 on an isolated instance; AC-008 full server start; AC-011 rendered Team tab): left to API/E2E.
   - Fresh-start build: a build input changed (`typecheck-baseline.json`, contract `dist/`); it needs a release-runner-like clean clone. Left to delivery.
