@@ -48,6 +48,15 @@ const steps = {
     lift2(); await sleep(1500); const lifted = await evaluate(PDF); shot(`${label}-lifted`);
     return { before, fingersDown: down, lifted };
   },
+  // A pinch whose centre also moves (d0 → d1 CSS px apart, centre (cx, cy) → (cx+dx, cy+dy)): the live view with the fingers
+  // still down, then after they lift and the pages settle.
+  'pinch-move-hold': async (cx, cy, d0, d1, dx, dy, label = 'pinch-move-hold') => {
+    const [x, y, a, b, mx, my] = [cx, cy, d0, d1, dx, dy].map(Number); const before = await evaluate(PDF);
+    await gesture2Hold([[x - a / 2, y], [x + a / 2, y]], [[x + mx - b / 2, y + my], [x + mx + b / 2, y + my]], 16);
+    await sleep(400); const down = await evaluate(PDF); shot(`${label}-fingers-down`);
+    lift2(); const lifted = await until(PDF, v => v && !v.transform && v.allBitmapsMatch, 15000); await sleep(500); shot(`${label}-lifted`);
+    return { before, fingersDown: down, lifted: await evaluate(PDF) };
+  },
   'swipe': async (x0, y0, x1, y1, label = 'swipe', kind = 'pdf') => {
     await evaluate(TOUCH_COUNTER); const before = await evaluate(kind === 'pdf' ? PDF : IMAGE);
     await swipe(+x0, +y0, +x1, +y1, 500); await sleep(1500); const after = await evaluate(kind === 'pdf' ? PDF : IMAGE); const page = await evaluate(PAGE); shot(label);

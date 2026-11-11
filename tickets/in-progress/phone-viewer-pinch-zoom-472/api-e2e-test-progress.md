@@ -14,3 +14,9 @@
 | 2026-11-11T17:42:45Z | API-07 | Started | — | full mobile-shell probe, clean env |
 | 2026-11-11T18:10:57Z | API-07 | Completed | Pass for this ticket's cases | phone probe 36/39 incl. MSP-39 (MSP-24/34/35 = 471 FU-003); search-pdf-preview, file-explorer-pending-save-draft Pass |
 | 2026-11-11T18:10:57Z | — | Round result | Fail | F-1 (AC-001: PDF two-finger move without zoom change snaps back); U-1 (REQ-006 reopen wording); 87% |
+| 2026-11-11T18:42:58Z | — | Round 2 plan | — | IR-002 code 1b5b7f5b0e: usePdfPinchZoom.ts + spec + MSP-39 only. Rerun API-01 PDF gestures (pan2-hold, moving pinch at the 3x cap, pinch in/out, swipe, dtap) and the phone probe's file cases; API-02..05, API-07 desktop still valid |
+| 2026-11-11T18:42:58Z | API-01 | Started | — | round 2: phone bundle, AVD, node |
+| 2026-11-11T18:49:08Z | API-01 | Completed | Pass | round 2 (1b5b7f5b0e): pan2-hold at 2x lifted scroll +120/+150 = the fingers' move; moving pinch at the 3x cap kept (+99/+120); 1x->2x->3x->1x sharp; one-finger scroll; double tap both ways (taps 146 ms apart; a first try 544 ms apart is the injection, noted); back; vvScale 1 |
+| 2026-11-11T18:49:08Z | API-07 | Started | — | round 2: mobile-shell file cases MSP-16,28,29,30,31,37,39 |
+| 2026-11-11T18:57:37Z | API-07 | Completed | Pass | round 2: MSP-16, 28-31, 37, 39 Pass; cleanup clean |
+| 2026-11-11T18:57:37Z | — | Round result | Pass | round 2 (API-REV-002): F-1 resolved; 94% (gap: Android 8-9 image) |
