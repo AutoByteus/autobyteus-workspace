@@ -838,7 +838,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
   it("EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change", async () => {
     const projectId = await createProject("lost-conversation");
     const root = await startRoot("org");
-    // A copy whose saved conversation is gone (its memory folder removed while it is stopped): refused before the commit.
+    // A copy whose saved conversation is gone while it is stopped (its traces removed; its own file stays, autobyteus-469
+    // DEC-011: a copy whose own file is gone is outside the supported states): refused before the commit.
     const taskH = await createTask(projectId, "Helper work.");
     const taskI = await createTask(projectId, "Follow-up for a copy whose conversation is gone.");
     const helper = (await root.managerCalls(callTool("delegate_task", { recipient_address: "/helper", task_id: taskH }))).target_agent_run_id as string;
@@ -847,7 +848,10 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     await until(() => !processLive(helper), "helper stopped at DONE", 30_000);
     const memoryDirs = spawnSync("find", [path.join(dataDir, "memory"), "-type", "d", "-name", helper], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);
     expect(memoryDirs.length, "the helper's memory folder").toBeGreaterThan(0);
-    for (const dir of memoryDirs) await fs.rm(dir, { recursive: true, force: true });
+    for (const dir of memoryDirs) {
+      for (const entry of await fs.readdir(dir)) if (entry !== "run_metadata.json") await fs.rm(path.join(dir, entry), { recursive: true, force: true });
+    }
+    expect(memoryDirs.some((dir) => spawnSync("test", ["-f", path.join(dir, "run_metadata.json")]).status === 0), "the helper's own file stays").toBe(true);
     const files = await projectFiles(projectId);
     const from = root.mark();
     const lost = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: helper, task_id: taskI }));
