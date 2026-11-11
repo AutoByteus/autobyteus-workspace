@@ -1040,3 +1040,4 @@
   Every dependency points to an earlier step.
 - Done: the design's composition steps 3, 5 and 6, with the reason. If a root use of the full port remains beyond `isOpen` and `statusChanged`, the Implementation Engineer reports it, and it either moves to the delegation owners or joins the narrow port, if it is a records read.
 
+- ARCH-REV-028 (2026-11-11): Pass, no finding. The narrow `RunTaskRecords` port is Principle 16's resolution; `isOpen` reads the same records `ProjectTaskService` wraps, so the gate-head re-check reads the authority (AR-017) and the records keep one owner.
