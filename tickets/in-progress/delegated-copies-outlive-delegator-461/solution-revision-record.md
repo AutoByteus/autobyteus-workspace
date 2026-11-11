@@ -551,3 +551,29 @@
 - Classification: `Large`, `High`, unchanged
 - Applied handoff-rule outcome: narrow architecture review; the Implementation Engineer is answered directly and proceeds with TC-12
 - Next action: architecture review, round 8 (TC-12 only)
+
+### SR-025 — Every team run is rooted at `/`; every address case written out and replayed (answers ARCH-REV-008 AR-018)
+
+- Phase and classification: Requirements (behavior-defining supplement, the Solution Designer's decision within the direction) and Design; `Design Impact` resolved
+- Triggering: ARCH-REV-008 failed SR-024 with AR-018. A team rooted at its delegation address breaks the code that relies on a team run's root being `/`: the server's config, selection, planner, index, launch resolver and member scope, and the web's Settings name. Handoffs to an address outside the team would no longer compile when the run is planned. Then the user asked for every communication case to be written in the contract with the exact address, and checked on the data.
+- The Solution Designer's own gap: SR-024 chose the delegation address as the root from the stored shape alone. It did not check the readers of `/`, nor which addresses agents actually write.
+- Decision (TC-12 revised): every team run is rooted at `/`, as the 601 the user started and every peer-started team already are.
+  - The address a team was delegated to is a name in its delegator's space. It moves to the Task entry's `recipientAddress`, now on every entry: 30 of 30 non-assigned entries take it from `taskAgent.address`.
+  - The migration drops the prefix from members and handoffs (153 of 153 without a collision). A handoff `to` outside the team is kept and resolved when it is sent, by step 2 (the assigner's standing agents).
+  - No reader of `/` changes, and the peer path is unchanged.
+  - This reverses SR-024's rejection of option B. The cost SR-024 gave it ("770 agents renamed") is real only for the members of the 11 delegated teams with an open Task. Their member context gives the new addresses. The 142 closed ones run no more.
+- Every address, case by case (contract §10.7, new): A inside one run, B a delegated run to its Task's assigner, C by run ID, D `delegate_task`, E the sender address a receiver is given; each with the exact string and the step.
+  - The DelegationTree's ownership is written down: one tree per run the user started, held by collaboration, not by that run's root (P6), and not an address space (contract §2.6).
+- Measured (read-only, `validate_every_address.py`, `every-address-2026-11-11.txt`): all 6,646 addressed sends stored in the agents' traces, replayed:
+  - Every delivered send reaches the same receiver, except 53 older sends (2026-08 … 2026-10) that addressed a delegated run, which today's code already refuses (run ID only). 51 of them involve a run without a Task record.
+  - 3,311 sends change only by the team prefix (`/software_engineering_team/code_reviewer` → `/code_reviewer`).
+  - Nothing is newly found: the 10 refused as not found stay refused.
+  - 0 delegated teams have a member at the address of a standing agent of their assigner.
+  - Sender address: 13,200 within a run and 690 from the assigner are given an address; 747 to the assigner and 167 between runs of one Task are given the run ID only.
+  - Two changes against today:
+    - A5: inside a delegated team, the team as a unit is no longer an address (0 sends used it).
+    - D3: a delegated team's member that delegates to its own team's definition gets a new copy, as in a team the user started (0 refusals in history).
+- Intended behavior changed: `Yes`, narrowly. The members of a delegated team use team-local addresses, the same as in the team when the user starts it. The UI's names do not change. The Solution Designer decided this within the direction (P1: a delegated run is an ordinary run); the user is informed.
+- Classification: `Large`, `High`, unchanged
+- Next action: the user reads contract §10.7 (requested); then architecture review, round 9 (TC-12 and §10.7)
+

@@ -10,6 +10,8 @@ History:
 - What changes against the approved revision 2 is listed in §9.1. The user decided TC-7, TC-8, TC-9 and DEC-011 on 2026-11-11.
 - Revision 6 (2026-11-11, the user): a delegated run keeps its own `delegatedFrom`, its origin, as symmetric information (TC-10 revised). The relationships live in memory in a `DelegationTree` that serves communication, as the old root's tree did but holding no run's life (TC-11). §9.2 lists the changes. Validated again on the user's data: `evidence/data-model-validation/contract-revision-6-2026-11-11.txt`.
 
+- SR-024 … SR-025 (2026-11-11): every team run, delegated or not, is rooted at `/` (TC-12 revised; the delegation address is the Task entry's `recipientAddress`). §10.7 writes out every address an agent uses, case by case, replayed on the 6,646 addressed sends stored in the agents' traces: `evidence/data-model-validation/every-address-2026-11-11.txt`.
+
 Model for this document: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md`, which made a delegated run's *storage* its own. autobyteus-469 made the *list of delegated runs* the Task's. This contract finishes the step: the *relationship* and the *lifecycle* become the run's and the Task's, and nothing hosts another run.
 
 Authorities: [Collaboration Model](../../../autobyteus-server-ts/docs/design/collaboration_model.md); [Data Migration Guideline](../../../autobyteus-server-ts/docs/design/data_migration_guideline.md); `DESIGN.md` (rules 7, 8, 10).
@@ -93,7 +95,7 @@ Fields:
 | `role` | `assigned`: the run was given this Task as its own work by an agent that works on no Task; only that agent can continue it after a reopen. `subWork`: a run working on this Task handed part of it to this run. `broughtIn`: older records only, never written | Always |
 | `delegatedFrom.delegatingRun { kind, runId }` | The run the delegator is a part of: `agent`, `agent_team` or `agent_org`. The delegated run is shown under it and reports to it by address. One hop (P3) | Always |
 | `delegatedFrom.delegatorAgentRunId` | The delegator | Always |
-| `recipientAddress` | The address the run was delegated to, its display name | `assigned` (as today), and every entry of a peer's run |
+| `recipientAddress` | The address the run was delegated to: its name under its delegating run, and the only place a delegated team's delegation address is kept (§2.2) | **Every entry** (today `assigned` only; the migration fills the others from the run's `taskAgent.address`) |
 | `agentRun` | The run, by kind and ID; a team's coordinator | Always |
 | `nodeId` | The peer the run is on | Only for a peer's run; absent means this node |
 | `members` | Every member of a peer's team run, by address and run ID | Only for a peer's team run |
@@ -143,15 +145,16 @@ A delegated agent run, `memory/agents/code_reviewer_91c2/run_metadata.json`:
 
 A delegated team run carries the same `delegatedFrom` at the top level of `team_run_execution_tree.json`, beside `rootTeam`.
 
-**A delegated team run's file is an ordinary team run file** (TC-12). One shape for every team run, in which a team's root address is its own address:
-- **`rootTeam.address`:** `/` for a team run the user started; the address it was delegated to (`/software_engineering_team`) for a delegated team run, local or peer-started. Measured: 601 of 601 user-started team runs have `/`; 153 of 153 delegated team runs have their delegation address, equal to today's `taskAgent.address`.
-- **Members** are direct children of the root address: `/solution_designer` in a user-started team, `/software_engineering_team/solution_designer` in a delegated one. Measured: 601 of 601 and 153 of 153. No stored address changes, so no agent is told a new name.
-- **Handoffs:** `from` is a member. `to` is a member, or, as stored in 2 delegated teams copied from an org, an address outside the team (`/Teacher`). It is kept as stored, and resolved when used by the ordinary address rules (§10.3).
-- **`rootTeam.teamDefinitionName`:** required, as for every team run. Absent in 153 of 153 delegated teams; the migration fills it from the definition (the definition-name port), else the definition ID.
-- **Members' `role`, `description`, `launchConfiguration`:** as in every team run; present in 770 of 770 delegated members.
-- **A member's `launchSource`** (10 of 770): an optional ordinary member field, display provenance of how a delegation resolved its launch. Absent means not recorded, as on every team member the user started.
-- **`followsTeam`** (770 of 770) and the team-level and member `userLaunchSelection`: removed (TC-5). The migration applies a team-level selection to the members with `followsTeam: true`, and a member's selection to that member, as their own `launchConfiguration`. It then drops all three. A stopped delegated team's later Settings edit is the ordinary team save.
-- `archivedAt` and `applicationBinding`: present in 153 of 153, as in every team run.
+**A delegated team run's file is an ordinary team run file, rooted at `/`** (TC-12, revised at SR-025). Every team run is its own address space with its root at `/`. That is already true of the 601 team runs the user started and of every team run a peer starts, and code throughout the server and the web relies on it (`team-run-config.ts:192`, the team-level Settings scope `/`, the planner, the index, the launch resolver, the member scope, the web's Settings name; ARCH-REV-008 AR-018). So a delegated team keeps that invariant instead of breaking it:
+- **`rootTeam.address`** is `/`. Members are direct children of `/` (`/solution_designer`), and handoffs between members likewise.
+- **The address the team was delegated to** (`/software_engineering_team`) is a fact of the delegation, not of the team. It is the Task entry's `recipientAddress`, now on every entry (§2.1). It names the team's row under its delegating run. Measured: 30 of 30 `subWork` and `broughtIn` entries can take it from their run's `taskAgent.address`.
+- **A handoff to an address outside the team** (2 legacy teams copied from an org hand off to `/Teacher`; a team delegated out of an org can do the same): the `to` is kept as written and is an **external target**. The planner does not resolve it inside the team. `get_handoff_rules` names it, and the agent's `send_message_to` resolves it by §10.3, step 2 (the standing agents of the run that assigned its Task, for example the org's `/Teacher`). This applies only to a delegated team (`isDelegated`). A team run the user started keeps today's check: a handoff target must be in the team. The 2 legacy teams have no Task record, so their external target stays unreachable, as any address of no relationship is.
+- **`rootTeam.teamDefinitionName`** is required, as for every team run. The migration fills it from the definition (the definition-name port), else the definition ID.
+- **Members' `role`, `description`, `launchConfiguration`** are as in every team run (present in 770 of 770).
+- **A member's `launchSource`** (10 of 770) becomes an optional ordinary member field (display provenance); absent means not recorded.
+- **`followsTeam`** (770) and the launch selections are removed (TC-5). The migration applies a team-level selection to the members with `followsTeam: true`, and a member's selection to that member, as their own `launchConfiguration`.
+- **The cost:** a delegated team's members get the addresses every team member has (`/software_engineering_team/solution_designer` → `/solution_designer`). Their member context tells them so at their next turn, and `get_handoff_rules` and `list_available_agents` give the new addresses. A message to an old address in their history is refused with today's guidance. Measured: 11 delegated team runs have an open Task; the 142 others are closed. The leaf names the UI shows ("solution designer") do not change.
+- Measured (`team-run-shapes-2026-11-11.txt`; rebasing check of SR-025): 153 of 153 delegated teams rebase to direct children of `/` without a collision; 2 have a handoff outside the team (both without a Task record).
 
 `delegatedFrom` on a run:
 
@@ -210,6 +213,8 @@ The relationships between runs, held in memory for communication and views, as t
 | Who can I reach? | Runs of my open Tasks, and the run that assigned each of them (§10.2) |
 | Which run is this agent in? | Node lookup by agent run ID |
 | What is under run X? | Walk down from X: views, token totals, the restart notice |
+
+**One tree per run the user started; held by collaboration, not by that run's root.** Each tree starts at a run the user started (16 today), and every delegated run is in exactly one tree (one parent, written once). The tree is not kept inside its top run's root: that root lives and stops with its own run, while the runs under it keep working and keep talking to each other after the top run stops or is deleted (P6). Nor is the tree an address space: every address belongs to one run's own space (§10.7).
 
 **Not in the tree:** runs that no Task entry names (the 15 legacy runs, the runs of a deleted Task). They are ordinary runs of their own; their own `delegatedFrom` gives only their "delegated from" label.
 
@@ -324,6 +329,8 @@ Message logs, memory and folders are not touched: each run already has its own (
 | V-16 | The run's own `delegatedFrom` equals each of its Task entries' | 181 of 181 runs that have entries and an own file |
 | V-17 | The `DelegationTree` built from the entries is a forest | 183 nodes; no node with two parents; 0 cycles; every chain ends at a stored run |
 | V-18 | The message rule answered on the tree equals the rule on the records | 230 of 230 run pairs |
+| V-21 | Every address case (§10.7) on the stored sends | 6,646 addressed sends replayed: every delivered one reaches the same receiver, except 53 older sends to a delegated run by address that today's code already refuses; 0 newly found; 3,311 change only by the team prefix; 0 collisions between a delegated team's members and its assigner's standing agents |
+| V-20 | A delegated team rebases to `/` | 153 of 153 without a member collision; 2 with a handoff outside the team (no Task record); 30 of 30 non-assigned entries can take `recipientAddress` from `taskAgent.address`; 11 delegated teams with an open Task get new member addresses |
 | V-19 | A delegated team run's file fits the ordinary team shape with the team's own root address | 153 of 153 delegated teams: root = delegation address, members under it; 601 of 601 user-started: root `/`. Differences: `teamDefinitionName` absent (153, filled by the migration); `followsTeam` on 770 members (removed); member `launchSource` on 10 (optional field); 2 teams with a handoff to an address outside the team (kept) (`team-run-shapes-2026-11-11.txt`) |
 
 ### 7.2 To do in the design, before the contract is final
@@ -372,7 +379,7 @@ Message logs, memory and folders are not touched: each run already has its own (
 | **TC-9** | The 15 old delegated runs with no Task record | **Shown as ordinary runs in the run list.** They have no relationship left to show them under, and they are runs with conversations the user can open, archive or delete. Today they are hidden from the run list and appear only on the Memory page | The user | **Decided by the user, 2026-11-11**: "if they are not associated with task yes i think they are just normal runs" |
 | **TC-10** | Does a delegated run also carry `delegatedFrom` in its own file? One name for the record? | **Yes, on the run as well, as its origin; one name.** Revision 5 kept it only in the Task entry. The run's own copy is written once and never changes, so the two cannot drift; each side reads its own (§2.2) | The user | **Revised by the user, 2026-11-11** (revision 6): "it's reasonable to put that information on my side … that's not like a duplicate … it's just like more symmetric information". The single name `delegatedFrom` stays (the user, earlier the same day) |
 | **TC-11** | An in-memory structure of the relationships between runs | **The `DelegationTree`** (§2.6): built from the Task entries, owned by collaboration, holding no run's life; communication, views, totals and the notice read it | The user | **Decided by the user, 2026-11-11**: "there should be a in-memory stuff, just like the earlier standalone … root stuff, but it behaves already like a different purpose. It was only trying to host the relationship there, so which helps with the communicating" |
-| **TC-12** | The shape of a delegated team run's file | **The ordinary team run file, where the root address is the team's own address** (`/` when the user started it, its delegation address when delegated); members under it; `teamDefinitionName` filled; `followsTeam` removed with the launch selections (§2.2). No stored address changes. New delegated team runs, local and peer-started, are created at their delegation address | Solution Designer (raised by the Implementation Engineer as a Design Impact; validated on the data: `team-run-shapes-2026-11-11.txt`) | Decided (the user informed) |
+| **TC-12** | The shape of a delegated team run's file | **The ordinary team run file, rooted at `/` like every team run;** the delegation address is the Task entry's `recipientAddress`; a handoff outside the team is an external target, resolved when sent by §10.3 (§2.2). Revised at SR-025: the first answer (root at the delegation address) broke the `/` invariant that server and web code relies on (ARCH-REV-008 AR-018) | Solution Designer (raised by the Implementation Engineer; validated on the data) | Decided (the user informed) |
 | **DEC-011** | Which runs may message each other | **Centered on the Task, with today's reach** (§10.2): runs of one open Task, and the run that assigned a Task with every run of it. Replaces the earlier choice between A and B | The user | **Decided by the user, 2026-11-11**: "the routing strategy will be centered around the task itself"; "let's go with this approach" |
 | **DEC-012** | A run with several open Tasks | **It may talk with the runs of any of its open Tasks.** It works on all of them; today it is judged by its newest Task only. 0 such runs today | Solution Designer | Decided (the user informed) |
 
@@ -432,10 +439,11 @@ A run with several open Tasks (0 today) may talk with the runs of any of its ope
 
 The first match wins. A miss inside a team never falls through to another team.
 
-1. **The sender's own team:** a teammate, or the team's own address (its coordinator). Unchanged.
+1. **The sender's own team:** a teammate at its address in the team's space (`/code_reviewer`). In an org's mounted team, also the team's own address (`/dev_team`, its coordinator). A team run's root `/` is never an address. For a delegated team this drops the prefix it has today (§10.7 A4, A5).
 2. **The standing agents of the run that assigned the sender's Task:**
    - for every run working on a Task the manager assigned, `/project_task_manager`;
    - for a Task assigned by a member of a team run the user started, that team's members.
+   - for a Task assigned by an agent of an org run, the org's agents and mounted teams (`/ceo_agent`, `/dev_team`, `/dev_team/dev_lead`).
 
    This is today's "standing agents of the top run", found through the Task.
 3. **The run's own standing agents:** for an agent of a run the user started (no Task), its own run's configured agents. Unchanged.
@@ -474,6 +482,85 @@ The `DelegationTree` (§2.6) answers every question above from memory, also afte
 | Refused today, allowed by the Task rule | 0 |
 
 The Task rule never allows more than today. It refuses only messages with the 15 legacy runs (TC-9), which stay in the logs.
+
+### 10.7 Every address, case by case
+
+**Every address belongs to the space of one run.**
+- A team run's space is rooted at `/`, whoever started it: `/solution_designer`, `/code_reviewer`.
+- An org run's space holds its agents (`/ceo_agent`) and its mounted teams (`/dev_team`, `/dev_team/dev_lead`).
+- A standalone agent run's space holds that agent (`/project_task_manager`).
+- The address a run was delegated to (`/software_engineering_team`) is a name in its delegator's space, stored as the Task entry's `recipientAddress`. It is not an address of the delegated run's agents.
+- The `DelegationTree` is not an address space. It relates runs and never gives another run's agents an address.
+
+**What an agent can reach by address**, first match wins (§10.3):
+1. Its own team: its teammates; in an org's mounted team, also that team as a unit.
+2. The standing agents of the run that assigned its Task (delegated runs only).
+3. Its own run's standing agents (runs the user started).
+
+Everything else is reached by run ID, which includes every delegated run.
+
+The runs are those of §13: the manager `/project_task_manager` assigned T1 to the engineering team E (delegated at `/software_engineering_team`). E's `solution_designer` gave sub-work of T1 to the product team P (`/product_team`) and to the image agent I (`/image_maker`). Also: the user's marketing team (`/marketing_coordinator`, `/copywriter`), the user's org (`/ceo_agent`, `/cto`, mounted team `/dev_team` with `/dev_team/dev_lead` and `/dev_team/qa`), and S, a team the org's `ceo_agent` delegated, with the handoff rule `to: "/Teacher"`.
+
+"Replayed" is `evidence/data-model-validation/every-address-2026-11-11.txt`: the replay of every `send_message_to` by address stored in the agents' traces (6,646 sends) under these rules, comparing the receiver with the one that got the message. It also covers the sender address of every stored message (§10.7 E).
+
+**A. Inside one run**
+
+| # | From | To | What the sender writes | Step | Against today | Replayed |
+| --- | --- | --- | --- | --- | --- | --- |
+| A1 | Marketing's `copywriter` (`/copywriter`) | Its teammate | `send_message_to(recipient_address: "/marketing_coordinator")` | 1 | Same | 2,237 user-started team sends; the same receiver |
+| A2 | The org's `ceo_agent` (`/ceo_agent`) | Another org agent; the mounted team; a member of it | `"/cto"`; `"/dev_team"` (its coordinator); `"/dev_team/dev_lead"` | 3 | Same | 514 sends inside an org (A2 and A3); the same receiver |
+| A3 | The mounted team's `dev_lead` (`/dev_team/dev_lead`) | Its teammate; an org agent | `"/dev_team/qa"`; `"/ceo_agent"`. A miss under `/dev_team/` is not found and never falls through | 1; 3 | Same | In A2 |
+| A4 | E's `solution_designer` (`/solution_designer`) | Its teammate | `"/code_reviewer"` | 1 | **Changed:** `"/software_engineering_team/code_reviewer"` | 3,311 delegated-team sends; every one reaches the same receiver with the prefix dropped |
+| A5 | E's member | E as a unit | No address: `/` is never addressable, as in every team the user starts. The coordinator is `"/solution_designer"` | — | **Changed:** `"/software_engineering_team"` reached the coordinator | 0 sends |
+| A6 | E's member | An old prefixed address from its history, `"/software_engineering_team/code_reviewer"` | Not found, with today's guidance. Its member context names its new addresses | — | **Changed** | The members of the 11 delegated teams with an open Task |
+
+**B. A delegated run to the run that assigned its Task**
+
+| # | From | To | What the sender writes | Step | Against today | Replayed |
+| --- | --- | --- | --- | --- | --- | --- |
+| B1 | E's `solution_designer` | The manager | `"/project_task_manager"` | 2: T1's assigner | Same | 311 delegated-team and 104 delegated-agent sends; the same receiver |
+| B2 | P's `product_designer` (sub-work of T1) | The manager | `"/project_task_manager"` | 2: T1's assigner, not P's delegator | Same | In B1 |
+| B3 | I, delegated by marketing's `copywriter` | Marketing's members | `"/copywriter"`, `"/marketing_coordinator"` | 2 | Same | 6; the same receiver |
+| B4 | S's member | The org's agents and mounted team | `"/ceo_agent"`, `"/dev_team"`, `"/dev_team/dev_lead"` | 2 | Same | 1; the same receiver |
+| B5 | S's member, following its handoff rule | The org's `Teacher` | `get_handoff_rules` names `"/Teacher"`; `send_message_to(recipient_address: "/Teacher")` | 2 | Same | 0 sends. The 2 legacy teams with such a rule have no Task record, so for them it is not found |
+
+**C. No address: by run ID**
+
+| # | From | To | What the sender writes | Against today | Replayed |
+| --- | --- | --- | --- | --- | --- |
+| C1 | The manager | E's coordinator or any member of E | `send_message_to(target_agent_run_id: "solution_designer_65a9")`. `"/software_engineering_team"` is not found | Same: today's code reaches delegated runs by run ID only | 53 older sends (2026-08 … 2026-10, before that rule) reached a delegated run by address; 51 of them involve a run with no Task record |
+| C2 | P's member | E's `solution_designer`, who delegated P | `target_agent_run_id: "solution_designer_65a9"`. `"/solution_designer"` means P's own member of that name if P has one; otherwise it is not found | Same | — |
+| C3 | E, P and I, among themselves (one Task) | Each other | By run ID. `"/product_team"` is not found | Same | 2 sends of 2026-10 reached `/product_team` by address, before that rule |
+| C4 | Runs of different Tasks | Each other | Run ID, refused by the Task rule | Same | — |
+| C5 | A run started by a peer | Its delegator on the other node | By run ID (CM-11) | Same | 0 such runs |
+| C6 | A legacy run (no Task record) | — | Only its own run's agents by address (step 3 for a run of its own) | Same as a run the user started | — |
+
+**D. `delegate_task`: an address in the delegator's own list**
+
+| # | From | What it writes | Result | Against today |
+| --- | --- | --- | --- | --- |
+| D1 | The manager | `delegate_task(recipient_address: "/software_engineering_team")` | A new team run rooted at `/`; the Task entry stores `recipientAddress: "/software_engineering_team"` | Same address. **Changed:** the team's file is no longer rooted at it |
+| D2 | E's member | `delegate_task(recipient_address: "/code_reviewer")` | Refused: its own team | Same |
+| D3 | E's member | `delegate_task(recipient_address: "/software_engineering_team")` | A new copy of the team, as in a team the user started | **Changed:** today it is refused as its own team in a delegated team only. History: 0 such refusals |
+| D4 | E's `solution_designer` | `delegate_task(recipient_address: "/product_team")` | P, rooted at `/`, `recipientAddress: "/product_team"` | Same address |
+
+**E. The sender address a receiver is given**
+
+The address shown is the sender's address in its own space, given only when the receiver can use it to reach the sender (`reachingAddressOf`). Otherwise the receiver gets only the run ID.
+
+| # | Sender → receiver | Given | Replayed (stored messages) |
+| --- | --- | --- | --- |
+| E1 | Teammates, or agents of one org | `"/code_reviewer"` | 13,200: the address is given |
+| E2 | The manager → E's member | `"/project_task_manager"` (by step 2 from E) | 690: the address is given |
+| E3 | E's member → the manager | The run ID only: the manager cannot address E | 747: the run ID only |
+| E4 | Runs of one Task (E ↔ P ↔ I) | The run ID only | 167: the run ID only |
+
+`list_available_agents` gives exactly the addresses of steps 1 to 3 and the catalog addresses for `delegate_task`.
+
+**Checked on the data:**
+- Every delivered send reaches the same receiver under these rules, except the 53 older sends that addressed a delegated run. Today's code already refuses those.
+- The 10 sends refused today as not found are still not found. Every other send that failed today failed for another reason (content, activation, a tool error) and finds its receiver under these rules.
+- 0 delegated teams have a member whose address equals a standing agent of the run that assigned their Task, so step 1 never hides a step-2 agent.
 
 ## 11. The life of a delegation, as records
 
@@ -544,14 +631,16 @@ T1's `agent_run_resources.json`, the new entry:
 `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`:
 ```json
 { "createdAt": "2026-11-10T09:39:18.439Z", "archivedAt": null, "applicationBinding": null, "handoffs": [ "…" ],
-  "rootTeam": { "address": "/software_engineering_team", "teamDefinitionId": "software-engineering-team",
-                "teamRunId": "software_engineering_team_0218", "coordinatorAddress": "/software_engineering_team/solution_designer",
+  "rootTeam": { "address": "/", "teamDefinitionId": "software-engineering-team", "teamDefinitionName": "Software Engineering Team",
+                "teamRunId": "software_engineering_team_0218", "coordinatorAddress": "/solution_designer",
                 "defaultLaunchConfiguration": { "…": "…" },
-                "members": [ { "address": "/software_engineering_team/solution_designer", "agentRunId": "solution_designer_65a9", "…": "…" },
-                             { "address": "/software_engineering_team/code_reviewer", "agentRunId": "code_reviewer_m_3b10", "…": "…" } ] },
+                "members": [ { "address": "/solution_designer", "agentRunId": "solution_designer_65a9", "…": "…" },
+                             { "address": "/code_reviewer", "agentRunId": "code_reviewer_m_3b10", "…": "…" } ] },
   "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
                      "delegatorAgentRunId": "project_task_manager_7c8d" } }
 ```
+The team's own file is rooted at `/`; the address it was delegated to is the entry's `recipientAddress` (§2.2).
+
 The tree, in memory (not stored):
 ```json
 { "run": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
@@ -597,6 +686,7 @@ The product team's own file carries `"delegatedFrom": { "delegatingRun": { "kind
 { "role": "subWork",
   "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" },
                      "delegatorAgentRunId": "solution_designer_65a9" },
+  "recipientAddress": "/product_team",
   "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
   "linkedAt": "2026-11-10T11:00:00.000Z", "start": "started", "closedAt": null }
 ```
@@ -670,8 +760,8 @@ before (team):  { "rootTeam": { "address": "/product_team", "teamDefinitionId": 
                                 "members": [ { "address": "/product_team/product_designer", "followsTeam": true, "launchConfiguration": { "…": "…" }, "…": "…" } ],
                                 "taskExecutions": [] },
                   "taskAgent": { "coordinatingRun": { "…": "…" }, "delegatorAgentRunId": "solution_designer_65a9", "address": "/product_team" } }
-after (team):   { "rootTeam": { "address": "/product_team", "teamDefinitionId": "product-team", "teamDefinitionName": "Product Team", "teamRunId": "product_team_e03d", "…": "…",
-                                "members": [ { "address": "/product_team/product_designer", "launchConfiguration": { "…": "…" }, "…": "…" } ] },
+after (team):   { "rootTeam": { "address": "/", "teamDefinitionId": "product-team", "teamDefinitionName": "Product Team", "teamRunId": "product_team_e03d", "…": "…",
+                                "members": [ { "address": "/product_designer", "launchConfiguration": { "…": "…" }, "…": "…" } ] },
                   "delegatedFrom": { "delegatingRun": { "kind": "agent_team", "runId": "software_engineering_team_0218" }, "delegatorAgentRunId": "solution_designer_65a9" } }
 ```
 - 4 old runs have no `delegatorAgentRunId`: their `delegatedFrom` has only `delegatingRun`, today's `coordinatingRun`.
