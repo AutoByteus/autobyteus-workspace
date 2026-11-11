@@ -64,3 +64,24 @@ If (1) fails it is a product failure and goes through failure-origin review as u
 ## Route
 
 `get_handoff_rules` (2026-11-11): the rule "Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence" matches. Sent to `/software_engineering_team/delivery_engineer` with this file. No Terminal result was returned to `/project_task_manager`.
+
+---
+
+## Re-verification of the corrected receipt DR-002 (2026-11-11)
+
+Result: **`Terminal`**. The gap is closed; everything verified for DR-001 stands.
+
+| Item | Check | Result |
+| --- | --- | --- |
+| AC-007 proof | `autobyteus-server-ts/tests/e2e/projects/closed-run-attachments.e2e.test.ts` (186 lines) read at `827f1e68dc`, lines 140-182: after `update_task` DONE the test waits until the worker left the tree, then the message reference returns HTTP 200 with the exact bytes; the same after a real restart from the stopped root and after the restore, with the worker asserted absent; after `IN_PROGRESS` and `send_message_to` by run ID the worker is back in the tree and its context file and the reference return HTTP 200 with the exact bytes. Agent and Org roots | Proven as required: (a) after closure and restart; (b) after the reopen |
+| Evidence | `evidence/API-E03-closed-run-attachments.txt`: `✓ CRA-1 …`, `Tests 1 passed (1)`; observed `{"agentContextFileWhileClosed":404,"orgContextFileWhileClosed":404}` | As reported; matches FU-006 |
+| Team root | Not covered (its context file goes through a Team draft owner the journey cannot address) | Accepted: the requirement was a standalone root at least; the reference route of every kind uses the same reader |
+| Reports | `release-deployment-report.md` row AC-007 keeps the DR-001 mis-citation on record and cites API-E03; `api-e2e-execution-coverage-report.md` row AC-007 cites API-E03; `api-e2e-test-review-report.md` result Pass (CRR-005) | Consistent |
+| Finalization | `HEAD` = `origin/personal` = `827f1e68dc`; its parents `1ee1ea61cf` and `a85c725656`; merge tree equals the branch tree; no `ac007` worktree or local branch left | As reported |
+| Follow-ups | `follow-ups.md` FU-001 … FU-006 (FU-005 and FU-006 rows added by delivery from this file) | Sent with the Terminal result (below) |
+
+## Route
+
+No handoff rule matches a verified `Terminal` result. Returned to the requester, `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), with FU-001 … FU-006, naming the Task key autobyteus-469. The archived `follow-ups.md` is finalized and is not edited; this file records the sending: **Sent to `/project_task_manager`, 2026-11-11**.
+
+Next: autobyteus-461 resumes on top of `827f1e68dc` (its prerequisite PRE-001 is delivered).
