@@ -23,14 +23,17 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S10 | M closes T1 | T-1, R-8 |
 | S11 | M reopens T1 and continues E | T-2, R-6 |
 | S12 | M gives E another Task, T6 | DL-7 |
-| S13 | T1 is deleted | T-3, R-9 |
-| S14 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
-| S15 | The peer team reports to M | R-10 |
-| S16 | M closes T7: the peer run is stopped through the link | T-1 |
-| S17 | Refused: runs of different Tasks | R-7 |
-| S18 | Refused: M messages itself | IN-7 |
-| S19 | Refused: addressing a delegated run | C-1, C-3 |
-| S20 | Refused: a run that works on a Task uses `task_id` | DL-11 |
+| S13 | E works on T1 and T6 and hands on sub-work: it joins T6 | DL-12 |
+| S14 | M closes T6; E keeps working on T1 | T-1, DL-12 |
+| S15 | E hands on sub-work again: it joins T1, its newest open Task | DL-13 |
+| S16 | T1 is deleted | T-3, R-9 |
+| S17 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
+| S18 | The peer team reports to M | R-10 |
+| S19 | M closes T7: the peer run is stopped through the link | T-1 |
+| S20 | Refused: runs of different Tasks | R-7 |
+| S21 | Refused: M messages itself | IN-7 |
+| S22 | Refused: addressing a delegated run | C-1, C-3 |
+| S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 
 ---
 
@@ -490,7 +493,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Result to the caller:** `{"delegated": true, "target_kind": "team", "target_team_run_id": "product_team_e03d", "target_team_coordinator_agent_run_id": "product_designer_1a2b"}`
 
-**How:** There is no `task_id`, so the work joins E's current Task: its newest open entry, T1, as a `subWork` entry. (A run that works on a Task may not use `task_id`: S20.) P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.
+**How:** There is no `task_id`, so the work joins E's current Task: its newest open entry, T1, as a `subWork` entry. (A run that works on a Task may not use `task_id`: S23.) P's own `delegatedFrom` is one hop: it names E, not M. Nothing about P is written in E's or M's files.
 
 **On disk after this step:**
 
@@ -1509,19 +1512,595 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S13 — T1 is deleted [T-3, R-9]
+#### S13 — E works on T1 and T6 and hands on sub-work: it joins T6 [DL-12]
+
+**Call:** `delegate_task(recipient_address: "/upscaler", description: "Upscale the import screenshots …")`, by `solution_designer_65a9`
+
+**Result to the caller:** `{"delegated": true, "target_kind": "agent", "target_agent_run_id": "upscaler_e1a1"}`
+
+**How:** E has two open Tasks, T1 (reopened in S11) and T6 (S12). Sub-work joins E's current Task, its newest open entry: T6. The upscaler's entry is a `subWork` entry in T6, under the same assigner M (§2.4).
+
+**On disk after this step:**
+
+**Created:** node A: `memory/agents/upscaler_e1a1/` (memory folder): the agent's own memory; its first input is kept there
+
+**Created:** node A: `memory/agents/upscaler_e1a1/run_metadata.json`:
+```json
+{
+  "runId": "upscaler_e1a1",
+  "agentDefinitionId": "upscaler",
+  "address": "/upscaler",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "memoryDir": "…/memory/agents/upscaler_e1a1",
+  "llmModelIdentifier": "…",
+  "llmConfig": {"…": "…"},
+  "autoExecuteTools": true,
+  "runtimeKind": "…",
+  "platformAgentRunId": "…",
+  "startedAt": "2026-11-10T16:30:00.000Z",
+  "launchSource": {"origin": "agent_default", "fallbacks": []},
+  "delegatedFrom": {
+    "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9"
+  }
+}
+```
+
+**Created:** node A: `memory/run_history_index.json`, new row:
+```json
+{
+  "runId": "upscaler_e1a1",
+  "agentDefinitionId": "upscaler",
+  "agentName": "Upscaler",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-10T16:30:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": null
+}
+```
+
+**Changed:** node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`:
+```json
+{
+  "taskId": "project_task_6a6a",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+      },
+      "recipientAddress": "/software_engineering_team",
+      "agentRun": {
+        "kind": "team",
+        "teamRunId": "software_engineering_team_0218",
+        "coordinatorAgentRunId": "solution_designer_65a9"
+      },
+      "linkedAt": "2026-11-10T16:00:00.000Z",
+      "start": "started",
+      "closedAt": null
+    },
+    {
+      "role": "subWork",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+        "delegatorAgentRunId": "solution_designer_65a9"
+      },
+      "recipientAddress": "/upscaler",
+      "agentRun": {"kind": "agent", "agentRunId": "upscaler_e1a1"},
+      "linkedAt": "2026-11-10T16:30:00.000Z",
+      "start": "started",
+      "closedAt": null
+    }
+  ]
+}
+```
+
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_440e/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_440e/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
+
+**In memory on node A (the `DelegationTree`):**
+```json
+[
+  {
+    "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+    "parent": null,
+    "tasks": [],
+    "agents": ["project_task_manager_7c8d"]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "parent": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+    "delegatorAgentRunId": "project_task_manager_7c8d",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "assigned",
+        "open": true,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      },
+      {
+        "taskId": "project_task_6a6a",
+        "role": "assigned",
+        "open": true,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": [
+      "architecture_reviewer_m_5c20",
+      "code_reviewer_m_3b10",
+      "implementation_engineer_m_7d31",
+      "solution_designer_65a9"
+    ]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "product_team_e03d"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "image_maker_33f0"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["image_maker_33f0"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": true,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
+  }
+]
+```
+
+**Against today:** The same.
+
+**Checked on the user's data:** 0 runs with more than one open Task today (DEC-012).
+
+---
+
+#### S14 — M closes T6; E keeps working on T1 [T-1, DL-12]
+
+**Call:** `update_task(task_id: "demo-6", status: "DONE")`, by M
+
+**Result to the caller:** `{"taskId": "demo-6", "status": "DONE"}`
+
+**How:** Every open entry of T6 is closed. The upscaler has no other open Task and is stopped. E is not stopped: T1 is still open (a closure stops only runs with no other open Task).
+
+**On disk after this step:**
+
+**Changed:** node A: `memory/run_history_index.json`, changed row:
+```json
+{
+  "runId": "upscaler_e1a1",
+  "agentDefinitionId": "upscaler",
+  "agentName": "Upscaler",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-10T16:30:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": "2026-11-10T16:40:00.000Z"
+}
+```
+
+**Changed:** node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`:
+```json
+{
+  "taskId": "project_task_6a6a",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+      },
+      "recipientAddress": "/software_engineering_team",
+      "agentRun": {
+        "kind": "team",
+        "teamRunId": "software_engineering_team_0218",
+        "coordinatorAgentRunId": "solution_designer_65a9"
+      },
+      "linkedAt": "2026-11-10T16:00:00.000Z",
+      "start": "started",
+      "closedAt": "2026-11-10T16:40:00.000Z"
+    },
+    {
+      "role": "subWork",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+        "delegatorAgentRunId": "solution_designer_65a9"
+      },
+      "recipientAddress": "/upscaler",
+      "agentRun": {"kind": "agent", "agentRunId": "upscaler_e1a1"},
+      "linkedAt": "2026-11-10T16:30:00.000Z",
+      "start": "started",
+      "closedAt": "2026-11-10T16:40:00.000Z"
+    }
+  ]
+}
+```
+
+**Changed:** node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`:
+```json
+{
+  "taskId": "project_task_6a6a",
+  "projectId": "project_8f21",
+  "taskKey": "demo-6",
+  "title": "Fix the import bug",
+  "description": "…",
+  "status": "DONE",
+  "dependsOnTaskIds": [],
+  "partOfTaskId": null,
+  "createdAt": "2026-11-01T08:07:00.000Z",
+  "updatedAt": "2026-11-10T16:40:00.000Z",
+  "contextFiles": [],
+  "comments": []
+}
+```
+
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_440e/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_440e/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
+
+**In memory on node A (the `DelegationTree`):**
+```json
+[
+  {
+    "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+    "parent": null,
+    "tasks": [],
+    "agents": ["project_task_manager_7c8d"]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "parent": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+    "delegatorAgentRunId": "project_task_manager_7c8d",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "assigned",
+        "open": true,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      },
+      {
+        "taskId": "project_task_6a6a",
+        "role": "assigned",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": [
+      "architecture_reviewer_m_5c20",
+      "code_reviewer_m_3b10",
+      "implementation_engineer_m_7d31",
+      "solution_designer_65a9"
+    ]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "product_team_e03d"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "image_maker_33f0"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["image_maker_33f0"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
+  }
+]
+```
+
+**Against today:** The same.
+
+**Checked on the user's data:** —
+
+---
+
+#### S15 — E hands on sub-work again: it joins T1, its newest open Task [DL-13]
+
+**Call:** `delegate_task(recipient_address: "/image_maker", description: "Draw the import icon …")`, by `solution_designer_65a9`
+
+**Result to the caller:** `{"delegated": true, "target_kind": "agent", "target_agent_run_id": "image_maker_88e8"}`
+
+**How:** E's newest entry, T6, is closed, but its older T1 is open. Sub-work joins the newest open entry, T1: E is still working on T1. It is refused only when none of E's entries is open (§2.4).
+
+**On disk after this step:**
+
+**Created:** node A: `memory/agents/image_maker_88e8/` (memory folder): the agent's own memory; its first input is kept there
+
+**Created:** node A: `memory/agents/image_maker_88e8/run_metadata.json`:
+```json
+{
+  "runId": "image_maker_88e8",
+  "agentDefinitionId": "image-maker",
+  "address": "/image_maker",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "memoryDir": "…/memory/agents/image_maker_88e8",
+  "llmModelIdentifier": "…",
+  "llmConfig": {"…": "…"},
+  "autoExecuteTools": true,
+  "runtimeKind": "…",
+  "platformAgentRunId": "…",
+  "startedAt": "2026-11-10T16:50:00.000Z",
+  "launchSource": {"origin": "agent_default", "fallbacks": []},
+  "delegatedFrom": {
+    "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9"
+  }
+}
+```
+
+**Created:** node A: `memory/run_history_index.json`, new row:
+```json
+{
+  "runId": "image_maker_88e8",
+  "agentDefinitionId": "image-maker",
+  "agentName": "Image Maker",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-10T16:50:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": null
+}
+```
+
+**Changed:** node A: `projects/project_8f21/tasks/project_task_440e/agent_run_resources.json`:
+```json
+{
+  "taskId": "project_task_440e",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+      },
+      "recipientAddress": "/software_engineering_team",
+      "agentRun": {
+        "kind": "team",
+        "teamRunId": "software_engineering_team_0218",
+        "coordinatorAgentRunId": "solution_designer_65a9"
+      },
+      "linkedAt": "2026-11-10T09:39:18.439Z",
+      "start": "started",
+      "closedAt": null
+    },
+    {
+      "role": "subWork",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+        "delegatorAgentRunId": "solution_designer_65a9"
+      },
+      "recipientAddress": "/product_team",
+      "agentRun": {"kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b"},
+      "linkedAt": "2026-11-10T13:00:00.000Z",
+      "start": "started",
+      "closedAt": "2026-11-10T15:00:00.000Z"
+    },
+    {
+      "role": "subWork",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+        "delegatorAgentRunId": "solution_designer_65a9"
+      },
+      "recipientAddress": "/image_maker",
+      "agentRun": {"kind": "agent", "agentRunId": "image_maker_33f0"},
+      "linkedAt": "2026-11-10T13:10:00.000Z",
+      "start": "started",
+      "closedAt": "2026-11-10T15:00:00.000Z"
+    },
+    {
+      "role": "subWork",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+        "delegatorAgentRunId": "solution_designer_65a9"
+      },
+      "recipientAddress": "/image_maker",
+      "agentRun": {"kind": "agent", "agentRunId": "image_maker_88e8"},
+      "linkedAt": "2026-11-10T16:50:00.000Z",
+      "start": "started",
+      "closedAt": null
+    }
+  ]
+}
+```
+
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_440e/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
+
+**In memory on node A (the `DelegationTree`):**
+```json
+[
+  {
+    "run": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+    "parent": null,
+    "tasks": [],
+    "agents": ["project_task_manager_7c8d"]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "parent": {"kind": "agent", "runId": "project_task_manager_7c8d"},
+    "delegatorAgentRunId": "project_task_manager_7c8d",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "assigned",
+        "open": true,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      },
+      {
+        "taskId": "project_task_6a6a",
+        "role": "assigned",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": [
+      "architecture_reviewer_m_5c20",
+      "code_reviewer_m_3b10",
+      "implementation_engineer_m_7d31",
+      "solution_designer_65a9"
+    ]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "product_team_e03d"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["product_designer_1a2b", "prototyper_4e11"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "image_maker_33f0"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["image_maker_33f0"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "image_maker_88e8"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_440e",
+        "role": "subWork",
+        "open": true,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["image_maker_88e8"]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
+  }
+]
+```
+
+**Against today:** The same.
+
+**Checked on the user's data:** —
+
+---
+
+#### S16 — T1 is deleted [T-3, R-9]
 
 **Call:** The user deletes T1 from the Project.
 
-**How:** T1's open entries are closed and its runs with no other open Task are stopped (none here: E still works on T6, and P and I are already stopped). Then T1's folder is removed. Each run keeps its own `delegatedFrom`. P and I are no longer named by any Task: they leave the tree and are runs of their own (TC-3), labeled "delegated from" E; no Task relates them to anyone (R-9). E stays, through T6.
+**How:** T1's open entries are closed, and its runs with no other open Task are stopped: E (its T6 is closed since S14) and the second image agent. Then T1's folder is removed. Each run keeps its own `delegatedFrom`. P, I and the second image agent are no longer named by any Task: they leave the tree and are runs of their own (TC-3), labeled "delegated from" E; no Task relates them to anyone (R-9). E stays in the tree through its closed T6 entry.
 
 **On disk after this step:**
+
+**Changed:** node A: `memory/run_history_index.json`, changed row:
+```json
+{
+  "runId": "image_maker_88e8",
+  "agentDefinitionId": "image-maker",
+  "agentName": "Image Maker",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-10T16:50:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": "2026-11-10T17:00:00.000Z"
+}
+```
+
+**Changed:** node A: `memory/team_run_history_index.json`, changed row:
+```json
+{
+  "teamRunId": "software_engineering_team_0218",
+  "teamDefinitionId": "software-engineering-team",
+  "teamDefinitionName": "Software Engineering Team",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-10T09:39:18.439Z",
+  "archivedAt": null,
+  "terminatedAt": "2026-11-10T17:00:00.000Z"
+}
+```
 
 **Removed:** node A: `projects/project_8f21/tasks/project_task_440e/agent_run_resources.json`
 
 **Removed:** node A: `projects/project_8f21/tasks/project_task_440e/task.json`
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -1540,7 +2119,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       {
         "taskId": "project_task_6a6a",
         "role": "assigned",
-        "open": true,
+        "open": false,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
@@ -1550,6 +2129,20 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       "implementation_engineer_m_7d31",
       "solution_designer_65a9"
     ]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
   }
 ]
 ```
@@ -1560,7 +2153,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S14 — M delegates T7 to a team on a peer node [DL-9, DL-10]
+#### S17 — M delegates T7 to a team on a peer node [DL-9, DL-10]
 
 **Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`, by M on node A. (`/research_team` is in node B's list for node A: `list_available_agents(node: "node-b")`.)
 
@@ -1653,7 +2246,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -1672,7 +2265,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       {
         "taskId": "project_task_6a6a",
         "role": "assigned",
-        "open": true,
+        "open": false,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
@@ -1682,6 +2275,20 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       "implementation_engineer_m_7d31",
       "solution_designer_65a9"
     ]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
   },
   {
     "run": {"kind": "agent_team", "runId": "research_team_77aa"},
@@ -1707,7 +2314,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S15 — The peer team reports to M [R-10]
+#### S18 — The peer team reports to M [R-10]
 
 **Call:** `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`, by `lead_0c11` on node B. (By address, `"/project_task_manager"` is not found on node B: across nodes only run IDs work.)
 
@@ -1745,7 +2352,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory:** unchanged.
 
@@ -1755,7 +2362,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S16 — M closes T7: the peer run is stopped through the link [T-1]
+#### S19 — M closes T7: the peer run is stopped through the link [T-1]
 
 **Call:** `update_task(task_id: "demo-7", status: "DONE")`, by M
 
@@ -1820,7 +2427,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -1839,7 +2446,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       {
         "taskId": "project_task_6a6a",
         "role": "assigned",
-        "open": true,
+        "open": false,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
@@ -1849,6 +2456,20 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       "implementation_engineer_m_7d31",
       "solution_designer_65a9"
     ]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
   },
   {
     "run": {"kind": "agent_team", "runId": "research_team_77aa"},
@@ -1874,15 +2495,15 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S17 — Refused: runs of different Tasks [R-7]
+#### S20 — Refused: runs of different Tasks [R-7]
 
-**Call:** M: `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`. Then, by `solution_designer_65a9` (E works on T6): `send_message_to(target_agent_run_id: "research_agent_9b10", content: "…")`
-
-**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CONFLICT", "message": "You can't message this agent: it works on a different Task." }`
+**Call:** M: `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "…")`
 
 **Result to the caller:** `{"delegated": true, "target_kind": "agent", "target_agent_run_id": "research_agent_9b10"}`
 
-**How:** The delegation is as S1, for an agent run. The message is refused: E works on T6 and R on T2, and neither assigned the other's Task.
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CONFLICT", "message": "You can't message this agent: it works on a different Task." }`
+
+**How:** The delegation is as S1, for an agent run. The message is refused: R works on T2, E's only remaining Task is T6, and neither run assigned the other's Task.
 
 **On disk after this step:**
 
@@ -1945,7 +2566,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -1964,7 +2585,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       {
         "taskId": "project_task_6a6a",
         "role": "assigned",
-        "open": true,
+        "open": false,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
       }
     ],
@@ -1974,6 +2595,20 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       "implementation_engineer_m_7d31",
       "solution_designer_65a9"
     ]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [
+      {
+        "taskId": "project_task_6a6a",
+        "role": "subWork",
+        "open": false,
+        "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
+      }
+    ],
+    "agents": ["upscaler_e1a1"]
   },
   {
     "run": {"kind": "agent_team", "runId": "research_team_77aa"},
@@ -2013,7 +2648,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S18 — Refused: M messages itself [IN-7]
+#### S21 — Refused: M messages itself [IN-7]
 
 **Call:** `send_message_to(recipient_address: "/project_task_manager", content: "…")`, by M
 
@@ -2031,7 +2666,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S19 — Refused: addressing a delegated run [C-1, C-3]
+#### S22 — Refused: addressing a delegated run [C-1, C-3]
 
 **Call:** `send_message_to(recipient_address: "/software_engineering_team", content: "…")`, by M
 
@@ -2049,9 +2684,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S20 — Refused: a run that works on a Task uses `task_id` [DL-11]
+#### S23 — Refused: a run that works on a Task uses `task_id` [DL-11]
 
-**Call:** `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E works on T6)
+**Call:** `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E has Task entries)
 
 **Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_OWNED_SENDER", "message": "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." }`
 
@@ -2562,7 +3197,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `delegate_task(recipient_address: "/architecture_reviewer")`, by `solution_designer_7a33`
 
-**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_SELF_TARGET_REJECTED", "message": "/architecture_reviewer is in your own team; use send_message_to." }`
+**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_SELF_TARGET_REJECTED", "message": "/architecture_reviewer is in your own team; you can't delegate to it. Talk with it using send_message_to." }`
 
 **How:** Its own team: use `send_message_to`. Nothing is written.
 

@@ -112,6 +112,8 @@ Why, for the data model:
 - **An `assigned` entry gives its assigner a run's life and continuation** (P5, R-6). Only an agent that works on no Task assigns Tasks. If a run that itself works for a Task could assign Tasks, assigners would chain under assigners, and a Task's runs would answer to a run that is itself answerable to another. Work a Task's run hands on is part of that Task: `subWork`, under the same assigner.
 - **Sub-work belongs to work in progress.** A run with an older open Task and a newer closed Task still works on the open one, so its sub-work joins that one. It is not refused. With several open Tasks (DEC-012; 0 today) the newest open one is taken.
 
+The cases, with their data: S12 (E is given a second Task), S13 (sub-work joins T6, E's newest open Task), S14 (T6 is closed; E keeps T1), S15 (sub-work joins T1, the older open Task), S23 (`task_id` refused from a run that works on a Task); the case IDs are DL-12, DL-13 and DL-11.
+
 These two rules are today's code too (`new-copy-work.ts:49`, `deriveCurrent`, `linkInherited`). They are kept because the model needs them, not because the code has them.
 
 ### 2.5 The sender address a receiver is shown
@@ -428,14 +430,17 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S10 | M closes T1 | T-1, R-8 |
 | S11 | M reopens T1 and continues E | T-2, R-6 |
 | S12 | M gives E another Task, T6 | DL-7 |
-| S13 | T1 is deleted | T-3, R-9 |
-| S14 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
-| S15 | The peer team reports to M | R-10 |
-| S16 | M closes T7: the peer run is stopped through the link | T-1 |
-| S17 | Refused: runs of different Tasks | R-7 |
-| S18 | Refused: M messages itself | IN-7 |
-| S19 | Refused: addressing a delegated run | C-1, C-3 |
-| S20 | Refused: a run that works on a Task uses `task_id` | DL-11 |
+| S13 | E works on T1 and T6 and hands on sub-work: it joins T6 | DL-12 |
+| S14 | M closes T6; E keeps working on T1 | T-1, DL-12 |
+| S15 | E hands on sub-work again: it joins T1, its newest open Task | DL-13 |
+| S16 | T1 is deleted | T-3, R-9 |
+| S17 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
+| S18 | The peer team reports to M | R-10 |
+| S19 | M closes T7: the peer run is stopped through the link | T-1 |
+| S20 | Refused: runs of different Tasks | R-7 |
+| S21 | Refused: M messages itself | IN-7 |
+| S22 | Refused: addressing a delegated run | C-1, C-3 |
+| S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
@@ -485,9 +490,9 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | B-3 | A run delegated by a team member (U4) | `"/solution_designer"` | The assigning team's member | 2 | The run ID only | Same | 6: the same receiver |
 | B-4 | A run delegated by an org (O7) | `"/ceo_agent"`, `"/dev_team/dev_lead"` | The org's agents | 2 | The run ID only | Same | 2: the same receiver |
 | B-5 | The same, by its handoff rule (O6) | `"/Teacher"` | The org's agent | 2 | The run ID only | Same | 0 sends |
-| C-1 | An assigner (S19) | `"/software_engineering_team"` | Not found: run ID only | — | — | Same as today's code | 53 older sends (2026-08 … 2026-10), before that rule |
+| C-1 | An assigner (S22) | `"/software_engineering_team"` | Not found: run ID only | — | — | Same as today's code | 53 older sends (2026-08 … 2026-10), before that rule |
 | C-2 | A sub-work run (S7) | `"/solution_designer"` | Its own member of that name, else not found | 1 or — | — | Same | — |
-| C-3 | A delegated run (S19) | `"/product_team"` | Not found: run ID only | — | — | Same | In C-1's 53 |
+| C-3 | A delegated run (S22) | `"/product_team"` | Not found: run ID only | — | — | Same | In C-1's 53 |
 | C-4 | Anyone | An address no step finds | `COLLABORATION_TARGET_NOT_FOUND` | — | — | Same | The 10 refused today stay refused |
 
 `list_available_agents` gives exactly the addresses of steps 1 to 3, plus the catalog addresses for `delegate_task`.
@@ -502,10 +507,10 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | R-4 | The assigner → a run at depth 2 | (b) | S7 |
 | R-5 | A run → its Task's assigner | (b) | S3, U4 |
 | R-6 | The assigner → a run of its reopened Task | (b), the assigner continues it | S11 |
-| R-7 | Runs of different Tasks | Refused: "it works on a different Task" | S17 |
+| R-7 | Runs of different Tasks | Refused: "it works on a different Task" | S20 |
 | R-8 | Anyone → a run whose Task is closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6 | S10 |
-| R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S13, 5.4.4 |
-| R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S15 |
+| R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S16, 5.4.4 |
+| R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S18 |
 
 **Checked** (`task-centered-messaging-2026-11-11.txt`, every stored message between two runs, 1,604):
 - 1,540 are allowed as today: 103 by (a) and 1,437 by (b).

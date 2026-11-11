@@ -305,9 +305,9 @@ class World:
         """delegate_task(recipient_address, task_id?, description?, node?). `new_run` names the new run: (kind, run id, {member def: agent id})."""
         snode, skind, srun = srun_key = self.run_of(sender)
         own, prefix, team, _ = self.agent_info(sender)
-        if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is your own address; you can't delegate to yourself.")
+        if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.")
         if (skind == "agent_team" and address in team) or (prefix and (address == prefix or address.startswith(prefix + "/"))):
-            raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is in your own team; use send_message_to.")
+            raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is in your own team; you can't delegate to it. Talk with it using send_message_to.")
         def_id = next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
         if def_id is None: raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"No agent or agent team has the address {address}.")
         # which Task

@@ -90,8 +90,8 @@ def render():
             if w.result is not None and w.result not in results: results.append(w.result)
             changes, unchanged = diff(before, w.disk, two_nodes)
             md += ["---", "", f"#### {s['id']} — {s['title']} [{s['cases']}]", "", f"**Call:** {s['call']}", ""]
-            if refused: md += [f"**Result:** refused, `{{ \"accepted\": false, \"code\": \"{refused.code}\", \"message\": {json.dumps(refused.message)} }}`", ""]
             for r in results: md += [f"**Result to the caller:** `{json.dumps(r, ensure_ascii=False)}`", ""]
+            if refused: md += [f"**Result:** refused, `{{ \"accepted\": false, \"code\": \"{refused.code}\", \"message\": {json.dumps(refused.message)} }}`", ""]
             md += [f"**How:** {s['found']}", ""]
             for x in seen: md += [f"**The receiver sees:** `{x}`", ""]
             if changes: md += ["**On disk after this step:**", ""] + sum(([c, ""] for c in changes), [])

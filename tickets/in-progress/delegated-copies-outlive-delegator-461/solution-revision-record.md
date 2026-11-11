@@ -734,3 +734,16 @@
 - Intended behavior changed: `No`
 - Next action: the user reads the file; then architecture review, round 9
 
+### SR-033 — The Task rules of §2.4 as cases in §5
+
+- Triggering: the user (2026-11-11): the rules of §2.4 belong in §5 as concrete cases with their data, as well as in §2.4. For example, a run assigned a Task and working on it, then assigned another; then the sub-work.
+- Done: three states added to the Project Task Manager story, after S12 (E is given T6 while T1 is open):
+  - **S13 (DL-12):** E hands on sub-work; it joins T6, its newest open Task, as a `subWork` entry in T6.
+  - **S14:** M closes T6. The T6 sub-work run stops; E is not stopped, because T1 is open.
+  - **S15 (DL-13):** E hands on sub-work again; it joins T1, the older open Task, and is not refused.
+
+  The later states are renumbered: the deletion is S16, and in it E now has no open Task left and is stopped; the peer is S17 … S19; the refusals are S20 … S23, with S23 the `task_id` refusal. The R-7 state now has the research agent message E.
+- Also corrected: the model's own wording of the self and own-team delegation refusals is replaced by the code's texts (`collaborator-errors.ts:68-73`), and a step's results are shown in call order.
+- Checks: `walkthrough.py --check` passes; the walkthrough's examples have 0 findings.
+- Next action: the user reads the file; then architecture review, round 9
+
