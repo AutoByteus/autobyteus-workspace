@@ -20,11 +20,12 @@ PDFs and images in the phone viewer zoom by touch. A PDF goes from page width to
 
 - Implementation cycle: `Rework` (IR-002 fixes CRR-002 CR-001; IR-001 was the initial round, CRR-001 Pass)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-002`
 - Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (Fail, CR-001); API/E2E: `API-REV-001`; delivery: `N/A`
-- Triggering finding IDs: IR-003: CR-002 (API/E2E F-2, API-06, CRR-005); IR-002: CR-001 (API/E2E F-1, API-01 `pan2-hold`)
+- Triggering finding IDs: IR-004: CR-003 (API/E2E F-3, API-06, CRR-007); IR-003: CR-002 (API/E2E F-2, API-06, CRR-005); IR-002: CR-001 (API/E2E F-1, API-01 `pan2-hold`)
+- IR-004 commit: `bb9b300c4a`. The place after a reload, and a zoom's anchor, are scrolled only against the whole layout (CRR-007 CR-003); this is the code under test for IMP-31…IMP-36.
 - IR-003 commit: `43ef1748da`, on the merged state with autobyteus-452 (`965a6b43c4`; HEAD before it `22f4806207`). A live refresh of a zoomed PDF now keeps its position (CRR-005 CR-002); this is the code under test for IMP-21…IMP-26.
 - IR-002 commit: `1b5b7f5b0e`. A two-finger move that ends at the same zoom pans instead of snapping back; this is the code under test for IMP-11…IMP-16.
 - IR-001 commits (on `ed481ae4ca`):
@@ -55,6 +56,7 @@ PDFs and images in the phone viewer zoom by touch. A PDF goes from page width to
 | REQ-001 PDF zoom (DS-001) | Pinch 1×–3× around the pinch centre, pan, page scroll, double tap 1× ↔ 2×, sharp text | `MobileFileViewer` → `FileViewer` (`touchZoom`) → `PdfViewer` touch mode → `usePdfPinchZoom`:<br>• two-finger touch events (non-passive, `preventDefault`) drive a live CSS transform around the anchor<br>• on release, `setZoom` sets `zoom`, vue-pdf-embed's `width` = base × zoom, and the composable waits until the page canvases have the new CSS width<br>• then it clears the transform and scrolls the anchor under the fingers<br>• one finger: native scrolling (`touch-action: pan-x pan-y`) | Unit: `usePdfPinchZoom.spec.ts` (6), `MobileFileViewer.zoom.spec.ts`. Browser (IMP-06 MSP-39):<br>• the width doubles (358 → 716)<br>• the anchor lands exactly under the fingers (195, 420)<br>• bitmaps are at width × DPR (1432)<br>• one finger scrolls<br>• double tap both ways<br>Android WebView mechanism: IMP-00 |
 | REQ-001 two-finger pan at a fixed zoom (IR-002, CR-001) | A two-finger drag, or a pinch held at 1× or 3× while the fingers move, leaves the pages where the fingers took them | `usePdfPinchZoom.commit`, factor ≈ 1 branch: the live transform is cleared and, on the next tick, the scroller scrolls back by the fingers' move; then `onCommit` (zoom memory). Resting fingers change nothing | `usePdfPinchZoom.spec.ts` (9; without the fix the drag and cap cases fail). MSP-39 (IMP-16): a two-finger pan at 2× moves `scrollTop` 356 → 506 (the 150 px move) with the width kept at 716 |
 | REQ-006 live refresh in place (IR-003, CR-002; SR-004) | A live refresh of a zoomed PDF keeps the zoom and the position | `PdfViewer` (touch mode):<br>• each new `resolvedUrl` (the first load and each in-place reload, autobyteus-452) starts a generation; it pauses remembering and clears a pending scroll write, so the collapsed scroller is not remembered<br>• `onTouchLoaded` waits for the layout and, if it is still the newest generation, puts back the zoom memory's position and resumes remembering<br>• one rule for the first load and every reload; two redraws of one rewrite are covered | `MobileFileViewer.zoom.spec.ts`: a live refresh in place, then two redraws back to back; the position comes back to (100, 150) at 2×. Without the fix it stays at (0, 0) |
+| REQ-006 / REQ-001 whole layout (IR-004, CR-003) | The restored position and a zoom's anchor are measured against every page's layout | `PdfViewer.pagesLaidOut()`:<br>• resolves `true` only when every page canvas has the current zoom's width, `false` past its 10 s bound or on unmount<br>• `onTouchLoaded` puts the place back only on `true`; `setZoom` returns the boolean, and the composable scrolls its anchor only on `true`<br>• the wait follows a zoom that changes meanwhile<br>• the generation guard (IR-003) is kept | `PdfViewer.touchLayout.spec.ts` (3), with a double that sizes 4 pages one per frame:<br>• place at (150, 1560) against 3120 px, set after page 4 (without the fix: after page 1)<br>• lower-page anchor scrolled after page 4 (without the fix: after page 1)<br>• an early double tap is zoomed and remembered (fails with a start-width wait) |
 | REQ-002 image zoom (DS-002) | Fit to 4×, pan, double tap fit ↔ fill, as the VNC picture | `ImageViewer` touch mode: a `touch-none` layer, `usePictureZoom(layer, { picture: natural size, onCommit })` | `usePictureZoom.spec.ts` (13, VNC cases unchanged plus commit/restore), MSP-39 (pinch to `scale(2)`, double tap back to fit) |
 | REQ-003 page never zooms, bar stays | — | The page zoom stays off; the PDF's two-finger moves are taken from the browser; the image layer is `touch-none`; the viewer is under the fixed bar | MSP-39: `visualViewport.scale` 1 and the back arrow at (4, 0) in all 8 states. IMP-00: Android WebView `visualViewport.scale` 1, no scroll on pinch |
 | REQ-004 Download (DS-003) | Bar button for a loaded PDF/image. App: Downloads under its name, with "Saved to Downloads: <name>" or "Couldn't save the file.". Browser: the browser's download | `MobileFileViewer` bar `actions` → `useMobileFileDownload`:<br>• `fetchAuthorizedResourceBlob(fileState.url)` → base64 → `getShellBridge().saveFile`, or `<a download>` in a browser<br>Android:<br>• `ShellBridge` → `ShellBridgeMessages.read` (`saveFile`) → `MainActivity.bridgeActions.onSaveFile` → `DownloadsSaver`<br>• API ≥ 29: MediaStore.Downloads with `IS_PENDING`<br>• API 26–28: `ACTION_CREATE_DOCUMENT`, with the bytes in the cache and the pending save kept in the saved instance state<br>• result toast | Unit: `useMobileFileDownload.spec.ts` (5), `MobileFileViewer.zoom.spec.ts` (button). JVM: `ShellBridgeMessagesTest` (13). Instrumented: `DownloadsSaverTest` (3) on Android 15 (IMP-08) and Android 10 (IMP-10). Browser download: MSP-39 (names and bytes) |
@@ -119,6 +121,7 @@ PDFs and images in the phone viewer zoom by touch. A PDF goes from page width to
 - Dead code found elsewhere, added to `follow-ups.md`: None
 - Shared structures remain tight: `Yes` (`ShellBridgeAction.SaveFile` is its own variant; `ViewerZoomMemory` holds two optional places)
 - Canonical shared design guidance reapplied: `Yes`
+- Departures from a design principle decided during implementation, each with the principle and why the reason holds for this case: `None`. IR-004 uses the per-page canvas size as the layout signal instead of vue-pdf-embed's `rendered` event, an implementation choice within the reviewer's stated options and not a departure.
 - Changed source files stayed within the size guardrails: `Yes`. Effective lines:
   - `MainActivity.kt` 370 (+9).
   - `ImageViewer.vue` 245, `usePictureZoom.ts` 226, `PdfViewer.vue` 169, `DownloadsSaver.kt` 169, `usePdfPinchZoom.ts` 165, `ShellBridge.kt` 153, `FileViewer.vue` 107, `shellBridge.ts` 91, `MobileFileViewer.vue` 86, `useMobileFileDownload.ts` 78, `useViewerZoomMemory.ts` 32.
@@ -163,6 +166,16 @@ IR-002 rows (code under test `1b5b7f5b0e`; they supersede the web rows above for
 | IMP-14 / IMP-15 | `build:mobile-web`, server build | `1b5b7f5b0e` | shell | the phone bundle with the fix | — | Pass | `IMP-14-mobile-web-build.log`, `IMP-15-server-build.log` | `Mobile web assets written to` |
 | IMP-16 | mobile-shell probe `--cases=MSP-39` | `1b5b7f5b0e` | clean env; headless Chrome touch 390×844 | the phone viewer with the fix, incl. the new two-finger pan at 2× | AC-001, AC-002, REQ-003, REQ-004 | Pass | `IMP-16-mobile-shell-probe.log`, `IMP-16-mobile-shell-probe-cases.json` | `"panned2"`: `pagesWidth` 716, `scrollTop` 506 (from 356), `zoomScale` 1; `"unknownBrowserErrors": 0` |
 
+IR-004 rows (code under test `bb9b300c4a` on the merged state; they supersede the web rows below for the current code; IR-004 changes no Android code):
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-31 | `pnpm -C autobyteus-web typecheck` | `bb9b300c4a` | shell | web | all | Pass | `IMP-31-web-typecheck.log` | `test-file errors: 93 in 40 files (baseline 93 in 40 files)`, `PASS` |
+| IMP-32 | full web suite | `bb9b300c4a` | shell | every web spec, incl. `PdfViewer.touchLayout.spec.ts` | AC-001…AC-005 | Pass | `IMP-32-web-nuxt-tests-excerpt.log` | `Test Files  757 passed (757)`, `Tests  5709 passed \| 2 skipped (5711)`; `PdfViewer.touchLayout.spec.ts (3 tests)` ✓ |
+| IMP-33 | web guards | `bb9b300c4a` | shell | boundaries, locales | — | Pass | `IMP-33-web-guards.log` | `Passed with zero unresolved findings.` |
+| IMP-34 / IMP-35 | `build:mobile-web`, server build | `bb9b300c4a` | shell | the phone bundle with the fix | — | Pass | `IMP-34-mobile-web-build.log`, `IMP-35-server-build.log` | `Mobile web assets written to` |
+| IMP-36 | mobile-shell probe `--cases=MSP-43` | `bb9b300c4a` | clean env; headless Chrome touch 390×844 | the phone viewer's zoom (pinch anchor against real pdf.js layout) and Download | AC-001, AC-002, REQ-003, REQ-004 | Pass | `IMP-36-mobile-shell-probe.log` | `[mobile-shell] MSP-43 Pass`, `"unknownBrowserErrors": 0` |
+
 IR-003 rows (code under test `43ef1748da` on the merged state; they supersede the web rows above for the current code; IR-003 changes no Android code):
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
@@ -205,6 +218,7 @@ Mutation checks (observed, not saved as files):
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+0. IR-004 rechecks (CRR-007), on the merged state: API-06 with several traced live refreshes of a zoomed multi-page PDF; the position must match the remembered place every time.
 0. IR-003 rechecks (CRR-005), on the merged state: API-06 (a live refresh of a zoomed PDF and image keeps the zoom and position, also when one rewrite redraws twice) and MSP-43.
 0. IR-002 rechecks (CRR-002), in the Android app: API-01 `pan2-hold`, a two-finger pan at 2×, a moving pinch held at the 3× cap, and the other PDF gestures.
 

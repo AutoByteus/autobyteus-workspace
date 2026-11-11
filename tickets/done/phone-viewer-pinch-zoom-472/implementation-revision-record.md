@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-002 Pass, SR-003) | N/A | `Initial Baseline` | SR-003, ARCH-REV-002 | Implemented; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-002 (failure-origin of API-REV-001) | CR-001 (F-1) | `Local Fix` | SR-003, CRR-001, CRR-002, API-REV-001 | Fixed; back to code review (targeted) |
 | IR-003 | Code Reviewer, `code-review-report.md` CRR-005 (failure-origin of API-REV-003, merged state, delivery re-entry DR-001) | CR-002 (F-2) | `Local Fix` | SR-004, CRR-005, API-REV-003, DR-001 | Fixed; back to code review (targeted) |
+| IR-004 | Code Reviewer, `code-review-report.md` CRR-007 (failure-origin of API-REV-004, merged state) | CR-003 (F-3) | `Local Fix` | SR-004, CRR-007, API-REV-004 | Fixed; back to code review (targeted) |
 
 ## Revision Entries
 
@@ -103,3 +104,34 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: the new case fails without the fix (the position stays at the top-left) and passes with it; the remount case still passes. The rest is in IMP-21…IMP-26 (see the handoff).
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (Medium / High; targeted source review of CR-002). Then API/E2E rechecks API-06 (PDF and image live refresh) and MSP-43 on the merged state.
 - Remaining limitations or risks: the Android in-app live refresh (API-06) is API/E2E's recheck. The note on the design's AR-001 premise (viewers are always remounted on a reload) is the Solution Designer's; no design change is needed for this fix.
+
+### IR-004 — Put a PDF's place back, and scroll a zoom's anchor, only against the whole layout
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/done/phone-viewer-pinch-zoom-472/code-review-report.md` (CRR-007, failure-origin review of API-REV-004 on the merged state), round 4.
+- Triggering finding IDs: CR-003 (API/E2E F-3, API-06; `evidence/api-e2e/r4-android/late-trials.json`, `restore-trace.json`)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003, code review Pass (CRR-006); API-REV-004 Fail (F-3). In 2 of 5 traced live refreshes in the app, the position was restored too high.
+- Current authoritative result: CR-003 fixed in `bb9b300c4a`. Checks IMP-31…IMP-36 are listed in `implementation-handoff.md`.
+- Related solution revision IDs: SR-004
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-007
+- Related API/E2E revision IDs: API-REV-004
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: vue-pdf-embed sizes its pages one after another, as each page resolves. The layout wait (`pagesLaidOutAt`) ended when the **first** page canvas had the target width. `onTouchLoaded` then set `scrollTop = ratio × scrollHeight` against a partial height. The pinch commit's anchor scroll used the same wait.
+- Approved behavior or requirement IDs affected: REQ-006 (SR-004), AC-005; REQ-001 (the anchor stays under the fingers).
+- Implementation delta (`components/fileExplorer/viewers/PdfViewer.vue`, `composables/usePdfPinchZoom.ts`):
+  1. The helper (`pagesLaidOut`) resolves `true` only when the page list is not empty and **every** page canvas has the current zoom's width. vue-pdf-embed sets each canvas's CSS width and height together, so the scrolled height is then whole.
+  2. Past its bound (now 10 s) or on unmount, the helper resolves `false`. `onTouchLoaded` then does not put the place back, and the pinch commit does not scroll its anchor, so neither ever scrolls against a partial layout. Remembering resumes afterwards, as before.
+  3. The wait reads the current zoom's width on every check. A zoom that changes meanwhile (a double tap while the pages are first laid out) is the one waited for. Previously such a wait ran to its bound with remembering paused.
+  4. `setZoom` resolves the helper's boolean (`Promise<boolean>`), and the composable scrolls its anchor only when it is `true`.
+  5. CR-002's generation guard is kept unchanged.
+- Changed files or areas: `PdfViewer.vue`, `usePdfPinchZoom.ts`; specs `components/fileExplorer/viewers/__tests__/PdfViewer.touchLayout.spec.ts` (new) and `composables/__tests__/usePdfPinchZoom.spec.ts` (its `setZoom` double resolves `true`).
+- Local validation and result: the new spec's double sizes four pages one per frame and records how many pages were sized when `scrollTop` was set.
+  - A remembered place (zoom 2, ratios 0.25 and 0.5) is put back at (150, 1560) against the full 3120 px. Without the fix it is set after 1 of 4 pages.
+  - A double tap on a lower page scrolls its anchor only after all 4 pages are drawn at 2×. Without the fix this also happens after 1 page.
+  - A double tap while the pages are first being laid out still zooms and is remembered. With a wait for the width captured at the start, the zoom is not remembered.
+  - The rest is in IMP-31…IMP-36 (see the handoff).
+- Next recipient or routing: `/software_engineering_team/code_reviewer` (Medium / High; targeted source review of CR-003). Then API/E2E rechecks API-06 with several traced refreshes.
+- Remaining limitations or risks:
+  - A PDF whose pages take more than 10 s to lay out opens without its remembered place: the place is skipped rather than put back wrong.
+  - I chose the per-page canvas size over vue-pdf-embed's `rendered` event; the reviewer allowed either. The size is the layout signal itself, and it arrives before the slower drawing that `rendered` waits for. No design-principle departure.
