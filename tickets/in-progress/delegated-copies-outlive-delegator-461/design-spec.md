@@ -3,7 +3,7 @@
 ## Solution And Approval Basis
 
 - Current solution revision ID: `SR-015`. A new design on the 469 base; it replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered in "Earlier Review Findings" below).
-- Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Decided by the user on 2026-11-11: TC-7, TC-8, DEC-011 (quotes in `solution-revision-record.md` SR-014). **TC-9 is open.**
+- Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Decided by the user on 2026-11-11: TC-7, TC-8, TC-9, DEC-011 (quotes in `solution-revision-record.md` SR-014, SR-015).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: **`Pending`**. The user: "after you redesign … don't send for review immediately, I want to review it myself first" (2026-11-11). This draft goes to the user, not to architecture review.
 - Design status: `Draft — for the user's review`.
@@ -179,7 +179,6 @@ Kept for team and org runs until their Tasks (TC-4): `RootTaskExecutionLifecycle
 
 | ID | Open item |
 | --- | --- |
-| TC-9 | The user: the 15 legacy runs as ordinary runs in the run list |
 | V-10 | Every reader of the removed fields, with a decision each (AR-003) |
 | V-11 | Why a Settings edit of a stopped copy was kept beside its started launch |
 | V-14 | Finding a non-coordinator member of a stopped delegated team |

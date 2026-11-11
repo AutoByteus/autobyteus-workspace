@@ -368,3 +368,4 @@
 - Downstream and architecture-review impact: architecture review after the user's review and the next revision (V-10, V-11, V-14, U-A, U-B)
 - Remaining gaps, assumptions or blocked decisions: TC-9; V-10, V-11, V-14, U-A, U-B
 - Next action: the user's review
+- Update 2026-11-11 (same round): the user decided TC-9: "if they are not associated with task yes i think they are just normal runs". The 15 delegated runs without a Task record become ordinary runs in the run list. All contract decisions are now taken; the user's review of the design draft is pending.

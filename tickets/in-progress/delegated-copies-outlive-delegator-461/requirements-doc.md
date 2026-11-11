@@ -251,7 +251,7 @@ BEH-002, BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-00
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
 - Content ready for approval: `Yes`
-- Remaining content blocker: the user's decision TC-9 (contract revision 5 §9); TC-7, TC-8 and DEC-011 decided by the user on 2026-11-11
+- Remaining content blocker: none. TC-7, TC-8, TC-9 and DEC-011 were decided by the user on 2026-11-11; the user's approval of the whole package follows his review of the design draft
 
 ### Approved Basis Ready For Design
 

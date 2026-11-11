@@ -7,7 +7,7 @@ History:
 - Revisions 3 (§10 Communication) and 4 (§11 the life of a link) were proposed on 2026-11-10 and never approved.
 - autobyteus-469 then changed the base: a top run stores no list of the runs it delegated to on this node. The Task record became the index, and the tree is built in memory from the Tasks that are open.
 - Revision 5 rewrites §2 … §12 on that base. Every count was measured again on the user's data on 2026-11-11 (read-only): `evidence/data-model-validation/contract-after-469-2026-11-11.txt` and `relationship-in-task-record-2026-11-11.txt`.
-- What changes against the approved revision 2 is listed in §9.1. The user decided TC-7, TC-8 and DEC-011 on 2026-11-11; TC-9 is open.
+- What changes against the approved revision 2 is listed in §9.1. The user decided TC-7, TC-8, TC-9 and DEC-011 on 2026-11-11.
 
 Model for this document: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md`, which made a delegated run's *storage* its own. autobyteus-469 made the *list of delegated runs* the Task's. This contract finishes the step: the *relationship* and the *lifecycle* become the run's and the Task's, and nothing hosts another run.
 
@@ -297,7 +297,7 @@ Message logs, memory and folders are not touched: each run already has its own (
 | TC-6 | The role name for sub-work | `subWork` | The user | Decided, 2026-11-10 |
 | **TC-7** | Where the delegation is stored | **Once, in the Task record (`delegatedBy`), one hop; no back-link on the delegated run.** Revision 2 stored it on both ends. Since 469 the Task record is the index the views are built from, and a back-link would be a second copy to keep equal | The user | **Decided by the user, 2026-11-11**, with the Task-centered approach ("let's go with this approach") |
 | **TC-8** | The standalone run's `collaboration_tree.json` | **Remove it**: its address moves to `run_metadata.json`, and its peer links move to their Task entries | The user | **Decided by the user, 2026-11-11**: the node information of a delegated run on a peer goes "on the task itself … I mean the agent run resource file" (the run's entry in `agent_run_resources.json`), and the file is removed |
-| **TC-9** | The 15 old delegated runs with no Task record | **Shown as ordinary runs in the run list.** They have no relationship left to show them under, and they are runs with conversations the user can open, archive or delete. Today they are hidden from the run list and appear only on the Memory page | The user | **Needs user** |
+| **TC-9** | The 15 old delegated runs with no Task record | **Shown as ordinary runs in the run list.** They have no relationship left to show them under, and they are runs with conversations the user can open, archive or delete. Today they are hidden from the run list and appear only on the Memory page | The user | **Decided by the user, 2026-11-11**: "if they are not associated with task yes i think they are just normal runs" |
 | **DEC-011** | Which runs may message each other | **Centered on the Task, with today's reach** (§10.2): runs of one open Task, and the run that assigned a Task with every run of it. Replaces the earlier choice between A and B | The user | **Decided by the user, 2026-11-11**: "the routing strategy will be centered around the task itself"; "let's go with this approach" |
 | **DEC-012** | A run with several open Tasks | **It may talk with the runs of any of its open Tasks.** It works on all of them; today it is judged by its newest Task only. 0 such runs today | Solution Designer | Decided (the user informed) |
 
