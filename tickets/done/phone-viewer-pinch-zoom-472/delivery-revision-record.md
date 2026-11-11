@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | Code reviewer CRR-004 Pass (code `1b5b7f5b0e`, evidence `9be773d634`) | N/A | Delivery Completed (no release) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `docs/android_mobile_access.md` |
+| DR-001 | Code reviewer CRR-004 Pass (code `1b5b7f5b0e`, evidence `9be773d634`) | N/A | Blocked at the re-integration before the final merge: duplicate phone probe case ID MSP-39 with autobyteus-452 | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `docs/android_mobile_access.md` |
 
 ## Revision Entries
 
@@ -17,4 +17,5 @@
 - Docs: Download added to `docs/android_mobile_access.md`.
 - Release decision: no release.
 - Finalization, the user's checkout and cleanup: in `release-deployment-report.md`.
-- Terminal return to the Solution Designer: `Sent` after cleanup.
+- Re-integration: `personal` advanced to `8641bc393a` (autobyteus-452) after verification; merged as `965a6b43c4`; the phone probe stops on duplicate case ID MSP-39. Routed to API/E2E.
+- Terminal return to the Solution Designer: `Not yet eligible`.

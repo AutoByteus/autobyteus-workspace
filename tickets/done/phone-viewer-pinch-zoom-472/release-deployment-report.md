@@ -47,3 +47,12 @@
 ## Release Notes Summary
 
 - `tickets/done/phone-viewer-pinch-zoom-472/release-notes.md` (the ticket's; "update the Android app" for Download).
+
+## Re-integration Before The Final Merge (Blocked)
+
+- After verification, `origin/personal` had advanced `ed481ae4ca` → `8641bc393a` (autobyteus-452: an open file refreshes when it changes on disk, with phone probe cases MSP-39…42; baseline fixes for MSP-22, MSP-24/34/35 and the duplicate MSP-32). The ticket branch had already been pushed (`305f25b472`); `personal` was not touched.
+- Merged `origin/personal` into the ticket branch: `965a6b43c4`. One import conflict in `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (`runFileZoomCases` vs `runLiveFileRefreshCases`); both kept.
+- Post-integration check: `node tests/e2e/mobile-shell-probe.mjs --cases=MSP-39` → `mobile-shell probe: duplicate case IDs MSP-39 (mobile-file-zoom-cases.mjs, mobile-live-file-refresh-cases.mjs)`, exit 1 (`evidence/delivery/DR1-probe-duplicate-id.log`). The probe's guard stops every run, so no phone probe case can run on the merged state.
+- Classification: this ticket's test code, after the base merge (this ticket's MSP-39 and 452's MSP-39); the owner is API/E2E. Also, 452's live refresh now makes AC-005 / REQ-006 (zoom kept when the open file reloads) reproducible live; API-06 could not before.
+- Recommended recipient: API/E2E engineer: renumber this ticket's zoom case to a free ID, rerun the phone probe on the merged state, and prove AC-005 live with 452's refresh.
+- Status: `Blocked`; nothing merged into `personal`.
