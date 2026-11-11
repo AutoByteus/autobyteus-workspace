@@ -382,16 +382,21 @@ export const createTeamExecutionViewState = (
             type: 'SEGMENT_CONTENT', payload: { change_sequence: message.payload.change_sequence, agent_run_id: agentRunId, ...content },
           } });
         }
-      } else if (message.type === 'TASK_EXECUTION_STARTED') {
-        const nextTree = insertTaskExecution({
-          tree: publication.value.tree,
-          parentTeamRunId: message.payload.parent_team_run_id,
-          execution: message.payload.execution,
-        });
+      } else if (message.type === 'TASK_EXECUTION_STARTED' || message.type === 'TASK_EXECUTIONS_REOPENED') {
+        // "Reopened" (D-8): a run the view does not hold (it left the tree when its Task closed) is inserted from its
+        // record, as for "started"; one it holds stays; then every reopened run is listed again (helpers stay closed).
+        const entries = message.type === 'TASK_EXECUTION_STARTED' ? [message.payload] : message.payload.executions;
+        const refOf = ({ execution }: (typeof entries)[number]) => fromTeamTaskExecutionReference('agent_run_id' in execution
+          ? { agent_run_id: execution.agent_run_id } : { team_run_id: execution.team_run_id });
+        const held = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
+        const inserted = message.type === 'TASK_EXECUTION_STARTED' ? entries : entries.filter((entry) => !held.has(taskExecutionReferenceKey(refOf(entry))));
+        const nextTree = inserted.reduce((tree, entry) => insertTaskExecution({ tree, parentTeamRunId: entry.parent_team_run_id, execution: entry.execution }),
+          publication.value.tree);
         const nextLocations = collectValidatedLocations(nextTree);
         const planned = planContextAssociations(nextTree, nextLocations);
-        publication.value = { ...publication.value, tree: nextTree, locations: nextLocations,
-          contexts: prepareContextAssociations(planned), changeSequence: sequence ?? publication.value.changeSequence };
+        publication.value = { ...publication.value, tree: nextTree, locations: nextLocations, contexts: prepareContextAssociations(planned),
+          closed: message.type === 'TASK_EXECUTION_STARTED' ? publication.value.closed : removeReopenedTaskExecutions(publication.value.closed, entries.map(refOf)),
+          changeSequence: sequence ?? publication.value.changeSequence };
         repairFocus();
         if (planned.length > 0) {
           effects.push({
@@ -418,15 +423,6 @@ export const createTeamExecutionViewState = (
         publication.value = { ...publication.value, closed: mergeClosedTaskExecutions(publication.value.closed, closed),
           changeSequence: sequence ?? publication.value.changeSequence };
         if (leaveClosedFocus()) effects.push({ kind: 'reconcile_focused_team_member_projection' });
-        effects.push({ kind: 'reconcile_team_navigation' });
-      } else if (message.type === 'TASK_EXECUTIONS_REOPENED') {
-        // Listed again (helpers stay closed); one the view lacks left the tree at its Task's closure (D-8): a fresh snapshot brings it.
-        const reopened = message.payload.task_executions.map(fromTeamTaskExecutionReference);
-        const treeKeys = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
-        if (reopened.some((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)))) { streamRecoveryRequired.value = true;
-          return Object.freeze({ disposition: 'applied', effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]) }); }
-        publication.value = { ...publication.value, closed: removeReopenedTaskExecutions(publication.value.closed, reopened),
-          changeSequence: sequence ?? publication.value.changeSequence };
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'DELEGATED_LAUNCH_SELECTIONS_CHANGED') {
         // A Save on the live run (DS-001): records take the choices; contexts the model their agent now runs with.

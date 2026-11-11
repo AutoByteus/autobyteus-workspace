@@ -117,6 +117,9 @@ export class AgentOrgExecutionContext {
     })))
   }
 
+  /** The view holds this agent: one of its tree (the Team tab names it from the view). */
+  holdsAgent(agentRunId: string): boolean { return this.index.agents.has(agentRunId) }
+
   getAgentContext(agentRunId: string): AgentContext | null {
     return this.contexts.get(agentRunId) ?? null
   }

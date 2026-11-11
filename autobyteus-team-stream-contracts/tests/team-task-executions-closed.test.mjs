@@ -39,10 +39,14 @@ test("TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty", () => {
   assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, task_executions: [{ teamRunId: "review-team" }] } }));
 });
 
-test("TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty", () => {
-  const message = { type: "TASK_EXECUTIONS_REOPENED", payload: { change_sequence: 10, task_executions: [{ agent_run_id: "writer-run" }] } };
+test("TASK_EXECUTIONS_REOPENED carries each reopened execution's record with its parent Team run (autobyteus-469 D-8)", () => {
+  const writer = { kind: "task_agent", address: "/writer", agent_run_id: "writer-run", platform_agent_run_id: null,
+    delegator_agent_run_id: "lead-run", started_at: "t", source: { kind: "agent", agent_definition_id: "writer", launch_configuration: launch } };
+  const message = { type: "TASK_EXECUTIONS_REOPENED", payload: { change_sequence: 10, executions: [{ parent_team_run_id: "team-run", execution: writer }] } };
   assert.deepEqual(parseTeamStreamServerMessage(message), message);
-  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, task_executions: [] } }));
-  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { task_executions: [{ agent_run_id: "writer-run" }] } }));
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, executions: [] } }));
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { executions: message.payload.executions } }));
   assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, extra: true } }));
+  // References alone are no longer a reopened payload.
+  assert.throws(() => parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_REOPENED", payload: { change_sequence: 10, task_executions: [{ agent_run_id: "writer-run" }] } }));
 });

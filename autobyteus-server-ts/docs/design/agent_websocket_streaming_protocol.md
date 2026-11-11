@@ -136,12 +136,16 @@ Closure is a separate fact beside the tree:
   to stop a Task's runs, the root publishes the released runs that are closed and
   present in its tree **before** it stops them, whatever the stop outcome. A
   repeated DONE re-publishes the same references; applying them again is a no-op.
-- `TASK_EXECUTIONS_REOPENED {change_sequence, task_executions}` has the same
-  payload shape. After the Task is moved out of DONE or CANCELLED, the run that assigned the
-  work can reactivate one assignment by messaging its run ID (a Team copy's
-  coordinator). The root publishes that reference after the Task-side commit and
-  before the message is delivered. Clients remove it from their closed set, so
-  the execution is listed again. Its helpers keep their own closed references and
+- `TASK_EXECUTIONS_REOPENED {change_sequence, executions: [{parent_team_run_id, execution}]}`
+  carries each reopened execution's record and host Team run, as
+  `TASK_EXECUTION_STARTED` does (autobyteus-469 D-8). After the Task is moved out of DONE or
+  CANCELLED, the run that assigned the work can reactivate one assignment by messaging its
+  run ID (a Team copy's coordinator), or give it another Task by its run ID. A run whose
+  stop was confirmed has left the root's tree; it is added back from its own file, and the
+  root publishes its record after the Task-side commit and before the message is delivered.
+  A Team view that does not hold the execution (it was loaded after the run left the tree)
+  inserts it from the record; one that holds it keeps it. Both remove it from their closed
+  set, so the execution is listed again. Its helpers keep their own closed references and
   stay hidden. Snapshots and stored reads no longer include it in
   `closed_task_executions`. See
   [Reactivation](../modules/projects.md#reactivation).

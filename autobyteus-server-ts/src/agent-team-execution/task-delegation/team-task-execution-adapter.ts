@@ -189,7 +189,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
 
   containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
   publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void { this.options.publish(taskExecutionsClosedEvent(references)); }
-  publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void { this.options.publish(taskExecutionsReopenedEvent(references)); }
+  publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void { this.options.publish(taskExecutionsReopenedEvent(this.options.getTree(), references)); }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);

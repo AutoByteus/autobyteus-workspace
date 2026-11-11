@@ -757,8 +757,10 @@ Reactivation reverses closure for one execution. After the Task leaves DONE,
 the assigning run messages the execution's run ID. The root then publishes
 `task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
 `removeReopenedTaskExecutions` drops that reference from the closed set. The
-execution is listed again without reload, and its still-closed helpers stay
-hidden. Snapshots and stored reads follow the same Task-side view.
+execution is listed again without a manual reload, and its still-closed helpers stay
+hidden. A view that no longer holds the execution (it left the tree when its Task
+closed, autobyteus-469) reloads itself through its checkpoint (Agent run, Org), or
+inserts it from the record the Team's `TASK_EXECUTIONS_REOPENED` carries. Snapshots and stored reads follow the same Task-side view.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

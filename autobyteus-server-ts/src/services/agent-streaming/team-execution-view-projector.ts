@@ -17,13 +17,12 @@ import type { RecordedMemberLaunch, UserLaunchSelection } from "../../run-histor
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type {
   ConfiguredExecutionNode,
-  RootConfiguredTeamExecutionNode,
   TaskExecution,
   TaskTeamAgentExecution,
-  TaskTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
+import { findTeamTaskExecution } from "../../agent-team-execution/domain/team-task-execution-lookup.js";
 import type { SequencedRootEvent } from "../../agent-team-execution/services/team-run-event-publisher.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
@@ -100,9 +99,11 @@ export const projectSequencedTeamRunEvent = (
         task_executions: event.taskExecutions.map(projectTaskExecutionReference),
       } });
     case TeamRunEventSourceType.TASK_EXECUTIONS_REOPENED:
+      // Each record as the loaded tree held it after the add-back (D-8): a view that does not hold it inserts it.
       return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_REOPENED", payload: {
         change_sequence: changeSequence,
-        task_executions: event.taskExecutions.map(projectTaskExecutionReference),
+        executions: event.executions.map(({ parentTeamRunId, execution }) => ({
+          parent_team_run_id: parentTeamRunId, execution: projectTaskExecution(execution) })),
       } });
     case TeamRunEventSourceType.REMOTE:
       return projectTeamRemoteEvent(event.event, changeSequence);
@@ -137,7 +138,7 @@ const projectTaskExecutionStarted = (
   reference: TaskExecutionReference,
   changeSequence: number,
 ): TeamStreamServerMessage => {
-  const located = findTaskExecution(root.getExecutionTreeSnapshot(), reference);
+  const located = findTeamTaskExecution(root.getExecutionTreeSnapshot(), reference);
   if (!located) throw new Error("Started task execution is not in the current execution tree.");
   return parseTeamStreamServerMessage({ type: "TASK_EXECUTION_STARTED", payload: {
     change_sequence: changeSequence,
@@ -247,26 +248,3 @@ const projectTaskTeamMember = (member: TaskTeamAgentExecution): TaskTeamAgentExe
   platform_agent_run_id: member.platformAgentRunId,
   ...optionalSelection("user_launch_selection", member.userLaunchSelection),
 });
-
-const findTaskExecution = (
-  tree: TeamRunExecutionTreeSnapshot,
-  reference: TaskExecutionReference,
-): { parentTeamRunId: string; execution: TaskExecution } | null => {
-  const visit = (
-    team: RootConfiguredTeamExecutionNode | TaskTeamExecution,
-  ): { parentTeamRunId: string; execution: TaskExecution } | null => {
-    const own = team.taskExecutions.find((execution) =>
-      "agentRunId" in reference
-        ? "agentRunId" in execution && execution.agentRunId === reference.agentRunId
-        : "teamRunId" in execution && execution.teamRunId === reference.teamRunId);
-    if (own) return { parentTeamRunId: team.teamRunId, execution: own };
-    for (const task of team.taskExecutions) {
-      if ("teamRunId" in task) {
-        const found = visit(task);
-        if (found) return found;
-      }
-    }
-    return null;
-  };
-  return visit(tree.rootTeam);
-};

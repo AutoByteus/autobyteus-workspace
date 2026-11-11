@@ -140,6 +140,9 @@ export class AgentRunCollaborationContext {
     return this.contexts.get(agentRunId) ?? null
   }
 
+  /** The view holds this agent: the host or a child of its tree (the Team tab names it from the view). */
+  holdsAgent(agentRunId: string): boolean { return agentRunId === this.hostRunId || this.index.agents.has(agentRunId) }
+
   getChild(agentRunId: string): AgentRootChildAgent | null {
     return this.index.agents.get(agentRunId) ?? null
   }

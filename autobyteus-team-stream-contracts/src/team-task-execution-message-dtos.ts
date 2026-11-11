@@ -31,9 +31,20 @@ export const teamTaskExecutionsClosedPayloadSchema = z.object({
 
 export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskExecutionsClosedPayloadSchema>>;
 
-/** These closed task executions were reactivated by their assigner; the Workspaces listing shows them again. Same shape as closed. */
-export const teamTaskExecutionsReopenedPayloadSchema = teamTaskExecutionsClosedPayloadSchema;
-export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
+/**
+ * These closed task executions were reactivated by their assigner, or given another Task, and are in the tree again
+ * (autobyteus-469 D-8). Each carries its record and parent Team run, as "started" does, so a view that no longer holds
+ * the run (it left the tree when its Task closed) inserts it; one that holds it lists it again.
+ */
+export const teamTaskExecutionsReopenedPayloadSchema = z.object({
+  change_sequence: z.number().int().positive(),
+  executions: z.array(z.object({
+    parent_team_run_id: nonEmptyStringSchema,
+    execution: z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema]),
+  }).strict()).min(1),
+}).strict();
+
+export type TeamTaskExecutionsReopenedPayload = Readonly<z.infer<typeof teamTaskExecutionsReopenedPayloadSchema>>;
 
 /**
  * The user's model choices of these delegated copies were saved on the live run

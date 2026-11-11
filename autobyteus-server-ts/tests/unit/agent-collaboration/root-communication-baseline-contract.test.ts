@@ -364,15 +364,21 @@ const releaseBoundChannel = () => {
 };
 
 /**
- * autobyteus-469 D-3: a coordinating tree file no longer stores its local delegated runs. The one intended difference
- * from the baseline record is that its lists hold only links to runs on another node (`nodeId`); every other byte of
- * every file, and every result, input and transmission, must still equal the record. Applied to both sides.
+ * autobyteus-469: the intended differences from the baseline record, applied to both sides; every other byte of every
+ * file, and every result, input and transmission, must still equal the record.
+ * - D-3: a coordinating tree file stores no local delegated run, so its lists hold only links to runs on another node.
+ * - D-8 (SR-009): a Team's "reopened" event carries each execution's record and host; it is compared by its references.
  */
 const TREE_FILE = /(collaboration_tree|team_run_execution_tree|agent_org_run_execution_tree)\.json$/;
 const onlyRemote = (list: unknown) => Array.isArray(list) ? list.filter((entry) => (entry as { nodeId?: unknown }).nodeId !== undefined) : list;
 const withoutLocalTreeEntries = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(withoutLocalTreeEntries);
   if (!value || typeof value !== "object") return value;
+  const event = value as Record<string, any>;
+  if (event.eventSourceType === "TASK_EXECUTIONS_REOPENED" && Array.isArray(event.executions)) {
+    return { eventSourceType: event.eventSourceType, taskExecutions: event.executions.map(({ execution }: Record<string, any>) =>
+      "agentRunId" in execution ? { agentRunId: execution.agentRunId } : { teamRunId: execution.teamRunId }) };
+  }
   return Object.fromEntries(Object.entries(value).map(([key, entry]) => {
     if (!TREE_FILE.test(key) || typeof entry !== "string") return [key, withoutLocalTreeEntries(entry)];
     const tree = JSON.parse(entry) as Record<string, any>;

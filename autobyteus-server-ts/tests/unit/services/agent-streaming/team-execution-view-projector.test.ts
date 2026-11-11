@@ -6,7 +6,7 @@ import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-exec
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
-import { taskExecutionsClosedEvent, taskExecutionsReopenedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
+import { taskExecutionsClosedEvent, taskExecutionsReopenedEvent, taskExecutionStartedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
 import { AgentTeamRunManager } from "../../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { validateCollaborationCommunicationMessageArray } from "../../../../src/agent-collaboration/execution/communication/collaboration-communication-message-schema.js";
@@ -50,11 +50,14 @@ describe("Team execution view strict projection", () => {
       type: "TASK_EXECUTIONS_CLOSED",
       payload: { change_sequence: 4, task_executions: [{ team_run_id: "task-team-run-qa-001" }, { agent_run_id: "nested-task-agent-run-001" }] },
     });
-    // A reactivation is the symmetric sequenced event with the same reference shape.
-    expect(projectSequencedTeamRunEvent(root as never, { event: taskExecutionsReopenedEvent([closed[0]!]), changeSequence: 5 })).toEqual({
-      type: "TASK_EXECUTIONS_REOPENED",
-      payload: { change_sequence: 5, task_executions: [{ team_run_id: "task-team-run-qa-001" }] },
-    });
+    // A reactivation carries each execution's record and host from the tree that holds it again (autobyteus-469 D-8),
+    // as "started" does: the same record a view inserts for a new run.
+    const started = projectSequencedTeamRunEvent(root as never, { event: taskExecutionStartedEvent({ taskExecution: closed[0]!, parentTeamRunId: "team-run-root" }), changeSequence: 5 });
+    const reopened = projectSequencedTeamRunEvent(root as never, { event: taskExecutionsReopenedEvent(tree, [closed[0]!]), changeSequence: 5 });
+    if (started.type !== "TASK_EXECUTION_STARTED") throw new Error("expected a started message");
+    expect(reopened).toEqual({ type: "TASK_EXECUTIONS_REOPENED", payload: { change_sequence: 5,
+      executions: [{ parent_team_run_id: started.payload.parent_team_run_id, execution: started.payload.execution }] } });
+    expect(() => taskExecutionsReopenedEvent(tree, [{ teamRunId: "not-in-tree" }])).toThrow("not in the current execution tree");
   });
 
   it("the Team manager reads a root's closed task executions of a given tree through the Task port", async () => {

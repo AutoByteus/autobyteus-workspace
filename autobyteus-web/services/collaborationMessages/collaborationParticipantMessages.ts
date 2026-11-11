@@ -32,6 +32,13 @@ const listKeyOf = (key: ParticipantMessagesKey) => `${rootKeyOf(key.rootKind, ke
 const isParticipant = (message: ParticipantMessage, agentRunId: string) =>
   message.senderAgentRunId === agentRunId || message.receiverAgentRunId === agentRunId
 
+/** A loaded list names an agent the view does not hold and the list's past participants do not name. */
+const namesUnknownAgent = (list: ParticipantMessagesList, holdsAgent: (agentRunId: string) => boolean): boolean =>
+  list.messages.some((message) => {
+    const other = message.senderAgentRunId === list.key.agentRunId ? message.receiverAgentRunId : message.senderAgentRunId
+    return !holdsAgent(other) && !list.pastParticipants.some((participant) => participant.agentRunId === other)
+  })
+
 /** Stored messages, then live ones not in them yet, in arrival order: one entry per message ID. */
 const mergeById = (stored: readonly ParticipantMessage[], live: readonly ParticipantMessage[]): readonly ParticipantMessage[] => {
   const seen = new Set(stored.map((message) => message.messageId))
@@ -108,15 +115,22 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
 
   /**
    * The root's context was rebuilt. Its lists stay, with their loads in flight, when no message could have been
-   * missed: the same live sequence, and no message past C; they then hold every message through the base. Otherwise
-   * loads in flight are abandoned and every loaded or loading list loads again.
+   * missed: the same live sequence, and no message past C; they then hold every message through the base. A kept list
+   * that names an agent the rebuilt view no longer holds (`holdsAgent`) and its past participants do not name loads
+   * again, so that agent is named from the server's answer (autobyteus-469 D-5, CR-002): it left the tree when its
+   * Task closed. Otherwise loads in flight are abandoned and every loaded or loading list loads again.
    */
-  const reloadRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild): void => {
+  const reloadRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild,
+    holdsAgent: (agentRunId: string) => boolean): void => {
     const rootKey = rootKeyOf(rootKind, rootRunId)
     const kept = positions.get(rootKey)
     if (rebuild.liveSequenceId !== null && kept?.liveSequenceId === rebuild.liveSequenceId
       && rebuild.lastMessageChangeSequence !== null && rebuild.lastMessageChangeSequence <= kept.through) {
       kept.through = rebuild.baseChangeSequence
+      for (const list of [...lists.values()]) {
+        if (list.key.rootKind === rootKind && list.key.rootRunId === rootRunId && list.state === 'loaded'
+          && namesUnknownAgent(list, holdsAgent)) start(list.key, list.messages, list.pastParticipants)
+      }
       return
     }
     if (rebuild.liveSequenceId === null) positions.delete(rootKey)

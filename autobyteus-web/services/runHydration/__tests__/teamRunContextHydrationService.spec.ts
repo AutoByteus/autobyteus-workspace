@@ -373,7 +373,7 @@ describe('Team open loads the focused member artifact list with its run state (a
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     // The stream's snapshot at the same sequence: the list is kept (one fetch per running-Team open).
-    owner.reloadRoot('agent_team', 'team-artifacts', { liveSequenceId: 'live-team-1', baseChangeSequence: 3, lastMessageChangeSequence: 0 });
+    owner.reloadRoot('agent_team', 'team-artifacts', { liveSequenceId: 'live-team-1', baseChangeSequence: 3, lastMessageChangeSequence: 0 }, () => true);
     expect(owner.statusOf(key).state).toBe('loaded');
   });
 

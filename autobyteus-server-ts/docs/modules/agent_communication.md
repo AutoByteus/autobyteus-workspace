@@ -478,10 +478,12 @@ startup into ordinary, unowned delegated runs of the same root (migration
   `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE or
   CANCELLED re-publishes them. The Workspaces tree leaves those executions and their
   subtrees out; messages and contexts keep them. A reactivation publishes the
-  reopened execution as `task_executions_reopened` (Team:
-  `TASK_EXECUTIONS_REOPENED`, same reference shape) after its Task-side commit;
-  clients remove it from their closed set, so it is listed again while its
-  still-closed helpers stay hidden. The same holds for a Task with
+  reopened execution as `task_executions_reopened` after its Task-side commit (Team:
+  `TASK_EXECUTIONS_REOPENED`, with each execution's record and host Team run, autobyteus-469
+  D-8); clients remove it from their closed set, so it is listed again while its
+  still-closed helpers stay hidden. A view that no longer holds the execution (it left the
+  tree when its Task closed) reloads itself (Agent run, Org) or inserts it from the record
+  (Team). The same holds for a Task with
   no Project: a description-only `delegate_task` by an unowned sender returns
   its `task_id`, and `update_task({task_id, status: "DONE"})` (for an agent that
   selected `update_task`) closes, stops and hides that copy and its sub-work (see

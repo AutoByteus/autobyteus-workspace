@@ -336,7 +336,9 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
     const reopenedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_REOPENED"
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_reopened";
-    const refsOf = (frame: Frame) => (kind === "team" ? frame.payload.task_executions : frame.payload.event.task_executions) as Record<string, any>[];
+    // A Team's "reopened" carries records (autobyteus-469 D-8); its references are the records' run IDs.
+    const refsOf = (frame: Frame) => (kind === "team" ? (frame.payload.task_executions ?? frame.payload.executions.map((entry: Record<string, any>) => entry.execution.agent_run_id
+      ? { agent_run_id: entry.execution.agent_run_id } : { team_run_id: entry.execution.team_run_id })) : frame.payload.event.task_executions) as Record<string, any>[];
     /** Keys of the copies in every closure / reopening frame since a mark. */
     const closedSince = (from: number) => live.frames.slice(from).filter(closedFrame).flatMap((frame) => keys(refsOf(frame)));
     const reopenedSince = (from: number) => live.frames.slice(from).filter(reopenedFrame).map((frame) => keys(refsOf(frame)));

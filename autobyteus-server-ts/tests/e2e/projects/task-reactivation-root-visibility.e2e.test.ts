@@ -309,7 +309,9 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
     const reopenedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_REOPENED"
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_reopened";
-    const refsOf = (frame: Frame) => kind === "team" ? frame.payload.task_executions : frame.payload.event.task_executions;
+    // A Team's "reopened" carries records (autobyteus-469 D-8); its references are the records' run IDs.
+    const refsOf = (frame: Frame) => kind === "team" ? (frame.payload.task_executions ?? frame.payload.executions.map((entry: Record<string, any>) => entry.execution.agent_run_id
+      ? { agent_run_id: entry.execution.agent_run_id } : { team_run_id: entry.execution.team_run_id })) : frame.payload.event.task_executions;
     const close = () => { state.view.socket.close(); inputChannel?.socket.close(); };
     return { kind, rootId, managerRunId, members, state, sendTo, snapshot, liveTree, conversationOf, agentCalls, managerCalls,
       waitForNodes, closedFrame, reopenedFrame, refsOf, close };
