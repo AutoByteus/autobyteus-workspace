@@ -1,0 +1,175 @@
+{
+  "startedAt": "2026-11-11T00:40:55.926Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-001": {
+      "result": "Fail",
+      "description": "Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer",
+      "message": "Timed out: Manager Team tab rows"
+    },
+    "BR-002": {
+      "result": "Pass",
+      "description": "Agent Team root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_brteam_7bde_6cbdf622d5e341cdbf28b29c42d0837e",
+          "managerRunId": "manager_brteam_7bde_e26003b31e5041d7b18c402fe22736ca"
+        },
+        "latencyMs": 313,
+        "leave": {
+          "firstHiddenAt": 42,
+          "goneAt": 275,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            true,
+            true
+          ],
+          "activeAtFirstHidden": "workspace-team-row-delivery_team_brteam_7bde_6cbdf622d5e341cdbf28b29c42d0837e"
+        },
+        "bLeave": {
+          "firstHiddenAt": 47,
+          "goneAt": 278,
+          "leaveMs": 231,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "workspace-team-row-delivery_team_brteam_7bde_6cbdf622d5e341cdbf28b29c42d0837e",
+        "storedLocalEntriesAfterA": 0,
+        "teamTab": {
+          "beforeA": [
+            "heroicons:paper-airplane | to release notes writer brteam 7bde | Status of the release notes?"
+          ],
+          "afterA": [
+            "heroicons:paper-airplane | to release notes writer brteam 7bde | Status of the release notes?"
+          ],
+          "beforeB": [
+            "heroicons:paper-airplane | to release notes writer brteam 7bde | Status of the release notes?"
+          ],
+          "afterB": [
+            "heroicons:paper-airplane | to release notes writer brteam 7bde | Status of the release notes?"
+          ],
+          "duringB": {
+            "frames": 284,
+            "framesDiffering": 0,
+            "firstDiffering": null,
+            "unknownTeammateFrames": 0
+          }
+        }
+      }
+    },
+    "BR-003": {
+      "result": "Fail",
+      "description": "Agent Org root live DONE (same journey; fallback to the delegating Manager)",
+      "message": "Timed out: Manager Team tab rows"
+    },
+    "BR-004": {
+      "result": "Pass",
+      "description": "Reduced motion (Agent and Team trees): removed at once; focus to the run row",
+      "details": {
+        "agent": {
+          "root": {
+            "kind": "agent",
+            "rootId": "manager_rmagent_8e5c_c605a216b34d4d92a332fc5c6f488f26",
+            "managerRunId": "manager_rmagent_8e5c_c605a216b34d4d92a332fc5c6f488f26"
+          },
+          "leave": {
+            "firstHiddenAt": 51,
+            "goneAt": 85,
+            "leaveMs": 34,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-agent-run-row"
+          },
+          "active": "workspace-agent-run-row"
+        },
+        "team": {
+          "root": {
+            "kind": "team",
+            "rootId": "delivery_team_rmteam_222a_0e8d4c98ce2b46cabdf46eb7187e2c48",
+            "managerRunId": "manager_rmteam_222a_a41e919b93ca4168ac552f098f4d86a3"
+          },
+          "leave": {
+            "firstHiddenAt": 32,
+            "goneAt": 64,
+            "leaveMs": 32,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-team-row-delivery_team_rmteam_222a_0e8d4c98ce2b46cabdf46eb7187e2c48"
+          },
+          "active": "workspace-team-row-delivery_team_rmteam_222a_0e8d4c98ce2b46cabdf46eb7187e2c48"
+        }
+      }
+    },
+    "BR-005": {
+      "result": "Fail",
+      "description": "Reload, then real backend restart + reload: closed rows never render",
+      "message": "BR-005 needs BR-001..BR-003 in the same run"
+    },
+    "BR-007": {
+      "result": "Fail",
+      "description": "SP-3: stopped Org run expanded from history before hydration renders no closed rows",
+      "message": "BR-007 needs BR-003 in the same run"
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 74202,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 72387,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "BR-001",
+      "message": "Timed out: Manager Team tab rows"
+    },
+    {
+      "id": "BR-003",
+      "message": "Timed out: Manager Team tab rows"
+    },
+    {
+      "id": "BR-005",
+      "message": "BR-005 needs BR-001..BR-003 in the same run"
+    },
+    {
+      "id": "BR-007",
+      "message": "BR-007 needs BR-003 in the same run"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:55101",
+    "frontendUrl": "http://127.0.0.1:55102",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-stqXWk"
+  },
+  "browserVersion": "157.0.8103.39",
+  "result": "Fail",
+  "finishedAt": "2026-11-11T00:42:19.061Z"
+}

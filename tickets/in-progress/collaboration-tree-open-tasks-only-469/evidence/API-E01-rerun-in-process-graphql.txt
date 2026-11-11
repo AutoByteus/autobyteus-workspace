@@ -1,0 +1,21 @@
+# Case: API-E01 rerun: memory-collaboration, imported-team-memory, recent-run-projection, archive-run-history (test-side source bound)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  24 passed (24)'
+
+## inproc-run1.log
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2577ms
+       ✓ archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else  573ms
+       ✓ archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop  530ms
+       ✓ reports a run that started after the running-run check as failed and archives the rest (AC-010)  499ms
+       ✓ rejects an empty workspace root or agent definition id as a GraphQL error without writing anything  402ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 808ms
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 632ms
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 139ms
+ Test Files  4 passed (4)
+      Tests  24 passed (24)
+   Start at  01:08:58
+   Duration  14.14s (transform 4.25s, setup 117ms, import 9.21s, tests 4.16s, environment 0ms)
+

@@ -1,0 +1,34 @@
+# Case: API-E01 rerun: task-reactivation-root-visibility (AC-002 per root kind)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts [-t root journeys in the 2nd run] --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: run1: CLS-E2E-001/002 and QR-001 ✓; run2: the three root journeys ✓ ('Tests  3 passed')
+
+## reactivation-run1.log
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 3 failed | 1 skipped) 28675ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  6120ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  5927ms
+     × standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO 3549ms
+     × Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate 3428ms
+     × Agent Org root: the same journey through the Org stream; an Org member cannot reactivate 3279ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  5220ms
+     ↓ real model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:727:5
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:731:5
+ ❯ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts:735:5
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed | 1 skipped (7)
+   Start at  00:51:28
+   Duration  36.70s (transform 5.73s, setup 52ms, import 7.58s, tests 28.68s, environment 0ms)
+
+## reactivation-run2.log
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 4 skipped) 13322ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4467ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4336ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4102ms
+ Test Files  1 passed (1)
+      Tests  3 passed | 4 skipped (7)
+   Start at  00:52:28
+   Duration  21.33s (transform 5.74s, setup 49ms, import 7.58s, tests 13.32s, environment 0ms)
+

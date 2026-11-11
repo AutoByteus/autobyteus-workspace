@@ -1,0 +1,21 @@
+# Case: API-E01 rerun: collaboration-model-contract + delegated-launch-config-defaults (baseline wording fixes)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/collaboration-model-contract.e2e.test.ts tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: 'Tests  6 passed (6)'
+
+## baseline-run1.log
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 17097ms
+     ✓ in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values  8334ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1249ms
+     ✓ Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it (AC-008)  5902ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4286ms
+     ✓ CM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy  1098ms
+     ✓ CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID  1159ms
+     ✓ CM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team  1662ms
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  01:07:54
+   Duration  31.50s (transform 6.05s, setup 69ms, import 9.59s, tests 21.38s, environment 0ms)
+

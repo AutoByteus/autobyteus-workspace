@@ -1,0 +1,37 @@
+# Case: API-E01 rerun: task-existing-copy-assignment (AC-003 per root kind; EXC-E2E-007 fails)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts [-t EXC-E2E-00[123] in the 2nd run] --no-watch
+# Code under test: 42652879b3 (product source); tests updated in this round
+# Environment: macOS darwin 25.5, Node v22.21.1, env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs; server dist built from 42652879b3 sources; test files as committed with this report
+# Date: 2026-11-11
+# Look for: run1: EXC-E2E-004, 005, TKD ✓, EXC-E2E-007 ×; run2: EXC-E2E-001..003 ✓
+
+## existing-run1.log
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 4 failed | 2 skipped) 224840ms
+     × EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views 17455ms
+     × EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner 19564ms
+     × EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner 22130ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  155989ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1258ms
+     ↓ EXC-E2E-006 AC-009: a copy that never started (a real start failure) is refused as never started — no real-use trigger remains; unit-covered
+     × EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change 1731ms
+     ✓ TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)  5451ms
+     ↓ EXC-E2E-008 real model (Claude Agent SDK) copy: after Task A is DONE, its follow-up Task B recalls Task A's conversation (AC-002)
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:716:5
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:720:5
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:724:5
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:837:26
+ Test Files  1 failed (1)
+      Tests  4 failed | 3 passed | 2 skipped (9)
+   Start at  00:53:04
+   Duration  232.84s (transform 5.72s, setup 52ms, import 7.57s, tests 224.84s, environment 0ms)
+
+## existing-run2.log
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 6 skipped) 68341ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  22733ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  22604ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  22562ms
+ Test Files  1 passed (1)
+      Tests  3 passed | 6 skipped (9)
+   Start at  00:57:22
+   Duration  77.11s (transform 6.12s, setup 59ms, import 8.24s, tests 68.34s, environment 0ms)
+
