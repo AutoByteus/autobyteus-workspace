@@ -455,6 +455,37 @@ No other gap was found. Not validated: the code. The implementation verifies the
 | `CollaborationRootResolver`, `ActiveCollaborationRootDirectory` | Resolving or restoring a run's root; the live roots (existing) |
 | The migration | DS-10 only |
 
+## Dependency Rules And The Composition Root (Principle 16; SR-047)
+
+**Structural Trigger fired: Hidden dependency.**
+- **Evidence:** this ticket added seven process-wide bindings for owners it creates: `bindCrossRunAddressResolution`, `bindCrossRunMessageDelivery`, `bindDelegatedRuns`, `bindDelegationTree`, `bindLocalChildPorts`, `bindTaskDelegation` and `bindTaskRunControl`. It also added nine `find…()?.… ?? fallback` call sites, for example `requestRelease: (run) => findTaskRunControl()?.stopForTaskClosure(run) ?? null`, and `tree: () => findDelegationTree()` with "before the Task records are loaded no run has children".
+- **Why they existed:** the startup is split across `project-task-execution-resource-composition.ts` and `task-delegation-composition.ts`, and the Project Task service was composed before the run control it needs.
+- **Resolution: none is kept.** A missing owner is a startup error, never a quiet `null`. There is no cycle: each owner below needs only owners created before it.
+
+**One composition root: `compositions/build-studio-server.ts`.** It creates the owners this ticket adds in this order and passes each one its collaborators, through its constructor or the call that needs it:
+
+1. `TaskExecutionResourceService`, loaded.
+2. `DelegationTree(taskExecutionResources, runOwnAgentsReader)`, built; then `taskExecutionResources.setEntriesListener(delegationTree)`; then `childRowsFeed.follow(delegationTree)`.
+3. The run services (agent, team, org), as today, given what they already take.
+4. `TaskRunControl({ agentRuns, teamRuns, tasks: taskExecutionResources })`.
+5. `ProjectTaskService({ …, runControl })`. Its `requestRelease` and `workerStatus` call `runControl` directly. `composeProjectTaskExecutionResources` is split: the Task records and the tree come at steps 1 and 2, and the service at step 5.
+6. `TaskDelegation`, `CrossRunMessageDelivery` and `CrossRunAddressResolution`, from the tree, the root resolver and the run services.
+7. `LocalChildPorts({ tree: delegationTree, agents })`, `LocalChildObservation`, `DelegatedRunCommands` (one instance), and `ChildRowsFeed`.
+8. Their consumers, each receiving them at construction:
+   - the `send_message_to` dispatcher gets `CrossRunAddressResolution`;
+   - `GlobalAgentRunMessageRouter` gets `CrossRunMessageDelivery`;
+   - the three stream handlers get `DelegatedRunCommands`, `ChildRowsFeed` and `LocalChildObservation`;
+   - `DelegatedRunAgentsReader`, `DelegatedWorkGuard` and the run list projection get `delegationTree` (they replace `bindDelegatedRuns`);
+   - `RunOwnTask`, `DelegatedChildLocations`, `PeerRunLink` and `TaskWorkerStatusNotice` get the tree or `runControl`.
+
+**The rules:**
+- **No owner this ticket adds is reached through a process-wide lookup.**
+- **A consumer created by an older singleton** (an existing `get…()` this ticket only uses) receives the new owner from the composition root through that singleton's existing initialization call, never by looking it up. Replacing that older singleton itself is FU-011, now limited to the older lookups the change only uses.
+- **Tests build the owners with fakes** through their constructors. No test binds or resets a global for an owner this ticket adds.
+- **The host's close and a startup rollback** release in reverse order. The `unbind…` calls go with the bindings.
+
+Read-only values (configuration, the data directory, the clock) stay process-wide (Principle 16's exception).
+
 ## Removal / Decommission Plan (this ticket)
 
 | Removed | Why | Replaced by |
@@ -480,6 +511,7 @@ No other gap was found. Not validated: the code. The implementation verifies the
 | `task_execution_started` / `TASK_EXECUTION_STARTED`, `task_executions_closed` / `TASK_EXECUTIONS_CLOSED`, `task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, `remote_task_execution_started` (stream events) | Their producer, the hosting lifecycle, is removed here | **Replaced** by `child_runs_changed` / `CHILD_RUNS_CHANGED` from `ChildRowsFeed` (DS-8, "Live child rows", SR-042): removed from the contracts and from their web readers (`agentRunCollaborationContext.ts`, `agentRunCollaborationStreamingService.ts`, `agentOrgExecutionContext.ts`, `teamExecutionViewModels.ts`, `teamExecutionViewState.ts`) and docs, with their tests; the new event reads the view again |
 | `delegated_launch_selections_changed` / `DELEGATED_LAUNCH_SELECTIONS_CHANGED` (stream events) | Its producer, the delegated launch editing in the roots, is removed here (SR-039 routes each change to the child's own save) | Removed from the contracts and web readers (the same contexts and team view models), docs and tests; after a Settings save the editor reloads its rows (DS-8) |
 | The Memory explorer's `isTaskTeam`, `startedByAgentName` and the kinds `TASK_AGENT`, `TASK_TEAM_MEMBER` | Producer touched here (`team-memory-explorer-service.ts`); always `false` / `null`, kinds never produced | Removed from `agent-memory/domain/models.ts`, `agent-memory/services/collaboration-member-memory-targets.ts`, `api/graphql/types/memory-explorer-schema.ts`, `graphql/queries/memoryExplorerQueries.ts`, `types/memory.ts`, `MemoryHome.vue`, `CollaborationMemoryDetail.vue`, `docs/memory.md`, their tests. A delegated run shows on the Memory page as the ordinary run it is |
+| The seven process bindings this ticket added (`bind`/`find`/`unbind` of `CrossRunAddressResolution`, `CrossRunMessageDelivery`, `DelegatedRuns`, `DelegationTree`, `LocalChildPorts`, `TaskDelegation`, `TaskRunControl`) and their `find…()?.… ?? fallback` call sites | Principle 16: hidden dependencies; behavior by absence | Owners passed in from `build-studio-server.ts` in the order of "Dependency Rules And The Composition Root" |
 | The "remote" in the names of the idle shutdowns and the run starters | They serve every delegated run | `DelegatedRunIdleShutdown`, `DelegatedTeamIdleShutdown`, `DelegatedRunStarter` |
 
 Nothing of the hosting machinery is kept.

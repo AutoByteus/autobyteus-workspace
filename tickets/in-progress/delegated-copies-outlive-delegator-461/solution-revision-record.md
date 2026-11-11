@@ -945,3 +945,20 @@
 - Done: the design's DS-8 (the server per stream kind, the modes and the switch, the tests). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-023)
 - ARCH-REV-021 (2026-11-11): Pass. AR-001 … AR-023 are resolved. Its residual is added to DS-8's tests: the restore snapshot keeps the restoring member's input state.
+
+### SR-047 — Owners this ticket adds are passed in from one composition root (updated Principle 16)
+
+- Triggering: the `solution-designer` skill was updated on 2026-11-11 with Principle 16, "Visible Dependencies, One Composition Root". It says:
+  - an owner receives its collaborators from one composition root;
+  - a new process-wide lookup for an owner needs a fired Structural Trigger with a reason, and "the composition binds it at startup" is not one;
+  - `find…()?.… ?? fallback` is behavior by absence;
+  - in code a change touches, a new dependency is passed in.
+
+  The Implementation Engineer asked whether the seven bindings this ticket added, recorded under FU-011 as "the pattern existed before this ticket", come into this ticket.
+- Decision: **yes.** Under Principle 16 the seven bindings and nine fallback sites are new hidden dependencies, and no reason for them stands. The startup split across two composition files, and the Project Task service created before the run control it needs, is an order to write down, not a cycle.
+  - The design's new section "Dependency Rules And The Composition Root" gives the order in `build-studio-server.ts`, with the consumers that receive each owner.
+  - The removal plan removes the bindings.
+  - FU-011 is narrowed to the older lookups the change only uses.
+- Applying the updated skill: the template's "Dependency Rules" requirement is answered by that section, and the Structural Trigger "Hidden dependency" is recorded as fired, with its evidence and resolution.
+- Next action: architecture review (narrow); then implementation, in IR-003
+
