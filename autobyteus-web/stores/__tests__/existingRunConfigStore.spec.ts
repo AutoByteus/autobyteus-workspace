@@ -861,15 +861,16 @@ describe('stopped Agent canonical collaboration snapshot', () => {
   it('reads the stored copy rows fresh after a committed Save and after a failure reconcile, not on the first open (autobyteus-348)', async () => {
     const store = useExistingRunConfigStore()
     mocks.refreshAgent.mockResolvedValue(agentPayload())
-    const before = { execution_tree: { taskExecutions: [{ agentRunId: 'copy', userLaunchSelection: undefined }] } }
-    const saved = { execution_tree: { taskExecutions: [{ agentRunId: 'copy', userLaunchSelection: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'm', llmConfig: null } }] } }
+    const launch = (model: string) => ({ source: { launchConfiguration: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: model, llmConfig: null } } })
+    const before = { execution_tree: { taskExecutions: [{ agentRunId: 'copy', ...launch('old') }] } }
+    const saved = { execution_tree: { taskExecutions: [{ agentRunId: 'copy', ...launch('m') }] } }
     mocks.readCollaboration.mockResolvedValueOnce(before)
     expect(await store.loadAgentCanonical('run-1')).toBe(true)
     expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: false })
     mocks.readCollaboration.mockResolvedValueOnce(saved)
     expect(await store.reloadCanonical(true)).toBe(true)
     expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: true })
-    expect((store.draft as any).delegatedSnapshot.execution_tree.taskExecutions[0].userLaunchSelection).toMatchObject({ runtimeKind: 'claude_agent_sdk' })
+    expect((store.draft as any).delegatedSnapshot.execution_tree.taskExecutions[0].source.launchConfiguration).toMatchObject({ llmModelIdentifier: 'm' })
     mocks.readCollaboration.mockResolvedValueOnce(saved)
     await store.reconcileAgentFailure('PERSISTENCE_INDETERMINATE', 'run-1')
     expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: true })

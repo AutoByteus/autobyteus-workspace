@@ -3,14 +3,16 @@ import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecut
 type OrgTaskExecution = AgentOrgExecutionTree['rootOrg']['taskExecutions'][number]
 type OrgAgent = { address: string; platformAgentRunId: string | null; launchConfiguration: { runtimeKind: string } }
 
+type Selection = <T extends { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown }>(launch: T) => T
 /**
- * A delegated copy's model choice (its own, or a Team copy's and its members') is saved on the Org run, so it may
- * change with a Save (autobyteus-366); every other field of a copy stays locked.
+ * A child row's model choice (its agent runtime, model and settings; a Team child's and its members') is its own run's
+ * launch, saved by that run (autobyteus-461 SR-039), so it may change with a Save; every other field stays locked.
  */
-const withoutCopyChoices = (task: OrgTaskExecution): OrgTaskExecution => 'agentRunId' in task
-  ? { ...task, userLaunchSelection: undefined }
-  : { ...task, userTeamLaunchSelection: undefined, members: task.members.map(member => ({ ...member, userLaunchSelection: undefined })),
-      taskExecutions: task.taskExecutions.map(withoutCopyChoices) }
+const withoutChildChoices = (task: OrgTaskExecution, selection: Selection): OrgTaskExecution => 'agentRunId' in task
+  ? { ...task, source: { ...task.source, launchConfiguration: selection(task.source.launchConfiguration) } }
+  : { ...task, source: { ...task.source, defaultLaunchConfiguration: selection(task.source.defaultLaunchConfiguration),
+      members: task.source.members.map(member => ({ ...member, launchConfiguration: selection(member.launchConfiguration) })) },
+    taskExecutions: task.taskExecutions.map(child => withoutChildChoices(child, selection)) }
 
 /**
  * Only the selection (agent runtime, model, settings), mounted Team/configured-child workspace fields and copies' model
@@ -36,12 +38,12 @@ export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, n
         platformAgentRunId: switched.has(value.address) ? '__SWITCHED__' : value.platformAgentRunId })
     return { ...tree, rootOrg: { ...tree.rootOrg,
       defaultLaunchConfiguration: selection(tree.rootOrg.defaultLaunchConfiguration),
-      taskExecutions: tree.rootOrg.taskExecutions.map(withoutCopyChoices),
+      taskExecutions: tree.rootOrg.taskExecutions.map(task => withoutChildChoices(task, selection)),
       members: tree.rootOrg.members.map(member => 'agentRunId' in member
         ? agent(member, selection)
         : { ...member, defaultLaunchConfiguration: teamLaunch(member.defaultLaunchConfiguration),
             members: member.members.map(value => agent(value, teamLaunch)),
-            taskExecutions: member.taskExecutions.map(withoutCopyChoices) }) } }
+            taskExecutions: member.taskExecutions.map(task => withoutChildChoices(task, selection)) }) } }
   }
   if (JSON.stringify(masked(previous)) !== JSON.stringify(masked(next))) {
     throw new Error('Org configuration changed topology, identity, or locked fields.')

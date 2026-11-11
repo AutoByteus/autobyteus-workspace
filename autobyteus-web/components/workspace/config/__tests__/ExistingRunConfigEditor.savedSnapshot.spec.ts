@@ -65,7 +65,18 @@ beforeEach(() => {
     for (const { key, selection } of changes) {
       const entries = mocks.stored.execution_tree.taskExecutions.flatMap((e: any) => [e, ...(e.members ?? [])])
       const entry = entries.find((e: any) => key === `agent:${e.agentRunId}` || key === `team:${e.teamRunId}`)
-      entry[key.startsWith('team:') ? 'userTeamLaunchSelection' : 'userLaunchSelection'] = { ...selection, selectedAt: '2026-10-13T01:00:00.000Z' }
+      // Each child's change is saved by its own run (SR-039): its launch is the new one. A Team child's team-level save
+      // also applies to the members that follow the Team; a member's own save to its own launch.
+      const apply = (target: any) => Object.assign(target, Object.fromEntries(Object.entries(selection).filter(([, value]) => value !== undefined)))
+      if (key.startsWith('team:')) {
+        apply(entry.source.defaultLaunchConfiguration)
+        entry.source.members.filter((member: any) => member.followsTeam).forEach((member: any) => apply(member.launchConfiguration))
+      } else if (entry.source) apply(entry.source.launchConfiguration)
+      else {
+        const team = mocks.stored.execution_tree.taskExecutions.find((t: any) => t.members?.includes(entry))
+        const member = team.source.members.find((m: any) => m.address === entry.address)
+        apply(member.launchConfiguration); member.followsTeam = false
+      }
     }
     return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] }
   })
@@ -79,7 +90,7 @@ describe('stopped Agent same-view canonical saved rows', () => {
     await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click'); await flushPromises()
     expect(row()).toBe('new:null')
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-    expect(mocks.stored.execution_tree.taskExecutions[0].userLaunchSelection.llmModelIdentifier).toBe('new')
+    expect(mocks.stored.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('new')
     expect(mocks.live.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('old')
     // The first load reads the hub's view once; the committed Save reads it again, fresh (autobyteus-366, CR-003).
     expect(mocks.read.mock.calls).toEqual([['host', { fresh: false }], ['host', { fresh: true }]])

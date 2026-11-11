@@ -88,38 +88,6 @@ type TeamLaunchDto = Readonly<{
 }>;
 /** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: Pick<MemberLaunchDto, "launchSource">) => CollaborationLaunchConfigurationSourceDto | null;
-/**
- * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
- * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
- */
-export declare const userLaunchSelectionDtoSchema: z.ZodObject<{
-    runtimeKind: z.ZodOptional<z.ZodEnum<{
-        autobyteus: "autobyteus";
-        claude_agent_sdk: "claude_agent_sdk";
-        codex_app_server: "codex_app_server";
-        antigravity_cli: "antigravity_cli";
-        grok_build: "grok_build";
-        deepseek_harness: "deepseek_harness";
-    }>>;
-    llmModelIdentifier: z.ZodString;
-    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
-    selectedAt: z.ZodString;
-}, z.core.$strict>;
-export type UserLaunchSelectionDto = Readonly<z.infer<typeof userLaunchSelectionDtoSchema>>;
-/**
- * The single launch rule of a copy agent (mirrors the server's
- * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
- * else its started launch. `selected` tells which choice applied.
- */
-export declare const collaborationCopyAgentLaunch: (input: Readonly<{
-    started: LaunchConfigurationDto;
-    followsTeam?: boolean;
-    teamSelection?: UserLaunchSelectionDto | null;
-    agentSelection?: UserLaunchSelectionDto | null;
-}>) => Readonly<{
-    launch: LaunchConfigurationDto;
-    selected: "agent" | "team" | null;
-}>;
 /** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
     kind: "agent";
@@ -149,13 +117,11 @@ type TaskAgentExecutionDto = Readonly<{
     delegatorAgentRunId?: string;
     startedAt: string;
     source: TaskAgentExecutionSourceDto;
-    userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
     address: string;
     agentRunId: string;
     platformAgentRunId: string | null;
-    userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamExecutionDto = Readonly<{
     address: string;
@@ -166,7 +132,6 @@ type TaskTeamExecutionDto = Readonly<{
     delegatorAgentRunId?: string;
     startedAt: string;
     source: TaskTeamExecutionSourceDto;
-    userTeamLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 /** Shared by every collaboration root view (Org and Agent roots). */

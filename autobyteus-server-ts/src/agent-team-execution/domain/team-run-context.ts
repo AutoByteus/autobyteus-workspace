@@ -18,7 +18,6 @@ export interface TeamAgentMemberRuntimeContext {
   getPlatformAgentRunId(): string | null;
 }
 
-export type TeamMemberRuntimeContext = TeamAgentMemberRuntimeContext;
 export type RuntimeTeamRunContext = FlatTeamExecutionContext | null;
 
 /** Root-neutral local context for one physical TeamRun. */
@@ -76,8 +75,4 @@ const required = (value: string, field: string): string => {
   if (!normalized) throw new Error(`${field} is required.`);
   return normalized;
 };
-
-export const getRuntimeMemberContexts = (
-  runtimeContext: RuntimeTeamRunContext | null | undefined,
-): TeamMemberRuntimeContext[] => runtimeContext ? [...runtimeContext.memberContexts] : [];
 

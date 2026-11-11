@@ -209,110 +209,45 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
   })
 })
 
-describe('what each copy agent runs with: its choice, else its Team\'s when it follows (CR-001, DS-003)', () => {
+describe('what each copy agent runs with: the launch its own run records (autobyteus-461 CR-461-007)', () => {
   const sol = { ...launch, llm_model_identifier: 'sol-6.1', llm_config: { effort: 'high' } }
-  const choice = (model: string) => ({ llm_model_identifier: model, llm_config: { thinking: 'low' }, selected_at: created })
   /** A mutable view of the fixture's root Team (the DTO types are readonly). */
   const rootOf = (tree: TeamRunExecutionTreeDto) => tree.root_team as { -readonly [K in keyof TeamRunExecutionTreeDto['root_team']]: TeamRunExecutionTreeDto['root_team'][K] }
-  const ran = (model: string) => ({ ...launch, llm_model_identifier: model, llm_config: { thinking: 'low' } })
 
-  it('Team root (snake_case): agent copies, Team followers and non-followers', () => {
+  it('Team root (snake_case): an agent copy and a Team copy\'s members each run with their own recorded launch', () => {
     const tree = teamTree()
     rootOf(tree).task_executions = [
-      { ...reviewerCopy, agent_run_id: 'reviewer-run' },
-      { kind: 'task_agent', address: '/code_reviewer', agent_run_id: 'copy-1', platform_agent_run_id: null,
-        delegator_agent_run_id: 'researcher-run', started_at: created, user_launch_selection: choice('copy-model'),
-        source: reviewerCopy.source },
-      { kind: 'task_agent', address: '/code_reviewer', agent_run_id: 'copy-2', platform_agent_run_id: null,
-        delegator_agent_run_id: 'researcher-run', started_at: created, source: reviewerCopy.source },
-      { ...productTeamCopy, user_team_launch_selection: choice('team-model'),
-        source: { ...productTeamCopy.source, members: [productTeamCopy.source.members[0]!, { ...productTeamCopy.source.members[1]!, launch_configuration: sol, follows_team: false }] } },
-      { kind: 'task_team', address: '/se_team', team_run_id: 'se-copy', task_executions: [], delegator_agent_run_id: 'researcher-run',
-        started_at: created, user_team_launch_selection: choice('se-team-model'),
-        members: [
-          { kind: 'task_team_agent', address: '/se_team/lead', agent_run_id: 'se-lead', platform_agent_run_id: null },
-          { kind: 'task_team_agent', address: '/se_team/ie', agent_run_id: 'se-ie', platform_agent_run_id: null },
-        ],
-        source: {
-          kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se_team/lead', handoffs: [],
-          members: [
-            { address: '/se_team/lead', agent_definition_id: 'lead', launch_configuration: launch, follows_team: true },
-            { address: '/se_team/ie', agent_definition_id: 'ie', launch_configuration: sol, follows_team: false },
-          ],
-          default_launch_configuration: launch,
-        } },
+      { ...reviewerCopy, agent_run_id: 'reviewer-run', source: { ...reviewerCopy.source, launch_configuration: sol } },
+      { ...productTeamCopy, source: { ...productTeamCopy.source, members: [productTeamCopy.source.members[0]!, { ...productTeamCopy.source.members[1]!, launch_configuration: sol, follows_team: false }] } },
     ]
-    const at = (_address: string, agentRunId: string) => teamAgentSourceOf(tree, agentRunId)?.launch_configuration
-    // An agent copy's own choice is per instance: another copy at the same address keeps its started launch.
-    expect(at('/code_reviewer', 'copy-1')).toEqual(ran('copy-model'))
-    expect(at('/code_reviewer', 'copy-2')).toEqual(launch)
-    expect(at('/code_reviewer', 'reviewer-run')).toEqual(launch)
-    // A copy Team member that follows takes the Team's choice; one with its own recorded launch does not.
-    expect(at('/product_team/prototyper', 'prototyper-run')).toEqual(ran('team-model'))
-    expect(at('/product_team/bootstrapper', 'bootstrapper-run')).toEqual(sol)
-    expect(at('/se_team/lead', 'se-lead')).toEqual(ran('se-team-model'))
-    expect(at('/se_team/ie', 'se-ie')).toEqual(sol)
-    // A configured member is never a copy.
-    expect(at('/researcher', 'researcher-run')).toEqual(launch)
+    const at = (agentRunId: string) => teamAgentSourceOf(tree, agentRunId)?.launch_configuration
+    expect(at('reviewer-run')).toEqual(sol)
+    expect(at('bootstrapper-run')).toEqual(sol)
+    expect(at('prototyper-run')).toEqual(productTeamCopy.source.members[0]!.launch_configuration)
+    expect(at('researcher-run')).toEqual(launch)
+  })
+
+  it('Org and Agent roots (camelCase): a copy agent runs with its own recorded launch', () => {
+    const camel = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null }
+    const solCamel = { ...camel, llmModelIdentifier: 'sol-6.1' }
+    const taskExecutions = [
+      { address: '/se', teamRunId: 'se-run', taskExecutions: [], startedAt: created, delegatorAgentRunId: 'host',
+        members: [{ address: '/se/lead', agentRunId: 'lead-run', platformAgentRunId: null }],
+        source: { kind: 'agent_team' as const, teamDefinitionId: 'se', coordinatorAddress: '/se/lead', handoffs: [], defaultLaunchConfiguration: camel,
+          members: [{ address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: solCamel, followsTeam: true }] } },
+      { address: '/ie', agentRunId: 'ie-copy', platformAgentRunId: null, delegatorAgentRunId: 'host', startedAt: created,
+        source: { kind: 'agent' as const, agentDefinitionId: 'ie', launchConfiguration: camel } },
+    ]
+    expect(copyAgentSourceOf(taskExecutions, 'lead-run')?.launchConfiguration).toEqual(solCamel)
+    expect(copyAgentSourceOf(taskExecutions, 'ie-copy')?.launchConfiguration).toEqual(camel)
+    expect(copyAgentSourceOf(taskExecutions, 'host')).toBeNull()
   })
 
   it('a member context shows the model its agent runs on', () => {
     const tree = teamTree()
-    rootOf(tree).task_executions = [{ ...reviewerCopy, user_launch_selection: choice('chosen') }]
+    rootOf(tree).task_executions = [{ ...reviewerCopy, source: { ...reviewerCopy.source, launch_configuration: { ...launch, llm_model_identifier: 'chosen' } } }]
     const context = createTeamAgentContext({ tree, agentRunId: 'reviewer-run', address: parseAgentTeamAddress('/code_reviewer'), workspaceMetadata: null })!
     expect(context.config.llmModelIdentifier).toBe('chosen')
     expect(context.state.conversation.llmModelIdentifier).toBe('chosen')
-  })
-
-  it('Org and Agent roots (camelCase): the same rule, with each member\'s recorded follower fact (D-5)', () => {
-    const camel = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null }
-    const solCamel = { ...camel, llmModelIdentifier: 'sol-6.1' }
-    const pick = (model: string) => ({ llmModelIdentifier: model, llmConfig: null, selectedAt: created })
-    const chosen = (model: string) => ({ ...camel, llmModelIdentifier: model })
-    const seCopy = {
-      address: '/se', teamRunId: 'se-run', userTeamLaunchSelection: pick('team-model'), taskExecutions: [], startedAt: created, delegatorAgentRunId: 'host',
-      members: [
-        { address: '/se/lead', agentRunId: 'lead-run', platformAgentRunId: null },
-        { address: '/se/ie', agentRunId: 'ie-run', platformAgentRunId: null },
-        { address: '/se/qa', agentRunId: 'qa-run', platformAgentRunId: null, userLaunchSelection: pick('qa-model') },
-      ],
-      source: {
-        kind: 'agent_team' as const, teamDefinitionId: 'se', coordinatorAddress: '/se/lead', handoffs: [], defaultLaunchConfiguration: camel,
-        members: [
-          { address: '/se/lead', agentDefinitionId: 'lead', launchConfiguration: camel, followsTeam: true },
-          { address: '/se/ie', agentDefinitionId: 'ie', launchConfiguration: solCamel, followsTeam: false },
-          { address: '/se/qa', agentDefinitionId: 'qa', launchConfiguration: solCamel, followsTeam: false },
-        ],
-      },
-    }
-    const taskExecutions = [
-      seCopy,
-      { address: '/se/ie', agentRunId: 'ie-copy', platformAgentRunId: null, delegatorAgentRunId: 'host', startedAt: created, userLaunchSelection: pick('copy-model'),
-        source: { kind: 'agent' as const, agentDefinitionId: 'ie', launchConfiguration: solCamel } },
-      // A copy of a configured Team: a member with its own auto-approve but the Team's model still follows (configured rule, AC-011 a).
-      { address: '/mounted', teamRunId: 'mounted-copy', taskExecutions: [], startedAt: created, delegatorAgentRunId: 'host',
-        userTeamLaunchSelection: pick('mounted-model'),
-        members: [
-          { address: '/mounted/a', agentRunId: 'a-copy', platformAgentRunId: null },
-          { address: '/mounted/b', agentRunId: 'b-copy', platformAgentRunId: null },
-        ],
-        source: {
-          kind: 'agent_team' as const, teamDefinitionId: 'm', coordinatorAddress: '/mounted/a', handoffs: [], defaultLaunchConfiguration: camel,
-          defaultLaunchSource: { origin: 'configured' as const, fallbacks: [] },
-          members: [
-            { address: '/mounted/a', agentDefinitionId: 'a', launchConfiguration: { ...camel, autoExecuteTools: true }, followsTeam: true },
-            { address: '/mounted/b', agentDefinitionId: 'b', launchConfiguration: solCamel, followsTeam: false },
-          ],
-        } },
-    ]
-    const at = (agentRunId: string) => copyAgentSourceOf(taskExecutions, agentRunId)?.launchConfiguration
-    expect(at('lead-run')).toEqual(chosen('team-model'))
-    expect(at('ie-run')).toEqual(solCamel)
-    expect(at('qa-run')).toEqual(chosen('qa-model'))
-    expect(at('ie-copy')).toEqual(chosen('copy-model'))
-    expect(at('a-copy')).toEqual({ ...chosen('mounted-model'), autoExecuteTools: true })
-    expect(at('b-copy')).toEqual(solCamel)
-    // Any other agent is not a copy.
-    expect(at('unknown')).toBeUndefined()
   })
 })

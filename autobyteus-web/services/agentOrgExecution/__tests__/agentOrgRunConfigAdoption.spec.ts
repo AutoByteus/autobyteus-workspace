@@ -54,11 +54,11 @@ describe('AgentOrg whole model-only canonical adoption', () => {
     }
   })
 
-  it('adopts a copy\'s saved model choice (an Agent copy, a Team copy and its members) and publishes it (autobyteus-366)', async () => {
+  it('adopts a child\'s saved launch (an Agent child, a Team child and its members: their own runs\' launches, SR-039) and publishes it', async () => {
     const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
     const next = JSON.parse(JSON.stringify(org.executionTree)) as any
-    const selection = { runtimeKind: 'autobyteus', llmModelIdentifier: 'copy-next', llmConfig: null, selectedAt: '2026-11-02T00:00:00.000Z' }
+    const save = (launch: any) => Object.assign(launch, { runtimeKind: 'autobyteus', llmModelIdentifier: 'copy-next', llmConfig: null })
     const tasks: any[] = []
     const visit = (list: any[]) => list.forEach((task) => { tasks.push(task); if (task.taskExecutions) visit(task.taskExecutions) })
     visit(next.rootOrg.taskExecutions)
@@ -66,13 +66,13 @@ describe('AgentOrg whole model-only canonical adoption', () => {
     const agentCopy = tasks.find((task) => 'agentRunId' in task)
     const teamCopy = tasks.find((task) => 'teamRunId' in task)
     expect(agentCopy ?? teamCopy).toBeTruthy()
-    if (agentCopy) agentCopy.userLaunchSelection = selection
-    if (teamCopy) { teamCopy.userTeamLaunchSelection = selection; teamCopy.members[0].userLaunchSelection = selection }
+    if (agentCopy) save(agentCopy.source.launchConfiguration)
+    if (teamCopy) { save(teamCopy.source.defaultLaunchConfiguration); save(teamCopy.source.members[0].launchConfiguration) }
     expect(org.applyRunConfig(next, false)).toBe(true)
     expect(JSON.stringify(org.executionTree)).toContain('copy-next')
   })
 
-  it('still refuses a copy\'s identity or launch drift alongside a choice', async () => {
+  it('still refuses a child\'s identity or locked launch drift alongside a saved model', async () => {
     const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
     const copyOf = (tree: any) => {
@@ -85,11 +85,11 @@ describe('AgentOrg whole model-only canonical adoption', () => {
     for (const mutate of [
       (task: any) => { task.address = '/renamed' },
       (task: any) => { task.startedAt = '2026-01-01T00:00:00.000Z' },
-      (task: any) => { (task.source.launchConfiguration ?? task.source.defaultLaunchConfiguration).llmModelIdentifier = 'started-changed' },
+      (task: any) => { (task.source.launchConfiguration ?? task.source.defaultLaunchConfiguration).autoExecuteTools = 'changed' },
     ]) {
       const view = org.view, next = JSON.parse(JSON.stringify(org.executionTree))
       const task = copyOf(next)
-      task['agentRunId' in task ? 'userLaunchSelection' : 'userTeamLaunchSelection'] = { runtimeKind: 'autobyteus', llmModelIdentifier: 'x', llmConfig: null, selectedAt: 't' }
+      ;(task.source.launchConfiguration ?? task.source.defaultLaunchConfiguration).llmModelIdentifier = 'x'
       mutate(task)
       expect(() => org.applyRunConfig(next, false)).toThrow('locked fields')
       expect(org.view).toBe(view)

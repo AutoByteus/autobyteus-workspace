@@ -80,42 +80,6 @@ export const collaborationMemberLaunchSource = (
   member: Pick<MemberLaunchDto, "launchSource">,
 ): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
 
-/**
- * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
- * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
- */
-export const userLaunchSelectionDtoSchema = z.object({
-  runtimeKind: agentOrgLaunchConfigurationDtoSchema.shape.runtimeKind.optional(),
-  llmModelIdentifier: nonEmptyStringSchema,
-  llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
-  selectedAt: timestamp,
-}).strict();
-export type UserLaunchSelectionDto = Readonly<z.infer<typeof userLaunchSelectionDtoSchema>>;
-
-/**
- * The single launch rule of a copy agent (mirrors the server's
- * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
- * else its started launch. `selected` tells which choice applied.
- */
-export const collaborationCopyAgentLaunch = (input: Readonly<{
-  started: LaunchConfigurationDto;
-  followsTeam?: boolean;
-  teamSelection?: UserLaunchSelectionDto | null;
-  agentSelection?: UserLaunchSelectionDto | null;
-}>): Readonly<{ launch: LaunchConfigurationDto; selected: "agent" | "team" | null }> => {
-  const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
-  if (!selection) return { launch: input.started, selected: null };
-  return {
-    launch: {
-      ...input.started,
-      runtimeKind: selection.runtimeKind ?? input.started.runtimeKind,
-      llmModelIdentifier: selection.llmModelIdentifier,
-      llmConfig: selection.llmConfig,
-    },
-    selected: input.agentSelection ? "agent" : "team",
-  };
-};
-
 /** The snapshot a delegated copy runs with: from the catalog or from a configured placement when it started. */
 export type TaskAgentExecutionSourceDto = Readonly<{
   kind: "agent";
@@ -138,13 +102,11 @@ type TaskAgentExecutionDto = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: string;
   source: TaskAgentExecutionSourceDto;
-  userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
   address: string;
   agentRunId: string;
   platformAgentRunId: string | null;
-  userLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskTeamExecutionDto = Readonly<{
   address: string;
@@ -155,15 +117,12 @@ type TaskTeamExecutionDto = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: string;
   source: TaskTeamExecutionSourceDto;
-  userTeamLaunchSelection?: UserLaunchSelectionDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 const launchSource = collaborationLaunchConfigurationSourceDtoSchema.optional();
 const memberLaunch = { launchConfiguration: agentOrgLaunchConfigurationDtoSchema, followsTeam: z.boolean(), launchSource };
-const agentSelection = { userLaunchSelection: userLaunchSelectionDtoSchema.optional() };
-const teamSelection = { userTeamLaunchSelection: userLaunchSelectionDtoSchema.optional() };
 const taskAgentSource: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
   kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
   launchSource,
@@ -176,15 +135,15 @@ const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
 }).strict();
 const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource, ...agentSelection,
+  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource,
 }).strict();
 const taskTeamMember: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
-  address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText, ...agentSelection,
+  address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
 }).strict();
 const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
   address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
-  source: taskTeamSource, ...teamSelection,
+  source: taskTeamSource,
 }).strict());
 const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */

@@ -19,25 +19,6 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
 }).strict();
 /** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export const teamMemberLaunchSource = (team, member) => member.launch_source ?? team.default_launch_source ?? null;
-/**
- * The single launch rule of a copy agent (mirrors the server's
- * `effectiveCopyAgentLaunch`): its own choice, else (when it follows its Team) the Team's choice,
- * else its started launch. `selected` tells which choice applied.
- */
-export const teamCopyAgentLaunch = (input) => {
-    const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
-    if (!selection)
-        return { launch: input.started, selected: null };
-    return {
-        launch: {
-            ...input.started,
-            runtime_kind: selection.runtime_kind ?? input.started.runtime_kind,
-            llm_model_identifier: selection.llm_model_identifier,
-            llm_config: selection.llm_config,
-        },
-        selected: input.agentSelection ? "agent" : "team",
-    };
-};
 const runtimeKindSchema = z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build", "deepseek_harness"]);
 const launchConfigurationSchema = z.object({
     runtime_kind: runtimeKindSchema,
@@ -65,14 +46,6 @@ const launchSourceSchema = z.union([
 const memberLaunchSchema = {
     launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
 };
-export const userLaunchSelectionDtoSchema = z.object({
-    runtime_kind: runtimeKindSchema.optional(),
-    llm_model_identifier: nonEmptyStringSchema,
-    llm_config: z.record(z.string(), jsonValueSchema).nullable(),
-    selected_at: nonEmptyStringSchema,
-}).strict();
-const agentSelectionSchema = { user_launch_selection: userLaunchSelectionDtoSchema.optional() };
-const teamSelectionSchema = { user_team_launch_selection: userLaunchSelectionDtoSchema.optional() };
 const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 const configuredAgentSchema = z.object({
     kind: z.literal("configured_agent"), address: agentTeamAddressDtoSchema,
@@ -95,18 +68,18 @@ const taskTeamSourceSchema = z.object({
 export const taskAgentExecutionDtoSchema = z.object({
     kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
     platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema, ...agentSelectionSchema,
+    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema,
 }).strict();
 const taskTeamAgentSchema = z.object({
     kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
-    agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema, ...agentSelectionSchema,
+    agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
 }).strict();
 export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     kind: z.literal("task_team"), address: agentTeamAddressDtoSchema, team_run_id: nonEmptyStringSchema,
     members: z.array(taskTeamAgentSchema),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-    source: taskTeamSourceSchema, ...teamSelectionSchema,
+    source: taskTeamSourceSchema,
 }).strict());
 export const teamRunExecutionTreeDtoSchema = z.object({
     created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,

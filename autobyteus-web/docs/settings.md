@@ -1620,12 +1620,13 @@ The saved-run view uses the start surfaces' visual language:
     "View decision" is not offered, since the decision is on that node.
   - **Fallback line.** A skipped default shows "{layer} {model} was not used:
     {detail}".
-  - **Effective values.** Values come from the contract packages' copy launch
-    rule (`teamCopyAgentLaunch`, `collaborationCopyAgentLaunch`): the agent's own
-    choice, else its Team's when it follows the Team (the member's recorded
-    `follows_team` / `followsTeam`), else its started value, all read from the
-    copy's own `source`. This edit's choices are applied as they are made. A member's
-    source is its own, else its Team's.
+  - **Effective values.** A row shows the launch its run has, read from the
+    copy's own `source` (each saved change is that run's own launch,
+    autobyteus-461 SR-039). This edit's unsaved choices are applied as they are
+    made by the draft rule (`draftLaunch` in `delegatedLaunchRows.ts`): the
+    agent's own choice, else its Team's when it follows the Team (the member's
+    recorded `follows_team` / `followsTeam`). A member's source is its own, else
+    its Team's.
   - **Stop.** A running copy (any of its agents not offline) has
     the run's red stop icon in its header; a Team copy's member's header stops its
     Team copy, never that one member. It

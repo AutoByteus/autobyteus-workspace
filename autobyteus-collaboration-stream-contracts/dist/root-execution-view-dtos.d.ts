@@ -122,7 +122,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -130,7 +129,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
@@ -139,12 +137,10 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                        userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
                         agentRunId: string;
@@ -152,7 +148,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -160,7 +155,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
@@ -169,12 +163,10 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                        userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown>>>;
                 }, z.core.$strict>]>>;
                 taskExecutions: z.ZodArray<z.ZodType<Readonly<{
@@ -184,7 +176,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -192,7 +183,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
@@ -201,12 +191,10 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                    userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
                     agentRunId: string;
@@ -214,7 +202,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -222,7 +209,6 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
@@ -231,12 +217,10 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                    userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown>>>;
             }, z.core.$strict>;
         }, z.core.$strict>;
@@ -481,7 +465,6 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
                 teamRunId: string;
@@ -489,7 +472,6 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>[];
                 taskExecutions: readonly (Readonly<{
                     address: string;
@@ -498,12 +480,10 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
                 agentRunId: string;
@@ -511,7 +491,6 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
                 teamRunId: string;
@@ -519,7 +498,6 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>[];
                 taskExecutions: readonly (Readonly<{
                     address: string;
@@ -528,12 +506,10 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>>;
         }, z.core.$strict>;
         agent_statuses: z.ZodArray<z.ZodObject<{
@@ -869,7 +845,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -877,7 +852,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
@@ -886,12 +860,10 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                        userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
                         agentRunId: string;
@@ -899,7 +871,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -907,7 +878,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
@@ -916,12 +886,10 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                        userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown>>>;
                 }, z.core.$strict>]>>;
                 taskExecutions: z.ZodArray<z.ZodType<Readonly<{
@@ -931,7 +899,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -939,7 +906,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
@@ -948,12 +914,10 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                    userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
                     agentRunId: string;
@@ -961,7 +925,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -969,7 +932,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
@@ -978,12 +940,10 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                    userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown>>>;
             }, z.core.$strict>;
         }, z.core.$strict>;
@@ -1227,7 +1187,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
                 teamRunId: string;
@@ -1235,7 +1194,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>[];
                 taskExecutions: readonly (Readonly<{
                     address: string;
@@ -1244,12 +1202,10 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
                 agentRunId: string;
@@ -1257,7 +1213,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
                 teamRunId: string;
@@ -1265,7 +1220,6 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>[];
                 taskExecutions: readonly (Readonly<{
                     address: string;
@@ -1274,12 +1228,10 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>>;
         }, z.core.$strict>;
         agent_statuses: z.ZodArray<z.ZodObject<{
@@ -1875,7 +1827,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly<{
                             address: string;
                             teamRunId: string;
@@ -1883,7 +1834,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
-                                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                             }>[];
                             taskExecutions: readonly (Readonly<{
                                 address: string;
@@ -1892,12 +1842,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 delegatorAgentRunId?: string;
                                 startedAt: string;
                                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                             }> | Readonly</*elided*/ any>)[];
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                            userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                             address: string;
                             agentRunId: string;
@@ -1905,7 +1853,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly<{
                             address: string;
                             teamRunId: string;
@@ -1913,7 +1860,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
-                                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                             }>[];
                             taskExecutions: readonly (Readonly<{
                                 address: string;
@@ -1922,12 +1868,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 delegatorAgentRunId?: string;
                                 startedAt: string;
                                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                             }> | Readonly</*elided*/ any>)[];
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                            userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>, unknown>>>;
                     }, z.core.$strict>]>>;
                     taskExecutions: z.ZodArray<z.ZodType<Readonly<{
@@ -1937,7 +1881,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -1945,7 +1888,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
@@ -1954,12 +1896,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                        userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
                         agentRunId: string;
@@ -1967,7 +1907,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -1975,7 +1914,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
@@ -1984,12 +1922,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             delegatorAgentRunId?: string;
                             startedAt: string;
                             source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                            userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                        userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown>>>;
                 }, z.core.$strict>;
             }, z.core.$strict>;
@@ -2233,7 +2169,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -2241,7 +2176,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
@@ -2250,12 +2184,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                    userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
                     agentRunId: string;
@@ -2263,7 +2195,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -2271,7 +2202,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
@@ -2280,12 +2210,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         delegatorAgentRunId?: string;
                         startedAt: string;
                         source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                        userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                    userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown>>>;
             }, z.core.$strict>;
             agent_statuses: z.ZodArray<z.ZodObject<{
@@ -2768,7 +2696,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
                 teamRunId: string;
@@ -2776,7 +2703,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>[];
                 taskExecutions: readonly (Readonly<{
                     address: string;
@@ -2785,12 +2711,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
                 agentRunId: string;
@@ -2798,7 +2722,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
                 teamRunId: string;
@@ -2806,7 +2729,6 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>[];
                 taskExecutions: readonly (Readonly<{
                     address: string;
@@ -2815,12 +2737,10 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     delegatorAgentRunId?: string;
                     startedAt: string;
                     source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
-                    userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
                 source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
-                userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>, z.ZodDiscriminatedUnion<[z.ZodObject<{
                 kind: z.ZodLiteral<"agent">;
                 address: z.ZodString;

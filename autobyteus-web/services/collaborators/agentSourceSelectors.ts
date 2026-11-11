@@ -1,15 +1,11 @@
 import {
-  teamCopyAgentLaunch,
   type AgentLaunchConfigurationDto,
   type TaskExecutionDto as TeamTaskExecutionDto,
   type TeamRunExecutionTreeDto,
-  type UserLaunchSelectionDto,
 } from '@autobyteus/team-stream-contracts'
 import {
-  collaborationCopyAgentLaunch,
   type CollaborationTaskExecutionDto,
   type TaskAgentExecutionSourceDto,
-  type UserLaunchSelectionDto as CollaborationSelectionDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionTreeSelectors'
 
@@ -20,16 +16,13 @@ import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionT
  * recorded `source`, whether it started from the catalog or from a configured placement (REQ-001,
  * REQ-004).
  *
- * What one copy agent runs with is its own user choice, else (when it follows its Team) its Team's
- * choice, else its started launch (DS-003), applied with the contract packages' functions. A Team
- * copy's member records its complete started launch and whether it follows the Team (`followsTeam`,
- * D-5). Teams are flat: a Team copy's members are Agents.
+ * What one copy agent runs with is the launch its own run has (autobyteus-461: a child's change is saved
+ * by its own run, SR-039). A Team copy's member records its complete launch and whether it follows the
+ * Team (`followsTeam`, D-5). Teams are flat: a Team copy's members are Agents.
  */
 
-/** The user choices that decide one agent instance's launch. */
-type InstanceChoice<S> = Readonly<{ agentSelection?: S; teamSelection?: S; followsTeam: boolean }>
-/** One copy agent's started launch, definition and choices. */
-type CopyAgent<L, S> = Readonly<{ address: string; agentDefinitionId: string; started: L; choice: InstanceChoice<S> }>
+/** One copy agent's launch and definition. */
+type CopyAgent<L> = Readonly<{ address: string; agentDefinitionId: string; launch: L }>
 
 // --- Team root (snake_case DTOs) ---
 
@@ -42,20 +35,18 @@ export type TeamAgentSource = Readonly<{
 const teamCopyAgent = (
   tasks: readonly TeamTaskExecutionDto[],
   agentRunId: string,
-): CopyAgent<AgentLaunchConfigurationDto, UserLaunchSelectionDto> | null => {
+): CopyAgent<AgentLaunchConfigurationDto> | null => {
   for (const task of tasks) {
     if (task.kind === 'task_agent') {
       if (task.agent_run_id === agentRunId) {
-        return { address: task.address, agentDefinitionId: task.source.agent_definition_id, started: task.source.launch_configuration,
-          choice: { agentSelection: task.user_launch_selection, followsTeam: false } }
+        return { address: task.address, agentDefinitionId: task.source.agent_definition_id, launch: task.source.launch_configuration }
       }
       continue
     }
     const member = task.members.find((candidate) => candidate.agent_run_id === agentRunId)
     const recorded = member && task.source.members.find((candidate) => candidate.address === member.address)
     if (member && recorded) {
-      return { address: member.address, agentDefinitionId: recorded.agent_definition_id, started: recorded.launch_configuration,
-        choice: { agentSelection: member.user_launch_selection, teamSelection: task.user_team_launch_selection, followsTeam: recorded.follows_team } }
+      return { address: member.address, agentDefinitionId: recorded.agent_definition_id, launch: recorded.launch_configuration }
     }
     const nested = teamCopyAgent(task.task_executions, agentRunId)
     if (nested) return nested
@@ -65,7 +56,7 @@ const teamCopyAgent = (
 
 /**
  * The Agent source of one agent execution of a Team root: a configured member's own, else a copy's
- * recorded source with what that instance runs with (its user choice, else its Team's when it follows).
+ * recorded source with the launch its run has.
  */
 export const teamAgentSourceOf = (tree: TeamRunExecutionTreeDto, agentRunId: string): TeamAgentSource | null => {
   const configured = collectConfiguredAgents(tree).find((agent) => agent.agent_run_id === agentRunId)
@@ -74,8 +65,7 @@ export const teamAgentSourceOf = (tree: TeamRunExecutionTreeDto, agentRunId: str
   }
   const copy = teamCopyAgent(tree.root_team.task_executions, agentRunId)
   if (!copy) return null
-  const { launch } = teamCopyAgentLaunch({ started: copy.started, ...copy.choice })
-  return Object.freeze({ address: copy.address, agent_definition_id: copy.agentDefinitionId, launch_configuration: launch })
+  return Object.freeze({ address: copy.address, agent_definition_id: copy.agentDefinitionId, launch_configuration: copy.launch })
 }
 
 // --- Org and Agent roots (camelCase DTOs) ---
@@ -106,20 +96,18 @@ export const collaborationTaskExecutionLists = (input: Readonly<{
 const collaborationCopyAgent = (
   tasks: readonly CollaborationTaskExecutionDto[],
   agentRunId: string,
-): CopyAgent<LaunchConfiguration, CollaborationSelectionDto> | null => {
+): CopyAgent<LaunchConfiguration> | null => {
   for (const task of tasks) {
     if ('agentRunId' in task) {
       if (task.agentRunId === agentRunId) {
-        return { address: task.address, agentDefinitionId: task.source.agentDefinitionId, started: task.source.launchConfiguration,
-          choice: { agentSelection: task.userLaunchSelection, followsTeam: false } }
+        return { address: task.address, agentDefinitionId: task.source.agentDefinitionId, launch: task.source.launchConfiguration }
       }
       continue
     }
     const member = task.members.find((candidate) => candidate.agentRunId === agentRunId)
     const recorded = member && task.source.members.find((candidate) => candidate.address === member.address)
     if (member && recorded) {
-      return { address: member.address, agentDefinitionId: recorded.agentDefinitionId, started: recorded.launchConfiguration,
-        choice: { agentSelection: member.userLaunchSelection, teamSelection: task.userTeamLaunchSelection, followsTeam: recorded.followsTeam } }
+      return { address: member.address, agentDefinitionId: recorded.agentDefinitionId, launch: recorded.launchConfiguration }
     }
     const nested = collaborationCopyAgent(task.taskExecutions, agentRunId)
     if (nested) return nested
@@ -128,8 +116,8 @@ const collaborationCopyAgent = (
 }
 
 /**
- * What one copy agent of an Org or Agent root runs with, by its run ID: its recorded source with its user
- * choice, else its Team's when it follows. `tasks` are every task-execution list of the root
+ * What one copy agent of an Org or Agent root runs with, by its run ID: its recorded source with the launch
+ * its run has. `tasks` are every task-execution list of the root
  * (`collaborationTaskExecutionLists`); null for any other run.
  */
 export const copyAgentSourceOf = (
@@ -138,8 +126,7 @@ export const copyAgentSourceOf = (
 ): CollaborationAgentSource | null => {
   const copy = collaborationCopyAgent(tasks, agentRunId)
   if (!copy) return null
-  const { launch } = collaborationCopyAgentLaunch({ started: copy.started, ...copy.choice })
-  return Object.freeze({ address: copy.address, agentDefinitionId: copy.agentDefinitionId, launchConfiguration: launch })
+  return Object.freeze({ address: copy.address, agentDefinitionId: copy.agentDefinitionId, launchConfiguration: copy.launch })
 }
 
 /** The Team source of a Team copy of an Org or Agent root, by its run ID; null for any other run. */

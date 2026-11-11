@@ -5,10 +5,7 @@ import {
   unknownDistinctValue,
   type DistinctValueSummary,
 } from "../domain/token-usage-distinct-value-summary.js";
-import type {
-  TokenUsageAccountingSummarySource,
-  TokenUsagePricingSummary,
-} from "../domain/token-usage-accounting-summary.js";
+import type { TokenUsageAccountingSummarySource } from "../domain/token-usage-accounting-summary.js";
 import type { TokenUsageRunRecord } from "../domain/token-usage-run-record.js";
 import { compareAdmissionMarkers } from "../domain/token-usage-snapshot-checkpoint.js";
 import {
@@ -17,10 +14,6 @@ import {
   TokenUsageSafeIntegerExceededError,
   type TokenUsageCostSummaryAggregate,
 } from "./token-usage-cost-summary-aggregate.js";
-import {
-  emptyTokenUsagePricingSummary,
-  mergeTokenUsagePricingSummaries,
-} from "./token-usage-pricing-summary.js";
 import { latestSelectedClaudeSdkRawIdFromState } from "./claude-sdk-model-usage-reconciler.js";
 
 export { TokenUsageSafeIntegerExceededError };
@@ -180,10 +173,3 @@ const buildRollUpSummary = (
     latest_selected_raw_model_id: host.latest_selected_raw_model_id,
   };
 };
-
-export const mergePricingSummariesForRecords = (
-  records: readonly TokenUsageRunRecord[],
-): TokenUsagePricingSummary => records.reduce(
-  (summary, record) => mergeTokenUsagePricingSummaries(summary, record.pricingSummary),
-  emptyTokenUsagePricingSummary(),
-);
