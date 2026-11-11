@@ -839,4 +839,4 @@
 - Decision (the Solution Designer): **(a)**. REQ-009 preserves "everything else a user … can do today with a delegation", and editing a stopped child's launch from the delegator's Settings is one of those things. Removing it would narrow an approved requirement. (a) also keeps the ownership rule: the delegator's view sends a command, and the child's own service writes the child's own file, the pattern of DS-8 for Stop and messages (`DelegatedRunCommands`). No run writes another run's file.
 - The trade-off accepted: the Save is no longer one atomic write. All children are checked first: stopped, and every patch valid. A failure after a write reports what was saved. Each run's file is its own truth.
 - Done: the design's DS-8 (routes, order, failure result, tests). The contract is unchanged, since views are not in the model. The web is unchanged.
-
+- ARCH-REV-014 (2026-11-11): Pass, no finding. Its note is applied in DS-8: a partial failure is reported as `PERSISTENCE_FAILED`, with a message naming the runs saved, so the unchanged web shows it.
