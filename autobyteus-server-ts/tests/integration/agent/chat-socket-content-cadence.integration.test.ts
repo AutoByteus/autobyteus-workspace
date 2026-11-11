@@ -21,6 +21,7 @@ import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/confi
 import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
 import {
   createAgentOrgRootExecutionIdentity,
+  createAgentRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -194,7 +195,7 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
       handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never) };
     } else {
       const snapshot = { host: { address: "/assistant" as never, agentRunId: rootRunId, agentDefinitionId: "assistant" }, createdAt: "2026-10-18T00:00:00.000Z", statuses: [] };
-      const root = { ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
+      const root = { rootIdentity: createAgentRootExecutionIdentity(rootRunId), ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
         openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot as never) };
       handlers = { collaborationHandler: new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never }) };
     }
