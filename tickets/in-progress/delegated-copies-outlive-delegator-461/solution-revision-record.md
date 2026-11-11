@@ -868,3 +868,20 @@
 - The residual note is taken too: the `DelegationTree` keeps each run's agents by run ID **and address**, read once (contract §4; `model.py` `agents_with_addresses`), so the view and the poll read no file per request. The walkthrough is regenerated, the §4 example is a model state again, `walkthrough.py --check` passes, and the examples have 0 findings.
 - Next action: architecture review (AR-021); then the Implementation Engineer, with CRR-003's Local Fixes, and the code review's targeted re-review
 
+### SR-042 — Live child rows in an open view (answers ARCH-REV-016 AR-022)
+
+- Triggering: ARCH-REV-016 resolved AR-021 and the residual, and failed SR-041 on AR-022 (Medium-High, Design Impact). An open view's child rows had no live path:
+  - DS-8 builds them when the view opens;
+  - the hosting lifecycle that pushed `task_execution_started`, `task_executions_closed` and `task_executions_reopened` is removed;
+  - SR-041 removed the reopened event, claiming "a reopened child comes back through the view's child list", which is built only at open;
+  - the history poll covers only runs that are not open.
+
+  Protected: REQ-002, REQ-005 / AC-005, AC-007, and 469's reopened row listed again without a reload.
+- The Solution Designer's error: SR-041's claim about the reopened child. The view's child list is not live.
+- Read: today the roots emit the three events. The web reloads the view on `task_execution_started` (`checkpoint_required`), and handles closed and reopened by a closed set, which SR-041 removes.
+- Decision (on the data model's merits): **the view is a projection, so it is told when its source changes, and reads itself again.** The `DelegationTree`, already updated synchronously inside each Task change, reports `childRowsChanged(X)` for every run X whose open children changed. `ChildRowsFeed`, the one listener, publishes `child_runs_changed` (collaboration and org streams) / `CHILD_RUNS_CHANGED` (team stream) on each open view stream of X, active or not, never starting X. The web answers with `checkpoint_required`, as it answers today's `task_execution_started`: the re-read carries every row's record (469 D-8).
+  - The three events and `remote_task_execution_started` are replaced by this one, because their producer is gone.
+  - `remote_task_execution_summary` stays.
+- Done: the design's DS-8 ("Live child rows", with tests per view kind) and the removal plan. Views are not in the model. `walkthrough.py --check` passes.
+- Next action: architecture review (AR-022)
+
