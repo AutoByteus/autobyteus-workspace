@@ -7,7 +7,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { defineComponent, h, nextTick, onMounted } from 'vue';
+import { defineComponent, h, nextTick, onMounted, watch } from 'vue';
 import MobileFileViewer from '../MobileFileViewer.vue';
 import type { OpenFileState } from '~/stores/fileExplorerState';
 
@@ -16,7 +16,9 @@ vi.mock('vue-pdf-embed', () => ({
     props: ['source', 'width'],
     emits: ['loaded', 'loading-failed'],
     setup(props, { emit }) {
+      // As vue-pdf-embed: `loaded` for each document it loads, on mount and when its source changes.
       onMounted(() => { void nextTick(() => emit('loaded', {})); });
+      watch(() => props.source, () => { void nextTick(() => emit('loaded', {})); });
       return () => h('div', { class: 'vue-pdf-embed', 'data-width': props.width }, [
         h('div', { class: 'vue-pdf-embed__page' }, [h('canvas', { style: { width: `${props.width}px` } })]),
       ]);
@@ -109,6 +111,39 @@ describe('the phone viewer zooms PDFs and images by touch (autobyteus-472)', () 
     await wrapper.setProps({ fileState: fileState('/w/other.pdf', 'PDF', 'blob:pdf-3') });
     await vi.waitFor(() => expect(pdfWidth(wrapper)).toBe(WIDTH));
     expect(scrollOf(scroller(wrapper))).toEqual({ left: 0, top: 0 });
+  });
+
+  // CRR-005 CR-002: a live refresh reloads a media file in place (autobyteus-452: a new `contentRevision`, no "Opening…"),
+  // so the same viewer draws the pages again; the scroller collapses meanwhile, as a browser's does.
+  it('AC-005 a zoomed PDF keeps its zoom and position across a live refresh in place, also when one rewrite redraws twice', async () => {
+    const state = (url: string, contentRevision: number) => ({ ...fileState('/w/resume.pdf', 'PDF', url), contentRevision });
+    const wrapper = mountViewer('/w/resume.pdf', state('blob:pdf-1', 0));
+    await vi.waitFor(() => expect(pdfWidth(wrapper)).toBe(WIDTH));
+    doubleTapPdf(scroller(wrapper), 100, 150);
+    await vi.waitFor(() => expect(pdfWidth(wrapper)).toBe(WIDTH * 2));
+    await vi.waitFor(() => expect(scrollOf(scroller(wrapper))).toEqual({ left: 100, top: 150 }));
+    const box = scroller(wrapper);
+
+    /** A redraw in place: the new source, then the collapsed scroller's own scroll events, then the pages again. */
+    const refresh = async (url: string, contentRevision: number) => {
+      await wrapper.setProps({ fileState: state(url, contentRevision) });
+      scrollOf(box).left = 0;
+      scrollOf(box).top = 0;
+      box.dispatchEvent(new Event('scroll'));
+    };
+    await refresh('blob:pdf-2', 1);
+    // The same viewer: no "Opening…", no remount.
+    expect(wrapper.find('[data-testid="mobile-file-preview-loading"]').exists()).toBe(false);
+    expect(scroller(wrapper)).toBe(box);
+    await vi.waitFor(() => expect(scrollOf(box)).toEqual({ left: 100, top: 150 }));
+    expect(pdfWidth(wrapper)).toBe(WIDTH * 2);
+
+    // One rewrite seen twice: two redraws back to back; the place still comes back, and the collapse is not remembered.
+    await refresh('blob:pdf-3', 2);
+    await refresh('blob:pdf-4', 3);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    await vi.waitFor(() => expect(scrollOf(box)).toEqual({ left: 100, top: 150 }));
+    expect(pdfWidth(wrapper)).toBe(WIDTH * 2);
   });
 
   it('AC-005 a zoomed image keeps its zoom and position across a reload of the same file; another file starts at fit', async () => {

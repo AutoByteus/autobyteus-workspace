@@ -94,8 +94,14 @@ const pages = ref<HTMLElement | null>(null)
 const baseWidth = ref(0)
 const zoom = ref(props.zoomMemory?.pdf?.zoom ?? 1)
 const renderWidth = computed(() => Math.floor(baseWidth.value * zoom.value))
-/** The remembered position has been put back (or there was none): from then on scrolling is remembered. */
+/**
+ * The remembered position has been put back for the shown document (or there was none): from then on scrolling is
+ * remembered. Each new source (the first load, and each reload in place: a live refresh redraws the same viewer,
+ * autobyteus-452) is a new generation: remembering pauses while the pages are drawn again (the scroller collapses
+ * meanwhile), and only the newest generation's `loaded` puts the place back.
+ */
 let placed = false
+let generation = 0
 let unmounted = false
 let scrollTimer: ReturnType<typeof setTimeout> | null = null
 const LAYOUT_WAIT_MS = 2000
@@ -137,11 +143,21 @@ const pinchZoom = usePdfPinchZoom(scroller, pages, {
   onCommit: remember,
 })
 
+watch(resolvedUrl, () => {
+  if (!props.touchZoom) return
+  generation += 1
+  placed = false
+  if (scrollTimer) clearTimeout(scrollTimer)
+  scrollTimer = null
+})
+
 /** The document is loaded: once its pages are laid out, the remembered position (a reload of this file) is put back. */
 const onTouchLoaded = async () => {
   loading.value = false
-  if (placed) return
+  const loaded = generation
   await pagesLaidOutAt(renderWidth.value)
+  // A newer source is being drawn: its own `loaded` puts the place back.
+  if (unmounted || loaded !== generation) return
   const box = scroller.value
   const place = props.zoomMemory?.pdf
   if (box && place) {
