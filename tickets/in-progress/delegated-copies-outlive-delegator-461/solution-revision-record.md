@@ -1013,4 +1013,4 @@
   - It keeps today's behavior, now explicit: `UnavailableTaskDelegation` (today's text), a run control that releases nothing and reports no status, no cross-run delivery, and no local children. It is composed through the same file, steps 1–3, plus these collaborators.
   - Option (a), composing delegation there, would add a capability nothing asks for.
 - Done: the design's composition section, with a test that composes the application host and asserts each answer. `walkthrough.py --check` passes.
-
+- ARCH-REV-025 (2026-11-11): Pass, no finding. Its note is applied in the composition section: the root's application-root refusal (`delegationSource`) is answered before `UnavailableTaskDelegation`'s text, so an agent reads today's text, and the test asserts the exact text.

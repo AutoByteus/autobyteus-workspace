@@ -502,7 +502,11 @@ No other gap was found. Not validated: the code. The implementation verifies the
   - no cross-run delivery: `send_message_to` resolves within the sender's run, and a run ID outside it takes the live-only path, as today;
   - `LocalChildPorts` with no children.
 
-No lookup answers null anywhere. A test composes the application host and asserts each of these answers.
+No lookup answers null anywhere. **The order of refusals stays as today** (ARCH-REV-025):
+- an application-owned run's `delegate_task` is first refused by the sender's root, through `delegationSource`'s application-root rule (`UNAVAILABLE_APPLICATION_ROOT`; `collaborator-admission.ts:112`), with today's text;
+- `UnavailableTaskDelegation`'s `TASKS_UNAVAILABLE_TEXT` answers only what passes that rule.
+
+So an agent reads no new text. A test composes the application host and asserts each of these answers, with the exact text.
 
 **Where the code lives** (SR-049): `build-studio-server.ts` is at its 500-line limit, so the steps live in a dedicated composition file with two calls that `build-studio-server.ts` makes in order. The first call covers steps 1–2, the run services are created between the calls (step 3), and the second call covers steps 4–8. The order stays readable in one place.
 
