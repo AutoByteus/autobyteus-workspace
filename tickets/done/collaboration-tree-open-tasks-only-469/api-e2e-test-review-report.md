@@ -1,6 +1,72 @@
 # API/E2E Test Review Report
 
-## Review Meta
+The latest result is round 2 (CRR-005), the delivery re-entry for AC-007 (DR-002, API-REV-003). It comes first. Round 1 (CRR-004) follows as history.
+
+## Round 2: AC-007 for a run that left the tree (CRR-005)
+
+### Review Meta
+
+- Review Round: 2 (test-code review)
+- Trigger: API/E2E round 3 `Pass` (API-REV-003), a delivery re-entry DR-002. It answers the Delivery Engineer's finding that the round-2 AC-007 row cited only runs still in the tree.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/collaboration-tree-open-tasks-only-469-ac007`, branch `codex/collaboration-tree-open-tasks-only-469-ac007` from `origin/personal` `1ee1ea61cf`.
+- Test commit reviewed: `87d03534df`. Reports and evidence are in `c06b599a4f`.
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` DR-002. The Solution Designer, as requirement owner, set AC-007's meaning:
+  - (a) a file attached to a message between the top run and a delegated run opens through the top run's route after the run's Task closed and the run left the tree, also after a restart;
+  - (b) the delegated run's context file opens again once the Task is reopened and the run is continued.
+  - The context-file route's answer while the Task is closed is FU-006, not this ticket.
+- API/E2E Result: `Pass`. API-E03 CRA-1 passes 1/1 (`evidence/API-E03-closed-run-attachments.txt`). API-E02 reran 3/3 after the helper move, and the server typecheck stays at its baseline (`evidence/API-E02-round3-rerun-and-typecheck.txt`).
+- Final Validation Confidence: 95%
+- Prior unresolved test-review findings rechecked: none. The round-1 non-blocking note about the probe's frame sample is unchanged and unaffected.
+- Project testing guideline(s) applied: `TESTING.md`. No conflict.
+- Supported Product Scenario Basis Confirmed: `Yes`. SCN-004 / AC-007 as the requirement owner set it in DR-002. The triggers are real: `delegate_task`, `send_message_to` with `reference_files`, the composer's upload / finalize / `SEND_MESSAGE`, `update_task`, a server restart, a root restore, and a run-ID continuation.
+
+### Changed Durable Test Scope
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/projects/closed-run-attachments.e2e.test.ts` | Added | AC-007 (a), (b); DR-002 | CRA-1: one journey for the Agent and Org roots | The Team root is not covered, and the header and report say why. Its reference route is the Team records' route, unchanged by this ticket |
+| `autobyteus-server-ts/tests/e2e/helpers/built-studio-roots.ts` | Added (moved) | — | The built-server root helpers both suites use | The moved code, `expect(…success…)` lines included, is in the helper. No assertion changed |
+| `autobyteus-server-ts/tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts` | Updated | AC-001, AC-005, AC-006, AC-008 … AC-012 | Imports the moved helpers | Rerun 3/3 |
+
+- No durable test file changed: `No`
+
+### Proportional Test-Code Checks
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | Pass | The CRA-1 name and header state AC-007 (a) and (b), the observed-only FU-006 read, and the Team exclusion |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | (a) is asserted as exact bytes (`{status: 200, body}`) after the closure, after a restart from the stopped root, and after the restore, with "worker not in the restored tree" asserted alongside. (b) is asserted as exact bytes after the reopen and continuation. The before-closure reads give the baseline, and the recorded 404 while closed shows the (b) check is not vacuous |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | The shared `built-studio-roots.ts` removes about 140 duplicated lines |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Temp data root, scripted CLI, `until` polling for every state change, sockets tracked and closed. Non-blocking note 1 below |
+| Large files remain coherent and navigable | Pass | 186 lines, one journey |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | — |
+| Coverage agrees with the coverage investigation and execution evidence | Pass | The AC-007 row cites API-E03 with a correction note; the investigation records FU-006 as not a pass condition |
+| Test callers and fixtures exercise an independently established supported scenario | Pass | DR-002's definition of AC-007; the closure, restart and reopen are SCN-001, SCN-002 and SCN-005 |
+| Each test enters through its scenario's real trigger and follows the real actor's steps | Pass | The Manager acts through real tools and the user through the composer's REST and WebSocket sequence. `referenceIdOf` reproduces the renderer's reference ID to address the real route |
+
+### Findings
+
+None.
+
+Non-blocking notes (not findings):
+
+1. `sendContextFile` treats "any frame after the snapshot" as "the message is taken" (`closed-run-attachments.e2e.test.ts:92-93`), so an `ERROR` that arrives after another frame is not seen.
+   - The asserted outcomes depend on the finalized file, not on the message's delivery, so the AC-007 proof holds.
+   - Waiting for the command's acknowledgement would make the setup prove that the user's message reached the worker.
+2. FU-006 is cited in the test and the reports. DR-002 records it as sent by the Solution Designer with FU-005, but this ticket's `follow-ups.md` lists FU-001 … FU-004 only. Delivery may want the two rows recorded there for traceability.
+
+### Round 2 Result
+
+- Result: `Pass`
+- Changed durable test paths reviewed: the three listed above.
+- Unresolved finding IDs: none
+- Recommended Recipient: `/software_engineering_team/delivery_engineer` (DR-002 follow-on merge into `personal`)
+
+---
+
+## Round 1 (CRR-004)
+
+### Review Meta
 
 - Review Round: 1 (test-code review)
 - Trigger: API/E2E round 2 `Pass` (API-REV-002) on product code `fa48d74a3e`.
