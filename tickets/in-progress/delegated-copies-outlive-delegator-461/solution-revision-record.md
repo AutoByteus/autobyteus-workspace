@@ -911,4 +911,4 @@
   - The stream session orders it against the snapshot: an event published while the session builds a snapshot is held and sent right after it, and the snapshot reads the tree when it is built. A change is therefore either in the snapshot (and its event is a no-op) or applied after it. None is lost, and no gap is possible.
 - Done: the design's DS-8 (the rule, the session's order, and the Team tests: a stopped team run, a change racing a snapshot, duplicate and unknown rows). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-022)
-
+- ARCH-REV-019 (2026-11-11): Pass. AR-001 … AR-022 are resolved. Its residual is added to DS-8's tests: held events are flushed in published order (FIFO), each once.

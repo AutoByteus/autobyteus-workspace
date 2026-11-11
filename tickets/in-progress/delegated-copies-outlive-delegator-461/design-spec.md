@@ -198,6 +198,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
     - a new delegation appears;
     - **in the Team view, a pending send and a pending tool approval survive a child-row change**, with no `team_stream_recovery_required`; the focused child that is removed hands the focus back;
     - **Team, the team run stopped:** an open view of a stopped team run gets the change and applies it, with no recovery, and the team run stays stopped;
+    - **Held events flush in order:** several child-row events held during one snapshot's build are sent after it in the order they were published (FIFO), each once (ARCH-REV-019 residual);
     - **Team, a change racing a snapshot:** a change published while the session builds a snapshot is sent after it. If the snapshot already holds the row, the event is a no-op; if not, the event adds it. A duplicate `added` and a `removed` for an unknown row are no-ops. None of these causes a gap or a recovery;
     - a closure removes a child with no other open Task, and keeps one with another open Task without an event;
     - the assigner's reopen-and-continue brings the child back;
