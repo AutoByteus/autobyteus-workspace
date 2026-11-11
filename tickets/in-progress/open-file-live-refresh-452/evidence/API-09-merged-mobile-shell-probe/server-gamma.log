@@ -1,0 +1,206 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:54681
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:54681
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:88985) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_orgs/live_org_bab02ef3896144ab968c9740f4cac4a9/live_planner_7c85e4efca6b495bb2ad696e815cfc9e/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418243756,"pid":88985,"hostname":"MacBookPro","reqId":"req-24","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.4498749999993379,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418243998,"pid":88985,"hostname":"MacBookPro","reqId":"req-2c","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.556959000000461,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418244265,"pid":88985,"hostname":"MacBookPro","reqId":"req-2y","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3583749999997963,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418244267,"pid":88985,"hostname":"MacBookPro","reqId":"req-2z","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.23999999999978172,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418244957,"pid":88985,"hostname":"MacBookPro","reqId":"req-4d","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30041699999947014,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418245197,"pid":88985,"hostname":"MacBookPro","reqId":"req-52","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3045830000010028,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418245215,"pid":88985,"hostname":"MacBookPro","reqId":"req-56","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.20933299999887822,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418245640,"pid":88985,"hostname":"MacBookPro","reqId":"req-6m","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.42699999999967986,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418245931,"pid":88985,"hostname":"MacBookPro","reqId":"req-7c","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.28874999999970896,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_orgs/live_org_bab02ef3896144ab968c9740f4cac4a9/live_planner_7c85e4efca6b495bb2ad696e815cfc9e/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418245962,"pid":88985,"hostname":"MacBookPro","reqId":"req-7j","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.24712500000168802,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_orgs/live_org_bab02ef3896144ab968c9740f4cac4a9/live_planner_7c85e4efca6b495bb2ad696e815cfc9e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_orgs/live_org_bab02ef3896144ab968c9740f4cac4a9/live_planner_7c85e4efca6b495bb2ad696e815cfc9e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_orgs/live_org_bab02ef3896144ab968c9740f4cac4a9/live_planner_7c85e4efca6b495bb2ad696e815cfc9e/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_orgs/live_org_bab02ef3896144ab968c9740f4cac4a9/live_planner_7c85e4efca6b495bb2ad696e815cfc9e/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418400662,"pid":88985,"hostname":"MacBookPro","reqId":"req-ci","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.32083300000522286,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418400723,"pid":88985,"hostname":"MacBookPro","reqId":"req-d1","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.37316699998336844,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agent_teams/live_team_05aa09d0065d468c936338094c3c877d/live_lead_e1b0faaa8cd146f381dfb62bdb840dc5/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418402626,"pid":88985,"hostname":"MacBookPro","reqId":"req-ej","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3078340000065509,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418402666,"pid":88985,"hostname":"MacBookPro","reqId":"req-el","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2771249999932479,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418403218,"pid":88985,"hostname":"MacBookPro","reqId":"req-em","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30962499999441206,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418403253,"pid":88985,"hostname":"MacBookPro","reqId":"req-eq","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.069208000000799,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418427516,"pid":88985,"hostname":"MacBookPro","reqId":"req-et","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.2127919999766164,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418427600,"pid":88985,"hostname":"MacBookPro","reqId":"req-ex","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3509170000033919,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418429305,"pid":88985,"hostname":"MacBookPro","reqId":"req-ey","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.331333000009181,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qGoPig/gamma/data/memory/agents/live_agent_65d9afca2fa5450d8361dbb8066e5706/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794418429388,"pid":88985,"hostname":"MacBookPro","reqId":"req-f5","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.23212500000954606,"msg":"http request completed"}

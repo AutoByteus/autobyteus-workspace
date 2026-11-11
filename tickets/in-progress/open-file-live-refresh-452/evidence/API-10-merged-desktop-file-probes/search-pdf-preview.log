@@ -1,0 +1,10 @@
+
+> autobyteus@1.5.13-beta.4 test:e2e:search-pdf-preview /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/tickets/in-progress/open-file-live-refresh-452/evidence/API-10-merged-desktop-file-probes/search-pdf-preview
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":9998,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":6106,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}
+exit 0
