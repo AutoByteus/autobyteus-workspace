@@ -18,6 +18,7 @@
 | SR-012 | Mixed | The user: a run is connected with its Task; closed Tasks need not stay in the collaboration tree; is the on-disk contract designed and validated? | N/A | Contract revision 3 proposed | Contract revision 4 proposed (§11 added) | Contract §11 (L1 … L11, what reads what, validation); DEC-011 (B, agreed in conversation, to confirm); TC-4 reopened by the user (teams and orgs in this ticket if it fits; not sized) | For the user's review |
 | SR-013 | Requirements | The user's ordering decision: fix the growing collaboration tree first, as its own Task | N/A | Contract revision 4 proposed; design Needs Revision | Blocked: Waiting For Prerequisite PRE-001 | PRE-001 (new); every REQ waits | The prerequisite is sent to the Project Task Manager |
 | SR-014 | Requirements (supplement) | PRE-001 delivered (`autobyteus-469`, verified Terminal 2026-11-11); the user: resume on the latest base and re-validate the contract | N/A | Blocked: Waiting For Prerequisite | Ready for Approval (contract revision 5 proposed; design Needs Revision) | Contract §1 … §12; TC-7 … TC-9; DEC-011 | Presented to the user |
+| SR-015 | Design | Contract revision 5 with TC-7, TC-8, DEC-011 decided; the user: redesign and show it to him before any review | N/A | Design Needs Revision (SR-010) | Design Draft, for the user's review | DS-1 … DS-10 | Presented to the user; not sent to review |
 
 ## Revision Entries
 
@@ -344,3 +345,26 @@
 - Next action: the user's decisions
 - Update 2026-11-11 (same round): the user decided TC-8. Quote: "do you think it's better to put the node information on the task itself … If it's put there, do you think it's even possible to remove this collaboration tree on JSON on the disk completely?", and after the answer, "Yeah, I mean the … agent run resource file". The node and members of a peer's run go into its entry in `agent_run_resources.json`; the standalone `collaboration_tree.json` is removed. TC-7, TC-9 and DEC-011 remain open.
 - Update 2026-11-11 (same round): the user approved the Task-centered approach. Quotes: "So you mean now we don't use the hosting or the routing strategy will be centered around the task itself?"; on the explanation "the product team may message the manager because it is doing part of the manager's Task, not because it is running inside the manager's process", "I think that's a very, very good explanation"; "let's go with this approach … always make sure that you start with the data model and validate your data model first. And after that, you do design … don't send for review immediately, I want to review it myself first". Recorded: TC-7 and DEC-011 decided (contract §9); DEC-012 decided by the Solution Designer; §10 and §12 rewritten; validated on every stored message between two runs (`evidence/data-model-validation/task-centered-messaging-2026-11-11.txt`: 1,540 of 1,604 allowed as today; the 64 others all involve legacy runs without a Task record; 0 newly allowed). TC-9 remains open. The design is rebuilt next and goes to the user before any review.
+
+### SR-015 — New design draft on the 469 base, for the user's review
+
+- Phase and classification: Design, `Design Rebuilt` (draft)
+- Triggering user feedback: 2026-11-11, "What is your data flow span in this case … Do we still keep the standalone like a roots? … after you redesign … don't send for review immediately, I want to review it myself first. Yeah, always make sure that you start with the data model and validate your data model first. And after that, you do design"
+- Triggering finding IDs: the open findings of ARCH-REV-001 (AR-001 … AR-010) on SR-010, answered in the new design's table
+- Prior authoritative requirements/design status: requirements Ready for Approval (TC-9 open); design Needs Revision (SR-010)
+- Current authoritative requirements/design status: requirements unchanged; design `Draft — for the user's review`
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: none in the requirements
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the data model (contract revision 5) was validated first, including the Task-centered message rule on every stored message. The design follows it. Every run becomes its own root, as runs started by a peer already are. The Task record decides views and messages. Delegations from team and org runs stay hosted until their Tasks (TC-4).
+- Canonical requirements, investigation and design sections changed: `design-spec.md` rewritten
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No` (the design realizes the contract)
+- Approval impact: the user reviews the draft; no handoff before his answer
+- Behavior-defining supplement versions and approval references: contract revision 5
+- Affected design/review basis invalidated or rebuilt: SR-010's design and its review round are superseded
+- Post-design task-size/risk classification and rationale changes: `Large`, `High` (draft)
+- Applied handoff-rule outcome / result-file reference: none, at the user's request
+- Downstream and architecture-review impact: architecture review after the user's review and the next revision (V-10, V-11, V-14, U-A, U-B)
+- Remaining gaps, assumptions or blocked decisions: TC-9; V-10, V-11, V-14, U-A, U-B
+- Next action: the user's review
