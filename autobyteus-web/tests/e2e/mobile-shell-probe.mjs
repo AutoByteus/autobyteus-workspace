@@ -127,7 +127,7 @@
 //   MSP-32 autobyteus-435 REQ-010  After MSP-13 revoked the phone (the page stays open on the pairing screen through the
 //                  later cases), it sends no refused request: no HTTP answer 401/403 and no socket closed 4401/4403.
 //
-//   MSP-32 autobyteus-9  The new-run model sheet on the production phone bundle (REQ-010, REQ-011, QR-001, QR-002; AC-010, AC-011): opening
+//   MSP-38 autobyteus-9 (was a second MSP-32, renumbered in autobyteus-471)  The new-run model sheet on the production phone bundle (REQ-010, REQ-011, QR-001, QR-002; AC-010, AC-011): opening
 //                  the sheet re-reads the runtime's model list once, the list is shown, and "Refresh models" (a touch-sized control)
 //                  re-reads it again without emptying the list and without an error. A change of the list itself (a CLI update)
 //                  is the desktop probe `model-list-journeys-probe.mjs`; this scripted Antigravity list does not change.
@@ -1253,7 +1253,7 @@ const runCases = async () => {
     return { freshAgent, orgMarked, orgListQuery, orgAgent, agentOptions, factCheckerReadiness, launchDisabledWhenMissing, sheets, statesDuringFirst, newRunId, top };
   });
 
-  await runCase('MSP-32', async () => {
+  await runCase('MSP-38', async () => {
     const r = {};
     const fresh = await openPhone({ storageState: paired, label: 'phone-model-sheet' });
     const p = fresh.page;
@@ -1288,7 +1288,7 @@ const runCases = async () => {
     r.control = { text: (await button.innerText()).trim(), box: await button.boundingBox() };
     assert(r.control.text === 'Refresh models', 'the control does not read Refresh models', r.control);
     assert(r.control.box && r.control.box.height >= 44 && r.control.box.width >= 44, 'the control is not touch-sized', r.control);
-    await shot(p, 'MSP-32-model-sheet-open');
+    await shot(p, 'MSP-38-model-sheet-open');
     const beforeRefresh = reads.length;
     await button.click();
     await waitFor('Refresh models re-reads the list', async () => reads.length > beforeRefresh, 15_000);
@@ -1298,7 +1298,7 @@ const runCases = async () => {
     assert(JSON.stringify(r.afterRefresh.rows) === JSON.stringify(r.opened.rows), 'the list changed or emptied on a refresh that read the same models', r);
     assert(r.afterRefresh.error === 0, 'a refresh error shows although the read succeeded', r.afterRefresh);
     assert(r.afterRefresh.button === 'Refresh models', 'the control did not return to Refresh models', r.afterRefresh);
-    await shot(p, 'MSP-32-model-sheet-refreshed');
+    await shot(p, 'MSP-38-model-sheet-refreshed');
     await fresh.context.close();
     return r;
   });
