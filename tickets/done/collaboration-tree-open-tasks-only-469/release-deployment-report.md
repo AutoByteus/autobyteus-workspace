@@ -46,7 +46,7 @@ Finalize `codex/collaboration-tree-open-tasks-only-469` (Project Task `autobyteu
 | AC-004 | API-R01 (IMP-09), API-E01 | Same suite pass | Proven |
 | AC-005 | API-E02 OT-1…OT-3; API-E01 SCP-E2E-006; BR-016 | `✓ OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back`; `✓ get-project-task-worker-scope (6 tests)`; BR-016 `Pass` | Proven |
 | AC-006 | API-E02 OT-1/OT-2 | OT-1 title: "token total and Memory page keep it" `✓` | Proven |
-| AC-007 | API-I01; API-E01 TAU-1, AOML-1/2 | `API-I01-round2-server-integration.txt`: `Test Files 90 passed \| 20 skipped (110)`, `Tests 524 passed`; `✓ task-agent-own-run-startup (3 tests)`, `✓ append-only-message-logs-startup (2 tests)` | Proven |
+| AC-007 | API-I01; API-E01 TAU-1, AOML-1/2 | `API-I01-round2-server-integration.txt`: `Test Files 90 passed \| 20 skipped (110)`, `Tests 524 passed`; `✓ task-agent-own-run-startup (3 tests)`, `✓ append-only-message-logs-startup (2 tests)`. **Corrected in DR-002:** these fixtures give their delegated runs open Tasks (`writeOpenTaskRecordsOfReleasedData`), so they prove attachments of runs that are in the tree. No case opens an attachment of a run that has left it | **Not Proven** (DR-002: targeted proof requested from API/E2E) |
 | AC-008 | API-E02 OT-2; API-E01 released-data suites | `✓ OT-2 an upgraded data root: admitted at start …`; migration suites `✓` | Proven |
 | AC-009 | API-R01; API-E02 OT-2; API-E01 TAU-2 | `✓ OT-2 … a read writes nothing; … the first save keeps only what it must` | Proven |
 | AC-010 | API-R01; API-E02 OT-2 | `✓ OT-2 … a load reads no closed run` | Proven |
