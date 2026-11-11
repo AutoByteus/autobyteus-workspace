@@ -29,7 +29,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S16 | T1 is deleted | T-3, R-9 |
 | S17 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
 | S18 | The peer team reports to M | R-10 |
-| S19 | M closes T7: the peer run is stopped through the link | T-1 |
+| S19 | M closes T7: the peer run is fenced; its next report is refused | T-1, R-8, R-10 |
 | S20 | Refused: runs of different Tasks | R-7 |
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
@@ -2362,13 +2362,15 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S19 — M closes T7: the peer run is stopped through the link [T-1]
+#### S19 — M closes T7: the peer run is fenced; its next report is refused [T-1, R-8, R-10]
 
-**Call:** `update_task(task_id: "demo-7", status: "DONE")`, by M
+**Call:** `update_task(task_id: "demo-7", status: "DONE")`, by M. Then `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "More findings …")`, by `lead_0c11` on node B
 
 **Result to the caller:** `{"taskId": "demo-7", "status": "DONE"}`
 
-**How:** Node A closes the entry and asks node B, through the link, to stop the run (it has no other open Task); node B sets `terminatedAt` on the run's row. Node B keeps the run as an ordinary run of its own.
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CLOSED", "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)." }`
+
+**How:** Node A closes T7's entry. The peer's run is **fenced, not stopped**: nothing is sent to node B, and its row there is unchanged. Messages between it and M are refused with the closed-Task text, because node A's entry is closed. The run keeps running on node B until it goes idle, and its own idle shutdown stops it there. A stop across nodes on Task closure is out of this ticket's scope.
 
 **On disk after this step:**
 
@@ -2413,21 +2415,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Changed:** node B: `memory/team_run_history_index.json`, changed row:
-```json
-{
-  "teamRunId": "research_team_77aa",
-  "teamDefinitionId": "research-team",
-  "teamDefinitionName": "Research Team",
-  "workspaceRootPath": "/Users/me/projects/x",
-  "summary": "…",
-  "createdAt": "2026-11-10T18:00:00.000Z",
-  "archivedAt": null,
-  "terminatedAt": "2026-11-10T19:00:00.000Z"
-}
-```
-
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -2489,7 +2477,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 ]
 ```
 
-**Against today:** The same.
+**Against today:** The same (`remote-endpoint.ts` `closureFence`, `root-task-execution-resource-scope.ts` `fenceRemoteClosedExecutions`).
 
 **Checked on the user's data:** —
 

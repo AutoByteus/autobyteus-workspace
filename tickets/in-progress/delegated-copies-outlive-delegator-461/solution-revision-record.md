@@ -747,3 +747,18 @@
 - Checks: `walkthrough.py --check` passes; the walkthrough's examples have 0 findings.
 - Next action: the user reads the file; then architecture review, round 9
 
+### SR-034 — Answers ARCH-REV-009 AR-020; AR-019 goes to the user
+
+- Triggering: ARCH-REV-009 (round 9) failed SR-033 with AR-019 (Requirement Gap) and AR-020 (Design Impact). It accepted TC-13, the peer member addresses, §2.4, the executable model as reference, and TC-12 revised as a structure (pending AR-019).
+- **AR-020 (the Solution Designer's model error):** the model stopped a peer's run on Task closure, and S19 called that "today". At `827f1e68dc` a closed Task's peer run is fenced, not stopped (`remote-endpoint.ts:44-46` `closureFence`; `root-task-execution-resource-scope.ts:85-106`), and a stop across nodes is out of scope (`requirements-doc.md:68`).
+  - Now `model.py` fences: node A closes the entry and nothing is sent to node B.
+  - S19 shows the peer run's next report refused with the closed-Task text, and node B's row unchanged. Its "today" text is corrected, as is contract T-1.
+  - `walkthrough.py --check` passes; the walkthrough's examples have 0 findings.
+- **The reviewer's note:** address step 2 now applies by the run's Task entries, not by its own `delegatedFrom` (`model.py` `resolve`). A run of a deleted Task uses step 3, as §5.4.4 says.
+- **AR-019, a Requirement Gap:** TC-12 revised (SR-025) and the D3 / DL-11 change alter what agents read. The approved non-goal is "No change to what an agent reads … collaboration texts" (`requirements-doc.md:76`), and the user was only informed. The trade-off goes to the user:
+  - (1) root at `/`: agents re-addressed and told, with no reader changes;
+  - (2) root at the delegation address: nothing agent-visible changes, with the reader and handoff-compiler changes of AR-018.
+
+  The Implementation Engineer is asked to hold the TC-12 and DL-11 parts until the user decides.
+- Next action: the user's decision on AR-019; then the requirements and the contract updated at an approved SR; then architecture review, round 10
+

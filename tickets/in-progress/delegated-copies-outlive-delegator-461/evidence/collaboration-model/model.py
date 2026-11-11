@@ -166,8 +166,9 @@ class World:
             if address.startswith(prefix + "/"):
                 if address in team: return team[address], 1
                 raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
-        f = self.file_of(run)
-        if "delegatedFrom" in f:
+        if self.entries_of(node, run):
+            # step 2 belongs to a run that works on a Task (its entries), not to every delegated run: a run whose Task
+            # was deleted is a run of its own and uses step 3 (§5.4.4)
             for t in sorted(self.open_tasks(node, run)) or sorted({t for t, e in self.entries_of(node, run)}):
                 for ak in sorted(self.assigners(node, t)):
                     st = self.standing((node, ak[0], ak[1]))
@@ -399,8 +400,8 @@ class World:
             if t != task_id: continue
             k = self.run_key_of_entry(e)
             if "nodeId" in e:
-                if not any(x["closedAt"] is None for tt, x in self.entries(node) if self.run_key_of_entry(x) == k):
-                    peer = next(n for n, i in self.node_ids.items() if i == e["nodeId"]); self.stop((peer, k[0], k[1]), at)
+                # a peer's run is fenced, not stopped: its closed entry refuses its messages, and the run stops on its
+                # own node when it goes idle (base: remote-endpoint.ts closureFence; requirements: out of scope)
                 continue
             if not self.open_tasks(node, (node, k[0], k[1])): self.stop((node, k[0], k[1]), at)
     def update_task(self, sender, task_key, status, at):

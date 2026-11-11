@@ -436,7 +436,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S16 | T1 is deleted | T-3, R-9 |
 | S17 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
 | S18 | The peer team reports to M | R-10 |
-| S19 | M closes T7: the peer run is stopped through the link | T-1 |
+| S19 | M closes T7: the peer run is fenced; its next report is refused | T-1, R-8, R-10 |
 | S20 | Refused: runs of different Tasks | R-7 |
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
@@ -535,7 +535,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 
 | # | Event | On disk | In memory | Afterwards |
 | --- | --- | --- | --- | --- |
-| T-1 | A Task is closed | `closedAt` on each of its entries | The Task closed on each node | Each of its runs with no other open Task is asked, by its own ID, to stop; R-8 |
+| T-1 | A Task is closed | `closedAt` on each of its entries | The Task closed | Each of its local runs with no other open Task is asked, by its own ID, to stop. A run on a peer node is fenced, not stopped: its messages are refused and it stops there when idle (S19; stop across nodes is out of scope); R-8 |
 | T-2 | A Task is reopened, and its assigner messages a run it assigned | `closedAt: null` on that `assigned` entry (a `subWork` entry stays closed) | The Task open | R-6; the run is in its delegating run's view again |
 | T-3 | A Task is deleted | Its record removed (its open runs with no other open Task stopped first) | Its runs leave the tree | Runs of their own (TC-3), labeled from their own `delegatedFrom`; R-9 |
 | T-4 | The user stops a run | Its history row | — | That run only (TC-1); its next message restores it |
