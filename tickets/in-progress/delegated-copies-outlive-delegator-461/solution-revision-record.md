@@ -832,3 +832,11 @@
   The model is unchanged: it stores nothing and does not model views. `walkthrough.py --check` passes.
 
 - ARCH-REV-013 (2026-11-11): Pass, no finding. The peer summary path is read-only (REQ-004 holds); the payload change is a clean cut between same-release nodes; `walkthrough.py --check` re-run by the reviewer: passes.
+
+### SR-039 — A child's launch edited in its delegator's Settings goes to the child's own save (the Implementation Engineer's Unclear)
+
+- Triggering: the Implementation Engineer (Unclear, 2026-11-11). Today a stopped delegated run's model and runtime are editable in its delegator's Settings. The Save sends them as `changes`, which wrote `userLaunchSelection` into the delegator's tree. TC-5 removed that field, and there is no copy record in the delegator any more. The options were (a) route each change to the child's own stopped-run save, or (b) remove the child rows from the delegator's Settings. The engineer recommended (b).
+- Decision (the Solution Designer): **(a)**. REQ-009 preserves "everything else a user … can do today with a delegation", and editing a stopped child's launch from the delegator's Settings is one of those things. Removing it would narrow an approved requirement. (a) also keeps the ownership rule: the delegator's view sends a command, and the child's own service writes the child's own file, the pattern of DS-8 for Stop and messages (`DelegatedRunCommands`). No run writes another run's file.
+- The trade-off accepted: the Save is no longer one atomic write. All children are checked first: stopped, and every patch valid. A failure after a write reports what was saved. Each run's file is its own truth.
+- Done: the design's DS-8 (routes, order, failure result, tests). The contract is unchanged, since views are not in the model. The web is unchanged.
+

@@ -154,7 +154,17 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 
 - **Opening a view never starts a run** (REQ-004, AR-008). The collaboration stream's connect stops starting the host: `AgentCollaborationStreamHandler.readyRoot` (`services/agent-streaming/agent-collaboration-stream-handler.ts:59-62, 73, 148`) resolves the root without `ensureHostReady`, and the host starts on its first input. The same holds for the team and org streams' connect.
 - **Commands to a local child from the delegating run's view** (AR-011): a message, interrupt, tool approval or Stop on a child row goes to the child's own root by its identity. `DelegatedRunCommands` (owner: the command route of a view) resolves it through `ActiveCollaborationRootDirectory` (`resolveOrRestore` for a message; a live root only for interrupt and tool approval; Stop to its root). Tool approval works, because the child runs on this node. A remote child keeps the remote route (`remote-child-commands.ts`, no tool approval). This holds in the standalone, team and org views.
-- A child's conversation is read from its own run, as for a remote child.
+- **A local child's launch, edited in its delegator's Settings** (REQ-009, TC-5; SR-039). The web is unchanged: the child rows of `ExistingRunConfigEditor.vue` (`delegatedLaunchRows.ts`, `delegatedLaunchDraftStore.ts`). `updateDelegatedLaunchSelections(rootKind, parentRunId, changes, configuredPatches)` routes each `change` to that child's **own** ordinary stopped-run save, by its identity, as `DelegatedRunCommands` routes Stop:
+  - an agent child: `AgentRunService.updateStoppedSelection` on the child run;
+  - a team child's team-level row: the child team's own stopped save, with its team-scope patch;
+  - a team child's member row: the child team's own stopped save, as a member patch at the member's address in its own team.
+
+  Each run writes only its own file, so the parent's Save is a composition of independent saves, not one atomic write:
+  - **Check first:** every child named is stopped (else `COPY_RUNNING`, as today) and every patch is valid. Then nothing is written unless all pass.
+  - **Then apply:** the parent's own patches, then each child, in row order.
+  - **On a failure:** if a write fails after others succeeded, the result names the runs saved and the one that failed. Each saved run keeps its save, since each file is that run's truth. The editor reloads the rows.
+
+  Peer children keep no editable launch (as today). Tests: an agent child and a team child (team row and member row) saved from the parent's Settings land in the child's own file; a running child refuses the whole Save before any write; a failure on the second child reports the first as saved.
 - **A peer child's launch details** (each agent's runtime, model and launch source; REQ-009) are read from the peer while the view is open (SR-038). The peer's run summary (`peer-run-view-answers.ts`, `remote-run-view-provider.ts`, autobyteus-278) gains `launches` per agent, read from the run's own file on its node. `remote-task-execution-dto-projection.ts` fills `RemoteTaskExecutionDto.launches` from that answer instead of the stored link. A peer that cannot answer gives no launch details, as it gives no statuses. Nothing is stored on the delegating node; the delegation result's launch notes are unchanged. Tests: the row shows the peer's launches from the summary; a changed launch on the peer shows on the next summary; no launches while the peer is unreachable.
 - The web keeps today's rows, selection and buttons. A local child's status and live output reach the view the way a remote child's do; its commands go to its own root (above).
 
