@@ -21,6 +21,8 @@ Project Task `autobyteus-469` (prerequisite PRE-001 of `autobyteus-461`). A coor
 
 Verified from evidence by delivery; no user check needed. Every critical AC is proven (see `release-deployment-report.md` Verification). Checked directly: `API-I01-round2-server-integration.txt` (90 files / 524 tests pass), `API-E01-round2-server-e2e.txt` (182 files pass, OT-1…OT-3, EXC-E2E-007 ✓), `API-B01-round2-probe-evidence.json` (BR-001…BR-016 Pass, `storedLocalEntriesAfterA: 0` ×3, `framesDiffering: 0` ×3, cleanup `dataRootRemoved: true`), `API-B01-round2-agent-team-tab-after.png` (message to the closed worker kept and named), `API-F01-round2-fresh-start-build.txt` (fresh clone build pass).
 
+AC-007 (DR-002): the Solution Designer's receipt check found the DR-001 citation did not reach a run that left the tree. API/E2E round 3 added `autobyteus-server-ts/tests/e2e/projects/closed-run-attachments.e2e.test.ts` (API-E03, Agent and Org roots): a message reference opens with exact bytes after the closure and after a real restart; the worker's context file opens again after the reopen. Test-code review CRR-005 Pass. Merged as a follow-on into `personal`.
+
 ## Docs
 
 See `docs-sync-report.md`: server and web docs updated in the change; delivery corrected the closed-execution list sentence in `agent_communication.md`. `DESIGN.md`, `TESTING.md`, `RELEASE.md`: no change.
