@@ -39,26 +39,29 @@ const setup = () => {
   const store = useAgentTeamRunStore()
   const service = store.connectToTeamStream(ROOT)!
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
-  const ready = () => {
-    emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+  /** A snapshot of the Team's view: on connect, or in-band when the Team starts or stops (autobyteus-461 SR-046). */
+  const snapshotOf = (liveSequenceId: string, status: string) => {
     const snapshot: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>['payload'] = {
       root_team_run_id: ROOT,
-      base_change_sequence: 0, live_sequence_id: 'live-1', last_message_change_sequence: 0,
+      base_change_sequence: 0, live_sequence_id: liveSequenceId, last_message_change_sequence: 0,
       execution_tree: team.view.getExecutionTree(),
       agent_input_states: [], remote_task_executions: [],
       agent_statuses: team.view.listAgentContextEntries().map(e => ({
-        agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle',
+        agent_run_id: e.agentRunId, member_address: e.memberAddress, status,
         trigger: null, tool_name: null, error_message: null, error_details: null,
         recoverableBlock: null,
       })),
     }
     emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot)
   }
+  const ready = () => { emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT }); snapshotOf('live-1', 'idle') }
+  /** The stopped Team's view continues on the same stream: its stored-mode snapshot and lifecycle. */
+  const stored = () => { snapshotOf('stored-1', 'offline'); emit('TEAM_RUN_LIFECYCLE', { is_active: false }) }
   ready()
   const lead = seed('lead'), worker = seed('worker')
   wrapper = mount(ActivityFeed)
   io.mutate.mockResolvedValue({ data: { terminateAgentTeamRun: { success: true } } })
-  return { team, store, service, lead, worker, emit, ready }
+  return { team, store, service, lead, worker, emit, ready, snapshotOf, stored }
 }
 it('BEH-001/004: successful Stop retains same-focus expanded completed/system Activity, other members and genuine empty state', async () => {
   const t = setup(), activity = useAgentActivityStore(), context = t.team.view.getAgentContext('lead')!
@@ -90,7 +93,8 @@ it('BEH-001/004: successful Stop retains same-focus expanded completed/system Ac
   t.team.view.focusAgent('empty'); await nextTick()
   expect(wrapper!.text()).toContain('0 Events'); expect(wrapper!.text()).toContain('No activity history yet')
   expect(io.mutate).toHaveBeenCalledTimes(1); expect(io.ws.send).not.toHaveBeenCalled()
-  expect(io.ws.disconnect).toHaveBeenCalledTimes(1)
+  // The stopped Team's open view keeps its stream (autobyteus-461 SR-045).
+  expect(io.ws.disconnect).not.toHaveBeenCalled()
 })
 it.each(['rejected', 'graphql', 'network'])('BEH-004: %s Stop preserves Activity and last-known lifecycle', async kind => {
   const t = setup()
@@ -110,13 +114,15 @@ it('BEH-004: concurrent and already-stopped duplicate Stop sends one command', a
   expect(await t.store.terminateTeamRun(ROOT)).toBe(false)
   expect(io.mutate).toHaveBeenCalledTimes(1); expect(useAgentActivityStore().getActivities('lead')).toEqual(t.lead)
 })
-it('BEH-001/003: retained old approval cannot dispatch via retired store or old service and viewing never restores', async () => {
+it('BEH-001/003: a retained old approval after Stop restores nothing: it goes over the kept stream, whose server refuses it for a stopped member (SR-045, SR-046)', async () => {
   const t = setup()
   t.emit('TOOL_APPROVAL_REQUESTED', { change_sequence: 1, agent_run_id: 'lead', invocation_id: 'pending', tool_name: 'send_message_to', turn_id: 'turn', arguments: { message: 'pending' } })
   await t.store.terminateTeamRun(ROOT)
+  t.stored(); await flushPromises()
   await t.store.postToolExecutionApproval('pending', true)
-  expect(() => t.service.approveTool('pending', { agentRunId: 'lead' })).toThrow('TEAM_STREAM_NOT_READY')
-  expect(io.ws.send).not.toHaveBeenCalled()
+  expect(io.ws.send).toHaveBeenCalledTimes(1)
+  expect(JSON.parse(io.ws.send.mock.calls[0]![0]).type).toBe('APPROVE_TOOL')
+  expect(t.team.view.isRootTeamActive()).toBe(false)
   expect(io.mutate).toHaveBeenCalledTimes(1)
   expect(wrapper!.findAll('button').filter(b => b.text() === 'Approve')).toHaveLength(0)
   expect(useAgentActivityStore().getToolActivities('lead').find(a => a.invocationId === 'pending')?.status).toBe('awaiting-approval')
@@ -133,41 +139,36 @@ it('BEH-002: real standalone Agent stop retains Activity in same renderer and co
   expect(useAgentActivityStore().getActivities('lead')).toEqual(t.lead)
   expect(wrapper!.text()).toContain('2 Events'); expect(wrapper!.text()).toContain('delivered-lead')
 })
-it('BEH-003: later normal Send restores, hydrates and admits exact input without duplicating retained Activity', async () => {
+it('BEH-003: a later Send goes over the kept stream; the Team starts on it and continues after one in-band snapshot, admitting the exact input without duplicating retained Activity (SR-045, SR-046)', async () => {
   const t = setup()
   await t.store.terminateTeamRun(ROOT)
-  io.mutate.mockResolvedValue({ data: { restoreAgentTeamRun: { success: true } } })
-  io.query.mockImplementation(async ({ query, variables }) => {
-    const name = query.definitions[0].name.value
-    if (name === 'GetTeamRunResumeConfig') return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], teamRunId: ROOT, isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: t.team.view.getExecutionTree(), modelConfigEditability: { editable: false, reason: 'active' } } } }
-    if (name === 'GetTeamMemberRunProjection') return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [{ kind: 'message', role: 'assistant', content: 'Historical conversation', ts: 1 }],
-      activities: variables.agentRunId === 'empty' ? [] : [
-        { kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `Instructions for ${variables.agentRunId}`, ts: 1 },
-        { kind: 'tool', invocationId: `${variables.agentRunId}-invocation`, toolName: 'send_message_to', status: 'success', arguments: { message: `message-${variables.agentRunId}` }, result: `delivered-${variables.agentRunId}`, ts: 2 },
-      ], hasEarlierActiveTraceEvents: false } } }
-    if (name === 'GetTeamCommunicationMessages') return { data: { getTeamCommunicationMessages: [] } }
-    return { data: {} }
-  })
-  io.ws.connect.mockImplementation(() => queueMicrotask(t.ready))
+  t.stored(); await flushPromises()
+  const team = useAgentTeamContextsStore().getTeamContextById(ROOT)
+  const conversation = team!.view.getAgentContext('lead')!.conversation
   io.ws.send.mockImplementation((wire: string) => {
     const { type, payload } = JSON.parse(wire)
     expect(type).toBe('SEND_MESSAGE')
+    // The server starts the Team on this input: its live snapshot on the same stream, its lifecycle, then the echo.
+    t.snapshotOf('live-2', 'idle'); t.emit('TEAM_RUN_LIFECYCLE', { is_active: true })
     t.emit('MEMBER_INPUT_MESSAGE', { change_sequence: 1, recipient_agent_run_id: payload.agent_run_id, message_id: payload.message_id, dedupe_key: payload.dedupe_key, content: payload.content, input_origin: 'user_message', received_at: '2026-09-14T10:00:00Z', context_file_paths: [], sender_agent_run_id: null, parent_communication_message_id: null })
   })
   await t.store.sendMessageToFocusedMember('deliberate next work', [])
   await flushPromises()
   const adopted = useAgentTeamContextsStore().getTeamContextById(ROOT)!
+  expect(adopted).toBe(team)
   expect(adopted.view.isRootTeamActive()).toBe(true)
   expect(adopted.view.getFocusedAgentRunId()).toBe('lead')
   expect(adopted.view.getAgentContext('lead')!.config.autoExecuteTools).toBe(false)
   expect(io.ws.send).toHaveBeenCalledTimes(1)
-  expect(io.mutate.mock.calls.map(([r]) => r.mutation.definitions[0].name.value)).toEqual(['TerminateAgentTeamRun', 'RestoreAgentTeamRun'])
+  expect(io.mutate.mock.calls.map(([r]) => r.mutation.definitions[0].name.value)).toEqual(['TerminateAgentTeamRun'])
+  expect(io.ws.connect).toHaveBeenCalledTimes(1)
   expect(useAgentActivityStore().getActivities('lead')).toHaveLength(2)
   expect(useAgentActivityStore().getToolActivities('lead').map(a => a.invocationId)).toEqual(['lead-invocation'])
   expect(wrapper!.text()).toContain('2 Events'); expect(wrapper!.text()).toContain('delivered-lead')
   const messages = adopted.view.getAgentContext('lead')!.conversation.messages
   expect(messages.filter(m => m.text === 'deliberate next work')).toHaveLength(1)
-  expect(messages.filter(m => m.text === 'Historical conversation')).toHaveLength(1)
+  // No rehydration: the retained conversation is the same one, with the new input once.
+  expect(adopted.view.getAgentContext('lead')!.conversation).toBe(conversation)
   t.emit('TOOL_EXECUTION_SUCCEEDED', { change_sequence: 2, agent_run_id: 'lead', invocation_id: 'next-work', tool_name: 'send_message_to', turn_id: 'next-turn', arguments: { message: 'new work' }, result: 'new result' })
   await nextTick()
   expect(useAgentActivityStore().getToolActivities('lead').map(a => a.invocationId)).toEqual(['lead-invocation', 'next-work'])

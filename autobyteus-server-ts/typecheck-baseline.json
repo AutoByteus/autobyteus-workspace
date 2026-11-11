@@ -297,7 +297,6 @@
   "tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts": 7,
   "tests/unit/services/agent-streaming/agent-session-manager.test.ts": 1,
   "tests/unit/services/agent-streaming/agent-stream-handler.test.ts": 1,
-  "tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts": 1,
   "tests/unit/services/agent-streaming/team-execution-view-projector.test.ts": 5,
   "tests/unit/services/file-explorer-streaming/file-explorer-session-manager.test.ts": 9,
   "tests/unit/services/team-communication/team-communication-port.test.ts": 2,

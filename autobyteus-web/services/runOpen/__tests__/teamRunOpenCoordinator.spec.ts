@@ -193,8 +193,9 @@ describe('openTeamRun current exact execution identity', () => {
       focusedAgentRunId: 'settled-task-agent-run-1',
       focusedMemberAddress: '/member-b',
     })
-    expect(disconnectTeamStreamMock).toHaveBeenCalledWith(ROOT)
-    expect(connectToTeamStreamMock).not.toHaveBeenCalled()
+    // The open stopped Team's view gets its stream (autobyteus-461 SR-045); connecting never starts the Team.
+    expect(connectToTeamStreamMock).toHaveBeenCalledWith(ROOT)
+    expect(disconnectTeamStreamMock).not.toHaveBeenCalled()
   })
 
   it('rejects an absent requested AgentRun without silently substituting another focus', async () => {
@@ -235,7 +236,7 @@ describe('openTeamRun current exact execution identity', () => {
     expect(disconnectTeamStreamMock).not.toHaveBeenCalled()
   })
 
-  it('uses navigation-free mobile selection and leaves an inactive projection disconnected', async () => {
+  it('uses navigation-free mobile selection and connects the inactive Team\'s view stream (SR-045)', async () => {
     const hydrated = makeTeam({ active: false })
     getTeamContextByIdMock.mockReturnValue(null)
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
@@ -249,8 +250,9 @@ describe('openTeamRun current exact execution identity', () => {
 
     expect(selectRunWithoutShellNavigationMock).toHaveBeenCalledWith(ROOT, 'team')
     expect(selectRunMock).not.toHaveBeenCalled()
-    expect(disconnectTeamStreamMock).toHaveBeenCalledWith(ROOT)
-    expect(connectToTeamStreamMock).not.toHaveBeenCalled()
+    // The open stopped Team's view gets its stream (autobyteus-461 SR-045); connecting never starts the Team.
+    expect(connectToTeamStreamMock).toHaveBeenCalledWith(ROOT)
+    expect(disconnectTeamStreamMock).not.toHaveBeenCalled()
   })
 
   it('keeps the failed context unpublished until exact recovery candidate readiness', async () => {

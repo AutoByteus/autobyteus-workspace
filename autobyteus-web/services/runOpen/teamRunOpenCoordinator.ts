@@ -89,8 +89,8 @@ export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promi
     resumeConfig: hydrated.resumeConfig,
   };
   input.onCommitted?.(result);
-  if (context.view.isRootTeamActive()) runStore.connectToTeamStream(input.teamRunId);
-  else runStore.disconnectTeamStream(input.teamRunId);
+  // The open Team's view has its stream whether the Team runs or not (autobyteus-461 SR-045); it never starts the Team.
+  runStore.connectToTeamStream(input.teamRunId);
   return result;
 }
 

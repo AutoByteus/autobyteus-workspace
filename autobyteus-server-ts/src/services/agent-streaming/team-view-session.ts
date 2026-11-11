@@ -36,8 +36,8 @@ const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
  *   child rows (`ChildRowsFeed`) and its children's output, numbered by this session;
  * - **live mode**, while it is managed: the live root's snapshot and events.
  * The session follows the run's registration; each switch sends a fresh in-band snapshot (a new `change_sequence`
- * base) and the run's lifecycle, in the session's own order. A switch caused by a message (a member's first input
- * restores the run) waits for that message's handling (`whileRestoring`), so its snapshot carries the input.
+ * base) and the run's lifecycle, in the session's own order. A member's message that starts the run is posted after
+ * the view is live (`showCurrentMode`), so its echo is an ordinary live event after the snapshot (SR-048).
  */
 export class TeamViewSession {
   private mode: Readonly<{ kind: "live"; root: RootTeamRun } | { kind: "stored" }> | null = null;
@@ -46,9 +46,6 @@ export class TeamViewSession {
   private readonly stopFollowing: () => void;
   private order: Promise<void> = Promise.resolve();
   private closed = false;
-  /** Messages that may restore the stopped run, in flight: a switch waits for them (its snapshot carries their input). */
-  private restoring = 0;
-  private switchWaiting = false;
 
   constructor(
     readonly teamRunId: string,
@@ -60,23 +57,7 @@ export class TeamViewSession {
     this.stopFollowing = sources.registrations.onRegistrationChanged(identity, () => this.switchMode());
   }
 
-  /**
-   * `work` may restore the stopped run (a message to one of its own agents, its first input): the mode switch the
-   * restore causes waits until `work` is done, so the live snapshot is read after the message was posted and carries the
-   * agent's input state (ARCH-REV-021). Other commands run as they arrive.
-   */
-  async whileRestoring<T>(work: () => Promise<T>): Promise<T> {
-    this.restoring += 1;
-    try {
-      return await work();
-    } finally {
-      this.restoring -= 1;
-      if (!this.restoring && this.switchWaiting) { this.switchWaiting = false; this.switchMode(); }
-    }
-  }
-
   private switchMode(): void {
-    if (this.restoring) { this.switchWaiting = true; return; }
     void this.run(() => this.follow()).catch((error: unknown) => console.error(`A run view could not switch modes: ${String(error)}`));
   }
 
@@ -87,8 +68,12 @@ export class TeamViewSession {
     return result;
   }
 
-  /** The first snapshot, in the run's current mode. Throws `TeamRunNotFoundError` for a run that does not exist. */
-  open(): Promise<void> { return this.run(() => this.follow()); }
+  /**
+   * The view in the run's current mode, after every earlier step: the first snapshot on connect, and the switch to live
+   * before a member's message that started the run is posted (SR-048). Throws `TeamRunNotFoundError` for a run that does
+   * not exist.
+   */
+  showCurrentMode(): Promise<void> { return this.run(() => this.follow()); }
 
   close(): void {
     if (this.closed) return;

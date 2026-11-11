@@ -4938,13 +4938,6 @@ export type TerminateAgentTeamRunMutationVariables = Exact<{
 
 export type TerminateAgentTeamRunMutation = { __typename?: 'Mutation', terminateAgentTeamRun: { __typename: 'TerminateAgentTeamRunResult', success: boolean, message: string } };
 
-export type RestoreAgentTeamRunMutationVariables = Exact<{
-  teamRunId: Scalars['String']['input'];
-}>;
-
-
-export type RestoreAgentTeamRunMutation = { __typename?: 'Mutation', restoreAgentTeamRun: { __typename: 'RestoreAgentTeamRunResult', success: boolean, message: string, teamRunId?: string | null } };
-
 export type UpdateStoppedTeamRunSelectionsMutationVariables = Exact<{
   input: UpdateStoppedTeamRunSelectionsInput;
 }>;
@@ -8463,38 +8456,6 @@ export function useTerminateAgentTeamRunMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<TerminateAgentTeamRunMutation, TerminateAgentTeamRunMutationVariables>(TerminateAgentTeamRunDocument, options);
 }
 export type TerminateAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateAgentTeamRunMutation, TerminateAgentTeamRunMutationVariables>;
-export const RestoreAgentTeamRunDocument = gql`
-    mutation RestoreAgentTeamRun($teamRunId: String!) {
-  restoreAgentTeamRun(teamRunId: $teamRunId) {
-    __typename
-    success
-    message
-    teamRunId
-  }
-}
-    `;
-
-/**
- * __useRestoreAgentTeamRunMutation__
- *
- * To run a mutation, you first call `useRestoreAgentTeamRunMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRestoreAgentTeamRunMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRestoreAgentTeamRunMutation({
- *   variables: {
- *     teamRunId: // value for 'teamRunId'
- *   },
- * });
- */
-export function useRestoreAgentTeamRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>(RestoreAgentTeamRunDocument, options);
-}
-export type RestoreAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>;
 export const UpdateStoppedTeamRunSelectionsDocument = gql`
     mutation UpdateStoppedTeamRunSelections($input: UpdateStoppedTeamRunSelectionsInput!) {
   updateStoppedTeamRunSelections(input: $input) {

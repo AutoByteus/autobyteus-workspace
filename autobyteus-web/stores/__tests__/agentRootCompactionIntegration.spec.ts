@@ -76,15 +76,13 @@ const setup = async () => {
   return { store, root, host: retainedHost, activities: useAgentActivityStore() }
 }
 
-it('real host action retires children BEFORE one request, settles all children before real empty-history hydration', async () => {
+it('a Stop of the run\'s own agent keeps the view\'s stream and leaves its children, runs of their own, as they are; only the host\'s compaction stops (SR-045)', async () => {
   const { store, root, activities, host } = await setup()
   store.selectChild('host-run', 'cua-run')
   root.getAgentContext('pp-run')!.requirement = 'keep my draft'
-  seed(root.getAgentContext('pb-run')!, 'already-completed', 'completed')
   const stream = store.attach('host-run'); const request = deferred()
   io.mutate.mockImplementation(() => {
-    expect(stream.disconnect).toHaveBeenCalledOnce()
-    expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
+    expect(stream.disconnect).not.toHaveBeenCalled()
     return request.promise
   })
   const pending = useAgentRunStore().terminateRun('host-run')
@@ -94,68 +92,61 @@ it('real host action retires children BEFORE one request, settles all children b
   const child = root.getAgentContext('cua-run')!; child.requirement = 'held draft'
   await expect(store.submit('host-run', 'cua-run', child, 'hello', [])).rejects.toThrow('being stopped')
   expect(child.requirement).toBe('held draft'); expect(child.conversation.messages).toEqual([])
-  const cold = nativeView(); cold.is_active = false; cold.agent_statuses.forEach(s => { s.status = 'offline' })
-  io.query.mockImplementation(async input => {
-    expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('stopped')
-    expect(host.state.compactionStatus?.phase).toBe('stopped')
-    return input.variables.runId ? envelope(cold) : emptyProjection(input)
-  })
   request.resolve({ data: { terminateAgentRun: { success: true } } })
   expect(await pending).toBe(true)
-  await store.inspect('host-run')
-  expect(store.contextFor('host-run')).not.toBe(root)
-  expect(store.contextFor('host-run')!.getAgentContext('pp-run')!.requirement).toBe('keep my draft')
-  for (const id of ['host-run', 'cua-run', 'pp-run', 'pb-run']) {
-    expect(activities.getCompactionActivities(id)[0]).toMatchObject({ phase: 'stopped', message: 'Stopped', rawTraceCount: 12 })
-  }
-  expect(activities.getCompactionActivities('pb-run')[1].phase).toBe('completed')
+  expect(host.state.compactionStatus?.phase).toBe('stopped')
+  expect(activities.getCompactionActivities('host-run')[0]).toMatchObject({ phase: 'stopped', message: 'Stopped', rawTraceCount: 12 })
+  for (const id of ['cua-run', 'pp-run', 'pb-run']) expect(activities.getCompactionActivities(id)[0].phase).toBe('started')
+  expect(store.contextFor('host-run')).toBe(root); expect(root.isActive).toBe(false)
+  expect(root.getAgentContext('pp-run')!.requirement).toBe('keep my draft')
+  expect(stream.disconnect).not.toHaveBeenCalled()
   expect(io.streams).toHaveLength(1); expect(store.selectedChild('host-run')).toBe('cua-run')
+  expect(store.attach('host-run')).toBe(stream)
 })
 
 it.each(['false', 'missing', 'transport', 'children-failed-after-inactive', 'host-failed-after-children'])(
   '%s is never whole-command confirmation and never auto-wakes the host', async kind => {
     const { store, root, activities } = await setup(); store.attach('host-run')
-    const retired = io.streams[0]; const pending = deferred(); io.mutate.mockReturnValue(pending.promise)
+    const stream = io.streams[0]; const pending = deferred(); io.mutate.mockReturnValue(pending.promise)
     const stop = useAgentRunStore().terminateRun('host-run')
-    retired.options.onInactive(); retired.options.reportError('obsolete callback')
+    stream.options.reportError('obsolete callback')
     if (kind === 'transport') pending.reject(new Error('lost response'))
     else pending.resolve({ data: { terminateAgentRun: kind === 'missing' ? undefined : { success: false, message: kind } } })
     expect(await stop).toBe(false)
     for (const id of ['host-run', 'cua-run', 'pp-run']) expect(activities.getCompactionActivities(id)[0].phase).toBe('started')
-    expect(root.phase).toBe('reopen_required'); expect(store.errors['host-run']).not.toBe('obsolete callback')
+    // Not confirmed: the run's agent is not marked stopped; the view's stream continues (SR-045).
+    expect(root.isActive).toBe(true); expect(store.errors['host-run']).not.toBe('obsolete callback')
+    expect(stream.disconnect).not.toHaveBeenCalled()
     store.syncHost('host-run', true); expect(io.streams).toHaveLength(1)
   },
 )
 
-it.each(['state', 'instance', 'runtime', 'address', 'root', 'release', 'node', 'host-state'])(
-  'late success cannot settle a replaced %s batch', async kind => {
-    const { store, root, activities, host } = await setup()
+// The host's Stop settles only the host's compaction (its children are runs of their own, SR-045): a late success
+// settles nothing once the host's request is no longer current.
+it.each(['host-state', 'host-instance', 'node'])(
+  'late success cannot settle a replaced %s', async kind => {
+    const { activities, host } = await setup()
     const pending = deferred(); io.mutate.mockReturnValue(pending.promise)
     const stop = useAgentRunStore().terminateRun('host-run')
-    const child = root.getAgentContext('pp-run')!
-    if (kind === 'state') child.state = Object.assign(Object.create(Object.getPrototypeOf(child.state)), child.state)
-    if (kind === 'instance') child.state.inputProjection = { runInstanceId: 'new-instance', revision: 0 }
-    if (kind === 'runtime') child.config.runtimeKind = 'codex_app_server'
-    if (kind === 'address') root.index.agents.set('pp-run', { ...root.index.requireAgent('pp-run'), address: '/wrong' as never })
-    if (kind === 'root') store.contexts = { ...store.contexts, 'host-run': await buildAgentRunCollaborationContext({ hostRunId: 'host-run', view }) }
-    if (kind === 'release') store.release('host-run')
-    if (kind === 'node') useWindowNodeContextStore().bindingRevision++
     if (kind === 'host-state') host.state = Object.assign(Object.create(Object.getPrototypeOf(host.state)), host.state)
+    if (kind === 'host-instance') host.state.inputProjection = { runInstanceId: 'new-instance', revision: 0 }
+    if (kind === 'node') useWindowNodeContextStore().bindingRevision++
     pending.resolve({ data: { terminateAgentRun: { success: true } } }); await stop
+    expect(activities.getCompactionActivities('host-run')[0].phase).toBe('started')
     expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
-    expect(activities.getCompactionActivities('pp-run')[0].phase).toBe('started')
   },
 )
 
-it('inspection failure after success retains Stopped and history; an empty cold store fabricates no activity', async () => {
+it('inspection failure after success keeps the stopped host and its children\'s own states; an empty cold store fabricates no activity', async () => {
   const { store, activities } = await setup()
   io.query.mockRejectedValue(new Error('inspection unavailable'))
   io.mutate.mockResolvedValue({ data: { terminateAgentRun: { success: true } } })
   expect(await useAgentRunStore().terminateRun('host-run')).toBe(true)
   await store.inspect('host-run')
   expect(store.errors['host-run']).toBe('inspection unavailable')
-  expect(store.contextFor('host-run')?.phase).toBe('historical')
-  expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('stopped')
+  expect(store.contextFor('host-run')?.isActive).toBe(false)
+  expect(activities.getCompactionActivities('host-run')[0].phase).toBe('stopped')
+  expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
   setActivePinia(createPinia())
   io.query.mockImplementation(async input => input.variables.runId ? envelope(view) : emptyProjection(input))
   await useAgentRunCollaborationStore().inspect('host-run')
@@ -228,7 +219,7 @@ it('release invalidates old stream callbacks and old inspection finally cannot d
   nextRead.resolve(envelope(view)); await nextPending; await coalesced
   const nextRoot = store.contextFor('host-run')
   const nextStream = store.attach('host-run')
-  oldStream.options.onInactive(); oldStream.options.reportError('stale')
+  oldStream.options.reportError('stale')
   expect(() => oldStream.options.publish(root)).toThrow('ownership released')
   expect(store.attach('host-run')).toBe(nextStream); expect(store.contextFor('host-run')).toBe(nextRoot)
   expect(store.errors['host-run']).toBeNull()

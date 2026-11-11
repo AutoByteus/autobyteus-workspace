@@ -9,6 +9,7 @@ import { validateCollaborationCommunicationMessageArray } from "../../../../src/
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
+import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
 import { delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const scenarioDir = path.resolve(
@@ -113,7 +114,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
     sessions.push({ handler: harness.handler, id: sessionId! });
     const execution = createTeamAgentExecutionBinding({
       root: createTeamRootExecutionIdentity("team-run-root"),
-      memberAddress: "/qa/automation/tester",
+      memberAddress: assertAgentTeamAddress("/qa/automation/tester"),
       agentRunId: "nested-task-agent-run-001",
     });
     harness.emit({
@@ -311,12 +312,21 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });
 
-    it("a member's message restores the team on that input; one live in-band snapshot follows the posted message (ARCH-REV-021)", async () => {
+    it("a member's message restores the team on that input: the view is live (one in-band snapshot, then followed) before the message is posted, so the run's events after it reach the view (SR-048)", async () => {
       const harness = createHarness({ stopped: true });
       const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
       sessions.push({ handler: harness.handler, id: sessionId! });
       const order: string[] = [];
-      harness.executeAgentCommand.mockImplementationOnce(async () => { order.push("posted"); return { accepted: true }; });
+      const execution = createTeamAgentExecutionBinding({
+        root: createTeamRootExecutionIdentity("team-run-root"), memberAddress: assertAgentTeamAddress("/qa/automation/tester"), agentRunId: "nested-task-agent-run-001",
+      });
+      harness.executeAgentCommand.mockImplementationOnce(async () => {
+        order.push("posted");
+        // The run's own event for this input (its echo is one such event): published after the post.
+        harness.emit({ changeSequence: 32, event: { eventSourceType: TeamRunEventSourceType.AGENT, execution,
+          payload: { eventType: "AGENT_STATUS", statusHint: "running", details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }) } } });
+        return { accepted: true };
+      });
       const open = harness.root.openPackageSnapshotConnection.getMockImplementation()!;
       harness.root.openPackageSnapshotConnection.mockImplementationOnce(async () => { order.push("live snapshot"); return open(); });
       await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
@@ -324,12 +334,12 @@ describe("AgentTeamStreamHandler current root stream", () => {
       } }));
       await flush();
       expect(harness.teamRunService.resolveManagedTeamRun).toHaveBeenCalledOnce();
-      // The live snapshot is read after the message was posted, so it carries the member's input state.
-      expect(order).toEqual(["posted", "live snapshot"]);
-      const tail = sent(harness.connection).slice(-2);
-      expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
+      expect(order).toEqual(["live snapshot", "posted"]);
+      const tail = sent(harness.connection).slice(-3);
+      expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE", "AGENT_STATUS"]);
       expect(tail[0]!.payload).toMatchObject({ base_change_sequence: 31, live_sequence_id: "live-team-1" });
       expect(tail[1]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: true } });
+      expect(tail[2]!.payload).toMatchObject({ change_sequence: 32, agent_run_id: "nested-task-agent-run-001" });
       expect(sent(harness.connection).filter((message) => message.type === "CONNECTED")).toHaveLength(1);
     });
 

@@ -311,7 +311,8 @@ export class TeamStreamingService {
       return;
     }
     if (message.type === 'TEAM_EXECUTION_VIEW_SNAPSHOT') {
-      if (this.phase !== 'awaiting_snapshot') throw new Error(`Team snapshot is invalid during '${this.phase}'.`);
+      // After the barrier a snapshot is in-band: the Team started or stopped, a new sequence base (autobyteus-461 SR-046).
+      if (this.phase !== 'awaiting_snapshot' && this.phase !== 'ready') throw new Error(`Team snapshot is invalid during '${this.phase}'.`);
       if (this.expectedBaseChangeSequence !== null
         && message.payload.base_change_sequence !== this.expectedBaseChangeSequence) {
         throw new Error(`TEAM_STREAM_SNAPSHOT_BASE_MISMATCH: Expected ${this.expectedBaseChangeSequence}, received ${message.payload.base_change_sequence}.`);

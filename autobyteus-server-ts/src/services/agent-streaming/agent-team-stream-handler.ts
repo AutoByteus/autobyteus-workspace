@@ -91,7 +91,7 @@ export class AgentTeamStreamHandler {
     this.sessions.set(sessionId, { view, egress });
     egress.send(parseTeamStreamServerMessage({ type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: teamRunId } }));
     try {
-      await view.open();
+      await view.showCurrentMode();
     } catch (error) {
       egress.send(error instanceof TeamRunNotFoundError ? errorMessage("TEAM_NOT_FOUND", error.message) : errorMessage("TEAM_STREAM_UNAVAILABLE", String(error)));
       this.cleanupSession(sessionId);
@@ -115,11 +115,9 @@ export class AgentTeamStreamHandler {
           return;
         }
         const routed: MemberCommands = { executeAgentCommand: async (agentRunId, command) =>
-          await this.children.execute(createTeamRootExecutionIdentity(teamRunId), agentRunId, command) ?? this.memberCommand(teamRunId, agentRunId, command) };
+          await this.children.execute(createTeamRootExecutionIdentity(teamRunId), agentRunId, command) ?? this.memberCommand(session.view, agentRunId, command) };
         if (message.type === "SEND_MESSAGE") {
-          // A message to a member of a stopped team restores it: the view's switch to live waits for the message.
-          const send = () => this.handleSendMessage(teamRunId, message.payload, session.egress, routed);
-          await (this.teamRunService.getActiveTeamRun(teamRunId) ? send() : session.view.whileRestoring(send));
+          await this.handleSendMessage(teamRunId, message.payload, session.egress, routed);
         } else if (message.type === "INTERRUPT_GENERATION") {
           await handleTeamInterruptGenerationCommand({ teamRunId, payload: message.payload, sink: session.egress, activeRun: routed });
         } else {
@@ -139,16 +137,21 @@ export class AgentTeamStreamHandler {
 
   static parseMessage(raw: string): TeamStreamClientMessage { return parseTeamStreamClientMessage(raw); }
 
-  /** A command to one of the team's own members: on the live run; a message restores a stopped run first. */
-  private async memberCommand(teamRunId: string, agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+  /**
+   * A command to one of the team's own members, on the live run. A message starts a stopped run (its first input): the
+   * run is restored, then the view is brought live (its in-band snapshot sent and the live run followed), then the message
+   * is posted, so its echo reaches the view as an ordinary live event (SR-048).
+   */
+  private async memberCommand(view: TeamViewSession, agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+    const teamRunId = view.teamRunId;
     const live = this.teamRunService.getActiveTeamRun(teamRunId);
-    if (live) return live.executeAgentCommand(agentRunId, command);
-    if (command.kind !== "post_message") {
+    if (!live && command.kind !== "post_message") {
       return { accepted: false, code: "TEAM_RUN_STOPPED", message: `Team run '${teamRunId}' is stopped. A message to one of its members starts it.` };
     }
-    const restored = await this.teamRunService.resolveManagedTeamRun(teamRunId);
-    if (!restored) return { accepted: false, code: "RUN_NOT_FOUND", message: `Team run '${teamRunId}' was not found.` };
-    return restored.executeAgentCommand(agentRunId, command);
+    const run = live ?? await this.teamRunService.resolveManagedTeamRun(teamRunId);
+    if (!run) return { accepted: false, code: "RUN_NOT_FOUND", message: `Team run '${teamRunId}' was not found.` };
+    if (command.kind === "post_message") await view.showCurrentMode();
+    return run.executeAgentCommand(agentRunId, command);
   }
 
   /** The team's live root for a member message's mentions; a stopped team is restored by that message, never for a child. */
