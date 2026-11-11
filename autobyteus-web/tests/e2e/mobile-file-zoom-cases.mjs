@@ -69,8 +69,6 @@ export const runFileZoomCases = async (probe) => {
     const pngBytes = stripedPng(600, 400);
     await fs.writeFile(pdfPath, pdfBytes);
     await fs.writeFile(pngPath, pngBytes);
-    const downloadDir = path.join(outputDir, 'MSP-39-downloads');
-    await fs.mkdir(downloadDir, { recursive: true });
 
     const marker = 'FILE-ZOOM-472';
     await sendOver(stack.wsUrl(`agent-team/${stack.delivery}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
@@ -79,7 +77,6 @@ export const runFileZoomCases = async (probe) => {
     await waitFor('the lead\'s answer naming the PDF and the image', async () => /ECHO:[^]*FILE-ZOOM-472/.test(await stack.leadProjection()), 60_000);
 
     const cdp = await page.context().newCDPSession(page);
-    await cdp.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloadDir });
     const touches = (points) => points.map(([x, y], id) => ({ x, y, id, radiusX: 4, radiusY: 4, force: 1 }));
     const gesture = async (from, to, steps = 12) => {
       await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: touches(from) });
@@ -126,11 +123,14 @@ export const runFileZoomCases = async (probe) => {
       await page.goBack();
       await waitFor('the conversation again', async () => (await viewer.count()) === 0, 15_000).catch(() => undefined);
     };
+    /** Download in the bar: the browser's download, with the file's name and bytes. */
     const downloaded = async (name, bytes) => {
-      await page.locator(sel('mobile-file-download')).tap();
-      const file = path.join(downloadDir, name);
-      await waitFor(`${name} downloaded`, async () => (await fs.readFile(file).catch(() => null))?.equals(bytes) === true, 20_000).catch(() => undefined);
-      return (await fs.readFile(file).catch(() => null))?.equals(bytes) === true;
+      const [download] = await Promise.all([
+        page.waitForEvent('download', { timeout: 20_000 }),
+        page.locator(sel('mobile-file-download')).tap(),
+      ]);
+      const saved = await fs.readFile(await download.path());
+      return { name: download.suggestedFilename(), sameBytes: saved.equals(bytes), url: download.url().slice(0, 5) };
     };
 
     await toList(page);
@@ -199,7 +199,8 @@ export const runFileZoomCases = async (probe) => {
     assert(/scale\((1\.9|2(\.0)?)/.test(imagePinched.pictureTransform ?? '') && imageFit.pictureTransform === 'translate(0px, 0px) scale(1)', 'AC-002 the image pinches to 2× and a double tap returns to fit', details);
     assert(all.every(s => s.zoomScale === 1), 'REQ-003 the page itself never zooms', details);
     assert(all.every(s => s.back && s.back.x === pdfStart.back.x && s.back.y === pdfStart.back.y), 'REQ-003 the back arrow stays where it is', details);
-    assert(pdfDownloaded && pngDownloaded, 'REQ-004 Download saves the PDF and the image with their names and bytes (browser download)', details);
+    assert(pdfDownloaded.name === 'resume-472.pdf' && pdfDownloaded.sameBytes && pngDownloaded.name === 'photo-472.png' && pngDownloaded.sameBytes
+      && pdfDownloaded.url === 'blob:' && pngDownloaded.url === 'blob:', 'REQ-004 Download saves the PDF and the image with their names and bytes (the browser\'s download of the bytes the page holds)', details);
     return details;
   });
 };
