@@ -31,16 +31,12 @@ const build = (live: { team?: unknown; org?: unknown; agent?: unknown } = {}) =>
 };
 
 describe("DelegatedLaunchSelectionService", () => {
-  it("routes a live root's Stop and Save to the root, refusing its own settings while it runs", async () => {
-    const root = {
-      stopDelegatedExecution: vi.fn(async () => ({ outcome: "STOPPED", message: "Stopped.", notStoppedUnattributed: 1 })),
-      updateDelegatedLaunchSelections: vi.fn(async () => saved),
-    };
+  it("routes a live root's Stop to the root; a live run has no copies to change (autobyteus-461: a delegated run is configured as itself)", async () => {
+    const root = { stopDelegatedExecution: vi.fn(async () => ({ outcome: "STOPPED", message: "Stopped.", notStoppedUnattributed: 1 })) };
     const f = build({ team: root });
     await expect(f.service.stop({ rootKind: "AGENT_TEAM", rootRunId: "root", target: { teamRunId: "copy" } }))
       .resolves.toEqual({ success: true, outcome: "STOPPED", message: "Stopped.", notStoppedUnattributed: 1 });
-    await expect(f.service.update({ rootKind: "AGENT_TEAM", rootRunId: "root", changes })).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
-    expect(root.updateDelegatedLaunchSelections).toHaveBeenCalledWith(changes, f.validator);
+    await expect(f.service.update({ rootKind: "AGENT_TEAM", rootRunId: "root", changes })).resolves.toMatchObject({ success: false, outcome: "NOT_FOUND" });
     await expect(f.service.update({ rootKind: "AGENT_TEAM", rootRunId: "root", changes,
       configured: { kind: "team", patches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/a", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "x", llmConfig: null }] } }))
       .resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
@@ -58,21 +54,15 @@ describe("DelegatedLaunchSelectionService", () => {
     expect(f.teams.updateStoppedRunLaunchChanges).toHaveBeenCalledWith({ teamRunId: "root", configuredPatches: [], delegatedChanges: changes });
   });
 
-  it("saves a stopped Agent root's tree first, then its host model; a host failure is reported", async () => {
+  it("saves a stopped Agent run's own model; it has no copies to change; a failure is reported", async () => {
     const f = build();
     const host = { kind: "agent" as const, selection: choice };
-    await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host })).resolves.toMatchObject({ outcome: "UPDATED" });
-    expect(f.agents.updateStoppedDelegatedLaunchSelections).toHaveBeenCalledWith(expect.objectContaining({ hostRunId: "host", hostSelection: choice }));
+    await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes: [], configured: host })).resolves.toMatchObject({ outcome: "UPDATED" });
     expect(f.agentRuns.updateStoppedSelection).toHaveBeenCalledWith({ agentRunId: "host", ...choice });
-
-    f.agents.updateStoppedDelegatedLaunchSelections.mockResolvedValueOnce({ result: { outcome: "VALIDATION_FAILED", message: "bad", fieldErrors: [] }, tree: null } as never);
-    f.agentRuns.updateStoppedSelection.mockClear();
-    await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host })).resolves.toMatchObject({ outcome: "VALIDATION_FAILED" });
-    expect(f.agentRuns.updateStoppedSelection).not.toHaveBeenCalled();
-
+    await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host })).resolves.toMatchObject({ success: false, outcome: "NOT_FOUND" });
     f.agentRuns.updateStoppedSelection.mockResolvedValueOnce({ success: false, outcome: "PERSISTENCE_FAILED", message: "disk", fieldErrors: [] });
-    await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host }))
-      .resolves.toMatchObject({ success: false, outcome: "PERSISTENCE_FAILED", message: expect.stringContaining("copies' models were saved") });
+    await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes: [], configured: host }))
+      .resolves.toMatchObject({ success: false, outcome: "PERSISTENCE_FAILED", message: "disk" });
   });
 
   it("refuses the run's own settings of another root kind", async () => {

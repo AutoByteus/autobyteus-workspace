@@ -8,7 +8,9 @@ const mocks = vi.hoisted(() => ({
   getActiveTeamRun: vi.fn(),
   getTeamRunResumeConfig: vi.fn(),
   projectExecutionTree: vi.fn((tree: unknown) => tree),
-  remoteTaskExecutionDtos: vi.fn(async (links: unknown[] | undefined) => (links ?? []).map((link) => ({ ...(link as object), node_name: "docker" }))),
+  // autobyteus-461: the peer runs a run delegated to come from its Task entries, by the run's identity.
+  peerDtos: [] as unknown[],
+  remoteTaskExecutionDtos: vi.fn(async (_run: unknown) => mocks.peerDtos),
 }));
 
 vi.mock(
@@ -78,14 +80,15 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
     mocks.getTeamRunResumeConfig.mockResolvedValue({
       teamRunId: "team-run-1",
       isActive: false,
-      executionTree: { rootTeam: { address: "/", members: [], remoteTaskExecutions: [link] } },
+      executionTree: { rootTeam: { address: "/", teamRunId: "team-run-1", members: [] } },
       closedTaskExecutions: [],
       modelConfigEditability: { editable: true, reason: null },
     });
 
+    mocks.peerDtos = [{ ...link, node_name: "docker" }];
     const config = await new TeamRunHistoryResolver().getTeamRunResumeConfig("team-run-1");
 
-    expect(mocks.remoteTaskExecutionDtos).toHaveBeenCalledWith([link]);
+    expect(mocks.remoteTaskExecutionDtos).toHaveBeenCalledWith({ rootSubjectKind: "agent_team", rootRunId: "team-run-1" });
     expect(config.remoteTaskExecutions).toEqual([{ ...link, node_name: "docker" }]);
   });
 
