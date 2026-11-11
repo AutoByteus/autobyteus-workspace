@@ -1,29 +1,29 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts
-App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data
-Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/.env
-Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/.env
-◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/.env // tip: ◈ encrypted .env [www.dotenvx.com]
 Environment variables loaded successfully
-Server public base URL configured to: http://127.0.0.1:59344
+Server public base URL configured to: http://127.0.0.1:64406
 === Starting logging configuration ===
 Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts/logging_config.ini
 ============================================================
-SERVER PUBLIC URL: http://127.0.0.1:59344
+SERVER PUBLIC URL: http://127.0.0.1:64406
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-server-ts
-APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data
-DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/db
-LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/logs
-DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/download
-MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/memory
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory
 ============================================================
 AgentFactory (Singleton) initialized.
 Running Prisma migrations...
 Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/db/test.db"
+Datasource "db": SQLite database "test.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/db/test.db"
 
-SQLite database test.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/db/test.db
+SQLite database test.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/db/test.db
 
 27 migrations found in prisma/migrations
 
@@ -115,19 +115,19 @@ migrations/
       
 All migrations have been successfully applied.
 Database migrations completed successfully.
-(node:99639) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:96487) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 prisma:info Starting a sqlite pool with 21 connections.
-[2026-11-11T13:42:52.167Z] [INFO] [secret-management.vault] Secret vault: application database
+[2026-11-11T15:27:27.463Z] [INFO] [secret-management.vault] Secret vault: application database
 Initialized server settings service with 32 predefined settings
 AgentRunManager initialized.
-Node access: local control socket not opened. The node's local control socket path is 108 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/node-access/local-control.sock. Use a shorter data folder path.
+Node access: local control socket not opened. The node's local control socket path is 108 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/node-access/local-control.sock. Use a shorter data folder path.
 AgentRunManager initialized.
 Loading workspace packages to trigger registration...
 Successfully loaded workspace packages.
-Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/temp_workspace
-Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/temp_workspace.
-Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/temp_workspace with fixed ID 'temp_ws_default'
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/temp_workspace with fixed ID 'temp_ws_default'
 Temp workspace created and cached with ID: temp_ws_default
 Registering agent customization processors...
 Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
@@ -178,9 +178,9 @@ Registered required tool unit: Agent Communication Tools
 Overwriting existing tool definition for name: 'search_web'
 Successfully registered tool definition: 'search_web'
 Registered required tool unit: Search Tools
-{"level":30,"time":1794404572574,"pid":99639,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59354"}
-{"level":30,"time":1794404572602,"pid":99639,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59344"}
-[2026-11-11T13:42:52.602Z] [INFO] [server.runtime] Server listening on 127.0.0.1:59344
+{"level":30,"time":1794410847920,"pid":96487,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64420"}
+{"level":30,"time":1794410847946,"pid":96487,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:64406"}
+[2026-11-11T15:27:27.946Z] [INFO] [server.runtime] Server listening on 127.0.0.1:64406
 Scheduling Studio-only non-critical startup tasks...
 Background cache pre-loading process has started.
 CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
@@ -203,11 +203,19 @@ Background task 'Cache Pre-loading' completed successfully.
 Agent Definition created successfully with ID: publisher
 Resolved configured temp workspace root to TempWorkspace.
 Resolved configured temp workspace root to TempWorkspace.
-AGY compaction detection off for run publisher_1a34f27934944fbc8c9bb3020fb83726: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
-Agent websocket attached for run publisher_1a34f27934944fbc8c9bb3020fb83726
-Created agent session f680f397-b499-413a-9411-27c4a8fa272c for run publisher_1a34f27934944fbc8c9bb3020fb83726
-Agent WebSocket connected: session=f680f397-b499-413a-9411-27c4a8fa272c, run=publisher_1a34f27934944fbc8c9bb3020fb83726
-Closed agent session f680f397-b499-413a-9411-27c4a8fa272c
-Agent WebSocket disconnected: f680f397-b499-413a-9411-27c4a8fa272c
-Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/memory/agents/publisher_1a34f27934944fbc8c9bb3020fb83726/raw_traces_manifest.json
-Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-37JT8j/data/memory/agents/publisher_1a34f27934944fbc8c9bb3020fb83726/raw_traces_manifest.json
+AGY compaction detection off for run publisher_1132474c9ea242259fc24b3a59f9f393: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run publisher_1132474c9ea242259fc24b3a59f9f393
+Created agent session e7d5c6c5-67c7-4c02-b656-41c2b7bf6770 for run publisher_1132474c9ea242259fc24b3a59f9f393
+Agent WebSocket connected: session=e7d5c6c5-67c7-4c02-b656-41c2b7bf6770, run=publisher_1132474c9ea242259fc24b3a59f9f393
+Closed agent session e7d5c6c5-67c7-4c02-b656-41c2b7bf6770
+Agent WebSocket disconnected: e7d5c6c5-67c7-4c02-b656-41c2b7bf6770
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest471-node-b-HHguCk/data/memory/agents/publisher_1132474c9ea242259fc24b3a59f9f393/raw_traces_manifest.json

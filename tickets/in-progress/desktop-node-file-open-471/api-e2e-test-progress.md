@@ -20,3 +20,16 @@
 | 2026-11-11T14:10:44Z | API-05 | Checkpoint | not started | run 1 stopped before any case: 'Build the phone bundle first' (the packaged build replaced dist-mobile); rebuilt (API-05-mobile-web-build.log); rerun |
 | 2026-11-11T14:37:26Z | API-05 | Completed | Pass for this ticket's cases; 3 out-of-scope fails | run 2 (bundle rebuilt): 35/38 Pass incl. MSP-16, 28-31, 37, 38; MSP-24/34/35 Fail: after a closed Task is set back to TODO the node no longer lists it closed but no phone/desktop list shows it again (469 task-tree model) -> FU-003 |
 | 2026-11-11T14:39:00Z | — | Round result | Fail | F-1, F-2 (AC-003), F-3 (REQ-001 read-only); report and revision record API-REV-001 written |
+| 2026-11-11T15:16:16Z | — | Round 2 plan | — | IR-002 code b0f3d1c42b (web only; probes and server unchanged since a2f52db5b0). Rerun: API-03, API-01 (D1-D3, D7-D9), API-02 (D5-D6), API-04, API-05; new API-06 (phone link and attachment in a remote run, Docker node over Tailscale) |
+| 2026-11-11T15:16:16Z | API-03 | Started | — | round 2: --build on a044b6652c |
+| 2026-11-11T15:23:26Z | API-03 | Completed | Pass | round 2 (--build on a044b6652c, code b0f3d1c42b): N-001…N-009 Pass |
+| 2026-11-11T15:23:26Z | API-01 | Started | — | round 2: image, nodes (A also on Tailscale), desktop recheck |
+| 2026-11-11T15:30:22Z | API-01 | Completed | Pass | round 2: D1-D3 as round 1 (all tabs readOnly, 5/5 object URLs revoked); D7-D9 attachment: preview, accessIntent node-file readOnly, no Edit Mode control, typing ignored, no WriteFileContent, node file unchanged |
+| 2026-11-11T15:30:22Z | API-02 | Completed | Pass | round 2: remote run attachment and link (each from an empty status line): 'This file is on host-b-471, where this run runs.', no drawer, no request, no file opened |
+| 2026-11-11T15:30:22Z | API-06 | Started | — | phone paired with A over Tailscale; remote run link and attachment |
+| 2026-11-11T15:31:45Z | API-06 | Completed | Pass | phone over Tailscale (100.127.30.107): link -> status line, attachment -> toast 'This file is on host-b-471, where this run runs.'; no viewer, no node-file request; 4 console 401s = /favicon.ico (known) |
+| 2026-11-11T15:31:45Z | API-04 | Started | — | round 2 |
+| 2026-11-11T15:33:48Z | API-04 | Completed | Pass | round 2: PSD-001…011 Pass; search-pdf-preview API-002, API-003 Pass |
+| 2026-11-11T15:33:48Z | API-05 | Started | — | round 2: phone bundle rebuilt (the packaged build removed dist/public); full probe, clean env |
+| 2026-11-11T16:12:45Z | API-05 | Completed | Pass for this ticket's cases | round 2: 34/38; MSP-24/34/35 out of scope (FU-003); MSP-20 window edge -> baseline fix 23524436af, MSP-20 Pass |
+| 2026-11-11T16:12:45Z | — | Round result | Pass | round 2 (API-REV-002): F-1, F-2, F-3 resolved; 95% |

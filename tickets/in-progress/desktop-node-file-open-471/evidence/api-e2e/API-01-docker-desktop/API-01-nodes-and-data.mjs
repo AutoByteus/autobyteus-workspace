@@ -6,6 +6,8 @@
 // - Docker node A: a test-owned container of abtest471/autobyteus-server:test (this worktree's server package) on
 //   127.0.0.1:<free port>, fresh anonymous volumes, a host temp folder mounted at /home/autobyteus/shared (as the launcher
 //   mounts the shared folder), the scripted AGY CLI (linked_skills: `ECHO_INPUT <text>` answers `ECHO:"<text>"`).
+//   Round 2: with TS_ADDR set, A is also published on that address (this Mac's Tailscale address, as the launcher publishes),
+//   so a phone can pair with it over Tailscale (API-06).
 // - Host node B: this worktree's dist/app.js on 127.0.0.1:<free port>, temp data root, the same scripted CLI; paired with A
 //   by invite (A calls B "host-b-471").
 // - On A: a run in /home/autobyteus/workspace/ws-471 whose own message links files in and outside its folder, and a
@@ -40,7 +42,7 @@ try {
   fs.writeFileSync(`${T}/shared/notes-471.md`, '# Notes 471\n\nNOTES-MARKER-471: the release notes an agent wrote.\n\n- one\n- two\n');
   fs.writeFileSync(`${T}/shared/picture-471.png`, png(120, 80));
   fs.writeFileSync(`${T}/plan-471.pdf`, pdf('PDF-MARKER-471')); fs.writeFileSync(`${T}/tone-471.wav`, wav());
-  docker('run', '-d', '--name', A_NAME, '-p', `127.0.0.1:${pA}:8000`, '-v', `${T}/shared:${S}`, '-v', `${T}/agy:/opt/abtest471-agy:ro`,
+  docker('run', '-d', '--name', A_NAME, '-p', `127.0.0.1:${pA}:8000`, ...(process.env.TS_ADDR ? ['-p', `${process.env.TS_ADDR}:${pA}:8000`] : []), '-v', `${T}/shared:${S}`, '-v', `${T}/agy:/opt/abtest471-agy:ro`,
     '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data', '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0', '-e', 'AUTOBYTEUS_SERVER_PORT=8000', '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${pA}`,
     '-e', 'APP_ENV=production', '-e', 'DB_TYPE=sqlite', '-e', 'AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace',
     '-e', 'ANTIGRAVITY_CLI_COMMAND=/opt/abtest471-agy/agy-failure-cli.mjs', '-e', 'AGY_FAKE_CASE=linked_skills', '-e', `AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL=${owner}`,

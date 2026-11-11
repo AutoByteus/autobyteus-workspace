@@ -1,0 +1,18 @@
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "node": {
+    "isEmbeddedWindow": false,
+    "rest": "http://127.0.0.1:64405/rest"
+  },
+  "links": {
+    "notes": 1,
+    "picture": 1,
+    "plan": 1,
+    "tone": 1,
+    "device": 1,
+    "folder": 1,
+    "missing": 1,
+    "inside": 1
+  },
+  "title": ""
+}

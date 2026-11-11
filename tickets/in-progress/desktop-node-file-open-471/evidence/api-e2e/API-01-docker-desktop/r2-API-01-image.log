@@ -1,0 +1,7 @@
+# API-01 test image; commit a044b6652c; 2026-11-11T15:23:26Z
+buildx exit 0
+#45 copying files 687.67MB 14.1s done
+#45 DONE 14.3s
+sha256:737e183c7241ec18cb3cefc61c8a4db5c0e597a4f186e5cf6f5a099914cc98e0
+server package node-files route: node-file-reader.d.ts node-file-reader.d.ts.map node-file-reader.js 
+package version: 0.1.1

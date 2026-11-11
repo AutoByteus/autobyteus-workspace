@@ -1,0 +1,14 @@
+# API-06 phone, remote run; commit a044b6652c; 2026-11-11T15:31:03.621Z
+node A at http://100.127.30.107:64405 (Tailscale publishing), run reporter_238ff93cf2dc4a4c8e3629083b8fa196, remote run publisher_1132474c9ea242259fc24b3a59f9f393 on host-b-471
+PASS Phone Access on for A
+PASS pairing session 201
+phone paired at http://100.127.30.107:64405; A's run is listed
+PASS the remote run's conversation is open on the phone
+link tap: {"toast":"","status":"This file is on host-b-471, where this run runs.","viewerOpened":false,"stillOnConversation":true,"nodeFileRequests":[],"nodeFileQuery":null}
+PASS phone link in a remote run says "This file is on host-b-471, where this run runs.", opens nothing, reads nothing (AC-003)
+attachment tap: {"toast":"This file is on host-b-471, where this run runs.","status":"This file is on host-b-471, where this run runs.","viewerOpened":false,"stillOnConversation":true,"nodeFileRequests":[],"nodeFileQuery":null}
+PASS phone path attachment in a remote run says "This file is on host-b-471, where this run runs.", opens nothing, reads nothing (AC-003)
+PASS no autobyteus-278 text, no "host workspace" text
+phone console errors: 4 ["Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /favicon.ico","Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /favicon.ico","Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /favicon.ico","Failed to load resource: the server responded with a status of 401 (Unauthorized) @ /favicon.ico"]
+401 responses (path, after the Pair click?): []
+result Pass
