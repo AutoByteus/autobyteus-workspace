@@ -2,7 +2,7 @@
 
 ## Document Status
 
-- Status: `Approved` (SR-018, 2026-11-11). The user approved the package for architecture review after the Solution Designer's own validation: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me." The scope covers standalone, team and org runs (TC-4 revised, SR-017).
+- Status: `Approved` (SR-018, 2026-11-11; the non-goals' exception for TC-12 approved by the user at SR-035, 2026-11-11). The user approved the package for architecture review after the Solution Designer's own validation: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me." The scope covers standalone, team and org runs (TC-4 revised, SR-017).
 - Current solution revision ID: `SR-022`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
@@ -73,7 +73,7 @@
 
 - No "stop this run and everything it delegated" action (DEC-008). Closing the Task does that.
 - No new store, inbox or queue for messages.
-- No change to what an agent reads: tool names, parameters, results and collaboration texts.
+- No change to what an agent reads: tool names, parameters, results and collaboration texts. **Exception, approved by the user on 2026-11-11 (SR-035, ARCH-REV-009 AR-019):** the members of a delegated team address each other at their team's root, as in a team the user starts. `/code_reviewer` replaces `/software_engineering_team/code_reviewer`, in messages and in `get_handoff_rules`. The members of delegated teams with an open Task are told their new addresses once; an old prefixed address gets "not found" with guidance. `delegate_task` to the team's own definition from inside a delegated team creates a new copy, as in a team the user starts, instead of today's own-team refusal. Contract TC-12 and §5 (S2, S23, DL-11).
 
 ### Preserved Behavior Boundary
 

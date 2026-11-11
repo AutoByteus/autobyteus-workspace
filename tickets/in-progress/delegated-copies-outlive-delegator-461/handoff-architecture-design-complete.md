@@ -1,9 +1,9 @@
-# Handoff: Architecture Design Complete (round 9)
+# Handoff: Architecture Design Complete (round 10)
 
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-461` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("Stopping an agent (e.g. the Project Task Manager) must not stop the task agents and task agent teams it delegated to")
 - Package identifier: `delegated-copies-outlive-delegator-461`
-- Current solution revision: `SR-033`
+- Current solution revision: `SR-035`
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-11
 - Classification: `task_size = Large`, `architectural_risk = High` (unchanged)
@@ -19,7 +19,18 @@
 - The user asked for the package to go to review.
 - Design `Ready`, self-validated.
 
-## What happened since your round 8 (ARCH-REV-008 failed SR-024 with AR-018)
+## Round 10: the answers to ARCH-REV-009
+
+| Finding | Answer |
+| --- | --- |
+| **AR-019** (Requirement Gap): TC-12 revised and DL-11 change what agents read; the user was only informed | **Decided by the user (SR-035).** The Solution Designer put both options to the user with worked examples. The user chose option 1: every team at its own root, so a delegated team's members write `/code_reviewer` ("When I address my team member, I should feel like I'm on the root"; "if option one feels more reasonable, we definitely use option one"). `requirements-doc.md` now records the exception to the non-goal "No change to what an agent reads": the teammates' addresses, the one-time notice to members of open delegated teams, and DL-11's new copy. The contract's TC-12 row says the user decided it. The contract, the model and the walkthrough were already option 1, so they are unchanged. |
+| **AR-020** (Design Impact): the model stopped a peer's run on Task closure | **Fixed (SR-034).** The model fences it, as the base does: node A closes the entry, nothing is sent to node B, and the peer run's next report is refused with the closed-Task text. Node B's run keeps running until its own idle shutdown. S19 and contract T-1 are corrected. |
+| Note: address step 2 keyed on the run's own `delegatedFrom` | **Fixed (SR-034).** Step 2 now applies by the run's Task entries; a run of a deleted Task uses step 3. |
+| Residual: implementation ahead of approval | The Implementation Engineer held the TC-12 and DL-11 parts until the user decided, and is now told to proceed with option 1. |
+
+Checks: `walkthrough.py --check` prints three "match" lines, and the walkthrough's examples have 0 findings.
+
+## Earlier: what happened between round 8 and round 9 (ARCH-REV-008 failed SR-024 with AR-018)
 
 | SR | Change | Why |
 | --- | --- | --- |
@@ -32,7 +43,7 @@
 | SR-032 | **Contract §2.4, which Task a delegation belongs to.** A run that works on a Task cannot use `task_id`. Sub-work joins the run's newest open entry, and is refused only when none is open. | Raised by the Implementation Engineer and decided on the model's merits. Both rules equal today's code. |
 | SR-033 | The §2.4 rules as states: S12 … S15, S23. | The user. |
 
-## What to review
+## What round 9 reviewed
 
 1. **AR-018's answer (TC-12 revised).**
    - Readers: none that equates the root or the team scope with `/` changes. The handoff compiler keeps a delegated team's outside `to` as an external target. Node B's answer stops mounting peer members.

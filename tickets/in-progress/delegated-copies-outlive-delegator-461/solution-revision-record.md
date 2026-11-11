@@ -760,5 +760,25 @@
   - (2) root at the delegation address: nothing agent-visible changes, with the reader and handoff-compiler changes of AR-018.
 
   The Implementation Engineer is asked to hold the TC-12 and DL-11 parts until the user decides.
-- Next action: the user's decision on AR-019; then the requirements and the contract updated at an approved SR; then architecture review, round 10
+- Next action: superseded by SR-035
+
+### SR-035 — The user decides AR-019: option 1, every team at its own root
+
+- Phase: Requirements (approval of an agent-visible change) and Design; `Requirement Gap` resolved
+- Triggering: ARCH-REV-009 AR-019. TC-12 revised (SR-025) and the DL-11 change alter what agents read, against the approved non-goal "No change to what an agent reads". The Solution Designer put the trade-off to the user with worked examples:
+  - option 1, every team at `/`: a delegated team's members write `/code_reviewer`;
+  - option 2, today's addresses: `/software_engineering_team/code_reviewer`.
+- The discussion (2026-11-11): the user first preferred option 2 for its hierarchy, and the Solution Designer then also leaned to it. The user then weighed it again: "Option 1 actually makes sense. The team member is in the team. Why do I add a second order? … When I address my team member, I should feel like I'm on the root." The Solution Designer checked option 1 against every way an address is used:
+  - delegation uses a catalog address in the delegator's own list, the same in both options;
+  - afterwards runs talk by run ID, the same in both;
+  - without a run ID, an agent reaches its own team, its Task's assigner's agents, or its own run's agents, the same in both apart from the teammates' prefix.
+
+  Option 2's prefix does not show the delegation hierarchy: sub-work delegated by E is addressed `/product_team`, not under `/software_engineering_team`. The hierarchy is kept in `delegatedFrom` and the tree. The one weakness of option 1, a teammate and an assigner's agent with the same name, is resolved by the own team first (0 such clashes in the data).
+- Decision (the user, 2026-11-11): "If option one feels more reasonable, we definitely use option one." The Solution Designer judged option 1 more reasonable in every case, as recorded above.
+- Done:
+  - `requirements-doc.md`: the non-goal "No change to what an agent reads" records this exception: teammates' addresses, the one-time notice to members of open delegated teams, and DL-11's new copy.
+  - The contract's TC-12 row: decided by the user.
+  - The contract, the model and the walkthrough were already option 1 (SR-025), so there is no change there. `walkthrough.py --check` passes.
+- Classification: `Large`, `High`, unchanged
+- Next action: architecture review, round 10 (AR-019 decided by the user; AR-020 answered at SR-034)
 
