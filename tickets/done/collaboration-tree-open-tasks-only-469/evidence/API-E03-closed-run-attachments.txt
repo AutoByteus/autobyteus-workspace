@@ -1,0 +1,14 @@
+# Case: API-E03 (round 3, delivery re-entry DR-002): AC-007, attachments of a closed run
+# Command: env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/closed-run-attachments.e2e.test.ts --no-watch
+# Code under test: origin/personal 1ee1ea61cf (merged change; worktree HEAD 3ebcb892e8 + this round test files); server dist built in this worktree (BUILD EXIT 0)
+# Environment: macOS darwin 25.5 arm64, Node v22.21.1; built server dist/app.js on a test-owned data root; one real restart
+# Date: 2026-11-11
+# Look for: "✓ CRA-1 ..." and "Tests  1 passed (1)". The assertions (exact bytes, HTTP 200) are in the test file; the observed-only line records the context-file route while the Task is closed (FU-006)
+
+CRA-1 observed (not asserted): {"agentContextFileWhileClosed":404,"orgContextFileWhileClosed":404}
+ ✓ tests/e2e/projects/closed-run-attachments.e2e.test.ts (1 test) 8816ms
+     ✓ CRA-1 a reference of a message with the closed run opens through the top run (also after a restart); the run's context file opens again once its Task is reopened  8800ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  04:56:51
+   Duration  18.97s (transform 6.25s, setup 63ms, import 9.04s, tests 8.82s, environment 0ms)

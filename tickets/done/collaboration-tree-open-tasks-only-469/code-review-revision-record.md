@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 / API-REV-001 F-1…F-3 | Pass | Fail: Design Impact (F-3), implementation Local Fix (F-2), API/E2E Local Fix (F-1) | CR-002, CR-003; C-06 corrected |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 / IR-002 (SR-009) | Fail (CRR-002) | Pass | CR-002, CR-003 resolved; CR-001 open, non-blocking |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-002 Pass | Pass (CRR-003) | Pass | None |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-003 Pass (DR-002 AC-007 re-entry) | Pass (CRR-004) | Pass | None |
 
 ## Revision Entries
 
@@ -136,3 +137,34 @@ None (first test-code review).
 - Remaining risks or uncertainty:
   - Memory Sync imported sources with delegated runs are untested.
   - Signing, notarization and the non-macOS release jobs need the release runner.
+
+### CRR-005: Proportional test-code review after API/E2E round 3 (AC-007 re-entry): Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new "Round 2" section first)
+- Review entry point and round: successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003); delivery re-entry DR-002; test commit `87d03534df`
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-002
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - New CRA-1 proves AC-007 as the requirement owner set it in DR-002, for the Agent and Org roots, with exact-byte assertions:
+    - (a) a message reference opens through the top run after the run left the tree, after a restart and after the restore;
+    - (b) the run's context file opens again after the reopen and continuation.
+  - The built-server root helpers moved to `tests/e2e/helpers/built-studio-roots.ts` with their assertions; the moved suite reran 3/3.
+- Supported product scenario / material-premise basis changes: none. AC-007's meaning comes from DR-002.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none. Two non-blocking notes:
+  - the context-file send's "taken" check is loose;
+  - FU-005 and FU-006 are not listed in this ticket's `follow-ups.md`.
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: the Team root is not covered for AC-007 (b), and the reason is stated. The context-file route's rule for a closed run is FU-006.

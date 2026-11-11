@@ -29,3 +29,6 @@
 | 2026-11-11 03:24 | API-B01 | Started | | round 2, all 16 cases, --output-dir /tmp/api469/r2-probe-B01 |
 | 2026-11-11 03:29 | API-B01 | Completed | Pass | round 2: 16/16 pass in one run; cleanup receipt dataRootRemoved true |
 | 2026-11-11 03:38 | API-F01 | Completed | Pass | round 2 on c7eb0d8626: install, build (typecheck PASS, dmg/zip), verify steps EXIT 0; clone removed |
+| 2026-11-11 (round 3) | API-E03 | Started | | DR-002 re-entry; worktree collaboration-tree-open-tasks-only-469-ac007 at 1ee1ea61cf; install, prebuild, build EXIT 0 |
+| 2026-11-11 04:57 | API-E03 | Completed | Pass | CRA-1 1/1 (Agent and Org); observed context-file route 404 while closed (not asserted) |
+| 2026-11-11 05:00 | API-E02 | Completed | Pass | rerun after moving helpers: 3/3; server typecheck PASS (1180 = baseline) |
