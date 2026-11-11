@@ -1,4 +1,4 @@
-import { rebaseDefinitionAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { DelegatedRunStartError, type DelegatedRunStarter } from "../../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import type { TaskTeamExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
@@ -14,7 +14,8 @@ export const TEAM_CHANGED_WHILE_STARTING = "the Agent Team changed while it was 
 /**
  * B's Team creation for a peer's delegation (autobyteus-247 G-9, DS-001): the run is created by `DelegatedRunStarter`
  * (the same as a local delegation, autobyteus-461); this keeps only the peer's concerns: the refusal the delegating node
- * reads, and the members named as the delegating node addresses them (mounted at its `recipient_address`).
+ * reads. The members are named by their own team-local addresses (`/lead`, SR-030): the delegating node reaches them by
+ * run ID only, and keeps them in the Task entry's `members` as they are.
  */
 export class RemoteTeamRunStarter {
   constructor(private readonly dependencies: Readonly<{ starter: Pick<DelegatedRunStarter, "startTeam"> }>) {}
@@ -31,14 +32,12 @@ export class RemoteTeamRunStarter {
       Object.freeze({ accepted: false, code: REMOTE_REFUSAL.AGENT_CANNOT_RUN, message, target: Object.freeze({ kind: "agent_team" as const, name: input.name }) });
     try {
       const started = await this.dependencies.starter.startTeam({ source: input.source, address: input.address, delegatedFrom: input.delegatedFrom });
-      // The answer names the members as the delegating node addresses them: mounted at the catalog address.
-      const mounted = (address: string) => rebaseDefinitionAgentTeamAddress(address, input.address);
       return Object.freeze({
         accepted: true as const,
         kind: "agent_team" as const,
         teamRunId: started.teamRunId,
-        coordinatorAddress: mounted(started.coordinatorAddress),
-        members: Object.freeze(started.members.map((member) => Object.freeze({ address: mounted(member.address), agentRunId: member.agentRunId }))),
+        coordinatorAddress: started.coordinatorAddress,
+        members: Object.freeze(started.members.map((member) => Object.freeze({ address: member.address, agentRunId: member.agentRunId }))),
       });
     } catch (error) {
       if (error instanceof DelegatedRunStartError) return refuse(error.changedWhileStarting ? TEAM_CHANGED_WHILE_STARTING : error.message);

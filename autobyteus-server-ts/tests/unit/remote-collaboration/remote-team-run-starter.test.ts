@@ -87,9 +87,10 @@ describe("RemoteTeamRunStarter: a resolved Team source → createTeamRun (G-9)",
     const node = setup();
     const answer = await node.start();
     expect(answer).toEqual({
-      accepted: true, kind: "agent_team", teamRunId: "studio_team_run", coordinatorAddress: "/studio_team/lead",
-      members: [{ address: "/studio_team/lead", agentRunId: "lead_run_1" }, { address: "/studio_team/writer", agentRunId: "writer_run_2" },
-        { address: "/studio_team/checker", agentRunId: "checker_run_3" }],
+      // SR-030: the members by their team-local addresses (the delegating node reaches them by run ID only).
+      accepted: true, kind: "agent_team", teamRunId: "studio_team_run", coordinatorAddress: "/lead",
+      members: [{ address: "/lead", agentRunId: "lead_run_1" }, { address: "/writer", agentRunId: "writer_run_2" },
+        { address: "/checker", agentRunId: "checker_run_3" }],
     });
     const tree = node.roots.get("studio_team_run")!.getExecutionTreeSnapshot() as never as {
       delegatedFrom: unknown; rootTeam: { coordinatorAddress: string; defaultLaunchConfiguration: unknown; members: Array<Record<string, unknown>> } };
