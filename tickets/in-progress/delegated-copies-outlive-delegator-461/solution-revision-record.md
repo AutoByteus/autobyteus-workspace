@@ -21,7 +21,8 @@
 | SR-015 | Design | Contract revision 5 with TC-7, TC-8, DEC-011 decided; the user: redesign and show it to him before any review | N/A | Design Needs Revision (SR-010) | Design Draft, for the user's review | DS-1 … DS-10 | Presented to the user; not sent to review |
 | SR-016 | Design | The user: names by ownership; finish the open items, then stop for his review | N/A | Design Draft (SR-015) | Design Draft, for the user's review | DS-1 … DS-10; V-10, V-11, V-14, U-A, U-B | Presented to the user; not sent to review |
 | SR-017 | Requirements and design | The user widens the scope: team and org runs in this ticket (TC-4 revised) | N/A | Design Draft (SR-016) | Requirements Ready for Approval; design Draft, for the user's review | REQ-001, REQ-002, REQ-010, REQ-011, BEH-002, BEH-004, AC-006, AC-012, SCN-002; TC-4 | Presented to the user; not sent to review |
-| SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | To architecture review |
+| SR-018 | Requirements and design | The user: validate the data model and the design yourself, then send to architecture review (approval given) | N/A | Requirements Ready for Approval; design Draft | Requirements Approved; design Ready | DS-11, migration step 8, the Task page's locator | Architecture review ARCH-REV-002: Fail (AR-004, AR-005, AR-008, AR-011 … AR-015) |
+| SR-019 | Design (and requirement wording) | Architecture review ARCH-REV-002 (round 2) on SR-018 | AR-004, AR-005, AR-008, AR-011, AR-012, AR-013, AR-014, AR-015 | Design Ready, review Fail | Design Ready | REQ-005, REQ-009 (wording); DS-1, DS-2, DS-8, DS-9, DS-10 | Back to architecture review |
 
 ## Revision Entries
 
@@ -428,3 +429,25 @@
 - Classification: `Large`, `High`
 - Applied handoff-rule outcome: see `handoff-architecture-design-complete.md`
 - Next action: architecture review
+
+### SR-019 — Answers to architecture review round 2
+
+- Phase and classification: Design, `Design Impact` resolved; requirement wording (AR-015) with no change of intended behavior
+- Triggering report: `design-review-report.md`, `architecture-review-revision-record.md`, ARCH-REV-002, decision `Fail`
+- Triggering finding IDs: AR-004, AR-005, AR-008 (narrowed from round 1); AR-011 … AR-015 (new); residuals
+- Prior status: requirements Approved; design Ready (SR-018), reviewed Fail
+- Current status: requirements Approved (wording corrected); design Ready (SR-019)
+- What changed (each answered in the design's table "Round 2"):
+  - **DS-10 (AR-005):** declares its four prerequisite migrations; preserves the released partial states of `20261017_task_agent_own_run_v1` (a tree holding a non-link entry or a link without an own file is left untouched and reported); states how each step is recognized as done on retry, the order, the Guideline §2 checklist and the fixtures.
+  - **DS-8 (AR-011, AR-008):** a view's commands to a local child go to the child's own root through `DelegatedRunCommands`, tool approval included; the stream connect no longer starts the host, for all three stream kinds.
+  - **DS-9 (AR-004):** the restart notice lists the resumed runs a run delegated, from the Task side.
+  - **DS-2 (AR-013):** the receiver's root writes its log, then the sender's root writes its own, as the peer path does, with the failure outcomes.
+  - **Readers table (AR-012):** team, org and standalone token totals cover the runs delegated from them, recursively, from the Task entries. The results are unchanged, so this is not a Requirement Gap; REQ-009 now says so.
+  - **Ownership Map (AR-014):** the Task side's index maps every agent of every run named as a `delegatingRun`; org roots named.
+  - **Requirements (AR-015):** supplements, follow-ups, scenarios, REQ-005, REQ-009, unknowns and ASM-003 corrected.
+  - **Residuals:** DS-1 states the role and the owned-sender refusal and the history row at creation; the team gate is named.
+- Intended behavior changed: `No`
+- Approval impact: none (within the approved requirements; REQ-009's wording makes explicit what "keeps working" covers)
+- Classification: `Large`, `High`, unchanged
+- Applied handoff-rule outcome: back to `/software_engineering_team/architecture_reviewer`
+- Next action: architecture review, round 3

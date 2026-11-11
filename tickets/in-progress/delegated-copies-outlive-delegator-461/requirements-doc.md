@@ -101,11 +101,11 @@ BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-008, REQ-00
 | REQ-002 | A delegated run, whoever delegated it, is shown under the run that delegated it, once, with its real status and its own Stop, in the desktop and phone layouts. It is opened, watched, messaged, configured while stopped, archived and deleted like any run. A quiet delegated run is shut down after the idle grace period and woken by its next message. | BEH-011 | Critical | Contract P1, §5 | N/A | Contract; TC-3 |
 | REQ-003 | A message a delegated run sends to its stopped delegator wakes the delegator: it resumes with its conversation and receives the message once. It is never lost or refused because the delegator is stopped. The same holds for a message to a stopped or idle delegated run. | BEH-003 | Critical | The platform's standard rule | N/A | DEC-001 (the user) |
 | REQ-004 | Opening or watching a run, a delegated run or their conversations never starts or resumes a run. | BEH-009 | High | Otherwise watching undoes a Stop | N/A | Investigation BEH-009 |
-| REQ-005 | The Task rules are unchanged for runs delegated from a standalone run: closing a Task stops its runs that have no other open Task (assigned and sub-work); a closed run takes no input except its assigner's reactivation; reopening starts nothing; runs of different Tasks cannot message each other by run ID; a follow-up Task can be given to a run by its ID. | BEH-005 | Critical | Contract P5; the Task rules stay | N/A | Task 461 want 3; CM-6 |
+| REQ-005 | The Task rules are unchanged for every delegated run: closing a Task stops its runs that have no other open Task (assigned and sub-work); a closed run takes no input except its assigner's reactivation; reopening starts nothing; runs of different Tasks cannot message each other by run ID; a follow-up Task can be given to a run by its ID. | BEH-005 | Critical | Contract P5; the Task rules stay | N/A | Task 461 want 3; CM-6 |
 | REQ-006 | A stopped run's own settings are editable while the runs it delegated to work, and a stopped delegated run's settings are saved like any stopped run's. | BEH-001, BEH-011 | High | "Change the manager's configuration without losing the work"; TC-5 | N/A | Task 461; TC-5 |
 | REQ-007 | Archive and delete of a run are refused, with the reason shown to the user, while a run it delegated to is working. They never delete a delegated run. A delegated run whose delegating run was deleted is listed as a run of its own. | BEH-007 | High | TC-2, TC-3 | N/A | TC-2; TC-3 (the user) |
 | REQ-008 | Server shutdown and restart stay as today; after an update restart a busy delegated run is resumed whether or not its delegator was stopped, and a stopped run is not resumed. | BEH-006 | Medium | DEC-007 | N/A | Task 461 want 4 |
-| REQ-009 | Everything else a user or an agent can do today with a delegation made from a standalone run keeps working: `delegate_task` to an address (described work and a saved Task) and to an existing run by its ID, with the same results and texts; the Project's folder and launch inheritance of a new delegated run; the launch notes; the Task page with each run's status and locator; a delegated run's files, conversation, context files and token usage, and the delegating run's token roll-up; tool approval and interrupt; `@` mentions; the restart notice. | BEH-011 | Critical | No regression | N/A | Preserved behavior |
+| REQ-009 | Everything else a user or an agent can do today with a delegation, from a standalone run, a team run or an org run, keeps working: `delegate_task` to an address (described work and a saved Task) and to an existing run by its ID, with the same results and texts; the Project's folder and launch inheritance of a new delegated run; the launch notes; the Task page with each run's status and locator; a delegated run's files, conversation, context files and token usage, and the delegating run's token roll-up (standalone, team and org totals include the work of the runs delegated from them, as today); tool approval, interrupt, messages and Stop of a delegated run from the delegating run's view; `@` mentions; the restart notice. | BEH-011 | Critical | No regression | N/A | Preserved behavior |
 | REQ-010 | Unchanged: termination of an application-owned run by its application. Inside one team run or org run, its members keep working together as today (messages, handoff rules); only runs delegated from it become runs of their own. | BEH-002 | High | DEC-006; TC-4 revised | N/A | DEC-006; TC-4 (the user) |
 | REQ-011 | Stored data follows the contract (§2, §3) for every delegated run and for runs started by a peer; the Task record's sub-work role is `subWork`. Existing data is converted once at startup: nothing is lost, a run that cannot be converted is left intact and reported, and the app starts and stays usable. | BEH-010 | Critical | Contract P4, P7; `DESIGN.md` rules 7 and 10; Data Migration Guideline | N/A (no uncertain technology; the data check shows every stored run converts) | Contract; DEC-010 |
 | REQ-012 | `collaboration_model.md` and `GLOSSARY.md` carry the contract's words and rules, with a current-state table that says which delegating run kinds follow it. | BEH-010 | High | The canonical contract changes with the code | N/A | `DESIGN.md` project documents |
@@ -174,30 +174,30 @@ BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-008, REQ-00
 - Data or state that must be preserved: every run's conversation, memory, message logs, files; every link; every Task record's content
 - Loss, reset, rebuild, or regeneration that is acceptable: none
 - Retention, privacy, compliance, volume, downtime, or operational constraints: the user's data today: 196 delegated runs, 197 links, 407 Task records; no downgrade after the migration, as in any upgrade that changes stored data
-- Unknowns requiring downstream investigation: contract §7.2 (V-8 … V-12)
+- Unknowns requiring downstream investigation: none open in the requirements; the design's "Readers Of Removed Or Renamed Fields" is confirmed file by file in implementation
 
 ## External Contracts And Dependencies
 
 | Contract / Dependency | Required Behavior Or Constraint | Evidence / Authority | Uncertainty Or Risk |
 | --- | --- | --- | --- |
 | Collaboration Model, Glossary | Updated to the contract in the same change | `DESIGN.md` | None |
-| Data Migration Guideline | Governs the migration | `autobyteus-server-ts/docs/design/data_migration_guideline.md` | Released migrations that read these shapes (contract V-11) |
+| Data Migration Guideline | Governs the migration | `autobyteus-server-ts/docs/design/data_migration_guideline.md` | Released migrations whose partial states the migration must preserve (design DS-10) |
 | The peer protocol between nodes | Both nodes run the same release (`DESIGN.md` rule 9); a renamed wire field is a clean cut | `DESIGN.md` | None |
 
 ## Supplemental Artifacts
 
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
-| `target-collaboration-contract.md` | The contract: words, rules, records with example JSON, cases, attribute check, existing data, simulations, decisions | All | Revision 2, approved (TC-1 … TC-6 decided) | Behavior-defining; approved by the user, 2026-11-10 |
+| `target-collaboration-contract.md` | The contract: words, rules, records with example JSON, cases, attribute check, existing data, communication, simulations, decisions | All | Revision 5, approved (TC-1 … TC-10, DEC-011 decided) | Behavior-defining; approved by the user, 2026-11-11 (SR-018) |
 | `evidence/data-model-validation/validate_delegation_shapes.py`, `counts-2026-11-10.txt` | The read-only data check | REQ-011 | Current | Evidence |
-| `follow-ups.md` | FU-002 … FU-005 | REQ-010 | Current | Not behavior-defining |
+| `follow-ups.md` | FU-002 (open); FU-003 … FU-005 withdrawn (now in scope) | — | Current | Not behavior-defining |
 
 ## Assumptions
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
 | ASM-001 | An application-owned run's termination by its application is not the user's Stop | REQ-010 | Solution Designer | Accepted |
-| ASM-003 | A delegated run can run under its own root with the features of REQ-009, as a run started by a peer already runs under its own root | REQ-002, REQ-009 | Investigation notes F-2 (the link machinery and peer-started runs) and F-3 (what a linked run lacks, each designed in `design-spec.md`); the review's AR-001 … AR-004 added the Task membership, the location consumers and restart resume (design RC-1, RC-3, RC-4) | Confirmed by reading; one part became DEC-011 |
+| ASM-003 | A delegated run can run under its own root with the features of REQ-009, as a run started by a peer already runs under its own root | REQ-002, REQ-009 | Investigation notes F-2, F-3 and "Re-investigation after autobyteus-469"; the design's spines DS-1 … DS-11 and its "Earlier Review Findings" table | Confirmed by reading; to be proven by implementation |
 
 ## Decisions
 
@@ -232,10 +232,10 @@ BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-008, REQ-00
 
 ## Architecture Phase Input
 
-- Approved scenario IDs and product-level behavior paths architecture must map: SCN-001, SCN-003 … SCN-010 (SCN-002 is deferred).
+- Approved scenario IDs and product-level behavior paths architecture must map: SCN-001 … SCN-010.
 - Product and system constraints architecture must preserve: the Preserved Behavior Boundary; the contract; `DESIGN.md` (smallest solution; no speculative machinery; rule 7 containment; rule 10 stored names); the Data Migration Guideline.
-- Decisions intentionally deferred to architecture design: the exact cut line of this step (which shapes the contract removes can be removed now); how a delegated run of a standalone run runs under its own root with REQ-009's features; the local path of a message between two runs; the Task side without a host; the migration; the client's tree through links.
-- Technical facts architecture should verify: contract V-8 … V-12; ASM-003.
+- Decisions intentionally deferred to architecture design: how each run kind runs under its own root with REQ-009's features; the route of a message between two runs; the Task side without a host; the migration; the client's views.
+- Technical facts architecture should verify: the readers of the removed and renamed fields; ASM-003.
 - Known feasibility or integration risks: REQ-009 is a wide surface; a part of it may prove to depend on hosting in a way that needs a decision.
 
 ## Readiness Check

@@ -3,7 +3,7 @@
 - Result: `Architecture Design Complete`
 - Task: `autobyteus-461` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a` ("Stopping an agent (e.g. the Project Task Manager) must not stop the task agents and task agent teams it delegated to")
 - Package identifier: `delegated-copies-outlive-delegator-461`
-- Current solution revision: `SR-018`
+- Current solution revision: `SR-019` (answers ARCH-REV-002 round 2; see the design's table "Round 2")
 - From: Solution Designer (run `solution_designer_65a93db823284ad5b4e87726a5b250a2`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Date: 2026-11-11
 - Classification: `task_size = Large`, `architectural_risk = High`
@@ -41,6 +41,10 @@
 - The Task side answers the delegation questions from memory, through its port.
 - `TaskMessageScope`, `TaskDelegation` and `DelegatedRunStarter` (extracted from the peer path).
 - Each run's own gate orders its transitions.
+
+## Round 2 answers (SR-019)
+
+AR-004 (restart notice), AR-005 (migration: prerequisites, preserved partial states, retry recognition, checklist, fixtures), AR-008 (the stream connect no longer starts the host), AR-011 (`DelegatedRunCommands`: message, interrupt, tool approval and Stop to the child's own root), AR-012 (token totals cover the runs delegated from a run, recursively; results unchanged), AR-013 (each root writes its own log, receiver first, as the peer path), AR-014 (the index maps every agent of every delegating run), AR-015 (requirements corrected), and the residuals are answered in the design spec.
 
 ## Points for the reviewer
 
