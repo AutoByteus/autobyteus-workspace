@@ -501,6 +501,7 @@ No other gap was found. Not validated: the code. The implementation verifies the
   - a characterization test **at `827f1e68dc`** captures the exact answer an application-owned team member's `delegate_task` gets, to its own address, to a teammate, to a catalog address, and with a `task_id`;
   - the branch test, composing the application host, asserts the same texts;
   - a run that is not application-bound delegates there, and its Task's closure stops it, as in the studio.
+- **What the application host lacks** (ARCH-REV-027): where it has no studio piece (the credential proxy, possibly the peer collaboration, the web view streams), the composition passes that host's real equivalent explicitly, as at base. For example, an empty stream session registry, or the peer channel absent as at base. Never a lookup.
 
 **Where the code lives** (SR-049): `build-studio-server.ts` is at its 500-line limit, so the steps live in a dedicated composition file with two calls that `build-studio-server.ts` makes in order. The first call covers steps 1–2, the run services are created between the calls (step 3), and the second call covers steps 4–8. The order stays readable in one place.
 

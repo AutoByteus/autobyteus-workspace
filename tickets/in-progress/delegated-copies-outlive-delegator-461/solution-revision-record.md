@@ -1023,4 +1023,4 @@
 - The Solution Designer's error: SR-050 and SR-051 took the branch's behavior, null lookups because the branch never composed delegation in the application host, for today's behavior. That behavior was this ticket's regression.
 - Decision: **the application host composes the same steps 1–8 as the studio**, through the same composition file (the Implementation Engineer's option (a)). Base's behavior then holds by construction: the application-bound rule refuses where it lives, in placement, with base's texts, and a non-application run delegates as at base. `UnavailableTaskDelegation` and the null collaborators of SR-050 are withdrawn.
 - Done: the design's composition section, with tests: a characterization test at `827f1e68dc` of the exact texts, the same texts asserted in the branch, and a non-application run's delegation and closure in the application host.
-
+- ARCH-REV-027 (2026-11-11): Pass, no finding. Its note is applied in the composition section: where the application host lacks a studio piece, its real equivalent is passed explicitly (an empty stream session registry, or the peer channel absent as at base), never a lookup.
