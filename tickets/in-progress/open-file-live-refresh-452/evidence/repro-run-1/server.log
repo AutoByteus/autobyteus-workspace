@@ -1,0 +1,344 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:61119
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:61119
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/open-file-live-refresh-452/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:72542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-11T15:13:40.240Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794410020580,"pid":72542,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61142"}
+{"level":30,"time":1794410020605,"pid":72542,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61119"}
+[2026-11-11T15:13:40.605Z] [INFO] [server.runtime] Server listening on 127.0.0.1:61119
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: writer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace.
+Created and registered workspace ID: agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace.
+Reusing registered workspace ID: agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace.
+Reusing registered workspace ID: agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+AGY compaction detection off for run writer_d4563848ace84adbb62406476c7885a5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run writer_d4563848ace84adbb62406476c7885a5
+Created agent session 49eaaec5-9ad9-49dc-86d4-eb7430f04c6f for run writer_d4563848ace84adbb62406476c7885a5
+Agent WebSocket connected: session=49eaaec5-9ad9-49dc-86d4-eb7430f04c6f, run=writer_d4563848ace84adbb62406476c7885a5
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory/agents/writer_d4563848ace84adbb62406476c7885a5/raw_traces_manifest.json
+Closed agent session 49eaaec5-9ad9-49dc-86d4-eb7430f04c6f
+Agent WebSocket disconnected: 49eaaec5-9ad9-49dc-86d4-eb7430f04c6f
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory/agents/writer_d4563848ace84adbb62406476c7885a5/raw_traces_manifest.json
+Agent websocket attached for run writer_d4563848ace84adbb62406476c7885a5
+Created agent session b7940e9d-087f-4a61-89ed-003a4d7e9acc for run writer_d4563848ace84adbb62406476c7885a5
+Agent WebSocket connected: session=b7940e9d-087f-4a61-89ed-003a4d7e9acc, run=writer_d4563848ace84adbb62406476c7885a5
+Closed agent session b7940e9d-087f-4a61-89ed-003a4d7e9acc
+Agent WebSocket disconnected: b7940e9d-087f-4a61-89ed-003a4d7e9acc
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory/agents/writer_d4563848ace84adbb62406476c7885a5/raw_traces_manifest.json
+Agent websocket attached for run writer_d4563848ace84adbb62406476c7885a5
+Created agent session 7dc88cbf-104a-494a-bce7-db8a538108ef for run writer_d4563848ace84adbb62406476c7885a5
+Agent WebSocket connected: session=7dc88cbf-104a-494a-bce7-db8a538108ef, run=writer_d4563848ace84adbb62406476c7885a5
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory/agents/writer_d4563848ace84adbb62406476c7885a5/raw_traces_manifest.json
+Created WorkspaceFileExplorer for agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd (file-explorer-websocket).
+FileSystemWatcher initialized for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: d083204d-94ac-432c-be26-2ef3827713cf for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Created file explorer session d083204d-94ac-432c-be26-2ef3827713cf for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd. Active sessions: 1
+File explorer WebSocket connected: d083204d-94ac-432c-be26-2ef3827713cf for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+File explorer websocket attached for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/e.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/e.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/deep/inner/a.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/deep/inner/a.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/b.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/b.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/pics/c.png
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/pics/c.png
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/docs/d.pdf
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/docs/d.pdf
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410107145,"pid":72542,"hostname":"MacBookPro","reqId":"req-5j","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.5462079999997513,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410107374,"pid":72542,"hostname":"MacBookPro","reqId":"req-5r","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.5107909999933327,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory/agents/writer_d4563848ace84adbb62406476c7885a5/raw_traces_manifest.json
+Agent websocket attached for run writer_d4563848ace84adbb62406476c7885a5
+Created agent session 1db78a50-9bbc-42e4-b2a7-77b41eb9c59f for run writer_d4563848ace84adbb62406476c7885a5
+Agent WebSocket connected: session=1db78a50-9bbc-42e4-b2a7-77b41eb9c59f, run=writer_d4563848ace84adbb62406476c7885a5
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410107456,"pid":72542,"hostname":"MacBookPro","reqId":"req-66","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2927909999998519,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/data/memory/agents/writer_d4563848ace84adbb62406476c7885a5/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410107477,"pid":72542,"hostname":"MacBookPro","reqId":"req-6a","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2707500000105938,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410107643,"pid":72542,"hostname":"MacBookPro","reqId":"req-6f","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.23154100000101607,"msg":"http request completed"}
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 424b7124-db66-418f-8216-75958f93d2a5 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Created file explorer session 424b7124-db66-418f-8216-75958f93d2a5 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd. Active sessions: 2
+File explorer WebSocket connected: 424b7124-db66-418f-8216-75958f93d2a5 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+File explorer websocket attached for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/e.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/e.md
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 424b7124-db66-418f-8216-75958f93d2a5
+Closed file explorer session 424b7124-db66-418f-8216-75958f93d2a5. Active sessions: 1
+File explorer WebSocket disconnected: 424b7124-db66-418f-8216-75958f93d2a5
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410119747,"pid":72542,"hostname":"MacBookPro","reqId":"req-6t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2867910000059055,"msg":"http request completed"}
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 2
+FileExplorerSession created: f771a8e6-4db2-409f-861d-5bd216f36446 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Created file explorer session f771a8e6-4db2-409f-861d-5bd216f36446 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd. Active sessions: 2
+File explorer WebSocket connected: f771a8e6-4db2-409f-861d-5bd216f36446 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+File explorer websocket attached for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410121045,"pid":72542,"hostname":"MacBookPro","reqId":"req-70","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.19008400000166148,"msg":"http request completed"}
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/deep/inner/a.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/deep/inner/a.md
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: f771a8e6-4db2-409f-861d-5bd216f36446
+Closed file explorer session f771a8e6-4db2-409f-861d-5bd216f36446. Active sessions: 1
+File explorer WebSocket disconnected: f771a8e6-4db2-409f-861d-5bd216f36446
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410133143,"pid":72542,"hostname":"MacBookPro","reqId":"req-77","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2788750000036089,"msg":"http request completed"}
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 2
+FileExplorerSession created: c52804fa-f9e6-4072-8299-35dec365859d for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Created file explorer session c52804fa-f9e6-4072-8299-35dec365859d for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd. Active sessions: 2
+File explorer WebSocket connected: c52804fa-f9e6-4072-8299-35dec365859d for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+File explorer websocket attached for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410134442,"pid":72542,"hostname":"MacBookPro","reqId":"req-7b","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.32591600000159815,"msg":"http request completed"}
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/b.md
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/b.md
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: c52804fa-f9e6-4072-8299-35dec365859d
+Closed file explorer session c52804fa-f9e6-4072-8299-35dec365859d. Active sessions: 1
+File explorer WebSocket disconnected: c52804fa-f9e6-4072-8299-35dec365859d
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410146548,"pid":72542,"hostname":"MacBookPro","reqId":"req-7p","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.35304200000246055,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410147839,"pid":72542,"hostname":"MacBookPro","reqId":"req-7s","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2001250000030268,"msg":"http request completed"}
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 2
+FileExplorerSession created: b4a6aa33-2d3c-49a8-aa09-ee5c07626de8 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Created file explorer session b4a6aa33-2d3c-49a8-aa09-ee5c07626de8 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd. Active sessions: 2
+File explorer WebSocket connected: b4a6aa33-2d3c-49a8-aa09-ee5c07626de8 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+File explorer websocket attached for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/pics/c.png
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/pics/c.png
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: b4a6aa33-2d3c-49a8-aa09-ee5c07626de8
+Closed file explorer session b4a6aa33-2d3c-49a8-aa09-ee5c07626de8. Active sessions: 1
+File explorer WebSocket disconnected: b4a6aa33-2d3c-49a8-aa09-ee5c07626de8
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410159943,"pid":72542,"hostname":"MacBookPro","reqId":"req-80","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.34062500001164153,"msg":"http request completed"}
+Acquired file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 2
+FileExplorerSession created: a1e8d725-1c25-4c92-8ba8-8b60f1416e96 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Created file explorer session a1e8d725-1c25-4c92-8ba8-8b60f1416e96 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd. Active sessions: 2
+File explorer WebSocket connected: a1e8d725-1c25-4c92-8ba8-8b60f1416e96 for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+File explorer websocket attached for workspace agent_ws_f1797cc946dd50553e5acd656dbb892d7ceee8261329163a53e775e0149ee3dd
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794410161239,"pid":72542,"hostname":"MacBookPro","reqId":"req-87","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.1275420000019949,"msg":"http request completed"}
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/docs/d.pdf
+Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace/docs/d.pdf
+Closed agent session 1db78a50-9bbc-42e4-b2a7-77b41eb9c59f
+Agent WebSocket disconnected: 1db78a50-9bbc-42e4-b2a7-77b41eb9c59f
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: a1e8d725-1c25-4c92-8ba8-8b60f1416e96
+Closed file explorer session a1e8d725-1c25-4c92-8ba8-8b60f1416e96. Active sessions: 1
+File explorer WebSocket disconnected: a1e8d725-1c25-4c92-8ba8-8b60f1416e96
+Closed agent session 7dc88cbf-104a-494a-bce7-db8a538108ef
+Agent WebSocket disconnected: 7dc88cbf-104a-494a-bce7-db8a538108ef
+Released file watcher lease for /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd452-repro-f6CrhX/workspace
+FileExplorerSession closed: d083204d-94ac-432c-be26-2ef3827713cf
+Closed file explorer session d083204d-94ac-432c-be26-2ef3827713cf. Active sessions: 0
+File explorer WebSocket disconnected: d083204d-94ac-432c-be26-2ef3827713cf

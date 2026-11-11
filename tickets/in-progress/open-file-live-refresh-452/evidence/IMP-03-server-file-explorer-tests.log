@@ -1,0 +1,100 @@
+# Check: IMP-03
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/file-explorer; ... tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+# Commit: base 827f1e68dc + working tree = e0bb6399c7
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11
+
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL 27ms
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file 20ms
+ ✓ tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped 9ms
+ ✓ tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale 56ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > reports availability based on rg presence 2ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > finds matching files 42ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > returns absolute paths 17ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > respects max results 30ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > FuzzysortSearchStrategy > is always available 0ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > FuzzysortSearchStrategy > uses the indexer for searches 1ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > FuzzysortSearchStrategy > returns empty list for empty index 1ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > requires at least one strategy 0ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > is available when any strategy is available 0ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > uses the first available strategy 0ms
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails 1ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > builds the workspace directory tree 5ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > reads file content within size limits 8ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > throws when reading a file that exceeds max size 8ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > returns the root tree node 2ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > serializes the live tree to JSON with workspace-relative identity 9ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > keeps an unloaded snapshot's tree JSON null 1ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > rejects reading files outside the workspace 1ms
+ ✓ tests/unit/file-explorer/file-explorer.test.ts > WorkspaceFileExplorer > projects the live tree with limited depth and relative paths 4ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired 3ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release 1ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent 0ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher 1ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > throws if subscribe is called before watcher is ready 0ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > closes active watcher once and clears future subscriptions 0ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > loads folder children as a bounded projection without full tree rebuild 38ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects direct requests for ignored folders without updating the tree 8ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects same-prefix sibling folder escapes without updating the tree 3ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names 29ms
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation 16ms
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts fuzzy candidates once without changing order 15ms
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > converts ripgrep candidates once without changing order 3ms
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > keeps an empty search result empty 3ms
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > does not publish a same-prefix sibling candidate as a workspace locator 10ms
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves a pre-aborted caller without starting snapshot traversal 4ms
+ ✓ tests/unit/file-explorer/workspace-file-search.test.ts > WorkspaceFileExplorer public search locators > preserves abort while waiting for candidates and does not convert a late result 4ms
+ ✓ tests/unit/file-explorer/watcher/event-batcher.test.ts > EventBatcher > combines rapid events into a single composite event 22ms
+ ✓ tests/unit/file-explorer/watcher/event-batcher.test.ts > EventBatcher > unblocks a pending consumer when the batched stream is returned 0ms
+ ✓ tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > builds the snapshot index on refresh 3ms
+ ✓ tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > does not acquire a watcher lease when refreshing the snapshot index 1ms
+ ✓ tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > replaces stale index entries on each refresh 1ms
+ ✓ tests/unit/file-explorer/file-name-indexer.test.ts > FileNameIndexer > uses an empty index when the current tree is unavailable 1ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > initializes root node 2ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > adds children 1ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > builds paths 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > serializes to dict 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > serializes to JSON 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > toShallowDict depth 0 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > toShallowDict depth 1 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > toShallowDict depth 2 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > toShallowDict includes path and id 0ms
+ ✓ tests/unit/file-explorer/tree-node.test.ts > TreeNode > file node ignores depth 0ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > reports a change in a folder the tree never loaded, by its POSIX path 2ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > reports a change to a loaded file by path 0ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > adds a content change after the structural add of a file 1ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > reports a content change when a file reappears at a path already in the tree 0ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > sends no content change for a folder add 0ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > reports the destination of a file moved over a path in an unloaded folder (atomic rewrite) 0ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > follows a loaded file's rename with a content change for its new path 0ms
+ ✓ tests/unit/file-explorer/watcher/watchdog-handler.test.ts > WatchdogHandler content changes > sends nothing for ignored paths 1ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > ChangeType enum values 1ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > throws on unknown change type 1ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serializes and deserializes AddChange 1ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serializes and deserializes DeleteChange 0ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serializes and deserializes RenameChange 0ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serializes and deserializes MoveChange 0ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serializes and deserializes ModifyChange by path only 0ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serializes and deserializes FileSystemChangeEvent 1ms
+ ✓ tests/unit/file-explorer/file-system-changes.test.ts > FileSystemChange > serialize/deserialize helpers 1ms
+ ✓ tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts > WorkspaceSearchSnapshotController > rejects promptly and aborts refresh when the caller aborts initial refresh 2ms
+ ✓ tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts > WorkspaceSearchSnapshotController > rejects promptly when a caller aborts while waiting on an existing refresh task 1ms
+ ✓ tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts > WorkspaceSearchSnapshotController > close aborts and unblocks an in-flight refresh without waiting for traversal completion 0ms
+ ✓ tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts > WorkspaceSearchSnapshotController > does not commit a stale refresh after caller abort 1ms
+ ✓ tests/unit/file-explorer/workspace-search-snapshot-controller.test.ts > WorkspaceSearchSnapshotController > aborts an in-flight refresh when traversal observes close abort 0ms
+ ✓ tests/unit/file-explorer/watcher-runtime-protocol.test.ts > watcher runtime protocol guards > accepts start commands with explicit watcher identity 1ms
+ ✓ tests/unit/file-explorer/watcher-runtime-protocol.test.ts > watcher runtime protocol guards > rejects commands without watcher generation identity 0ms
+ ✓ tests/unit/file-explorer/watcher-runtime-protocol.test.ts > watcher runtime protocol guards > accepts raw event messages and rejects identity-free messages 0ms
+ Test Files  13 passed (13)
+      Tests  81 passed (81)
+
+## RED: base server source (827f1e68dc), new handler tests
+     × reports a change in a folder the tree never loaded, by its POSIX path 7ms
+     × reports a change to a loaded file by path 1ms
+     × adds a content change after the structural add of a file 1ms
+     × reports a content change when a file reappears at a path already in the tree 1ms
+     × reports the destination of a file moved over a path in an unloaded folder (atomic rewrite) 1ms
+     × follows a loaded file's rename with a content change for its new path 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)

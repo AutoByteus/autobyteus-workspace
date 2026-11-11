@@ -1,0 +1,132 @@
+{
+  "startedAt": "2026-11-11T15:20:00.100Z",
+  "timeline": [
+    {
+      "t": 4067,
+      "event": "stack",
+      "runId": "writer_8dbbbaed00154f20a988814a6f3151ae"
+    },
+    {
+      "t": 88510,
+      "event": "desktop",
+      "E": {
+        "textBefore": "E-VERSION-1",
+        "textAfter8s": "E-VERSION-2",
+        "contentReadsAfterChangeMs": [
+          571
+        ]
+      },
+      "A": {
+        "textBefore": "A-VERSION-1",
+        "textAfter8s": "A-VERSION-1",
+        "contentReadsAfterChangeMs": []
+      },
+      "B": {
+        "textBefore": "B-VERSION-1",
+        "textAfter8s": "B-VERSION-2",
+        "contentReadsAfterChangeMs": [
+          464
+        ]
+      },
+      "C": {
+        "contentReadsAfterChangeMs": []
+      },
+      "D": {
+        "contentReadsAfterChangeMs": []
+      }
+    },
+    {
+      "t": 154966,
+      "event": "phone",
+      "E": {
+        "textBefore": "E-VERSION-1",
+        "textAfter8s": "E-VERSION-2",
+        "contentReadsAfterChangeMs": [
+          516
+        ]
+      },
+      "A": {
+        "textBefore": "A-VERSION-1",
+        "textAfter8s": "A-VERSION-1",
+        "contentReadsAfterChangeMs": []
+      },
+      "B": {
+        "textBefore": "B-VERSION-1",
+        "textAfter8s": "B-VERSION-2",
+        "contentReadsAfterChangeMs": [
+          514
+        ]
+      },
+      "C": {
+        "contentReadsAfterChangeMs": []
+      },
+      "D": {
+        "contentReadsAfterChangeMs": []
+      }
+    }
+  ],
+  "desktop": {
+    "E": {
+      "textBefore": "E-VERSION-1",
+      "textAfter8s": "E-VERSION-2",
+      "contentReadsAfterChangeMs": [
+        571
+      ]
+    },
+    "A": {
+      "textBefore": "A-VERSION-1",
+      "textAfter8s": "A-VERSION-1",
+      "contentReadsAfterChangeMs": []
+    },
+    "B": {
+      "textBefore": "B-VERSION-1",
+      "textAfter8s": "B-VERSION-2",
+      "contentReadsAfterChangeMs": [
+        464
+      ]
+    },
+    "C": {
+      "contentReadsAfterChangeMs": []
+    },
+    "D": {
+      "contentReadsAfterChangeMs": []
+    }
+  },
+  "phone": {
+    "E": {
+      "textBefore": "E-VERSION-1",
+      "textAfter8s": "E-VERSION-2",
+      "contentReadsAfterChangeMs": [
+        516
+      ]
+    },
+    "A": {
+      "textBefore": "A-VERSION-1",
+      "textAfter8s": "A-VERSION-1",
+      "contentReadsAfterChangeMs": []
+    },
+    "B": {
+      "textBefore": "B-VERSION-1",
+      "textAfter8s": "B-VERSION-2",
+      "contentReadsAfterChangeMs": [
+        514
+      ]
+    },
+    "C": {
+      "contentReadsAfterChangeMs": []
+    },
+    "D": {
+      "contentReadsAfterChangeMs": []
+    }
+  },
+  "error": null,
+  "serverWatcher": {
+    "modificationLines": 20,
+    "creationLines": 0,
+    "deletionLines": 0
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  }
+}
