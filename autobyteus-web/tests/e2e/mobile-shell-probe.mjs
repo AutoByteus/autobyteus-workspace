@@ -111,7 +111,7 @@
 //                  alpha's desktop window, last). MSP-37 autobyteus-471: a desktop window that is not the embedded one opens
 //                  files outside the run's folder read-only in the Files panel, with plain reasons for a missing path and
 //                  a folder (same file, after MSP-31).
-//   MSP-39 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
+//   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated

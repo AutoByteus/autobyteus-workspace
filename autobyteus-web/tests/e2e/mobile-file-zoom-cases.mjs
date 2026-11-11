@@ -1,7 +1,7 @@
 // Touch zoom and Download in the phone viewer (autobyteus-472). A case of `pnpm -C autobyteus-web test:e2e:mobile-shell`,
-// run by `mobile-shell-probe.mjs` right after MSP-16, on its phone page (`--cases=MSP-39` runs only this one).
+// run by `mobile-shell-probe.mjs` right after MSP-16, on its phone page (`--cases=MSP-43` runs only this one).
 //
-//   MSP-39 AC-001, AC-002, AC-003 (browser), AC-004  The Delivery Team lead's message links a four-page PDF and a
+//   MSP-43 AC-001, AC-002, AC-003 (browser), AC-004  The Delivery Team lead's message links a four-page PDF and a
 //          600×400 PNG outside the run's folder; each opens in the phone viewer (production phone bundle, headless
 //          Chrome with touch, 390×844). Touches go through Chrome's own input path (CDP `Input.dispatchTouchEvent`).
 //          PDF: a two-finger pinch out draws the pages at twice the width (canvas bitmaps at the new width × the device
@@ -61,7 +61,7 @@ const stripedPng = (width, height) => {
 export const runFileZoomCases = async (probe) => {
   const { runCase, page, stack, sel, toList, openRow, shot, sendOver, waitFor, sleep, assert, outputDir } = probe;
 
-  await runCase('MSP-39', async () => {
+  await runCase('MSP-43', async () => {
     const outsideDir = path.join(path.dirname(stack.workspace), 'outside-472');
     const pdfPath = path.join(outsideDir, 'resume-472.pdf');
     const pngPath = path.join(outsideDir, 'photo-472.png');
@@ -146,7 +146,7 @@ export const runFileZoomCases = async (probe) => {
     }, 30_000);
     const pdfStart = await pageState();
     const base = pdfStart.pagesWidth;
-    await shot(page, 'MSP-39-pdf-1x');
+    await shot(page, 'MSP-43-pdf-1x');
     const centre = [195, 420];
     const anchor = { x: centre[0] - pdfStart.pagesRect.left, y: centre[1] - pdfStart.pagesRect.top };
     await gesture([[centre[0] - 50, centre[1]], [centre[0] + 50, centre[1]]], [[centre[0] - 100, centre[1]], [centre[0] + 100, centre[1]]]);
@@ -156,7 +156,7 @@ export const runFileZoomCases = async (probe) => {
     }, 20_000);
     await sleep(800);
     const pinched = await pageState();
-    await shot(page, 'MSP-39-pdf-2x');
+    await shot(page, 'MSP-43-pdf-2x');
     const anchorNow = { x: pinched.pagesRect.left + anchor.x * (pinched.pagesWidth / base), y: pinched.pagesRect.top + anchor.y * (pinched.pagesWidth / base) };
     // Two fingers moving together at 2× pan (CRR-002 CR-001): the pages stay where the fingers left them.
     await gesture([[145, 600], [245, 600]], [[145, 450], [245, 450]]);
@@ -166,7 +166,7 @@ export const runFileZoomCases = async (probe) => {
     await gesture([[195, 700]], [[195, 300]]);
     await sleep(800);
     const scrolled = await pageState();
-    await shot(page, 'MSP-39-pdf-2x-scrolled');
+    await shot(page, 'MSP-43-pdf-2x-scrolled');
     await doubleTap(195, 420);
     await waitFor('a double tap returns to page width', async () => Math.abs((await pageState()).pagesWidth - base) <= 1, 20_000).catch(() => undefined);
     const backToFit = await pageState();
@@ -185,7 +185,7 @@ export const runFileZoomCases = async (probe) => {
     await gesture([[145, 420], [245, 420]], [[95, 420], [295, 420]]);
     await sleep(300);
     const imagePinched = await pageState();
-    await shot(page, 'MSP-39-image-pinched');
+    await shot(page, 'MSP-43-image-pinched');
     await doubleTap(195, 420);
     await sleep(400);
     const imageFit = await pageState();
