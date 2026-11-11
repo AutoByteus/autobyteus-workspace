@@ -319,7 +319,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       providerRelayAccess: null,
       runPasses: null,
       modelSelectionValidator: expect.anything(),
-      taskExecutionResources: expect.objectContaining({ ownerOf: expect.any(Function), linkNewTaskExecution: expect.any(Function) }),
+      taskExecutionResources: expect.objectContaining({ entriesOf: expect.any(Function), linkNewTaskExecution: expect.any(Function) }),
       platformInputNotices: expect.objectContaining({
         takePreface: expect.any(Function), runPublished: expect.any(Function), runReleased: expect.any(Function),
       }),
