@@ -147,7 +147,7 @@ describe('the phone viewer zooms PDFs and images by touch (autobyteus-472)', () 
     const button = wrapper.get('[data-testid="mobile-file-download"]');
     expect(button.attributes('aria-label')).toBe('Download');
     // The back arrow stays where it is.
-    expect(wrapper.get('[data-testid="mobile-screen-back"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-screen-back"]').exists()).toBe(true);
     await button.trigger('click');
     expect(downloads.download).toHaveBeenCalledWith({ path: '/w/resume.pdf', type: 'PDF', url: 'blob:pdf-1' });
 
