@@ -818,3 +818,4 @@
   - `requirements-doc.md`'s exception and the design's test line are corrected.
   - `walkthrough.py --check` passes.
 
+- ARCH-REV-012 (2026-11-11): Pass, no finding. The SR-035 exception only narrows; informing the user is enough. `walkthrough.py --check` re-run by the reviewer: passes.
