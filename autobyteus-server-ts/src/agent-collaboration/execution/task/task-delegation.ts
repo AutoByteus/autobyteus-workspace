@@ -28,7 +28,24 @@ export type WorkPacket = Readonly<{
   comments: readonly string[];
   task?: DelegatedProjectTask;
   referenceFiles: readonly string[];
+  /** The gate-head re-check from the Task side (CR-461-003, design race table row 5): throws when the Task closed meanwhile. */
+  assertAllowed(): void;
 }>;
+
+/** The text a delegation answers when its Task closed while the new run was starting. */
+const CLOSED_DURING_START = "The Task was marked DONE or CANCELLED; its new work was not started.";
+
+/**
+ * A run's acceptance of its work packet, in its own gate (CR-461-003): the Task side is asked first, so a closure that
+ * committed while the run was starting refuses the packet (`TASK_AGENT_RESOURCE_CLOSED`) and nothing starts.
+ */
+export const acceptWorkPacketIfAllowed = (packet: WorkPacket, accept: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> => {
+  try { packet.assertAllowed(); } catch (error) {
+    if (error instanceof TaskDelegationError) return Promise.resolve({ accepted: false, code: error.code, message: error.message });
+    throw error;
+  }
+  return accept();
+};
 
 /** A local placement: an agent or a team on this node. */
 export type LocalDelegationPlacement = Extract<DelegationPlacement, { kind: "agent" | "agent_team" }>;
@@ -210,16 +227,22 @@ export class TaskDelegation {
     // A Task closed during the start (design "Ordering Without A Shared Queue"): the new run is not started.
     if (!tasks.isOpen(execution)) {
       await this.dependencies.discard(execution).catch((error) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(error) }));
-      return { delegated: false, message: "The Task was marked DONE or CANCELLED; its new work was not started." };
+      return { delegated: false, message: CLOSED_DURING_START };
     }
     // 5. The work packet starts the run in its own root.
     const run = copy.kind === "agent" ? { rootSubjectKind: "agent" as const, rootRunId: copy.agentRunId } : { rootSubjectKind: "agent_team" as const, rootRunId: copy.teamRunId };
     let delivered: AgentOperationResult;
     try {
       delivered = await this.dependencies.deliverWorkPacket(run, { delegator: input.sender, delegatorAddress: input.delegatorAddress,
-        description: work.description, comments: work.comments, ...(work.task ? { task: work.task } : {}), referenceFiles: work.referenceFiles });
+        description: work.description, comments: work.comments, ...(work.task ? { task: work.task } : {}), referenceFiles: work.referenceFiles,
+        assertAllowed: () => { if (!tasks.isOpen(execution)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", CLOSED_DURING_START); } });
     } catch (error) {
       delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: message(error) };
+    }
+    // A closure that committed after the check above, seen at the head of the new run's gate: nothing started.
+    if (!delivered.accepted && delivered.code === "TASK_AGENT_RESOURCE_CLOSED") {
+      await this.dependencies.discard(execution).catch((error) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(error) }));
+      return { delegated: false, message: CLOSED_DURING_START };
     }
     if (!delivered.accepted) {
       const reason = delivered.message ?? delivered.code ?? "The work was not delivered.";

@@ -1,3 +1,4 @@
+import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { Arg, Field, Float, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLSafeInt } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
@@ -11,7 +12,7 @@ import { TokenUsageRunStore } from "../../../token-usage/providers/token-usage-r
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
 import { StandaloneRunTokenUsageSummaryService } from "../../../token-usage/services/standalone-run-token-usage-summary-service.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
-import { ClosedDelegatedRunReader } from "../../../run-history/services/closed-delegated-run-reader.js";
+import { DelegatedRunAgentsReader } from "../../../run-history/services/delegated-run-agents-reader.js";
 import { createAgentRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 @ObjectType()
@@ -327,7 +328,7 @@ export class TokenUsageStatisticsResolver {
     @Arg("runId", () => String) runId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
     // REQ-009: every run delegated from it, one hop at a time and recursively, open and closed (the Task entries).
-    const delegated = new ClosedDelegatedRunReader(appConfigProvider.config.getMemoryDir());
+    const delegated = new DelegatedRunAgentsReader(appConfigProvider.config.getMemoryDir());
     const service = new StandaloneRunTokenUsageSummaryService({
       tree: { listChildAgentRunIds: async (hostRunId) => [...new Set(await delegated.agentRunIds(createAgentRootExecutionIdentity(hostRunId)))] },
       store: new TokenUsageRunStore(),
@@ -339,8 +340,12 @@ export class TokenUsageStatisticsResolver {
   async getTeamRunTokenUsageSummary(
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TokenUsageRunSummaryGraphql> {
-    const store = new TokenUsageRunStore();
-    return toTokenUsageRunSummaryGraphql(await store.getTeamRunSummary(teamRunId));
+    // REQ-009 (CR-461-004): a team or org run's total includes every run delegated from it, recursively, open and closed.
+    // The ID names a team run or an org run (an org run's agents record it as their root team run); ask for both kinds.
+    const delegated = new DelegatedRunAgentsReader(appConfigProvider.config.getMemoryDir());
+    const agentRunIds = (await Promise.all((["agent_team", "agent_org"] as const).map((rootSubjectKind) =>
+      delegated.agentRunIds(createRootExecutionIdentity({ rootSubjectKind, rootRunId: teamRunId }))))).flat();
+    return toTokenUsageRunSummaryGraphql(await new TokenUsageRunStore().getTeamRunSummary(teamRunId, [...new Set(agentRunIds)]));
   }
 
   @Query(() => TokenUsageRunSummaryGraphql)

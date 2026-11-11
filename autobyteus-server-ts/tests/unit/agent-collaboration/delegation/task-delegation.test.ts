@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { TaskDelegation, type LocalDelegationPlacement } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
+import { acceptWorkPacketIfAllowed, TaskDelegation, type LocalDelegationPlacement, type WorkPacket } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { DelegatedRunStartError } from "../../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -34,6 +34,28 @@ const harness = () => {
 };
 
 describe("TaskDelegation.toNewRun", () => {
+  it.each([["an agent run", undefined], ["a team run", "team"]] as const)(
+    "CR-461-003 (race table row 5): %s whose Task closes while it starts is refused at its gate head, discarded, and nothing starts", async (_kind, which) => {
+      const h = harness();
+      h.tasks.addTask("project_task_440e", "Build it", "abc-1");
+      const posted = vi.fn(async () => ({ accepted: true }));
+      // The new run's root: the closure commits after TaskDelegation's own check, before the packet reaches the gate.
+      h.deliverWorkPacket.mockImplementationOnce(async (_run: unknown, packet: WorkPacket) => {
+        h.tasks.close("project_task_440e");
+        return acceptWorkPacketIfAllowed(packet, posted);
+      });
+      const outcome = await h.delegate(M, M.rootRunId, { recipient_address: "/x", task_id: "abc-1" }, which === "team" ? teamPlacement : agentPlacement);
+      expect(outcome).toEqual({ delegated: false, message: "The Task was marked DONE or CANCELLED; its new work was not started." });
+      expect(posted).not.toHaveBeenCalled();
+      expect(h.discard).toHaveBeenCalledWith(which === "team" ? { teamRunId: "product_team_e03d" } : { agentRunId: "image_maker_33f0" });
+    });
+
+  it("CR-461-003: the gate-head check lets the packet through while the Task is open", async () => {
+    const h = harness();
+    h.deliverWorkPacket.mockImplementationOnce(async (_run: unknown, packet: WorkPacket) => acceptWorkPacketIfAllowed(packet, async () => ({ accepted: true })));
+    await expect(h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", description: "Draw." })).resolves.toMatchObject({ delegated: true });
+  });
+
   it("CM-6: a new run of a Project Task works in the Project's first linked folder; a missing link refuses before anything starts", async () => {
     const h = harness();
     h.tasks.addTask("project_task_440e", "Build it", "abc-1");

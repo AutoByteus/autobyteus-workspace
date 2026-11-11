@@ -1,3 +1,4 @@
+import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
@@ -203,7 +204,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /** The work packet of a local delegation that created this run (DS-1): its first input, in the gate. */
   acceptWorkPacket(packet: WorkPacket): Promise<AgentOperationResult> {
-    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptWorkPacket(packet); });
+    return this.operationGate.run(async () => { this.assertAdmitting(); return acceptWorkPacketIfAllowed(packet, () => this.delivery.acceptWorkPacket(packet)); });
   }
   /** DS-2: a message from another run of this node (the receiver's gate; this run's own log). */
   acceptFromRun(input: CrossRunAcceptInput): Promise<AgentOperationResult> {

@@ -24,7 +24,7 @@ import {
 } from "../projects/search/project-task-search-service.js";
 import { getEmbeddingIndex, shutdownEmbeddingIndex } from "../embeddings/embedding-index.js";
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
-import { bindClosedDelegatedRuns, unbindClosedDelegatedRuns } from "../run-history/services/closed-delegated-run-reader.js";
+import { bindDelegatedRuns, unbindDelegatedRuns } from "../run-history/services/delegated-run-agents-reader.js";
 
 /** The run links binding of the composed Task resources, released with them. */
 let projectRunLinks: Readonly<{ close(): void }> | null = null;
@@ -84,7 +84,7 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   });
   // The `/ws/projects` feed: views are built from the services' committed state, after `load()`.
   // Readers of closed delegated runs (Team tab names, token totals) ask the same Task side (D-5, D-7).
-  bindClosedDelegatedRuns(delegationTree);
+  bindDelegatedRuns(delegationTree);
   getProjectChangePublisher().bind({
     readProject: (projectId) => getProjectService().getProject(projectId),
     readTask: (location) => service.readTaskChangeView(location),
@@ -97,7 +97,7 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
 export const releaseProjectTaskExecutionResources = (port: TaskExecutionResourcePort): void => {
   projectRunLinks?.close();
   projectRunLinks = null;
-  if (delegationTree) { unbindDelegationTree(delegationTree); unbindClosedDelegatedRuns(delegationTree); }
+  if (delegationTree) { unbindDelegationTree(delegationTree); unbindDelegatedRuns(delegationTree); }
   delegationTree = null;
   getProjectChangePublisher().unbind();
   releaseProjectTaskSearchService();

@@ -1,3 +1,4 @@
+import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
@@ -308,7 +309,8 @@ export class RootTeamRun {
   prepareSendToRun(input: import("../../agent-collaboration/execution/communication/root-communication-engine.js").RunSendInput) { return this.communication.prepareSendToRun(input); }
   commitSentToRun(message: Parameters<RootCommunicationEngine["commitSentToRun"]>[0]) { return this.communication.commitSentToRun(message); }
   acceptWorkPacket(packet: import("../../agent-collaboration/execution/task/task-delegation.js").WorkPacket): Promise<AgentOperationResult> {
-    return this.delivery.acceptWorkPacket(packet, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId));
+    return this.materializationGate.run(() => acceptWorkPacketIfAllowed(packet, // CR-461-003: the Task side first, in the gate
+      () => this.delivery.acceptWorkPacket(packet, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId))));
   }
   acceptRemoteWorkPacket(input: RemoteInboundWorkPacket): Promise<AgentOperationResult> {
     return this.delivery.acceptRemoteWorkPacket(input, this.getCoordinatorAgentRunId(), (message, agentRunId) => this.postMessage(message, agentRunId));

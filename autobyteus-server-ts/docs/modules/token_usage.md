@@ -733,12 +733,19 @@ records:
 A standalone run's usage includes the runs delegated from it, recursively, open
 and closed, and their team members, as a Team run's usage includes its members
 (REQ-006). `StandaloneRunTokenUsageSummaryService` (`token-usage/services/`) asks
-`ClosedDelegatedRunReader` for those runs' agent run IDs (from the Task entries,
+`DelegatedRunAgentsReader` for those runs' agent run IDs (from the Task entries,
 each run's agents from its own file; autobyteus-461) and
 `TokenUsageRunStore.getStandaloneRunSummary` sums the records of the host and
 every child run ID once each. Children carry no root attribution, and none is
 needed. A run that delegated nothing is its host alone (equal to the exact-run
 summary).
+
+A Team or Org run's total (`getTeamRunTokenUsageSummary`, by its run ID) is its own
+records (those that name it as their root team run) plus the records of every agent of
+the runs delegated from it, recursively, open and closed, each record once
+(`TokenUsageRunStore.getTeamRunSummary(rootTeamRunId, delegatedAgentRunIds)`;
+autobyteus-461, REQ-009). As for a standalone run, the identity, latest prompt, context
+window and model stay the run's own.
 
 Totals, costs, pricing and report count cover every record. The latest prompt,
 context window, latest model, runtime and run identity stay those of the host

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { ClosedDelegatedRunReader } from "../../../../src/run-history/services/closed-delegated-run-reader.js";
+import { DelegatedRunAgentsReader } from "../../../../src/run-history/services/delegated-run-agents-reader.js";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
@@ -39,10 +39,10 @@ const world = async () => {
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/eng", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { teamRunId: "eng" }, teamCoordinatorAgentRunId: "designer" });
   await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/image_maker", delegatedFrom: { delegatingRun: E, delegatorAgentRunId: "designer" }, execution: { agentRunId: "image" } });
-  return { reader: new ClosedDelegatedRunReader(memory, () => tree), tasks };
+  return { reader: new DelegatedRunAgentsReader(memory, () => tree), tasks };
 };
 
-describe("ClosedDelegatedRunReader (runs delegated from a run)", () => {
+describe("DelegatedRunAgentsReader (runs delegated from a run)", () => {
   it("token totals: every agent of every run delegated from it, recursively, open or closed", async () => {
     const w = await world();
     expect((await w.reader.agentRunIds(M)).sort()).toEqual(["coder", "designer", "image"]);

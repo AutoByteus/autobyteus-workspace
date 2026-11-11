@@ -74,7 +74,7 @@ Team Communication projection:
   returns the focused agent's messages whose other agent is in the root's tree, or
   is an agent of a delegated run that left the tree when its Task closed: those are
   listed in `pastParticipants` (`{ agentRunId, address }`, read from the run's own
-  file by `ClosedDelegatedRunReader`), and the web names them from the address
+  file by `DelegatedRunAgentsReader`), and the web names them from the address
   (identity kind `past`; autobyteus-469 D-5).
 
 Acceptance means the live AgentRun owns one ordered, at-most-once forwarding

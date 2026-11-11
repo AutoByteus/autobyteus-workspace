@@ -4,7 +4,7 @@ import { StandaloneRunTokenUsageSummaryService } from "../../../../src/token-usa
 
 /**
  * REQ-006 (kept by autobyteus-461 REQ-009): a standalone run's usage includes the runs delegated from it; their agent
- * run IDs come from the Task entries and each run's own file (`ClosedDelegatedRunReader`, tested on its own).
+ * run IDs come from the Task entries and each run's own file (`DelegatedRunAgentsReader`, tested on its own).
  */
 const HOST = "research_assistant_host";
 const serviceOver = (children: readonly string[]) => {

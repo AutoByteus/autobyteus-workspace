@@ -1,3 +1,4 @@
+import { TaskDelegationError } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -40,6 +41,17 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
     expect(files.some((file) => file.startsWith("communication_messages"))).toBe(true);
     expect(files).not.toContain("collaboration");
     expect(root.getCommunicationSnapshot().messages.map((item) => item.messageId)).toEqual(["m-1"]);
+  });
+
+  it("CR-461-003: a work packet whose Task closed while the run started is refused in the run's gate; its agent is not started", async () => {
+    const h = await buildManager();
+    h.host.crash();
+    const root = (await h.manager.resolveRoot(HOST))!;
+    const packet = { delegator: manager, delegatorAddress: null, description: "Do it.", comments: [], referenceFiles: [],
+      assertAllowed: () => { throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "closed"); } };
+    await expect(root.acceptWorkPacket(packet)).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: "closed" });
+    expect(h.restores).not.toHaveBeenCalled();
+    expect(h.host.run.postUserMessage).not.toHaveBeenCalled();
   });
 
   it("an address in this run is its own agent (the self refusal); any other address is not found here", async () => {

@@ -7,7 +7,7 @@ import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { appConfigProvider } from "../../../../src/config/app-config-provider.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
-import { bindClosedDelegatedRuns, unbindClosedDelegatedRuns } from "../../../../src/run-history/services/closed-delegated-run-reader.js";
+import { bindDelegatedRuns, unbindDelegatedRuns } from "../../../../src/run-history/services/delegated-run-agents-reader.js";
 import { readCollaborationParticipantMessages } from "../../../../src/api/graphql/types/collaboration-participant-messages.js";
 import { AgentOrgRunManager } from "../../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import { TeamCommunicationProjectionService } from "../../../../src/services/team-communication/team-communication-projection-service.js";
@@ -34,8 +34,8 @@ const withDelegatedSolo = async <T>(run: () => Promise<T>): Promise<T> => {
     runtimeKind: "autobyteus", platformAgentRunId: null } as never);
   vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({ getMemoryDir: () => memory } as never);
   const port = { childrenOf: () => [{ agentRunId: "solo" }], subtreeOf: () => [{ agentRunId: "solo" }] } as never;
-  bindClosedDelegatedRuns(port);
-  try { return await run(); } finally { unbindClosedDelegatedRuns(port); await fs.rm(memory, { recursive: true, force: true }); }
+  bindDelegatedRuns(port);
+  try { return await run(); } finally { unbindDelegatedRuns(port); await fs.rm(memory, { recursive: true, force: true }); }
 };
 
 const withHubRecords = async <T>(records: () => Promise<unknown>, run: () => Promise<T>): Promise<T> => {

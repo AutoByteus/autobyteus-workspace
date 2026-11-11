@@ -197,4 +197,24 @@ describe("TokenUsageRunStore", () => {
     const alone = await store.getStandaloneRunSummary({ hostRunId, childAgentRunIds: [] });
     expect(alone).toEqual(await store.getAgentRunSummary(hostRunId));
   });
+
+  it("CR-461-004: rolls a team (or org) run up over the runs delegated from it, once each, keeping its own identity and context", async () => {
+    const rootTeamRunId = "rollup-team";
+    const member = remember("rollup-team-member");
+    const delegatedAgent = remember("rollup-delegated-agent");
+    const delegatedTeamMember = remember("rollup-delegated-team-member");
+    const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
+    await store.recordObservation(buildCurrentTokenUsagePayload({ runId: member, rootTeamRunId, inputTokens: 100, outputTokens: 10,
+      agentName: "Member", latestPromptTokens: 1_000, effectiveContextWindowTokens: 10_000, contextWindowUsagePercent: 10 }));
+    // A delegated agent run (its own root) and a member of a delegated team run (its own root team), reporting later.
+    await store.recordObservation(buildCurrentTokenUsagePayload({ runId: delegatedAgent, inputTokens: 20, outputTokens: 2, agentName: "Delegated",
+      latestPromptTokens: 9_000, effectiveContextWindowTokens: 10_000, contextWindowUsagePercent: 90 }));
+    await store.recordObservation(buildCurrentTokenUsagePayload({ runId: delegatedTeamMember, rootTeamRunId: "rollup-delegated-team",
+      inputTokens: 3, outputTokens: 1, agentName: "Delegated team member" }));
+
+    const summary = await store.getTeamRunSummary(rootTeamRunId, [delegatedAgent, delegatedTeamMember, delegatedAgent, member, "never-reported"]);
+    expect(summary).toMatchObject({ run_id: rootTeamRunId, root_team_run_id: rootTeamRunId, gross_input_tokens: 100 + 20 + 3,
+      output_tokens: 10 + 2 + 1, usage_report_count: 3, latest_prompt_tokens: 1_000, context_window_usage_percent: 10 });
+    expect(await store.getTeamRunSummary(rootTeamRunId)).toMatchObject({ gross_input_tokens: 100, usage_report_count: 1 });
+  });
 });
