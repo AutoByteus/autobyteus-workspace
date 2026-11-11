@@ -165,6 +165,23 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - **On a failure:** if a write fails after others succeeded, the result names the runs saved and the one that failed. It is reported through an outcome the editor already shows, `PERSISTENCE_FAILED` with that message, so the web needs no new branch (ARCH-REV-014). Each saved run keeps its save, since each file is that run's truth. The editor reloads the rows.
 
   Peer children keep no editable launch (as today). Tests: an agent child and a team child (team row and member row) saved from the parent's Settings land in the child's own file; a running child refuses the whole Save before any write; a failure on the second child reports the first as saved.
+- **The history poll for listed runs that are not open** (`agentRunCollaborationStatuses(runIds)`; autobyteus-426 REQ-009, kept by REQ-009 and REQ-002; SR-040, CR-461-002). Today the hosting root answered it from its copies. Now it is answered from **the same projection as the view**, so the two agree by construction:
+  - **Server**, for every listed run X, active or stopped, never restoring anything:
+    - `isActive`: X's own root.
+    - `statuses`: every agent of every local child row the view of X has, `DelegationTree.openChildrenOf(X)`, one hop. Each carries the address the view gives that agent, and its status from the child's own root when it is active (`TaskRunControl.ownStatus` and the paired-agent statuses), else `offline`. Peer children keep their own state source, as today.
+    - `closedTaskExecutionsDigest`: the digest of the closed set the view returns. That set is empty since this ticket, because a child whose Task closed leaves the view. The field stays on the wire with a constant value until FU-008 removes it.
+  - **Web** (`agentRunCollaborationStore.refreshListedStatuses`; `docs/workspace_layout.md`): **one rule for every hub, active or stopped.**
+    - The view is read again when the answer's active state, its local children (ID and address) or its digest differ from the view's. This happens at most once per distinct answer: the hub's `isActive`, children and digest.
+    - Otherwise the statuses are applied.
+    - The stopped-host branch, which looked at the digest only, goes. It assumed a stopped host's children were stopped too. Now they are independent runs whose states change while their delegator is stopped, so its rows follow them like an active hub's.
+    - The once-per-answer guard also ends the re-read every 5 s of an active hub whose answer a re-read cannot match.
+  - Tests:
+    - a stopped Project Task Manager whose delegated team works: the team's row shows its live status within one poll, with no view re-read per poll;
+    - a child's Task closed while its delegator is stopped: the row leaves within one poll, with one re-read;
+    - a reopen brings the row back;
+    - an active hub whose answer equals its view: no re-read;
+    - an answer a re-read cannot match: one re-read, then the statuses are applied;
+    - the 100-run limit is unchanged.
 - **A peer child's launch details** (each agent's runtime, model and launch source; REQ-009) are read from the peer while the view is open (SR-038). The peer's run summary (`peer-run-view-answers.ts`, `remote-run-view-provider.ts`, autobyteus-278) gains `launches` per agent, read from the run's own file on its node. `remote-task-execution-dto-projection.ts` fills `RemoteTaskExecutionDto.launches` from that answer instead of the stored link. A peer that cannot answer gives no launch details, as it gives no statuses. Nothing is stored on the delegating node; the delegation result's launch notes are unchanged. Tests: the row shows the peer's launches from the summary; a changed launch on the peer shows on the next summary; no launches while the peer is unreachable.
 - The web keeps today's rows, selection and buttons. A local child's status and live output reach the view the way a remote child's do; its commands go to its own root (above).
 

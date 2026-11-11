@@ -840,3 +840,19 @@
 - The trade-off accepted: the Save is no longer one atomic write. All children are checked first: stopped, and every patch valid. A failure after a write reports what was saved. Each run's file is its own truth.
 - Done: the design's DS-8 (routes, order, failure result, tests). The contract is unchanged, since views are not in the model. The web is unchanged.
 - ARCH-REV-014 (2026-11-11): Pass, no finding. Its note is applied in DS-8: a partial failure is reported as `PERSISTENCE_FAILED`, with a message naming the runs saved, so the unchanged web shows it.
+
+### SR-040 — The history poll, answered from the view's projection (answers CR-461-002, Design Impact)
+
+- Triggering: code review CRR-003 failed with CR-461-002 (Design Impact). The history poll `agentRunCollaborationStatuses`, a derived consumer of the removed hosting, was never inventoried. The design's readers table, Change Scope and review did not name it. The implementation answered `statuses: []`. The unchanged web then re-read an active hub every 5 s, and lost the children's live status under listed runs that are not open (autobyteus-426 REQ-009, kept by this ticket's REQ-009 and REQ-002).
+- The Solution Designer's gap: the readers inventory missed this consumer of the hosting root's in-memory state. The design's own rule ("a reader not in this table is an escalation") caught it in code review.
+- Read: the new view's `closed_task_executions` is always `[]`, in every projector, because a child whose Task closed leaves the view. The web (`agentRunCollaborationStore.ts`) has two branches:
+  - for a stopped hub it looks at the digest only, once per value; that assumed a stopped host's children were stopped;
+  - for an active hub it re-reads on any difference, with no guard.
+- Decision (on the data model's merits): the poll is a second consumer of **the same projection as the view** (DS-8).
+  - The server answers active and stopped runs alike, never restoring: `isActive`; the statuses of every agent of the view's local child rows, from each child's own root, else `offline`; and the digest of the view's (empty) closed set.
+  - The web uses one rule for every hub: re-read on a difference, at most once per distinct answer; otherwise apply the statuses.
+
+  The stopped-host branch goes, because children now live on while their delegator is stopped, and their rows must follow them. The constant digest field stays until FU-008 removes the hosting-only fields.
+- Done: the design's DS-8 (server, web, tests). FU-009 notes where it is designed. The contract is unchanged (views are not in the model), and `walkthrough.py --check` passes.
+- The four Local Fixes of CRR-003 (CR-461-001, -003, -004, -005) are the Implementation Engineer's. Each restores what the design already states: DS-5's closure re-check in the gate, race row 5, the readers table's unchanged token totals, and `DESIGN.md` rule 11 and Principle 15.
+
