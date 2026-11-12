@@ -1,0 +1,93 @@
+# Check: IMP-01
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run components/conversation/segments/renderer/__tests__/ utils/__tests__/markdownHeadingAnchors.spec.ts --reporter=verbose; RED with the base production files (useMarkdownSegments.ts, MarkdownRenderer.vue at 931a1feeb6, no markdownHeadingAnchors.ts), then GREEN with the change
+# Commit: base 931a1feeb6 + working tree = 45e456b8b0
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12
+
+## RED: base production code
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > gives each heading its GitHub anchor id, numbering repeats, from the text as written 25ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > renders design-principles.md so every Contents entry has exactly one heading 90ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > scrolls a Contents entry to its heading without leaving the page 57ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > decodes an encoded anchor 12ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > scrolls within its own message when two messages share a heading 8ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for #no-such-heading, without navigating 3ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for other.md, without navigating 2ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for other.md#x, without navigating 4ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for /x.md, without navigating 2ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for ./x.md, without navigating 5ms
+ × components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for ../docs/x.md, without navigating 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > keeps external and other-scheme links as they were 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > keeps file-action links opening their file 3ms
+ FAIL  utils/__tests__/markdownHeadingAnchors.spec.ts [ utils/__tests__/markdownHeadingAnchors.spec.ts ]
+Error: Failed to resolve import "~/utils/markdownHeadingAnchors" from "utils/__tests__/markdownHeadingAnchors.spec.ts". Does the file exist?
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  11 failed | 2 passed (13)
+
+## GREEN: with the change
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > fits wide and tall diagrams without changing their aspect ratios 1ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > returns safe finite empty geometry for invalid dimensions 0ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > clamps zoom and creates real centered or overflow plane extents 1ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > keeps the anchored diagram point stable while zooming from a centered fit 0ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > clamps anchored scroll at every real plane edge 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "The Approach: Spine First, Practices In Context" → "the-approach-spine-first-practices-in-context" 2ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "1. Approved Behavior And Production Reality" → "1-approved-behavior-and-production-reality" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "15. One Vocabulary: One Word, One Meaning; One Meaning, One Word" → "15-one-vocabulary-one-word-one-meaning-one-meaning-one-word" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "Foo & Bar" → "foo--bar" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "A -- B" → "a----b" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "What's new?" → "whats-new" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "snake_case_name" → "snake_case_name" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "Hello 👋 World" → "hello--world" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "Ünïcödé Straße" → "ünïcödé-straße" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "Привет Мир" → "привет-мир" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "日本語 見出し" → "日本語-見出し" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > githubHeadingSlug > "v1.5 (beta)" → "v15-beta" 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > createHeadingSlugger > numbers repeated headings in order, per document 0ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts > createHeadingSlugger > resolves every Contents entry of design-principles.md to exactly one heading 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > preserves loading and error states without exposing an empty viewer action 9ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > keeps long parser errors in the bounded local message surface 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > renders a full-width intrinsic-capped preview with no duplicate wrapper id 7ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > moves the one SVG copy into the viewer from the button or non-interactive preview 27ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > preserves interactive descendants instead of treating them as expand actions 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > forwards expanded links to the owning Markdown boundary 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > commits only the newest async render generation and invalidates an open viewer 9ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > mounts a named modal with exactly four persistent actions and restores body overflow 19ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > fits from the SVG viewBox, creates real zoom extents, and resets with Fit 19ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > zooms around the wheel interaction point and supports keyboard controls 15ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > traps focus, dismisses conventionally, and reports backdrop or Escape closes 5ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > returns Mermaid xlink HTTP anchors while preserving other interactive descendants 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > should render markdown content correctly 17ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps the generic renderer inert and enables scoped file actions only when opted in 13ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > emits the raw-token action on explicit click without classifying anchor.href 5ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > decodes encoded POSIX and Windows link destinations while retaining source text 6ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > renders valid file URIs as authored-label actions with raw provenance 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > neutralizes invalid and unsupported file links without exposing the raw URI 7ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > renders unsupported bare absolute Markdown destinations as inert labels 8ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > leaves file links unchanged when Event Monitor actions are disabled 12ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps fenced code text unchanged while exposing complete space-containing paths 8ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > renders supported paths as compact inline links while preserving labels and source text 6ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps inline file links keyboard accessible for Enter and Space 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > activates SVG Event Monitor actions by click, Enter, and Space while retaining focusable action semantics 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps unsupported archive, installer, and binary paths source-faithful without actions 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > renders supported Lua code paths as Event Monitor actions 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps incomplete absolute paths unchanged across links, prose, inline code, and fences 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > should render MermaidDiagram component for mermaid blocks 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > routes a teleported Mermaid external-link event through the existing link authority 20ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > routes ordinary HTML href and inline Mermaid xlink anchors through one authority 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > binds a managed image only after authorized resolution completes 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > shapes an html segment with a very long unbroken run cheaply, and leaves prose as it is (autobyteus-358 DS-007) 7ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > gives each heading its GitHub anchor id, numbering repeats, from the text as written 20ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > renders design-principles.md so every Contents entry has exactly one heading 73ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > scrolls a Contents entry to its heading without leaving the page 52ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > decodes an encoded anchor 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > scrolls within its own message when two messages share a heading 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for #no-such-heading, without navigating 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for other.md, without navigating 5ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for other.md#x, without navigating 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for /x.md, without navigating 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for ./x.md, without navigating 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > does nothing for ../docs/x.md, without navigating 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > keeps external and other-scheme links as they were 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts > MarkdownRenderer heading links > keeps file-action links opening their file 5ms
+ Test Files  6 passed (6)
+      Tests  64 passed (64)
