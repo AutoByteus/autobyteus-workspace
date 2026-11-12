@@ -243,6 +243,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
     - `isActive`: X's own run;
     - `children`: one entry per local child row the view of X has (`DelegationTree.openChildrenOf(X)`, one hop), each with:
       - `row`: the child's row record, built by **the view's own projection function**, the same that builds the view's rows and `ChildRowsFeed`'s `added` records;
+        the projection takes the child's address and members from the `DelegationTree`'s per-run data, read once per run from its own file, never from a file per child per poll (ARCH-REV-030). A delegated run's address and members do not change;
       - `statuses`: every agent of that child, with its address from the tree's per-run agents and its status from the child's own root when active, else `offline`.
 
       Peer children keep their own state source, as today.

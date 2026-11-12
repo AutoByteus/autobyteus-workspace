@@ -1078,4 +1078,4 @@
 - Done: the design's DS-8 poll section (server, web, tests). `walkthrough.py --check` passes (views are not in the model).
 - The four Local Fixes of CRR-012 (CR-461-017, -018, -019, -020) are the Implementation Engineer's.
 - Next action: architecture review (narrow)
-
+- ARCH-REV-030 (2026-11-12): Pass, no finding. Its cost note is applied in DS-8: the row records take a child's address and members from the `DelegationTree`'s per-run data, read once, never from a file per child per poll.
