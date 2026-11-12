@@ -1063,3 +1063,19 @@
 - The three Local Fixes of CRR-008 (CR-461-009, CR-461-010, CR-461-011) are the Implementation Engineer's.
 
 - ARCH-REV-029 (2026-11-12): Pass, no finding. The texts and the refusal were verified at `827f1e68dc`, and the org story follows a real path. `walkthrough.py --check` passes, and the example validator has 0 findings.
+
+### SR-055 — The listed-runs poll serves every delegating kind and carries the rows (answers CRR-012 Design Impact CR-461-021)
+
+- Triggering: the code review's failure-origin review of API/E2E round 2 (CRR-012) found CR-461-021. A team or org that is listed but not open never lists its delegated runs: phone MSP-38 and MSP-39 list only the manager, while MSP-37 (an agent root) passes. That fails REQ-002 ("shown under the run that delegated it … in the desktop and phone layouts") and DS-11.
+  - The design gave listed runs that are not open one source of child rows, the history poll, which serves standalone agent runs only (`agent-run-collaboration.ts:63-90`).
+  - A team's or org's list rows come from its own stored members (`mobileRunTreeProjection.ts` `teamRowsOf`). Child rows are built only for an open team (`runHistoryNavigationProjection.ts:202`).
+  - At base, copies were hosted in the team's or org's tree, and removing hosting took that source away.
+- The Solution Designer's gap: SR-040 inventoried the poll for the agent-run hub only. The list rows of team and org delegators are another derived consumer of the removed hosting.
+- Decision (spine first: one capability, one path, Trigger "Several kinds or forms"):
+  - **One poll, `runCollaborationStatuses(runs)`, for every kind**, replaces `agentRunCollaborationStatuses`. Its answer carries each open local child's **row record, built by the view's own projection function** (the one the view and `ChildRowsFeed` use), with its agents' statuses.
+  - The web builds the delegated rows of every listed run that is not open from that answer, desktop and phone. The open run keeps its live stream.
+  - Because the answer carries the rows, the per-change view re-read of SR-040 and SR-041 is no longer needed, and is withdrawn. One projection serves the view, the feed and the poll, so the list and the open view agree by construction.
+- Done: the design's DS-8 poll section (server, web, tests). `walkthrough.py --check` passes (views are not in the model).
+- The four Local Fixes of CRR-012 (CR-461-017, -018, -019, -020) are the Implementation Engineer's.
+- Next action: architecture review (narrow)
+

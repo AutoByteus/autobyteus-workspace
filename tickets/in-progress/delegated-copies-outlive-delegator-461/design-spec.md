@@ -238,23 +238,26 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
     - a Task deletion removes its children;
     - a delegation to a peer appears;
     - an open view of a stopped X gets the event and X stays stopped.
-- **The history poll for listed runs that are not open** (`agentRunCollaborationStatuses(runIds)`; autobyteus-426 REQ-009, kept by REQ-009 and REQ-002; SR-040, CR-461-002). Today the hosting root answered it from its copies. Now it is answered from **the same projection as the view**, so the two agree by construction:
-  - **Server**, for every listed run X, active or stopped, never restoring anything:
-    - `isActive`: X's own root.
-    - `statuses`: every agent of every local child row the view of X has, `DelegationTree.openChildrenOf(X)`, one hop. Each carries its address from the `DelegationTree`'s per-run agents (run ID and address, read once from the run's own file; contract §4), so no file is read per poll, and its status from the child's own root when it is active (`TaskRunControl.ownStatus` and the paired-agent statuses), else `offline`. Peer children keep their own state source, as today.
-    - No closed-set digest: the answer's `closedTaskExecutionsDigest` is removed (SR-041, below), because a child whose Task closed leaves the view.
-  - **Web** (`agentRunCollaborationStore.refreshListedStatuses`; `docs/workspace_layout.md`): **one rule for every hub, active or stopped.**
-    - The view is read again when the answer's active state or its local children (ID and address) differ from the view's. This happens at most once per distinct answer: the hub's `isActive` and children.
-    - Otherwise the statuses are applied.
-    - The stopped-host branch, which looked at the closed-set digest only, goes. It assumed a stopped host's children were stopped too. Now they are independent runs whose states change while their delegator is stopped, so its rows follow them like an active hub's.
-    - The once-per-answer guard also ends the re-read every 5 s of an active hub whose answer a re-read cannot match.
-  - Tests:
-    - a stopped Project Task Manager whose delegated team works: the team's row shows its live status within one poll, with no view re-read per poll;
-    - a child's Task closed while its delegator is stopped: the row leaves within one poll, with one re-read;
-    - a reopen brings the row back;
-    - an active hub whose answer equals its view: no re-read;
-    - an answer a re-read cannot match: one re-read, then the statuses are applied;
-    - the 100-run limit is unchanged.
+- **The history poll for listed runs that are not open** (`runCollaborationStatuses(runs)`; autobyteus-426 REQ-009, kept by REQ-009 and REQ-002; SR-040, SR-041; **SR-055, every delegating kind**). Today the hosting run answered it from its copies, and a team's or org's list rows came from its own stored tree. Now it is answered from **the same projection as the view**, for every kind of run, so a listed run's rows and its open view agree by construction:
+  - **Server:** `runCollaborationStatuses(runs: [{ kind: agent | agent_team | agent_org, runId }])`, at most 100 runs, replaces `agentRunCollaborationStatuses`. It is a clean cut of the query, its GraphQL type, the web query and its hydration. For every listed run X, active or stopped, never restoring anything, the answer has:
+    - `isActive`: X's own run;
+    - `children`: one entry per local child row the view of X has (`DelegationTree.openChildrenOf(X)`, one hop), each with:
+      - `row`: the child's row record, built by **the view's own projection function**, the same that builds the view's rows and `ChildRowsFeed`'s `added` records;
+      - `statuses`: every agent of that child, with its address from the tree's per-run agents and its status from the child's own root when active, else `offline`.
+
+      Peer children keep their own state source, as today.
+  - **Web, one rule for every listed run that is not open, desktop and phone:**
+    - `runHistoryStore`'s listed runs (all kinds, `listedRuns`) are polled in one read.
+    - The run list's delegated rows of each such run come **from the answer**: each `children[].row` is placed under its delegating agent or member, as in the open view, with its `statuses` applied, in `runHistoryNavigationProjection` (desktop) and `mobileRunTreeProjection` (phone).
+    - A child no longer in the answer leaves the list at the next poll, and a reopened one comes back.
+    - The open run's rows keep coming from its live stream (SR-042 … SR-046).
+    - Because the answer carries the rows, a listed run that is not open needs no view read. The re-read rule of SR-040 and SR-041 (re-read on a difference, once per distinct answer) is withdrawn with it, and the agent run's stored view is read only when the run is opened.
+  - Tests, desktop and phone:
+    - a listed, not-open **team** and **org** with an open delegated child show the child's row under its delegating member within one poll, with its live status;
+    - the row leaves within one poll after the child's Task closes, and returns on a reopen;
+    - a listed, not-open **agent run** does the same, with no view read per poll;
+    - the open run's rows are unchanged by the poll;
+    - the 100-run limit holds.
 - **A peer child's launch details** (each agent's runtime, model and launch source; REQ-009) are read from the peer while the view is open (SR-038). The peer's run summary (`peer-run-view-answers.ts`, `remote-run-view-provider.ts`, autobyteus-278) gains `launches` per agent, read from the run's own file on its node. `remote-task-execution-dto-projection.ts` fills `RemoteTaskExecutionDto.launches` from that answer instead of the stored link. A peer that cannot answer gives no launch details, as it gives no statuses. Nothing is stored on the delegating node; the delegation result's launch notes are unchanged. Tests: the row shows the peer's launches from the summary; a changed launch on the peer shows on the next summary; no launches while the peer is unreachable.
 - The web keeps today's rows, selection and buttons. A local child's status and live output reach the view the way a remote child's do; its commands go to its own root (above).
 
