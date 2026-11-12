@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E pass (API-REV-001) | Pass | Pass | None |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review, delivery re-entry (API-REV-002) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -61,3 +62,26 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: RSK-001 / C-03 not observed (Antigravity); signing and notarization not run; FU-001 and FU-002 are pre-existing.
+
+### CRR-003 — Test-code review of the delivery re-entry (API-REV-002)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` § Round 2
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review): `6f667d2552`
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-04 r2)
+- Relevant solution / architecture-review / implementation revision IDs: SR-002 / ARCH-REV-001 / IR-001
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-002)
+- Current authoritative result: Pass
+- What changed in the review result and why: a pure renumber MSP-44…46 → MSP-47…49 resolves the collision with autobyteus-480. The full probe is 49/49 on the merged state.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: unchanged from CRR-002.

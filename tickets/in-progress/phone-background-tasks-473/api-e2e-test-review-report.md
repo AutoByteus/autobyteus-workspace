@@ -48,10 +48,18 @@ None.
 
 - Follow-ups this review added: None (FU-001 and FU-002 were recorded by API/E2E).
 
+## Round 2 (CRR-003): Delivery Re-Entry on the Merged State, API-REV-002
+
+- Trigger: Delivery DR-001 was blocked after `origin/personal` moved to `87b7f16c9d` (autobyteus-480, merged as `4ea0901811`), because the case IDs MSP-44…46 collided. API/E2E commit `6f667d2552`; no product code changed.
+- Changed durable tests: `mobile-background-tasks-cases.mjs` and `mobile-shell-probe.mjs`. This is a pure renumber MSP-44…46 → MSP-47…49: the IDs, the header and `--cases` hint, the cross-reference assertion ("MSP-48 needs MSP-47") and the four screenshot names, plus the probe's case-list and timing lines. No assertion changed, no old ID is left in the file, and 480's MSP-44…46 are untouched.
+- Evidence: on the merged state the full phone probe passes 49/49, including MSP-47…49 and 480's MSP-44…46; the duplicate-ID guard passes; 0 unknown browser errors (`evidence/api-e2e/r2-API-04-mobile-shell.log`).
+- Proportional checks: names and IDs consistent; assertions unchanged; deterministic. All `Pass`.
+- Findings: none.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `mobile-background-tasks-cases.mjs`, `mobile-shell-probe.mjs`, the 473 server and web specs
+- Result: `Pass` (round 2, CRR-003; round 1 CRR-002 stands)
+- Changed durable test paths reviewed: round 2: `6f667d2552` renumber; round 1: `mobile-background-tasks-cases.mjs`, `mobile-shell-probe.mjs`, the 473 server and web specs
 - Unresolved finding IDs: none
 - Recommended Recipient: `delivery_engineer`
 - Notes: residuals are RSK-001 / C-03 (Antigravity missed end, not seen; in-app runs used Claude), and signing and notarization (not run).
