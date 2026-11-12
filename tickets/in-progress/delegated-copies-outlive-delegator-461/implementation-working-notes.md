@@ -438,3 +438,10 @@ then re-apply only:
 1. SR-045, the view stream kept for a stopped run;
 2. rule 2, a delegated row binds to its own run's context and stream, and its Settings save goes to its own save.
 List the re-applied hunks in the handoff. The contracts follow the server's base shapes.
+
+Step 3a done (`62cb766186`): `RunViewStream` + `RunViewStreams` (in `run-view-stream.ts`), created in `composeTaskSide`
+(`TaskSide.viewStreams`), passed by the supervisor and the application platform to the three builders; roots no longer
+clear the stream; registry test. Focused units 215 files pass. Next, step 3b: the view sessions open
+`streamOf(run).openSnapshotConnection` in both modes (a session needs the registry and the run's `isMessageEvent`), with the
+sync rows/status read first; `ChildRowsStreams` and the unsequenced `CHILD_RUNS_CHANGED` go; base's row events return
+into each root's event union and are published by `ChildRowsFeed` into the run's stream.
