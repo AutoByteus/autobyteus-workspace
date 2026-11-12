@@ -113,6 +113,8 @@
 //                  a folder (same file, after MSP-31).
 //   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
+//   MSP-44…46 autobyteus-473  Background tasks: on the phone's Activity (a task started before it opened, its end, a task
+//                  started while open) and on the desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
 //                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
@@ -160,6 +162,7 @@ import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
+import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -1697,6 +1700,9 @@ const runCases = async () => {
 
   // autobyteus-472: touch zoom and Download in the phone viewer (`mobile-file-zoom-cases.mjs`).
   await runFileZoomCases({ runCase, page, stack, sel, toList, openRow, shot, sendOver, waitFor, sleep, assert, outputDir });
+
+  // autobyteus-473: background tasks on the phone's Activity and after a desktop reload (`mobile-background-tasks-cases.mjs`).
+  await runBackgroundTaskCases({ runCase, page, stack, alpha, browser, sel, toList, openRow, menuOpen, shot, waitFor, sleep, assert, desktopRunsView, outputDir });
 
   await runCase('MSP-14', async () => {
     await toList(page);
