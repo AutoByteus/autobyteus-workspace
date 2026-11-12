@@ -1,0 +1,14 @@
+# Check: IMP-02
+# Command: pnpm -C autobyteus-web typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# Commit: base 931a1feeb6 + working tree = 45e456b8b0
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12
+
+## typecheck
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 26.6s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+## guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
