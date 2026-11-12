@@ -111,6 +111,22 @@ export const readRowEvent = async (projection: ChildRowProjection, event: ChildR
   }
 };
 
+/**
+ * A view's delivery of its stream's events, in order (base's views sent each event as it was published). An event is
+ * delivered at once, unless a row event's records are still being read: then it waits behind it. `deliver` reads a row
+ * event's records before sending it, and handles its own errors.
+ */
+export const inOrderViewDelivery = <S>(isRowEvent: (sequenced: S) => boolean, deliver: (sequenced: S) => Promise<void>): ((sequenced: S) => void) => {
+  let pending: Promise<void> | null = null;
+  return (sequenced) => {
+    if (!pending && !isRowEvent(sequenced)) { void deliver(sequenced); return; }
+    const next = (pending ?? Promise.resolve()).then(() => deliver(sequenced));
+    const settle = () => { if (pending === next) pending = null; };
+    pending = next;
+    void next.then(settle, settle);
+  };
+};
+
 /** Whether an event of a run's view stream is a row event. */
 export const isChildRowRootEvent = (event: { kind?: unknown }): event is ChildRowRootEvent =>
   event.kind === "task_execution_started" || event.kind === "task_executions_closed" || event.kind === "task_executions_reopened";

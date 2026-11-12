@@ -182,7 +182,7 @@ describe("Run file changes API integration", () => {
     studioServices = configureStudioApplicationApiServices(Object.fromEntries([
       "agentDefinitionService", "agentTeamDefinitionService", "agentOrgDefinitionService", "agentRunService",
       "teamRunService", "agentOrgRunService", "definitionAdmissionService", "collaborationRootHistoryService",
-      "runModelConfigService", "delegatedLaunchSelectionService", "runViewChildren", "delegatedRunAgents", "bundleService", "capabilityService",
+      "runModelConfigService", "runViewChildren", "delegatedRunAgents", "runViewStreams", "bundleService", "capabilityService",
       "packageQueries", "packageCommands",
     ].map((name) => [name, {}])) as never);
 

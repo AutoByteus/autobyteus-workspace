@@ -117,10 +117,9 @@ const teamScenario: Scenario = {
     const publisher = new RunViewStream<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const root = {
       teamRunId: "team-run-root",
-      openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => ({ tree, messages, inputStates: [], statuses: [] })),
+      openViewSnapshotConnection: (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => publisher.openSnapshotConnection(() => { const rows = atBase(); return read({ tree, messages, inputStates: [], statuses: [] }, rows) as never; }),
       executeAgentCommand: vi.fn(async () => ({ accepted: true })),
       getExecutionTreeSnapshot: () => tree,
-      localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
     };
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
@@ -190,13 +189,13 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
         details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
       }));
       const snapshot = { tree, messages: { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: rootRunId, messages: [] }, statuses, inputStates: [] };
-      const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
-        openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
+      const run = { orgRunId: rootRunId, isActive: () => true, getExecutionTreeSnapshot: () => tree,
+        openViewSnapshotConnection: (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => publisher.openSnapshotConnection(() => { const rows = atBase(); return read(snapshot, rows) as never; }),
         executeAgentCommand: vi.fn(), executeAgentCommandWithExecutionKind: vi.fn() };
       handlers = { orgHandler: new AgentOrgStreamHandler({ getActive: (id: string) => id === rootRunId ? run : null, recordRunActivity: vi.fn(async () => undefined) } as never, testViewSources()) };
     } else {
       const snapshot = { host: { address: "/assistant" as never, agentRunId: rootRunId, agentDefinitionId: "assistant" }, createdAt: "2026-10-18T00:00:00.000Z", statuses: [] };
-      const root = { rootIdentity: createAgentRootExecutionIdentity(rootRunId), ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true, localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined },
+      const root = { rootIdentity: createAgentRootExecutionIdentity(rootRunId), ensureHostReady: vi.fn(async () => ({ runId: rootRunId })), isHostLive: () => true,
         openViewSnapshotConnection: (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => publisher.openSnapshotConnection(() => { const rows = atBase(); return read(snapshot, rows) as never; }) };
       handlers = { collaborationHandler: new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never }, testViewSources().rows) };
     }

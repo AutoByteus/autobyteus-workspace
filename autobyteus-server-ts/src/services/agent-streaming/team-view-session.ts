@@ -8,7 +8,7 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import { isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type ProjectedRowEvent, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
 import { storedTeamPackageSnapshot } from "./stored-view-children.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot, projectTeamRowEvent } from "./team-execution-view-projector.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
@@ -142,31 +142,28 @@ export class TeamViewSession {
       lastMessageChangeSequence: connection.lastMessageChangeSequence,
     }, connection.snapshot.rows, connection.snapshot.statuses));
     let open = true;
-    let sending: Promise<void> = Promise.resolve();
-    const unsubscribe = connection.subscribe((sequenced) => {
-      sending = sending.then(async () => {
-        if (!open) return;
-        try {
-          const message = await this.project(sequenced);
-          if (message && open) this.sink.send(message);
-        } catch (error) { console.error(`Error projecting a team run's view event: ${String(error)}`); }
-      });
-    });
+    const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event as { kind?: unknown }), async (sequenced) => {
+      if (!open) return;
+      try {
+        const event = sequenced.event;
+        const rowEvent = isChildRowRootEvent(event as { kind?: unknown }) ? await readRowEvent(this.sources.rows.projection, event as ChildRowRootEvent) : null;
+        const message = this.project(sequenced, rowEvent);
+        if (message && open) this.sink.send(message);
+      } catch (error) { console.error(`Error projecting a team run's view event: ${String(error)}`); }
+    }));
     this.sink.send(lifecycle(isActive));
     // The view's peer rows, observed after its snapshot (SR-066): never through the root.
     const stopPeers = this.sources.rows.peers.follow(this.identity);
     return () => { open = false; unsubscribe(); stopPeers(); };
   }
 
-  private async project(sequenced: SequencedRootEvent<TeamViewEvent>): Promise<TeamStreamServerMessage | null> {
+  /** One event in base's shapes; a row event with its records read (`null` when none could be read). */
+  private project(sequenced: SequencedRootEvent<TeamViewEvent>, rowEvent: ProjectedRowEvent | null): TeamStreamServerMessage | null {
     const event = sequenced.event;
     // The rows' statuses and the peer rows' summaries and output (SR-066), as base projected a hosted copy's and a peer's.
     if ("kind" in event && (event.kind === "local_child_presentation" || event.kind === "remote_agent_presentation"
       || event.kind === "remote_task_execution_summary")) return projectTeamRemoteEvent(event, sequenced.changeSequence);
-    if (isChildRowRootEvent(event as { kind?: unknown })) {
-      const rowEvent = await readRowEvent(this.sources.rows.projection, event as ChildRowRootEvent);
-      return rowEvent ? projectTeamRowEvent(rowEvent, sequenced.changeSequence) : null;
-    }
+    if (isChildRowRootEvent(event as { kind?: unknown })) return rowEvent ? projectTeamRowEvent(rowEvent, sequenced.changeSequence) : null;
     return projectSequencedTeamRunEvent(sequenced as SequencedRootEvent<TeamRunEvent>);
   }
 }

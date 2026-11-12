@@ -1,6 +1,6 @@
 import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources } from "./run-view-rows.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -109,28 +109,25 @@ export class AgentCollaborationStreamHandler {
           lastMessageChangeSequence: barrier.lastMessageChangeSequence, rows: barrier.snapshot.rows, childStatuses: barrier.snapshot.statuses }),
       }));
       // Every frame after the base, in order; a row event's records are read when it is sent.
-      let sending: Promise<void> = Promise.resolve();
       let open = true;
-      const unsubscribe = barrier.subscribe((event) => {
-        sending = sending.then(async () => {
-          if (!open) return;
-          try {
-            const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, event.event) : null;
-            const projected = projectAgentCollaborationEvent(hostRunId, event, rowEvent);
-            if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
-          } catch (cause) {
-            egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
-            queueMicrotask(() => { this.disconnect(sessionId); connection.close(1011); });
-            return;
-          }
-          if (event.event.kind === "lifecycle") {
-            egress.send(CollaborationStreamServerMessageSchema.parse({
-              type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: event.event.isActive },
-            }));
-            if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
-          }
-        });
-      });
+      const unsubscribe = barrier.subscribe(inOrderViewDelivery((event) => isChildRowRootEvent(event.event), async (event) => {
+        if (!open) return;
+        try {
+          const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, event.event) : null;
+          const projected = projectAgentCollaborationEvent(hostRunId, event, rowEvent);
+          if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
+        } catch (cause) {
+          egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
+          queueMicrotask(() => { this.disconnect(sessionId); connection.close(1011); });
+          return;
+        }
+        if (event.event.kind === "lifecycle") {
+          egress.send(CollaborationStreamServerMessageSchema.parse({
+            type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: event.event.isActive },
+          }));
+          if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
+        }
+      }));
       // The run's own agent's state (SR-045): a stopped run's view keeps its stream; its agent starts on its first input.
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: root.isHostLive() },

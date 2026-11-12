@@ -9,7 +9,7 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from "./agent-org-execution-view-projector.js";
 import { orgTeamOfDelegator } from "./collaboration-execution-tree-dto-projection.js";
 import type { ProjectedRowEvent } from "./run-view-rows.js";
@@ -160,18 +160,15 @@ export class OrgViewSession {
       lastMessageChangeSequence: connection.lastMessageChangeSequence, rows: connection.snapshot.rows, childStatuses: connection.snapshot.statuses,
     }) }));
     let open = true;
-    let sending: Promise<void> = Promise.resolve();
-    const unsubscribe = connection.subscribe((sequenced) => {
-      sending = sending.then(async () => {
-        if (!open) return;
-        try {
-          const rowEvent = isChildRowRootEvent(sequenced.event)
-            ? placeInMountedTeam(await readRowEvent(this.sources.rows.projection, sequenced.event), connection.snapshot.own.tree) : null;
-          const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
-          if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
-        } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }
-      });
-    });
+    const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event), async (sequenced) => {
+      if (!open) return;
+      try {
+        const rowEvent = isChildRowRootEvent(sequenced.event)
+          ? placeInMountedTeam(await readRowEvent(this.sources.rows.projection, sequenced.event), connection.snapshot.own.tree) : null;
+        const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
+        if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
+      } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }
+    }));
     this.send(this.lifecycle(isActive));
     // The view's peer rows, observed after its snapshot (SR-066): never through the root.
     const stopPeers = this.sources.rows.peers.follow(this.identity);

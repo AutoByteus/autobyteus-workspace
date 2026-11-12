@@ -322,10 +322,6 @@ export class RootTeamRun {
     return this.options.publisher.subscribe(listener);
   }
 
-  openPackageSnapshotConnection(): Promise<RootSnapshotConnection<RootTeamRunPackageSnapshot, TeamRunEvent>> {
-    return this.openViewSnapshotConnection(() => undefined, (own) => own);
-  }
-
   /**
    * The run's view snapshot (SR-063): in the view stream's snapshot connection, `atBase` runs in the same synchronous
    * step as the base (the view's rows and statuses, in memory); then the root's own parts are read consistently, as at

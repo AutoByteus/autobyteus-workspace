@@ -117,7 +117,7 @@ describe('fresh and restored configured scope use deferred readiness', () => {
     expect(run.isActive()).toBe(true);
     expect(run.getAgentStatusSnapshots()).toHaveLength(4);
     expect(run.getAgentStatusSnapshots().map(s => s.details.status)).toEqual(['offline', 'offline', 'offline', 'offline']);
-    const snapshot = await run.openPackageSnapshotConnection(); snapshot.close();
+    const snapshot = await run.openViewSnapshotConnection(() => undefined, (own) => own); snapshot.close();
     expect(f.prepareNewAgentRun).not.toHaveBeenCalled();
     expect(() => run.authorizeIdentity(identity('receiver'))).toThrow('not a live execution');
     expect(f.prepareNewAgentRun).not.toHaveBeenCalled();

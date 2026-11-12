@@ -79,7 +79,7 @@ describe("Org-owned Agent exact lookup through the hosted definition catalog and
     const unused = new Proxy({}, { get: (_target, key) => { throw new Error(`Unexpected unrelated service operation ${String(key)}`); } });
     registration = configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never, runViewStreams: {} as never, ...definitions, bundleService,
       agentOrgDefinitionService: unused, agentRunService: unused, teamRunService: unused, agentOrgRunService: unused,
-      definitionAdmissionService: unused, collaborationRootHistoryService: unused, runModelConfigService: unused, delegatedLaunchSelectionService: unused,
+      definitionAdmissionService: unused, collaborationRootHistoryService: unused, runModelConfigService: unused,
       capabilityService: unused, packageQueries: unused, packageCommands: unused,
     } as never);
     schema = await buildSchema({ resolvers: [AgentDefinitionResolver], validate: false });
