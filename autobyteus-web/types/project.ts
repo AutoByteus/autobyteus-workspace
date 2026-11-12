@@ -42,8 +42,7 @@ export interface TaskRootView {
   /** The agent run, or the team's coordinator: the run that opens it. */
   ingressAgentRunId: string
   teamRunId: string | null
-  /** The run that delegated it (one hop): the Task page opens this run's view with the worker selected. */
-  delegatingRun: { kind: 'agent' | 'agent_team' | 'agent_org'; runId: string }
+  hostRoot: { kind: 'agent' | 'agent_team' | 'agent_org'; runId: string }
   start: 'starting' | 'started' | 'failed'
   startError: { code: string; message: string } | null
   closed: boolean

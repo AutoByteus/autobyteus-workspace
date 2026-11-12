@@ -433,7 +433,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     })
   })
 
-  it('terminates once, keeps the view\'s stream, and stops only the Team\'s own members (autobyteus-461 SR-045)', async () => {
+  it('terminates once, disconnects, and preserves an offline context for history restore', async () => {
     const team = twoMemberTeam({ teamRunId: 'team-terminate' })
     setActiveTeam(team)
     const worker = team.view.getAgentContext('team-terminate-worker-run')!
@@ -448,7 +448,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(await store.terminateTeamRun('team-terminate')).toBe(true)
 
     expect(mockMutate).toHaveBeenCalledTimes(1)
-    expect(mockDisconnect).not.toHaveBeenCalled()
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
     expect(team.view.isRootTeamActive()).toBe(false)
     expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
     expect(worker.submissionPending).toBe(false)
@@ -541,8 +541,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(coordinator.requirement).toBe('')
     expect(coordinator.contextFilePaths).toEqual([])
     expect(coordinator.submissionPending).toBe(false)
-    // The Team's activity comes from its stream, never from a send (a child's message leaves it stopped, SR-045).
-    expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled()
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
   })
 
   it('finalizes a delegated task-Team Agent upload with its containing TeamRun while preserving root send scope', async () => {
@@ -581,7 +580,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       [finalImage.locator],
       expect.objectContaining({ dedupeKey: expect.stringContaining('team-delegating-live') }),
     )
-    expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled()
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-delegating-live')
   })
 
   it('finalizes attachments from an explicit source owner (a Team started from a New chat)', async () => {
@@ -643,30 +642,76 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(worker.state.conversation.messages).toEqual([])
   })
 
-  it('a stopped Team\'s message goes over its view\'s stream to the exact execution address: no restore call, no rehydration, and the Team stays stopped until its stream says otherwise (SR-045, SR-046)', async () => {
-    const stopped = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: false })
-    setActiveTeam(stopped)
+  it('preserves the real associated Team draft when restore fails before local admission', async () => {
+    const team = twoMemberTeam({
+      teamRunId: 'team-pre-admission-failure', focusedMemberAddress: '/worker', isActive: false,
+    })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-pre-admission-failure-worker-run')!
+    const stagedAttachment: ContextAttachment = {
+      kind: 'workspace_path', id: 'staged-file', locator: '/tmp/staged.txt',
+      displayName: 'staged.txt', type: 'Text',
+    }
+    worker.requirement = 'Keep this draft'
+    worker.contextFilePaths = [stagedAttachment]
+    const visibleRequirement = computed(() => worker.requirement)
+    const visibleAttachmentIds = computed(() => worker.contextFilePaths.map((attachment) => attachment.id))
+    const visiblePending = computed(() => worker.submissionPending)
+    expect(visibleRequirement.value).toBe('Keep this draft')
+    expect(visibleAttachmentIds.value).toEqual(['staged-file'])
+    expect(visiblePending.value).toBe(false)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: false, teamRunId: null } }, errors: [],
+    })
 
-    await useAgentTeamRunStore().sendMessageToFocusedMember('start on this input', [])
+    await expect(useAgentTeamRunStore().sendMessageToFocusedMember(
+      worker.requirement,
+      worker.contextFilePaths,
+    )).rejects.toThrow('Team restore failed')
 
-    expect(mockMutate).not.toHaveBeenCalled()
-    expect(mockHydrateLiveTeamRunContext).not.toHaveBeenCalled()
-    expect(teamContextsStoreMock.replaceTeamContext).not.toHaveBeenCalled()
+    expect(visibleRequirement.value).toBe('Keep this draft')
+    expect(visibleAttachmentIds.value).toEqual(['staged-file'])
+    expect(visiblePending.value).toBe(false)
+    expect(worker.state.conversation.messages).toEqual([])
+    expect(mockSendMessage).not.toHaveBeenCalled()
+  })
+
+  it('restores an inactive Team and sends to the unchanged exact execution address', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/coordinator', isActive: true })
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-restore' } },
+      errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('restore then send', [])
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { teamRunId: 'team-restore' } }))
+    expect(mockHydrateLiveTeamRunContext).toHaveBeenCalledWith(expect.objectContaining({
+      teamRunId: 'team-restore',
+      agentRunId: 'team-restore-worker-run',
+    }))
+    expect(teamContextsStoreMock.replaceTeamContext).toHaveBeenCalledWith('team-restore', stale, hydrated)
+    expect(teamContextsStoreMock.addTeamContext).not.toHaveBeenCalled()
     expect(mockSendMessage).toHaveBeenCalledWith(
-      'start on this input',
+      'restore then send',
       'team-restore-worker-run',
       [],
       [],
       expect.any(Object),
     )
-    // The server starts the Team on its member's first input; its in-band snapshot and lifecycle mark it active.
-    expect(stopped.view.isRootTeamActive()).toBe(false)
-    expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled()
   })
 
-  it('keeps a stopped Team\'s submission pending until exact Team admission is confirmed', async () => {
-    const stopped = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: false })
-    setActiveTeam(stopped)
+  it('keeps the lazy-restore submission pending until exact Team admission is confirmed', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: true })
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-admission' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
     let admit!: () => void
     mockSendMessage.mockReturnValueOnce(new Promise<void>((resolve) => { admit = resolve }))
 
@@ -675,25 +720,30 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       .then(() => { completed = true })
     await vi.waitFor(() => expect(mockSendMessage).toHaveBeenCalledOnce())
     expect(completed).toBe(false)
-    expect(stopped.view.getAgentContext('team-admission-worker-run')?.submissionPending).toBe(true)
+    expect(hydrated.view.getAgentContext('team-admission-worker-run')?.submissionPending).toBe(true)
 
     admit()
     await sending
     expect(completed).toBe(true)
   })
 
-  it('retains a stopped Team\'s exact prompt and attachments for retry after admission failure', async () => {
-    const stopped = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: false })
+  it('retains the exact lazy-restore prompt and attachments for retry after admission failure', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: true })
     const attachment: ContextAttachment = {
       kind: 'workspace_path', id: 'retry-file', locator: '/tmp/retry.txt',
       displayName: 'retry.txt', type: 'Text',
     }
-    setActiveTeam(stopped)
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-retry' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
     mockSendMessage.mockRejectedValueOnce(new Error('runtime is stopping'))
 
     await useAgentTeamRunStore().sendMessageToFocusedMember('retry this exact prompt', [attachment])
 
-    const worker = stopped.view.getAgentContext('team-retry-worker-run')!
+    const worker = hydrated.view.getAgentContext('team-retry-worker-run')!
     expect(worker.requirement).toBe('retry this exact prompt')
     expect(worker.contextFilePaths).toEqual([attachment])
     expect(worker.submissionPending).toBe(false)

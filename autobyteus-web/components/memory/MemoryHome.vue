@@ -89,6 +89,9 @@
               <div class="min-w-0">
                 <h2 class="break-words text-base font-semibold text-gray-900">{{ team.teamDefinitionName }}</h2>
                 <p class="mt-1 break-all font-mono text-xs text-gray-500">{{ team.teamDefinitionId }}</p>
+                <p v-if="team.isTaskTeam" class="mt-2 inline-flex items-center gap-1 rounded-[0.2rem] border border-dashed border-indigo-300 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-700" :title="team.startedByAgentName ? $t('memory.browse.task_team_started_by', { name: team.startedByAgentName }) : undefined" data-test="memory-task-team-tag">
+                  <Icon icon="heroicons:user-group-20-solid" class="h-3 w-3" aria-hidden="true" />{{ $t('memory.browse.task_team') }}
+                </p>
               </div>
               <span :class="countClass">{{ team.teamRunCount }} runs</span>
             </div>

@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { GetAgentRunCollaboration } from '~/graphql/queries/collaboratorQueries'
-import { GetRunFileChanges, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+import {
+  GetAgentRunCollaboration,
+  GetAgentRunCollaborationMemberFileChanges,
+  GetAgentRunCollaborationMemberProjection,
+} from '~/graphql/queries/collaboratorQueries'
+import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 import { memberId, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), holds: [] as Array<{ match(input: any): boolean; remaining: number; promise: Promise<void> }> }))
@@ -41,12 +45,10 @@ const serve = () => io.query.mockImplementation(async (input) => {
   if (input.query === GetAgentRunCollaboration) {
     return { data: { agentRunCollaboration: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view } } }
   }
-  // A child is read by its own identity (autobyteus-461 CR-461-022): these children are members of the team runs the
-  // view's run delegated to, read through those team runs.
-  if (input.query === GetTeamMemberFileChanges) return { data: { getTeamMemberFileChanges: [] } }
-  if (input.query === GetTeamMemberRunProjection) {
-    return { data: { getTeamMemberRunProjection: {
-      agentRunId: input.variables.agentRunId,
+  if (input.query === GetAgentRunCollaborationMemberFileChanges) return { data: { agentRunCollaborationMemberFileChanges: [] } }
+  if (input.query === GetAgentRunCollaborationMemberProjection) {
+    return { data: { agentRunCollaborationMemberProjection: {
+      agentRunId: input.variables.agentRunId, memberAddress: input.variables.memberAddress,
       conversation: [{ kind: 'message', role: 'assistant', content: `stored ${input.variables.agentRunId}`, ts: 1_700_000_000 }],
       activities: [], hasEarlierActiveTraceEvents: false,
     } } }
@@ -61,16 +63,15 @@ const holdChild = (agentRunId: string) => {
 }
 const count = (query: unknown, agentRunId?: string) => io.query.mock.calls
   .filter(([input]) => input.query === query && (!agentRunId || input.variables.agentRunId === agentRunId)).length
-const memberRequests = () => count(GetTeamMemberRunProjection) + count(GetTeamMemberFileChanges)
+const memberRequests = () => count(GetAgentRunCollaborationMemberProjection) + count(GetAgentRunCollaborationMemberFileChanges)
 const snapshot = async (socket: Socket, snapshotView = multiTeamView()) => {
   socket.frame({ type: 'CONNECTED', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', session_id: 'session' } })
   socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: snapshotView } })
   await flush()
 }
-/** A new child row (autobyteus-461 SR-042: unsequenced; the sequence argument is not sent). */
-const startedExecution = (socket: Socket, _changeSequence: number) => socket.frame({
-  type: 'CHILD_RUNS_CHANGED', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', event: {
-    kind: 'child_runs_changed', run_id: 'host-run', added: [multiTeamView(8).execution_tree.taskExecutions.at(-1)], removed: [],
+const startedExecution = (socket: Socket, change_sequence: number) => socket.frame({
+  type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence, event: {
+    kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: multiTeamView(8).execution_tree.taskExecutions.at(-1),
   } },
 })
 const segment = { segment_id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' as const }
@@ -102,7 +103,7 @@ describe('Agent-root children load on demand', () => {
   it.each([5, 50])('drawing the rows of a hub with %s task Teams issues one view request and no member request (AC-001, AC-002)', async (teams) => {
     view = multiTeamView(teams)
     const store = useAgentRunCollaborationStore()
-    await store.inspect('host-run')
+    store.syncHost('host-run', false); await store.inspect('host-run')
 
     expect(store.taskRows('host-run')).toHaveLength(teams)
     expect(store.contextFor('host-run')!.listAgentContextEntries()).toHaveLength(teams * 6)
@@ -117,14 +118,14 @@ describe('Agent-root children load on demand', () => {
     const child = memberId(2, 4)
 
     store.selectChild('host-run', child); await flush()
-    expect(count(GetTeamMemberRunProjection, child)).toBe(1)
-    expect(count(GetTeamMemberFileChanges, child)).toBe(1)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(1)
+    expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(1)
     expect(shown(store, child)).toBe(1)
     store.selectChild('host-run', memberId(3, 0)); await flush()
     store.selectChild('host-run', null)
     store.selectChild('host-run', child); await flush()
 
-    expect(count(GetTeamMemberRunProjection, child)).toBe(1)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(1)
     expect(memberRequests()).toBe(4)
     expect(count(GetRunFileChanges)).toBe(0)
   })
@@ -143,7 +144,7 @@ describe('Agent-root children load on demand', () => {
     store.selectChild('host-run', null)
     store.selectChild('host-run', child); await flush()
     expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
-    expect(count(GetTeamMemberRunProjection, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
     warn.mockRestore()
   })
 
@@ -156,13 +157,13 @@ describe('Agent-root children load on demand', () => {
     store.selectChild('host-run', child); await flush()
     // The same (context, child) while its load is in flight starts nothing.
     store.selectChild('host-run', child); await flush()
-    expect(count(GetTeamMemberRunProjection, child)).toBe(1)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(1)
     const releaseSecond = holdChild(child)
-    void store.inspect('host-run'); await flush()
+    store.syncHost('host-run', false); await flush()
     const second = store.contextFor('host-run')!
     expect(second).not.toBe(first)
     expect(second.getAgentContext(child)).toBe(first.getAgentContext(child))
-    expect(count(GetTeamMemberRunProjection, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
     store.selectChild('host-run', child); await flush()
 
     releaseFirst(); await flush()
@@ -172,8 +173,8 @@ describe('Agent-root children load on demand', () => {
 
     expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
     expect(shown(store, child)).toBe(1)
-    expect(count(GetTeamMemberRunProjection, child)).toBe(2)
-    expect(count(GetTeamMemberFileChanges, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)
     expect(memberRequests()).toBe(4)
   })
 
@@ -183,7 +184,7 @@ describe('Agent-root children load on demand', () => {
     const opened = memberId(2, 0)
     store.selectChild('host-run', opened); await flush()
     expect(memberLoader().isHydrated('agent:host-run', opened)).toBe(true)
-    const before = { projection: count(GetTeamMemberRunProjection), files: count(GetTeamMemberFileChanges) }
+    const before = { projection: count(GetAgentRunCollaborationMemberProjection), files: count(GetAgentRunCollaborationMemberFileChanges) }
     const first = store.contextFor('host-run')!
 
     startedExecution(Socket.instances[0]!, 5); await flush()
@@ -198,9 +199,9 @@ describe('Agent-root children load on demand', () => {
     release(); await flush()
 
     expect(memberLoader().isHydrated('agent:host-run', opened)).toBe(true)
-    expect(count(GetTeamMemberRunProjection) - before.projection).toBe(1)
-    expect(count(GetTeamMemberFileChanges) - before.files).toBe(1)
-    expect(count(GetTeamMemberRunProjection, opened)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberProjection) - before.projection).toBe(1)
+    expect(count(GetAgentRunCollaborationMemberFileChanges) - before.files).toBe(1)
+    expect(count(GetAgentRunCollaborationMemberProjection, opened)).toBe(2)
     expect(count(GetAgentRunCollaboration)).toBe(0)
   })
 
@@ -216,8 +217,8 @@ describe('Agent-root children load on demand', () => {
     release(); await flush()
 
     expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
-    expect(count(GetTeamMemberRunProjection, child)).toBe(2)
-    expect(count(GetTeamMemberFileChanges, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)
     expect(store.contextFor('host-run')!.changeSequence).toBe(7)
   })
 
@@ -256,7 +257,7 @@ describe('Agent-root children load on demand', () => {
     const shownBefore = store.contextFor('host-run')!.getAgentContext(child)!.state.conversation
     releaseFirst(); await flush()
     expect(store.contextFor('host-run')!.getAgentContext(child)!.state.conversation).toBe(shownBefore)
-    expect(count(GetTeamMemberRunProjection, child)).toBe(2)
-    expect(count(GetTeamMemberFileChanges, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
+    expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)
   })
 })

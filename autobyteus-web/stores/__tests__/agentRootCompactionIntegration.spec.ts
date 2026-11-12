@@ -7,8 +7,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState'
 import { agentRootView, launch } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
-import { GetAgentRunCollaboration } from '~/graphql/queries/collaboratorQueries'
-import { GetRunFileChanges, GetRunProjection, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+import { GetAgentRunCollaborationMemberFileChanges, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { useAgentRunStore } from '../agentRunStore'
 import { useAgentContextsStore } from '../agentContextsStore'
@@ -45,25 +44,19 @@ const nativeView = () => {
 const envelope = (view: ReturnType<typeof nativeView> | null) => ({ data: { agentRunCollaboration: view && {
   root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view,
 } } })
-/** A child's stored state, read by its own identity (autobyteus-461 CR-461-022): an agent child as its run, a team child's member through its team run. */
-const emptyProjection = ({ query, variables }: any) => {
-  if (query === GetTeamMemberFileChanges) return { data: { getTeamMemberFileChanges: [] } }
-  if (query === GetRunFileChanges) return { data: { getRunFileChanges: [] } }
-  if (query === GetRunProjection) return { data: { getRunProjection: {
-    runId: variables.runId, conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false } } }
-  if (query === GetTeamMemberRunProjection) return { data: { getTeamMemberRunProjection: {
-    agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
-  throw new Error('Unexpected query')
-}
-/** The run's view read, else a child's stored state. */
-const answer = (input: any) => input.query === GetAgentRunCollaboration ? envelope(view) : emptyProjection(input)
+const emptyProjection = ({ query, variables }: any) => query === GetAgentRunCollaborationMemberFileChanges
+  ? { data: { agentRunCollaborationMemberFileChanges: [] } }
+  : { data: { agentRunCollaborationMemberProjection: {
+    agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
+    conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+  } } }
 const memberRequests = (query: unknown, agentRunId: string) =>
   io.query.mock.calls.filter(([input]) => input.query === query && input.variables.agentRunId === agentRunId).length
 const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve() }
 let view: ReturnType<typeof nativeView>
 beforeEach(() => {
   setActivePinia(createPinia()); vi.clearAllMocks(); io.streams.length = 0; view = nativeView()
-  io.query.mockImplementation(async (input) => answer(input))
+  io.query.mockImplementation(async (input) => input.variables.runId ? envelope(view) : emptyProjection(input))
 })
 afterEach(() => { useAgentRunCollaborationStore().release('host-run') })
 const seed = (context: AgentContext, operation = context.state.runId, phase: any = 'started') => {
@@ -83,13 +76,15 @@ const setup = async () => {
   return { store, root, host: retainedHost, activities: useAgentActivityStore() }
 }
 
-it('a Stop of the run\'s own agent keeps the view\'s stream and leaves its children, runs of their own, as they are; only the host\'s compaction stops (SR-045)', async () => {
+it('real host action retires children BEFORE one request, settles all children before real empty-history hydration', async () => {
   const { store, root, activities, host } = await setup()
   store.selectChild('host-run', 'cua-run')
   root.getAgentContext('pp-run')!.requirement = 'keep my draft'
+  seed(root.getAgentContext('pb-run')!, 'already-completed', 'completed')
   const stream = store.attach('host-run'); const request = deferred()
   io.mutate.mockImplementation(() => {
-    expect(stream.disconnect).not.toHaveBeenCalled()
+    expect(stream.disconnect).toHaveBeenCalledOnce()
+    expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
     return request.promise
   })
   const pending = useAgentRunStore().terminateRun('host-run')
@@ -99,63 +94,70 @@ it('a Stop of the run\'s own agent keeps the view\'s stream and leaves its child
   const child = root.getAgentContext('cua-run')!; child.requirement = 'held draft'
   await expect(store.submit('host-run', 'cua-run', child, 'hello', [])).rejects.toThrow('being stopped')
   expect(child.requirement).toBe('held draft'); expect(child.conversation.messages).toEqual([])
+  const cold = nativeView(); cold.is_active = false; cold.agent_statuses.forEach(s => { s.status = 'offline' })
+  io.query.mockImplementation(async input => {
+    expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('stopped')
+    expect(host.state.compactionStatus?.phase).toBe('stopped')
+    return input.variables.runId ? envelope(cold) : emptyProjection(input)
+  })
   request.resolve({ data: { terminateAgentRun: { success: true } } })
   expect(await pending).toBe(true)
-  expect(host.state.compactionStatus?.phase).toBe('stopped')
-  expect(activities.getCompactionActivities('host-run')[0]).toMatchObject({ phase: 'stopped', message: 'Stopped', rawTraceCount: 12 })
-  for (const id of ['cua-run', 'pp-run', 'pb-run']) expect(activities.getCompactionActivities(id)[0].phase).toBe('started')
-  expect(store.contextFor('host-run')).toBe(root); expect(root.isActive).toBe(false)
-  expect(root.getAgentContext('pp-run')!.requirement).toBe('keep my draft')
-  expect(stream.disconnect).not.toHaveBeenCalled()
+  await store.inspect('host-run')
+  expect(store.contextFor('host-run')).not.toBe(root)
+  expect(store.contextFor('host-run')!.getAgentContext('pp-run')!.requirement).toBe('keep my draft')
+  for (const id of ['host-run', 'cua-run', 'pp-run', 'pb-run']) {
+    expect(activities.getCompactionActivities(id)[0]).toMatchObject({ phase: 'stopped', message: 'Stopped', rawTraceCount: 12 })
+  }
+  expect(activities.getCompactionActivities('pb-run')[1].phase).toBe('completed')
   expect(io.streams).toHaveLength(1); expect(store.selectedChild('host-run')).toBe('cua-run')
-  expect(store.attach('host-run')).toBe(stream)
 })
 
 it.each(['false', 'missing', 'transport', 'children-failed-after-inactive', 'host-failed-after-children'])(
   '%s is never whole-command confirmation and never auto-wakes the host', async kind => {
     const { store, root, activities } = await setup(); store.attach('host-run')
-    const stream = io.streams[0]; const pending = deferred(); io.mutate.mockReturnValue(pending.promise)
+    const retired = io.streams[0]; const pending = deferred(); io.mutate.mockReturnValue(pending.promise)
     const stop = useAgentRunStore().terminateRun('host-run')
-    stream.options.reportError('obsolete callback')
+    retired.options.onInactive(); retired.options.reportError('obsolete callback')
     if (kind === 'transport') pending.reject(new Error('lost response'))
     else pending.resolve({ data: { terminateAgentRun: kind === 'missing' ? undefined : { success: false, message: kind } } })
     expect(await stop).toBe(false)
     for (const id of ['host-run', 'cua-run', 'pp-run']) expect(activities.getCompactionActivities(id)[0].phase).toBe('started')
-    // Not confirmed: the run's agent is not marked stopped; the view's stream continues (SR-045).
-    expect(root.isActive).toBe(true); expect(store.errors['host-run']).not.toBe('obsolete callback')
-    expect(stream.disconnect).not.toHaveBeenCalled()
+    expect(root.phase).toBe('reopen_required'); expect(store.errors['host-run']).not.toBe('obsolete callback')
     store.syncHost('host-run', true); expect(io.streams).toHaveLength(1)
   },
 )
 
-// The host's Stop settles only the host's compaction (its children are runs of their own, SR-045): a late success
-// settles nothing once the host's request is no longer current.
-it.each(['host-state', 'host-instance', 'node'])(
-  'late success cannot settle a replaced %s', async kind => {
-    const { activities, host } = await setup()
+it.each(['state', 'instance', 'runtime', 'address', 'root', 'release', 'node', 'host-state'])(
+  'late success cannot settle a replaced %s batch', async kind => {
+    const { store, root, activities, host } = await setup()
     const pending = deferred(); io.mutate.mockReturnValue(pending.promise)
     const stop = useAgentRunStore().terminateRun('host-run')
-    if (kind === 'host-state') host.state = Object.assign(Object.create(Object.getPrototypeOf(host.state)), host.state)
-    if (kind === 'host-instance') host.state.inputProjection = { runInstanceId: 'new-instance', revision: 0 }
+    const child = root.getAgentContext('pp-run')!
+    if (kind === 'state') child.state = Object.assign(Object.create(Object.getPrototypeOf(child.state)), child.state)
+    if (kind === 'instance') child.state.inputProjection = { runInstanceId: 'new-instance', revision: 0 }
+    if (kind === 'runtime') child.config.runtimeKind = 'codex_app_server'
+    if (kind === 'address') root.index.agents.set('pp-run', { ...root.index.requireAgent('pp-run'), address: '/wrong' as never })
+    if (kind === 'root') store.contexts = { ...store.contexts, 'host-run': await buildAgentRunCollaborationContext({ hostRunId: 'host-run', view }) }
+    if (kind === 'release') store.release('host-run')
     if (kind === 'node') useWindowNodeContextStore().bindingRevision++
+    if (kind === 'host-state') host.state = Object.assign(Object.create(Object.getPrototypeOf(host.state)), host.state)
     pending.resolve({ data: { terminateAgentRun: { success: true } } }); await stop
-    expect(activities.getCompactionActivities('host-run')[0].phase).toBe('started')
     expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
+    expect(activities.getCompactionActivities('pp-run')[0].phase).toBe('started')
   },
 )
 
-it('inspection failure after success keeps the stopped host and its children\'s own states; an empty cold store fabricates no activity', async () => {
+it('inspection failure after success retains Stopped and history; an empty cold store fabricates no activity', async () => {
   const { store, activities } = await setup()
   io.query.mockRejectedValue(new Error('inspection unavailable'))
   io.mutate.mockResolvedValue({ data: { terminateAgentRun: { success: true } } })
   expect(await useAgentRunStore().terminateRun('host-run')).toBe(true)
   await store.inspect('host-run')
   expect(store.errors['host-run']).toBe('inspection unavailable')
-  expect(store.contextFor('host-run')?.isActive).toBe(false)
-  expect(activities.getCompactionActivities('host-run')[0].phase).toBe('stopped')
-  expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
+  expect(store.contextFor('host-run')?.phase).toBe('historical')
+  expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('stopped')
   setActivePinia(createPinia())
-  io.query.mockImplementation(async input => answer(input))
+  io.query.mockImplementation(async input => input.variables.runId ? envelope(view) : emptyProjection(input))
   await useAgentRunCollaborationStore().inspect('host-run')
   expect(useAgentActivityStore().getActivities('cua-run')).toEqual([])
 })
@@ -165,11 +167,11 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   store.selectChild('host-run', 'pp-run'); store.toggleTaskTeam('host-run', 'team-run')
   await flush()
   expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
-  const projectionsBefore = memberRequests(GetTeamMemberRunProjection, 'pp-run')
+  const projectionsBefore = memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run')
   const delay = deferred(); io.query.mockImplementation(async input => {
-    if ((point === 'view' && input.query === GetAgentRunCollaboration)
-      || (point === 'member' && input.query === GetTeamMemberRunProjection && input.variables.agentRunId === 'pp-run')) await delay.promise
-    return answer(input)
+    if ((point === 'view' && input.variables.runId)
+      || (point === 'member' && input.query === GetAgentRunCollaborationMemberProjection && input.variables.agentRunId === 'pp-run')) await delay.promise
+    return input.variables.runId ? envelope(view) : emptyProjection(input)
   })
   const pending = store.inspect('host-run'); await flush()
   seed(store.contextFor('host-run')!.getAgentContext('pp-run')!, 'concurrent')
@@ -183,7 +185,7 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
   expect(activities.getActivityContentRevision('pp-run')).toBeGreaterThan(revision)
   // A change during the member fetch costs one retry; during the view fetch, nothing.
-  expect(memberRequests(GetTeamMemberRunProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)
+  expect(memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)
   expect(store.selectedChild('host-run')).toBe('pp-run'); expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
 })
 
@@ -226,7 +228,7 @@ it('release invalidates old stream callbacks and old inspection finally cannot d
   nextRead.resolve(envelope(view)); await nextPending; await coalesced
   const nextRoot = store.contextFor('host-run')
   const nextStream = store.attach('host-run')
-  oldStream.options.reportError('stale')
+  oldStream.options.onInactive(); oldStream.options.reportError('stale')
   expect(() => oldStream.options.publish(root)).toThrow('ownership released')
   expect(store.attach('host-run')).toBe(nextStream); expect(store.contextFor('host-run')).toBe(nextRoot)
   expect(store.errors['host-run']).toBeNull()

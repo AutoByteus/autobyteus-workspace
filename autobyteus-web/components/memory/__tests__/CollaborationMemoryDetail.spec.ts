@@ -24,7 +24,7 @@ const row = (overrides: Partial<CollaborationRunMemoryRow> = {}): CollaborationR
   memory,
   memberTargets: [
     member({ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1' }),
-    member({ memberAddress: '/writer', displayName: 'Writer', agentRunId: 'member-2' }),
+    member({ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'task-member-1', executionKind: 'TASK_AGENT', startedAt: '2026-06-19T09:00:00.000Z' }),
   ],
   ...overrides,
 });
@@ -53,9 +53,9 @@ const orgRow = () => row({
     member({ memberAddress: '/Teacher', displayName: 'Teacher', agentRunId: 'teacher-run' }),
     member({ memberAddress: '/StudentStudyGroup/student_one', displayName: 'StudentStudyGroup/student_one', agentRunId: 'one-configured', groupPath: [studyGroup] }),
     member({ memberAddress: '/StudentStudyGroup/student_two', displayName: 'StudentStudyGroup/student_two', agentRunId: 'two-configured', groupPath: [studyGroup] }),
-    member({ memberAddress: '/StudentStudyGroup/student_one', displayName: 'StudentStudyGroup/student_one', agentRunId: 'one-task', groupPath: [studyTask] }),
-    member({ memberAddress: '/StudentStudyGroup/student_two', displayName: 'StudentStudyGroup/student_two', agentRunId: 'two-task', groupPath: [studyTask] }),
-    member({ memberAddress: '/StudentStudyGroup/helpers/checker', displayName: 'StudentStudyGroup/helpers/checker', agentRunId: 'checker-task', groupPath: [studyTask, nested] }),
+    member({ memberAddress: '/StudentStudyGroup/student_one', displayName: 'StudentStudyGroup/student_one', agentRunId: 'one-task', executionKind: 'TASK_TEAM_MEMBER', groupPath: [studyTask] }),
+    member({ memberAddress: '/StudentStudyGroup/student_two', displayName: 'StudentStudyGroup/student_two', agentRunId: 'two-task', executionKind: 'TASK_TEAM_MEMBER', groupPath: [studyTask] }),
+    member({ memberAddress: '/StudentStudyGroup/helpers/checker', displayName: 'StudentStudyGroup/helpers/checker', agentRunId: 'checker-task', executionKind: 'TASK_TEAM_MEMBER', groupPath: [studyTask, nested] }),
   ],
 });
 
@@ -74,8 +74,9 @@ describe('CollaborationMemoryDetail', () => {
     const memberButtons = wrapper.findAll('article button');
     const spans = memberButtons.map((button) => button.findAll('span').map((span) => span.text()));
     expect(spans[0]).toEqual(['Lead', 'member-1']);
-    // A team run's own agents only: a run it delegated to is a run of its own (autobyteus-461).
-    expect(spans[1]).toEqual(['Writer', 'member-2']);
+    expect(spans[1]?.[0]).toBe('Lead');
+    expect(spans[1]?.[1]).toMatch(/^Task · \S/);
+    expect(spans[1]?.[2]).toBe('task-member-1');
     for (const button of memberButtons) {
       expect(button.find('span').text()).not.toBe('');
     }
@@ -143,7 +144,7 @@ describe('CollaborationMemoryDetail', () => {
 
     await wrapper.findAll('article button')[1]!.trigger('click');
     expect(wrapper.emitted('inspectMember')?.[0]?.[0]).toBe('team-run-1');
-    expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberAddress: '/writer', agentRunId: 'member-2' });
+    expect(wrapper.emitted('inspectMember')?.[0]?.[1]).toMatchObject({ memberAddress: '/lead', agentRunId: 'task-member-1' });
 
     await wrapper.findAll('button').find((button) => button.text() === 'Next')!.trigger('click');
     await wrapper.findAll('button').find((button) => button.text() === 'Prev')!.trigger('click');

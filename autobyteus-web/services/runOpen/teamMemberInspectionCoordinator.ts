@@ -1,6 +1,5 @@
 import { useAgentSelectionStore, type WorkspaceSelectionIntent, type SupersededSelection } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { teamAgentReadSubject } from '~/services/runHydration/agentReads';
 import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService';
 import { readRemoteTeamMember } from '~/services/teamExecution/teamRemoteRunRegistry';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
@@ -43,13 +42,9 @@ export const inspectMountedTeamMember = async (input: {
       throw new Error(`AgentRun '${agentRunId}' is not retained in the mounted Team.`);
     }
     // autobyteus-278 (F-006): a member of a run another node runs is focused first and read after, so its node being
-    // down shows as its run's notice, not as a failed selection. A member of this team run is loaded before it is
-    // focused. A run this team delegated to is a run of its own, read from its own run: it is focused first too, so the
-    // composer shows it from the click and text typed while it loads is its own (autobyteus-461 CR-461-019).
+    // down shows as its run's notice, not as a failed selection. A member of this node is loaded before it is focused.
     const remote = useRemoteRunsStore().runOfAgentRun(agentRunId) !== null;
-    const subject = teamAgentReadSubject({ teamRunId, tree: team.view.getExecutionTree(), memberAddress: '' }, agentRunId);
-    const delegatedChild = !remote && !(subject.kind === 'teamMember' && subject.teamRunId === teamRunId);
-    if (!remote && !delegatedChild) await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
+    if (!remote) await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
     if (!intent.isCurrent()) return { disposition: 'superseded' };
     if (contexts.getTeamContextById(teamRunId) !== team) {
       throw new Error(`Team context '${teamRunId}' changed before selection commit.`);
@@ -65,11 +60,6 @@ export const inspectMountedTeamMember = async (input: {
     const committed = Object.freeze({ teamRunId, agentRunId, memberAddress });
     input.commit(committed);
     if (remote) readRemoteTeamMember(team, agentRunId);
-    if (delegatedChild) {
-      // Its stored state, read after it is shown; a failure is this selection's error, the focus stays with it.
-      const loaded = await ensureAuthoritativeTeamMemberProjection({ team, agentRunId, selectionIntent: intent });
-      if (loaded.disposition === 'superseded') return { disposition: 'superseded' };
-    }
     return Object.freeze({ disposition: 'committed' as const, ...committed });
   } catch (error) {
     if (!intent.isCurrent()) return { disposition: 'superseded' };

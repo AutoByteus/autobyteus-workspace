@@ -74,7 +74,7 @@ const emit = (
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
   base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
-  execution_tree: team.view.getExecutionTree(),
+  closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
@@ -140,82 +140,17 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(team.view.isRootTeamActive()).toBe(false);
   });
 
-  it('a stopped Team\'s first message to its own member settles after the in-band live snapshot, and the composer does not stay pending (autobyteus-461 SR-048)', async () => {
-    const { callbacks, service, team } = createHarness();
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
-    // The view of a stopped Team: its stored-mode snapshot and lifecycle.
-    admitReady(callbacks, team);
-    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
-    let settled = false;
-    const sending = service.sendMessage('start on this input', teacherRunId, [], [], { messageId: 'message-start', dedupeKey: 'dedupe-start' })
-      .then(() => { settled = true; });
-
-    // The server restores the Team and switches the view to live first: a fresh snapshot with a new sequence base.
-    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(team, 7), live_sequence_id: 'live-2' });
-    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: true });
-    await Promise.resolve();
-    // A snapshot neither drains nor settles the pending send.
-    expect(settled).toBe(false);
-    expect(service.isReady).toBe(true);
-
-    // Then it posts the message: its echo is an ordinary live event after the snapshot, and settles the send by identity.
-    emit(callbacks, 'MEMBER_INPUT_MESSAGE', {
-      change_sequence: 8, recipient_agent_run_id: teacherRunId, message_id: 'message-start', dedupe_key: 'dedupe-start',
-      content: 'start on this input', input_origin: 'user_message', received_at: '2026-11-11T00:00:00.000Z', context_file_paths: [],
-      sender_agent_run_id: null, parent_communication_message_id: null,
-    });
-    await sending;
-    expect(settled).toBe(true);
-    expect(team.view.isRootTeamActive()).toBe(true);
-    // Nothing is left pending for the member: its next message is admitted.
-    expect(() => service.sendMessage('next input', teacherRunId, [], [], { messageId: 'message-next', dedupeKey: 'dedupe-next' })).not.toThrow();
-  });
-
-  it('autobyteus-461 CR-461-034: two messages to a stopped Team\'s child row each settle on the child\'s acknowledgement, by identity; the Team stays stopped', async () => {
-    const { callbacks, service, team } = createHarness();
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
-    admitReady(callbacks, team);
-    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
-    const settledIds: string[] = [];
-    const sendOne = async (messageId: string) => {
-      const sending = service.sendMessage(`input ${messageId}`, taskStudentRunId, [], [], { messageId, dedupeKey: messageId })
-        .then(() => { settledIds.push(messageId); });
-      await Promise.resolve();
-      expect(settledIds).not.toContain(messageId);
-      // The child's own run accepted it; its input is its run's event, not this Team's: the Team acknowledges it.
-      emit(callbacks, 'AGENT_COMMAND_ACK', { command_type: 'SEND_MESSAGE', state: 'accepted', agent_run_id: taskStudentRunId, message_id: messageId, dedupe_key: messageId });
-      await sending;
-    };
-    await sendOne('message-1');
-    // The first send left nothing pending for the child: the second is admitted, and settles too.
-    await sendOne('message-2');
-    expect(settledIds).toEqual(['message-1', 'message-2']);
-    expect(team.view.isRootTeamActive()).toBe(false);
-  });
-
-  it('a child\'s acknowledgement settles only its own send', async () => {
-    const { callbacks, service, team } = createHarness();
-    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
-    admitReady(callbacks, team);
-    let settled = false;
-    void service.sendMessage('input', taskStudentRunId, [], [], { messageId: 'message-1', dedupeKey: 'message-1' }).then(() => { settled = true; });
-    emit(callbacks, 'AGENT_COMMAND_ACK', { command_type: 'SEND_MESSAGE', state: 'accepted', agent_run_id: taskStudentRunId, message_id: 'other', dedupe_key: 'other' });
-    await Promise.resolve();
-    expect(settled).toBe(false);
-    expect(() => service.sendMessage('again', taskStudentRunId, [], [], { messageId: 'message-2', dedupeKey: 'message-2' })).toThrow(/already has a pending Team message admission/);
-  });
-
   it('reconciles a mounted task activation without stealing exact focus', () => {
     const { callbacks, team } = createHarness();
     teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
     admitReady(callbacks, team);
     vi.clearAllMocks();
 
-    emit(callbacks, 'CHILD_RUNS_CHANGED', {
-      run_id: rootTeamRunId, removed: [], added: [{ parent_team_run_id: rootTeamRunId,
+    emit(callbacks, 'TASK_EXECUTION_STARTED', {
+      change_sequence: 1, parent_team_run_id: rootTeamRunId,
       execution: {
         kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } } }],
+        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
     });
 
     expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);

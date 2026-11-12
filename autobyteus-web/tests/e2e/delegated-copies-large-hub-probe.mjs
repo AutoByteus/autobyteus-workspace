@@ -219,29 +219,7 @@ const copyInputFor = async (hostId) => {
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
 // autobyteus-358: the hub's view carries no messages; its Team tab loads the host's messages with this query.
 const hostMessagesFor = async (id) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: id, a: id })).collaborationParticipantMessages.messages;
-/**
- * A run the host delegated to, read by its own identity (autobyteus-461 CR-461-022: the host-scoped member read is gone):
- * an agent run by `getRunProjection`; a member of a delegated team through that team run (found among the host's children
- * in the listed-runs poll, one hop at a time).
- */
-const childProjection = async (host, _address, run, fields = 'conversation') => {
-  const own = await gql(`query($id:String!){getRunProjection(runId:$id){${fields}}}`, { id: run }).catch(() => null);
-  if (own?.getRunProjection) return fields === 'conversation' ? own.getRunProjection.conversation : own.getRunProjection;
-  const queue = [{ kind: 'agent', runId: host }];
-  for (let hops = 0; queue.length && hops < 50; hops += 1) {
-    const ref = queue.shift();
-    const answer = (await gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [ref] })).runCollaborationStatuses[0];
-    for (const child of answer?.children ?? []) {
-      if (child.node) continue;
-      if (child.row.kind === 'agent_team' && child.row.members.some((m) => m.agentRunId === run)) {
-        const read = (await gql(`query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){${fields}}}`, { t: child.row.teamRunId, a: run })).getTeamMemberRunProjection;
-        return fields === 'conversation' ? read?.conversation : read;
-      }
-      queue.push(child.row.kind === 'agent' ? { kind: 'agent', runId: child.row.agentRunId } : { kind: 'agent_team', runId: child.row.teamRunId });
-    }
-  }
-  throw new Error(`no run holds the agent ${run}`);
-};
+const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
 const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root {kind teamRunId ingressAgentRunId start status closed}}}', { id })).projectTasks;
 const terminateAgent = async (id) => {
   const r = (await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id })).terminateAgentRun;
@@ -464,15 +442,8 @@ const hubMessageCount = async () => (await gql('query($k:String!,$r:String!,$a:S
 /** Team-tab participant-list requests since `start`, by participant (large-runs-load-less). */
 const participantOps = (start) => requests.slice(start).filter((r) => r.operationName === 'CollaborationParticipantMessages')
   .reduce((m, r) => ({ ...m, [r.variables?.agentRunId ?? '-']: (m[r.variables?.agentRunId ?? '-'] || 0) + 1 }), {});
-// A delegated child's reads (autobyteus-461 CR-461-022): by its own identity: an agent run's `GetRunProjection` /
-// `GetRunFileChanges`, a delegated team member's `GetTeamMemberRunProjection` / `GetTeamMemberFileChanges`; a peer child
-// through the run (`GetAgentRunCollaborationMemberProjection`). Counted by role: `projection` and `artifacts`.
-const PROJECTION_OPS = ['GetRunProjection', 'GetTeamMemberRunProjection', 'GetAgentRunCollaborationMemberProjection'];
-const ARTIFACT_OPS = ['GetRunFileChanges', 'GetTeamMemberFileChanges'];
-const childRead = (r) => PROJECTION_OPS.includes(r.operationName) ? 'projection' : ARTIFACT_OPS.includes(r.operationName) ? 'artifacts' : null;
-const byRole = (list) => list.reduce((m, r) => ({ ...m, [childRead(r)]: (m[childRead(r)] || 0) + 1 }), {});
-const memberOps = (start, id) => byRole(requests.slice(start).filter((r) => childRead(r) && (r.variables?.agentRunId === id || r.variables?.runId === id)));
-const allMemberOps = (start) => byRole(requests.slice(start).filter((r) => childRead(r) && (r.variables?.runId ?? r.variables?.agentRunId) !== setup.hostId));
+const memberOps = (start, id) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges', 'GetRunFileChanges'].includes(r.operationName) && (r.variables?.agentRunId === id || r.variables?.runId === id));
+const allMemberOps = (start) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges'].includes(r.operationName) || (r.operationName === 'GetRunFileChanges' && r.variables?.runId !== setup.hostId));
 const expandTeam = async (teamRunId, id = setup.hostId) => {
   const row = await teamRowFor(teamRunId, id);
   await row.waitFor({ timeout: 60000 });
@@ -523,9 +494,9 @@ const apiTimings = async () => {
   const query = {
     hubView: ['query($id:String!){agentRunCollaboration(runId:$id)}', { id: setup.hostId }],
     hubConversation: ['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: setup.hostId }],
-    // A member of a delegated team copy, read through that team run (CR-461-022).
-    copyProjection: ['query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation activities}}', { t: marker.teamRunId, a: marker.agentRunId }],
-    copyArtifacts: ['query($t:String!,$a:String!){getTeamMemberFileChanges(teamRunId:$t,agentRunId:$a){id}}', { t: marker.teamRunId, a: marker.agentRunId }],
+    copyProjection: ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation activities}}', { h: setup.hostId, a: marker.address, r: marker.agentRunId }],
+    copyArtifactsGeneric: ['query($r:String!){getRunFileChanges(runId:$r){id}}', { r: marker.agentRunId }],
+    copyArtifactsScoped: ['query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberFileChanges(hostRunId:$h,memberAddress:$a,agentRunId:$r){id}}', { h: setup.hostId, a: marker.address, r: marker.agentRunId }],
   };
   const result = {};
   for (const [name, [q, v]] of Object.entries(query)) {
@@ -584,14 +555,14 @@ const liveJourneys = async () => {
     const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, title: 'New live Engineering Task', description: 'New live Engineering Task' } })).createProjectTask.taskId;
     send(callTool('delegate_task', { recipient_address: `/${segment(TEAM)}`, task_id: taskId }));
     await until('new Team row appears', async () => (await teamRowsOf().count()) === teamsBefore + 1, 180000);
-    await until('opened copy reloaded once', async () => (memberOps(start, marker.agentRunId).artifacts ?? 0) >= 1, 60000).catch(() => {});
+    await until('opened copy reloaded once', async () => (memberOps(start, marker.agentRunId).GetAgentRunCollaborationMemberFileChanges ?? 0) >= 1, 60000).catch(() => {});
     await quiet(3000);
     await page.evaluate(() => { window.__stopMin = true; });
     const minMessages = await page.evaluate(() => window.__minMessages), lostTarget = await page.evaluate(() => window.__lostTarget ?? false);
     const after = await storeState();
     const ops = opsSince(start), member = memberOps(start, marker.agentRunId), all = allMemberOps(start);
     assert(after.target === marker.agentRunId && after.messageCount >= before.messageCount && minMessages > 0 && !lostTarget, 'Opened copy lost its conversation', { before, after, minMessages, lostTarget });
-    assert(member.projection === 1 && member.artifacts === 1, 'Expected exactly one projection and one artifact request for the opened copy', { member, all });
+    assert(member.GetAgentRunCollaborationMemberProjection === 1 && member.GetAgentRunCollaborationMemberFileChanges === 1, 'Expected exactly one projection and one artifact request for the opened copy', { member, all });
     assert(JSON.stringify(all) === JSON.stringify(member), 'Requests for other copies', { member, all });
     // large-runs-load-less SR-004: the delegation's checkpoint reconnect refetches a loaded list at most once (only when a
     // message fell in the reconnect window), never every loaded list on every publication.
@@ -631,7 +602,7 @@ const liveJourneys = async () => {
     await expandTeam(setup.teams[5].teamRunId);
     const start = requests.length;
     await timedClick(memberRow(queuedTarget.agentRunId), CHILD_READY, { id: queuedTarget.agentRunId });
-    await until('copy loaded', async () => (memberOps(start, queuedTarget.agentRunId).projection ?? 0) >= 1, 30000);
+    await until('copy loaded', async () => (memberOps(start, queuedTarget.agentRunId).GetAgentRunCollaborationMemberProjection ?? 0) >= 1, 30000);
     await quiet(1500);
     const after = await storeState();
     const centerText = await page.locator('[data-test="workspace-center-pane"]').innerText();
@@ -699,7 +670,7 @@ const liveJourneys = async () => {
       await until(`large turn ${i + 1} stored`, async () => JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)).includes(`Large ${i + 1} ECHO_INPUT`), 60000);
     }
     await sleep(3000);
-    const projection = await gqlRaw('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation activities}}', { t: team.teamRunId, a: target.agentRunId });
+    const projection = await gqlRaw('query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation activities}}', { h: setup.hostId, a: target.address, r: target.agentRunId });
     await coldOpenWorkspace();
     await runRow().click(); await until('live', async () => (await storeState()).phase === 'live', 120000); await quiet(1500);
     await expandTeam(team.teamRunId);
@@ -720,7 +691,7 @@ const liveJourneys = async () => {
     const result = { clickToStoreLoadedMs: large.loaded - large.click, clickToLastMessageInDomMs: large.shown - large.click,
       projectionBytes: projection.bytes, projectionServerMs: Number(projection.ms.toFixed(1)), ops, state: await storeState() };
     await shot(`${label}-large-copy-open`);
-    if (!label.startsWith('base')) assert(ops.projection === 1 && ops.artifacts === 1, 'Unexpected requests', result);
+    if (!label.startsWith('base')) assert(ops.GetAgentRunCollaborationMemberProjection === 1 && ops.GetAgentRunCollaborationMemberFileChanges === 1, 'Unexpected requests', result);
     if (getArg('large-shape', 'words') === 'unbroken') {
       // large-runs-load-less AC-007: the long-token messages still wrap, select (copy) whole and are found by find-in-page,
       // and the conversation ends scrolled to its latest message.
@@ -758,7 +729,7 @@ const liveJourneys = async () => {
     let failed = 0;
     const handler = async (route) => {
       let body = null; try { body = route.request().postDataJSON(); } catch { /* not JSON */ }
-      if (!failed && PROJECTION_OPS.includes(body?.operationName) && (body.variables?.agentRunId ?? body.variables?.runId) === target.agentRunId) { failed += 1; return route.abort('failed'); }
+      if (!failed && body?.operationName === 'GetAgentRunCollaborationMemberProjection' && body.variables?.agentRunId === target.agentRunId) { failed += 1; return route.abort('failed'); }
       return route.continue();
     };
     await page.route('**/graphql', handler);
@@ -782,7 +753,7 @@ const liveJourneys = async () => {
     const injected = errors.splice(errorsBefore).filter((e) => !/ERR_FAILED|Failed to fetch|NetworkError|Failed to load resource/i.test(e));
     errors.push(...injected);
     const logged = warnings.slice(warningsBefore).map((w) => w.text.slice(0, 300));
-    assert(failed === 1 && afterFailure.hydrated === false && !afterFailure.error && otherOk && retried.hydrated && retried.ops.projection === 1,
+    assert(failed === 1 && afterFailure.hydrated === false && !afterFailure.error && otherOk && retried.hydrated && retried.ops.GetAgentRunCollaborationMemberProjection === 1,
       'Failure path differs', { failed, afterFailure, otherOk, retried, logged });
     return { injectedFailures: failed, logged, afterFailure, otherCopyOpened: otherOk, retried, firstOps: memberOps(start, target.agentRunId) };
   });
@@ -796,7 +767,7 @@ const liveJourneys = async () => {
     const ms = await timedClick(memberRow(target.agentRunId, setup.otherHostId), `const t = p._s.get('activeContext')?.activeWorkspaceTarget; return t?.agentRunId === arg && t.context.state.conversation.id === arg;`, target.agentRunId);
     await quiet(2000);
     const ops = memberOps(start, target.agentRunId);
-    assert((ops.projection ?? 0) >= 1 && (ops.projection ?? 0) <= 2, 'Unexpected load count', ops);
+    assert((ops.GetAgentRunCollaborationMemberProjection ?? 0) >= 1 && (ops.GetAgentRunCollaborationMemberProjection ?? 0) <= 2, 'Unexpected load count', ops);
     const hydrated = await page.evaluate(copyLoadedInPage, { host: setup.otherHostId, id: target.agentRunId });
     assert(hydrated === true, 'Copy did not end loaded', { hydrated, ops });
     return { clickToTargetMs: ms, ops, hydrated, selected: (await storeState(setup.otherHostId)).selected };

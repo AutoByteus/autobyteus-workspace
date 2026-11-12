@@ -50,7 +50,6 @@ const teamContext = (root: string) => {
 };
 
 const build = (input: Partial<Parameters<typeof buildRunHistoryNavigationProjection>[0]> = {}) => buildRunHistoryNavigationProjection({
-  listedChildren: () => null,
   workspaceGroups: [agentGroup('/work/agent', 'agent-run')],
   agentAvatarByDefinitionId: {},
   allWorkspaces: WORKSPACES,

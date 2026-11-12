@@ -45,8 +45,9 @@ import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 describe('agentRunCollaborationStore', () => {
   beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; childHydration.hydrate.mockClear() })
 
-  it('keeps a new task Team collapsed in a stored view and preserves explicit disclosure', async () => {
+  it('reads a stopped run without connecting, keeps a new task Team collapsed and preserves explicit disclosure', async () => {
     const store = useAgentRunCollaborationStore()
+    store.syncHost('host-run', false)
     await store.inspect('host-run')
     expect(stream.instances).toHaveLength(0)
     expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
@@ -78,19 +79,20 @@ describe('agentRunCollaborationStore', () => {
     expect(childHydration.hydrate.mock.calls.map(([input]) => input.agentRunId)).toEqual(['pp-run', 'cua-run'])
   })
 
-  // autobyteus-461 CR-461-022: a child on this node is a run of its own, read by its own identity, never through the host.
-  it('reads a child\'s earlier events by its own identity: an agent child as its run, a team child\'s member through that team run', async () => {
+  it('reads a child\'s earlier events from the host\'s collaboration package, not as a top-level run (CR-002)', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     store.selectChild('host-run', 'pp-run')
     expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'teamMember', teamRunId: 'team-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
+      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
     })
     store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')?.browse).toEqual({ kind: 'run', runId: 'cua-run' })
+    expect(store.childTargetFor('host-run')?.browse).toEqual({
+      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/computer_use_agent', agentRunId: 'cua-run',
+    })
   })
 
-  it('sending to a child goes over the view\'s stream, which never restores the host, and carries mentions (SR-045, SR-046)', async () => {
+  it('sending to a child attaches the stream (which restores the host) and carries mentions', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     const context = store.contextFor('host-run')!.getAgentContext('cua-run')!
@@ -176,30 +178,20 @@ describe('agentRunCollaborationStore', () => {
     expect(reads).not.toHaveBeenCalled()
   })
 
-  it('SR-045: the open run keeps one view stream whether its agent runs or not; its agent state only updates the view', async () => {
+  it('selecting a stopped hub whose stored view is already published reads it no more (QR-002); a hub that stops is read again', async () => {
     const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
+    store.contextFor('host-run')!.setActive(false) // the stored view of a stopped hub
     reads.mockClear()
     store.syncHost('host-run', false)
     store.syncHost('host-run', false)
-    expect(stream.instances).toHaveLength(1)
-    expect(stream.instances[0]!.connect).toHaveBeenCalledOnce()
-    expect(store.contextFor('host-run')!.isActive).toBe(false)
-    store.syncHost('host-run', true)
-    expect(store.contextFor('host-run')!.isActive).toBe(true)
-    store.syncHost('host-run', false)
-    expect(stream.instances).toHaveLength(1)
-    expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
+    await Promise.resolve()
     expect(reads).not.toHaveBeenCalled()
-    // A Stop leaves the stream; the children keep their states (they are runs of their own).
-    const child = store.contextFor('host-run')!.getAgentContext('pp-run')!
-    const before = child.state.currentStatus
-    const stop = store.beginHostTermination('host-run')
-    expect(stop.confirm()).toBe(true)
-    stop.finish()
-    expect(child.state.currentStatus).toBe(before)
-    expect(stream.instances[0]!.disconnect).not.toHaveBeenCalled()
+    store.syncHost('host-run', true)
+    store.syncHost('host-run', false)
+    await Promise.resolve()
+    expect(reads).toHaveBeenCalledOnce()
   })
 })
 

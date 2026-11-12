@@ -81,6 +81,8 @@ const memoryMessages = {
   'memory.journal.not_shown': '{{count}} 行未显示',
   'memory.journal.showing': '第 {{from}}–{{to}} 行，共 {{total}} 行',
   'memory.journal.large_file': '大文件：分段加载行。',
+  'memory.browse.task_team': '任务团队',
+  'memory.browse.task_team_started_by': '任务团队 · 由 {{name}} 启动',
   'memory.components.memory.MemoryHome.search_agents': '按名称或运行 ID 筛选智能体…',
   'memory.components.memory.MemoryHome.search_agent_teams': '按名称筛选智能体团队…',
   'memory.components.memory.MemoryHome.search_agent_orgs': '按名称筛选智能体组织…',

@@ -118,9 +118,7 @@ describe.each(['/director', '/team/lead'])('installed Apollo final inspection %s
     if (!oldFirst) { first.respond(inspectionData(true)); await old }
     expect(orgs.contextFor('org-run')?.phase).toBe('historical')
     expect(observedRow().isActive).toBe(false)
-    // The stopped Org's open view keeps one stream (autobyteus-461 SR-045); an earlier one is closed.
-    expect(OrgTestSocket.instances.filter(socket => socket.readyState === OrgTestSocket.OPEN)).toHaveLength(1)
-    expect(OrgTestSocket.instances.flatMap(socket => socket.sent)).toEqual([])
+    expect(OrgTestSocket.instances).toHaveLength(0)
   })
 })
 
@@ -224,13 +222,8 @@ it('opening a historical Org loads the selected member artifact list, a nested T
   orgs.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' })
   const open = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(false))
-  // A member of the team the Org delegated to is read through that team run (autobyteus-461 CR-461-010).
-  const [read] = await requests('GetTeamMemberRunProjection', 1)
-  expect(read!.operation.variables).toEqual({ teamRunId: 'team-task', agentRunId: 'agent-task-lead' })
-  read!.respond({ getTeamMemberRunProjection: { __typename: 'TeamMemberRunProjection', agentRunId: 'agent-task-lead', summary: null,
-    lastActivityAt: null, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } })
+  releaseMembers(await requests(MEMBER, 1), 'historical')
   await open
-  expect(transport.named(MEMBER)).toHaveLength(0)
 
   const files = useRunFileChangesStore()
   expect(orgs.contexts['org-run']?.isActive).toBe(false)

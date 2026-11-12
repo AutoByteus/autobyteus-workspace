@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchEventMonitorActiveTracePage } from '../eventMonitorActiveTracePageService';
 import {
   GetAgentOrgMemberEventMonitorActiveTracePage,
+  GetAgentRunCollaborationMemberEventMonitorActiveTracePage,
   GetRunEventMonitorActiveTracePage,
   GetTeamMemberEventMonitorActiveTracePage,
 } from '~/graphql/queries/runHistoryQueries';
@@ -18,11 +19,17 @@ describe('fetchEventMonitorActiveTracePage', () => {
     vi.mocked(getApolloClient).mockReturnValue({ query } as never);
   });
 
-  it('a run on a peer node keeps its trace there: refused, and nothing is asked (autobyteus-461 CR-461-022)', async () => {
+  it('reads a standalone collaborator or collaborator-Team member from its host\'s package (CR-002)', async () => {
+    query.mockResolvedValue({ data: { agentRunCollaborationMemberEventMonitorActiveTracePage: page } });
     await expect(fetchEventMonitorActiveTracePage(
-      { kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/research', agentRunId: 'far-run' }, 'cursor-1',
-    )).rejects.toThrow("AgentRun 'far-run' runs on another node; its trace is kept there.");
-    expect(query).not.toHaveBeenCalled();
+      { kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
+      'cursor-1',
+    )).resolves.toBe(page);
+    expect(query).toHaveBeenCalledWith({
+      query: GetAgentRunCollaborationMemberEventMonitorActiveTracePage,
+      variables: { hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run', beforeCursor: 'cursor-1' },
+      fetchPolicy: 'network-only',
+    });
   });
 
   it('keeps every other subject on its own query', async () => {

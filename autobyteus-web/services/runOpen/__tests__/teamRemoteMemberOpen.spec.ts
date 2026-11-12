@@ -42,7 +42,7 @@ describe("a Team root's remote member, its node down", () => {
     Object.assign(io, { unreachable: true, reads: [] })
     io.query.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
       if (!variables.agentRunId) {
-        return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [remoteTeam], teamRunId: TEAM,
+        return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [remoteTeam], closedTaskExecutions: [], teamRunId: TEAM,
           isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, executionTree: tree, modelConfigEditability: { editable: true, reason: null } } } }
       }
       if (query === GetTeamMemberRunProjection) io.reads.push(String(variables.agentRunId))

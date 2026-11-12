@@ -10,10 +10,10 @@ const CHILD_VIEW_WAIT_MS = 5000
 
 /**
  * Opens a Task's root exactly as its left-panel row does (DS-004): the worker's conversation
- * inside the view of the run that delegated it (one hop, autobyteus-461), selected there. A team opens its coordinator.
- * - Agent run: the run opens in chat with the worker (or the task Team's coordinator) selected, the task Team expanded.
- * - Team run: the worker opens as a child row in the Team view.
- * - Org run: the existing Org inspect action for that execution.
+ * inside the run that hosts it, selected in the left panel. A team opens its coordinator.
+ * - Agent run host: the run opens in chat with the worker (or task Team coordinator) selected, the task Team expanded.
+ * - Team run host: the team member (the worker, or the task Team's coordinator) opens in the Team view.
+ * - Org run host: the existing Org inspect action for that execution.
  */
 export const useTaskRootNavigation = () => {
   const router = useRouter()
@@ -22,7 +22,7 @@ export const useTaskRootNavigation = () => {
   const orgActions = useWorkspaceHistorySubjectActions()
 
   const openInAgentRun = async (root: TaskRootView): Promise<void> => {
-    const hostRunId = root.delegatingRun.runId
+    const hostRunId = root.hostRoot.runId
     const link = { kind: 'agent' as const, runId: hostRunId }
     const intent = selection.beginSelectionIntent()
     const opened = await openWorkspaceExecutionLink(link, intent)
@@ -38,7 +38,7 @@ export const useTaskRootNavigation = () => {
   }
 
   const openInTeamRun = async (root: TaskRootView): Promise<void> => {
-    const link = { kind: 'team' as const, teamRunId: root.delegatingRun.runId, agentRunId: root.ingressAgentRunId }
+    const link = { kind: 'team' as const, teamRunId: root.hostRoot.runId, agentRunId: root.ingressAgentRunId }
     const intent = selection.beginSelectionIntent()
     const opened = await openWorkspaceExecutionLink(link, intent)
     if (opened.disposition !== 'committed' || !intent.isCurrent()) return
@@ -47,9 +47,9 @@ export const useTaskRootNavigation = () => {
 
   const open = async (root: TaskRootView): Promise<void> => {
     try {
-      if (root.delegatingRun.kind === 'agent') await openInAgentRun(root)
-      else if (root.delegatingRun.kind === 'agent_team') await openInTeamRun(root)
-      else await orgActions.execute({ rootSubjectKind: 'agent_org', rootRunId: root.delegatingRun.runId, action: 'inspect', agentRunId: root.ingressAgentRunId })
+      if (root.hostRoot.kind === 'agent') await openInAgentRun(root)
+      else if (root.hostRoot.kind === 'agent_team') await openInTeamRun(root)
+      else await orgActions.execute({ rootSubjectKind: 'agent_org', rootRunId: root.hostRoot.runId, action: 'inspect', agentRunId: root.ingressAgentRunId })
     } catch (error) {
       console.error('Failed to open the Task root:', error)
     }

@@ -63,7 +63,7 @@ loaded list and shows the source error text.
 
 Cards show display names, stable IDs, run counts, compact latest-update timestamps and member counts for teams and orgs. Availability says nothing in the normal case: a card shows `No Work Journal`, `No Raw traces` or `Archive` only when something is missing or archived. Filter placeholders are scoped to the selected tab, and filtering/pagination are backed by GraphQL rather than by client-side grouping.
 
-A team run that an agent delegated to is listed as the team run it is (autobyteus-461); there is no task-team tag.
+Task teams (teams an agent started) are listed with the configured teams, with a dashed `Task team` tag whose tooltip names the agent that started it (`isTaskTeam`, `startedByAgentName`).
 
 Agent cards are grouped primarily by `agentDefinitionId` when metadata exists. Standalone memory directories without run-history or metadata remain visible under an explicit `Unattributed runs` agent group so legacy stored memory is not hidden.
 
@@ -138,13 +138,13 @@ Team-run and org-run entries expose `memberTargets` of the shared type
 `CollaborationMemberMemoryTargetSummary` (renamed from the former team-only
 member target type). Each target carries `memberAddress`, `displayName`,
 `agentRunId` (the target's own run), `agentDefinitionId`, `executionKind`
-(`CONFIGURED`: a run's own agents), `startedAt`,
+(`CONFIGURED`, `TASK_AGENT`, `TASK_TEAM_MEMBER`), `startedAt` (task agents),
 `groupPath` (ordered `CollaborationMemoryGroup` entries with `teamRunId`,
 `address`, `displayName`, `kind` `CONFIGURED_TEAM`/`TASK_TEAM`, and
 `startedAt`), `lastUpdatedAt`, and `memory`. These fields are additive; existing
 query names and arguments are unchanged.
 
-Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPages`. Entry summaries include `MemoryAvailabilitySummary` flags `hasWorkJournal`, `hasRawTraces` and `hasRawArchive`.
+Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPages`. Entry summaries include `MemoryAvailabilitySummary` flags `hasWorkJournal`, `hasRawTraces` and `hasRawArchive`, and team summaries `isTaskTeam` and `startedByAgentName`.
 
 The `source` variable is explicit:
 

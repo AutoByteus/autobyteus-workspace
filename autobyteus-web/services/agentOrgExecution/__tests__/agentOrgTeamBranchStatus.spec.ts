@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentOrgConfiguredTeamNode } from '~/types/collaboration/agentOrgExecution';
-import { projectAgentOrgTeamBranchStatus } from '../agentOrgTeamBranchStatus';
+import { projectAgentOrgTaskTeamStatus, projectAgentOrgTeamBranchStatus } from '../agentOrgTeamBranchStatus';
 
 const launch = {
   runtimeKind: 'codex_app_server' as const,
@@ -66,6 +66,7 @@ const team: AgentOrgConfiguredTeamNode = {
   ],
 };
 
+const listed = () => true;
 
 describe('projectAgentOrgTeamBranchStatus', () => {
   it('enumerates configured and recursive task Agents in only the supplied Team branch', () => {
@@ -85,6 +86,7 @@ describe('projectAgentOrgTeamBranchStatus', () => {
     expect(projectAgentOrgTeamBranchStatus({
       team,
       runAlive: true,
+      isListed: listed,
       statusForAgentRunId,
     })).toBe(AgentStatus.Running);
     expect(statusForAgentRunId.mock.calls.map(([runId]) => runId)).toEqual([
@@ -101,10 +103,44 @@ describe('projectAgentOrgTeamBranchStatus', () => {
   it('maps a starting member to busy and reads a stopped Org run as offline (REQ-001/003)', () => {
     const startingOnly = (runId: string) => runId === 'inner-child-task' ? AgentStatus.Initializing : AgentStatus.Idle;
     expect(projectAgentOrgTeamBranchStatus({
-      team, runAlive: true, statusForAgentRunId: startingOnly,
+      team, runAlive: true, isListed: listed, statusForAgentRunId: startingOnly,
     })).toBe(AgentStatus.Running);
     expect(projectAgentOrgTeamBranchStatus({
-      team, runAlive: false, statusForAgentRunId: () => AgentStatus.Running,
+      team, runAlive: false, isListed: listed, statusForAgentRunId: () => AgentStatus.Running,
+    })).toBe(AgentStatus.Offline);
+  });
+
+  it('skips closed task executions and everything under them (REQ-002, AC-006)', () => {
+    const statusForAgentRunId = vi.fn((runId: string) => runId === 'inner-child-task' ? AgentStatus.Running : AgentStatus.Idle);
+    expect(projectAgentOrgTeamBranchStatus({
+      team,
+      runAlive: true,
+      isListed: (node) => !('teamRunId' in node && node.teamRunId === 'inner-task-team'),
+      statusForAgentRunId,
+    })).toBe(AgentStatus.Idle);
+    expect(statusForAgentRunId.mock.calls.map(([runId]) => runId)).not.toContain('inner-child-task');
+  });
+});
+
+describe('projectAgentOrgTaskTeamStatus', () => {
+  type TaskTeam = Extract<AgentOrgConfiguredTeamNode['taskExecutions'][number], { teamRunId: string }>;
+  const taskTeam = team.taskExecutions[1] as TaskTeam;
+  /** The Team the task Team's lead delegated in turn (Teams are flat; a Team is never a member). */
+  const innerTaskTeam = taskTeam.taskExecutions[1] as TaskTeam;
+
+  it('counts the listed agents in a delegated Team subtree, Teams it delegated included', () => {
+    const statusForAgentRunId = vi.fn((runId: string) => runId === 'inner-reviewer' ? AgentStatus.Error : AgentStatus.Idle);
+    expect(projectAgentOrgTaskTeamStatus({ team: taskTeam, runAlive: true, isListed: listed, statusForAgentRunId }))
+      .toBe(AgentStatus.Error);
+    expect(statusForAgentRunId.mock.calls.map(([runId]) => runId)).toEqual([
+      'task-team-lead', 'task-team-child-task', 'inner-reviewer', 'inner-child-task',
+    ]);
+    expect(projectAgentOrgTaskTeamStatus({
+      team: innerTaskTeam, runAlive: true, isListed: listed,
+      statusForAgentRunId: (runId) => runId === 'inner-child-task' ? AgentStatus.Running : AgentStatus.Offline,
+    })).toBe(AgentStatus.Running);
+    expect(projectAgentOrgTaskTeamStatus({
+      team: taskTeam, runAlive: false, isListed: listed, statusForAgentRunId: () => AgentStatus.Running,
     })).toBe(AgentStatus.Offline);
   });
 });

@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+import {
+  GetAgentRunCollaborationMemberFileChanges,
+  GetAgentRunCollaborationMemberProjection,
+} from '~/graphql/queries/collaboratorQueries'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore'
 import { beginLocalUserSubmission } from '~/services/runSubmission/localUserSubmission'
@@ -12,9 +15,8 @@ import { agentRootView } from './agentRootFixture'
 
 /**
  * delegated-copies-slow-open D-2 / DS-005 (AC-004, AC-006), autobyteus-358 DS-003: the shared member loader loads one
- * child's stored details into one published context; a load whose context is no longer published writes nothing; a
- * live change during the fetch retries within the same context. The child is read by its own identity
- * (autobyteus-461 CR-461-022): `pp-run`, a member of the team run the view's run delegated to, through that team run.
+ * hub child's stored details into one published context, hub-scoped; a load whose context is no longer published
+ * writes nothing; a live change during the fetch retries within the same context.
  */
 const mocks = vi.hoisted(() => ({ query: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query }) }))
@@ -34,15 +36,15 @@ type Served = { conversation?: unknown[]; fail?: 'projection' | 'artifacts'; hol
 const serve = (next: () => Served = () => ({})) => mocks.query.mockImplementation(async ({ query, variables }) => {
   const plan = next()
   if (plan.hold) await plan.hold
-  if (query === GetTeamMemberFileChanges) {
+  if (query === GetAgentRunCollaborationMemberFileChanges) {
     return plan.fail === 'artifacts'
       ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.agentRunId}` }] }
-      : { data: { getTeamMemberFileChanges: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
+      : { data: { agentRunCollaborationMemberFileChanges: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
   }
-  if (query === GetTeamMemberRunProjection) {
+  if (query === GetAgentRunCollaborationMemberProjection) {
     if (plan.fail === 'projection') return { data: null, errors: [{ message: 'projection unavailable' }] }
-    return { data: { getTeamMemberRunProjection: {
-      agentRunId: variables.agentRunId,
+    return { data: { agentRunCollaborationMemberProjection: {
+      agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
       conversation: plan.conversation ?? [assistantEntry('stored answer')],
       activities: [{ kind: 'system_instruction', activityId: `projected-${variables.agentRunId}`, content: 'projected', ts: 1 }],
       hasEarlierActiveTraceEvents: true,
@@ -76,15 +78,19 @@ describe('MemberLoader with a hub child target', () => {
     vi.clearAllMocks()
   })
 
-  it('loads exactly the selected child through its own team run and commits conversation, activities and artifacts', async () => {
+  it('loads exactly the selected child through the hub-scoped queries and commits conversation, activities and artifacts', async () => {
     serve()
     const { child, load, isLoaded } = await setup()
     const revision = child.state.eventMonitorPresentationRevision
 
     await expect(load()).resolves.toBe('hydrated')
 
-    expect(requests(GetTeamMemberRunProjection).map(([options]) => options.variables)).toEqual([{ teamRunId: 'team-run', agentRunId: 'pp-run' }])
-    expect(requests(GetTeamMemberFileChanges).map(([options]) => options.variables)).toEqual([{ teamRunId: 'team-run', agentRunId: 'pp-run' }])
+    expect(requests(GetAgentRunCollaborationMemberProjection).map(([options]) => options.variables)).toEqual([
+      { hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
+    ])
+    expect(requests(GetAgentRunCollaborationMemberFileChanges).map(([options]) => options.variables)).toEqual([
+      { hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
+    ])
     expect(mocks.query).toHaveBeenCalledTimes(2)
     expect(isLoaded('pp-run')).toBe(true)
     expect(isLoaded('cua-run')).toBe(false)
@@ -147,8 +153,8 @@ describe('MemberLoader with a hub child target', () => {
     gate.resolve()
 
     await expect(pending).resolves.toBe('hydrated')
-    expect(requests(GetTeamMemberRunProjection)).toHaveLength(2)
-    expect(requests(GetTeamMemberFileChanges)).toHaveLength(2)
+    expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(2)
+    expect(requests(GetAgentRunCollaborationMemberFileChanges)).toHaveLength(2)
     expect(isLoaded('pp-run')).toBe(true)
   })
 
@@ -184,7 +190,7 @@ describe('MemberLoader with a hub child target', () => {
     }
 
     await expect(pending).rejects.toThrow("The stored state of 'pp-run' changed while it was loading.")
-    expect(requests(GetTeamMemberRunProjection)).toHaveLength(3)
+    expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(3)
     expect(isLoaded('pp-run')).toBe(false)
     expect(paths('pp-run')).toEqual([])
   })
@@ -237,15 +243,15 @@ describe('MemberLoader with a hub child target', () => {
     const [first, joined] = [load(), load()]
     await expect(first).resolves.toBe('hydrated')
     await expect(joined).resolves.toBe('hydrated')
-    expect(requests(GetTeamMemberRunProjection)).toHaveLength(1)
+    expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(1)
     await expect(load()).resolves.toBe('already_hydrated')
-    expect(requests(GetTeamMemberRunProjection)).toHaveLength(1)
+    expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(1)
 
     // The root's context is rebuilt (stream recovery, a fresh snapshot, a reopen): a new generation.
     loader.beginRoot('agent:host-run')
     expect(isLoaded('pp-run')).toBe(false)
     await expect(load()).resolves.toBe('hydrated')
-    expect(requests(GetTeamMemberRunProjection)).toHaveLength(2)
+    expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(2)
     expect(isLoaded('pp-run')).toBe(true)
   })
 

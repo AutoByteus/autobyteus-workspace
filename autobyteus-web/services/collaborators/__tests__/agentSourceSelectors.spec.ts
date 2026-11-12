@@ -7,7 +7,7 @@ import { AgentOrgExecutionViewIndex } from '~/services/agentOrgExecution/agentOr
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { copyAgentSourceOf, copyTeamSourceOf, teamAgentSourceOf } from '../agentSourceSelectors'
-import { readsAsDisplayNameAmong } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import { readsAsDisplayName } from '~/services/teamExecution/teamExecutionTreeSelectors'
 
 const created = '2026-09-30T00:00:00.000Z'
 const launch = { runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'root-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null }
@@ -78,11 +78,11 @@ describe('copy sources', () => {
 
   it('display names (D-7): a configured member, its copies and the root keep basenames; a catalog copy reads as a spaced name', () => {
     const tree = withRootTeam(teamTree(), { task_executions: [reviewerCopy, productTeamCopy] })
-    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/researcher')).toBe(false)
-    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/researcher/nested')).toBe(false)
-    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/')).toBe(false)
-    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/code_reviewer')).toBe(true)
-    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/product_team/prototyper')).toBe(true)
+    expect(readsAsDisplayName(tree, '/researcher')).toBe(false)
+    expect(readsAsDisplayName(tree, '/researcher/nested')).toBe(false)
+    expect(readsAsDisplayName(tree, '/')).toBe(false)
+    expect(readsAsDisplayName(tree, '/code_reviewer')).toBe(true)
+    expect(readsAsDisplayName(tree, '/product_team/prototyper')).toBe(true)
   })
 
   it('a catalog copy and its members take their source from the copy (REQ-011)', () => {
@@ -97,20 +97,20 @@ describe('copy sources', () => {
     }
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, 
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
       createAgentContext: (agentRunId, address, nextTree) => createTeamAgentContext({ tree: nextTree, agentRunId, address, workspaceMetadata: null }),
     })
-    const started = state.applyMessage({ type: 'CHILD_RUNS_CHANGED', payload: { run_id: 'team-run', removed: [], added: [{ parent_team_run_id: 'team-run', execution: {
+    const started = state.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: { change_sequence: 1, parent_team_run_id: 'team-run', execution: {
       kind: 'task_team', address: '/product_team', team_run_id: 'copy-run',
       members: [
         { kind: 'task_team_agent', address: '/product_team/product_prototyper', agent_run_id: 'copy-prototyper', platform_agent_run_id: null },
         { kind: 'task_team_agent', address: '/product_team/prototype_bootstrapper', agent_run_id: 'copy-bootstrapper', platform_agent_run_id: null },
       ],
       task_executions: [], delegator_agent_run_id: 'researcher-run', started_at: created, source: productSource,
-    } }] } } as never)
+    } } } as never)
     expect(started.disposition).toBe('applied')
     expect(state.getAgentContext('copy-bootstrapper')?.config.agentDefinitionId).toBe('bootstrapper')
     const rows = state.listNavigationRows()

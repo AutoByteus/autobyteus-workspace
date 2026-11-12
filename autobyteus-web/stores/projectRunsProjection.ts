@@ -147,8 +147,7 @@ const buildProjectEntry = (project: Project, snapshot: ProjectRunsSnapshot, inpu
   }).map((team) => {
     const context = teamContextById.get(team.teamRunId) ?? null
     const focused = { ...team, focusedAgentRunId: context?.view.getFocusedAgentRunId() ?? team.focusedAgentRunId }
-    // The Projects list takes no history poll answer (SR-055 covers the Workspaces list and the phone): members alone.
-    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context, null) }
+    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) }
   })
 
   return { project, node, teams, teamHistoryGroups: group.teamDefinitions }

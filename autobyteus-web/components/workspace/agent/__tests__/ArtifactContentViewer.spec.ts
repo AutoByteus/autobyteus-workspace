@@ -213,6 +213,8 @@ describe('ArtifactContentViewer', () => {
       'http://localhost:3000/rest/team-runs/team-1/agent-runs/agent-1/file-change-content?path=docs%2Fa.md'],
     [{ kind: 'agentOrgMember', orgRunId: 'org-1', memberAddress: '/research/writer', agentRunId: 'agent-1' },
       'http://localhost:3000/rest/agent-org-runs/org-1/agent-runs/agent-1/file-change-content?memberAddress=%2Fresearch%2Fwriter&path=docs%2Fa.md'],
+    [{ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: 'agent-1' },
+      'http://localhost:3000/rest/agent-collaborations/hub-1/agent-runs/agent-1/file-change-content?memberAddress=%2Freviewer&path=docs%2Fa.md'],
   ] as Array<[AgentRunReadSubject, string]>)('reads a %o member artifact through its owner route', async (subject, url) => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock.mockResolvedValue({ ok: true, status: 200, text: async () => 'member content' } as Response);

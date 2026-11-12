@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue'
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows'
 import { useLocalization } from '~/composables/useLocalization'
@@ -47,6 +47,8 @@ const props = defineProps<{
   label: string
   /** The run is the selected run in the workspace. */
   runSelected: boolean
+  /** The run has a stored collaboration package. */
+  hasCollaboration: boolean
 }>()
 /**
  * `select-run` opens the run with its last selected child; `open-run` opens the run's own conversation, as
@@ -56,7 +58,11 @@ const emit = defineEmits<{ (event: 'select-run'): void; (event: 'open-run'): voi
 const { t } = useLocalization()
 const collaboration = useAgentRunCollaborationStore()
 
-// The open run's rows come from its view; a listed run's that is not open from the history poll's answer (SR-055).
+// The stored view is read without restoring the run; a live run is kept current by its stream.
+const loadStored = () => collaboration.ensureStoredView(props.runId, props.hasCollaboration)
+onMounted(loadStored)
+watch(() => props.hasCollaboration, loadStored)
+
 const rows = computed(() => collaboration.taskRows(props.runId))
 // Task workers show their current Task's summary; it locates the Task in Projects.
 const { taskOf, locate } = useTaskWorkerTasks(() => rows.value.map((display) => display.row))

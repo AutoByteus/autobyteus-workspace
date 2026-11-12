@@ -26,7 +26,7 @@ const teamEntry = () => {
     team: { teamRunId: 't-1', executionRows, isActive: true } };
 };
 const agentEntry = { kind: 'agent', key: 'agent:host', runId: 'host', name: 'Host', lastActivityAt: '', isActive: false, folderRootPath: null,
-  agentDefinitionId: 'd', avatarUrl: null, run: { runId: 'host', summary: '', currentStatus: 'idle' } };
+  agentDefinitionId: 'd', avatarUrl: null, run: { runId: 'host', summary: '', currentStatus: 'idle', hasCollaboration: false } };
 
 let pinia: Pinia;
 const setup = async () => {

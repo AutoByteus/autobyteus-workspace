@@ -18,7 +18,7 @@ const team = () => buildTestTeamContext({
   teamRunId: 'team-1',
   coordinatorAddress: '/member-a',
   focusedAgentRunId: 'run-a',
-  rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' }), testAgentNode('/member-b', { agentRunId: 'run-b' })],
+  rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' })],
   delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-a', target: { agentRunId: 'task-run' } })],
 });
 
@@ -29,29 +29,29 @@ describe('teamMemberInspectionCoordinator', () => {
     mocks.mounted = team();
   });
 
-  it('hydrates a member of the team before committing focus and outer selection metadata', async () => {
+  it('hydrates before committing focus and outer selection metadata', async () => {
     let finish!: () => void;
     mocks.ensureProjection.mockReturnValue(new Promise<void>((resolve) => { finish = resolve; }));
     const commit = vi.fn();
 
-    const pending = inspectMountedTeamMember({ teamRunId: 'team-1', agentRunId: 'run-b', commit });
+    const pending = inspectMountedTeamMember({ teamRunId: 'team-1', agentRunId: 'task-run', commit });
     await vi.waitFor(() => expect(mocks.ensureProjection).toHaveBeenCalledTimes(1));
     expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('run-a');
     expect(commit).not.toHaveBeenCalled();
     finish();
     await expect(pending).resolves.toMatchObject({
-      disposition: 'committed', teamRunId: 'team-1', agentRunId: 'run-b', memberAddress: '/member-b',
+      disposition: 'committed', teamRunId: 'team-1', agentRunId: 'task-run', memberAddress: '/member-a',
     });
-    expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('run-b');
+    expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('task-run');
     expect(commit).toHaveBeenCalledTimes(1);
   });
 
-  it('preserves focus and selection metadata when a member\'s exact hydration fails', async () => {
+  it('preserves focus and selection metadata when exact hydration fails', async () => {
     mocks.ensureProjection.mockRejectedValue(new Error('projection unavailable'));
     const commit = vi.fn();
 
     await expect(inspectMountedTeamMember({
-      teamRunId: 'team-1', agentRunId: 'run-b', commit,
+      teamRunId: 'team-1', agentRunId: 'task-run', commit,
     })).resolves.toMatchObject({ disposition: 'rejected', message: 'projection unavailable' });
 
     expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('run-a');
@@ -64,33 +64,10 @@ describe('teamMemberInspectionCoordinator', () => {
     const commit = vi.fn();
 
     await expect(inspectMountedTeamMember({
-      teamRunId: 'team-1', agentRunId: 'run-b', commit,
+      teamRunId: 'team-1', agentRunId: 'task-run', commit,
     })).resolves.toMatchObject({ disposition: 'rejected', message: expect.stringContaining('changed before selection commit') });
 
     expect(original.view.getFocusedAgentRunId()).toBe('run-a');
     expect(commit).not.toHaveBeenCalled();
-  });
-
-  it('focuses a run the team delegated to first and reads it after, so the composer shows it from the click (CR-461-019)', async () => {
-    let finish!: () => void;
-    mocks.ensureProjection.mockReturnValue(new Promise((resolve) => { finish = () => resolve({ disposition: 'hydrated', agentRunId: 'task-run' }); }));
-    const commit = vi.fn();
-
-    const pending = inspectMountedTeamMember({ teamRunId: 'team-1', agentRunId: 'task-run', commit });
-    await vi.waitFor(() => expect(mocks.ensureProjection).toHaveBeenCalledTimes(1));
-    expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('task-run');
-    expect(commit).toHaveBeenCalledTimes(1);
-    finish();
-    await expect(pending).resolves.toMatchObject({ disposition: 'committed', agentRunId: 'task-run' });
-  });
-
-  it('keeps the focus with a delegated run whose stored state fails, and reports the failure (CR-461-019)', async () => {
-    mocks.ensureProjection.mockRejectedValue(new Error('projection unavailable'));
-    const commit = vi.fn();
-
-    await expect(inspectMountedTeamMember({ teamRunId: 'team-1', agentRunId: 'task-run', commit }))
-      .resolves.toMatchObject({ disposition: 'rejected', message: 'projection unavailable' });
-    expect(mocks.mounted.view.getFocusedAgentRunId()).toBe('task-run');
-    expect(commit).toHaveBeenCalledTimes(1);
   });
 });

@@ -17,7 +17,7 @@ describe('fresh canonical Team seed reader', () => {
     const canonical = tree(); canonical.root_team.default_launch_configuration.llm_config = { budget: 0, enabled: false }
     canonical.root_team.members[0].launch_configuration.llm_config = null
     const original = JSON.stringify(canonical), history = useRunHistoryStore()
-    io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { teamRunId: 'source', executionTree: canonical, isActive } } })
+    io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'source', executionTree: canonical, isActive } } })
     const resolve = vi.spyOn(history, 'resolveWorkspaceMetadataByRootPath').mockResolvedValue(meta)
     const ensure = vi.spyOn(history, 'ensureWorkspaceByRootPath')
     const seed = await loadTeamRunLaunchSeed({ teamRunId: 'source', expectedDefinitionId: 'definition', workspaceMetadata: [{ ...meta, workspaceRootPath: '/stale' }] })
@@ -30,7 +30,7 @@ describe('fresh canonical Team seed reader', () => {
     const canonical = tree()
     canonical.root_team.default_launch_configuration.llm_config = { budget: 4, enabled: true }
     canonical.root_team.members[0].launch_configuration.llm_model_identifier = 'member-model'
-    io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { teamRunId: 'source', executionTree: canonical, isActive: false } } })
+    io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'source', executionTree: canonical, isActive: false } } })
     const seed = await loadTeamRunLaunchSeed({ teamRunId: 'source', expectedDefinitionId: 'definition', workspaceMetadata: [meta] })
     expect(seed.rootConfig.llmConfig).toEqual({ budget: 4, enabled: true })
     expect(seed.agentOverrides['/lead']).toMatchObject({ llmModelIdentifier: 'member-model', llmConfig: { budget: 0, enabled: false } })
@@ -41,17 +41,17 @@ describe('fresh canonical Team seed reader', () => {
     const canonical = tree(), history = useRunHistoryStore(); const previous = { sentinel: true }
     history.teamResumeConfigByTeamRunId.source = previous as any
     if (failure === 'tree') canonical.root_team.team_run_id = 'foreign'
-    io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: failure === 'missing' ? null : { teamRunId: failure === 'payload' ? 'foreign' : 'source', executionTree: failure === 'malformed' ? {} : canonical, isActive: false } } })
+    io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: failure === 'missing' ? null : { closedTaskExecutions: [], teamRunId: failure === 'payload' ? 'foreign' : 'source', executionTree: failure === 'malformed' ? {} : canonical, isActive: false } } })
     await expect(history.refreshTeamResumeConfig('source')).rejects.toThrow()
     expect(history.teamResumeConfigByTeamRunId.source).toEqual(previous)
   })
   it.each(['definition', 'unresolved', 'wrong-path'])('fails %s without fallback to retained/default values', async failure => {
-    const canonical = tree(); io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { teamRunId: 'source', executionTree: canonical, isActive: false } } })
+    const canonical = tree(); io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'source', executionTree: canonical, isActive: false } } })
     vi.spyOn(useRunHistoryStore(), 'resolveWorkspaceMetadataByRootPath').mockResolvedValue(failure === 'wrong-path' ? { ...meta, workspaceRootPath: '/other' } : null)
     await expect(loadTeamRunLaunchSeed({ teamRunId: 'source', expectedDefinitionId: failure === 'definition' ? 'other' : 'definition' })).rejects.toThrow()
   })
   it('reuses matching snapshot metadata only and permits unassigned workspace as incomplete', async () => {
-    const canonical = tree(); io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { teamRunId: 'source', executionTree: canonical, isActive: false } } })
+    const canonical = tree(); io.query.mockResolvedValue({ data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'source', executionTree: canonical, isActive: false } } })
     const resolve = vi.spyOn(useRunHistoryStore(), 'resolveWorkspaceMetadataByRootPath')
     const seed = await loadTeamRunLaunchSeed({ teamRunId: 'source', expectedDefinitionId: 'definition', workspaceMetadata: [meta] })
     expect(seed.rootConfig.workspace.workspaceId).toBe(meta.workspaceId); expect(resolve).not.toHaveBeenCalled()

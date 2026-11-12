@@ -7,7 +7,7 @@ type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentR
 export const agentRootView = (): MutableView => ({
   base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent', createdAt: created,
     host: { address: '/research_assistant', agentRunId: 'host-run', agentDefinitionId: 'research-assistant' },
     // Delegated runs of the host: an Agent copy and a Team copy, each recording its catalog source.

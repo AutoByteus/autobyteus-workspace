@@ -259,7 +259,6 @@ const relative = (createdAt: string) => {
 const rowsFor = (run: AgentOrgRunHistoryItem) => projectAgentOrgHistoryRows({
   run,
   context: props.state.agentOrgContextFor?.(run.rootRunId) ?? null,
-  listed: props.state.agentOrgListedChildrenFor?.(run.rootRunId) ?? null,
   isTeamExpanded: (address) => isTeamExpanded(run.rootRunId, address),
   isTaskTeamExpanded: (teamRunId) => props.state.isAgentOrgTaskTeamExpanded?.(run.rootRunId, teamRunId) ?? true,
 })

@@ -36,7 +36,7 @@ const teamCopySource = {
 const view = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org',
     createdAt: '2026-09-01T00:00:00.000Z',
     archivedAt: null,
@@ -118,12 +118,15 @@ const build = (snapshot = view(), taskEntries: ConstructorParameters<typeof Agen
   return { context }
 }
 
-/** A new child row of the Org (autobyteus-461 SR-042: the unsequenced child-row change). */
-const started = (execution: Partial<Record<string, unknown>> = {}) => ({ kind: 'child_runs_changed', run_id: 'org-run', removed: [], added: [{
-  address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-  delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
-  ...execution,
-}] }) as never
+type StartedExecution = Extract<AgentOrgExecutionEventDto, { kind: 'task_execution_started' }>['execution']
+const started = (execution: Partial<Record<string, unknown>> = {}): AgentOrgExecutionEventDto => ({
+  kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
+  execution: {
+    address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+    delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
+    ...execution,
+  } as StartedExecution,
+})
 
 const communication = (senderAgentRunId = 'agent-direct', receiverAgentRunId = 'agent-member') => ({
   kind: 'communication' as const,
@@ -348,14 +351,6 @@ describe('AgentOrgExecutionContext', () => {
       content: 'Task Team response', messageType: 'agent_message', referenceFiles: [],
       createdAt: '2026-09-01T00:00:03.750Z',
     }])
-    // The task run's own log holds its messages with the Org's agents too: its Team tab reads them there (CR-461-020).
-    storeParticipantMessages('agent', 'agent-task-fresh', [{
-      messageId: 'message-to-task', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-fresh',
-      content: 'Task update', messageType: 'agent_message', referenceFiles: [], createdAt: '2026-09-01T00:00:02.000Z',
-    }, {
-      messageId: 'message-from-task', senderAgentRunId: 'agent-task-fresh', receiverAgentRunId: 'agent-direct',
-      content: 'Task response', messageType: 'agent_message', referenceFiles: [], createdAt: '2026-09-01T00:00:03.000Z',
-    }])
     const taskEntry = {
       agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),
       context: agentContext('agent-task-fresh', 'Task Member'),
@@ -451,16 +446,18 @@ describe('AgentOrgExecutionContext', () => {
     expect(owner.messagesOf(key).map((message) => message.messageId)).toEqual(['message-2'])
   })
 
-  it('routes a fresh task Agent or Team row to checkpoint hydration without partial mutation; one it holds is a no-op', () => {
+  it('routes a fresh task Agent or Team activation to checkpoint hydration without partial mutation', () => {
     const { context } = build()
     const committed = structuredClone(context.view)
 
-    expect(context.applyChildRunsChanged(started())).toBe('checkpoint_required')
-    expect(context.applyChildRunsChanged({ kind: 'child_runs_changed', run_id: 'org-run', removed: [], added: [{
-      address: '/team', teamRunId: 'team-task-fresh', members: [], taskExecutions: [],
-      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: teamCopySource,
-    }] } as never)).toBe('checkpoint_required')
-    expect(context.applyChildRunsChanged(started({ agentRunId: 'agent-member' }))).toBe('applied')
+    expect(context.applyEvent(5, started())).toBe('checkpoint_required')
+    expect(context.applyEvent(5, {
+      kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
+      execution: {
+        address: '/team', teamRunId: 'team-task-fresh', members: [], taskExecutions: [],
+        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: teamCopySource,
+      },
+    } as AgentOrgExecutionEventDto)).toBe('checkpoint_required')
 
     expect(context.phase).toBe('live')
     expect(context.changeSequence).toBe(4)
@@ -470,6 +467,17 @@ describe('AgentOrgExecutionContext', () => {
   it.each([
     ['communication sender', communication('unknown-agent', 'agent-member')],
     ['communication receiver', communication('agent-direct', 'unknown-agent')],
+    ['task delegator', started({ delegatorAgentRunId: 'unknown-agent' })],
+    ['task execution kind', {
+      kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
+      execution: {
+        // A Team execution whose recorded source is an Agent's.
+        address: '/team/member', teamRunId: 'fresh-team', members: [], taskExecutions: [],
+        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
+      },
+    } as unknown as AgentOrgExecutionEventDto], // deliberately outside the DTO type
+    ['reused configured execution', started({ agentRunId: 'agent-member' })],
+    ['task host', { ...started(), host_run_id: 'other-org' } as AgentOrgExecutionEventDto],
   ] satisfies readonly (readonly [string, AgentOrgExecutionEventDto])[])(
     'fails closed before mutating a miscorrelated %s event', (_label, event) => {
       const { context } = build()

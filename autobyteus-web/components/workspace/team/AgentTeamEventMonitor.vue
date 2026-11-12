@@ -33,8 +33,6 @@ import { computed } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
-import { teamAgentReadSubject } from '~/services/runHydration/agentReads';
-import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
@@ -55,10 +53,10 @@ const focusedMemberAvatarUrl = computed(() => {
 });
 const interAgentSenderNameById = computed<Record<string, string>>(() =>
   getInterAgentSenderNameById(activeTeam.value));
-// The subject that reads the focused agent in this Team view (a delegated child by its own identity; CR-461-010).
-// (The monitor renders only with a focused agent, so with an active Team.)
-const focusedBrowseSubject = computed<AgentRunReadSubject>(() => activeTeam.value
-  ? teamAgentReadSubject({ teamRunId: activeTeam.value.view.getRootTeamRunId(), tree: activeTeam.value.view.getExecutionTree(),
-    memberAddress: focusedMemberAddress.value }, focusedAgentRunId.value)
-  : { kind: 'teamMember', teamRunId: '', memberAddress: focusedMemberAddress.value, agentRunId: focusedAgentRunId.value });
+const focusedBrowseSubject = computed(() => ({
+  kind: 'teamMember' as const,
+  teamRunId: activeTeam.value?.view.getRootTeamRunId() ?? '',
+  memberAddress: focusedMemberAddress.value,
+  agentRunId: focusedAgentRunId.value,
+}));
 </script>

@@ -38,7 +38,7 @@ const retainedView = (active: boolean) => {
 }
 const historyResponse = (view: ReturnType<typeof retainedView>) => ({ data: { listCollaborationRootHistory: [{
   root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: view.is_active,
-  created_at: view.execution_tree.createdAt, last_activity_at: view.execution_tree.createdAt, archived_at: null, summary: 'Mixed Org', org: view.execution_tree, 
+  created_at: view.execution_tree.createdAt, last_activity_at: view.execution_tree.createdAt, archived_at: null, summary: 'Mixed Org', org: view.execution_tree, closed_task_executions: [],
 }] } })
 let wrapper: VueWrapper | undefined
 beforeEach(() => {
@@ -117,16 +117,14 @@ describe('exact Org task inspection independent of history drawer initialization
     expect(mocks.mutate).not.toHaveBeenCalled()
   })
 
-  it('resolves inactive history through the same read owner and inspects without Restore or activation; the open view gets its stream (SR-045)', async () => {
+  it('resolves inactive history through the same read owner and inspects without Restore, transport or activation', async () => {
     const { execute, contexts, router } = await setup(false)
     await execute(inspect('agent-task-worker-two'))
     expect(router.currentRoute.value.query).toMatchObject({ mode: 'history', agentRunId: 'agent-task-worker-two' })
     expect(contexts.contextFor('org-run')?.selectedTarget()).toMatchObject({ access: 'read_only', context: { state: { runId: 'agent-task-worker-two' } } })
     expect(historyQueries()).toHaveLength(1)
     expect(mocks.query.mock.calls.some(([{ query }]) => query === GetAgentOrgRunInspection)).toBe(false) // coherent retained context is reusable
-    // The stopped Org's open view keeps a stream, whose stored-mode snapshot refreshes it (autobyteus-461 SR-045).
-    expect(mocks.instances).toHaveLength(1)
-    expect(contexts.contextFor('org-run')?.isActive).toBe(false)
+    expect(mocks.instances).toHaveLength(0)
     expect(mocks.mutate).not.toHaveBeenCalled()
   })
 

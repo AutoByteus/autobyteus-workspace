@@ -4,7 +4,6 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
-import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore'
 import type { DelegatedReference, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 
 type AgentContextReader = Readonly<{ getAgentContext?(agentRunId: string): { state: { currentStatus: unknown } } | null }>
@@ -23,23 +22,10 @@ const teamRootTeamAgents = (tree: TeamRunExecutionTreeDto, teamRunId: string): s
   return visit(tree.root_team.task_executions) ?? []
 }
 
-const LISTED_KIND = { AGENT: 'agent', AGENT_TEAM: 'agent_team', AGENT_ORG: 'agent_org' } as const
-
 /**
- * A child of a listed run that is not open, from the history poll's answer (autobyteus-461 SR-055): it runs when any of
- * its agents is not offline. False when the answer does not list it.
- */
-const isListedChildLive = (root: DelegatedRoot, reference: DelegatedReference): boolean => {
-  const child = useListedRunChildrenStore().answerOf(LISTED_KIND[root.rootKind], root.rootRunId)?.children.find(({ row }) => 'agentRunId' in reference
-    ? row.kind === 'agent' && row.agentRunId === reference.agentRunId
-    : row.kind === 'agent_team' && row.teamRunId === reference.teamRunId)
-  return Boolean(child?.statuses.some((status) => status.status !== AgentStatus.Offline))
-}
-
-/**
- * DS-002: whether a delegated copy of a root runs (any of its agents is not offline), for its stop icon. A Team counts
- * as one unit. From the root's view when it has one (false while that view has no index or agent contexts yet), else
- * from the history poll's answer for a listed run that is not open (SR-055).
+ * DS-002: whether a delegated copy of a live root runs (any of its agents is not
+ * offline), for its stop icon. A Team counts as one unit. False when the root has no live view (or a
+ * view still without its index or agent contexts).
  */
 export const isDelegatedCopyLive = (root: DelegatedRoot, reference: DelegatedReference): boolean => {
   let context: AgentContextReader | null = null
@@ -63,7 +49,7 @@ export const isDelegatedCopyLive = (root: DelegatedRoot, reference: DelegatedRef
       return team ? team.members.map((member) => member.agentRunId) : []
     }
   }
-  if (!context) return isListedChildLive(root, reference)
+  if (!context) return false
   // autobyteus-278: a remote Team copy's agents are its members as the link names them.
   const remoteTeam = 'teamRunId' in reference ? useRemoteRunsStore().run(reference.teamRunId) : null
   const ids = 'agentRunId' in reference ? [reference.agentRunId] : remoteTeam ? remoteTeam.agentRunIds : teamAgents(reference.teamRunId)

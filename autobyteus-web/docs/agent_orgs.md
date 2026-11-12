@@ -401,18 +401,22 @@ on-demand detail disclosure. Disclosure state resets on item, reference or scope
 changes; readable labels never replace identity keys.
 
 The delegation work packet (the only task-system input) appears in the
-recipient event monitor, not as ordinary Messages. Fresh message/status
-publications update already-mounted views without refocus; a change to the Org's
-child rows arrives as the unsequenced `CHILD_RUNS_CHANGED`, and the view reads
-itself again unless the change is already in it. Snapshots are the recovery path,
-not a substitute for normal live publication.
+recipient event monitor, not as ordinary Messages. Fresh message/status and
+`task_execution_started` publications update already-mounted views without
+refocus; snapshots are the recovery path, not a
+substitute for normal live publication.
 
-The Org's child rows are the runs it delegated to that hold an open Task
-(autobyteus-461). When a child's last open Task becomes DONE, it leaves the Org's
-Workspaces rows (with a short fade; at once under reduced motion); when the
-delegating agent continues it (it reopens the Task, then messages the run ID), it
-comes back. Both arrive as `CHILD_RUNS_CHANGED`. A selected agent that leaves is
-no longer selected.
+When a Task becomes DONE, its task executions leave the Org's Workspaces rows
+(with a short fade; at once under reduced motion). The Org view and the
+`agent_org` history item carry `closed_task_executions` beside the unfiltered
+tree, so rows rendered from the history item before the Org context hydrates
+already leave them out; a live `task_executions_closed` event updates a mounted
+view in place. When the delegating agent reactivates a closed execution (it
+reopens the Task, then messages the execution's run ID), a live
+`task_executions_reopened` event lists it again. Its still-closed helpers stay
+hidden. A selected closed agent hands selection to the agent that
+delegated its outermost closed execution, when that agent is still listed. The
+Team tab keeps messages with closed runs.
 
 The left **Workspaces** hierarchy remains mounted across configuration, active,
 focused, and stopped/history states. Within each Workspace it retains the

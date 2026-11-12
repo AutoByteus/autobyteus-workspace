@@ -442,9 +442,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
-      let hostStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
       try {
-        hostStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -461,7 +461,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (!ownsRequest()) return false;
-        hostStop.confirm();
+        childStop.confirm();
         if (context?.config.runtimeKind === 'autobyteus' && state) {
           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
@@ -474,7 +474,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
       } finally {
-        hostStop?.finish();
+        childStop?.finish();
       }
     },
 

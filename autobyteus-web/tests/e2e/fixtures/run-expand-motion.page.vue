@@ -20,15 +20,15 @@ definePageMeta({ layout: false });
 const HOST = 'probe-host-run';
 const DELEGATED = 12;
 // Newest first: the four other runs are newer, so the Project Task Manager's row is the fifth.
-const run = (runId: string, name: string, minutesAgo: number) => {
+const run = (runId: string, name: string, minutesAgo: number, hasCollaboration: boolean) => {
   const at = new Date(Date.UTC(2026, 10, 6, 8, 0) - minutesAgo * 60_000).toISOString();
   return { agentDefinitionId: `definition-${runId}`, agentName: name, runs: [{ runId, summary: `${name} notes`,
-    createdAt: at, lastActivityAt: at, status: AgentStatus.Offline, isActive: false }] };
+    createdAt: at, lastActivityAt: at, status: AgentStatus.Offline, isActive: false, hasCollaboration }] };
 };
 const runHistory = useRunHistoryStore();
 runHistory.workspaceGroups = [{ workspaceRootPath: '/probe', workspaceName: 'probe', teamDefinitions: [], agentDefinitions: [
-  ...['Writer', 'Researcher', 'Reviewer', 'Planner'].map((name, index) => run(`probe-run-${index}`, name, index + 1)),
-  run(HOST, 'Project Task Manager', 30),
+  ...['Writer', 'Researcher', 'Reviewer', 'Planner'].map((name, index) => run(`probe-run-${index}`, name, index + 1, false)),
+  run(HOST, 'Project Task Manager', 30, true),
 ] }] as never;
 
 // The stored delegated view is already in the store, as after its first load: no server read.

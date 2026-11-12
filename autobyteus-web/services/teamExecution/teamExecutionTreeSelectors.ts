@@ -8,6 +8,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
+import { agentRunKey, teamRunKey, type TaskExecutionTreeWalk } from '~/utils/collaboration/taskExecutionClosure';
 import type {
   TeamAgentExecutionLocation,
   TeamExecutionNavigationRow,
@@ -23,18 +24,14 @@ const firstSegment = (address: string): string | undefined => address.split('/')
  * root Team, so it reads as a spaced name (`product team`) in rows and contexts. A configured member,
  * and every copy started from it, keeps its address basename; the root never reads as a display name.
  */
-export const readsAsDisplayNameAmong = (memberAddresses: readonly string[], address: string): boolean => {
+export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
   const segment = firstSegment(address);
-  return segment !== undefined && !memberAddresses.some((memberAddress) => firstSegment(memberAddress) === segment);
+  return segment !== undefined && !tree.root_team.members.some((member) => firstSegment(member.address) === segment);
 };
 
 /** The name a Team run shows for the agent or Team at `address` (F-03 / D-7): rows, contexts and Settings. */
 export const teamMemberName = (tree: TeamRunExecutionTreeDto, address: string): string =>
-  teamMemberNameAmong(tree.root_team.members.map((member) => member.address), address);
-
-/** The same name from the root Team's configured member addresses alone. */
-export const teamMemberNameAmong = (memberAddresses: readonly string[], address: string): string =>
-  readsAsDisplayNameAmong(memberAddresses, address) ? memberDisplayName(address) : memberAddressBasename(address);
+  readsAsDisplayName(tree, address) ? memberDisplayName(address) : memberAddressBasename(address);
 
 /** Teams are flat: the root Team's configured members are its Agents. */
 export const collectConfiguredAgents = (
@@ -194,4 +191,25 @@ export const projectNavigationRows = (inputTree: {
     .filter((task) => !root.members.some((member) => member.address === task.address))
     .forEach((task) => addTask(task, 1, rootKey));
   return Object.freeze(rows);
+};
+
+/** A node of the Team tree: Agents, and Teams with Agent members (Teams are flat) and task executions. */
+export type TeamTreeNode = Readonly<{ agent_run_id: string }> | Readonly<{
+  team_run_id: string; members?: readonly unknown[]; task_executions?: readonly unknown[];
+  delegator_agent_run_id?: string | null;
+}>;
+export const teamTreeWalk: TaskExecutionTreeWalk<TeamTreeNode> = {
+  keyOf: (node) => 'agent_run_id' in node ? agentRunKey(node.agent_run_id) : teamRunKey(node.team_run_id),
+  childrenOf: (node) => 'agent_run_id' in node ? []
+    : [...(node.members ?? []), ...(node.task_executions ?? [])] as readonly TeamTreeNode[],
+};
+
+export const teamTreeRunKeys = (root: TeamTreeNode): ReadonlySet<string> => {
+  const keys = new Set<string>();
+  const visit = (node: TeamTreeNode): void => {
+    keys.add(teamTreeWalk.keyOf(node));
+    teamTreeWalk.childrenOf(node).forEach(visit);
+  };
+  visit(root);
+  return keys;
 };

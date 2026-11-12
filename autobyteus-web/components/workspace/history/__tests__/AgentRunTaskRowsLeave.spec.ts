@@ -10,7 +10,7 @@ const rows = vi.hoisted(() => ({ value: null as unknown as import('vue').Ref<unk
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
     taskRows: () => rows.value.value,
-    contextFor: () => ({}), isTaskTeamExpanded: () => false, selectedChild: () => null,
+    contextFor: () => ({}), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => false, selectedChild: () => null,
     toggleTaskTeam: vi.fn(), selectTaskRow: vi.fn(() => true),
   }),
 }))
@@ -36,7 +36,7 @@ describe('AgentRunTaskRows leave motion with a real TransitionGroup', () => {
   const mountTree = () => mount(defineComponent({
     setup: () => () => h('div', [
       h('button', { 'data-test': 'run-row' }, 'Manager run'),
-      h(AgentRunTaskRows, { runId: 'host-run', label: 'Manager run', runSelected: true }),
+      h(AgentRunTaskRows, { runId: 'host-run', label: 'Manager run', runSelected: true, hasCollaboration: true }),
     ]),
   }), { attachTo: document.body, global: { stubs: { transition: false, 'transition-group': false } } })
 

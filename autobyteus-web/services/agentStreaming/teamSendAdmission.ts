@@ -3,8 +3,7 @@ import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/
 
 /**
  * The Team stream's pending message admissions: one per AgentRun, settled by the root's
- * `MEMBER_INPUT_MESSAGE` for the same identity, or by the acknowledgement of a child row's accepted message (its
- * input is its own run's event, autobyteus-461 CR-461-034), or rejected by its send failure (`ERROR`).
+ * `MEMBER_INPUT_MESSAGE` for the same identity or rejected by its send failure (`ERROR`).
  */
 
 type PendingTeamSend = Readonly<{
@@ -59,20 +58,14 @@ export class TeamSendAdmissions {
   }
 
   resolve(message: Extract<TeamStreamServerMessage, { type: 'MEMBER_INPUT_MESSAGE' }>): void {
-    // CR-003: settle on identity only; the root may compose the content (the mention note).
-    if (message.payload.input_origin !== 'user_message') return;
-    this.settle({ agentRunId: message.payload.recipient_agent_run_id, messageId: message.payload.message_id, dedupeKey: message.payload.dedupe_key });
-  }
-
-  /** A child row's agent accepted the message (CR-461-034): its send settles by its identity. */
-  acknowledge(identity: TeamSendIdentity): void {
-    this.settle(identity);
-  }
-
-  private settle(identity: TeamSendIdentity): void {
-    const key = sendKey(identity);
+    const key = sendKey({
+      agentRunId: message.payload.recipient_agent_run_id,
+      messageId: message.payload.message_id,
+      dedupeKey: message.payload.dedupe_key,
+    });
     const pending = this.pending.get(key);
-    if (!pending) return;
+    // CR-003: settle on identity only; the root may compose the content (the mention note).
+    if (!pending || message.payload.input_origin !== 'user_message') return;
     this.pending.delete(key);
     pending.resolve();
   }

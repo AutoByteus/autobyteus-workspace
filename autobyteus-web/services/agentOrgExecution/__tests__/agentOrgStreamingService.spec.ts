@@ -90,7 +90,7 @@ const snapshot = {
     root_subject_kind: 'agent_org', root_run_id: 'org-run',
     root_org: {
       base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, is_active: true,
-      execution_tree: {
+      closed_task_executions: [], execution_tree: {
         subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
         rootOrg: {
@@ -420,30 +420,6 @@ describe('AgentOrgStreamingService', () => {
     expect(advance).toHaveBeenCalledWith('agent_org', 'org-run', 'live-1', 9)
   })
 
-  it('autobyteus-461 SR-042: CHILD_RUNS_CHANGED (unsequenced) reads the view again when the Org lacks the change, and not otherwise', async () => {
-    const first = candidate()
-    const applyChildRunsChanged = vi.fn().mockReturnValueOnce('applied').mockReturnValueOnce('checkpoint_required')
-    Object.assign(first, { applyChildRunsChanged })
-    mocks.hydrate.mockResolvedValueOnce(first).mockResolvedValueOnce(candidate(null, 4))
-    mocks.query.mockResolvedValue({ data: { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: 4, hasOpenExecutionWork: true } } })
-    const publish = vi.fn()
-    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError: vi.fn() })
-    service.connect()
-    const socket = TestWebSocket.instances[0]!
-    socket.emit(connected)
-    socket.emit(snapshot)
-    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
-    const changed = { type: 'CHILD_RUNS_CHANGED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run',
-      event: { kind: 'child_runs_changed', run_id: 'org-run', added: [], removed: [{ agentRunId: 'agent-task' }] } } }
-    socket.emit(changed)
-    await vi.waitFor(() => expect(applyChildRunsChanged).toHaveBeenCalledTimes(1))
-    expect(TestWebSocket.instances).toHaveLength(1)
-    socket.emit(changed)
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
-    expect(first.applyEvent).not.toHaveBeenCalled()
-    expect(advance).not.toHaveBeenCalled()
-  })
-
   it('checkpoint-hydrates a fresh task activation instead of publishing a partial context', async () => {
     const first = candidate()
     vi.mocked(first.applyEvent).mockReturnValue('checkpoint_required')
@@ -468,7 +444,11 @@ describe('AgentOrgStreamingService', () => {
       type: 'ROOT_EXECUTION_EVENT',
       payload: {
         root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'remote_task_execution_summary', node_id: 'node-b', run_id: 'far-run', reachable: false, title: null, statuses: [] },
+        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
+          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
+        } },
       },
     })
 
@@ -479,7 +459,7 @@ describe('AgentOrgStreamingService', () => {
     recoverySocket.emit(snapshot)
     await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
     // A single event carries no change_sequence_through (only content batches cover a range).
-    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'remote_task_execution_summary' }), undefined)
+    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }), undefined)
     // The single checkpoint event was seen and carries no message: the lists are consistent through it (SR-004).
     expect(advance).toHaveBeenCalledWith('agent_org', 'org-run', 'live-1', 5)
     expect(first.requireReopen).not.toHaveBeenCalled()
@@ -626,7 +606,11 @@ describe('AgentOrgStreamingService', () => {
       type: 'ROOT_EXECUTION_EVENT',
       payload: {
         root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'remote_task_execution_summary', node_id: 'node-b', run_id: 'far-run', reachable: false, title: null, statuses: [] },
+        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
+          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
+        } },
       },
     })
     await vi.waitFor(() => expect(mocks.query).toHaveBeenCalledTimes(1))
@@ -708,7 +692,11 @@ describe('AgentOrgStreamingService', () => {
       type: 'ROOT_EXECUTION_EVENT',
       payload: {
         root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'remote_task_execution_summary', node_id: 'node-b', run_id: 'far-run', reachable: false, title: null, statuses: [] },
+        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
+          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
+        } },
       },
     })
     await vi.waitFor(() => expect(mocks.query).toHaveBeenCalledTimes(1))

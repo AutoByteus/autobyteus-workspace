@@ -12,15 +12,18 @@ type TaskExecution = Tree['taskExecutions'][number]
 type TaskTeam = Extract<TaskExecution, { teamRunId: string }>
 type TaskTeamMember = TaskTeam['members'][number]
 
-type ChildAgentCore = Readonly<{ agentRunId: string; address: AgentTeamAddress; source: CollaborationAgentSource }>
-/**
- * One child AgentRun of a standalone run's collaboration root (the host is not a child): an agent run delegated
- * directly (`task_agent`, with the AgentRun that started it, if recorded), or a member of a delegated task Team
- * (`task_team_member`, always with its Team run; its Team row names who started it).
- */
-export type AgentRootChildAgent =
-  | (ChildAgentCore & Readonly<{ kind: 'task_agent'; teamRunId: null; delegatorAgentRunId: string | null }>)
-  | (ChildAgentCore & Readonly<{ kind: 'task_team_member'; teamRunId: string; delegatorAgentRunId: null }>)
+/** One child AgentRun of a standalone run's collaboration root (the host is not a child). */
+export type AgentRootChildAgent = Readonly<{
+  agentRunId: string
+  address: AgentTeamAddress
+  /** `task_agent`: delegated directly; `task_team_member`: a member of a delegated task Team. */
+  kind: 'task_agent' | 'task_team_member'
+  source: CollaborationAgentSource
+  /** The task Team this agent belongs to, when it is a member. */
+  teamRunId: string | null
+  /** The AgentRun that started this child; null for task Team members (their Team row has it). */
+  delegatorAgentRunId: string | null
+}>
 
 /**
  * An agent of a run this root delegated to another node (autobyteus-278): the Agent run, or a member of the Team
@@ -95,8 +98,8 @@ export class AgentRunCollaborationIndex {
     const team = this.teams.get(teamRunId)
     if (!team) throw new Error(`TeamRun '${teamRunId}' is not a child of this run.`)
     const members = [...this.agents.values()].filter((agent) => agent.teamRunId === teamRunId)
-    const coordinator = members.find((agent) => agent.address === team.coordinatorAddress)
-    if (!coordinator) throw new Error(`Team run '${teamRunId}' has no member at its coordinator address '${team.coordinatorAddress}'.`)
+    const coordinator = members.find((agent) => agent.address === team.coordinatorAddress) ?? members[0]
+    if (!coordinator) throw new Error(`Task Team '${teamRunId}' has no member.`)
     return coordinator
   }
 
@@ -104,9 +107,7 @@ export class AgentRunCollaborationIndex {
   coordinatorRunIdOf(teamRunId: string): string {
     const remote = this.remoteExecutions.find((execution) => execution.kind === 'agent_team' && execution.team_run_id === teamRunId)
     if (remote?.kind !== 'agent_team') return this.coordinatorOf(teamRunId).agentRunId
-    const coordinator = remote.members.find((member) => member.address === remote.coordinator_address)
-    if (!coordinator) throw new Error(`Team run '${teamRunId}' has no member at its coordinator address '${remote.coordinator_address}'.`)
-    return coordinator.agent_run_id
+    return (remote.members.find((member) => member.address === remote.coordinator_address) ?? remote.members[0]!).agent_run_id
   }
 
   private register(runId: string): void {
@@ -115,15 +116,16 @@ export class AgentRunCollaborationIndex {
     }
   }
 
-  private addAgent(agentRunId: string, address: string,
-    placement: Readonly<{ kind: 'task_agent'; teamRunId: null; delegatorAgentRunId: string | null }>
-      | Readonly<{ kind: 'task_team_member'; teamRunId: string; delegatorAgentRunId: null }>): void {
+  private addAgent(agentRunId: string, address: string, kind: AgentRootChildAgent['kind'],
+    teamRunId: string | null, delegatorAgentRunId: string | null): void {
     this.register(agentRunId)
     // A copy (or its member) carries its own source; what it runs with is its user choice, else its Team's
     // when it follows, else the started source (DS-003).
     const source = copyAgentSourceOf(collaborationTaskExecutionLists(this.tree), agentRunId)
     if (!source) throw new Error(`No recorded source for AgentRun '${agentRunId}' at '${address}'.`)
-    this.agents.set(agentRunId, Object.freeze({ agentRunId, address: parseAgentTeamAddress(address), source, ...placement }))
+    this.agents.set(agentRunId, Object.freeze({
+      agentRunId, address: parseAgentTeamAddress(address), kind, source, teamRunId, delegatorAgentRunId,
+    }))
   }
 
   private addTeam(team: AgentRootChildTeam['execution'], delegatorAgentRunId: string | null): void {
@@ -132,9 +134,7 @@ export class AgentRunCollaborationIndex {
       teamRunId: team.teamRunId, address: parseAgentTeamAddress(team.address), coordinatorAddress: team.source.coordinatorAddress,
       delegatorAgentRunId, execution: team,
     }))
-    for (const member of team.members) {
-      this.addAgent(member.agentRunId, member.address, { kind: 'task_team_member', teamRunId: team.teamRunId, delegatorAgentRunId: null })
-    }
+    for (const member of team.members) this.addAgent(member.agentRunId, member.address, 'task_team_member', team.teamRunId, null)
     team.taskExecutions.forEach((task) => this.addTask(task, team.teamRunId))
   }
 
@@ -156,7 +156,7 @@ export class AgentRunCollaborationIndex {
 
   private addTask(task: TaskExecution, _hostTeamRunId: string | null): void {
     const delegator = task.delegatorAgentRunId ?? null
-    if ('agentRunId' in task) this.addAgent(task.agentRunId, task.address, { kind: 'task_agent', teamRunId: null, delegatorAgentRunId: delegator })
+    if ('agentRunId' in task) this.addAgent(task.agentRunId, task.address, 'task_agent', null, delegator)
     else this.addTeam(task, delegator)
   }
 }

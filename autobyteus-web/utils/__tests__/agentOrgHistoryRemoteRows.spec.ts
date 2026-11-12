@@ -22,14 +22,14 @@ describe('Org history rows with remote runs', () => {
     const view = taskBearingView()
     const tree = view.execution_tree as AgentOrgRunHistoryItem['executionTree']
     const run: AgentOrgRunHistoryItem = { stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: tree.rootOrg.orgRunId,
-      createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Org', executionTree: tree }
+      createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Org', executionTree: tree, closedTaskExecutions: [] }
     const statuses: Record<string, AgentStatus> = { 'lead-run': AgentStatus.Running, 'writer-run': AgentStatus.Idle }
     const context = {
-      orgRunId: run.rootRunId, executionTree: tree, isActive: true, phase: 'live', view: { },
+      orgRunId: run.rootRunId, executionTree: tree, isActive: true, phase: 'live', view: { closed_task_executions: [] },
       remoteExecutions: [remoteTeam],
       getAgentContext: (agentRunId: string) => ({ state: { currentStatus: statuses[agentRunId] ?? AgentStatus.Idle } }),
     } as unknown as AgentOrgExecutionContext
-    const rows = projectAgentOrgHistoryRows({ run, context, isTeamExpanded: () => false, listed: null })
+    const rows = projectAgentOrgHistoryRows({ run, context, isTeamExpanded: () => false })
     const remote = rows.filter((display) => display.row.kind === 'remote').map((display) => display.row)
     expect(remote.map((row) => row.kind === 'remote' && [row.key, row.depth, row.transient.remote?.nodeName, row.transient.currentStatus])).toEqual([
       ['team:marketing-run', 0, 'docker', null],

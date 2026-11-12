@@ -18,7 +18,6 @@ import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/Agen
 import { teamAgentSourceOf, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
 import { teamMemberName } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
-import { modelConfigsEqual } from '~/utils/teamRunConfigUtils'
 
 const runtimeKind = (value: AgentLaunchConfigurationDto['runtime_kind']): AgentRuntimeKind => value as AgentRuntimeKind
 const deepFreeze = <T>(value: T): T => {
@@ -74,25 +73,6 @@ export const createTeamAgentContext = (input: {
   const state = new AgentRunState(input.agentRunId, conversation)
   initializeRuntimeStatusState(state, AgentStatus.Offline)
   return new AgentContext(agentConfig({ source, name, workspaceMetadata: input.workspaceMetadata }), state)
-}
-
-/**
- * After a live Save (DS-001): each agent context takes the model its agent now runs with (its own
- * choice, else its Team's when it follows). Contexts whose model is unchanged are left as they are.
- */
-export const refreshTeamAgentLaunches = (
-  tree: TeamRunExecutionTreeDto,
-  locations: ReadonlyMap<string, Readonly<{ memberAddress: AgentTeamAddress }>>,
-  contexts: ReadonlyMap<string, AgentContext>,
-): void => {
-  for (const [agentRunId, context] of contexts) {
-    const location = locations.get(agentRunId)
-    const launch = location ? teamAgentSourceOf(tree, agentRunId)?.launch_configuration : null
-    if (!launch || (context.config.llmModelIdentifier === launch.llm_model_identifier
-      && modelConfigsEqual(context.config.llmConfig, launch.llm_config))) continue
-    context.config = { ...context.config, llmModelIdentifier: launch.llm_model_identifier, llmConfig: immutableLlmConfig(launch.llm_config) }
-    context.state.conversation.llmModelIdentifier = launch.llm_model_identifier
-  }
 }
 
 export const createTeamConfigurationView = (input: {

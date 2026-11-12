@@ -28,16 +28,25 @@ export const GetAgentRunCollaboration = gql`
 `
 
 /**
- * The history poll of listed runs of every kind (autobyteus-461 SR-055): each run's activity and the runs on this node it
- * delegated to that its view shows, each by its identity with its agents' statuses. Never the view; never restores.
+ * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states only, never the
+ * collaboration view; a run without an active root answers inactive with no states.
  */
-export const GetRunCollaborationStatuses = gql`
-  query GetRunCollaborationStatuses($runs: [ListedRunInput!]!) {
-    runCollaborationStatuses(runs: $runs)
+export const GetAgentRunCollaborationStatuses = gql`
+  query GetAgentRunCollaborationStatuses($runIds: [String!]!) {
+    agentRunCollaborationStatuses(runIds: $runIds) {
+      runId
+      isActive
+      closedTaskExecutionsDigest
+      statuses {
+        agentRunId
+        memberAddress
+        status
+        recoverableBlock
+      }
+    }
   }
 `
 
-/** A child of a standalone run on a peer node: its stored state, read from its node through the run (autobyteus-278). */
 export const GetAgentRunCollaborationMemberProjection = gql`
   query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
     agentRunCollaborationMemberProjection(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
@@ -48,6 +57,24 @@ export const GetAgentRunCollaborationMemberProjection = gql`
       summary
       lastActivityAt
       hasEarlierActiveTraceEvents
+    }
+  }
+`
+
+/** One delegated copy's artifact list, located inside its hub only (live while the hub runs). */
+export const GetAgentRunCollaborationMemberFileChanges = gql`
+  query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+    agentRunCollaborationMemberFileChanges(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
     }
   }
 `

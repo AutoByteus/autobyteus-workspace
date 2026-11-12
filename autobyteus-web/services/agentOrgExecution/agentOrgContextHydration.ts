@@ -13,6 +13,8 @@ import {
   primeRecentEventMonitorBaseline,
   resetRecentEventMonitorBaseline,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator'
+import { GetAgentOrgMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+import { getApolloClient } from '~/utils/apolloClient'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import {
@@ -21,6 +23,7 @@ import {
   type MemberRunState,
   type MemberRunStateCommit,
 } from '~/services/runHydration/memberRunStateHydration'
+import { fetchRunFileChanges } from '~/services/runHydration/runFileChangeHydrationService'
 import { createRemoteAgentContext } from '~/services/remoteRuns/remoteAgentContext'
 import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
@@ -30,7 +33,6 @@ import {
 } from './agentOrgExecutionContext'
 import type { OrgWorkspaceSelection } from './agentOrgExecutionViewIndex'
 import type { MemberLoadTarget } from '~/services/runHydration/memberLoader'
-import { orgAgentReadSubject, readsOf } from '~/services/runHydration/agentReads'
 
 type LaunchConfiguration = AgentOrgExecutionViewDto['execution_tree']['rootOrg']['defaultLaunchConfiguration']
 
@@ -81,11 +83,31 @@ const resolveWorkspaces = async (
 }
 
 
+const fetchProjection = async (
+  orgRunId: string,
+  seed: AgentSeed,
+): Promise<Projection> => {
+  const response = await getApolloClient().query<{ getAgentOrgMemberRunProjection: Projection | null }>({
+    query: GetAgentOrgMemberRunProjection,
+    variables: { orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId },
+    fetchPolicy: 'network-only',
+    context: { queryDeduplication: false },
+  })
+  if (response.errors?.length) {
+    throw new Error(response.errors.map((error: { message: string }) => error.message).join(', '))
+  }
+  const projection = response.data?.getAgentOrgMemberRunProjection ?? null
+  if (projection && (projection.agentRunId !== seed.agentRunId || projection.memberAddress !== seed.address)) {
+    throw new Error(`Projection identity mismatch for '${seed.agentRunId}'.`)
+  }
+  if (!projection) throw new Error(`Projection unavailable for '${seed.agentRunId}'.`)
+  return projection
+}
+
 const applyProjection = (
   context: AgentContext,
   seed: AgentSeed,
-  // A member's own projection, or a delegated child's read by its own identity (the stored state only).
-  { projection, fileChanges }: MemberRunState<Pick<Projection, 'conversation' | 'activities' | 'hasEarlierActiveTraceEvents'>>,
+  { projection, fileChanges }: MemberRunState<Projection>,
   expectedActivityRevision: number,
 ): MemberRunStateCommit => {
   resetRecentEventMonitorBaseline(context)
@@ -135,9 +157,12 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
   const focus = typeof input.focus === 'string' ? index.configuredSelection(input.focus) : input.focus
   const focused = local.find((item) => item.seed.agentRunId === index.selectedAgent(focus)?.agentRunId) ?? null
   const expectedActivityRevision = focused ? useAgentActivityStore().getActivityContentRevision(focused.seed.agentRunId) : 0
-  // Read through the subject that reads it in this Org view (a delegated child by its own identity; CR-461-010).
-  const staged = focused ? applyProjection(focused.entry.context, focused.seed,
-    await fetchMemberRunState(readsOf(orgAgentReadSubject(input.orgRunId, index, focused.seed.agentRunId))), expectedActivityRevision) : null
+  const staged = focused ? applyProjection(focused.entry.context, focused.seed, await fetchMemberRunState({
+    fetchProjection: () => fetchProjection(input.orgRunId, focused.seed),
+    fetchFileChanges: () => fetchRunFileChanges({
+      kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: focused.seed.address, agentRunId: focused.seed.agentRunId,
+    }),
+  }), expectedActivityRevision) : null
   if (input.isCurrent && !input.isCurrent()) throw new Error('AgentOrg hydration ownership released.')
   // autobyteus-278: the agents of the runs this Org delegated to other nodes; each is read from its node when selected.
   const remote = [...index.remoteAgents.values()].map((agent) => Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address,
@@ -174,14 +199,12 @@ export const orgMemberLoadTarget = (input: Readonly<{
     : Object.freeze({ address: remote!.address, agentRunId: remote!.agentRunId, agentDefinitionId: '',
       launch: { runtimeKind: 'autobyteus', llmModelIdentifier: '', llmConfig: null, autoExecuteTools: true, workspaceRootPath: null } as AgentSeed['launch'] })
   const remoteRunId = remote ? remoteTaskExecutionRunIdOf(remote.execution) : null
-  // The subject that reads this agent in the Org view (a delegated child by its own identity; CR-461-010).
-  const reads = readsOf(orgAgentReadSubject(input.orgRunId, input.context.index, input.agentRunId))
   return Object.freeze({
     agent,
     conversationDefaults: { agentDefinitionId: seed.agentDefinitionId, agentName: nameAt(seed.address), llmModelIdentifier: seed.launch.llmModelIdentifier },
     fetchProjection: async () => {
       try {
-        const projection = await reads.fetchProjection()
+        const projection = await fetchProjection(input.orgRunId, seed)
         if (remoteRunId) useRemoteRunsStore().markReachable(remoteRunId, true)
         return projection
       } catch (cause) {
@@ -189,7 +212,9 @@ export const orgMemberLoadTarget = (input: Readonly<{
         throw cause
       }
     },
-    fetchFileChanges: () => remote ? Promise.resolve([]) : reads.fetchFileChanges(),
+    fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
+      kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId,
+    }),
     liveToolAuthority: input.liveToolAuthority,
   })
 }

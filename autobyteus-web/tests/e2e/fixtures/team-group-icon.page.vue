@@ -39,7 +39,7 @@
 import { reactive, ref } from 'vue';
 import AgentRunTaskRows from '~/components/workspace/history/AgentRunTaskRows.vue';
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue';
-import { buildChildRunsContext } from '~/services/agentCollaboration/__tests__/agentRootChildRunsFixture';
+import { buildClosureContext } from '~/services/agentCollaboration/__tests__/agentRootClosureFixture';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';
@@ -65,7 +65,7 @@ const rows: RunHistoryTransientExecutionRow[] = ['Delegated Team', 'Collaborator
 const expanded = reactive(Object.fromEntries(rows.map(row => [row.rowKey, true])));
 // Publish a supported inspected Agent-root view at the store boundary, without transport/model work.
 const collaboration = useAgentRunCollaborationStore();
-collaboration.contexts = { 'host-run': buildChildRunsContext() };
+collaboration.contexts = { 'host-run': buildClosureContext() };
 collaboration.toggleTaskTeam('host-run', 'team-run');
 collaboration.toggleTaskTeam('host-run', 'review-team');
 const agentSelections = ref(0), teamSelected = ref('');
@@ -90,20 +90,20 @@ tree.rootOrg.taskExecutions = [...tree.rootOrg.taskExecutions, {
 }];
 const groups = [{ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Preview Org', runs: [{
   stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,
-  archivedAt: null, isActive: false, summary: 'Team identity preview', executionTree: tree,
+  archivedAt: null, isActive: false, summary: 'Team identity preview', executionTree: tree, closedTaskExecutions: [],
 }] }] as any;
 const treeState = useWorkspaceHistoryTreeState({ runHistoryStore: history, selectionStore: useAgentSelectionStore() });
 treeState.toggleAgentOrgDefinition('preview', 'org-definition'); treeState.toggleAgentOrgRun('org-run'); treeState.toggleAgentOrgTeam('org-run', '/team');
 const state = { ...treeState, agentOrgContextFor: () => null, isAgentOrgTerminating: () => false, isAgentOrgDeleting: () => false, isAgentOrgArchiving: () => false, agentOrgTerminationError: () => null } as any;
 const actions = { onInspectAgentOrgExecution: () => inspections.value++, onSelectAgentOrgMember: () => selections.value++ } as any;
 const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: () => {} };
-const worker: TaskRootView = { kind: 'team', recipientAddress: '/software_engineering_team', ingressAgentRunId: 'preview-worker', teamRunId: 'preview-team', delegatingRun: { kind: 'agent', runId: 'preview-host' }, start: 'started', startError: null, closed: false, status: 'idle' };
+const worker: TaskRootView = { kind: 'team', recipientAddress: '/software_engineering_team', ingressAgentRunId: 'preview-worker', teamRunId: 'preview-team', hostRoot: { kind: 'agent', runId: 'preview-host' }, start: 'started', startError: null, closed: false, status: 'idle' };
 const memory = { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
 const configured: CollaborationMemoryGroup = { teamRunId: 'configured', address: '/review_team', displayName: 'Review Team', kind: 'CONFIGURED_TEAM', startedAt: null };
 const task: CollaborationMemoryGroup = { ...configured, teamRunId: 'task', kind: 'TASK_TEAM' };
 // A task Team that a member of the `task` Team copy delegated in turn (Teams are flat).
 const delegated: CollaborationMemoryGroup = { ...task, teamRunId: 'delegated', address: '/review_team/helpers', displayName: 'Helpers' };
 const memoryRows: CollaborationRunMemoryRow[] = [{ runId: 'preview-memory', summary: 'Configured and delegated Teams', workspaceRootPath: '/test-owned/preview', lastUpdatedAt: null, memory,
-  memberTargets: [[configured], [task], [task, delegated]].map((groupPath, index) => ({ memberAddress: `${groupPath.at(-1)!.address}/lead`, displayName: 'Lead', agentRunId: `preview-lead-${index}`, executionKind: 'CONFIGURED' as const, startedAt: null, groupPath, memory })),
+  memberTargets: [[configured], [task], [task, delegated]].map((groupPath, index) => ({ memberAddress: `${groupPath.at(-1)!.address}/lead`, displayName: 'Lead', agentRunId: `preview-lead-${index}`, executionKind: index ? 'TASK_TEAM_MEMBER' : 'CONFIGURED', startedAt: null, groupPath, memory })),
 }];
 </script>

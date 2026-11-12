@@ -3,9 +3,10 @@ import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService';
+import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { memberLoader, type MemberLoadTarget } from './memberLoader';
 import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
-import { readsOf, teamAgentReadSubject } from './agentReads';
 
 export type TeamMemberProjectionHydrationResult = Readonly<{
   disposition: 'authoritative' | 'hydrated' | 'superseded';
@@ -22,13 +23,10 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
   const agent = team.view.getAgentContext(agentRunId);
   const location = team.view.getAgentExecutionLocation(agentRunId);
   if (!agent || agent.state.runId !== agentRunId || !location || location.agentRunId !== agentRunId) return null;
-  const tree = team.view.getExecutionTree();
-  const configured = teamAgentSourceOf(tree, agentRunId);
+  const configured = teamAgentSourceOf(team.view.getExecutionTree(), agentRunId);
   // autobyteus-278: an agent of a run another node runs: its conversation is read from its node; its files stay there.
   const remote = configured ? null : useRemoteRunsStore().runOfAgentRun(agentRunId);
   if (!configured && !remote) throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
-  // The subject that reads this agent: a run this team delegated to by its own identity, else this team's member (CR-461-010).
-  const reads = readsOf(teamAgentReadSubject({ teamRunId: rootTeamRunId, tree, memberAddress: location.memberAddress }, agentRunId));
   return Object.freeze({
     agent,
     conversationDefaults: {
@@ -38,7 +36,7 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
     },
     fetchProjection: async () => {
       try {
-        const projection = await reads.fetchProjection();
+        const projection = await fetchExactTeamMemberProjection(rootTeamRunId, agentRunId);
         if (remote) useRemoteRunsStore().markReachable(remote.runId, true);
         return projection;
       } catch (cause) {
@@ -46,7 +44,9 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
         throw cause;
       }
     },
-    fetchFileChanges: () => remote ? Promise.resolve([]) : reads.fetchFileChanges(),
+    fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
+      kind: 'teamMember', teamRunId: rootTeamRunId, memberAddress: location.memberAddress, agentRunId,
+    }),
     // Content authority does not supersede currently observed live tool decisions.
     liveToolAuthority: () => team.view.isRootTeamActive() && !team.view.needsStreamRecovery()
       && team.view.listLiveAgentContextEntries().some((entry) => entry.agentRunId === agentRunId && entry.agentContext === agent)

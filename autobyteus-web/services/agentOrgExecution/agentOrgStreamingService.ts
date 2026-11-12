@@ -144,11 +144,21 @@ export class AgentOrgStreamingService {
     if (generation === null) {
       const view = await readAgentOrgRunInspection(this.options.orgRunId)
       if (!this.ownsOperation(null)) return
-      // A stopped Org's stream continues (autobyteus-461 SR-045): its stored-mode snapshot is a new base, with no checkpoint.
       if (!view.is_active) {
         this.recoveryCheckpoint = null
-        this.recoveryFocus = this.context?.selection ?? null
-        this.openSocket()
+        this.recoveryFocus = null
+        const staged = await stageAgentOrgExecutionContext({
+          source: 'inspection', orgRunId: this.options.orgRunId, view, focus: this.context?.selection ?? null,
+          isCurrent: () => this.ownsOperation(null),
+        })
+        if (!this.ownsOperation(null)) return
+        const candidate = shallowReactive(staged.context)
+        candidate.setActive(false)
+        candidate.select(this.context?.selection ?? null)
+        this.options.publish(candidate, staged.commit)
+        this.context = candidate
+        this.options.onInactive?.()
+        this.disconnect()
         return
       }
     }
@@ -179,7 +189,7 @@ export class AgentOrgStreamingService {
   }
 
   isReady(): boolean {
-    return !this.released && this.streamPhase === 'ready' && this.context?.phase !== 'reopen_required'
+    return !this.released && this.streamPhase === 'ready' && this.context?.phase === 'live'
       && this.socket?.readyState === WebSocket.OPEN
   }
 
@@ -236,9 +246,11 @@ export class AgentOrgStreamingService {
   }
 
   private requireReadyContext(): AgentOrgExecutionContext {
-    // Ready is the stream's own: open, with its snapshot applied, the Org active or stopped (autobyteus-461 SR-045).
-    if (!this.isReady()) throw new Error('AgentOrg interaction stream is not ready.')
-    return this.context!
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN
+      || this.streamPhase !== 'ready' || this.context?.phase !== 'live') {
+      throw new Error('AgentOrg interaction stream is not ready.')
+    }
+    return this.context
   }
 
   private async command(message: Exclude<CollaborationStreamClientMessage, { type: 'REFRESH_REMOTE_TASK_EXECUTIONS' }>): Promise<void> {
@@ -288,8 +300,9 @@ export class AgentOrgStreamingService {
       return
     }
     if (message.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT') {
-      // After the barrier, a snapshot is in-band: the Org started or stopped, a new sequence base (SR-046).
-      if (this.streamPhase !== 'awaiting_snapshot' && this.streamPhase !== 'ready') throw new Error('AgentOrg snapshot arrived before CONNECTED.')
+      if (this.streamPhase !== 'awaiting_snapshot') {
+        throw new Error('AgentOrg snapshot arrived before CONNECTED or after the snapshot barrier.')
+      }
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org snapshot.')
       }
@@ -316,7 +329,11 @@ export class AgentOrgStreamingService {
       this.recoveryFocus = null
       this.streamPhase = 'ready'
       this.reconnect.connected()
-      this.settleReadiness()
+      if (candidate.isActive) this.settleReadiness()
+      else {
+        this.options.onInactive?.()
+        this.disconnect()
+      }
       return
     }
     if (!this.context || this.streamPhase !== 'ready') {
@@ -335,15 +352,11 @@ export class AgentOrgStreamingService {
       if (application === 'checkpoint_required') await this.reopenOwned(generation)
       return
     }
-    if (message.type === 'CHILD_RUNS_CHANGED') {
-      // autobyteus-461 SR-042: its child rows changed (unsequenced): read the view again unless the change is already in it.
-      if (message.payload.root_subject_kind !== 'agent_org') throw new Error('AgentOrg stream supplied a non-Org event.')
-      if (this.context.applyChildRunsChanged(message.payload.event) === 'checkpoint_required') await this.reopenOwned(generation)
-      return
-    }
-    // The Org's own lifecycle updates the view; the stream continues (autobyteus-461 SR-045).
     this.context.setActive(message.payload.is_active)
-    if (!message.payload.is_active) this.options.onInactive?.()
+    if (!message.payload.is_active) {
+      this.options.onInactive?.()
+      this.disconnect()
+    }
   }
 
   private async processFrame(generation: StreamGeneration, raw: string): Promise<void> {

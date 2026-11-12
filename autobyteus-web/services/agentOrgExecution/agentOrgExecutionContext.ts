@@ -7,7 +7,6 @@ import { existingRunModelConfigsEqual } from '~/services/runConfigEditing/existi
 import { reactive, shallowReactive } from 'vue'
 import type {
   AgentOrgExecutionEventDto,
-  ChildRunsChangedEventDto,
   AgentOrgExecutionViewDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import type { AgentContext } from '~/types/agent/AgentContext'
@@ -24,14 +23,23 @@ import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStrea
 import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { AgentOrgExecutionViewIndex, type OrgRemoteAgent, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
-import { applyRemoteSummaryStatuses } from '~/services/remoteRuns/remoteChildren'
+import { applyRemoteSummaryStatuses, isRemoteExecutionKnown } from '~/services/remoteRuns/remoteChildren'
 import {
   assertAgentOrgCommunicationMessagesCorrelated,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
-import { orgAgentReadSubject, participantMessagesKeyOf } from '~/services/runHydration/agentReads'
+import { createAgentContext } from './agentOrgMemberContextFactory'
+import {
+  agentRunKey,
+  collaborationTreeWalk,
+  collectClosedSubtrees,
+  mergeClosedTaskExecutions,
+  removeReopenedTaskExecutions,
+  type CollaborationTreeNode,
+} from '~/utils/collaboration/taskExecutionClosure'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -42,6 +50,7 @@ export type AgentOrgContextEntry = Readonly<{
   context: AgentContext
 }>
 
+type TaskExecutionStartedEvent = Extract<AgentOrgExecutionEventDto, { kind: 'task_execution_started' }>
 type AgentOrgStatus = AgentOrgExecutionViewDto['agent_statuses'][number]
 
 const nameAt = memberDisplayName
@@ -119,11 +128,13 @@ export class AgentOrgExecutionContext {
     const candidate = typeof selection === 'string' ? this.index.configuredSelection(selection) : selection
     const remote = candidate?.kind === 'agent_execution' && this.index.remoteAgents.has(candidate.agentRunId)
     this.selection = remote || this.index.selectedAgent(candidate) ? candidate : null
+    this.leaveClosedSelection()
   }
 
-  /** An agent is listed in the Workspaces tree: every agent the view has (its child rows are the open ones, autobyteus-461). */
+  /** An agent is listed in the Workspaces tree unless it is in a closed task execution (Task DONE). */
   isListed(agentRunId: string): boolean {
-    return this.index.remoteAgents.has(agentRunId) || this.index.agents.has(agentRunId)
+    return this.index.remoteAgents.has(agentRunId)
+      || (this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId)))
   }
 
   selectedTarget(): ActiveAgentWorkspaceTarget | null {
@@ -138,8 +149,8 @@ export class AgentOrgExecutionContext {
       ...access, root: Object.freeze({ orgRunId: this.orgRunId }), address: agent.address, context,
       workspaceRootPath: agent.source.launchConfiguration.workspaceRootPath,
       collaborationMessages: this.messagesView(agent.address, agent.agentRunId),
-      // The subject that reads this agent in the Org view (a delegated child by its own identity; CR-461-010).
-      browse: orgAgentReadSubject(this.orgRunId, this.index, agent.agentRunId),
+      browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId,
+        memberAddress: agent.address, agentRunId: agent.agentRunId }),
     }
     if (agent.kind === 'task') return Object.freeze({ ...common, kind: 'agent_org_task_agent' })
     if (agent.host.kind === 'team') return Object.freeze({
@@ -154,7 +165,7 @@ export class AgentOrgExecutionContext {
     return Object.freeze({ access: 'read_only' as const, root: Object.freeze({ orgRunId: this.orgRunId }), address: remote.address,
       context: this.contexts.get(remote.agentRunId)!, workspaceRootPath: null,
       collaborationMessages: this.messagesView(remote.address, remote.agentRunId),
-      browse: orgAgentReadSubject(this.orgRunId, this.index, remote.agentRunId),
+      browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId, memberAddress: remote.address, agentRunId: remote.agentRunId }),
       kind: 'agent_org_task_agent' as const })
   }
 
@@ -217,8 +228,7 @@ export class AgentOrgExecutionContext {
 
   /** Applies one root event, or a content batch covering `[changeSequence, changeSequenceThrough]`. */
   applyEvent(changeSequence: number, event: AgentOrgExecutionEventDto, changeSequenceThrough = changeSequence): AgentOrgEventApplication {
-    // A stopped Org's view streams too (autobyteus-461 SR-045): its children's output and rows.
-    if (this.phase !== 'live' && this.phase !== 'historical') throw new Error('AgentOrg context is not accepting stream events.')
+    if (this.phase !== 'live') throw new Error('AgentOrg context is not accepting stream events.')
     const following = advanceSequencedStream(this.nextChangeSequence, { first: changeSequence, through: changeSequenceThrough })
     if (following === null) {
       this.requireReopen(`Expected change sequence ${this.nextChangeSequence}, received ${changeSequence}.`)
@@ -228,6 +238,31 @@ export class AgentOrgExecutionContext {
       this.dispatchPresentation([event])
     } else if (event.kind === 'agent_presentation_batch') {
       this.dispatchPresentation(event.items)
+    } else if (event.kind === 'task_execution_started') {
+      // A new delegated child needs new contexts; reload through a checkpoint.
+      this.validateTaskExecutionStarted(event)
+      return 'checkpoint_required'
+    } else if (event.kind === 'task_executions_closed') {
+      // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
+      if (event.task_executions.some((reference) => 'agentRunId' in reference
+        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task' : !this.index.teams.get(reference.teamRunId)?.delegation)) {
+        this.correlationFailure('A closed task execution is not a task execution of this AgentOrg.')
+      }
+      this.view = { ...this.view,
+        closed_task_executions: mergeClosedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
+      this.leaveClosedSelection()
+    } else if (event.kind === 'task_executions_reopened') {
+      // Their assigner reactivated them: they are listed again (helpers under them stay closed). One the view does not
+      // hold left the run's tree when its Task closed (autobyteus-469 D-8): it is back in it, so reload the view.
+      if (event.task_executions.some((reference) => 'agentRunId' in reference
+        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task' : !this.index.teams.get(reference.teamRunId)?.delegation)) {
+        return 'checkpoint_required'
+      }
+      this.view = { ...this.view,
+        closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
+    } else if (event.kind === 'remote_task_execution_started') {
+      // autobyteus-278: a new remote child needs its contexts (one the view already lists needs nothing).
+      if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
     } else if (event.kind === 'remote_task_execution_summary') {
       applyRemoteSummaryStatuses(event, (agentRunId) => this.contexts.get(agentRunId) ?? null, this.view.remote_task_executions)
     } else {
@@ -237,23 +272,10 @@ export class AgentOrgExecutionContext {
         this.correlationFailure(`AgentOrg communication message '${event.message.messageId}' identity mismatch.`)
       }
       // The Team tab's lists own the messages (autobyteus-358); the view holds none.
-      useCollaborationParticipantMessagesStore().append(event.message)
+      useCollaborationParticipantMessagesStore().append('agent_org', this.orgRunId, event.message)
     }
     this.nextChangeSequence = following
     return 'applied'
-  }
-
-  /**
-   * The Org's child rows changed (autobyteus-461 SR-042 … SR-044; unsequenced): a re-read of the view, unless the event
-   * changes nothing it holds (an added row it has, a removed row it does not have, as for a change already in its snapshot).
-   */
-  applyChildRunsChanged(event: ChildRunsChangedEventDto): AgentOrgEventApplication {
-    const holds = (reference: Readonly<{ agentRunId: string } | { teamRunId: string }>) => 'agentRunId' in reference
-      ? this.index.agents.has(reference.agentRunId) || this.index.remoteAgents.has(reference.agentRunId)
-      : this.index.teams.has(reference.teamRunId) || this.view.remote_task_executions.some((remote) => remote.kind === 'agent_team' && remote.team_run_id === reference.teamRunId)
-    const added = event.added.map((row) => 'node_id' in row
-      ? (row.kind === 'agent' ? { agentRunId: row.agent_run_id } : { teamRunId: row.team_run_id }) : row)
-    return added.every(holds) && !event.removed.some(holds) ? 'applied' : 'checkpoint_required'
   }
 
   /** Every identity is checked before any message is dispatched; batch items apply in order. */
@@ -279,14 +301,11 @@ export class AgentOrgExecutionContext {
     }
   }
 
-  /** The Org's own agents start or stop; its children are runs of their own and keep their states (autobyteus-461 SR-045). */
   setActive(active: boolean): void {
     this.view = { ...this.view, is_active: active }
     if (!active) {
-      const own = (agentRunId: string) => !this.index.agents.get(agentRunId)?.delegation
-      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) =>
-        own(status.agent_run_id) ? { ...status, status: 'offline', recoverableBlock: null } : status) })
-      this.contexts.forEach((context, agentRunId) => { if (own(agentRunId)) applyOfflineOrTerminalCleanup(context) })
+      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline', recoverableBlock: null })) })
+      this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
       this.phase = 'historical'
     }
   }
@@ -296,10 +315,70 @@ export class AgentOrgExecutionContext {
     this.phase = 'reopen_required'
   }
 
+  /** Offline contexts for indexed agents without one (a new delegated copy's executions). */
+  private addContextsForNewAgents(): void {
+    const workspaceFor = (rootPath: string | null) => rootPath
+      ? [...this.index.agents.values()].map((agent) => this.contexts.get(agent.agentRunId)?.config.workspaceMetadata)
+        .find((metadata) => metadata?.workspaceRootPath === rootPath) ?? null
+      : null
+    for (const agent of this.index.agents.values()) {
+      if (this.contexts.has(agent.agentRunId)) continue
+      const context = createAgentContext({
+        address: agent.address, agentRunId: agent.agentRunId,
+        agentDefinitionId: agent.source.agentDefinitionId, launch: agent.source.launchConfiguration,
+      }, this.view.execution_tree.createdAt, workspaceFor(agent.source.launchConfiguration.workspaceRootPath))
+      context.state = reactive(context.state)
+      const live = reactive(context)
+      this.contexts.set(agent.agentRunId, live)
+      const rootPath = agent.source.launchConfiguration.workspaceRootPath
+      if (!live.config.workspaceMetadata && rootPath) {
+        void useRunHistoryStore().resolveWorkspaceMetadataByRootPath(rootPath).then((metadata) => {
+          if (metadata && !live.config.workspaceMetadata) {
+            live.config = { ...live.config, workspaceMetadata: metadata, workspaceId: metadata.workspaceId }
+          }
+        }).catch(() => undefined)
+      }
+    }
+  }
+
+  private closedSubtrees() {
+    const root = this.view.execution_tree.rootOrg
+    return collectClosedSubtrees<CollaborationTreeNode>([...root.members, ...root.taskExecutions],
+      this.view.closed_task_executions, collaborationTreeWalk)
+  }
+
+  /**
+   * A selected agent whose Task became DONE leaves the main view: selection moves to the agent
+   * that delegated the outermost closed execution when it is still listed, else it is cleared.
+   */
+  private leaveClosedSelection(): void {
+    const selected = this.index.selectedAgent(this.selection)
+    const hiddenBy = selected ? this.closedSubtrees().get(agentRunKey(selected.agentRunId)) : undefined
+    if (!hiddenBy) return
+    const delegator = hiddenBy.delegatorAgentRunId
+    this.selection = delegator && this.isListed(delegator) ? { kind: 'agent_execution', agentRunId: delegator } : null
+  }
+
   private commitView(view: AgentOrgExecutionViewDto): void {
     const index = new AgentOrgExecutionViewIndex(view)
     this.view = view
     this.index = index
+  }
+
+  private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
+    const execution = event.execution
+    const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
+    // Every copy carries the source it started with (REQ-002), of its own kind.
+    const source = execution.source
+    const hostKnown = event.host_kind === 'root'
+      ? event.host_run_id === this.orgRunId
+      : this.index.teams.has(event.host_run_id)
+    // A newly started child always records its delegator.
+    if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown
+      || (source.kind === 'agent') !== ('agentRunId' in execution)
+      || this.index.agents.has(runId) || this.index.teams.has(runId)) {
+      this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
+    }
   }
 
   private correlationFailure(message: string): never {
@@ -329,12 +408,13 @@ export class AgentOrgExecutionContext {
         projectAgentOrgMessageIdentity(this.index, id),
       ]))),
       // A remote child's messages are in its own run's log on its node (autobyteus-278).
-      // From the log of the run it is read through: a delegated child's own (CR-461-020).
       ...participantMessagesView({
-        key: participantMessagesKeyOf(orgAgentReadSubject(this.orgRunId, this.index, focusedAgentRunId)),
+        key: { rootKind: 'agent_org', rootRunId: this.orgRunId, agentRunId: focusedAgentRunId },
         isRemote: this.index.remoteAgents.has(focusedAgentRunId),
         identityOf: (agentRunId) => this.index.agents.has(agentRunId) ? projectAgentOrgMessageIdentity(this.index, agentRunId) : null,
       }),
+      referenceContentPath: (messageId: string, referenceId: string) =>
+        `agent-org-runs/${encodeURIComponent(this.orgRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
   }
 }

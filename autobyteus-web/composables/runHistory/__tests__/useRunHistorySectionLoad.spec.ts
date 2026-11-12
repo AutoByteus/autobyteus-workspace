@@ -6,19 +6,18 @@ const stores = vi.hoisted(() => ({
   history: {
     error: null as string | null, workspaceGroups: [] as any[], agentOrgHistory: [] as any[],
     setHistoryWindow: vi.fn(), fetchTree: vi.fn(async () => undefined), refreshTreeQuietly: vi.fn(async () => undefined),
-    loadWorkspaceCatalogForNavigation: vi.fn(async () => undefined), refreshRunNavigationTopology: vi.fn(),
-    listedRuns: [] as { kind: string; runId: string }[],
+    loadWorkspaceCatalogForNavigation: vi.fn(async () => undefined),
   },
   agents: { fetchAllAgentDefinitions: vi.fn(async () => undefined) },
   teams: { fetchAllAgentTeamDefinitions: vi.fn(async () => undefined) },
   orgs: { fetchAll: vi.fn(async () => undefined) },
-  listed: { refresh: vi.fn(async (_runs: readonly unknown[]) => false) },
+  collaboration: { refreshListedStatuses: vi.fn(async (_ids: readonly string[]) => undefined) },
 }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => stores.history }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => stores.agents }))
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => stores.teams }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => stores.orgs }))
-vi.mock('~/stores/listedRunChildrenStore', () => ({ useListedRunChildrenStore: () => stores.listed }))
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => stores.collaboration }))
 
 import { useRunHistorySectionLoad } from '../useRunHistorySectionLoad'
 
@@ -37,7 +36,6 @@ describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
     vi.useFakeTimers(); vi.clearAllMocks()
     stores.history.error = null; stores.history.workspaceGroups = []; stores.history.agentOrgHistory = []
     stores.history.fetchTree.mockImplementation(async () => undefined)
-    stores.history.listedRuns = []; stores.listed.refresh.mockImplementation(async () => false)
   })
   afterEach(() => vi.useRealTimers())
 
@@ -102,38 +100,27 @@ describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
     await flushPromises()
   })
 
-  // autobyteus-461 SR-055 (autobyteus-426 REQ-009): the listed runs of every kind are asked for their children after each
-  // history read; a changed answer rebuilds the run list, whose rows of a run that is not open come from it.
-  it('reads the listed runs\' children after the first load, each quiet read, a window change and a resumed poll', async () => {
-    stores.history.listedRuns = [{ kind: 'agent', runId: 'run-a' }, { kind: 'agent_team', runId: 'team-a' }, { kind: 'agent_org', runId: 'org-a' }]
+  // autobyteus-426 REQ-009 (D-09): each poll tick refreshes the task rows' states after its quiet history read.
+  it('refreshes the listed runs\' child states after each quiet read, and on a resumed poll; not on the first load or a window change', async () => {
+    Object.assign(stores.history, { listedAgentRunIds: ['run-a', 'run-b'] })
     const order: string[] = []
-    stores.history.fetchTree.mockImplementation(async () => { order.push('history') })
-    stores.history.refreshTreeQuietly.mockImplementation(async () => { order.push('quiet history') })
-    stores.listed.refresh.mockImplementation(async () => { order.push('children'); return false })
+    stores.history.refreshTreeQuietly.mockImplementation(async () => { order.push('history') })
+    stores.collaboration.refreshListedStatuses.mockImplementation(async () => { order.push('states') })
     const { state, load } = host({ window: null, polling: true })
     await load().initialLoad
-    expect(order).toEqual(['history', 'children'])
-    expect(stores.listed.refresh).toHaveBeenLastCalledWith(stores.history.listedRuns)
+    expect(stores.collaboration.refreshListedStatuses).not.toHaveBeenCalled()
 
     await vi.advanceTimersByTimeAsync(5_000)
-    expect(order).toEqual(['history', 'children', 'quiet history', 'children'])
+    expect(order).toEqual(['history', 'states'])
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenLastCalledWith(['run-a', 'run-b'])
 
     state.window = 6; await nextTick(); await flushPromises()
-    expect(stores.listed.refresh).toHaveBeenCalledTimes(3)
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenCalledTimes(1)
 
     state.polling = false; await nextTick()
     await vi.advanceTimersByTimeAsync(20_000)
-    expect(stores.listed.refresh).toHaveBeenCalledTimes(3)
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenCalledTimes(1)
     state.polling = true; await nextTick(); await flushPromises()
-    expect(stores.listed.refresh).toHaveBeenCalledTimes(4)
-    // No answer changed: the run list is not rebuilt.
-    expect(stores.history.refreshRunNavigationTopology).not.toHaveBeenCalled()
-  })
-
-  it('rebuilds the run list when an answer changed', async () => {
-    stores.listed.refresh.mockImplementation(async () => true)
-    const { load } = host({ window: null, polling: false })
-    await load().initialLoad
-    expect(stores.history.refreshRunNavigationTopology).toHaveBeenCalledWith('listed-run-children')
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenCalledTimes(2)
   })
 })

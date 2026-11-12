@@ -10,10 +10,9 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: hydration.read,
   buildAgentRunCollaborationContext: vi.fn(async ({ view }) => shallowReactive(buildMultiTeamContext(view))),
 }));
-vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({ hubChildLoadTarget: vi.fn(() => null) }));
-// The history poll's answer (autobyteus-461 SR-055): the run's delegated rows while it is not open.
-const io = vi.hoisted(() => ({ query: vi.fn() }));
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query }) }));
+vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
+  hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
+}));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null }) }));
 // Every delegated row is on a Task; the composable is what asks for the Task answers (one ask per mount).
 const tasks = vi.hoisted(() => ({ use: vi.fn() }));
@@ -23,23 +22,20 @@ const TASK = { taskId: 'task-1', projectId: 'project-1', title: 'Ship the releas
 import RunListRow from '../RunListRow.vue';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
-import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore';
-import { agentRunAnswerFor } from '~/services/listedRuns/__tests__/listedRunAnswerFixture';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts';
 import type { RunListEntry } from '~/utils/runListProjection';
 
 // autobyteus-390 SR-002 (REQ-002, REQ-003, AC-002, AC-003, R-01): an Agent run's delegated rows stay mounted while the run
 // is folded, only hidden, so they keep their Task answers and show complete on unfold (no late Task line, CRR-001 CR-001).
-// That rows never slide is the Runs view's scoped rule (RunListPanel.spec) and the browser probe's. The run is listed and
-// not open: its rows come from the history poll's answer, and no view is read (autobyteus-461 SR-055).
+// That rows never slide is the Runs view's scoped rule (RunListPanel.spec) and the browser probe's.
 const HOST = 'host-run';
 const agentEntry = (): RunListEntry => ({
   kind: 'agent', key: `agent:${HOST}`, runId: HOST, name: 'Project Task Manager', lastActivityAt: '2026-11-06T00:00:00.000Z',
   isActive: false, folderRootPath: '/ws/a', agentDefinitionId: 'pm', avatarUrl: null,
   run: {
     runId: HOST, summary: 'Plan the release', lastActivityAt: '2026-11-06T00:00:00.000Z', createdAt: '2026-11-06T00:00:00.000Z',
-    currentStatus: AgentStatus.Offline, isActive: false, source: 'history',
+    currentStatus: AgentStatus.Offline, isActive: false, source: 'history', hasCollaboration: true,
   } as never,
 });
 
@@ -75,15 +71,12 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     vi.clearAllMocks();
     hydration.read.mockImplementation(async () => multiTeamView());
     tasks.use.mockImplementation(() => ({ taskOf: () => TASK, locate: vi.fn() }));
-    io.query.mockResolvedValue({ data: { runCollaborationStatuses: [agentRunAnswerFor(multiTeamView())] } });
   });
-  const pollOnce = () => useListedRunChildrenStore().refresh([{ kind: 'agent', runId: HOST }]);
 
-  it('expanded at first: the delegated rows from the poll\'s answer show, with no view read; the disclosure says expanded', async () => {
-    await pollOnce();
+  it('expanded at first: the stored delegated rows load once and show; the disclosure says expanded', async () => {
     const { wrapper } = render();
     await flushPromises();
-    expect(hydration.read).not.toHaveBeenCalled();
+    expect(hydration.read).toHaveBeenCalledTimes(1);
     expect(tree(wrapper).exists()).toBe(true);
     expect(tree(wrapper).findAll('[role="treeitem"]').length).toBeGreaterThan(0);
     expect(disclosureButton(wrapper).attributes('aria-expanded')).toBe('true');
@@ -91,7 +84,6 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
   });
 
   it('fold hides the rows and keeps them, with their Task lines; unfold shows the same rows with no new read (R-01)', async () => {
-    await pollOnce();
     const { wrapper, toggle } = render();
     await flushPromises();
     const before = rowKeys(wrapper);
@@ -117,12 +109,11 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     expect(wrapper.findAll('[data-test="workspace-task-worker-task-summary"]')).toHaveLength(taskLines);
     expect(tasks.use).toHaveBeenCalledTimes(1);
     expect(disclosureButton(wrapper).attributes('aria-expanded')).toBe('true');
-    expect(hydration.read).not.toHaveBeenCalled();
+    expect(hydration.read).toHaveBeenCalledTimes(1);
     wrapper.unmount();
   });
 
   it('the disclosure button folds and unfolds it', async () => {
-    await pollOnce();
     const { wrapper } = render();
     await flushPromises();
     await disclosureButton(wrapper).trigger('click');
@@ -134,7 +125,6 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
   });
 
   it('a folded Agent row renders no Team or Org tree in its place', async () => {
-    await pollOnce();
     const { wrapper, toggle } = render();
     await flushPromises();
     toggle();

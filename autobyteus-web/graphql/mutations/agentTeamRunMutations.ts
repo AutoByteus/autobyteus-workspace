@@ -21,6 +21,17 @@ export const TerminateAgentTeamRun = gql`
   }
 `
 
+export const RestoreAgentTeamRun = gql`
+  mutation RestoreAgentTeamRun($teamRunId: String!) {
+    restoreAgentTeamRun(teamRunId: $teamRunId) {
+      __typename
+      success
+      message
+      teamRunId
+    }
+  }
+`
+
 export const UpdateStoppedTeamRunSelections = gql`
   mutation UpdateStoppedTeamRunSelections($input: UpdateStoppedTeamRunSelectionsInput!) {
     updateStoppedTeamRunSelections(input: $input) {

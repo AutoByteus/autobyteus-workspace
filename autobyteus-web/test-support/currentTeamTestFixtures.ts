@@ -132,7 +132,7 @@ function launch(node: TestAgentNode): AgentLaunchConfigurationDto {
   return {
   runtime_kind: node.runtimeKind,
   llm_model_identifier: node.llmModelIdentifier,
-  llm_config: node.llmConfig,
+  llm_config: node.llmConfig as AgentLaunchConfigurationDto['llm_config'],
   auto_execute_tools: node.autoExecuteTools,
   workspace_root_path: node.workspaceRootPath,
   };
@@ -226,6 +226,7 @@ export const buildTestTeamContext = (input: {
   messages?: readonly TeamCommunicationMessageDto[];
   configuration?: Record<string, unknown>;
   baseChangeSequence?: number;
+  closedTaskExecutions?: readonly import('~/utils/collaboration/taskExecutionClosure').TaskExecutionReference[];
 }): AgentTeamContext => {
   const teamRunId = input.teamRunId ?? 'test-root-team-run';
   const coordinatorAddress = input.coordinatorAddress
@@ -285,7 +286,7 @@ export const buildTestTeamContext = (input: {
   const view = createTeamExecutionViewState({
     rootTeamRunId: teamRunId, rootActive: input.isActive ?? true,
     baseChangeSequence: input.baseChangeSequence ?? 0,
-    executionTree: tree, configuration,
+    executionTree: tree, closedTaskExecutions: input.closedTaskExecutions ?? [], configuration,
     initialFocusedAgentRunId: focusedAgentRunId, agentContexts: contexts,
     createAgentContext: (agentRunId, address, currentTree) => createTeamAgentContext({
       tree: currentTree, agentRunId, address, workspaceMetadata,

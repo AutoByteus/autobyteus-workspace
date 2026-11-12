@@ -22,6 +22,8 @@ export interface ProjectionRunItem {
   currentStatus: AgentStatus;
   lastKnownStatus: ProjectionRunKnownStatus;
   isActive: boolean;
+  /** The run has task children brought in with `@` (a collaboration package). */
+  hasCollaboration?: boolean;
 }
 
 export interface ProjectionAgentGroup {
@@ -261,6 +263,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
           currentStatus: run.currentStatus,
           lastKnownStatus: run.lastKnownStatus,
           isActive: run.isActive,
+          hasCollaboration: run.hasCollaboration === true,
           source: 'history',
           isDraft: false,
         });

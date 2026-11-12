@@ -131,7 +131,7 @@ for (const previouslyMounted of [false, true]) {
     const retainedDraft = draftStore.config
     await files.openFile('A.txt', 'A')
     // The normal History action retains the unrelated launch draft.
-    history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree }] as any
+    history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run',
       action: 'select', memberAddress: '/team/lead' })
     // The selected member's stored conversation loads when it is selected (autobyteus-358).
@@ -241,7 +241,7 @@ for (const knownId of [false, true]) {
         conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } };
       return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } };
     });
-    useRunHistoryStore().agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree }] as any;
+    useRunHistoryStore().agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any;
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team/lead' });
     const active = useActiveContextStore(), target = active.activeWorkspaceTarget!;
     expect(target.workspaceRootPath).toBe('/workspace/B');

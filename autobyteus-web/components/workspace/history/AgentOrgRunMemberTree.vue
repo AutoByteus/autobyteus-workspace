@@ -136,7 +136,6 @@ const rowStyle = (depth: number) => ({ paddingLeft: `calc((${depth} + 1) * 0.875
 const rows = computed(() => projectAgentOrgHistoryRows({
   run: props.run,
   context: props.state.agentOrgContextFor?.(props.run.rootRunId) ?? null,
-  listed: props.state.agentOrgListedChildrenFor?.(props.run.rootRunId) ?? null,
   isTeamExpanded,
   isTaskTeamExpanded: (teamRunId) => props.state.isAgentOrgTaskTeamExpanded?.(props.run.rootRunId, teamRunId) ?? true,
 }))

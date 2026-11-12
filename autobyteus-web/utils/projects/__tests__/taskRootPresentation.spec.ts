@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { TASK_ROOT_KIND_LABEL_KEYS, TASK_ROOT_STATE_LABEL_KEYS, isTaskRootDelegatingRunListed, presentTaskRoot } from '../taskRootPresentation'
+import { TASK_ROOT_KIND_LABEL_KEYS, TASK_ROOT_STATE_LABEL_KEYS, isTaskRootHostListed, presentTaskRoot } from '../taskRootPresentation'
 import en from '~/localization/messages/en/projects'
 import zhCN from '~/localization/messages/zh-CN/projects'
 import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
   kind: 'agent', recipientAddress: '/product_team/release_writer', ingressAgentRunId: 'worker', teamRunId: null,
-  delegatingRun: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
+  hostRoot: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 
 describe('presentTaskRoot (AR-002 openable rule, DEC-006 statuses)', () => {
@@ -36,7 +36,7 @@ describe('presentTaskRoot (AR-002 openable rule, DEC-006 statuses)', () => {
   })
 })
 
-describe('isTaskRootDelegatingRunListed', () => {
+describe('isTaskRootHostListed', () => {
   const history = {
     workspaceGroups: [{
       agentDefinitions: [{ runs: [{ runId: 'manager-root' }] }],
@@ -49,7 +49,7 @@ describe('isTaskRootDelegatingRunListed', () => {
     ['agent_team', 'team-root', true], ['agent_team', 'manager-root', false],
     ['agent_org', 'org-root', true], ['agent_org', 'deleted-org', false],
   ] as const)('%s host %s → %s', (kind, runId, listed) => {
-    expect(isTaskRootDelegatingRunListed(history, { kind, runId })).toBe(listed)
+    expect(isTaskRootHostListed(history, { kind, runId })).toBe(listed)
   })
 })
 

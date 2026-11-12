@@ -4,7 +4,6 @@ import type {
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
-import type { ListedRunAnswer } from '~/services/listedRuns/listedRunChildrenQuery';
 import type { WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 
@@ -42,8 +41,6 @@ export interface RunListSectionState {
   isAgentOrgArchiving: (rootRunId: string) => boolean;
   agentOrgTerminationError: (rootRunId: string) => string | null;
   agentOrgContextFor: (rootRunId: string) => AgentOrgExecutionContext | null;
-  /** An Org run's last answer from the history poll: its delegated rows while it is not open (autobyteus-461 SR-055). */
-  agentOrgListedChildrenFor: (rootRunId: string) => ListedRunAnswer | null;
 }
 
 export interface RunListSectionActions {

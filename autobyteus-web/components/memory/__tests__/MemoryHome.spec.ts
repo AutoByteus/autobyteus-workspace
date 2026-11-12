@@ -90,18 +90,21 @@ describe('MemoryHome', () => {
     expect(store.fetchHomeTab).toHaveBeenCalledWith('orgs');
   });
 
-  it('shows the missing-memory note only when something is missing; a team carries no task-team tag (autobyteus-461)', () => {
+  it('tags a task team with its starter and shows the missing-memory note only when something is missing', () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const store = useMemoryExplorerStore();
     store.homeTab = 'teams';
     store.teams.entries = [
-      { teamDefinitionId: 'task-team-x', teamDefinitionName: 'Release Crew', teamRunCount: 1, memberMemoryCount: 2,
+      { teamDefinitionId: 'task-team-x', teamDefinitionName: 'Release Crew', teamRunCount: 1, memberMemoryCount: 2, isTaskTeam: true, startedByAgentName: 'Project Task Manager',
         memory: { latestMemoryAt: null, hasWorkJournal: false, hasRawTraces: true, hasRawArchive: false } },
       { teamDefinitionId: 'team-a', teamDefinitionName: 'Alpha Team', teamRunCount: 3, memberMemoryCount: 4,
         memory: { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: true, hasRawArchive: false } },
     ];
     const wrapper = mount(MemoryHome, { global: { plugins: [pinia] } });
-    expect(wrapper.findAll('[data-test="memory-task-team-tag"]')).toHaveLength(0);
+    const tags = wrapper.findAll('[data-test="memory-task-team-tag"]');
+    expect(tags).toHaveLength(1);
+    expect(tags[0]!.text()).toBe('Task team');
+    expect(tags[0]!.attributes('title')).toBe('Task team started by'); // memory.browse.task_team_started_by (test $t fallback)
     expect(wrapper.text().match(/No Work Journal/g)).toHaveLength(1);
   });
 

@@ -39,19 +39,9 @@ const pastIdentityOf = (pastParticipants: readonly PastParticipant[], agentRunId
   return past ? Object.freeze({ kind: 'past', address: past.address, label: memberDisplayName(past.address) }) : null
 }
 
-/** Where a message's reference content is served, under the run whose log holds the message (the key's root). */
-const REFERENCE_CONTENT_BASE: Readonly<Record<ParticipantMessagesKey['rootKind'], string>> = Object.freeze({
-  agent: 'agent-collaborations', agent_team: 'team-runs', agent_org: 'agent-org-runs',
-})
-const COMMUNICATION_SEGMENT: Readonly<Record<ParticipantMessagesKey['rootKind'], string>> = Object.freeze({
-  agent: 'communication', agent_team: 'team-communication', agent_org: 'communication',
-})
-
 /**
  * The Team-tab part of a root's `CollaborationMessagesContextView` for one focused participant: its rows, its
- * load state, the request to load it, and where a reference's content is served. The key names the run whose log
- * holds the participant's messages: the view's root for its own agents, a delegated child's own run for the child
- * (autobyteus-461 CR-461-020). A counterpart that is not in the root's tree is named from the list's past
+ * load state and the request to load it. A counterpart that is not in the root's tree is named from the list's past
  * participants. A participant that is a run on another node gets no request: its messages stay on its node, and its
  * list is empty (AR-004).
  */
@@ -59,7 +49,7 @@ export const participantMessagesView = (input: Readonly<{
   key: ParticipantMessagesKey
   isRemote: boolean
   identityOf(agentRunId: string): CollaborationMessageMemberIdentity | null
-}>): Pick<CollaborationMessagesContextView, 'listMessages' | 'messagesStatus' | 'loadMessages' | 'referenceContentPath'> => {
+}>): Pick<CollaborationMessagesContextView, 'listMessages' | 'messagesStatus' | 'loadMessages'> => {
   const owner = useCollaborationParticipantMessagesStore()
   return {
     listMessages: () => input.isRemote ? [] : projectParticipantMessageRows({
@@ -68,7 +58,5 @@ export const participantMessagesView = (input: Readonly<{
     }),
     messagesStatus: () => input.isRemote ? LOADED : owner.statusOf(input.key),
     loadMessages: () => { if (!input.isRemote) owner.load(input.key) },
-    referenceContentPath: (messageId, referenceId) => `${REFERENCE_CONTENT_BASE[input.key.rootKind]}/${encodeURIComponent(input.key.rootRunId)}/`
-      + `${COMMUNICATION_SEGMENT[input.key.rootKind]}/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
   }
 }

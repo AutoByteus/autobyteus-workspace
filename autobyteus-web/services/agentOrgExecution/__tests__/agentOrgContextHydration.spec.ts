@@ -29,7 +29,7 @@ vi.mock('~/stores/runHistoryStore', () => ({
 import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 
 import { taskBearingView } from './taskBearingOrgFixture'
-import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetRunFileChanges, GetRunProjection, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 
 const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org:org-run',
@@ -40,6 +40,7 @@ const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem 
   isActive: true,
   summary: 'Restored Org',
   executionTree: view.execution_tree,
+  closedTaskExecutions: view.closed_task_executions,
 })
 
 const offlineEvent = (memberAddress: string, agentRunId: string): AgentOrgExecutionEventDto => ({
@@ -53,17 +54,9 @@ describe('staged AgentOrg context hydration and publication', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
-    // A delegated child is read by its own identity (autobyteus-461 CR-461-010): an agent child as its own run, a member
-    // of a team child as a member of that team run; the Org's own agents through the Org.
-    mocks.query.mockImplementation(async ({ query, variables }) => query === GetRunProjection
-      ? { data: { getRunProjection: { runId: variables.runId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
-      : query === GetTeamMemberRunProjection
-        ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
-        : query === GetRunFileChanges ? { data: { getRunFileChanges: [] } }
-        : query === GetTeamMemberFileChanges ? { data: { getTeamMemberFileChanges: [] } }
-        : { data: { getAgentOrgMemberRunProjection: {
-          agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-        } } })
+    mocks.query.mockImplementation(async ({ variables }) => ({ data: { getAgentOrgMemberRunProjection: {
+      agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+    } } }))
   })
 
   it('builds configured and fresh task runs with shared placement addresses and stages only the focused one (autobyteus-358)', async () => {
@@ -89,12 +82,17 @@ describe('staged AgentOrg context hydration and publication', () => {
       address: '/team/lead',
       context: { state: { runId: 'agent-lead-configured' } },
     })
-    // The focused delegated run is read as its own run, not as one of the Org's agents (CR-461-010).
     const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
-    expect(queried(GetRunProjection).map(([options]) => options.variables)).toEqual([{ runId: 'agent-worker-task' }])
-    expect(queried(GetRunFileChanges).map(([options]) => options.variables)).toEqual([{ runId: 'agent-worker-task' }])
-    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(0)
-    expect(queried(GetAgentOrgMemberFileChanges)).toHaveLength(0)
+    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(1)
+    expect(queried(GetAgentOrgMemberFileChanges).map(([options]) => options.variables)).toEqual([{
+      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+    }])
+    expect(queried(GetRunFileChanges)).toHaveLength(0)
+    expect(mocks.query).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+      },
+    }))
   })
 
   it('commits projection activities through the current atomic activity replacement owner', async () => {
@@ -128,19 +126,13 @@ describe('staged AgentOrg context hydration and publication', () => {
       sourceTool: 'generated_output', sourceInvocationId: null, content: null,
       createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
     })
-    // The Org's own agents' artifacts are read through the Org; a member of a team child through that team run (CR-461-010).
     const serve = (failingArtifactsFor?: string) => mocks.query.mockImplementation(async ({ query, variables }) => {
-      if (query === GetAgentOrgMemberFileChanges || query === GetTeamMemberFileChanges) {
-        if (query === GetTeamMemberFileChanges) expect(variables.teamRunId).toBe('team-task')
-        else expect(variables.orgRunId).toBe('org-run')
-        const field = query === GetTeamMemberFileChanges ? 'getTeamMemberFileChanges' : 'getAgentOrgMemberFileChanges'
+      if (query === GetRunFileChanges) throw new Error('org member artifacts are read through the org, not by run id')
+      if (query === GetAgentOrgMemberFileChanges) {
+        expect(variables.orgRunId).toBe('org-run')
         return variables.agentRunId === failingArtifactsFor
           ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.agentRunId}` }] }
-          : { data: { [field]: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
-      }
-      if (query === GetTeamMemberRunProjection) {
-        expect(variables.teamRunId).toBe('team-task')
-        return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+          : { data: { getAgentOrgMemberFileChanges: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
       }
       return { data: { getAgentOrgMemberRunProjection: {
         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
@@ -201,18 +193,16 @@ describe('staged AgentOrg context hydration and publication', () => {
   })
 
   it('rejects an unavailable focused projection without publishing any staged activities', async () => {
-    // A member of the team child is read from that team run (CR-461-010); its projection is missing there.
-    mocks.query.mockImplementation(async ({ query, variables }) => query === GetTeamMemberRunProjection
-      ? { data: { getTeamMemberRunProjection: null } }
-      : query === GetTeamMemberFileChanges ? { data: { getTeamMemberFileChanges: [] } }
-      : { data: { getAgentOrgMemberRunProjection: {
+    mocks.query.mockImplementation(async ({ variables }) => ({ data: { getAgentOrgMemberRunProjection:
+      variables.agentRunId === 'agent-task-worker' ? null : {
         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
         conversation: [], hasEarlierActiveTraceEvents: false,
         activities: [{ kind: 'tool', invocationId: 'staged-tool', toolName: 'read_file', status: 'success', result: 'done', ts: 1 }],
-      } } })
+      },
+    } }))
     await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
       focus: { kind: 'agent_execution', agentRunId: 'agent-task-worker' } }))
-      .rejects.toThrow("Team member projection payload missing for 'agent-task-worker'.")
+      .rejects.toThrow("Projection unavailable for 'agent-task-worker'")
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
     expect(useAgentActivityStore().getActivities('agent-task-lead')).toEqual([])
   })
@@ -230,7 +220,6 @@ describe('staged AgentOrg context hydration and publication', () => {
         run,
         context,
         isTeamExpanded: () => true,
-        listed: null,
       }).map((item) => item.row)
         .find((candidate) => candidate.kind === 'task_agent'
           && candidate.agentRunId === 'agent-worker-task')

@@ -79,6 +79,8 @@ export const LIST_AGENT_TEAMS_WITH_MEMORY = gql`
         teamRunCount
         memberMemoryCount
         latestMemoryAt
+        isTaskTeam
+        startedByAgentName
         memory {
           latestMemoryAt
           hasWorkJournal

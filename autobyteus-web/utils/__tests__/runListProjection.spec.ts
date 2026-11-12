@@ -19,6 +19,7 @@ const team = (teamRunId: string, lastActivityAt: string, isActive = false) => ({
 });
 const org = (rootRunId: string, createdAt: string, lastActivityAt = createdAt) => ({
   stableKey: rootRunId, rootSubjectKind: 'agent_org', rootRunId, createdAt, lastActivityAt, archivedAt: null, isActive: true, summary: 'Launch',
+  closedTaskExecutions: [],
   executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgDefinitionName: 'Launch Org', members: [], defaultLaunchConfiguration: { workspaceRootPath: '/ws/c/' } } },
 });
 const build = (sources: Partial<RunListSources>) => buildRunListEntries({

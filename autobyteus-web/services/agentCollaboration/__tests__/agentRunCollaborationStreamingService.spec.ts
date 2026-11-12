@@ -71,19 +71,3 @@ it('applies a received content batch frame and continues after its covered range
   expect(f.options.reportError).not.toHaveBeenCalled(); expect(f.socket.close).not.toHaveBeenCalled()
   f.service.disconnect()
 })
-it('autobyteus-461 SR-042: CHILD_RUNS_CHANGED is unsequenced; a change the view lacks reloads it, one it already has does nothing', async () => {
-  const f = setup(); f.finish(); await flush()
-  const sequence = f.context.changeSequence
-  const changed = (event: Record<string, unknown>) => ({ type: 'CHILD_RUNS_CHANGED', payload: { root_subject_kind: 'agent', root_run_id: 'host-run',
-    event: { kind: 'child_runs_changed', run_id: 'host-run', added: [], removed: [], ...event } } })
-  // Already in the snapshot (a held event): a row it has, a removed row it does not have.
-  f.socket.frame(changed({ added: [f.context.view.execution_tree.taskExecutions[0]], removed: [{ agentRunId: 'gone-run' }] }))
-  await flush()
-  expect(Socket.instances).toHaveLength(1); expect(f.context.changeSequence).toBe(sequence)
-  // A child whose Task closed leaves: the view is read again.
-  f.socket.frame(changed({ removed: [{ agentRunId: 'cua-run' }] }))
-  await flush()
-  expect(f.socket.close).toHaveBeenCalledWith(1000, 'Agent collaboration reload'); expect(Socket.instances).toHaveLength(2)
-  expect(f.options.reportError).not.toHaveBeenCalled()
-  f.service.disconnect()
-})

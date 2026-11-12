@@ -129,10 +129,8 @@ A child's stored details load on demand (`agentRunCollaborationChildHydration.ts
   selected child after every publication, including the snapshot that follows a
   new delegation or a settings Save. Unopened children are never loaded;
   previously opened ones load again when selected again.
-- **What.** The child's stored state and artifacts by the subject the view's owner gives it
-  (`agentRunAgentReadSubject` in `services/runHydration/agentReads.ts`): a child on this node by its
-  own identity (`getRunProjection` and `getRunFileChanges`, or its team run's member reads); a child on
-  a peer node through the run (`agentRunCollaborationMemberProjection`; its files stay on its node).
+- **What.** One member projection request and one hub-scoped artifact request
+  (`agentRunCollaborationMemberFileChanges`, never the run-id `getRunFileChanges`).
 - **Ownership.** The store is the only owner of in-flight loads, keyed by
   (published context, child). A load whose context is no longer published, because
   it was republished or the host is stopping, ends `superseded` and writes nothing.
@@ -162,13 +160,10 @@ for the user interaction contract.
     on success or failure. Pending edits, focus/input/workspace/removal/clear,
     selection changes, and duplicate launch allocation are rejected.
   - `connectToTeamStream(rootTeamRunId)`: attaches one `TeamStreamingService` to
-    the root TeamRun and its canonical `AgentTeamContext`, for the open Team run
-    whether it runs or not (autobyteus-461 SR-045: a stopped Team's child rows are
-    runs of their own, so its view keeps its stream; connecting never starts it).
-    Transport readiness is separate from root Team liveness and leaf Agent status.
-    The service accepts the initial structural snapshot as its sequence base, and
-    each later in-band snapshot (the Team started or stopped) as a new base, and
-    then requires exact next-sequence admission for every live execution message. The first gap is
+    the root TeamRun and its canonical `AgentTeamContext`. Transport readiness is
+    separate from root Team liveness and leaf Agent status. The service accepts
+    the initial structural snapshot as its sequence base and then requires exact
+    next-sequence admission for every live execution message. The first gap is
     rejected before Team or Agent conversation mutation, enters the persistent
     `reopen_required` phase once, closes the stale transport, and blocks commands
     and ordinary reconnect rather than silently dropping later output.
@@ -220,10 +215,7 @@ for the user interaction contract.
   only the returned `agentOrgRunId`. `restore()`, `terminate()`, and
   `fetchHistory()` use the AgentOrg GraphQL operations and the
   `root_subject_kind: "agent_org"` history projection.
-- `agentOrgContextsStore` owns one `AgentOrgStreamingService` per open Org, active
-  or stopped (autobyteus-461 SR-045: a stopped Org's child rows are runs of their
-  own; its stream serves the stored mode and takes an in-band snapshot when the Org
-  starts or stops).
+- `agentOrgContextsStore` owns one `AgentOrgStreamingService` per active Org.
   Launch establishes the full coordinator-free scope without focus; `select()`
   later focuses an exact Agent or mounted Team. A mounted Team selection resolves
   to its direct coordinator but does not create a standalone Team lifecycle.
@@ -309,13 +301,12 @@ replays the configuration mutation.
 ### Org Observational Inspection And Deliberate Continuation
 
 History selection reads the exact retained package without Restore or provider
-activation, and the open Org's view keeps its stream. `agentOrgContextsStore.accessFor`
-distinguishes live, continuable inactive configured Agents, and delegated children,
-which take input over the view's stream whether the Org is active or stopped (each
-is a run of its own; a message wakes only it). A deliberate configured Send goes
-over the same stream and the server starts the Org on that input (autobyteus-461
-SR-046); the client makes no Restore call. Captured AgentContext/AgentRun/owner and
-newer drafts are preserved across failure. Existing
+activation. `agentOrgContextsStore.accessFor` distinguishes live, continuable
+inactive configured Agents, and read-only delegated children of an inactive
+Org (continuation starts from a configured Agent; once the Org is active, a
+message to a shut-down delegated child wakes it). Deliberate configured
+Send alone performs exact-root Restore and strict stream readiness, preserving
+captured AgentContext/AgentRun/owner and newer drafts across failure. Existing
 reopen-required copy takes priority over generic historical recovery text.
 Successful Stop keeps the same monitor, immediately publishes inactive activity,
 then stages final retained content. Exact Org history, inspection and member
@@ -327,9 +318,8 @@ no global client switch or new persistence/lifecycle owner.
 ### Retained Activity After Termination
 
 Runtime termination and Activity disposal are separate responsibilities. Successful
-Team termination keeps the open view's stream (its stored-mode snapshot follows) and
-applies existing Offline/terminal cleanup to the Team's own members, not its child
-rows (runs of their own), without clearing any retained member's Activity. Standalone Agent termination
+Team termination retires the stream and applies existing Offline/terminal cleanup
+without clearing any retained member's Activity. Standalone Agent termination
 also keeps its Activity; Org termination retains the monitor and uses its existing
 staged inspection owner. Do not replace these distinct lifecycle paths with a
 shared stop-time cache or a provider restart merely to display history.
@@ -343,10 +333,9 @@ A rejected/failed Stop preserves retained content and existing uncertainty/error
 handling; failure alone must not be presented as confirmed Offline.
 
 Historical cards do not authorize execution. Existing Team inline conversation
-approval buttons can still look enabled after Stop; an old decision reaches the
-server over the kept stream and is refused for a stopped member (`TEAM_RUN_STOPPED`),
-starting nothing. A later deliberate Send goes over the same stream: the server
-starts the Team on that input and the view continues after one in-band snapshot.
+approval buttons can still look enabled after Stop, but the retired stream and
+cleared approval targets prevent an old decision from dispatching or starting a
+runtime. Later deliberate Send uses normal recovery/hydration and manual policy.
 Compare exact Activity identities to detect duplication: a legitimately new
 System capture or tool event is new Activity, not a duplicate of an old card.
 
@@ -503,10 +492,10 @@ and passes the counted statuses and its liveness to the rule:
   highest status among its listed runs. `WorkspaceTeamExecutionTree` derives
   these at render time from `executionRows`, so navigation patches stay current.
 - Agent runs (`AgentRunCollaborationContext.listTaskRows`): the walk visits
-  every child row, collapsed ones included, and sets
+  every listed node, collapsed ones included, skips closed subtrees, and sets
   `AgentRunTaskTreeRow.teamStatus` on Team rows, gated by the host run's
   `isActive`.
-- Org runs (`agentOrgTeamBranchStatus.ts`): one Agent collector serves a
+- Org runs (`agentOrgTeamBranchStatus.ts`): one listed-Agent collector serves a
   configured mounted Team (`projectAgentOrgTeamBranchStatus`) and a delegated
   task Team (`projectAgentOrgTaskTeamStatus`). The Org counts as alive
   only while its status authority is `live`. The Org root row is an Org, not a
@@ -647,20 +636,18 @@ different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
-A newly delegated child is a run of its own (autobyteus-461). Its row reaches an
-open view as the unsequenced `CHILD_RUNS_CHANGED` (`{ run_id, added, removed }`),
-which the server holds while a snapshot is built and sends after it. The Team
-view applies it in place by membership (`teamChildRunsChange.ts`: an added row it
-holds is skipped, an unknown removed row ignored; then
-`invalidate_team_member_projection`, focus hand-back with
-`reconcile_focused_team_member_projection`, and `reconcile_team_navigation`),
-never through `team_stream_recovery_required`, so pending sends and approvals
-stay. The Agent-run and Org views read themselves again (`checkpoint_required`)
-unless the change is already in them. Later frames of the child are routed by
+For a newly delegated child, the root Team stream publishes
+`TASK_EXECUTION_STARTED` before every exact Agent frame. The server's
+registry-owned durability gate retains pre-activation Agent events, drains them
+FIFO after the durable tree write (including synchronous reentrant events), then
+forwards later status, turn, content, tool, and segment events exactly once
+through the unchanged root publisher before assignment work can start. Abort or
+disposal releases neither events nor work. The frontend inserts the child into
+the view's execution tree from that event, then routes all later frames by
 `agent_execution`; an already-selected child therefore advances its
-conversation, Activity, and execution status without refocus or reload.
-Snapshot/reconnect remains the recovery path rather than the normal live-update
-mechanism.
+conversation, Activity, and execution status without refocus or reload, and two
+same-address task runs cannot share updates. Snapshot/reconnect remains the
+recovery path rather than the normal live-update mechanism.
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -747,17 +734,33 @@ compatible run-id fallback. The frontend must not recreate the removed
 as a routing authority. Idle shutdown does not remove delegated rows; they stay
 in the tree with `offline` status, in active and historical views alike.
 
-Task closure (autobyteus-461): a view's child rows are the runs it delegated to
-that hold an open Task. When a child's last open Task becomes DONE or CANCELLED,
-or its Task is deleted, it leaves the view through `CHILD_RUNS_CHANGED`
-(`removed`), with everything under it; when its assigner continues it after the
-Task leaves DONE, it comes back the same way (`added`). There is no closed set in
-the views or the stored reads. Leaving rows use `useLeavingTreeRows` and
-`treeRowLeave.css`: a 200 ms ease-out fade and collapse while the remaining rows
-move up, at once under `prefers-reduced-motion`. New rows appear without motion.
-A selected child that leaves hands selection to the Agent run (Agent root), to
-its delegator, else the coordinator (Team root), or clears it (Org root), and
-keyboard focus on a leaving row moves to that row. Nothing is deleted from disk.
+Task closure: when a Project Task becomes DONE, its task executions leave the
+Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),
+together with everything under them. The execution tree itself is never
+filtered, so message participants and history keep their identities. Closure is
+a separate fact beside the tree: the root snapshot and stored reads carry
+`closed_task_executions`, and the live `task_executions_closed` /
+`TASK_EXECUTIONS_CLOSED` event is published before the runs are stopped, so a
+failed stop does not keep them listed. `utils/collaboration/taskExecutionClosure.ts`
+owns the closed-subtree rule; the run-history row builders and
+`AgentRunTaskRows` / `WorkspaceTeamExecutionTree` /
+`WorkspaceAgentOrgHistoryCollection` apply it. Leaving rows use
+`useLeavingTreeRows` and `treeRowLeave.css`: a 200 ms ease-out fade and collapse
+while the remaining rows move up, at once under `prefers-reduced-motion`. New
+rows appear without motion. A selected closed run hands selection to the Agent
+run (Agent root), to the delegating Manager (Team root), or to the agent that
+delegated its outermost closed execution (Org root), and keyboard focus
+on a leaving row moves to that row. Messages with closed runs stay in the Team
+tab, and nothing is deleted from disk. Only the Workspaces tree and the main
+view follow closure; other Team surfaces still list closed members.
+Reactivation reverses closure for one execution. After the Task leaves DONE,
+the assigning run messages the execution's run ID. The root then publishes
+`task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
+`removeReopenedTaskExecutions` drops that reference from the closed set. The
+execution is listed again without a manual reload, and its still-closed helpers stay
+hidden. A view that no longer holds the execution (it left the tree when its Task
+closed, autobyteus-469) reloads itself through its checkpoint (Agent run, Org), or
+inserts it from the record the Team's `TASK_EXECUTIONS_REOPENED` carries. Snapshots and stored reads follow the same Task-side view.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -779,9 +782,9 @@ with the local copies by start time. A remote Team is listed with its members.
   the node's name, `reachable` (`null` until the node answers), `checking` while
   Retry waits, the node's title, and the Retry callback of the root that owns the
   run.
-- **Updates.** A new peer run arrives as a `CHILD_RUNS_CHANGED` row (the Team
-  view adds it in place; the Agent-run and Org views read themselves again) and
-  `remote_task_execution_summary` which carries `reachable`, the title and the
+- **Updates.** The root's stream adds `remote_task_execution_started` (an unknown
+  run reloads the view; a Team stream recovers) and
+  `remote_task_execution_summary`, which carries `reachable`, the title and the
   live statuses. An agent the summary does not list is `Offline`.
 - **Shared code.** `services/remoteRuns/remoteChildren.ts` (summary statuses, rows,
   start-time merge) and `remoteAgentContext.ts` (an `AgentContext` with no local
@@ -1414,7 +1417,7 @@ unlock it or supersede the Settings-owned read.
 
 For a stopped standalone Agent, `readAgentCanonical` reads resume metadata and
 `readAgentRunCollaboration` through the existing read-only network client. The
-Settings draft retains only `execution_tree` and `remote_task_executions` as its
+Settings draft retains only `execution_tree` and `closed_task_executions` as its
 `delegatedSnapshot`; it does not hydrate child conversations or attach a runtime.
 `ExistingRunConfigEditor` builds stopped delegated rows from that snapshot,
 not the cached live collaboration view. Active Agent rows retain their live-view
@@ -1775,7 +1778,7 @@ The projector commits those effects once after the handler transaction.
 Duplicate, invalid, final-equal, Activity-only-detail, or other unrepresented
 traffic remains a no-op for unrelated consumers. Team delegated-child
 projection keeps a separate required mutation result: topology changes (for
-example `CHILD_RUNS_CHANGED`) rebuild the cached navigation once, and
+example `TASK_EXECUTION_STARTED`) rebuild the cached navigation once, and
 visible display/status changes patch an exact indexed row. This prevents an
 unfocused stream from multiplying complete Event Monitor and workspace-tree
 projections while preserving the selected stream's progressive rendering.

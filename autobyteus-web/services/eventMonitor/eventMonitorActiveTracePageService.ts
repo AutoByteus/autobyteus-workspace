@@ -1,6 +1,7 @@
 import type {
   EventMonitorActiveTracePageFieldsFragment,
   GetAgentOrgMemberEventMonitorActiveTracePageQuery,
+  GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery,
   GetRunEventMonitorActiveTracePageQuery,
   GetTeamMemberEventMonitorActiveTracePageQuery,
 } from '~/generated/graphql';
@@ -8,6 +9,7 @@ import {
   GetRunEventMonitorActiveTracePage,
   GetTeamMemberEventMonitorActiveTracePage,
   GetAgentOrgMemberEventMonitorActiveTracePage,
+  GetAgentRunCollaborationMemberEventMonitorActiveTracePage,
 } from '~/graphql/queries/runHistoryQueries';
 import { getApolloClient } from '~/utils/apolloClient';
 import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
@@ -40,7 +42,9 @@ export const fetchEventMonitorActiveTracePage = async (
         orgRunId: subject.orgRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId, beforeCursor,
       })).getAgentOrgMemberEventMonitorActiveTracePage;
     case 'standaloneMember':
-      // A run on a peer node keeps its trace there (autobyteus-278), as a peer child of a team or org view does.
-      throw new Error(`AgentRun '${subject.agentRunId}' runs on another node; its trace is kept there.`);
+      return (await query<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery>(
+        GetAgentRunCollaborationMemberEventMonitorActiveTracePage,
+        { hostRunId: subject.hostRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId, beforeCursor },
+      )).agentRunCollaborationMemberEventMonitorActiveTracePage;
   }
 };

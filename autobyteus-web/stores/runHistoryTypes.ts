@@ -4,6 +4,7 @@ import type { RunProjectionConversationEntry } from '~/services/runHydration/run
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution';
+import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
@@ -20,6 +21,8 @@ export interface RunHistoryItem {
   isActive: boolean;
   shouldConnectStream?: boolean;
   statusSource?: string;
+  /** The run has a collaboration package (task children brought in with `@`). */
+  hasCollaboration?: boolean;
 }
 
 export interface RunHistoryAgentGroup {
@@ -47,6 +50,8 @@ export interface AgentOrgRunHistoryItem {
   isActive: boolean;
   summary: string;
   executionTree: AgentOrgExecutionTree;
+  /** Task executions of `executionTree` whose Task is DONE; the rows leave them out before the Org context hydrates. */
+  closedTaskExecutions: readonly TaskExecutionReference[];
 }
 
 export interface AgentOrgHistoryDefinitionGroup {
@@ -239,6 +244,19 @@ export interface TeamMemberRunProjectionPayload {
   summary?: string | null;
   lastActivityAt?: string | null;
   hasEarlierActiveTraceEvents: boolean;
+}
+
+export interface GetTeamMemberRunProjectionQueryData {
+  getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
+}
+
+export interface GetTeamRunResumeConfigQueryData {
+  getTeamRunResumeConfig: {
+    teamRunId: string;
+    isActive: boolean;
+    executionTree: unknown;
+    modelConfigEditability: RunModelConfigEditability;
+  };
 }
 
 export interface GetTeamRunExecutionCheckpointQueryData {

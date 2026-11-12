@@ -130,29 +130,7 @@ const inputFor = async (id) => {
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
   return (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: id, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
 };
-/**
- * A run the host delegated to, read by its own identity (autobyteus-461 CR-461-022: the host-scoped member read is gone):
- * an agent run by `getRunProjection`; a member of a delegated team through that team run (found among the host's children
- * in the listed-runs poll, one hop at a time).
- */
-const childProjection = async (host, _address, run, fields = 'conversation') => {
-  const own = await gql(`query($id:String!){getRunProjection(runId:$id){${fields}}}`, { id: run }).catch(() => null);
-  if (own?.getRunProjection) return fields === 'conversation' ? own.getRunProjection.conversation : own.getRunProjection;
-  const queue = [{ kind: 'agent', runId: host }];
-  for (let hops = 0; queue.length && hops < 50; hops += 1) {
-    const ref = queue.shift();
-    const answer = (await gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [ref] })).runCollaborationStatuses[0];
-    for (const child of answer?.children ?? []) {
-      if (child.node) continue;
-      if (child.row.kind === 'agent_team' && child.row.members.some((m) => m.agentRunId === run)) {
-        const read = (await gql(`query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){${fields}}}`, { t: child.row.teamRunId, a: run })).getTeamMemberRunProjection;
-        return fields === 'conversation' ? read?.conversation : read;
-      }
-      queue.push(child.row.kind === 'agent' ? { kind: 'agent', runId: child.row.agentRunId } : { kind: 'agent_team', runId: child.row.teamRunId });
-    }
-  }
-  throw new Error(`no run holds the agent ${run}`);
-};
+const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
 const projection = async (id) => (await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id })).getRunProjection.conversation;
 const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId description status root {kind teamRunId ingressAgentRunId hostRoot{kind runId} start status closed}}}', { id })).projectTasks;

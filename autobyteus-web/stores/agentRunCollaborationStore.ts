@@ -1,5 +1,7 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { defineStore } from 'pinia'
+import { closedTaskExecutionsDigest } from '@autobyteus/collaboration-stream-contracts'
 import { shallowReactive, shallowRef, watch } from 'vue'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { ContextFilePath } from '~/types/conversation'
@@ -8,13 +10,14 @@ import type { CollaborationMessagesContextView } from '~/types/workspace/collabo
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
-import { readAgentRunCollaboration, buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
-import { agentRunTaskRows } from '~/services/agentCollaboration/agentRunTaskRows'
-import { listedRunChildren } from '~/services/delegatedChildren/delegatedChildRuns'
-import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore'
+import {
+  readAgentRunCollaboration,
+  readAgentRunCollaborationStatuses,
+  buildAgentRunCollaborationContext,
+  type AgentRunCollaborationStatusesAnswer,
+} from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
-import { agentRunAgentReadSubject } from '~/services/runHydration/agentReads'
 import {
   acceptLocalSubmission,
   beginLocalUserSubmission,
@@ -36,10 +39,9 @@ import { createRandomId } from '~/utils/randomId'
  * The client side of standalone runs' collaboration roots: the task children brought in with
  * `@`, their rows under the run row, direct chat with a child and the run's Team tab.
  *
- * Reading never restores a host. The open run's view has its stream whether the run's own agent runs
- * or not (autobyteus-461 SR-045): its children are runs of their own, and the stream never restores
- * the run. A listed run that is not open shows its task rows from the history poll's answer (SR-055);
- * its view is read only when it is opened.
+ * Reading never restores a host: a stored view comes from `agentRunCollaboration`. The live
+ * stream is attached only while the host runs, or when the user sends to a child (connecting
+ * makes the root command-ready, restoring the host).
  *
  * A published context carries the tree and statuses only. A child's stored conversation,
  * activities and artifacts are loaded by the member loader when it is selected, and again for the
@@ -56,9 +58,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const terminations = new Map<string, object>()
   const loaderRoot = (hostRunId: string) => `agent:${hostRunId}`
   const binding = useWindowNodeContextStore()
+  const activities = useAgentActivityStore()
   const remoteRuns = useRemoteRunsStore()
   const participantMessages = useCollaborationParticipantMessagesStore()
-  const listedChildren = useListedRunChildrenStore()
   const assertNotTerminating = (id: string) => {
     if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
   }
@@ -131,7 +133,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         if (!isCurrent()) throw new Error('Agent collaboration stream ownership released.')
         publish(hostRunId, context)
       },
+      onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
+      onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
     })
     services.set(hostRunId, service)
     service.connect()
@@ -180,6 +184,69 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /** Loads the stored (or live) view without restoring anything; a failure is kept as the hub's error. */
   const inspect = async (hostRunId: string): Promise<void> => { await read(hostRunId) }
 
+  /** The status read on the history poll that is still running; a tick that finds one skips its own. */
+  let statusRefresh: Promise<void> | null = null
+  /** Per stopped host, the node's closed-set digest its view was last re-read for: one re-read per digest value. */
+  const stoppedHostRereads = new Map<string, string>()
+
+  /** The answer names exactly the context's local children (ID and address), each once. */
+  const sameLocalChildren = (context: AgentRunCollaborationContext, answer: AgentRunCollaborationStatusesAnswer): boolean => {
+    const named = new Set(answer.statuses.map((status) => status.agentRunId))
+    return named.size === answer.statuses.length && named.size === context.index.agents.size
+      && answer.statuses.every((status) => context.index.agents.get(status.agentRunId)?.address === status.memberAddress)
+  }
+
+  /**
+   * The history poll's refresh of task rows under listed runs that are not open (autobyteus-426 REQ-009, D-09): one
+   * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
+   * listed (`listedAgentRunIds`, active or stopped) or whose context is still live. Each answer, in order: dropped
+   * unless its hub is as it was at selection; when both are inactive, a view re-read only when the node's closed-set
+   * digest differs from the view's and was not re-read for before (a Task closed or reopened while the host is
+   * stopped, autobyteus-435); a view re-read when the active state or the local children changed, or when the
+   * digest differs (autobyteus-446); else the states are applied.
+   */
+  const refreshListedStatuses = (listedAgentRunIds: readonly string[]): Promise<void> => {
+    if (statusRefresh) return statusRefresh
+    const listed = new Set(listedAgentRunIds)
+    const revision = binding.bindingRevision
+    const selected = Object.entries(contexts.value).filter(([hostRunId, context]) => !services.has(hostRunId)
+      && !inspections.has(hostRunId) && !terminations.has(hostRunId) && (listed.has(hostRunId) || context.isActive))
+    if (!selected.length) return Promise.resolve()
+    const refresh = (async () => {
+      let answers: AgentRunCollaborationStatusesAnswer[]
+      try {
+        answers = await readAgentRunCollaborationStatuses(selected.map(([hostRunId]) => hostRunId))
+      } catch (cause) {
+        console.warn('[agentRunCollaboration] Could not read the listed runs\' child states.', cause)
+        return
+      }
+      const answerOf = new Map(answers.map((answer) => [answer.runId, answer]))
+      for (const [hostRunId, context] of selected) {
+        const answer = answerOf.get(hostRunId)
+        const current = contexts.value[hostRunId] === context && binding.bindingRevision === revision
+          && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
+        if (!answer || !current) continue
+        if (!answer.isActive && !context.isActive) {
+          const digest = answer.closedTaskExecutionsDigest
+          if (digest && digest !== closedTaskExecutionsDigest(context.view.closed_task_executions)
+            && stoppedHostRereads.get(hostRunId) !== digest) {
+            stoppedHostRereads.set(hostRunId, digest)
+            void inspect(hostRunId)
+          }
+          continue
+        }
+        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)
+          || answer.closedTaskExecutionsDigest !== closedTaskExecutionsDigest(context.view.closed_task_executions)) {
+          void inspect(hostRunId)
+          continue
+        }
+        context.applyStatuses(answer.statuses)
+      }
+    })().finally(() => { if (statusRefresh === refresh) statusRefresh = null })
+    statusRefresh = refresh
+    return refresh
+  }
+
   /**
    * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
    * else a new inspection, so one hub selection reads the view once.
@@ -196,39 +263,71 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     return contexts.value[hostRunId]?.view ?? null
   }
 
-  /**
-   * A Stop of the run's own agent (one request-local exclusion owned here, never a server receipt). The view keeps its
-   * stream and its children keep their states: they are runs of their own (autobyteus-461 SR-045). A confirmed Stop
-   * marks the run's agent stopped; the server ends the run's root, and the stream reconnects to a fresh view.
-   */
+  /** One request-local exclusion owned here, never a server receipt or input ledger. */
   const beginHostTermination = (hostRunId: string) => {
     assertNotTerminating(hostRunId)
     const token = {}
     const revision = binding.bindingRevision
+    const root = contexts.value[hostRunId]
+    const view = root?.view
+    const children = root?.listAgentContextEntries().map(entry => ({ ...entry,
+      state: entry.context.state, runtimeKind: entry.context.config.runtimeKind,
+      instance: entry.context.state.inputProjection?.runInstanceId,
+      activityIds: activities.getNativeCompactionActivityIds(entry.agentRunId),
+    })) ?? []
     terminations.set(hostRunId, token)
+    inspections.delete(hostRunId)
+    // Deliberate retirement BEFORE the command: absence later is not a transport receipt.
+    detach(hostRunId)
+    root?.requireReopen('Agent collaboration requires fresh inspection after Stop.')
     let confirmed = false
+    const ownsScope = () => terminations.get(hostRunId) === token
+      && binding.bindingRevision === revision && contexts.value[hostRunId] === root
+      && root?.view === view && !services.has(hostRunId)
     return Object.freeze({
       confirm: (): boolean => {
-        if (confirmed || terminations.get(hostRunId) !== token || binding.bindingRevision !== revision) return false
-        contexts.value[hostRunId]?.setActive(false)
+        if (confirmed || !ownsScope() || (root?.listAgentContextEntries().length ?? 0) !== children.length) return false
+        // Validate the WHOLE batch before even one activity or context changes.
+        if (children.some(child => root?.getAgentContext(child.agentRunId) !== child.context
+          || root?.getChild(child.agentRunId)?.address !== child.memberAddress
+          || child.context.state !== child.state || child.state.runId !== child.agentRunId
+          || child.context.config.runtimeKind !== child.runtimeKind
+          || (!!child.state.inputProjection?.runInstanceId && child.state.inputProjection.runInstanceId !== child.instance))) return false
+        for (const child of children) {
+          if (child.runtimeKind === 'autobyteus') {
+            child.state.compactionStatus = activities.applyConfirmedNativeTermination(child.agentRunId,
+              [...child.activityIds, ...activities.getNativeCompactionActivityIds(child.agentRunId)], child.state.compactionStatus)
+          }
+        }
+        root?.setActive(false)
         confirmed = true
         return true
       },
       finish: (): void => {
-        if (terminations.get(hostRunId) === token) terminations.delete(hostRunId)
+        if (terminations.get(hostRunId) !== token) return
+        // setActive replaced our captured view on success; all other ownership still holds.
+        const inspectConfirmed = confirmed && binding.bindingRevision === revision
+          && contexts.value[hostRunId] === root && !services.has(hostRunId)
+        terminations.delete(hostRunId)
+        if (inspectConfirmed) void inspect(hostRunId)
       },
     })
   }
 
   /**
-   * Called for the selected standalone run. The open run's view keeps its stream whether its own agent runs or not (autobyteus-461 SR-045): its children are runs
-   * of their own, so their rows and output stay live while it is stopped. Its agent's state only updates the view.
+   * Keeps one host's view in step with the host: live stream while the host runs; the stored
+   * view otherwise. Called for the selected standalone run.
    */
   const syncHost = (hostRunId: string, hostRunning: boolean) => {
     if (terminations.has(hostRunId)) return
     if (contexts.value[hostRunId]?.phase === 'reopen_required' && !services.has(hostRunId)) return
-    attach(hostRunId)
-    contexts.value[hostRunId]?.setActive(hostRunning)
+    if (hostRunning) attach(hostRunId)
+    else {
+      const wasLive = services.has(hostRunId)
+      detach(hostRunId)
+      // A settled stored view is reused: one view read per hub selection (autobyteus-358, DS-004).
+      if (wasLive || contexts.value[hostRunId]?.phase !== 'historical') void inspect(hostRunId)
+    }
   }
 
   const contextFor = (hostRunId: string): AgentRunCollaborationContext | null => contexts.value[hostRunId] ?? null
@@ -240,26 +339,23 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 
-  /** The run's view is open: it has its stream and its published context (else its rows come from the poll's answer). */
-  const isOpen = (hostRunId: string): boolean => services.has(hostRunId) && Boolean(contextFor(hostRunId))
+  /**
+   * A listed standalone run's stored view, read once without restoring the run, when it has collaboration and is not
+   * loaded yet; a live run is kept current by its stream.
+   */
+  const ensureStoredView = (hostRunId: string, hasCollaboration: boolean): void => {
+    if (hasCollaboration && !contextFor(hostRunId)) void inspect(hostRunId)
+  }
 
   /**
-   * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. A row of a run that is not
-   * open (the poll's answer) is selected for when its view is published, which keeps it only if the view lists it.
-   * Answers whether a child was selected.
+   * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. Answers whether a child
+   * was selected (false while the run's view is not loaded).
    */
   const selectTaskRow = (hostRunId: string, row: RunHistoryTransientExecutionRow): boolean => {
-    if (isOpen(hostRunId)) {
-      const context = contextFor(hostRunId)!
-      selectChild(hostRunId, row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null))
-      return true
-    }
-    const team = row.teamRunIdForNode
-      ? listedChildren.answerOf('agent', hostRunId)?.children.find((child) => child.row.kind === 'agent_team' && child.row.teamRunId === row.teamRunIdForNode)
-      : null
-    const agentRunId = row.agentRunId ?? (team?.row.kind === 'agent_team' ? team.row.coordinatorAgentRunId : null)
-    if (!agentRunId) return false
-    selection[hostRunId] = agentRunId
+    const context = contextFor(hostRunId)
+    if (!context) return false
+    const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
+    selectChild(hostRunId, agentRunId)
     return true
   }
 
@@ -272,15 +368,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       : [...current, teamRunId])
   }
 
-  /** The task rows under a run row: the open run's from its view, else the history poll's answer's (SR-055). */
-  const taskRows = (hostRunId: string): AgentRunTaskTreeRow[] => {
-    const expanded = (teamRunId: string) => isTaskTeamExpanded(hostRunId, teamRunId)
-    const answer = isOpen(hostRunId) ? null : listedChildren.answerOf('agent', hostRunId)
-    if (!answer) return contextFor(hostRunId)?.listTaskRows(expanded) ?? []
-    const listed = listedRunChildren(answer)
-    return agentRunTaskRows({ hostRunId, children: listed.children, statusOf: listed.statusOf, delegatorAddressOf: listed.delegatorAddressOf,
-      isActive: answer.isActive, isTeamExpanded: expanded })
-  }
+  const taskRows = (hostRunId: string): AgentRunTaskTreeRow[] =>
+    contextFor(hostRunId)?.listTaskRows((teamRunId) => isTaskTeamExpanded(hostRunId, teamRunId)) ?? []
 
   /** The host's Team tab: messages with its children, once it has any. */
   const hostMessagesView = (hostRunId: string): CollaborationMessagesContextView | null => {
@@ -299,7 +388,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
     const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     try {
-      // The view's stream, ready once its snapshot is applied; the child's message goes to the child's own run (SR-045).
+      // Attaching makes the root command-ready; a stopped host is restored first.
       const service = attach(hostRunId)
       await service.whenReady()
       if (attachments.some((file) => isDraftUploadedContextAttachment(file) || coerceDraftUploadedContextAttachment(file))) {
@@ -342,8 +431,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       context,
       workspaceRootPath: local ? local.source.launchConfiguration.workspaceRootPath : null,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
-      // A child is read by the subject this view kind's owner gives it: its own run on this node, else through this run.
-      browse: agentRunAgentReadSubject(hostRunId, collaboration.index, child.agentRunId),
+      // A child is not a top-level run package: its pages come from the host's collaboration package.
+      browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),
       // A child is always addressable: a message wakes it (and its host) through the stream.
       access: 'live' as const,
       interaction: Object.freeze({
@@ -366,6 +455,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     delete selection[hostRunId]
     delete expandedTeams[hostRunId]
     delete errors[hostRunId]
+    stoppedHostRereads.delete(hostRunId)
   }
 
   /** Releases every host's view and stream: the window's node changed, or the phone's session ended (autobyteus-435). */
@@ -376,7 +466,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   watch(() => binding.bindingRevision, releaseAll, { flush: 'sync' })
 
   return {
-    contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, releaseAll, beginHostTermination,
-    selectChild, selectedChild, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
+    contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, releaseAll, beginHostTermination,
+    selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
   }
 })

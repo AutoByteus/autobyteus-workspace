@@ -253,6 +253,7 @@ export type AgentOrgPlacementLaunchOverrideInput = {
 export type AgentOrgRootHistoryObject = {
   __typename?: 'AgentOrgRootHistoryObject';
   archived_at?: Maybe<Scalars['String']['output']>;
+  closed_task_executions: Scalars['JSON']['output'];
   created_at: Scalars['String']['output'];
   is_active: Scalars['Boolean']['output'];
   last_activity_at: Scalars['String']['output'];
@@ -432,6 +433,14 @@ export enum AgentPackageUpdateStatus {
   UpToDate = 'UP_TO_DATE'
 }
 
+export type AgentRunChildStatusObject = {
+  __typename?: 'AgentRunChildStatusObject';
+  agentRunId: Scalars['String']['output'];
+  memberAddress: Scalars['String']['output'];
+  recoverableBlock?: Maybe<Scalars['JSON']['output']>;
+  status: Scalars['String']['output'];
+};
+
 export type AgentRunCollaborationMemberProjectionPayload = {
   __typename?: 'AgentRunCollaborationMemberProjectionPayload';
   activities: Array<Scalars['JSON']['output']>;
@@ -441,6 +450,15 @@ export type AgentRunCollaborationMemberProjectionPayload = {
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   memberAddress: Scalars['String']['output'];
   summary?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentRunCollaborationStatusesObject = {
+  __typename?: 'AgentRunCollaborationStatusesObject';
+  /** The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed task executions of its root, as its live view. Inactive run: the closed task executions the Task index records as hosted by this run, not filtered by its stored execution tree. */
+  closedTaskExecutionsDigest?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  runId: Scalars['String']['output'];
+  statuses: Array<AgentRunChildStatusObject>;
 };
 
 export type AgentRunMemoryPage = {
@@ -626,9 +644,11 @@ export type AgentTeamRunMemoryPage = {
 export type AgentTeamRunMemorySummary = {
   __typename?: 'AgentTeamRunMemorySummary';
   createdAt?: Maybe<Scalars['String']['output']>;
+  isTaskTeam: Scalars['Boolean']['output'];
   lastUpdatedAt?: Maybe<Scalars['String']['output']>;
   memberTargets: Array<CollaborationMemberMemoryTargetSummary>;
   memory: MemoryAvailabilitySummary;
+  startedByAgentName?: Maybe<Scalars['String']['output']>;
   summary?: Maybe<Scalars['String']['output']>;
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
@@ -647,9 +667,11 @@ export type AgentTeamWithMemoryPage = {
 
 export type AgentTeamWithMemorySummary = {
   __typename?: 'AgentTeamWithMemorySummary';
+  isTaskTeam: Scalars['Boolean']['output'];
   latestMemoryAt?: Maybe<Scalars['String']['output']>;
   memberMemoryCount: Scalars['Int']['output'];
   memory: MemoryAvailabilitySummary;
+  startedByAgentName?: Maybe<Scalars['String']['output']>;
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
   teamRunCount: Scalars['Int']['output'];
@@ -877,7 +899,9 @@ export type CatalogProviderObject = {
 };
 
 export enum CollaborationMemberExecutionKind {
-  Configured = 'CONFIGURED'
+  Configured = 'CONFIGURED',
+  TaskAgent = 'TASK_AGENT',
+  TaskTeamMember = 'TASK_TEAM_MEMBER'
 }
 
 export type CollaborationMemberMemoryTargetSummary = {
@@ -1543,11 +1567,6 @@ export type IntegrationView = {
   tools: Array<IntegrationTool>;
 };
 
-export type ListedRunInput = {
-  kind: Scalars['String']['input'];
-  runId: Scalars['String']['input'];
-};
-
 export type McpConfigEntry = {
   __typename?: 'McpConfigEntry';
   name: Scalars['String']['output'];
@@ -2019,7 +2038,9 @@ export type Mutation = {
   resetAgentOrgPersonalSetting: AgentOrgDefinition;
   resetAgentPersonalSetting: AgentDefinition;
   resetAgentTeamPersonalSetting: AgentTeamDefinition;
+  restoreAgentOrgRun: AgentOrgRunMutationResult;
   restoreAgentRun: RestoreAgentRunResult;
+  restoreAgentTeamRun: RestoreAgentTeamRunResult;
   retryEmbeddingModel: Scalars['Boolean']['output'];
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
@@ -2495,8 +2516,18 @@ export type MutationResetAgentTeamPersonalSettingArgs = {
 };
 
 
+export type MutationRestoreAgentOrgRunArgs = {
+  agentOrgRunId: Scalars['String']['input'];
+};
+
+
 export type MutationRestoreAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
+};
+
+
+export type MutationRestoreAgentTeamRunArgs = {
+  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -2948,7 +2979,10 @@ export type Query = {
   agentOrgRunModelOptions: Array<AgentOrgRunModelOptionObject>;
   agentPackages: Array<AgentPackage>;
   agentRunCollaboration?: Maybe<Scalars['JSON']['output']>;
+  agentRunCollaborationMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
+  agentRunCollaborationMemberFileChanges: Array<RunFileChangeEntryObject>;
   agentRunCollaborationMemberProjection: AgentRunCollaborationMemberProjectionPayload;
+  agentRunCollaborationStatuses: Array<AgentRunCollaborationStatusesObject>;
   agentRunModelOptions: RunModelOptionsObject;
   agentRuntimeSignInBrowserAvailable: Scalars['Boolean']['output'];
   agentRuntimes: Array<AgentRuntime>;
@@ -3043,7 +3077,6 @@ export type Query = {
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
   remoteCollaborationCapability: RemoteCollaborationCapabilityGql;
-  runCollaborationStatuses: Scalars['JSON']['output'];
   runFolderWorkJournal?: Maybe<WorkJournalView>;
   runtimeAvailability: RuntimeAvailabilityObject;
   runtimeAvailabilityKinds: Array<Scalars['String']['output']>;
@@ -3106,10 +3139,30 @@ export type QueryAgentRunCollaborationArgs = {
 };
 
 
+export type QueryAgentRunCollaborationMemberEventMonitorActiveTracePageArgs = {
+  agentRunId: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+};
+
+
+export type QueryAgentRunCollaborationMemberFileChangesArgs = {
+  agentRunId: Scalars['String']['input'];
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+};
+
+
 export type QueryAgentRunCollaborationMemberProjectionArgs = {
   agentRunId: Scalars['String']['input'];
   hostRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
+};
+
+
+export type QueryAgentRunCollaborationStatusesArgs = {
+  runIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -3454,11 +3507,6 @@ export type QueryProviderModelCatalogSnapshotsArgs = {
 };
 
 
-export type QueryRunCollaborationStatusesArgs = {
-  runs: Array<ListedRunInput>;
-};
-
-
 export type QueryRunFolderWorkJournalArgs = {
   runKey: Scalars['String']['input'];
   workJournal?: InputMaybe<WorkJournalWindowInput>;
@@ -3629,6 +3677,13 @@ export type RestoreAgentRunResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type RestoreAgentTeamRunResult = {
+  __typename?: 'RestoreAgentTeamRunResult';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  teamRunId?: Maybe<Scalars['String']['output']>;
+};
+
 export type RunFileChangeEntryObject = {
   __typename?: 'RunFileChangeEntryObject';
   content?: Maybe<Scalars['String']['output']>;
@@ -3654,6 +3709,7 @@ export type RunHistoryItemObject = {
   __typename?: 'RunHistoryItemObject';
   archivedAt?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
+  hasCollaboration: Scalars['Boolean']['output'];
   isActive: Scalars['Boolean']['output'];
   lastActivityAt: Scalars['String']['output'];
   runId: Scalars['String']['output'];
@@ -3881,7 +3937,7 @@ export type StreamableHttpMcpServerConfigInput = {
 export type TaskRoot = {
   __typename?: 'TaskRoot';
   closed: Scalars['Boolean']['output'];
-  delegatingRun: TaskRootDelegatingRun;
+  hostRoot: TaskRootHost;
   ingressAgentRunId: Scalars['String']['output'];
   kind: Scalars['String']['output'];
   recipientAddress?: Maybe<Scalars['String']['output']>;
@@ -3891,8 +3947,8 @@ export type TaskRoot = {
   teamRunId?: Maybe<Scalars['String']['output']>;
 };
 
-export type TaskRootDelegatingRun = {
-  __typename?: 'TaskRootDelegatingRun';
+export type TaskRootHost = {
+  __typename?: 'TaskRootHost';
   kind: Scalars['String']['output'];
   runId: Scalars['String']['output'];
 };
@@ -3973,6 +4029,7 @@ export type TeamRunExecutionCheckpointPayload = {
 export type TeamRunResumeConfigPayload = {
   __typename?: 'TeamRunResumeConfigPayload';
   baseChangeSequence: Scalars['Int']['output'];
+  closedTaskExecutions: Scalars['JSON']['output'];
   executionTree: Scalars['JSON']['output'];
   isActive: Scalars['Boolean']['output'];
   lastMessageChangeSequence?: Maybe<Scalars['Int']['output']>;
@@ -4814,6 +4871,13 @@ export type CreateAgentOrgRunMutationVariables = Exact<{
 
 export type CreateAgentOrgRunMutation = { __typename?: 'Mutation', createAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
 
+export type RestoreAgentOrgRunMutationVariables = Exact<{
+  agentOrgRunId: Scalars['String']['input'];
+}>;
+
+
+export type RestoreAgentOrgRunMutation = { __typename?: 'Mutation', restoreAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
+
 export type TerminateAgentOrgRunMutationVariables = Exact<{
   agentOrgRunId: Scalars['String']['input'];
 }>;
@@ -4917,6 +4981,13 @@ export type TerminateAgentTeamRunMutationVariables = Exact<{
 
 
 export type TerminateAgentTeamRunMutation = { __typename?: 'Mutation', terminateAgentTeamRun: { __typename: 'TerminateAgentTeamRunResult', success: boolean, message: string } };
+
+export type RestoreAgentTeamRunMutationVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+}>;
+
+
+export type RestoreAgentTeamRunMutation = { __typename?: 'Mutation', restoreAgentTeamRun: { __typename: 'RestoreAgentTeamRunResult', success: boolean, message: string, teamRunId?: string | null } };
 
 export type UpdateStoppedTeamRunSelectionsMutationVariables = Exact<{
   input: UpdateStoppedTeamRunSelectionsInput;
@@ -5342,21 +5413,21 @@ export type CreateProjectTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type UpdateProjectTaskMutationVariables = Exact<{
   input: UpdateProjectTaskInput;
 }>;
 
 
-export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type AddProjectTaskCommentMutationVariables = Exact<{
   input: AddProjectTaskCommentInput;
 }>;
 
 
-export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
+export type AddProjectTaskCommentMutation = { __typename?: 'Mutation', addProjectTaskComment: { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> } };
 
 export type DeleteProjectTaskMutationVariables = Exact<{
   input: DeleteProjectTaskInput;
@@ -5590,14 +5661,14 @@ export type AvailableAgentRuntimesQuery = { __typename?: 'Query', availableAgent
 export type ListCollaborationRootHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, last_activity_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
+export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, last_activity_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
 
 export type GetAgentOrgRootHistoryQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
 }>;
 
 
-export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRootHistory?: { __typename?: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, last_activity_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any } | null };
+export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRootHistory?: { __typename?: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, last_activity_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | null };
 
 export type GetCollaboratorMentionCandidatesQueryVariables = Exact<{
   rootSubjectKind: Scalars['String']['input'];
@@ -5615,12 +5686,12 @@ export type GetAgentRunCollaborationQueryVariables = Exact<{
 
 export type GetAgentRunCollaborationQuery = { __typename?: 'Query', agentRunCollaboration?: any | null };
 
-export type GetRunCollaborationStatusesQueryVariables = Exact<{
-  runs: Array<ListedRunInput> | ListedRunInput;
+export type GetAgentRunCollaborationStatusesQueryVariables = Exact<{
+  runIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type GetRunCollaborationStatusesQuery = { __typename?: 'Query', runCollaborationStatuses: any };
+export type GetAgentRunCollaborationStatusesQuery = { __typename?: 'Query', agentRunCollaborationStatuses: Array<{ __typename?: 'AgentRunCollaborationStatusesObject', runId: string, isActive: boolean, closedTaskExecutionsDigest?: string | null, statuses: Array<{ __typename?: 'AgentRunChildStatusObject', agentRunId: string, memberAddress: string, status: string, recoverableBlock?: any | null }> }> };
 
 export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
   hostRunId: Scalars['String']['input'];
@@ -5630,6 +5701,15 @@ export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
 
 
 export type GetAgentRunCollaborationMemberProjectionQuery = { __typename?: 'Query', agentRunCollaborationMemberProjection: { __typename?: 'AgentRunCollaborationMemberProjectionPayload', agentRunId: string, memberAddress: string, conversation: Array<any>, activities: Array<any>, summary?: string | null, lastActivityAt?: string | null, hasEarlierActiveTraceEvents: boolean } };
+
+export type GetAgentRunCollaborationMemberFileChangesQueryVariables = Exact<{
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentRunCollaborationMemberFileChangesQuery = { __typename?: 'Query', agentRunCollaborationMemberFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
 
 export type GetDefinitionProblemsQueryVariables = Exact<{
   kind: DefinitionKind;
@@ -5763,7 +5843,7 @@ export type ListAgentTeamsWithMemoryQueryVariables = Exact<{
 }>;
 
 
-export type ListAgentTeamsWithMemoryQuery = { __typename?: 'Query', listAgentTeamsWithMemory: { __typename?: 'AgentTeamWithMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamWithMemorySummary', teamDefinitionId: string, teamDefinitionName: string, teamRunCount: number, memberMemoryCount: number, latestMemoryAt?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkJournal: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
+export type ListAgentTeamsWithMemoryQuery = { __typename?: 'Query', listAgentTeamsWithMemory: { __typename?: 'AgentTeamWithMemoryPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'AgentTeamWithMemorySummary', teamDefinitionId: string, teamDefinitionName: string, teamRunCount: number, memberMemoryCount: number, latestMemoryAt?: string | null, isTaskTeam: boolean, startedByAgentName?: string | null, memory: { __typename?: 'MemoryAvailabilitySummary', latestMemoryAt?: string | null, hasWorkJournal: boolean, hasRawTraces: boolean, hasRawArchive: boolean } }> } };
 
 export type ListAgentTeamRunsWithMemoryQueryVariables = Exact<{
   teamDefinitionId: Scalars['String']['input'];
@@ -5897,18 +5977,18 @@ export type GetProjectRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectRunHistoryQuery = { __typename?: 'Query', projectRunHistory: { __typename?: 'ProjectRunHistoryObject', projectId: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
+export type GetProjectRunHistoryQuery = { __typename?: 'Query', projectRunHistory: { __typename?: 'ProjectRunHistoryObject', projectId: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
-export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
+export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
 
-export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
+export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> };
 
 export type GetProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
+export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, title: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, taskKey: string, dependsOnTaskIds: Array<string>, partOfTaskId?: string | null, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null, comments: Array<{ __typename?: 'ProjectTaskComment', id: number, createdAt: string, text: string }> }> };
 
 export type GetTaskWorkerTasksQueryVariables = Exact<{
   agentRunIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
@@ -5921,7 +6001,7 @@ export type GetTaskWorkerTasksQuery = { __typename?: 'Query', taskWorkerTasks: A
 export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, delegatingRun: { __typename?: 'TaskRootDelegatingRun', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
 
 export type SearchProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
@@ -5964,7 +6044,7 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetWorkspaceRunHistoryQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -5972,7 +6052,7 @@ export type GetWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
+export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -6024,6 +6104,16 @@ export type GetTeamMemberEventMonitorActiveTracePageQueryVariables = Exact<{
 
 export type GetTeamMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', getTeamMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorInterAgentVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, senderAgentRunId: string, senderAddress?: string | null, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> } };
 
+export type GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables = Exact<{
+  hostRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', agentRunCollaborationMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorInterAgentVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, senderAgentRunId: string, senderAddress?: string | null, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> } };
+
 export type GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
@@ -6039,7 +6129,7 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, remoteTaskExecutions: any, liveSequenceId?: string | null, baseChangeSequence: number, lastMessageChangeSequence?: number | null, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
+export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, closedTaskExecutions: any, remoteTaskExecutions: any, liveSequenceId?: string | null, baseChangeSequence: number, lastMessageChangeSequence?: number | null, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
 export type GetTeamRunExecutionCheckpointQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -6882,7 +6972,7 @@ export const TaskRootFieldsFragmentDoc = gql`
   recipientAddress
   ingressAgentRunId
   teamRunId
-  delegatingRun {
+  hostRoot {
     kind
     runId
   }
@@ -7974,6 +8064,37 @@ export function useCreateAgentOrgRunMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>(CreateAgentOrgRunDocument, options);
 }
 export type CreateAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>;
+export const RestoreAgentOrgRunDocument = gql`
+    mutation RestoreAgentOrgRun($agentOrgRunId: String!) {
+  restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) {
+    success
+    message
+    agentOrgRunId
+  }
+}
+    `;
+
+/**
+ * __useRestoreAgentOrgRunMutation__
+ *
+ * To run a mutation, you first call `useRestoreAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRestoreAgentOrgRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRestoreAgentOrgRunMutation({
+ *   variables: {
+ *     agentOrgRunId: // value for 'agentOrgRunId'
+ *   },
+ * });
+ */
+export function useRestoreAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>(RestoreAgentOrgRunDocument, options);
+}
+export type RestoreAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>;
 export const TerminateAgentOrgRunDocument = gql`
     mutation TerminateAgentOrgRun($agentOrgRunId: String!) {
   terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) {
@@ -8417,6 +8538,38 @@ export function useTerminateAgentTeamRunMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<TerminateAgentTeamRunMutation, TerminateAgentTeamRunMutationVariables>(TerminateAgentTeamRunDocument, options);
 }
 export type TerminateAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateAgentTeamRunMutation, TerminateAgentTeamRunMutationVariables>;
+export const RestoreAgentTeamRunDocument = gql`
+    mutation RestoreAgentTeamRun($teamRunId: String!) {
+  restoreAgentTeamRun(teamRunId: $teamRunId) {
+    __typename
+    success
+    message
+    teamRunId
+  }
+}
+    `;
+
+/**
+ * __useRestoreAgentTeamRunMutation__
+ *
+ * To run a mutation, you first call `useRestoreAgentTeamRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRestoreAgentTeamRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRestoreAgentTeamRunMutation({
+ *   variables: {
+ *     teamRunId: // value for 'teamRunId'
+ *   },
+ * });
+ */
+export function useRestoreAgentTeamRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>(RestoreAgentTeamRunDocument, options);
+}
+export type RestoreAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>;
 export const UpdateStoppedTeamRunSelectionsDocument = gql`
     mutation UpdateStoppedTeamRunSelections($input: UpdateStoppedTeamRunSelectionsInput!) {
   updateStoppedTeamRunSelections(input: $input) {
@@ -11595,6 +11748,7 @@ export const ListCollaborationRootHistoryDocument = gql`
       is_active
       summary
       org
+      closed_task_executions
     }
     ... on AgentTeamRootHistoryObject {
       root_subject_kind
@@ -11634,6 +11788,7 @@ export const GetAgentOrgRootHistoryDocument = gql`
     is_active
     summary
     org
+    closed_task_executions
   }
 }
     `;
@@ -11732,34 +11887,44 @@ export function useGetAgentRunCollaborationLazyQuery(variables?: GetAgentRunColl
   return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>(GetAgentRunCollaborationDocument, variables, options);
 }
 export type GetAgentRunCollaborationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>;
-export const GetRunCollaborationStatusesDocument = gql`
-    query GetRunCollaborationStatuses($runs: [ListedRunInput!]!) {
-  runCollaborationStatuses(runs: $runs)
+export const GetAgentRunCollaborationStatusesDocument = gql`
+    query GetAgentRunCollaborationStatuses($runIds: [String!]!) {
+  agentRunCollaborationStatuses(runIds: $runIds) {
+    runId
+    isActive
+    closedTaskExecutionsDigest
+    statuses {
+      agentRunId
+      memberAddress
+      status
+      recoverableBlock
+    }
+  }
 }
     `;
 
 /**
- * __useGetRunCollaborationStatusesQuery__
+ * __useGetAgentRunCollaborationStatusesQuery__
  *
- * To run a query within a Vue component, call `useGetRunCollaborationStatusesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunCollaborationStatusesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationStatusesQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetRunCollaborationStatusesQuery({
- *   runs: // value for 'runs'
+ * const { result, loading, error } = useGetAgentRunCollaborationStatusesQuery({
+ *   runIds: // value for 'runIds'
  * });
  */
-export function useGetRunCollaborationStatusesQuery(variables: GetRunCollaborationStatusesQueryVariables | VueCompositionApi.Ref<GetRunCollaborationStatusesQueryVariables> | ReactiveFunction<GetRunCollaborationStatusesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>(GetRunCollaborationStatusesDocument, variables, options);
+export function useGetAgentRunCollaborationStatusesQuery(variables: GetAgentRunCollaborationStatusesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationStatusesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationStatusesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>(GetAgentRunCollaborationStatusesDocument, variables, options);
 }
-export function useGetRunCollaborationStatusesLazyQuery(variables?: GetRunCollaborationStatusesQueryVariables | VueCompositionApi.Ref<GetRunCollaborationStatusesQueryVariables> | ReactiveFunction<GetRunCollaborationStatusesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>(GetRunCollaborationStatusesDocument, variables, options);
+export function useGetAgentRunCollaborationStatusesLazyQuery(variables?: GetAgentRunCollaborationStatusesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationStatusesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationStatusesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>(GetAgentRunCollaborationStatusesDocument, variables, options);
 }
-export type GetRunCollaborationStatusesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunCollaborationStatusesQuery, GetRunCollaborationStatusesQueryVariables>;
+export type GetAgentRunCollaborationStatusesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>;
 export const GetAgentRunCollaborationMemberProjectionDocument = gql`
     query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
   agentRunCollaborationMemberProjection(
@@ -11802,6 +11967,51 @@ export function useGetAgentRunCollaborationMemberProjectionLazyQuery(variables?:
   return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>(GetAgentRunCollaborationMemberProjectionDocument, variables, options);
 }
 export type GetAgentRunCollaborationMemberProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberProjectionQuery, GetAgentRunCollaborationMemberProjectionQueryVariables>;
+export const GetAgentRunCollaborationMemberFileChangesDocument = gql`
+    query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+  agentRunCollaborationMemberFileChanges(
+    hostRunId: $hostRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+  ) {
+    id
+    runId
+    path
+    type
+    status
+    sourceTool
+    sourceInvocationId
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetAgentRunCollaborationMemberFileChangesQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationMemberFileChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationMemberFileChangesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunCollaborationMemberFileChangesQuery({
+ *   hostRunId: // value for 'hostRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetAgentRunCollaborationMemberFileChangesQuery(variables: GetAgentRunCollaborationMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>(GetAgentRunCollaborationMemberFileChangesDocument, variables, options);
+}
+export function useGetAgentRunCollaborationMemberFileChangesLazyQuery(variables?: GetAgentRunCollaborationMemberFileChangesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberFileChangesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>(GetAgentRunCollaborationMemberFileChangesDocument, variables, options);
+}
+export type GetAgentRunCollaborationMemberFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberFileChangesQuery, GetAgentRunCollaborationMemberFileChangesQueryVariables>;
 export const GetDefinitionProblemsDocument = gql`
     query GetDefinitionProblems($kind: DefinitionKind!) {
   definitionProblems(kind: $kind) {
@@ -12476,6 +12686,8 @@ export const ListAgentTeamsWithMemoryDocument = gql`
       teamRunCount
       memberMemoryCount
       latestMemoryAt
+      isTaskTeam
+      startedByAgentName
       memory {
         latestMemoryAt
         hasWorkJournal
@@ -13266,6 +13478,7 @@ export const GetProjectRunHistoryDocument = gql`
         isActive
         shouldConnectStream
         statusSource
+        hasCollaboration
       }
     }
     teamDefinitions {
@@ -13606,6 +13819,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
         isActive
         shouldConnectStream
         statusSource
+        hasCollaboration
       }
     }
     teamDefinitions {
@@ -13679,6 +13893,7 @@ export const GetWorkspaceRunHistoryDocument = gql`
         isActive
         shouldConnectStream
         statusSource
+        hasCollaboration
       }
     }
     teamDefinitions {
@@ -13960,6 +14175,44 @@ export function useGetTeamMemberEventMonitorActiveTracePageLazyQuery(variables?:
   return VueApolloComposable.useLazyQuery<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>(GetTeamMemberEventMonitorActiveTracePageDocument, variables, options);
 }
 export type GetTeamMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>;
+export const GetAgentRunCollaborationMemberEventMonitorActiveTracePageDocument = gql`
+    query GetAgentRunCollaborationMemberEventMonitorActiveTracePage($hostRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String) {
+  agentRunCollaborationMemberEventMonitorActiveTracePage(
+    hostRunId: $hostRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+    beforeCursor: $beforeCursor
+  ) {
+    ...EventMonitorActiveTracePageFields
+  }
+}
+    ${EventMonitorActiveTracePageFieldsFragmentDoc}`;
+
+/**
+ * __useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery({
+ *   hostRunId: // value for 'hostRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ *   beforeCursor: // value for 'beforeCursor'
+ * });
+ */
+export function useGetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery(variables: GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>(GetAgentRunCollaborationMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export function useGetAgentRunCollaborationMemberEventMonitorActiveTracePageLazyQuery(variables?: GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>(GetAgentRunCollaborationMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export type GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationMemberEventMonitorActiveTracePageQuery, GetAgentRunCollaborationMemberEventMonitorActiveTracePageQueryVariables>;
 export const GetAgentOrgMemberEventMonitorActiveTracePageDocument = gql`
     query GetAgentOrgMemberEventMonitorActiveTracePage($orgRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String) {
   getAgentOrgMemberEventMonitorActiveTracePage(
@@ -14004,6 +14257,7 @@ export const GetTeamRunResumeConfigDocument = gql`
     teamRunId
     isActive
     executionTree
+    closedTaskExecutions
     remoteTaskExecutions
     modelConfigEditability {
       editable

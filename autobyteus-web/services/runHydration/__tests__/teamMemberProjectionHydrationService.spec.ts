@@ -7,10 +7,9 @@ import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-supp
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { ensureAuthoritativeTeamMemberProjection } from '../teamMemberProjectionHydrationService';
 
-// TASK_RUN is a run the Team delegated to: it is read by its own identity, as its own run (autobyteus-461 CR-461-010).
 const { fetchProjection, fetchFileChanges } = vi.hoisted(() => ({ fetchProjection: vi.fn(), fetchFileChanges: vi.fn() }));
-vi.mock('../runStoredStateLoader', () => ({
-  fetchRunProjection: fetchProjection,
+vi.mock('../teamRunContextHydrationService', () => ({
+  fetchExactTeamMemberProjection: fetchProjection,
 }));
 vi.mock('../runFileChangeHydrationService', async (importOriginal) => ({
   ...await importOriginal<typeof import('../runFileChangeHydrationService')>(),
@@ -20,7 +19,7 @@ vi.mock('../runFileChangeHydrationService', async (importOriginal) => ({
 const ROOT = 'team-mounted';
 const TASK_RUN = 'task-run';
 const projection = () => ({
-  runId: TASK_RUN,
+  agentRunId: TASK_RUN,
   conversation: [{ kind: 'assistant', role: 'assistant', content: 'projected answer', ts: 10 }],
   activities: [{ kind: 'system_instruction', activityId: 'projection-system', content: 'projected', ts: 11 }],
   lastActivityAt: '2026-08-31T10:00:00.000Z',
@@ -69,7 +68,6 @@ describe('teamMemberProjectionHydrationService', () => {
     const first = ensureAuthoritativeTeamMemberProjection({ team, agentRunId: TASK_RUN });
     const second = ensureAuthoritativeTeamMemberProjection({ team, agentRunId: TASK_RUN });
     await vi.waitFor(() => expect(fetchProjection).toHaveBeenCalledTimes(1));
-    expect(fetchProjection).toHaveBeenCalledWith(TASK_RUN);
     resolveProjection(projection());
 
     await expect(Promise.all([first, second])).resolves.toEqual([
@@ -149,7 +147,8 @@ describe('teamMemberProjectionHydrationService', () => {
         .resolves.toEqual({ disposition: 'hydrated', agentRunId: TASK_RUN });
 
       expect(fetchFileChanges).toHaveBeenCalledWith({
-        kind: 'run', runId: TASK_RUN,
+        kind: 'teamMember', teamRunId: ROOT,
+        memberAddress: team.view.getAgentExecutionLocation(TASK_RUN)!.memberAddress, agentRunId: TASK_RUN,
       });
       expect(paths()).toEqual(['/outputs/1.png', '/outputs/2.png']);
     });

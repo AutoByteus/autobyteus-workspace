@@ -15,7 +15,6 @@ import {
   normalizeRootPath,
 } from './runHistoryReadModel';
 import { buildRunHistoryTeamExecutionRows } from './runHistoryTeamExecutionRows';
-import type { ListedRunAnswer } from '~/services/listedRuns/listedRunChildrenQuery';
 
 export interface RunHistoryAgentNavigationAncestry {
   workspaceId: string;
@@ -54,8 +53,6 @@ export interface RunHistoryNavigationProjectionBuildInput {
   agentContexts: Map<string, AgentContext>;
   teamContexts: AgentTeamContext[];
   agentOrgHistory: AgentOrgRunHistoryItem[];
-  /** A listed run's last answer from the history poll: the delegated rows of a Team run that is not open (SR-055). */
-  listedChildren(kind: 'agent_team', runId: string): ListedRunAnswer | null;
 }
 
 export const runHistoryExecutionRowIndexKey = (teamRunId: string, rowKey: string): string =>
@@ -106,7 +103,7 @@ const equalWorkspace = (a: WorkspaceHistoryWorkspaceNode, b: WorkspaceHistoryWor
     && equalRows(a.runs, b.runs, (a, b) => a.runId === b.runId && a.summary === b.summary
       && a.lastActivityAt === b.lastActivityAt && a.currentStatus === b.currentStatus
       && a.lastKnownStatus === b.lastKnownStatus && a.isActive === b.isActive
-      && a.source === b.source && a.isDraft === b.isDraft))
+      && a.hasCollaboration === b.hasCollaboration && a.source === b.source && a.isDraft === b.isDraft))
   && equalRows(a.agentOrgDefinitions, b.agentOrgDefinitions, (a, b) => a.stableKey === b.stableKey
     && a.definitionId === b.definitionId && a.name === b.name && equalRows(a.runs, b.runs, (a, b) => a === b));
 
@@ -202,7 +199,7 @@ export const buildRunHistoryNavigationProjection = (
       ...team,
       focusedAgentRunId: context?.view.getFocusedAgentRunId() ?? team.focusedAgentRunId,
     };
-    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context, input.listedChildren('agent_team', team.teamRunId)) };
+    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
   });
   const workspaceNodes = previous
     ? retainEqualNodes(previous.workspaceNodes, builtWorkspaceNodes, (node) => node.workspaceId, equalWorkspace)

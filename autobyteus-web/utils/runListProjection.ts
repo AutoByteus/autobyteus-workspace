@@ -62,6 +62,7 @@ const historyRow = (run: RunHistoryWorkspaceGroup['agentDefinitions'][number]['r
     currentStatus,
     lastKnownStatus: runStatusOf(currentStatus).lastKnownStatus,
     isActive: run.isActive,
+    hasCollaboration: run.hasCollaboration === true,
     source: 'history',
     isDraft: false,
   };

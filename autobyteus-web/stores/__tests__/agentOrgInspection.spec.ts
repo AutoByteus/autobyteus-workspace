@@ -4,7 +4,7 @@ import { flushPromises } from '@vue/test-utils'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 const mocks = vi.hoisted(() => ({ query: vi.fn(), instances: [] as any[] }))
 // Member artifacts are not under test here: answered empty without reaching the scenario's query mock.
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => /FileChanges$/.test(options.query?.definitions?.[0]?.name?.value ?? '') ? Promise.resolve({ data: { getAgentOrgMemberFileChanges: [], getTeamMemberFileChanges: [], getRunFileChanges: [] } }) : mocks.query(options) }) }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => options.query?.definitions?.[0]?.name?.value === 'GetAgentOrgMemberFileChanges' ? Promise.resolve({ data: { getAgentOrgMemberFileChanges: [] } }) : mocks.query(options) }) }))
 vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({ AgentOrgStreamingService: class {
   connect = vi.fn(); disconnect = vi.fn(); isReady = () => true
   constructor(readonly options: any) { mocks.instances.push(this) }
@@ -13,12 +13,9 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: vi.fn(), ensureWorkspaceByRootPath: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(),
 }) }))
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
-/** An Org agent's stored state through the Org; a delegated child's by its own identity (autobyteus-461 CR-461-010). */
-const projection = (variables: any) => {
-  const state = { conversation: [], activities: [], hasEarlierActiveTraceEvents: false }
-  return { data: { getAgentOrgMemberRunProjection: { ...variables, ...state }, getTeamMemberRunProjection: { agentRunId: variables.agentRunId, ...state },
-    getRunProjection: { runId: variables.runId, ...state } } }
-}
+const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,
+  conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+} } })
 const inspection = (active = false) => {
   const base = taskBearingView()
   const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
@@ -27,7 +24,7 @@ const inspection = (active = false) => {
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })
 afterEach(() => useAgentOrgContextsStore().releaseContext('org-run'))
 describe('same-owner read-only Org inspection', () => {
-  it('publishes strict retained contexts and exact selection; the stopped Org\'s open view gets its stream (autobyteus-461 SR-045)', async () => {
+  it('publishes strict retained contexts and exact selection without creating a transport', async () => {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection())
     const store = useAgentOrgContextsStore()
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' })
@@ -35,9 +32,7 @@ describe('same-owner read-only Org inspection', () => {
     expect(store.errorFor('org-run')).toBeNull()
     expect(store.contextFor('org-run')?.selectedTarget()).toMatchObject({ access: 'read_only', kind: 'agent_org_task_team_member',
       context: { state: { runId: 'agent-task-lead' } } })
-    expect(mocks.instances).toHaveLength(1)
-    expect(mocks.instances[0].connect).toHaveBeenCalledTimes(1)
-    expect(store.contextFor('org-run')?.isActive).toBe(false)
+    expect(mocks.instances).toHaveLength(0)
   })
   it('retires pending hydration on disposal, without stale publication', async () => {
     let release!: () => void

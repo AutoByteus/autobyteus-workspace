@@ -128,10 +128,6 @@
 //                  the phones' lists (MSP-34, delta) and a desktop window's (MSP-35, alpha) within one refresh, with at
 //                  most one view re-read per digest value; set back to TODO, the lists agree with the node:
 //                  `mobile-closed-task-rows-cases.mjs`.
-//   MSP-50, MSP-51, MSP-52 autobyteus-461 AC-007 (SCN-005) and O-1 (were MSP-37 … MSP-39, renumbered after the merge with
-//                  autobyteus-452, -471, -472, -473 and -480)  A stopped delegator (agent, team, org root) on the phone: its
-//                  row shows stopped; the user messages its delegated worker from the run list, the reply is live, the root
-//                  stays stopped and shown stopped; its own member's message starts it: `mobile-stopped-delegator-cases.mjs`.
 //   MSP-32 autobyteus-435 REQ-010  After MSP-13 revoked the phone (the page stays open on the pairing screen through the
 //                  later cases), it sends no refused request: no HTTP answer 401/403 and no socket closed 4401/4403.
 //
@@ -168,7 +164,6 @@ import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeN
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
-import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
 import { runBackgroundTaskCases } from './mobile-background-tasks-cases.mjs';
@@ -645,8 +640,7 @@ const storedHas = async (node, ids, marker) => {
   const reads = [];
   if (ids.runId) reads.push(['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: ids.runId }, data => data.getRunProjection?.conversation]);
   if (ids.teamRunId && ids.agentRunId) reads.push(['query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}', { id: ids.teamRunId, a: ids.agentRunId }, data => data.getTeamMemberRunProjection?.conversation]);
-  // A local agent an agent run delegated to is read by its own run (autobyteus-461 CR-461-022).
-  if (ids.hostRunId && ids.agentRunId) reads.push(['query($id:String!){getRunProjection(runId:$id){conversation}}', { id: ids.agentRunId }, data => data.getRunProjection?.conversation]);
+  if (ids.hostRunId) reads.push(['query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: ids.hostRunId, m: ids.memberAddress, a: ids.agentRunId }, data => data.agentRunCollaborationMemberProjection?.conversation]);
   if (ids.orgRunId) reads.push(['query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}', { id: ids.orgRunId, a: ids.agentRunId, m: ids.memberAddress }, data => data.getAgentOrgMemberRunProjection?.conversation]);
   for (const [query, variables, pick] of reads) {
     const text = JSON.stringify(pick(await node.gql(query, variables).catch(() => ({}))) ?? '');
@@ -1847,8 +1841,7 @@ const runCases = async () => {
     // autobyteus-426 D-09: the poll also reads the delegated rows' states; per window, how many such reads the phone sent.
     const statusReadsIn = {};
     const window = async (label, ms) => { const from = Date.now(); await sleep(ms);
-      // The listed-runs poll (autobyteus-461 SR-055: one poll for every run kind; it carries the delegated rows and their states).
-      statusReadsIn[label] = phoneNet.filter(entry => entry.label === 'phone' && entry.op === 'GetRunCollaborationStatuses' && entry.at >= from && entry.at <= from + ms).length;
+      statusReadsIn[label] = phoneNet.filter(entry => entry.label === 'phone' && entry.op === 'GetAgentRunCollaborationStatuses' && entry.at >= from && entry.at <= from + ms).length;
       return historyReads(entry => entry.label === 'phone' && entry.at >= from).map(entry => ({ dt: entry.at - from, window: entry.window, status: entry.status, bytes: entry.bytes })); };
     const listFrom = Date.now();
     const onList = await window('list', 16_000);
@@ -1894,12 +1887,11 @@ const runCases = async () => {
 
   await runCase('MSP-20', async () => {
     // autobyteus-426 D-09 (AC-009a…d): the delegated rows of a listed, active Agent run that is not open follow their
-    // children's states on each history poll, on the desktop Runs view and the phone list. Since autobyteus-461 SR-055/056
-    // the poll (GetRunCollaborationStatuses) carries each child's row identity with its agents' states, for every run kind,
-    // and the per-change re-read of the collaboration view (GetAgentRunCollaboration) is withdrawn: a listed hub's view is
-    // never read. A fresh hub run with two delegated children; its children's turns are driven over the hub's collaboration
-    // socket, as a second client does (HOLD_TURN keeps a turn running until stopped).
-    const STATUS_OP = 'GetRunCollaborationStatuses';
+    // children's states on each history poll, on the desktop Runs view and the phone list. The poll reads only the states
+    // (GetAgentRunCollaborationStatuses); the collaboration view (GetAgentRunCollaboration) is read again only when the
+    // children or the run's active state change. A fresh hub run with two delegated children; its children's turns are
+    // driven over the hub's collaboration socket, as a second client does (HOLD_TURN keeps a turn running until stopped).
+    const STATUS_OP = 'GetAgentRunCollaborationStatuses';
     const VIEW_OP = 'GetAgentRunCollaboration';
     const hubDef = (await alpha.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Status Hub',
       role: 'assistant', description: 'Status Hub (phone probe)', instructions: 'Follow the request.', toolNames: [],
@@ -1907,8 +1899,8 @@ const runCases = async () => {
     const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: hubDef, ...stack.runConfig } })).createAgentRun;
     assert(created.success, created.message);
     const hub = created.runId;
-    const serverStatuses = async () => (await alpha.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: hub }] })).runCollaborationStatuses[0];
-    const serverStatusOf = async id => (await serverStatuses())?.children.flatMap(child => child.statuses).find(entry => entry.agentRunId === id)?.status ?? null;
+    const serverStatuses = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive statuses{agentRunId status}}}', { ids: [hub] })).agentRunCollaborationStatuses[0];
+    const serverStatusOf = async id => (await serverStatuses())?.statuses.find(entry => entry.agentRunId === id)?.status ?? null;
     const delegate = async (recipient, marker) => pickId(await stack.agentCall(hub, 'delegate_task', { recipient_address: recipient, description: `Status child. Marker ${marker}.` }), 'target_agent_run_id');
     const childA = await delegate('/changelog_helper', 'D09-A');
     const childB = await delegate('/release_notes_writer', 'D09-B');
@@ -1932,14 +1924,12 @@ const runCases = async () => {
       desktopPage.on('requestfinished', async (request) => {
         if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
         let op = null; let runIds = null;
-        try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? null; runIds = body.variables?.runs?.map(run => run.runId) ?? body.variables?.runIds ?? null; } catch { /* not JSON */ }
+        try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? null; runIds = body.variables?.runIds ?? null; } catch { /* not JSON */ }
         const response = await request.response().catch(() => null);
         const body = response ? await response.body().catch(() => null) : null;
         const entry = { at: Date.now(), op, runIds, bytes: body?.length ?? null };
-        if (op === STATUS_OP && body) { try { const answers = JSON.parse(String(body)).data?.runCollaborationStatuses ?? [];
-          entry.statuses = answers.reduce((n, a) => n + a.children.reduce((m, c) => m + c.statuses.length, 0), 0);
-          const hubAnswer = answers.find(a => a.runId === hub); entry.hubBytes = hubAnswer ? JSON.stringify(hubAnswer).length : null;
-          entry.hubStatuses = hubAnswer ? hubAnswer.children.reduce((m, c) => m + c.statuses.length, 0) : null; entry.hubRows = hubAnswer?.children.length ?? null; } catch { /* not JSON */ } }
+        if (op === STATUS_OP && body) { try { const answers = JSON.parse(String(body)).data?.agentRunCollaborationStatuses ?? []; entry.statuses = answers.reduce((n, a) => n + a.statuses.length, 0);
+          const hubAnswer = answers.find(a => a.runId === hub); entry.hubBytes = hubAnswer ? JSON.stringify(hubAnswer).length : null; entry.hubStatuses = hubAnswer?.statuses.length ?? null; } catch { /* not JSON */ } }
         net.push(entry);
       });
       await desktopPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
@@ -1999,7 +1989,7 @@ const runCases = async () => {
     const quietPhone = phoneOps(quietFrom);
     const quiet = { desktopStatusReads: count(quietDesktop, STATUS_OP), desktopViewReads: count(quietDesktop, VIEW_OP),
       phoneStatusReads: count(quietPhone, STATUS_OP), phoneViewReads: count(quietPhone, VIEW_OP),
-      desktopStatusBytes: quietDesktop.filter(entry => entry.op === STATUS_OP).map(entry => ({ bytes: entry.bytes, statuses: entry.statuses, hubBytes: entry.hubBytes, hubStatuses: entry.hubStatuses, hubRows: entry.hubRows, runIds: entry.runIds?.length ?? null })),
+      desktopStatusBytes: quietDesktop.filter(entry => entry.op === STATUS_OP).map(entry => ({ bytes: entry.bytes, statuses: entry.statuses, hubBytes: entry.hubBytes, hubStatuses: entry.hubStatuses, runIds: entry.runIds?.length ?? null })),
       phoneStatusBytes: quietPhone.filter(entry => entry.op === STATUS_OP).map(entry => entry.bytes),
       hubInDesktopRead: quietDesktop.filter(entry => entry.op === STATUS_OP).every(entry => entry.runIds?.includes(hub)),
       hubInPhoneRead: quietPhone.filter(entry => entry.op === STATUS_OP).every(entry => entry.runIds?.includes(hub)) };
@@ -2086,13 +2076,12 @@ const runCases = async () => {
       [quiet.desktopStatusReads >= 2 && quiet.phoneStatusReads >= 2 && quiet.desktopViewReads === 0 && quiet.phoneViewReads === 0, 'no change: a status read on each poll and no view read (AC-009a)'],
       [quiet.hubInDesktopRead && quiet.hubInPhoneRead, 'the listed hub is in each status read'],
       [phoneHidden.onRunScreen === 0 && phoneHidden.inBackground === 0 && phoneHidden.firstReadAfterShownMs !== null && phoneHidden.firstReadAfterShownMs <= 6_000, 'the phone sends no status read while its list is hidden or the page is in the background, and reads again once shown (AC-009c)'],
-      // autobyteus-461 SR-055/056: the answer carries each child's row identity with its states (it replaced 426's states-only read); the bytes are recorded.
-      [quiet.desktopStatusBytes.every(entry => entry.hubRows === 2 && entry.hubStatuses === 2), 'each poll carries the hub\'s two child rows with their states (SR-055)'],
+      [quiet.desktopStatusBytes.every(entry => entry.hubBytes !== null && entry.hubBytes <= 2_048 && (entry.statuses > 10 || entry.bytes <= 2_048)), 'a status read carries only states: the hub\'s answer and any read of ≤ 10 children ≤ 2 KB (AC-009a)'],
       [running.desktopAfterNodeMs !== null && running.desktopAfterNodeMs <= TWO_POLLS && running.phoneAfterNodeMs !== null && running.phoneAfterNodeMs <= ONE_POLL, 'running shows within ≤ 2 polls on the desktop and one on the phone (AC-009a, AC-009c)'],
       [idleAgain.desktopAfterNodeMs !== null && idleAgain.desktopAfterNodeMs <= TWO_POLLS && idleAgain.phoneAfterNodeMs !== null && idleAgain.phoneAfterNodeMs <= ONE_POLL, 'idle again shows within ≤ 2 polls on the desktop and one on the phone'],
       [running.desktopViewReads === 0 && running.phoneViewReads === 0 && idleAgain.desktopViewReads === 0 && idleAgain.phoneViewReads === 0, 'a state change alone causes no view read'],
       [openRun.statusReads === 0 || openRun.hubInRead === 0, 'the open run is not in the status read (AC-009d)'],
-      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= ONE_POLL && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= ONE_POLL && third.desktopViewReads === 0 && third.phoneViewReads === 0, 'a third child appears within one poll, from the poll itself, with no view read (AC-009b; SR-055 withdrew the re-read)'],
+      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= ONE_POLL && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= ONE_POLL && third.desktopViewReads === 1 && third.phoneViewReads === 1, 'a third child appears within one poll with one view re-read on each surface (AC-009b)'],
       [stop.success && stop.desktopOfflineMs !== null && stop.desktopOfflineMs <= ONE_POLL && stop.phoneOfflineMs !== null && stop.phoneOfflineMs <= ONE_POLL, 'after the run stops, its rows show offline within one poll (AC-009b)'],
     ].filter(([ok]) => !ok).map(([, label]) => label);
     assert(failures.length === 0, failures.join('; '), facts);
@@ -2468,7 +2457,6 @@ const runCases = async () => {
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runFileOpenCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
-  await runStoppedDelegatorCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runLiveFileRefreshCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runHeadingLinksCases({ runCase, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
 

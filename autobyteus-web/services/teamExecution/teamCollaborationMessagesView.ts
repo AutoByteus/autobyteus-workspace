@@ -1,7 +1,6 @@
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows';
-import { participantMessagesKeyOf, teamAgentReadSubject } from '~/services/runHydration/agentReads';
 import { projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective';
 
 /**
@@ -21,12 +20,12 @@ export const teamCollaborationMessagesView = (team: AgentTeamContext): Collabora
       entry.agentRunId,
       projectTeamCommunicationMemberIdentity(view, entry.agentRunId),
     ]))),
-    // The focused agent's messages from the log of the run it is read through: a delegated child's own (CR-461-020).
     ...participantMessagesView({
-      key: participantMessagesKeyOf(teamAgentReadSubject({ teamRunId: view.getRootTeamRunId(), tree: view.getExecutionTree(),
-        memberAddress: view.getFocusedMemberAddress() }, focusedAgentRunId)),
+      key: { rootKind: 'agent_team', rootRunId: view.getRootTeamRunId(), agentRunId: focusedAgentRunId },
       isRemote: view.isRemoteAgent(focusedAgentRunId),
       identityOf: (agentRunId) => view.getMemberAddress(agentRunId) ? projectTeamCommunicationMemberIdentity(view, agentRunId) : null,
     }),
+    referenceContentPath: (messageId: string, referenceId: string) =>
+      `team-runs/${encodeURIComponent(view.getRootTeamRunId())}/team-communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
   });
 };

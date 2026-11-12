@@ -4,7 +4,6 @@ import { applyRunNavigationEffectToProjection } from '../runHistoryNavigationPat
 import { buildRunHistoryNavigationProjection } from '../runHistoryNavigationProjection';
 
 const projectionWithHistoryRun = (summary: string) => buildRunHistoryNavigationProjection({
-  listedChildren: () => null,
   workspaceGroups: [{
     workspaceRootPath: '/workspace-a',
     workspaceName: 'Workspace A',

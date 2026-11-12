@@ -59,8 +59,6 @@ describe('AgentRunCollaborationContext', () => {
 
   it('gives the host and each child a Team-tab perspective with named counterparts, loaded when shown', async () => {
     storeParticipantMessages('agent', 'host-run', agentRootMessages)
-    // A child's messages are read from its own run's log, which holds the same messages with the host (CR-461-020).
-    storeParticipantMessages('agent', 'cua-run', agentRootMessages)
     const context = build()
     const host = context.messagesView('host-run')
     expect(host).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedMemberAddress: '/research_assistant' })
@@ -76,7 +74,7 @@ describe('AgentRunCollaborationContext', () => {
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 
-  it('applies sequenced events: messages to the Team tab lists, and a gap; a new child row reads the view again (unsequenced)', async () => {
+  it('applies sequenced events: messages to the Team tab lists, a started delegated run through a checkpoint, and a gap', async () => {
     storeParticipantMessages('agent', 'host-run', agentRootMessages)
     const context = build()
     context.messagesView('host-run').loadMessages()
@@ -86,27 +84,24 @@ describe('AgentRunCollaborationContext', () => {
     } })).toBe('applied')
     expect(context.messagesView('host-run').listMessages().map((row) => row.messageId)).toEqual(['m1', 'm2'])
     expect(context.view).not.toHaveProperty('communication_messages')
-    expect(context.applyChildRunsChanged({ kind: 'child_runs_changed', run_id: 'host-run', removed: [], added: [{
+    expect(context.applyEvent(6, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
       address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
       source: { kind: 'agent', agentDefinitionId: 'code-reviewer', launchConfiguration: launch },
-    }] })).toBe('checkpoint_required')
-    expect(context.changeSequence).toBe(5)
-    expect(() => context.applyEvent(7, { kind: 'communication', message: {
+    } })).toBe('checkpoint_required')
+    expect(() => context.applyEvent(8, { kind: 'communication', message: {
       messageId: 'm3', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'gap', messageType: 'direct_message', referenceFiles: [], createdAt: created,
     } })).toThrow('change sequence gap')
     expect(context.phase).toBe('reopen_required')
   })
 
-  it('rejects a live message from an AgentRun outside the run; a stop of its own agent leaves the children and the stream (SR-045)', () => {
+  it('rejects a live message from an AgentRun outside the run and goes historical on stop', () => {
     const context = build()
     expect(() => context.applyEvent(5, { kind: 'communication', message: { ...agentRootMessages[0]!, messageId: 'm-stranger', senderAgentRunId: 'stranger' } }))
       .toThrow('identity mismatch')
     expect(useCollaborationParticipantMessagesStore().messagesOf({ rootKind: 'agent', rootRunId: 'host-run', agentRunId: 'host-run' })).toEqual([])
-    const before = context.getAgentContext('pp-run')?.state.currentStatus
     context.setActive(false)
-    expect(context.isActive).toBe(false)
-    expect(context.phase).toBe('live')
-    expect(context.getAgentContext('pp-run')?.state.currentStatus).toBe(before)
+    expect(context.phase).toBe('historical')
+    expect(context.getAgentContext('pp-run')?.state.currentStatus).toBe(AgentStatus.Offline)
     expect(parseAgentTeamAddress(context.index.hostAddress)).toBe('/research_assistant')
   })
 })
@@ -248,11 +243,11 @@ describe('AgentRunCollaborationContext task Team status', () => {
     expect(team()).toBe(AgentStatus.Offline)
   })
 
-  it('a child Team reads its own agents\' state while the run\'s own agent is stopped (autobyteus-461: a run of its own)', () => {
+  it('reads gray when the run is not alive, whatever the members last reported', () => {
     const view = agentRootView()
     view.is_active = false
     const context = build(view)
     expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Running)
-    expect(teamStatusOf(context.listTaskRows(() => true), 'product team')).toBe(AgentStatus.Running)
+    expect(teamStatusOf(context.listTaskRows(() => true), 'product team')).toBe(AgentStatus.Offline)
   })
 })

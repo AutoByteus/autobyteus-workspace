@@ -102,6 +102,7 @@
       :run-id="entry.runId"
       :label="label"
       :run-selected="state.selectedRunId === entry.runId"
+      :has-collaboration="entry.run.hasCollaboration === true"
       @select-run="actions.onSelectRun(entry.run)"
       @open-run="openAgentRun(entry.run)"
     />

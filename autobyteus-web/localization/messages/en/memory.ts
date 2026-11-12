@@ -81,6 +81,8 @@ const memoryMessages = {
   'memory.journal.not_shown': '{{count}} not shown',
   'memory.journal.showing': 'Lines {{from}}–{{to}} of {{total}}',
   'memory.journal.large_file': 'Large file: lines load in parts.',
+  'memory.browse.task_team': 'Task team',
+  'memory.browse.task_team_started_by': 'Task team · started by {{name}}',
   'memory.components.memory.MemoryHome.search_agents': 'Filter agents by name or run ID…',
   'memory.components.memory.MemoryHome.search_agent_teams': 'Filter agent teams by name…',
   'memory.components.memory.MemoryHome.search_agent_orgs': 'Filter agent orgs by name…',

@@ -109,7 +109,6 @@ import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHis
 import { chatRouteRunId } from '~/services/workspace/workspaceNavigationService'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
-import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore'
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore'
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
@@ -141,7 +140,6 @@ const teamRunStore = useAgentTeamRunStore()
 const { stopPendingTeamIds } = storeToRefs(teamRunStore)
 const agentOrgRunStore = useAgentOrgRunStore()
 const agentOrgContextsStore = useAgentOrgContextsStore()
-const listedRunChildren = useListedRunChildrenStore()
 const collaboration = useAgentRunCollaborationStore()
 const workspaceStore = useWorkspaceStore()
 const agentDefinitionStore = useAgentDefinitionStore()
@@ -241,7 +239,6 @@ const sectionState: RunListSectionState = {
   isAgentOrgArchiving: (rootRunId) => Boolean(mutations.archivingAgentOrgIds.value[rootRunId]),
   agentOrgTerminationError: (rootRunId) => agentOrgRunStore.terminationErrors[rootRunId] ?? agentOrgContextsStore.errorFor(rootRunId),
   agentOrgContextFor: (rootRunId) => agentOrgContextsStore.contextFor(rootRunId),
-  agentOrgListedChildrenFor: (rootRunId) => listedRunChildren.answerOf('agent_org', rootRunId),
 }
 
 const orgAction = (action: 'open' | 'stop') => (run: { rootRunId: string }) =>

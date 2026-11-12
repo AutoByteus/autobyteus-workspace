@@ -34,9 +34,6 @@ const snapshot = async (socket: Socket, view = multiTeamView()) => {
 const event = (socket: Socket, change_sequence: number, value: unknown) => socket.frame({
   type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence, event: value },
 })
-/** An unsequenced child-row change (autobyteus-461 SR-042). */
-const childRuns = (socket: Socket, added: unknown[], removed: unknown[]) => socket.frame({ type: 'CHILD_RUNS_CHANGED', payload: {
-  root_subject_kind: 'agent', root_run_id: 'host-run', event: { kind: 'child_runs_changed', run_id: 'host-run', added, removed } } })
 const rowKeys = (store: ReturnType<typeof useAgentRunCollaborationStore>) => store.taskRows('host-run').map(item => item.row.rowKey)
 
 /** REQ-001..004/006: real store, context and stream; only hydration/transport boundaries are fixtures. */
@@ -50,7 +47,7 @@ describe('standalone delegated Team disclosure', () => {
 
   it('a fresh stored manager lists seven collapsed Teams, with all 42 child contexts intact', async () => {
     const store = useAgentRunCollaborationStore()
-    await store.inspect('host-run')
+    store.syncHost('host-run', false); await store.inspect('host-run')
     expect(rowKeys(store)).toEqual(Array.from({ length: 7 }, (_, index) => `team:${teamId(index)}`))
     expect(store.contextFor('host-run')!.listAgentContextEntries()).toHaveLength(42)
     expect(Socket.instances).toHaveLength(0)
@@ -71,7 +68,7 @@ describe('standalone delegated Team disclosure', () => {
     store.toggleTaskTeam('host-run', teamId(3))
     store.selectChild('host-run', null)
     hydration.read.mockResolvedValue(multiTeamView(8))
-    await store.inspect('host-run')
+    store.syncHost('host-run', false); await store.inspect('host-run')
     expect(store.isTaskTeamExpanded('host-run', teamId(3))).toBe(true)
     expect(store.isTaskTeamExpanded('host-run', teamId(2))).toBe(false)
     expect(store.isTaskTeamExpanded('host-run', teamId(7))).toBe(false)
@@ -99,8 +96,8 @@ describe('standalone delegated Team disclosure', () => {
     store.toggleTaskTeam('host-run', teamId(2)); store.selectChild('host-run', memberId(2, 0))
     expect(store.isTaskTeamExpanded('host-run', teamId(2))).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(2, 0))
-    // A new child row (autobyteus-461 SR-042, unsequenced) follows the production checkpoint/reconnect snapshot path.
-    childRuns(socket, [multiTeamView(8).execution_tree.taskExecutions.at(-1)], []); await flush()
+    // Starting a fresh execution follows the production checkpoint/reconnect snapshot path.
+    event(socket, 5, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: multiTeamView(8).execution_tree.taskExecutions.at(-1) }); await flush()
     expect(Socket.instances).toHaveLength(2)
     const refreshed = multiTeamView(8)
     refreshed.base_change_sequence = 5
@@ -110,13 +107,7 @@ describe('standalone delegated Team disclosure', () => {
     expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
     expect(rowKeys(store).length).toBeGreaterThanOrEqual(8)
     expect(store.selectedChild('host-run')).toBe(memberId(2, 0))
-    // The child's Task closed: it leaves through a fresh view, and its selected member returns the focus to the run.
-    childRuns(Socket.instances[1]!, [], [{ teamRunId: teamId(2) }]); await flush()
-    expect(Socket.instances).toHaveLength(3)
-    const closed = multiTeamView(8)
-    closed.base_change_sequence = 5
-    closed.execution_tree = { ...closed.execution_tree, taskExecutions: closed.execution_tree.taskExecutions.filter((task) => !('teamRunId' in task && task.teamRunId === teamId(2))) }
-    await snapshot(Socket.instances[2]!, closed)
+    event(Socket.instances[1]!, 6, { kind: 'task_executions_closed', task_executions: [{ teamRunId: teamId(2) }] }); await flush()
     expect(store.contextFor('host-run')!.phase).toBe('live')
     expect(store.selectedChild('host-run')).toBeNull()
     expect(rowKeys(store)).not.toContain(`team:${teamId(2)}`)
@@ -136,22 +127,32 @@ describe('task row rules', () => {
     hydration.build.mockImplementation(async ({ view }) => shallowReactive(buildMultiTeamContext(view)))
   })
 
-  // autobyteus-461 SR-055: the open run's rows select through its view; a row of a run that is not open comes from the
-  // history poll's answer (agentRunListedTaskRows.spec).
-  it('selectTaskRow on the open run: a task Team row selects its coordinator; with neither view nor answer, nothing', async () => {
+  it('ensureStoredView reads a run with collaboration once, and never one without', async () => {
+    const store = useAgentRunCollaborationStore()
+    store.ensureStoredView('plain-run', false)
+    store.ensureStoredView('host-run', true)
+    store.ensureStoredView('host-run', true)
+    await flush()
+    expect(hydration.read).toHaveBeenCalledTimes(1)
+    expect(hydration.read).toHaveBeenCalledWith('host-run')
+    store.ensureStoredView('host-run', true)
+    await flush()
+    expect(hydration.read).toHaveBeenCalledTimes(1)
+    expect(Socket.instances).toHaveLength(0)
+  })
+
+  it('selectTaskRow: a task Team row selects its coordinator; nothing is selected before the view is loaded', async () => {
     const store = useAgentRunCollaborationStore()
     const teamRow = { agentRunId: null, teamRunIdForNode: teamId(1) } as never
     expect(store.selectTaskRow('host-run', teamRow)).toBe(false)
-    store.attach('host-run')
-    await snapshot(Socket.instances[0]!, multiTeamView(2))
+    await store.inspect('host-run')
     expect(store.selectTaskRow('host-run', teamRow)).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(1, 0))
   })
 
-  it('selectTaskRow on the open run: a task agent row selects that agent', async () => {
+  it('selectTaskRow: a task agent row selects that agent', async () => {
     const store = useAgentRunCollaborationStore()
-    store.attach('host-run')
-    await snapshot(Socket.instances[0]!, multiTeamView(2))
+    await store.inspect('host-run')
     expect(store.selectTaskRow('host-run', { agentRunId: memberId(0, 2), teamRunIdForNode: null } as never)).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(0, 2))
   })

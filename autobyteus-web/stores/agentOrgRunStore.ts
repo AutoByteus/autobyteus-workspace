@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
-import { CreateAgentOrgRun, TerminateAgentOrgRun } from '~/graphql/mutations/agentOrgRunMutations'
+import { CreateAgentOrgRun, RestoreAgentOrgRun, TerminateAgentOrgRun } from '~/graphql/mutations/agentOrgRunMutations'
 
 export type AgentOrgLaunchInput = {
   agentOrgDefinitionId: string
@@ -26,6 +26,14 @@ export const useAgentOrgRunStore = defineStore('agentOrgRun', () => {
     } finally { launching.value = false }
   }
 
+  const restore = async (orgRunId: string): Promise<string> => {
+    const { data, errors: gqlErrors } = await getApolloClient().mutate({ mutation: RestoreAgentOrgRun, variables: { agentOrgRunId: orgRunId } })
+    if (gqlErrors?.length) throw new Error(gqlErrors.map((entry: { message: string }) => entry.message).join(', '))
+    const result = data?.restoreAgentOrgRun
+    if (!result?.success || !result.agentOrgRunId) throw new Error(result?.message || 'AgentOrg restore failed.')
+    return result.agentOrgRunId
+  }
+
   const terminate = async (orgRunId: string): Promise<void> => {
     if (terminatingRunIds.value.has(orgRunId)) return
     terminatingRunIds.value = new Set([...terminatingRunIds.value, orgRunId])
@@ -46,6 +54,6 @@ export const useAgentOrgRunStore = defineStore('agentOrgRun', () => {
   }
   return {
     launching, terminatingRunIds, terminationErrors,
-    launch, terminate,
+    launch, restore, terminate,
   }
 })

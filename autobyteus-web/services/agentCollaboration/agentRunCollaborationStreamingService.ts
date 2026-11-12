@@ -62,7 +62,10 @@ export class AgentRunCollaborationStreamingService {
     hostRunId: string
     isCurrent(): boolean
     publish(context: AgentRunCollaborationContext): void
+    onInactive(): void
     reportError(message: string): void
+    /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
+    onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
 
   /** The store's connect: starts over (any wait is cancelled) and opens. */
@@ -225,8 +228,8 @@ export class AgentRunCollaborationStreamingService {
       this.context = candidate
       this.phase = 'ready'
       this.reconnect.connected()
-      // SR-045: the stream lives with the open view, active or stopped; it is ready once its snapshot is applied.
-      this.settleReadiness()
+      if (candidate.isActive) this.settleReadiness()
+      else { this.options.onInactive(); this.disconnect() }
       return
     }
     if (!this.context || this.phase !== 'ready') throw new Error('Agent collaboration event arrived before the snapshot.')
@@ -242,23 +245,20 @@ export class AgentRunCollaborationStreamingService {
       if (application === 'applied' || through === undefined) {
         useCollaborationParticipantMessagesStore().advance('agent', this.options.hostRunId, this.context.view.live_sequence_id, through ?? first)
       }
-      if (application === 'checkpoint_required') this.reload()
+      if (application === 'checkpoint_required') {
+        // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
+        this.closeSocket('Agent collaboration reload')
+        this.openSocket()
+      } else if (message.payload.event.kind === 'task_executions_closed') {
+        this.options.onTaskExecutionsClosed?.(this.context)
+      }
       return
     }
-    if (message.type === 'CHILD_RUNS_CHANGED') {
-      // autobyteus-461 SR-042: its child rows changed (unsequenced): read the view again unless the change is already in it.
-      if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
-      if (this.context.applyChildRunsChanged(message.payload.event) === 'checkpoint_required') this.reload()
-      return
-    }
-    // The run's own agent started or stopped: the view says so and its stream continues (SR-045).
     this.context.setActive(message.payload.is_active)
-  }
-
-  /** Reconnects for a fresh snapshot (the view only); a selected child that left returns the focus to the run (publish). */
-  private reload(): void {
-    this.closeSocket('Agent collaboration reload')
-    this.openSocket()
+    if (!message.payload.is_active) {
+      this.options.onInactive()
+      this.disconnect()
+    }
   }
 
   private acknowledge(message: CommandAck): void {

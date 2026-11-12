@@ -77,6 +77,7 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       archivedAt: null,
       isActive: true,
       summary: 'Deliver current package',
+      closedTaskExecutions: [],
       executionTree: {
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
@@ -143,7 +144,7 @@ const mountSubject = (options: {
     members: stableChildren,
     executionRows: [],
   };
-  team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext, null);
+  team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext);
 
   const actions = {
     onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(),
@@ -228,7 +229,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     { kind: 'Org', selector: 'button[aria-label="Stop Agent Org"]', action: 'onTerminateAgentOrg', target: null },
   ] as const)('$kind root Stop is red when enabled, muted while disabled, and keeps its exact target', async (variant) => {
     const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Running,
-      lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: true, source: 'history', isDraft: false };
+      lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: true, hasCollaboration: false, source: 'history', isDraft: false };
     const agent = { agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] };
     const group = agentOrgDefinitionGroup();
     const { wrapper, actions, state, team } = mountSubject({ agents: [agent], agentOrgDefinitions: [group], teamExpanded: false });
@@ -340,7 +341,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
         isActive, deleteLifecycle: 'READY', focusedAgentRunId: '', rootTeam: rootRow(children, teamRunId),
         members: children, executionRows: [],
       };
-      return { ...node, executionRows: buildRunHistoryTeamExecutionRows(node, null, null) };
+      return { ...node, executionRows: buildRunHistoryTeamExecutionRows(node) };
     };
     const idleRun = teamRun('team-run-idle', true, [AgentStatus.Idle, AgentStatus.Offline]);
     const busyRun = teamRun('team-run-busy', true, [AgentStatus.Offline, AgentStatus.Running], '2026-06-30T00:00:00.000Z');
@@ -554,7 +555,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(true);
     await wrapper.setProps({ workspaceTeams: [{
       ...team, focusedAgentRunId: worker.agentRunId!, rootTeam: rootRow([worker]), members: [worker],
-      executionRows: buildRunHistoryTeamExecutionRows({ ...team, focusedAgentRunId: worker.agentRunId!, rootTeam: rootRow([worker]), members: [worker] }, null, null),
+      executionRows: buildRunHistoryTeamExecutionRows({ ...team, focusedAgentRunId: worker.agentRunId!, rootTeam: rootRow([worker]), members: [worker] }),
     }] });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(false);
@@ -638,7 +639,7 @@ describe('WorkspaceHistoryWorkspaceSection Task summary run opening', () => {
 
   it('opens the Agent run\'s own conversation (as its run row does) for an Agent host\'s open-run', async () => {
     const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Idle, lastActivityAt: '2026-06-30T00:00:00.000Z',
-      isActive: true, source: 'history', isDraft: false };
+      isActive: true, hasCollaboration: true, source: 'history', isDraft: false };
     const { wrapper, actions } = mountSubject({
       workspaceTeams: [],
       agents: [{ agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] }],

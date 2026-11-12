@@ -253,24 +253,30 @@ Task delegation is a pure spawn. A delegated task Agent or task Team is shown
 as a transient execution row whose starter ("Started by <delegator>") is in the
 accessible label only (see below); there is no
 Tasks surface, task status, submission, review, or task reference file. The
-right-side Team tab shows Messages only. The child is a run of its own
-(autobyteus-461); its row reaches the open view as the unsequenced
-`CHILD_RUNS_CHANGED`, applied in place by membership (pending sends and approvals
-stay), so an early-selected child monitor advances without reload or refocus. A child that stays quiet is shut down after the
+right-side Team tab shows Messages only. The child's single execution-tree
+write becomes durable, and `TASK_EXECUTION_STARTED` is published, before its
+Agent frames are released, allowing an early-selected child monitor to advance
+without reload or refocus. A child that stays quiet is shut down after the
 server grace period (but not while it has a running background task) and keeps its row with the standard `offline` status;
 sending to it from the composer (or a peer `send_message_to` by run ID) wakes
 it with its conversation. Nothing distinguishes a shut-down child from a
 configured member that has not started other than the row kind.
 
-When the last open Task of a child becomes DONE, or its Task is deleted, the
-child (and, for a task Team, its members and nested delegations) leaves the
-Team's view through `CHILD_RUNS_CHANGED` (`removed`). The rows fade and collapse
-in 200 ms, or go at once under reduced motion. A focused row that leaves hands
-the focus to its delegator, else the coordinator. The view snapshot and the Team
-resume config hold the open children only, so the rows stay gone after reload
-and restart. Nothing is deleted from disk. When the delegating agent continues a
-closed child (it reopens the Task, then messages the child's run ID), its rows
-return the same way (`added`) without reload.
+When the Project Task that a child was delegated for becomes DONE, the child
+(and, for a task Team, its members and nested delegations) leaves the Team's
+Workspaces tree. The rows fade and collapse in 200 ms, or go at once under
+reduced motion. The root Team stream publishes `TASK_EXECUTIONS_CLOSED` before
+the child runs are stopped, so the rows leave even if a stop fails. The view
+snapshot and the Team resume config carry `closed_task_executions` beside the
+unfiltered execution tree, so closed rows stay hidden after reload, restart and
+Task deletion. A selected or focused closed row hands selection and focus to the
+delegating Manager. Messages with closed runs stay in the Team tab, and nothing
+is deleted from disk. Reopening the Task and delegating again shows the new runs
+only. When the delegating agent reactivates a closed child (it reopens the Task,
+then messages the child's run ID), the stream publishes
+`TASK_EXECUTIONS_REOPENED` and the child's rows return without reload; its own
+still-closed helpers stay hidden. Other Team surfaces (the members panel, running list and token usage)
+still list closed members.
 
 ## Workspace History Sidebar Task Peers
 
@@ -309,7 +315,7 @@ that `source`, by run ID, never from the configured member at its address:
   copy's own model choice, else its Team's when the member's recorded `follows_team` says it follows;
 - `source.coordinator_address` for a Team copy's coordinator.
 
-A new child arrives as `CHILD_RUNS_CHANGED`. Rows and tab labels use
+A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
 `utils/collaboration/memberDisplayName.ts`. Rows for addresses outside the root Team's configured
 members (catalog copies, their members and copies) use the display-name formatter
 (`readsAsDisplayName`); a configured member and every copy started from it keep the address

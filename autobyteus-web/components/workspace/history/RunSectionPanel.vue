@@ -84,7 +84,6 @@ import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
-import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
@@ -128,7 +127,6 @@ const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'work
 const runHistoryStore = useRunHistoryStore();
 const agentOrgRunStore = useAgentOrgRunStore();
 const agentOrgContextsStore = useAgentOrgContextsStore();
-const listedRunChildren = useListedRunChildrenStore();
 const route = useRoute() as ReturnType<typeof useRoute> | undefined;
 const router = useRouter();
 const runStart = useRunStart();
@@ -331,7 +329,6 @@ const sectionState: WorkspaceHistorySectionState = {
   isAgentOrgArchiving: (rootRunId: string) => Boolean(archivingAgentOrgIds.value[rootRunId]),
   agentOrgTerminationError: (rootRunId: string) => agentOrgRunStore.terminationErrors[rootRunId] ?? agentOrgContextsStore.errorFor(rootRunId),
   agentOrgContextFor: (rootRunId: string) => agentOrgContextsStore.contextFor(rootRunId),
-  agentOrgListedChildrenFor: (rootRunId: string) => listedRunChildren.answerOf('agent_org', rootRunId),
   isGroupArchiving,
 };
 

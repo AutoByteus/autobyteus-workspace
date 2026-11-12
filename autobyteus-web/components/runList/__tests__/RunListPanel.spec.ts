@@ -30,7 +30,7 @@ const teamRun = (teamRunId: string, offset: number, address: string) => {
 const history = (agentRuns: number, teams: ReturnType<typeof teamRun>[] = []): RunHistoryWorkspaceGroup[] => [{
   workspaceRootPath: '/ws/a', workspaceName: 'a',
   agentDefinitions: agentRuns ? [{ agentDefinitionId: 'agent-1', agentName: 'Daily Assistant', runs: Array.from({ length: agentRuns }, (_, index) => ({
-    runId: `run-${index + 1}`, summary: `Run ${index + 1}`, createdAt: day(index + 1), status: 'offline', isActive: index === 6,
+    runId: `run-${index + 1}`, summary: `Run ${index + 1}`, createdAt: day(index + 1), status: 'offline', isActive: index === 6, hasCollaboration: false,
   })) }] : [],
   teamDefinitions: teams.length ? [{ teamDefinitionId: 'team-def', teamDefinitionName: 'Video Team', runs: teams }] : [],
 }] as unknown as RunHistoryWorkspaceGroup[];
