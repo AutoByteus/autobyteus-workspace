@@ -4,6 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { shallowReactive } from 'vue'
 import { buildMultiTeamContext, memberId, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  fake.ownRuns.openAll = true
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => multiTeamView()),

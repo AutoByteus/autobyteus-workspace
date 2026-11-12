@@ -5,6 +5,7 @@ import { buildMultiTeamContext, memberId, multiTeamView, teamId } from '~/servic
 import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 
 const hydration = vi.hoisted(() => ({ read: vi.fn(), build: vi.fn(), hydrateChild: vi.fn(async () => 'hydrated') }))
+vi.mock('~/stores/delegatedRunsStore', async () => ({ useDelegatedRunsStore: (await import('~/test-support/delegatedRunsFake')).fakeDelegatedRunsStore }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: hydration.read, buildAgentRunCollaborationContext: hydration.build,
 }))
@@ -16,6 +17,7 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyR
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 
+import { ownRuns } from '~/test-support/delegatedRunsFake'
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 
 class Socket {
@@ -41,6 +43,8 @@ describe('standalone delegated Team disclosure', () => {
   beforeEach(() => {
     setActivePinia(createPinia()); vi.clearAllMocks(); Socket.instances.length = 0
     vi.stubGlobal('WebSocket', Socket)
+    // A selected child is its own run (autobyteus-461 rule 2): here every one is open.
+    ownRuns.reset(); ownRuns.openAll = true
     hydration.read.mockImplementation(async (host: string) => multiTeamView(7, host))
     hydration.build.mockImplementation(async ({ view }) => shallowReactive(buildMultiTeamContext(view)))
   })

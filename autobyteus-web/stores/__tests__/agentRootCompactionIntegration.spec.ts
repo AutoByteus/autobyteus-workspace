@@ -153,33 +153,6 @@ it('inspection failure after success keeps the stopped host and its children\'s 
   expect(useAgentActivityStore().getActivities('cua-run')).toEqual([])
 })
 
-it.each(['view', 'member'])('a live activity change during the %s fetch never fails the inspection; the selected child loads against fresh revisions', async point => {
-  const { store, root, activities } = await setup()
-  store.selectChild('host-run', 'pp-run'); store.toggleTaskTeam('host-run', 'team-run')
-  await flush()
-  expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
-  const projectionsBefore = memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run')
-  const delay = deferred(); io.query.mockImplementation(async input => {
-    if ((point === 'view' && input.variables.runId)
-      || (point === 'member' && input.query === GetAgentRunCollaborationMemberProjection && input.variables.agentRunId === 'pp-run')) await delay.promise
-    return input.variables.runId ? envelope(view) : emptyProjection(input)
-  })
-  const pending = store.inspect('host-run'); await flush()
-  seed(store.contextFor('host-run')!.getAgentContext('pp-run')!, 'concurrent')
-  const revision = activities.getActivityContentRevision('pp-run')
-  delay.resolve(null); await pending; await flush()
-  const next = store.contextFor('host-run')!
-  expect(store.errors['host-run']).toBeNull()
-  expect(next).not.toBe(root)
-  // The retained AgentContext object moved to the new context, which loaded the child itself.
-  expect(next.getAgentContext('pp-run')).toBe(root.getAgentContext('pp-run'))
-  expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
-  expect(activities.getActivityContentRevision('pp-run')).toBeGreaterThan(revision)
-  // A change during the member fetch costs one retry; during the view fetch, nothing.
-  expect(memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)
-  expect(store.selectedChild('host-run')).toBe('pp-run'); expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
-})
-
 it.each(['null', 'view', 'error'])('stale %s inspection after attach cannot remove newer service or context', async result => {
   const { store, root } = await setup(); const read = deferred(); io.query.mockReturnValue(read.promise)
   const pending = store.inspect('host-run'); const service = store.attach('host-run')

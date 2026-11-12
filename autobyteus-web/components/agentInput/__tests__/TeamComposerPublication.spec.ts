@@ -14,6 +14,16 @@ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamT
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const mocks = vi.hoisted(() => ({ topology: vi.fn(), projection: vi.fn(async () => undefined) }));
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
+  fake.ownRuns.openAll = true
+  // Its own context is, here, the one the Team view holds for its row.
+  fake.ownRuns.contextOf = (agentRunId) => [...useAgentTeamContextsStore().teams.values()]
+    .map((team) => team.view.getAgentContext(agentRunId)).find(Boolean) ?? null
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   refreshRunNavigationTopology: mocks.topology, reconcileFocusedTeamMemberProjection: mocks.projection,
   applyRunNavigationEffect: vi.fn(),

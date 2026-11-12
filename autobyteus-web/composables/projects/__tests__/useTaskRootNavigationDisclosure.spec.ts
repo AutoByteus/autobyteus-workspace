@@ -5,6 +5,12 @@ import { buildMultiTeamContext, memberId, teamId } from '~/services/agentCollabo
 import type { TaskRootView } from '~/types/project'
 
 const navigation = vi.hoisted(() => ({ open: vi.fn(), push: vi.fn(), isCurrent: vi.fn(() => true) }))
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  fake.ownRuns.openAll = true
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
 vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRouter: () => ({ push: navigation.push }) }))
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ beginSelectionIntent: () => ({ isCurrent: navigation.isCurrent }) }) }))
 vi.mock('~/composables/useWorkspaceHistorySubjectActions', () => ({ useWorkspaceHistorySubjectActions: () => ({ execute: vi.fn() }) }))

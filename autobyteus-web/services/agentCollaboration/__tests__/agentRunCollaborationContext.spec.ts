@@ -59,6 +59,8 @@ describe('AgentRunCollaborationContext', () => {
 
   it('gives the host and each child a Team-tab perspective with named counterparts, loaded when shown', async () => {
     storeParticipantMessages('agent', 'host-run', agentRootMessages)
+    // A delegated run's Team tab reads its own run's log (autobyteus-461 rule 2; CR-461-020).
+    storeParticipantMessages('agent', 'cua-run', agentRootMessages)
     const context = build()
     const host = context.messagesView('host-run')
     expect(host).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedMemberAddress: '/research_assistant' })
@@ -76,6 +78,8 @@ describe('AgentRunCollaborationContext', () => {
 
   it('applies sequenced events: messages to the Team tab lists, a started delegated run through a checkpoint, and a gap', async () => {
     storeParticipantMessages('agent', 'host-run', agentRootMessages)
+    // A delegated run's Team tab reads its own run's log (autobyteus-461 rule 2; CR-461-020).
+    storeParticipantMessages('agent', 'cua-run', agentRootMessages)
     const context = build()
     context.messagesView('host-run').loadMessages()
     await settle()

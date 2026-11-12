@@ -34,6 +34,15 @@ const { state, teamContextsStoreMock, agentDefinitionStoreMock, teamRunConfigSto
   };
 });
 
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
+  fake.ownRuns.openAll = true
+  // Its own context is, here, the one the Team view holds for its row.
+  fake.ownRuns.contextOf = (agentRunId) => useAgentTeamContextsStore().activeTeamContext?.view.getAgentContext(agentRunId) ?? null
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ refreshTeamResumeConfig: async () => ({ teamRunId: 'team-1', executionTree: state.activeTeamContext.view.getExecutionTree() }), resolveWorkspaceMetadataByRootPath: async (path: string) => ({ workspaceId: 'ws-1', workspaceRootPath: path, displayName: 'Workspace', kind: 'filesystem' }) }) }));
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));

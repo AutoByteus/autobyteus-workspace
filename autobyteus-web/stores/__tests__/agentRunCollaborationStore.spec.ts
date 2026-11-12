@@ -37,13 +37,25 @@ const childHydration = vi.hoisted(() => ({ hydrate: vi.fn((_input: { agentRunId:
 vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
   hubChildLoadTarget: childHydration.hydrate,
 }))
+// autobyteus-461 rule 2: a local child is its own run; the fake owner records the opens and gives each a bound context.
+const own = vi.hoisted(() => ({ ensureOpen: vi.fn(), send: vi.fn(async () => undefined), contexts: new Map<string, unknown>() }))
+vi.mock('~/stores/delegatedRunsStore', () => ({ useDelegatedRunsStore: () => ({
+  ensureOpen: own.ensureOpen,
+  bindingOf: (subject: { kind: string; agentRunId: string; teamRunId?: string; memberAddress?: string }) => {
+    if (!own.contexts.has(subject.agentRunId)) return null
+    return { context: own.contexts.get(subject.agentRunId), workspaceRootPath: '/own-ws',
+      browse: subject.kind === 'agent' ? { kind: 'run', runId: subject.agentRunId }
+        : { kind: 'teamMember', teamRunId: subject.teamRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId },
+      interaction: { send: own.send, interrupt: vi.fn(), decideTool: vi.fn() } }
+  },
+}) }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))
 
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 
 describe('agentRunCollaborationStore', () => {
-  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; childHydration.hydrate.mockClear() })
+  beforeEach(() => { setActivePinia(createPinia()); stream.instances.length = 0; childHydration.hydrate.mockClear(); own.ensureOpen.mockClear(); own.contexts.clear() })
 
   it('keeps a new task Team collapsed in a stored view and preserves explicit disclosure', async () => {
     const store = useAgentRunCollaborationStore()
@@ -60,57 +72,60 @@ describe('agentRunCollaborationStore', () => {
     expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(false)
   })
 
-  it('selects a child as the target, and the run row returns to the host with a Team tab', async () => {
+  it('rule 2: a selected child opens as its own run, and the target is that run\'s; the run row returns to the host with a Team tab', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     expect(store.childTargetFor('host-run')).toBeNull()
     expect(store.hostMessagesView('host-run')).toMatchObject({ rootKind: 'agent', focusedAgentRunId: 'host-run' })
     store.selectChild('host-run', 'pp-run')
+    // Until its own run is open there is no target; the host never loads it.
+    expect(store.childTargetFor('host-run')).toBeNull()
+    const member = { conversation: 'own pp' }
+    own.contexts.set('pp-run', member)
     expect(store.childTargetFor('host-run')).toMatchObject({
       kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' }, address: '/product_team/prototyper', agentRunId: 'pp-run', access: 'live',
-      collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/ws',
+      collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/own-ws', context: member,
     })
     store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', workspaceRootPath: '/ws' })
+    own.contexts.set('cua-run', { conversation: 'own cua' })
+    expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', context: { conversation: 'own cua' } })
     store.selectChild('host-run', 'unknown')
     expect(store.childTargetFor('host-run')).toBeNull()
-    // Each selected child starts one load of its details; the run's own agent and unknown children none.
-    expect(childHydration.hydrate.mock.calls.map(([input]) => input.agentRunId)).toEqual(['pp-run', 'cua-run'])
+    expect(own.ensureOpen.mock.calls.map(([subject]) => subject)).toEqual([
+      { kind: 'team_member', teamRunId: 'team-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
+      { kind: 'agent', agentRunId: 'cua-run' },
+    ])
+    expect(childHydration.hydrate).not.toHaveBeenCalled()
   })
 
-  it('reads a child\'s earlier events from the host\'s collaboration package, not as a top-level run (CR-002)', async () => {
+  it('rule 2: a child\'s earlier events and files are read by its own identity, not through the host (CR-461-010)', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
+    own.contexts.set('pp-run', {}); own.contexts.set('cua-run', {})
     store.selectChild('host-run', 'pp-run')
-    expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
-    })
+    expect(store.childTargetFor('host-run')?.browse).toEqual({ kind: 'teamMember', teamRunId: 'team-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' })
     store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/computer_use_agent', agentRunId: 'cua-run',
-    })
+    expect(store.childTargetFor('host-run')?.browse).toEqual({ kind: 'run', runId: 'cua-run' })
   })
 
-  it('sending to a child goes over the view\'s stream, which never restores the host, and carries mentions (SR-045, SR-046)', async () => {
+  it('rule 2: a message to a local child goes to its own run, never over the view\'s stream', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
+    own.contexts.set('cua-run', {})
+    store.selectChild('host-run', 'cua-run')
+    const target = store.childTargetFor('host-run')!
+    if (target.access !== 'live') throw new Error('expected a live target')
+    await target.interaction.send('hello', [])
+    expect(own.send).toHaveBeenCalledOnce()
+    expect(stream.instances).toHaveLength(0)
     const context = store.contextFor('host-run')!.getAgentContext('cua-run')!
-    context.requestedMentions = [{ kind: 'agent', definitionId: 'code-reviewer', name: 'Code Reviewer' }]
-    await store.submit('host-run', 'cua-run', context, 'ask @Code Reviewer', [])
-    expect(stream.instances).toHaveLength(1)
-    expect(stream.instances[0]!.connect).toHaveBeenCalled()
-    expect(stream.instances[0]!.sendMessage).toHaveBeenCalledWith(expect.objectContaining({
-      agentRunId: 'cua-run', content: 'ask @Code Reviewer', mentions: [{ kind: 'agent', definition_id: 'code-reviewer' }],
-    }))
-    expect(context.state.conversation.messages.at(-1)).toMatchObject({ type: 'user', text: 'ask @Code Reviewer', mentionNames: ['Code Reviewer'] })
-    expect(context.requestedMentions).toEqual([])
+    await expect(store.submit('host-run', 'cua-run', context, 'hello', [])).rejects.toThrow('reached through its own run')
   })
 
   it('releaseAll closes every host stream and drops every host view (autobyteus-435 REQ-010 (b))', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
-    const context = store.contextFor('host-run')!.getAgentContext('cua-run')!
-    await store.submit('host-run', 'cua-run', context, 'hello', [])
+    store.attach('host-run')
     expect(stream.instances).toHaveLength(1)
 
     store.releaseAll()

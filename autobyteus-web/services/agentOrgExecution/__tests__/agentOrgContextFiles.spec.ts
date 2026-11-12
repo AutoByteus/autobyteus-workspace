@@ -22,6 +22,8 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({
   authorizedFetch: (input: string, init?: RequestInit) => mocks.fetch(input, init),
 }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
+// A run the Org delegated is its own run (autobyteus-461 rule 2); here none of them is open yet.
+vi.mock('~/stores/delegatedRunsStore', async () => ({ useDelegatedRunsStore: (await import('~/test-support/delegatedRunsFake')).fakeDelegatedRunsStore }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
@@ -173,7 +175,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
     expect(mocks.historyRefresh.mock.calls.every(([id]) => id === 'org-run')).toBe(true); expect(mocks.navigation).not.toHaveBeenCalled()
     expect(mocks.fetch).not.toHaveBeenCalled()
   })
-  it('captures upload ownership across focus switches and does not acquire draft ownership for stopped tasks', async () => {
+  it('captures upload ownership across focus switches and does not acquire draft ownership for a task child not yet open', async () => {
     const original = await open()
     let finish!: (value: any) => void
     const physical = mocks.post.getMockImplementation()!
@@ -186,8 +188,9 @@ describe('actual shared Org file input -> active target -> attachment upload own
     next.requirement = 'new draft'
     finish(null); await flushPromises()
     expect(original.contextFilePaths).toHaveLength(1); expect(next.contextFilePaths).toEqual([]); expect(next.requirement).toBe('new draft')
+    // A task child is its own run (rule 2): until it is open there is no target, so nothing takes its draft.
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-worker' })
-    expect(useActiveContextStore().activeWorkspaceTarget?.access).toBe('read_only')
+    expect(useActiveContextStore().activeWorkspaceTarget).toBeNull()
     await flushPromises() // the composer re-renders with the newly focused target before the next user action
     await choose(); expect(mocks.post).toHaveBeenCalledOnce(); expect(mocks.mutate).not.toHaveBeenCalled()
   })

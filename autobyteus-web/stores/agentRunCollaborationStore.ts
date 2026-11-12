@@ -349,10 +349,15 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     return context?.hasChildren ? context.messagesView(hostRunId) : null
   }
 
+  /** A message to a peer's child over the view's stream (autobyteus-278); a local child is reached by its own run (rule 2). */
   const submit = async (hostRunId: string, agentRunId: string, context: AgentContext,
     content: string, paths: readonly ContextFilePath[]): Promise<void> => {
     assertNotTerminating(hostRunId)
-    if (contexts.value[hostRunId]?.getAgentContext(agentRunId) !== context) throw new Error('Agent collaboration child was replaced.')
+    const collaboration = contexts.value[hostRunId]
+    if (collaboration && agentRunDelegatedRunSubject(collaboration.index, agentRunId)) {
+      throw new Error('A delegated run on this node is reached through its own run.')
+    }
+    if (collaboration?.getAgentContext(agentRunId) !== context) throw new Error('Agent collaboration child was replaced.')
     if (context.submissionPending) throw new Error('A message to this collaborator is already pending.')
     const mentions = mentionsPresentInText(content, context.requestedMentions)
     let attachments = paths.map((attachment) => ({ ...attachment }))

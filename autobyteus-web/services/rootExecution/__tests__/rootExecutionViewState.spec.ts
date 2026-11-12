@@ -11,6 +11,12 @@ import type { AgentOrgExecutionEventDto } from '@autobyteus/collaboration-stream
 import { clearStoredParticipantMessages, storeParticipantMessages } from '~/test-support/participantMessagesStub'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
+// A delegated row is its own run (autobyteus-461 rule 2); here every one is open.
+vi.mock('~/stores/delegatedRunsStore', async () => {
+  const fake = await import('~/test-support/delegatedRunsFake')
+  fake.ownRuns.openAll = true
+  return { useDelegatedRunsStore: fake.fakeDelegatedRunsStore }
+})
 vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub)
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 beforeEach(() => { setActivePinia(createPinia()); clearStoredParticipantMessages() })
@@ -350,6 +356,14 @@ describe('AgentOrgExecutionContext', () => {
       messageId: 'message-from-task-team-member', senderAgentRunId: 'agent-task-team-member', receiverAgentRunId: 'agent-direct',
       content: 'Task Team response', messageType: 'agent_message', referenceFiles: [],
       createdAt: '2026-09-01T00:00:03.750Z',
+    }])
+    // The task's Team tab reads its own run's log (autobyteus-461 rule 2; CR-461-020).
+    storeParticipantMessages('agent', 'agent-task-fresh', [{
+      messageId: 'message-to-task', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-fresh',
+      content: 'Task update', messageType: 'agent_message', referenceFiles: [], createdAt: '2026-09-01T00:00:02.000Z',
+    }, {
+      messageId: 'message-from-task', senderAgentRunId: 'agent-task-fresh', receiverAgentRunId: 'agent-direct',
+      content: 'Task response', messageType: 'agent_message', referenceFiles: [], createdAt: '2026-09-01T00:00:03.000Z',
     }])
     const taskEntry = {
       agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),

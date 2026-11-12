@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { ownRuns } from '~/test-support/delegatedRunsFake'
 import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { mount, flushPromises } from '@vue/test-utils'
 import { reactive } from 'vue'
@@ -20,6 +21,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
+vi.mock('~/stores/delegatedRunsStore', async () => ({ useDelegatedRunsStore: (await import('~/test-support/delegatedRunsFake')).fakeDelegatedRunsStore }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistoryItem: mocks.historyRefresh, applyRunNavigationEffect: mocks.navigation,
@@ -97,6 +99,10 @@ async function open(agentRunId = 'agent-director') {
   } })
   await vi.waitFor(() => expect(store.contextFor('org-run')?.phase).toBe('live'))
   const org = store.contextFor('org-run')!
+  // A run the Org delegated is its own run (autobyteus-461 rule 2): its own context, here the same object.
+  for (const agent of org.index.agents.values()) {
+    if (agent.kind !== 'configured') ownRuns.contexts.set(agent.agentRunId, org.getAgentContext(agent.agentRunId))
+  }
   org.select({ kind: 'agent_execution', agentRunId })
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
@@ -108,6 +114,7 @@ async function open(agentRunId = 'agent-director') {
 
 beforeEach(() => {
   setActivePinia(createPinia())
+  ownRuns.reset()
   vi.clearAllMocks()
   mocks.route.query.mode = 'active'
   Socket.instances = []
@@ -131,7 +138,17 @@ afterEach(async () => {
 })
 
 describe('Org shared composer -> exact interaction -> correlated stream', () => {
-  it.each(['agent-director', 'agent-team-worker-configured', 'agent-task-worker'])(
+  it('rule 2: a message to a task child goes to its own run, never over the Org\'s stream (autobyteus-461)', async () => {
+    const { active } = await open('agent-task-worker')
+    await wrapper!.find('textarea').setValue('to the child')
+    await wrapper!.find('button[title="Send message"]').trigger('click')
+    await flushPromises()
+    expect(ownRuns.send).toHaveBeenCalledOnce()
+    expect(socket.sent).toEqual([])
+    expect(active.activeWorkspaceTarget?.access).toBe('live')
+  })
+
+  it.each(['agent-director', 'agent-team-worker-configured'])(
     'clears exact %s text/attachments immediately, retains pending and projects one authoritative echo', async (id) => {
       const { context } = await open(id)
       context.contextFilePaths = [attachment()]
@@ -386,6 +403,10 @@ async function inactive(id = 'agent-director') {
   const store = useAgentOrgContextsStore()
   await store.openForInspection('org-run')
   await connectStored()
+  const org = store.contextFor('org-run')!
+  for (const agent of org.index.agents.values()) {
+    if (agent.kind !== 'configured') ownRuns.contexts.set(agent.agentRunId, org.getAgentContext(agent.agentRunId))
+  }
   store.select('org-run', { kind: 'agent_execution', agentRunId: id })
   const active = useActiveContextStore()
   wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
@@ -468,15 +489,13 @@ describe('observational Org history, exact deliberate continuation and retained 
     expect(mocks.navigation).not.toHaveBeenCalled()
   })
 
-  it('a stopped Org\'s task child is a run of its own: it takes a message over the view\'s stream and the Org stays stopped (SR-045)', async () => {
-    const { store, active, context } = await inactive('agent-task-worker')
+  it('a stopped Org\'s task child is a run of its own: its message goes to its own run and the Org stays stopped (SR-045; rule 2)', async () => {
+    const { store, active } = await inactive('agent-task-worker')
     expect(active.activeWorkspaceTarget?.access).toBe('live')
     await wrapper!.get('textarea').setValue('to the child')
-    const sent = active.send()
-    await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
-    expect(socket.sent[0].payload).toMatchObject({ target_agent_run_id: 'agent-task-worker', content: 'to the child' })
-    ack(); await sent
-    expect(context.conversation.messages.filter((m) => m.type === 'user')).toHaveLength(1)
+    await active.send()
+    expect(ownRuns.send).toHaveBeenCalledOnce()
+    expect(socket.sent).toEqual([])
     const org = store.contextFor('org-run')!
     expect(org.isActive).toBe(false); expect(org.phase).toBe('historical')
     expect(mocks.mutate).not.toHaveBeenCalled(); expect(Socket.instances).toHaveLength(1)
