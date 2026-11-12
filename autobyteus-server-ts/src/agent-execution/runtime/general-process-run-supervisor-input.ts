@@ -1,3 +1,4 @@
+import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
@@ -44,6 +45,8 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   delegationTree: DelegationTree;
   /** A run's collaboration context, derived from the tree (SR-058). */
   runCollaboration: RunCollaborationContext;
+  /** What a run reaches by address step 2 (SR-059). */
+  reachableAgents: ReachableAgents;
   /**
    * Platform notices that ride along with each run's next external input, told when runs are
    * published and released (the host composition owns and closes it). None by default.
@@ -86,6 +89,7 @@ export const requireGeneralProcessRunSupervisorInput = (
     || !input.taskRecords
     || !input.delegationTree
     || !input.runCollaboration
+    || !input.reachableAgents
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }

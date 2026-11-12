@@ -1,3 +1,4 @@
+import { reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
@@ -143,7 +144,7 @@ describe("Team communication API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
       memoryDir: appConfigProvider.config.getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,

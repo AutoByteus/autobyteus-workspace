@@ -40,7 +40,7 @@ export class AgentOrgRecipientResolver {
       senderAgentRunId: sender.agentRunId,
       address,
       newCopyFolder,
-      resolveInRun: () => this.resolveInRunDelegationPlacement(address),
+      resolveInRun: async () => this.resolveInRunDelegationPlacement(address),
       catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });
   }

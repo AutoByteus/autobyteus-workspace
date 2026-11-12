@@ -201,7 +201,7 @@ const createStudioApplicationServices = (input: {
   taskSide: TaskSide;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
-    appConfig: input.appConfig, delegationTree: input.taskSide.tree, runCollaboration: input.taskSide.runCollaboration, taskRecords: input.taskSide.taskRecords,
+    appConfig: input.appConfig, delegationTree: input.taskSide.tree, runCollaboration: input.taskSide.runCollaboration, reachableAgents: input.taskSide.reachableAgents, taskRecords: input.taskSide.taskRecords,
     contextFilePathEnvironment: input.contextFilePathEnvironment,
     bundleService: input.packages.bundleService,
     agentDefinitionService: input.definitions.agentDefinitionService,
@@ -350,7 +350,7 @@ export const buildStudioServer = async (input: {
       providerRelayAccess: credentialProxyHost.providerRelayAccess,
       runPasses: credentialProxyHost.runPasses,
       modelSelectionValidator,
-      taskRecords: taskSide.taskRecords, delegationTree: taskSide.tree, runCollaboration: taskSide.runCollaboration,
+      taskRecords: taskSide.taskRecords, delegationTree: taskSide.tree, runCollaboration: taskSide.runCollaboration, reachableAgents: taskSide.reachableAgents,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
       // then tool list updates, skill notices and background task notices (one notice per input).
       platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, ...platformNotices.sources]),

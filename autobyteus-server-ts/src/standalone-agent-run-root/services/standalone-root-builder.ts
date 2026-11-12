@@ -1,3 +1,4 @@
+import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -18,6 +19,8 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf">;
+  /** What a run reaches by address step 2 (SR-059). */
+  reachableAgents: Pick<ReachableAgents, "stepTwoOf" | "delegationPlacementAt">;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
   collaboratorAdmission?: CollaboratorAdmission;
@@ -57,6 +60,7 @@ export class StandaloneRootBuilder {
       publisher: new RootEventPublisher<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent }),
       taskRecords: this.dependencies.taskRecords,
       delegationTree: this.dependencies.delegationTree,
+      reachableAgents: this.dependencies.reachableAgents,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       delegatedFrom: input.delegatedFrom,
       remoteRunChannel: this.dependencies.remoteRunChannel,

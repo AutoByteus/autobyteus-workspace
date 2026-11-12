@@ -167,6 +167,7 @@ export const buildApplicationExecutionScopeKernel = (
       memoryDir: input.memoryDir,
       modelSelectionValidator: input.modelSelectionValidator,
       delegationTree: input.delegationTree,
+      reachableAgents: input.reachableAgents,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
         agentRunManager,

@@ -1,4 +1,4 @@
-import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { NOT_DELEGATED, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
@@ -37,7 +37,7 @@ vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", 
   }),
 }));
 
-const createManager = () => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-self-heal",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

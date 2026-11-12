@@ -41,7 +41,7 @@ import { testActivationManager } from "../../fixtures/agent-run-preparation-fixt
 import { testTaskSide } from "../../helpers/task-side-binding.js";
 import { noDelegations } from "../../helpers/no-delegations.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
-import { runCollaborationOf } from "../../helpers/run-collaboration.js";
+import { runCollaborationOf, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -117,7 +117,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     },
     rootDependencies: {
       taskRecords: resources,
-      delegationTree: taskSide.tree,
+      delegationTree: taskSide.tree, reachableAgents: reachableAgentsOf(taskSide.tree),
       remoteRunChannel: () => client,
     },
   });
@@ -208,7 +208,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       teamScoped: true, collaborationRole: "team_member", inOrganization: false,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCapability }) } as never,
     taskRecords: new InMemoryTaskExecutionResources(),
-    delegationTree: noDelegations(),
+    delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()),
     modelSelectionValidator: { validate: async ({ selection }: any) => ({ kind: "valid", selection }), validateMany: async () => [] } as never,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
   });

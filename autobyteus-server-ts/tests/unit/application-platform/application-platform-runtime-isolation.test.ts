@@ -1,4 +1,4 @@
-import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { NOT_DELEGATED, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -86,7 +86,7 @@ describe("application platform runtime isolation", () => {
       const get = vi.fn(() => '{malformed current setting');
       const setDurably = vi.fn();
       const runtime = buildApplicationPlatformRuntime({
-        delegationTree: noDelegations(),
+        delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()),
         runCollaboration: NOT_DELEGATED as never,
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
@@ -227,7 +227,7 @@ describe("application platform runtime isolation", () => {
 
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
-        delegationTree: noDelegations(),
+        delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()),
         runCollaboration: NOT_DELEGATED as never,
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {

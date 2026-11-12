@@ -452,4 +452,27 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     root.close();
     await h.terminate("team", root.rootId);
   }, 300_000);
+
+  it("CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy", async () => {
+    // Base 827f1e68dc (IMP-43): the assigner's own agent is refused as a delegation target; an assigner's configured
+    // placement is delegated to (a new task agent). The list at those addresses: reachable-agents.test.ts.
+    const text = (result: { text: string }) => result.text.replace(/\\+"/g, '"');
+    const agentRoot = await h.startRoot("agent", ids);
+    const fromAgent = (await agentRoot.calls(agentRoot.managerRunId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }))).target_agent_run_id as string;
+    await agentRoot.waitForTaskAgent(fromAgent);
+    const managerAddress = `/${segment(names.manager)}`;
+    expect(text(await h.mcpCall(fromAgent, "delegate_task", { recipient_address: managerAddress, description: "Do it" })))
+      .toContain(`'${managerAddress}' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use.`);
+    agentRoot.close();
+    await h.terminate("agent", agentRoot.rootId);
+
+    const teamRoot = await h.startRoot("team", ids);
+    const fromTeam = (await teamRoot.calls(teamRoot.managerRunId, "/manager", callTool("delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }))).target_agent_run_id as string;
+    await teamRoot.waitForTaskAgent(fromTeam);
+    const delegated = text(await h.mcpCall(fromTeam, "delegate_task", { recipient_address: "/mate", description: "Reply OK." }));
+    expect(delegated).toContain('"delegated":true');
+    expect(delegated).toContain('"target_kind":"agent"');
+    teamRoot.close();
+    await h.terminate("team", teamRoot.rootId);
+  }, 300_000);
 });

@@ -1,3 +1,4 @@
+import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
@@ -71,6 +72,8 @@ export type ApplicationPlatformBuildInput = Readonly<{
   delegationTree: DelegationTree;
   /** A run's collaboration context, derived from the tree (SR-058). */
   runCollaboration: RunCollaborationContext;
+  /** What a run reaches by address step 2 (SR-059). */
+  reachableAgents: ReachableAgents;
   /** The run side's Task records (SR-053). */
   taskRecords: RunTaskRecords;
   /** The host's provider relays for application runs (`null`: the host runs no credential proxy). */
@@ -129,6 +132,7 @@ export const buildApplicationPlatformRuntime = (
     modelSelectionValidator: input.modelSelectionValidator,
     delegationTree: input.delegationTree,
     runCollaboration: input.runCollaboration,
+    reachableAgents: input.reachableAgents,
     taskRecords: input.taskRecords,
     applicationAgentTools: applicationAgentToolAssembly.capability,
     });

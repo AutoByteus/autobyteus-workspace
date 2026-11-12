@@ -1,4 +1,4 @@
-import { NOT_DELEGATED } from "../helpers/run-collaboration.js";
+import { NOT_DELEGATED, reachableAgentsOf } from "../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { testActivationManager } from "./agent-run-preparation-fixtures.js";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -124,7 +124,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
     });
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
-    const root = await materializeTeamRoot({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const root = await materializeTeamRoot({ delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,

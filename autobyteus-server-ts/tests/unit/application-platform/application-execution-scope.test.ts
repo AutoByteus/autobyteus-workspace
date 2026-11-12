@@ -1,4 +1,4 @@
-import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { NOT_DELEGATED, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -85,7 +85,7 @@ const createScope = async () => {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
-    delegationTree: noDelegations(),
+    delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()),
     runCollaboration: NOT_DELEGATED as never,
     taskRecords: openTaskRecords(),
   });

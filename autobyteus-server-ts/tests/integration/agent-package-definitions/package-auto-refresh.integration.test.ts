@@ -69,9 +69,9 @@ const port: CollaboratorRootPort = {
   isApplicationBound: false,
   launchBase: () => ({ kind: "inherited", launch: {} as never }),
   ownDefinition: () => null,
-  inRunPlacementsByDefinition: () => new Map(),
+  inRunPlacementsByDefinition: async () => new Map(),
   collaborators: () => [],
-  addressesInUse: () => new Set(),
+  addressesInUse: async () => new Set(),
 };
 
 const services = () => host!;

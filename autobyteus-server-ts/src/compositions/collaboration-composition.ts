@@ -5,6 +5,7 @@ import { DelegationTree } from "../agent-collaboration/delegation/delegation-tre
 import { RunCollaborationContext } from "../agent-collaboration/delegation/run-collaboration-context.js";
 import type { AgentOrgDefinitionService } from "../agent-org-definition/services/agent-org-definition-service.js";
 import { CrossRunAddressResolution } from "../agent-collaboration/communication/cross-run-address-resolution.js";
+import { ReachableAgents } from "../agent-collaboration/communication/reachable-agents.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
@@ -71,6 +72,8 @@ export type TaskSide = Readonly<{
   tree: DelegationTree;
   /** A run's collaboration context derived from the tree (SR-058), asked by every kind's member context builder. */
   runCollaboration: RunCollaborationContext;
+  /** What a run reaches by address step 2 (SR-059): its in-run set and step 2's resolution. */
+  reachableAgents: ReachableAgents;
   taskRecords: RunTaskRecords;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
@@ -99,7 +102,8 @@ export const composeTaskSide = async (input: Readonly<{
   resources.setEntriesListener(tree);
   const runCollaboration = new RunCollaborationContext({ tree, orgs: ownFiles,
     orgInstruction: async (orgDefinitionId) => (await input.orgDefinitions.getDefinitionById(orgDefinitionId))?.instructions?.trim() || null });
-  return Object.freeze({ resources, tree, runCollaboration, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
+  const reachableAgents = new ReachableAgents({ tree: () => tree, placements: ownFiles });
+  return Object.freeze({ resources, tree, runCollaboration, reachableAgents, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */
@@ -160,7 +164,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(() => getProjectChangePublisher().unbind());
 
     // 6. Delegation and messages between runs, through each run's own root (DS-1, DS-2; contract §2.3, §2.4).
-    const addresses = new CrossRunAddressResolution({ tree: () => tree });
+    const addresses = new CrossRunAddressResolution({ tree: () => tree, reachable: taskSide.reachableAgents });
     const crossRun = new CrossRunMessageDelivery({
       senderAddress: (message) => addresses.reachingAddress(message.sender, message.receiverRun),
       tree: () => tree,

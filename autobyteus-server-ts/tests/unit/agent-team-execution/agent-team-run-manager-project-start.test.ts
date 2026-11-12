@@ -1,4 +1,4 @@
-import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
+import { NOT_DELEGATED, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 /**
  * A Team run started under a Project (projects-left-navigation, SR-009, DS-002): `AgentTeamRunManager.createTeamRun`
@@ -14,7 +14,7 @@ import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaborati
 import { configureRunProjects } from "../../../src/agent-execution/domain/run-project-context.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-project-start",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

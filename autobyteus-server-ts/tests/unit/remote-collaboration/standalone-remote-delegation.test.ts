@@ -30,7 +30,7 @@ import type { RemoteRunRootEvent } from "../../../src/agent-collaboration/execut
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
-import { runCollaborationOf } from "../../helpers/run-collaboration.js";
+import { runCollaborationOf, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 
 /**
  * The first end to end of slice 1 (design Change Sequence step 5), in one process: a standalone run on node A
@@ -169,7 +169,7 @@ const buildNode = async (input: Readonly<{
     },
     rootDependencies: {
       taskRecords: resources,
-      delegationTree: taskSide.tree,
+      delegationTree: taskSide.tree, reachableAgents: reachableAgentsOf(taskSide.tree),
       remoteRunChannel: () => client,
     },
   });

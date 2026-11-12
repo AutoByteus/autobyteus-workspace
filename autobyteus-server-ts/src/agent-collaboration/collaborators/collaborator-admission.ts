@@ -88,7 +88,7 @@ export class CollaboratorAdmission {
       const eligible: AdmissibleCollaboratorDefinition[] = [];
       for (const ref of definitions) eligible.push(await this.checked(() => this.dependencies.policy.requireEligible(port, ref), ref));
       const addresses = await this.dependencies.policy.catalogAddressMap(port);
-      const placements = port.inRunPlacementsByDefinition();
+      const placements = await port.inRunPlacementsByDefinition();
       const collaborators = eligible.map((definition): MentionedCollaborator => {
         // Own team first (SR-011): the focused agent's own team instance is checked by definition before the
         // configured-placement and catalog paths, because a task agent team's members are neither.

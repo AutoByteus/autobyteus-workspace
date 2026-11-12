@@ -35,8 +35,8 @@ const port = (): CollaboratorRootPort => ({
   isApplicationBound: false,
   launchBase: () => ({ kind: "inherited", launch: root }),
   ownDefinition: () => ({ kind: "agent_team", definitionId: "pm-team" }),
-  inRunPlacementsByDefinition: () => buildInRunPlacements({ configured: [] }),
-  addressesInUse: () => new Set(["/project_task_manager"]),
+  inRunPlacementsByDefinition: async () => buildInRunPlacements({ configured: [], configuredStep: 1, reached: [] }),
+  addressesInUse: async () => new Set(["/project_task_manager"]),
 });
 
 const setup = (codexEnabled = true) => {

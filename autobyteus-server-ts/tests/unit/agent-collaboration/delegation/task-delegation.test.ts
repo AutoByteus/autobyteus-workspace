@@ -1,3 +1,4 @@
+import { reachableAgentsOf } from "../../../helpers/run-collaboration.js";
 import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
 import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
 import { describe, expect, it, vi } from "vitest";
@@ -27,7 +28,7 @@ const harness = (reader: RunPartsReader = NO_RUN_PARTS) => {
   const deliverWorkPacket = vi.fn(async (_run: unknown, _packet: WorkPacket) => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
-  const addresses = new CrossRunAddressResolution({ tree: () => tree });
+  const addresses = new CrossRunAddressResolution({ tree: () => tree, reachable: reachableAgentsOf(tree) });
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
     deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
     reachingAddress: (sender, receiverRun) => addresses.reachingAddress(sender, receiverRun) });

@@ -214,6 +214,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         taskRecords: input.taskRecords,
         delegationTree: input.delegationTree,
+        reachableAgents: input.reachableAgents,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -268,6 +269,7 @@ export class GeneralProcessRunSupervisor {
         rootDependencies: {
           taskRecords: input.taskRecords,
           delegationTree: input.delegationTree,
+          reachableAgents: input.reachableAgents,
           agentRunManager: generalAgentRunManager,
           collaboratorAdmission,
         },

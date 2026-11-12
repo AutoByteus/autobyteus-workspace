@@ -55,12 +55,13 @@ export type AvailableCollaborator = Readonly<{
 const RANK_ORDER: readonly InRunPlacement["rank"][] = ["run_agent", "configured"];
 
 /**
- * AR-002: one in-run placement per definition, by rank, then the lexicographically smallest
- * address; its address is the definition's in-run address. Null when it has none.
+ * AR-002, SR-059: one in-run placement per definition, by §2.3's step (own team, step 2, own run), then by rank,
+ * then the lexicographically smallest address; its address is the definition's in-run address. Null when it has none.
  */
 export const preferredInRunPlacement = (placements: readonly InRunPlacement[]): InRunPlacement | null => {
   const [best] = [...placements].sort((left, right) =>
-    RANK_ORDER.indexOf(left.rank) - RANK_ORDER.indexOf(right.rank)
+    left.step - right.step
+    || RANK_ORDER.indexOf(left.rank) - RANK_ORDER.indexOf(right.rank)
     || (left.address < right.address ? -1 : left.address > right.address ? 1 : 0));
   return best ?? null;
 };
@@ -89,12 +90,12 @@ export class CollaboratorCandidatePolicy {
    * In the run: the viewer's own definition and every in-run placement (the run agent and
    * configured placements).
    */
-  inRunDefinitionIds(port: CollaboratorRootPort): InRunDefinitionIds {
+  async inRunDefinitionIds(port: CollaboratorRootPort): Promise<InRunDefinitionIds> {
     const agents = new Set<string>();
     const teams = new Set<string>();
     const own = port.ownDefinition();
     if (own) (own.kind === "agent" ? agents : teams).add(own.definitionId);
-    for (const key of port.inRunPlacementsByDefinition().keys()) {
+    for (const key of (await port.inRunPlacementsByDefinition()).keys()) {
       const separator = key.indexOf(":");
       (key.slice(0, separator) === "agent" ? agents : teams).add(key.slice(separator + 1));
     }
@@ -131,11 +132,11 @@ export class CollaboratorCandidatePolicy {
         ({ kind: "agent_team" as const, definitionId: team.id!, name: team.name, description: team.description ?? "" })),
     ].filter((entry) => !own || own.kind !== entry.kind || own.definitionId !== entry.definitionId);
     const inRunAddresses = new Map<string, AgentTeamAddress>();
-    for (const [key, placements] of port.inRunPlacementsByDefinition()) {
+    for (const [key, placements] of await port.inRunPlacementsByDefinition()) {
       const placement = preferredInRunPlacement(placements);
       if (placement) inRunAddresses.set(key, placement.address);
     }
-    const map = new CatalogAddressMap({ eligible, inRunAddresses, addressesInUse: port.addressesInUse() });
+    const map = new CatalogAddressMap({ eligible, inRunAddresses, addressesInUse: await port.addressesInUse() });
     return { eligible, map };
   }
 
@@ -188,7 +189,7 @@ export class CollaboratorCandidatePolicy {
    */
   async requireAdmissible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
     const eligible = await this.requireEligible(port, mention);
-    const inRun = this.inRunDefinitionIds(port);
+    const inRun = await this.inRunDefinitionIds(port);
     const inRunIds = eligible.kind === "agent" ? inRun.agentDefinitionIds : inRun.teamDefinitionIds;
     if (inRunIds.has(eligible.definition.id)) throw this.alreadyInRun(eligible.definition.name);
     return eligible;

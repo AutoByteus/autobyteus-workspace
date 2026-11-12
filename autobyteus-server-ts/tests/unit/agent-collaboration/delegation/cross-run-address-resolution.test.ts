@@ -1,3 +1,4 @@
+import { reachableAgentsOf } from "../../../helpers/run-collaboration.js";
 import { describe, expect, it } from "vitest";
 import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
 import { DelegationTree, type RunParts, type RunStanding } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
@@ -55,7 +56,7 @@ const harness = async () => {
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/study_group", delegatedFrom: from(ORG, "ceo"), execution: { teamRunId: "study" }, teamCoordinatorAgentRunId: "tutor" });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T3", recipientAddress: "/helper", delegatedFrom: from(U, "u_designer"), execution: { agentRunId: "helper" } });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T5", recipientAddress: "/dev_team", delegatedFrom: from(ORG, "ceo"), execution: { teamRunId: "xteam" }, teamCoordinatorAgentRunId: "x_lead" });
-  const resolution = new CrossRunAddressResolution({ tree: () => tree });
+  const resolution = new CrossRunAddressResolution({ tree: () => tree, reachable: reachableAgentsOf(tree) });
   return { tasks, resolution, reads };
 };
 

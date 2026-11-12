@@ -28,7 +28,7 @@ export class StandaloneRootRecipientResolver {
     });
   }
 
-  /** CM-1 refusal first, then a catalog copy (an Agent root has no other delegation target). */
+  /** CM-1 refusal first, then a configured placement its address step 2 reaches (SR-059), then a catalog copy. */
   resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<DelegationPlacement> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
@@ -41,7 +41,9 @@ export class StandaloneRootRecipientResolver {
     });
   }
 
-  private resolveInRunDelegationPlacement(address: AgentTeamAddress): DelegationPlacement {
+  private async resolveInRunDelegationPlacement(address: AgentTeamAddress): Promise<DelegationPlacement> {
+    const reached = await this.options.collaborators.reachedPlacementAt(address);
+    if (reached) return reached;
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 

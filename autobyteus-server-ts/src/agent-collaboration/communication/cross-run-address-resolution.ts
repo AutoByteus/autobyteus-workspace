@@ -1,4 +1,5 @@
 import type { DelegationTree } from "../delegation/delegation-tree.js";
+import type { ReachableAgents } from "./reachable-agents.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runReferenceOf } from "../execution/task/task-execution-resource-port.js";
@@ -10,7 +11,7 @@ const NO_LONGER = (address: string) => `${address} is no longer an address: your
  * resolves steps 1 and 3 (its own team, its own run's standing agents) and the self refusal; when that misses, a run
  * that works on a Task (it has Task entries) continues here:
  * - step 2: the standing agents of the runs that assigned its Tasks (its open Tasks in Task-ID order, else all its
- *   Tasks; the assigners in run order);
+ *   Tasks; the assigners in run order; the first match wins), as `ReachableAgents` enumerates them (SR-059);
  * - then, for a team run, the correction of an address under the name the team was delegated to (its entries'
  *   `recipientAddress`): it is refused with the address to use, never resolved (SR-036; after step 2, ARCH-REV-011).
  * A run without Task entries (a run the user started, a run whose Task was deleted) is not this resolution's: `null`.
@@ -18,7 +19,9 @@ const NO_LONGER = (address: string) => `${address} is no longer an address: your
 export class CrossRunAddressResolution {
   constructor(private readonly dependencies: Readonly<{
     /** The relationships, and each run's standing agents (the tree is their one owner, read once per run). */
-    tree(): Pick<DelegationTree, "tasksOf" | "assignersOfTasksOf" | "standingOf">;
+    tree(): Pick<DelegationTree, "tasksOf" | "standingOf">;
+    /** Step 2's one enumeration (SR-059, ARCH-REV-034). */
+    reachable: Pick<ReachableAgents, "stepTwoOf">;
   }>) {}
 
   /** The receiving agent's run ID; `null` when the sender's run has no Task entries. Refusals throw. */
@@ -43,14 +46,9 @@ export class CrossRunAddressResolution {
 
   /** Step 2: `undefined` when the run has no Task entries; `null` when no assigner has the address. */
   private async assignersAgent(run: RootExecutionIdentity, address: string): Promise<string | null | undefined> {
-    const reference = runReferenceOf(run);
-    const tree = this.dependencies.tree();
-    if (!reference || !tree.tasksOf(reference).length) return undefined;
-    for (const assigner of tree.assignersOfTasksOf(reference)) {
-      const agentRunId = (await tree.standingOf(assigner))?.agents.get(address);
-      if (agentRunId) return agentRunId;
-    }
-    return null;
+    const reached = await this.dependencies.reachable.stepTwoOf(run);
+    if (!reached) return undefined;
+    return reached.get(address)?.agentRunId ?? null;
   }
 
   private async correct(run: RootExecutionIdentity, address: string): Promise<void> {

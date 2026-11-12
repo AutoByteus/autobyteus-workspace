@@ -54,10 +54,11 @@ const port = (input: {
   isApplicationBound: input.applicationBound ?? false,
   launchBase: () => ({ kind: "inherited", launch }),
   ownDefinition: () => input.ownAgent ? { kind: "agent", definitionId: input.ownAgent } : { kind: "agent_team", definitionId: "se-team" },
-  inRunPlacementsByDefinition: () => buildInRunPlacements({
+  inRunPlacementsByDefinition: async () => buildInRunPlacements({
     configured: (input.configuredAgents ?? []).map((id) => ({ ref: { kind: "agent" as const, definitionId: id }, address: `/${id}` as never })),
+    configuredStep: 1, reached: [],
   }),
-  addressesInUse: () => new Set(input.addresses ?? ["/coordinator"]),
+  addressesInUse: async () => new Set(input.addresses ?? ["/coordinator"]),
 });
 
 /** Records every step so the order can be asserted. */

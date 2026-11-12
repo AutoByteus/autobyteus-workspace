@@ -18,7 +18,7 @@ export class NodeCatalogPort implements CollaboratorRootPort {
 
   ownDefinition(): CatalogDefinitionRef | null { return null; }
 
-  inRunPlacementsByDefinition(): InRunPlacementsByDefinition { return new Map(); }
+  async inRunPlacementsByDefinition(): Promise<InRunPlacementsByDefinition> { return new Map(); }
 
-  addressesInUse(): ReadonlySet<string> { return new Set(); }
+  async addressesInUse(): Promise<ReadonlySet<string>> { return new Set(); }
 }

@@ -1,3 +1,4 @@
+import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { NOT_AN_AGENT_OF_THIS_RUN, type CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { reachingAddressOf } from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
@@ -158,7 +159,7 @@ export class TeamRunMessageDelivery {
     });
   }
 
-  /** `delegate_task(address)`: refuses the sender's own Team (CM-1), then a configured Agent, then the catalog. */
+  /** `delegate_task(address)`: refuses the sender's own Team (CM-1), then a configured Agent (the team's, else one step 2 reaches), then the catalog. */
   resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, recipientAddress: string, work: DelegationWork, newCopyFolder: string | null): Promise<TeamDelegationPlacement> {
     const address = this.recipients.requireNonRootAddress(recipientAddress);
     return resolveDelegationPlacement({
@@ -166,7 +167,17 @@ export class TeamRunMessageDelivery {
       senderAgentRunId: sender.agentRunId,
       address,
       newCopyFolder,
-      resolveInRun: () => this.recipients.resolveInRunDelegationPlacement(this.options.getIndex(), address),
+      resolveInRun: async () => {
+        try {
+          return this.recipients.resolveInRunDelegationPlacement(this.options.getIndex(), address);
+        } catch (error) {
+          // Beyond the team's own placements: a configured placement its address step 2 reaches (SR-059).
+          if (!(error instanceof CollaborationContractError) || error.code !== "COLLABORATION_TARGET_NOT_FOUND") throw error;
+          const reached = await this.options.collaborators.reachedPlacementAt(address);
+          if (reached) return reached;
+          throw error;
+        }
+      },
       catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });
   }

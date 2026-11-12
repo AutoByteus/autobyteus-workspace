@@ -265,7 +265,7 @@ export const startStandaloneApplicationHost = async (
         modelSelectionValidator,
         taskRecords: taskSide.taskRecords,
         delegationTree: taskSide.tree,
-        runCollaboration: taskSide.runCollaboration,
+        runCollaboration: taskSide.runCollaboration, reachableAgents: taskSide.reachableAgents,
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
       });
@@ -279,7 +279,7 @@ export const startStandaloneApplicationHost = async (
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
       delegationTree: taskSide.tree,
-      runCollaboration: taskSide.runCollaboration,
+      runCollaboration: taskSide.runCollaboration, reachableAgents: taskSide.reachableAgents,
       taskRecords: taskSide.taskRecords,
       contextFilePathEnvironment,
       bundleService,
