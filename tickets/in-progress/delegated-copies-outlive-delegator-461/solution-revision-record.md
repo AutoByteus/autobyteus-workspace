@@ -1119,4 +1119,4 @@
 - Done: the design's DS-8 ("Rows at every depth", "A delegated run's collaboration context"), with tests. `walkthrough.py --check` passes.
 - The three Local Fixes of CRR-016 (CR-461-031, -032, -034) are the Implementation Engineer's.
 - Next action: architecture review (narrow)
-
+- ARCH-REV-033 (2026-11-12): Pass, no finding. Its wording note is applied: the DS-8 spine now names the open-subtree rule and SR-056's identity from the tree. The reviewer notes that contract revision 8's "one hop" applies to the stored edge only, so the two do not conflict.
