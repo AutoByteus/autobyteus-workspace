@@ -1274,4 +1274,4 @@
   - The agents' own collaboration with a peer run stays in the roots. There is no protocol change.
 - **Kept from SR-065:** each local child's model options come from its own queries.
 - **Next action:** architecture review.
-
+- **ARCH-REV-040 passed SR-066.** Its notes were applied: one shared `observe` per peer run across the open views, reference-counted, with each view numbering the frames in its own sequence; and one `PeerRunLink` builder (`peerRunLinksOf`) for `peerRunOf` and the roots.
