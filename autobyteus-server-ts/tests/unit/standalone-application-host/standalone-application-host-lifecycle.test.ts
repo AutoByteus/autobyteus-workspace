@@ -326,6 +326,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       modelSelectionValidator: expect.anything(),
       taskRecords: expect.objectContaining({ isOpen: expect.any(Function), statusChanged: expect.any(Function) }),
       delegationIndex: expect.objectContaining({ openChildrenOf: expect.any(Function), parentOf: expect.any(Function) }),
+      // Each run's one view stream, from the composition root (SR-062).
+      viewStreams: expect.objectContaining({ streamOf: expect.any(Function) }),
       platformInputNotices: expect.objectContaining({
         takePreface: expect.any(Function), runPublished: expect.any(Function), runReleased: expect.any(Function),
       }),

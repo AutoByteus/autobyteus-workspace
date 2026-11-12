@@ -1,92 +1,76 @@
-import { ChildRowsStreams } from "../../../../src/agent-collaboration/delegation/child-rows-streams.js";
-import { describe, expect, it, vi } from "vitest";
-import { ChildRowsFeed, type ChildRowsEvent } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
-import type { ChildRowsChange,  } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { describe, expect, it } from "vitest";
+import { ChildRowsFeed, placementOf, type ChildRowRootEvent } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
+import type { ChildRowsChange } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import type { SubtreeRow } from "../../../../src/agent-collaboration/delegation/collaboration-tree.js";
-import { ChildRowsStreamSession } from "../../../../src/services/agent-streaming/child-rows-stream-session.js";
+import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import type { SequencedRootEvent } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../../helpers/view-streams.js";
 
-/** autobyteus-461 DS-8, SR-042 … SR-044 (ARCH-REV-019 residual): the feed to open views and each stream's order. */
-const M = { rootSubjectKind: "agent" as const, rootRunId: "manager" };
-const OTHER = { rootSubjectKind: "agent_team" as const, rootRunId: "eng" };
-const child = (agentRunId: string, nodeId?: string): SubtreeRow => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "manager",
-  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent: M, ...(nodeId ? { nodeId } : {}) });
-const row = (agentRunId: string) => ({ kind: "local" as const, row: { agentRunId } as never });
+/**
+ * autobyteus-461 SR-061 … SR-063: the feed publishes base's row events into each affected run's view stream at the change
+ * itself, numbered in the run's one sequence: a new row is started (with its placement, as at base), a row whose Tasks
+ * closed is closed, a closed row that still runs and is back is reopened.
+ */
+const M: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "manager" };
+const TEAM: RootExecutionIdentity = { rootSubjectKind: "agent_team", rootRunId: "squad" };
+const row = (agentRunId: string, parent: RootExecutionIdentity = M): SubtreeRow => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "manager",
+  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent });
+const teamRow = (teamRunId: string, parent: RootExecutionIdentity = M): SubtreeRow => ({ run: { teamRunId }, taskId: "T1", delegatorAgentRunId: "manager",
+  entryAgentRunId: `${teamRunId}-lead`, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${teamRunId}`, parent });
 
-type RowOf = (child: SubtreeRow) => Promise<ReturnType<typeof row> | null>;
-const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
+const harness = (closedEntries: ReadonlySet<string> = new Set()) => {
   let report: (change: ChildRowsChange) => void = () => undefined;
-  const streams = new ChildRowsStreams();
-  const feed = new ChildRowsFeed({ rowOf }, streams);
+  const rows = new Map<string, SubtreeRow[]>();
+  const streams = testViewStreams();
+  const tree = {
+    collaborationTreeOf: (run: RootExecutionIdentity) => ({ rows: () => rows.get(run.rootRunId) ?? [], closedRows: () => [] }),
+    tasksOf: (run: { agentRunId?: string }) => run.agentRunId && closedEntries.has(run.agentRunId) ? [{ open: false }] : [],
+  };
+  const feed = new ChildRowsFeed({ streams, tree: tree as never, isRunning: () => true });
   feed.follow({ subscribeChildRows: (listener) => { report = listener; return () => undefined; } });
-  // SR-047: the open view streams are their own owner; the feed publishes to them.
-  return { feed: Object.assign(feed, { open: streams.open.bind(streams) }), rowOf, report: (change: ChildRowsChange) => report(change) };
+  const events = (run: RootExecutionIdentity) => {
+    const seen: SequencedRootEvent<ChildRowRootEvent>[] = [];
+    streams.streamOf<ChildRowRootEvent>(run).subscribe((event) => seen.push(event));
+    return seen;
+  };
+  return { rows, streams, report: (change: ChildRowsChange) => report(change), events };
 };
 
 describe("ChildRowsFeed", () => {
-  it("publishes each change to the run's open views only, with the added rows as the views project them", async () => {
+  it("a new row is base's task_execution_started in its run's stream, at the change, placed in the root", () => {
     const h = harness();
-    const mine: ChildRowsEvent[] = [], second: ChildRowsEvent[] = [], other: ChildRowsEvent[] = [];
-    h.feed.open(M, (event) => mine.push(event));
-    h.feed.open(M, (event) => second.push(event));
-    h.feed.open(OTHER, (event) => other.push(event));
-    h.report({ run: M, added: [child("writer")], removed: [{ teamRunId: "old" }] });
-    await h.feed.settled();
-    expect(mine).toEqual([{ run: M, added: [row("writer")], removed: [{ teamRunId: "old" }] }]);
-    expect(second).toEqual(mine);
-    expect(other).toEqual([]);
+    const seen = h.events(M);
+    h.rows.set("manager", [row("writer")]);
+    h.report({ run: M, added: [row("writer")], removed: [] });
+    expect(seen).toEqual([{ changeSequence: 1, event: { kind: "task_execution_started", placed: { row: row("writer"), host: { hostKind: "root", hostRunId: "manager" } } } }]);
   });
 
-  it("does no work for a run with no open view, and stops after a view closes", async () => {
-    const h = harness();
-    h.report({ run: M, added: [child("writer")], removed: [] });
-    await h.feed.settled();
-    expect(h.rowOf).not.toHaveBeenCalled();
-    const events: ChildRowsEvent[] = [];
-    const close = h.feed.open(M, (event) => events.push(event));
-    close();
+  it("a row whose Tasks closed is task_executions_closed; a closed row back that still runs is task_executions_reopened", () => {
+    const h = harness(new Set(["writer"]));
+    const seen = h.events(M);
     h.report({ run: M, added: [], removed: [{ agentRunId: "writer" }] });
-    await h.feed.settled();
-    expect(events).toEqual([]);
+    h.rows.set("manager", [row("writer")]);
+    h.report({ run: M, added: [row("writer")], removed: [] });
+    expect(seen.map(({ changeSequence, event }) => [changeSequence, event.kind])).toEqual([[1, "task_executions_closed"], [2, "task_executions_reopened"]]);
   });
 
-  it("publishes in reported order even when an earlier row is slower to read; an unreadable row is left out", async () => {
-    let release!: () => void;
-    const slow = new Promise<void>((resolve) => { release = resolve; });
-    const h = harness(vi.fn<RowOf>(async (c) => {
-      if ("agentRunId" in c.run && c.run.agentRunId === "slow") { await slow; return row("slow"); }
-      return "agentRunId" in c.run && c.run.agentRunId === "missing" ? null : row("x");
-    }));
-    const events: ChildRowsEvent[] = [];
-    h.feed.open(M, (event) => events.push(event));
-    h.report({ run: M, added: [child("slow")], removed: [] });
-    h.report({ run: M, added: [], removed: [{ agentRunId: "slow" }] });
-    h.report({ run: M, added: [child("missing")], removed: [] });
-    release();
-    await h.feed.settled();
-    expect(events.map((event) => [event.added.length, event.removed.length])).toEqual([[1, 0], [0, 1]]);
-  });
-});
-
-describe("ChildRowsStreamSession", () => {
-  it("holds the events published while its snapshot is built and sends them after it, in published order, each once", async () => {
+  it("each run has its own sequence: a change to another run's rows is not in this run's stream", () => {
     const h = harness();
-    const sent: string[] = [];
-    const session = new ChildRowsStreamSession(h.feed, M, (event) => sent.push(`${event.added.map((r) => (r.row as { agentRunId: string }).agentRunId).join()}|${event.removed.length}`));
-    h.report({ run: M, added: [child("a")], removed: [] });
-    h.report({ run: M, added: [], removed: [{ agentRunId: "a" }] });
-    h.report({ run: M, added: [child("b")], removed: [] });
-    await h.feed.settled();
-    expect(sent).toEqual([]);
-    sent.push("SNAPSHOT");
-    session.snapshotSent();
-    expect(sent).toEqual(["SNAPSHOT", "a|0", "|1", "b|0"]);
-    session.snapshotSent();
-    h.report({ run: M, added: [child("c")], removed: [] });
-    await h.feed.settled();
-    expect(sent).toEqual(["SNAPSHOT", "a|0", "|1", "b|0", "c|0"]);
-    session.dispose();
-    h.report({ run: M, added: [child("d")], removed: [] });
-    await h.feed.settled();
-    expect(sent).toHaveLength(5);
+    const seen = h.events(M);
+    h.report({ run: { rootSubjectKind: "agent", rootRunId: "other" }, added: [row("helper")], removed: [] });
+    expect(seen).toEqual([]);
+  });
+
+  it("base's placement: a row is in the root, in the team run that delegated it, or where its delegating task agent is", () => {
+    const squad = teamRow("squad");
+    const fromTeam = row("checker", TEAM);
+    const worker = row("worker");
+    const fromWorker = row("helper", { rootSubjectKind: "agent", rootRunId: "worker" });
+    const fromHelper = row("deep", { rootSubjectKind: "agent", rootRunId: "helper" });
+    const rows = [squad, fromTeam, worker, fromWorker, fromHelper];
+    expect(placementOf(M, squad, rows)).toEqual({ hostKind: "root", hostRunId: "manager" });
+    expect(placementOf(M, fromTeam, rows)).toEqual({ hostKind: "team", hostRunId: "squad" });
+    expect(placementOf(M, fromWorker, rows)).toEqual({ hostKind: "root", hostRunId: "manager" });
+    expect(placementOf(M, fromHelper, rows)).toEqual({ hostKind: "root", hostRunId: "manager" });
   });
 });

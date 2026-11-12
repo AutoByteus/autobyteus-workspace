@@ -117,7 +117,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
         publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
       }),
-      project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, {} as never, event),
+      project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, event),
     },
     {
       kind: "Org root",
@@ -128,7 +128,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
         publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
       }),
-      project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent({ orgRunId: "org-root" } as never, event),
+      project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent("org-root", event),
     },
   ] as const)("$kind: only the local messages are published, with consecutive sequences", async ({ root, build, project }) => {
     const publisher = new RunViewStream<never>({ isMessageEvent: () => false });

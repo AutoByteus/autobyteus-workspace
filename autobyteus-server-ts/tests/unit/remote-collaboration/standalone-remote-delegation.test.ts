@@ -1,3 +1,5 @@
+import { ChildRowsFeed } from "../../../src/agent-collaboration/delegation/child-rows-feed.js";
+import { createChildRowProjection } from "../../../src/services/agent-streaming/delegated-children-dtos.js";
 import { testViewStreams } from "../../helpers/view-streams.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
@@ -274,8 +276,11 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(fs.access(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"))).rejects.toThrow();
     // autobyteus-278: A's run tree view lists it as a remote child of the delegator, never among the local copies.
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
-    const view = projectAgentCollaborationView({ ...inspection, taskExecutions: [], remoteTaskExecutions: await new RunViewChildren({ memoryDir: a.memoryDir, tree: a.taskSide.tree,
-      followers: { statuses: async () => [] }, channel: () => null }).remote(createAgentRootExecutionIdentity(DELEGATOR)) });
+    // Its rows as the run's view and history reads give them (SR-061): from its collaboration tree, the peer row with its node.
+    const children = new RunViewChildren({ feed: new ChildRowsFeed({ streams: testViewStreams(), tree: a.taskSide.tree, isRunning: () => false }),
+      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }), followers: { statuses: async () => [] } });
+    const { rows } = await children.read(createAgentRootExecutionIdentity(DELEGATOR));
+    const view = projectAgentCollaborationView({ ...inspection, rows, childStatuses: [] });
     if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");
     expect(view.root_agent.execution_tree.taskExecutions).toEqual([]);
     // Its launches are read from B while the view is open (SR-038); nothing about them is stored on A.
@@ -304,7 +309,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const bRecords = await b.manager.getCollaborationRecordsSnapshot("publisher_r1");
     expect(bRecords.messages.messages.map((message) => message.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     const bInspection = (await b.manager.getInspection("publisher_r1"))!;
-    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, taskExecutions: [], remoteTaskExecutions: [] }))).not.toContain("Published to the channel.");
+    expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, rows: { taskExecutions: [], remoteTaskExecutions: [], closedTaskExecutions: [] }, childStatuses: [] }))).not.toContain("Published to the channel.");
   });
 
   it("keeps working after both nodes restart: A restores the link from its tree and B the back-link from run_metadata.json (REQ-108)", async () => {

@@ -80,7 +80,7 @@ describe("LocalChildObservation", () => {
   it("projects a child's output into the Agent view's agent_presentation (N-402)", () => {
     const event: LocalChildRootEvent = { kind: "local_child_presentation", agentRunId: "writer", memberAddress: "/writer",
       message: { type: "AGENT_STATUS", payload: { status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } } as never };
-    expect(projectAgentCollaborationEvent("manager", null, { changeSequence: 3, event } as never))
+    expect(projectAgentCollaborationEvent("manager", { changeSequence: 3, event } as never))
       .toMatchObject({ change_sequence: 3, event: { kind: "agent_presentation", agent_run_id: "writer", member_address: "/writer" } });
   });
 });

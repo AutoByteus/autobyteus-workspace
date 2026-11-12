@@ -16,10 +16,10 @@ const summary: RemoteRunRootEvent = { kind: "remote_task_execution_summary", sum
 
 describe("remote children in the root streams", () => {
   it("the Agent and Org projectors present a remote frame as the stream's agent_presentation at the stored address", () => {
-    const agent = projectAgentCollaborationEvent("manager-run", {} as never, { event: frame, changeSequence: 9 });
+    const agent = projectAgentCollaborationEvent("manager-run", { event: frame, changeSequence: 9 });
     expect(agent).toEqual({ root_subject_kind: "agent", root_run_id: "manager-run", change_sequence: 9,
       event: { kind: "agent_presentation", member_address: "/marketing/lead", agent_run_id: "lead-run", message: running } });
-    const org = projectAgentOrgExecutionEvent({ orgRunId: "org-run" } as never, { event: summary, changeSequence: 10 });
+    const org = projectAgentOrgExecutionEvent("org-run", { event: summary, changeSequence: 10 });
     expect(org).toEqual({ root_subject_kind: "agent_org", root_run_id: "org-run", change_sequence: 10,
       event: { kind: "remote_task_execution_summary", node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } });
   });

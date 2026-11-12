@@ -1,6 +1,11 @@
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { ChildRowProjection } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import { peerRunIdOf, peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
+import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import { describeRemoteTaskExecutions } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projection.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import { childRunIdentity } from "./child-run-identity.js";
@@ -20,3 +25,21 @@ export const delegatedChildDto = async (child: DelegatedChild, memoryDir: string
   const file = await new TeamRunExecutionTreeStore().read(new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: identity.teamRunId, ancestorTeamRunIds: [] }), identity.teamRunId);
   return file ? projectDelegatedTeamRun(identity, file) : null;
 };
+
+/**
+ * The views' projection of one row (SR-061): a run on this node from its own files (`delegatedChildDto`), a peer's run
+ * from its Task entry and its node's answer (autobyteus-278); `null` when its record cannot be read.
+ */
+export const createChildRowProjection = (input: Readonly<{
+  memoryDir: string;
+  tree: Pick<DelegationIndex, "agentsOf" | "peerChildrenOf">;
+  channel: () => RemoteRunChannel | null;
+}>): ChildRowProjection => ({ rowOf: async (child) => {
+  if (child.nodeId === undefined) {
+    const row = await delegatedChildDto(child, input.memoryDir, input.tree);
+    return row ? { kind: "local", row } : null;
+  }
+  const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
+  const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(child.parent, input.tree).filter((link) => peerRunIdOf(link) === runId), input.channel());
+  return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer) } : null;
+} });

@@ -23,7 +23,8 @@ vi.mock(
     getTeamRunResumeConfig: mocks.getTeamRunResumeConfig,
   }),
   // SR-047: the run's children as the views read them, from the framework-edge container.
-  getStudioRunViewChildren: () => ({ rows: async () => [], remote: mocks.remoteTaskExecutionDtos }) }),
+  getStudioRunViewChildren: () => ({ read: async (run: unknown) => ({ statuses: [],
+    rows: { taskExecutions: [], closedTaskExecutions: [], remoteTaskExecutions: await mocks.remoteTaskExecutionDtos(run) } }) }) }),
 );
 vi.mock(
   "../../../../../src/run-history/services/team-run-history-service.js",

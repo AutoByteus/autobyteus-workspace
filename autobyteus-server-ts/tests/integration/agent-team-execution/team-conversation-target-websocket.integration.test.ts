@@ -88,7 +88,7 @@ const startHarness = async () => {
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    testViewSources(), noChildCommands(),
+    testViewSources(),
   );
   await registerAgentWebsocket(app, {} as never, handler, {} as never);
   await app.listen({ host: "127.0.0.1", port: 0 });

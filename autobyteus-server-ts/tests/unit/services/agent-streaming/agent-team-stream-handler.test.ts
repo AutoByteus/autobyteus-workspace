@@ -10,7 +10,7 @@ import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/dom
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
-import { delegatedChild, followTestChildRows, noChildCommands, noFollowers, noViewChildren, testRegistrations } from "../../../helpers/child-rows-feed.js";
+import { delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const scenarioDir = path.resolve(
   process.cwd(),
@@ -36,9 +36,10 @@ const createHarness = (input: {
   commandError?: Error;
   /** The team run is stopped (not managed) when the view connects. */
   stopped?: boolean;
-  /** The child-row commands (default: no child rows). */
-  children?: ReturnType<typeof noChildCommands>;
 } = {}) => {
+  const feed = followTestChildRows();
+  // The run's one view stream (SR-062): row events reach the live view's subscription through it.
+  const stream = feed.streams.streamOf(createTeamRootExecutionIdentity("team-run-root"));
   let eventListener: ((event: unknown) => void) | null = null;
   const closeSnapshot = vi.fn();
   const executeAgentCommand = vi.fn(async () => {
@@ -47,20 +48,22 @@ const createHarness = (input: {
   });
   const root = {
     teamRunId: "team-run-root",
-    openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, messages, inputStates: [], statuses: [] },
-      baseChangeSequence: 31,
-      liveSequenceId: "live-team-1", lastMessageChangeSequence: 0,
-      subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
-      close: closeSnapshot,
-    })),
+    openViewSnapshotConnection: vi.fn(async (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) => {
+      const rows = atBase();
+      return {
+        snapshot: await read({ tree, messages, inputStates: [], statuses: [] }, rows),
+        baseChangeSequence: 31,
+        liveSequenceId: "live-team-1", lastMessageChangeSequence: 0,
+        subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return stream.subscribe(listener as never); }),
+        close: closeSnapshot,
+      };
+    }),
     executeAgentCommand,
     getExecutionTreeSnapshot: () => tree,
     localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
   };
   // The run's registration (SR-046): managed (live) or stopped; a restore registers it, a stop unregisters it.
   let managed = !input.stopped;
-  const feed = followTestChildRows();
   const registrations = testRegistrations();
   const team = createTeamRootExecutionIdentity("team-run-root");
   const teamRunService = {
@@ -73,10 +76,9 @@ const createHarness = (input: {
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    { streams: feed.streams, children: noViewChildren(), followers: noFollowers(), registrations, readStoredTree },
-    input.children ?? noChildCommands(),
+    { streams: feed.streams, rows: feed.rows, registrations, readStoredTree },
   );
-  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree,
+  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree, stream,
     stop: () => { managed = false; registrations.unregister(team); },
     emit: (event: unknown) => eventListener?.(event) };
 };
@@ -140,6 +142,8 @@ describe("AgentTeamStreamHandler current root stream", () => {
         payload: { eventType: "TURN_STARTED", statusHint: "running", details: { turnId: "turn-1" } },
       },
     });
+    // Every frame after the base is sent in order, through the view's ordered sends (SR-062).
+    for (let k = 0; k < 10; k += 1) await new Promise((resolve) => setTimeout(resolve, 0));
     expect(sent(harness.connection).slice(-2)).toEqual([
       {
         type: "AGENT_STATUS",
@@ -264,25 +268,26 @@ describe("AgentTeamStreamHandler current root stream", () => {
     }))).toThrow();
   });
 
-  it("autobyteus-461 SR-043/044: an open Team view gets each child-row change, unsequenced, after its snapshot (FIFO, each once)", async () => {
+  it("autobyteus-461 SR-061 … SR-063: an open Team view gets base's row events in the run's sequence, after its snapshot, each once", async () => {
     const harness = createHarness();
     const team = createTeamRootExecutionIdentity("team-run-root");
-    const open = harness.root.openPackageSnapshotConnection.getMockImplementation()!;
-    // Two changes committed while the snapshot is built: held, then sent after it in published order (FIFO), each once.
-    harness.root.openPackageSnapshotConnection.mockImplementationOnce(async () => {
+    // Two changes committed while the run's own parts are read: after the base, so frames after the snapshot, in order
+    // (the run's real view stream queues them, SR-063).
+    harness.root.openViewSnapshotConnection.mockImplementationOnce((atBase, read) => harness.stream.openSnapshotConnection(async () => {
+      const rows = atBase();
       harness.feed.report({ run: team, added: [delegatedChild("writer")], removed: [] });
       harness.feed.report({ run: team, added: [], removed: [{ agentRunId: "old-helper" }] });
-      await harness.feed.settled();
-      return open();
-    });
+      return read({ tree, messages, inputStates: [], statuses: [] }, rows);
+    }) as never);
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
     sessions.push({ handler: harness.handler, id: sessionId! });
+    await harness.feed.settled();
     const output = sent(harness.connection);
-    expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "CHILD_RUNS_CHANGED", "CHILD_RUNS_CHANGED", "TEAM_RUN_LIFECYCLE"]);
-    expect(output[2]!.payload).toEqual({ run_id: "team-run-root", removed: [],
-      added: [{ parent_team_run_id: "team-run-root", execution: expect.objectContaining({ kind: "task_agent", agent_run_id: "writer", address: "/writer" }) }] });
-    expect(output[3]!.payload).toEqual({ run_id: "team-run-root", added: [], removed: [{ agent_run_id: "old-helper" }] });
-    expect(output[2]!.payload).not.toHaveProperty("change_sequence");
+    expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE", "TASK_EXECUTION_STARTED", "TASK_EXECUTIONS_CLOSED"]);
+    expect(output[1]!.payload).toMatchObject({ closed_task_executions: [], execution_tree: { root_team: { task_executions: [] } } });
+    expect(output[3]!.payload).toEqual({ change_sequence: 1, parent_team_run_id: "team-run-root",
+      execution: expect.objectContaining({ kind: "task_agent", agent_run_id: "writer", address: "/writer" }) });
+    expect(output[4]!.payload).toEqual({ change_sequence: 2, task_executions: [{ agent_run_id: "old-helper" }] });
   });
 
   describe("SR-046: a stopped team run's view (stored mode), never restored to serve the view", () => {
@@ -294,15 +299,16 @@ describe("AgentTeamStreamHandler current root stream", () => {
       sessions.push({ handler: harness.handler, id: sessionId! });
       const output = sent(harness.connection);
       expect(output.map((message) => message.type)).toEqual(["CONNECTED", "TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
-      expect(output[1]!.payload).toMatchObject({ root_team_run_id: "team-run-root", base_change_sequence: 0, live_sequence_id: expect.stringMatching(/^stored-/) });
+      // The run's one view stream (SR-062): the stopped view is numbered in it, under its live sequence.
+      expect(output[1]!.payload).toMatchObject({ root_team_run_id: "team-run-root", base_change_sequence: 0, live_sequence_id: harness.stream.liveSequenceId, closed_task_executions: [] });
       expect((output[1]!.payload.agent_statuses as Array<{ status: string }>).every((status) => status.status === "offline")).toBe(true);
       expect(output[2]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
       expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
-      expect(harness.root.openPackageSnapshotConnection).not.toHaveBeenCalled();
-      // Its child rows stay live.
+      expect(harness.root.openViewSnapshotConnection).not.toHaveBeenCalled();
+      // Its rows stay live: base's row events, numbered in the run's stream.
       harness.feed.report({ run: createTeamRootExecutionIdentity("team-run-root"), added: [delegatedChild("checker")], removed: [] });
       await harness.feed.settled();
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "CHILD_RUNS_CHANGED", payload: { added: [{ execution: { agent_run_id: "checker" } }] } });
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "TASK_EXECUTION_STARTED", payload: { change_sequence: 1, execution: { agent_run_id: "checker" } } });
     });
 
     it("an interrupt or tool approval for a member of the stopped team is refused and restores nothing", async () => {
@@ -313,43 +319,6 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "failed", code: "TEAM_RUN_STOPPED" } });
       expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
-    });
-
-    it("autobyteus-461 CR-461-032/034: a message with mentions to a child row goes, mentions and all, to the child's own run; the team stays stopped; each accepted send is acknowledged by its identity", async () => {
-      const postUserMessage = vi.fn(async (_parent: unknown, agentRunId: string, _input: { message: { content: string; metadata: Record<string, unknown> }; mentions: readonly unknown[] }) =>
-        agentRunId === "child-agent" ? { accepted: true } : null);
-      const harness = createHarness({ stopped: true, children: { execute: async () => null, postUserMessage } as never });
-      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
-      sessions.push({ handler: harness.handler, id: sessionId! });
-      const send = (messageId: string) => harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        content: "Ask @Reviewer", context_file_paths: [], image_urls: [], agent_run_id: "child-agent", message_id: messageId, dedupe_key: messageId,
-        mentions: [{ kind: "agent", definition_id: "reviewer" }] } }));
-      await send("m-1");
-      await send("m-2");
-      expect(postUserMessage).toHaveBeenCalledTimes(2);
-      const [parent, , first] = postUserMessage.mock.calls[0]!;
-      expect(parent).toEqual(createTeamRootExecutionIdentity("team-run-root"));
-      // The raw content and the mentions: the child's own root resolves them and composes the note.
-      expect(first.message.content).toBe("Ask @Reviewer");
-      expect(first.mentions).toEqual([{ kind: "agent", definitionId: "reviewer" }]);
-      expect(sent(harness.connection).filter((message) => message.type === "AGENT_COMMAND_ACK").map((message) => message.payload)).toEqual([
-        { command_type: "SEND_MESSAGE", state: "accepted", agent_run_id: "child-agent", message_id: "m-1", dedupe_key: "m-1" },
-        { command_type: "SEND_MESSAGE", state: "accepted", agent_run_id: "child-agent", message_id: "m-2", dedupe_key: "m-2" },
-      ]);
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
-      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
-    });
-
-    it("autobyteus-461 CR-461-032: a child's refused mention is the send's notice, naming the collaborator; nothing is posted", async () => {
-      const postUserMessage = vi.fn(async () => ({ accepted: false, code: "COLLABORATOR_ADD_FAILED", message: "No such collaborator.", collaboratorName: "Nobody" }));
-      const harness = createHarness({ stopped: true, children: { execute: async () => null, postUserMessage } as never });
-      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
-      sessions.push({ handler: harness.handler, id: sessionId! });
-      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        content: "Ask @Nobody", context_file_paths: [], image_urls: [], agent_run_id: "child-agent", message_id: "m-1", dedupe_key: "m-1",
-        mentions: [{ kind: "agent", definition_id: "nobody" }] } }));
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { code: "COLLABORATOR_ADD_FAILED", agent_run_id: "child-agent", collaborator_name: "Nobody" } });
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
     });
 
     it("a member's message restores the team on that input: the view is live (one in-band snapshot, then followed) before the message is posted, so the run's events after it reach the view (SR-048)", async () => {
@@ -367,8 +336,8 @@ describe("AgentTeamStreamHandler current root stream", () => {
           payload: { eventType: "AGENT_STATUS", statusHint: "running", details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }) } } });
         return { accepted: true };
       });
-      const open = harness.root.openPackageSnapshotConnection.getMockImplementation()!;
-      harness.root.openPackageSnapshotConnection.mockImplementationOnce(async () => { order.push("live snapshot"); return open(); });
+      const open = harness.root.openViewSnapshotConnection.getMockImplementation()!;
+      harness.root.openViewSnapshotConnection.mockImplementationOnce(async (atBase, read) => { order.push("live snapshot"); return open(atBase, read); });
       await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
         agent_run_id: "nested-task-agent-run-001", content: "Start please", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1",
       } }));
@@ -391,12 +360,13 @@ describe("AgentTeamStreamHandler current root stream", () => {
       await flush();
       const tail = sent(harness.connection).slice(-2);
       expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE"]);
-      expect(tail[0]!.payload).toMatchObject({ base_change_sequence: 0, live_sequence_id: expect.stringMatching(/^stored-/) });
+      // The switch is an in-band snapshot at the current sequence, in the same live sequence (SR-062, DS-8).
+      expect(tail[0]!.payload).toMatchObject({ base_change_sequence: harness.stream.getCurrentChangeSequence(), live_sequence_id: harness.stream.liveSequenceId });
       expect(tail[1]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
       expect(harness.connection.close).not.toHaveBeenCalled();
       harness.feed.report({ run: createTeamRootExecutionIdentity("team-run-root"), added: [delegatedChild("checker")], removed: [] });
       await harness.feed.settled();
-      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "CHILD_RUNS_CHANGED" });
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "TASK_EXECUTION_STARTED" });
     });
 
     it("a run with no stored tree closes with TEAM_NOT_FOUND; disconnect stops following the run", async () => {

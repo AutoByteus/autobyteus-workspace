@@ -489,3 +489,12 @@ history and inspection reads (team resume read has `closedTaskExecutions` again)
 observation, three handlers, helpers `tests/helpers/child-rows-feed.ts`), then remove `DelegatedRunCommands` and the
 team and org handlers' child routing and `@` handling (rule 2), SR-039's child launch routing, the checkpoint answers,
 then the web (step 6), the characterization (7), the sequencing tests (8).
+
+Progress after `da9203deb3` (uncommitted until the full unit suite finishes): the server tests are updated for the
+views in base's shapes (agent, team and org handlers; the feed; the inspection and history reads; recovery and
+supervisor fakes); `createChildRowProjection` (`delegated-children-dtos.ts`) is shared by the composition and tests.
+Server type gate PASS; focused areas pass. Next: the web (step 6): restore `autobyteus-web` to `3228eff74b`, then rule 2
+(a delegated row binds the conversation and composer to its own run's context and stream, by run ID; a child's Settings
+save to its own stopped-run save) and SR-045 (the view stream kept for a stopped run). Base's web read a hosted copy's
+conversation through the delegator's stream; that stream no longer carries a delegated run's output, so rule 2 is the
+one real web change besides SR-045.

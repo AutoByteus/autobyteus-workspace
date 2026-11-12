@@ -40,14 +40,14 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-delegated-task-team-forest/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
   tree.rootTeam.collaborators=[];
   const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,localChildren:{viewerAttached:()=>{},viewerDetached:()=>{}},remoteChildren:{viewerAttached:()=>{},viewerDetached:()=>{},refresh:async()=>{}},executeAgentCommand,
-   openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};
+   openViewSnapshotConnection:(atBase:()=>unknown,read:(own:unknown,rows:unknown)=>unknown)=>publisher.openSnapshotConnection(()=>{const rows=atBase();return read({tree,messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()},rows);})};
   handler=new AgentTeamStreamHandler(new AgentSessionManager(),{resolveActiveTeamRun:async()=>run,getActiveTeamRun:()=>run,recordRunActivity:async()=>{}} as any,
    testViewSources());
  } else {
   const tree=testAgentOrgExecutionTree({orgRunId:root.rootRunId,members:[testOrgAgentNode(identity.memberAddress,f.run.runId)]});
   const run={orgRunId:root.rootRunId,isActive:()=>true,getExecutionTreeSnapshot:()=>tree,localChildren:{viewerAttached:()=>{},viewerDetached:()=>{}},remoteChildren:{viewerAttached:()=>{},viewerDetached:()=>{},refresh:async()=>{}},executeAgentCommand,
    executeAgentCommandWithExecutionKind:async(id:string,command:any)=>({result:await executeAgentCommand(id,command),executionKind:'configured'}),
-   openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:root.rootRunId,messages:[]},statuses:[handle.getStatusSnapshot()],inputStates:handle.getInputStateSnapshots()}))};
+   openViewSnapshotConnection:(atBase:()=>unknown,read:(own:unknown,rows:unknown)=>unknown)=>publisher.openSnapshotConnection(()=>{const rows=atBase();return read({tree,messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:root.rootRunId,messages:[]},statuses:[handle.getStatusSnapshot()],inputStates:handle.getInputStateSnapshots()},rows);})};
   handler=new AgentOrgStreamHandler({getActive:()=>run,recordRunActivity:async()=>{}} as any,testViewSources());
  }
  const session=await handler.connect(connection,root.rootRunId);expect(session,JSON.stringify(send.mock.calls)).toBeTruthy();

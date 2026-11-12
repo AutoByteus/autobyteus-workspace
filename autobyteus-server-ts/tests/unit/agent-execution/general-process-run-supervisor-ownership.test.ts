@@ -1,3 +1,4 @@
+import { testViewStreams } from "../../helpers/view-streams.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { openTaskRecords } from "../../helpers/no-delegations.js";
 import { noDelegations } from "../../helpers/no-delegations.js";
@@ -71,7 +72,7 @@ const createSupervisorInput = () => {
     runPasses: null,
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
-    delegationIndex: noDelegations(),
+    delegationIndex: noDelegations(), viewStreams: testViewStreams(),
   };
 };
 

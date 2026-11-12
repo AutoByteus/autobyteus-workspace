@@ -18,13 +18,14 @@ const child = { address: "/analyst", agentRunId: "analyst_run", platformAgentRun
   startedAt: "2026-11-12T00:00:00.000Z", source: { kind: "agent", agentDefinitionId: "analyst", launchConfiguration: testOrgLaunchConfiguration() } };
 const serviceWith = () => new AgentOrgRunService({ workGuard: noWorkGuard(),
   manager: { getInspection: vi.fn(async () => activeInspection) } } as never);
-const children = (statuses: unknown[]) => ({ rows: vi.fn(async () => [child]), remote: vi.fn(async () => []), statuses: vi.fn(async () => statuses) });
+// The run's rows as the inspection reads them (SR-061: `RunViewChildren.read`): the child, and its agents' statuses.
+const children = (statuses: unknown[]) => ({ read: vi.fn(async () => ({ rows: { taskExecutions: [child], remoteTaskExecutions: [], closedTaskExecutions: [] }, statuses })) });
 
 describe("an active Org's inspection with a delegated child (CR-461-011)", () => {
   it("lists the child's status from its own run and parses", async () => {
     const view = children([{ agentRunId: "analyst_run", memberAddress: "/analyst", status: "running" }]);
     const dto = await serviceWith().getInspection("org", view as never);
-    expect(view.statuses).toHaveBeenCalledWith({ rootSubjectKind: "agent_org", rootRunId: "org" });
+    expect(view.read).toHaveBeenCalledWith({ rootSubjectKind: "agent_org", rootRunId: "org" });
     if (dto.root_subject_kind !== "agent_org") throw new Error("expected an Org view");
     expect(dto.root_org.agent_statuses).toEqual(expect.arrayContaining([
       expect.objectContaining({ agent_run_id: "ceo_run", status: "idle" }),

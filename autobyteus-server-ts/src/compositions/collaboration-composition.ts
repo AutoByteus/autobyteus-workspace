@@ -3,15 +3,13 @@ import { isTeamRunMessageEvent } from "../agent-team-execution/domain/team-run-e
 import { isAgentOrgMessageEvent } from "../agent-org-execution/domain/agent-org-run-event.js";
 import { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import path from "node:path";
-import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
+import { ChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { LocalChildFollowers } from "../agent-collaboration/execution/delegation/local-child-followers.js";
-import { peerRunIdOf, peerRunLinksOf } from "../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteDelegation } from "../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteRunChannel } from "../agent-collaboration/execution/remote/remote-run-channel.js";
-import { describeRemoteTaskExecutions } from "../agent-collaboration/execution/remote/remote-run-observation.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { TaskDelegation } from "../agent-collaboration/execution/task/task-delegation.js";
 import type { RunTaskRecords } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -44,8 +42,7 @@ import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjecti
 import { setProcessTeamRunHistoryService } from "../run-history/services/team-run-history-service.js";
 import { setProcessWorkspaceRunHistoryService, WorkspaceRunHistoryService } from "../run-history/services/workspace-run-history-service.js";
 import { RunOwnAgentsReader } from "../run-history/store/run-own-agents-reader.js";
-import { delegatedChildDto } from "../services/agent-streaming/delegated-children-dtos.js";
-import { projectRemoteTaskExecution } from "../services/agent-streaming/remote-task-execution-dto-projection.js";
+import { createChildRowProjection } from "../services/agent-streaming/delegated-children-dtos.js";
 import { RunViewChildren } from "../services/agent-streaming/run-view-children.js";
 import { setProcessStandaloneRootMemberViewProjectionService, StandaloneRootMemberViewProjectionService } from "../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
@@ -190,15 +187,7 @@ export const composeCollaboration = async (input: Readonly<{
     // from the tree, the rows' records.
     const followers = new LocalChildFollowers({ tree,
       agents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents }, taskSide.viewStreams);
-    const projection: ChildRowProjection = { rowOf: async (child) => {
-      if (child.nodeId === undefined) {
-        const row = await delegatedChildDto(child, memoryDir, tree);
-        return row ? { kind: "local", row } : null;
-      }
-      const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
-      const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(child.parent, tree).filter((link) => peerRunIdOf(link) === runId), input.remoteChannel());
-      return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer) } : null;
-    } };
+    const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel });
     // A closed row is in its view's closed set while its run still runs (its root is live).
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null });
     releases.push(feed.follow(tree));
