@@ -343,14 +343,26 @@ The code mirrors this model: one owner writes each record, and the others only r
 | A run list row | The run history services; `DelegatedRunStarter` for a delegated run | The run list |
 | `DelegationTree` (§4) | Collaboration, from the Task side's change notices | `CrossRunMessageDelivery`, views, token totals, the restart notice |
 
-## 4. In memory: the `DelegationTree`
+## 4. In memory: the `DelegationTree`, one tree per run the user started
 
-Collaboration owns it (TC-11). It holds the relationships between runs for communication and views, as the old root's tree did, but holds no run's life (P6).
+Collaboration owns it (TC-11). It is what the old container's index was, the map the user sees as the collaboration tree and the one you look things up in, **without hosting**: it holds no run's life (P6). It is built from the Task records, not from where a run happens to run. (SR-060, the user's direction of 2026-11-12: "the individual ones which served from the earlier container could also be extracted from this … it serves a similar purpose".)
+
+**Its structure:** a forest, with direct lookups.
+
+```
+DelegationTree (global, in memory)
+├── byAgentRunId: agent run ID → { run, its address in its run's own space, the tree it is in }
+├── byRunId:      run reference → its node
+└── trees: one per run the user started (16 today), keyed by that run
+      └── a node per run: parent (one hop), children, its Tasks (open or closed) with roles and assigners,
+          its agents with addresses, its node (for a peer's run)
+```
 
 | Part | What | From |
 | --- | --- | --- |
 | Node | A run named by a Task entry, or as an entry's `delegatingRun` | Task entries |
 | Edge | Child → parent, one hop | `delegatedFrom.delegatingRun` |
+| A node's tree | The run the user started at the top of its chain | Walking up the edges; each run is in exactly one tree |
 | A node's Tasks | Each Task it works on, open or closed, with its role | Its entries |
 | A Task's assigner | The `delegatingRun` of the Task's `assigned` entry | That entry |
 | A node's agents | Its standing agents, each by run ID and its address in the run's own space; a peer team's members from its entry | The run's own file, read once; an org is re-read on a miss. The view and the history poll read addresses here, never a file per request (SR-041) |
@@ -358,15 +370,29 @@ Collaboration owns it (TC-11). It holds the relationships between runs for commu
 
 - **Built** at startup from the Task entries.
 - **Kept current** by every delegation, closure, reopen and Task deletion. Each update happens synchronously inside the Task's ordered change, before the change resolves. The Task side stays the authority for "is this Task open".
-- **One tree per run the user started.** Each tree starts at a run the user started (16 today), and every delegated run is in exactly one tree. The tree is not kept inside its top run's root: that root stops with its own run, while the runs under it keep working and keep talking.
-- **It answers:**
-  - who delegated me (my parent);
-  - who I delegated to that still works (my children with an open Task);
-  - may A and B talk (`canMessage`, §2.2);
-  - which run assigned my Task;
-  - which run an agent run ID is in;
-  - what is under run X (for views, token totals, the restart notice).
-- **Not in the tree:** runs that no Task entry names (the 15 legacy runs, and the runs of a deleted Task). They are ordinary runs of their own.
+- **Each tree lives as long as its Task records do,** not as long as its top run. A tree is not kept inside its top run's root: that root stops with its own run, while the runs under it keep working and keep talking, also after the top run stops or is deleted.
+
+**Each run's collaboration map** (`mapOf(run)`, derived when asked, never stored). It answers, for one run, every cross-run question the old container's index answered. The questions about a run's own parts stay with that run's own index, as today: its members and sub-teams, its own addresses, steps 1 and 3 of §2.3. The design's "The delegation tree and each run's collaboration map" has the method-by-method inventory.
+
+| Question | Answer |
+| --- | --- |
+| Which run is agent run ID A in, and at which address? | `byAgentRunId` |
+| What can this run reach by address? | Step 1 and step 3 from the run's own index; step 2 from the standing agents of its Tasks' assigners, in one enumeration (open Tasks by Task ID, else all; assigners in run order; first match). A definition reachable twice is preferred in §2.3's order |
+| Which addresses are in use? | The reach above |
+| Which sender address may the receiver use? | The sender's own-space address, when the receiver's reach resolves it to the sender (§2.5) |
+| Which rows are under this run, and how do they nest? | Its open subtree (`openChildrenOf` transitively), each row with its parent and delegator; the identity from the nodes' agents; peer rows not expanded |
+| Is its agent a task agent, in an org, with inherited rules? | A task agent when its run has `delegatedFrom`; the organization line when its Task's assigner is an org; a copy of an org's configured agent inherits that address's handoff rules and the org's instruction, from the delegating org's file |
+| May runs A and B talk? | `canMessage` (§2.2) |
+| What is under run X (token totals, the restart notice)? | Its subtree |
+
+The map is what every view, prompt, list and message route reads, so they cannot disagree. It is not an address space of its own: every address still belongs to one run's space (§2.1); the map lists what a run reaches.
+
+- **Not in the tree:** runs that no Task entry names (the 15 legacy runs, and the runs of a deleted Task). They are ordinary runs of their own, each the top of a tree of its own if it delegates.
+
+**Validated** (2026-11-11, read-only, `contract-revision-6-2026-11-11.txt`):
+- 183 nodes from the entries (181 on this node, 2 on a peer); no node has two parents;
+- 0 cycles; every chain ends at a stored run; depth 1: 153, depth 2: 30; 16 top runs;
+- the message rule computed on the tree gives the same answer as on the records for all 230 run pairs the rule concerns.
 
 A node, as held in memory:
 ```json

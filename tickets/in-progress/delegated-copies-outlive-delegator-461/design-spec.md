@@ -125,6 +125,36 @@ Each new name says what its owner owns.
 
 `agent: send_message_to(address) → the send_message_to dispatcher (the tool service) → the sender's root, in its gate: (1) its own team, unchanged (resolveMessageRecipient's own-team step) → (2) new, for a run that works on a Task, asked by the dispatcher of CrossRunAddressResolution, not by the root: the standing agents of the run that assigned its Task: DelegationTree.assignerOf(each open Task of the sender's run) → DelegationTree.standingAgentsOf(that run), by address, read once from that run's own file (no root is restored to resolve an address) → (3) for a run the user started: its own run's standing agents, unchanged → DS-2's delivery step` (contract §2.3; the steps as the contract numbers them; a miss inside the own team never falls through)
 
+**The delegation tree and each run's collaboration map** (SR-060; the user's direction of 2026-11-12; contract §4). The old containers' indexes answered every question about a run's collaboration world, and they were the map the user sees in the collaboration tree. This ticket removed the hosting, and with it the indexes' cross-run part. That part was then rebuilt question by question, by five owners: `CrossRunAddressResolution`'s step 2 and `reachingAddress`, `ReachableAgents`, `RunCollaborationContext`, the rows of `RunViewChildren`, and `addressesInUse`. That is why their details kept disagreeing (ARCH-REV-034). **They become one owner: each run's collaboration map, derived from the `DelegationTree`.**
+
+- **The `DelegationTree`** is a forest: one tree per run the user started, with `byAgentRunId` (agent run ID → run, address, tree) and `byRunId` for direct lookups (contract §4). It is restructured in `delegation-tree.ts` and created at composition step 2, as now.
+- **`RunCollaborationMap`** (`agent-collaboration/delegation/run-collaboration-map.ts`), from `delegationTree.mapOf(run)`, is derived when asked and never stored. It works whether or not the run is loaded, because it reads only the tree's nodes and their per-run agents and files, read once. It answers:
+  - **reach**, steps 1 to 3 of §2.3, in one enumeration, with the old-address correction after step 2;
+  - **the addresses in use;**
+  - **the sender address** a receiver may use (§2.5);
+  - **the rows** under the run (its open subtree, nested by parent and delegator; identity only, SR-056);
+  - **the collaboration context:** task agent, the organization line, and an org copy's inherited rules and instruction;
+  - `canMessage`;
+  - the subtree for token totals and the restart notice.
+
+  Steps 1 and 3 use the same run file that a loaded root's own index is built from, so the two agree.
+- **The folded owners:**
+  - `CrossRunAddressResolution` keeps only the message route. It resolves addresses through the sender's map and owns no enumeration.
+  - `ReachableAgents` and `RunCollaborationContext` are replaced by the map, and their callers read `mapOf(run)`: the mention note, `list_available_agents`, `delegate_task`'s in-run placements, and the member context builders.
+  - The rows of `RunViewChildren`, `ChildRowsFeed` and the poll come from `mapOf(run).rows`. The row builder adds `source` for the view (SR-056).
+
+**What the old indexes answered, method by method, and where each goes** (`standalone-root-execution-index.ts`, `team-execution-index.ts`, `agent-org-execution-index.ts` at `827f1e68dc`):
+
+| Old methods | About | After this ticket |
+| --- | --- | --- |
+| `getAgent` / `requireAgent`, `agentAddressOf`, `getTeam` / `requireTeam`, `rootRunId` / `hostAddress` | Looking up an agent or a team | A run's own parts: its own index, unchanged. An agent of another run: `delegationTree.byAgentRunId` |
+| `getTaskExecution`, `listTaskExecutions`, `listChildAgents`, `listTaskExecutionChainForAgent` | Copies hosted in the root, and their chain | `mapOf(run).rows` (the open subtree) and the node's parent chain; the copies are gone from the root's index |
+| `listAgents`, `listTeams`, `listDirect…`, `listTeamAncestorsDeepestFirst`, `listContainingTeamAncestorsForAgent` | Navigating the run's own parts | The run's own index, unchanged (members, sub-teams, mounted teams) |
+| `getMessagePlacement`, `getConfiguredPlacement`, `teamInstancesOf`, `memberOfInstance`, `isOwnTeamAddress`, `instanceDefinitionsOf` | Reach by address, and CM-1 | Steps 1 and 3 and CM-1: the run's own index. Step 2, the addresses in use, the sender address shown: `mapOf(run)` |
+| `getPhysicalScope…`, `getMemoryPlacementForAgent` | Where a copy's memory lived inside the root | The run's own root: each delegated run has its own folder (the memory layout ticket); no cross-run answer |
+
+Any caller of these methods that the change leaves without an answer in this table is an escalation. The Implementation Engineer confirms each caller against the table, and lists them in the handoff.
+
 **What a delegated run sees as in its run** (the `@` note, `list_available_agents`, and the in-run part of `delegate_task`; REQ-009, the non-goal "no change to what an agent reads"; SR-059). At base a copy was hosted in its delegator's root, so the delegator's agents were "in the run" for it. Now the rule follows address reach: **a run's in-run set is exactly what it reaches by address (§2.3)**:
 - step 1, its own team;
 - for a run that works on a Task, step 2, the standing agents of the run that assigned it (`DelegationTree.assignersOf` its open Tasks → `standingOf`, each with its definition from the tree's per-run agents);

@@ -1137,3 +1137,28 @@
   One owner (`ReachableAgents`, beside `CrossRunAddressResolution`) computes it. The mention note, `list_available_agents` and `delegate_task`'s in-run placements read it, and the root port's read becomes async. The notes are then base's (`run_agent` / `in_run`), and what an agent is told it can talk with is exactly what it can reach. The delegation answers for these addresses are base's, captured by a characterization test at `827f1e68dc` (SR-052's method).
 - Done: the design's "What a delegated run sees as in its run" (before DS-4), with tests. `walkthrough.py --check` passes; the model does not cover mentions or lists.
 - ARCH-REV-034 (2026-11-12): Pass. Its two notes are applied in the design: one step-2 enumeration (`CrossRunAddressResolution` looks up `ReachableAgents`' address map; open Tasks in Task-ID order, else all, first match), §2.3's order for a definition at two addresses, and `addressesInUse` from the same set.
+
+### SR-060 — The delegation tree as one tree per top run, and each run's collaboration map (the user's direction)
+
+- Triggering: the user (2026-11-12). The old container's index was what the user sees as the collaboration tree, and made lookups direct ("you can use the agent ID to do the lookup directly"). Even without hosting, "there should be something like the similar … the individual ones which served from the earlier container could also be extracted from this … it serves a similar purpose." The Solution Designer agreed. Since design approval, almost every finding (CR-461-002, -021, -027, -030, -033, ARCH-REV-034 …) was a cross-run question the old index answered, rebuilt one at a time by a separate owner.
+- Inventory (read at `827f1e68dc`): the three old indexes answer four kinds of question:
+  - (A) looking up an agent;
+  - (B) navigation, the copies and their chains;
+  - (C) reach by address and CM-1;
+  - (D) where a copy's memory lives.
+
+  A run's own parts stay with its own index. The cross-run part of A, B and C goes to the new map, and D goes to each run's own root. The design has the method-by-method table.
+- Decision:
+  - The `DelegationTree` is **a forest, one tree per run the user started**, with `byAgentRunId` and `byRunId` for direct lookups. Each tree lives as long as its Task records, not as long as its top run, and holds no run's life.
+  - **Each run's collaboration map** (`RunCollaborationMap`, from `mapOf(run)`) answers every cross-run question: reach (one enumeration), the addresses in use, the sender address shown, the nested rows, the collaboration context, `canMessage`, and the subtree.
+  - The five separate owners fold into it: `CrossRunAddressResolution` keeps only the message route, and `ReachableAgents`, `RunCollaborationContext` and the separate row sources go.
+- Done:
+  - contract §4 (the structure, the map's questions);
+  - `model.py` (each node's `tree`);
+  - the walkthrough, regenerated;
+  - the design's new section with the inventory.
+
+  `walkthrough.py --check` passes, and the examples have 0 findings.
+- Approval: the user's direction; no intended behavior changes. The map answers what the five owners answered, from one place.
+- Next action: architecture review; then the Implementation Engineer folds the owners, and confirms every caller of the old index methods against the inventory
+

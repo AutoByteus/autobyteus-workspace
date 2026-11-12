@@ -158,7 +158,14 @@ class World:
             n["tasks"].append({"taskId": t, "role": e["role"], "open": e["closedAt"] is None,
                                "assigner": {"kind": asg[0][0], "runId": asg[0][1]} if asg else None})
             if "nodeId" in e: n["node"] = e["nodeId"]; n["agents"] = [{"agentRunId": m["agentRunId"], "address": m["address"]} for m in e["members"]]
-        order = ["run", "parent", "delegatorAgentRunId", "node", "tasks", "agents"]
+        # one tree per run the user started (contract §4): a node's tree is the run at the top of its chain
+        def top_of(n):
+            seen = set()
+            while n["parent"] is not None and (n["parent"]["kind"], n["parent"]["runId"]) in nodes and id(n) not in seen:
+                seen.add(id(n)); n = nodes[(n["parent"]["kind"], n["parent"]["runId"])]
+            return n["run"]
+        for n in nodes.values(): n["tree"] = top_of(n)
+        order = ["run", "tree", "parent", "delegatorAgentRunId", "node", "tasks", "agents"]
         return [{k: n[k] for k in order if k in n} for n in nodes.values()]
 
     # ---------- the rules
