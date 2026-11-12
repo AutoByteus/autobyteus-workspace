@@ -1079,3 +1079,15 @@
 - The four Local Fixes of CRR-012 (CR-461-017, -018, -019, -020) are the Implementation Engineer's.
 - Next action: architecture review (narrow)
 - ARCH-REV-030 (2026-11-12): Pass, no finding. Its cost note is applied in DS-8: the row records take a child's address and members from the `DelegationTree`'s per-run data, read once, never from a file per child per poll.
+
+### SR-056 — The row projection is split by data lifetime (the Implementation Engineer's question on SR-055)
+
+- Triggering: the Implementation Engineer. DS-8 asked the poll's row to be built by the view's projection function (`delegatedChildDto` → `projectDelegatedAgentRun` / `projectDelegatedTeamRun`), and, per ARCH-REV-030, from the tree's per-run data read once. That function builds the full row, including `source` (each agent's launch), from the child's own file on every call, and a Settings save (SR-039) rewrites the launch. A cached whole row would go stale in the open view; a fresh one would read a file per child per poll.
+- Decision (on the merits, by data lifetime; the engineer's option (a)):
+  - **The identity**, fixed for the run's life (address, run reference, members with addresses, delegator, `startedAt`, definition IDs), is built by one shared function from the tree's per-run data, read once.
+  - **The view's part** adds `source`, read fresh from the child's file when a snapshot or feed event is built, as today.
+  - The poll's `row` is the identity, which is all the run list reads. The view and the list agree by construction through the shared builder, and the launch is never cached.
+  - Option (b), invalidating a cached row on a save, needs a new notice from the run services to the tree and an ordering point. Option (c) leaves the launch stale until a restart and breaks SR-039's reload.
+- Done: the design's DS-8 poll section. `walkthrough.py --check` passes.
+- The four CRR-012 Local Fixes are committed by the Implementation Engineer (`e208080b3c`, `b6ea7d241c`, `438d64a85c`, `e423b15cff`).
+

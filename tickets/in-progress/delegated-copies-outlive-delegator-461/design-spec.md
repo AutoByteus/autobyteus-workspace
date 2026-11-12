@@ -242,8 +242,11 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - **Server:** `runCollaborationStatuses(runs: [{ kind: agent | agent_team | agent_org, runId }])`, at most 100 runs, replaces `agentRunCollaborationStatuses`. It is a clean cut of the query, its GraphQL type, the web query and its hydration. For every listed run X, active or stopped, never restoring anything, the answer has:
     - `isActive`: X's own run;
     - `children`: one entry per local child row the view of X has (`DelegationTree.openChildrenOf(X)`, one hop), each with:
-      - `row`: the child's row record, built by **the view's own projection function**, the same that builds the view's rows and `ChildRowsFeed`'s `added` records;
-        the projection takes the child's address and members from the `DelegationTree`'s per-run data, read once per run from its own file, never from a file per child per poll (ARCH-REV-030). A delegated run's address and members do not change;
+      - `row`: the child's **row identity**, built by the one shared builder (SR-056). The row projection is split by how long its data lasts:
+        - **The identity, fixed for the run's life:** address, run reference, members with their addresses, delegator, `startedAt`, and each agent's definition ID. It is built by one function from the `DelegationTree`'s per-run data, read once per run from its own file (ARCH-REV-030), never from a file per poll.
+        - **The view's part:** the identity plus `source` (each agent's launch, launch source, the team's handoffs), read from the child's own file when a view snapshot or a `ChildRowsFeed` event is built, as today. A Settings save (SR-039) rewrites the launch, and the editor's reload then reads it fresh.
+
+        The poll's `row` is the identity alone, which is all the run list reads. The view and the list share the identity builder, so they agree by construction, and the launch is never cached;
       - `statuses`: every agent of that child, with its address from the tree's per-run agents and its status from the child's own root when active, else `offline`.
 
       Peer children keep their own state source, as today.
