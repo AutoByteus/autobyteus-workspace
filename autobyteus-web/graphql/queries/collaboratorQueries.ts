@@ -37,6 +37,7 @@ export const GetRunCollaborationStatuses = gql`
   }
 `
 
+/** A child of a standalone run on a peer node: its stored state, read from its node through the run (autobyteus-278). */
 export const GetAgentRunCollaborationMemberProjection = gql`
   query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
     agentRunCollaborationMemberProjection(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
@@ -47,24 +48,6 @@ export const GetAgentRunCollaborationMemberProjection = gql`
       summary
       lastActivityAt
       hasEarlierActiveTraceEvents
-    }
-  }
-`
-
-/** One delegated copy's artifact list, located inside its hub only (live while the hub runs). */
-export const GetAgentRunCollaborationMemberFileChanges = gql`
-  query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
-    agentRunCollaborationMemberFileChanges(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {
-      id
-      runId
-      path
-      type
-      status
-      sourceTool
-      sourceInvocationId
-      content
-      createdAt
-      updatedAt
     }
   }
 `

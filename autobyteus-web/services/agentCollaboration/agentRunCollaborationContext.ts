@@ -25,7 +25,7 @@ import { participantMessagesView } from '~/services/collaborationMessages/partic
 import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { applyRemoteSummaryStatuses, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
-import { participantMessagesKeyOf } from '~/services/runHydration/agentReads'
+import { agentRunAgentReadSubject, participantMessagesKeyOf } from '~/services/runHydration/agentReads'
 import { treeLinesOf } from '~/utils/treeLines'
 import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
@@ -339,16 +339,9 @@ export class AgentRunCollaborationContext {
     })
   }
 
-  /**
-   * Whose log holds a participant's messages: the run's own for its agent, a delegated child's own run for the child
-   * (an agent child as its run, a team child's member as that team run's member; autobyteus-461 CR-461-020).
-   */
+  /** Whose log holds a participant's messages: the log of the subject this view kind's owner reads it through (CR-461-022). */
   private participantMessagesKey(agentRunId: string): ParticipantMessagesKey {
-    const child = this.index.agents.get(agentRunId)
-    if (!child) return participantMessagesKeyOf({ kind: 'run', runId: this.hostRunId })
-    return participantMessagesKeyOf(child.kind === 'task_team_member' && child.teamRunId
-      ? { kind: 'teamMember', teamRunId: child.teamRunId, memberAddress: child.address, agentRunId }
-      : { kind: 'run', runId: agentRunId })
+    return participantMessagesKeyOf(agentRunAgentReadSubject(this.hostRunId, this.index, agentRunId))
   }
 
   private identityOf(agentRunId: string): CollaborationMessageMemberIdentity {

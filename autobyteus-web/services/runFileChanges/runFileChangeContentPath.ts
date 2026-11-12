@@ -17,7 +17,7 @@ export const runFileChangeContentPath = (subject: AgentRunReadSubject, filePath:
       return `/agent-org-runs/${segment(subject.orgRunId)}/agent-runs/${segment(subject.agentRunId)}/file-change-content`
         + `?memberAddress=${segment(subject.memberAddress)}&${pathQuery}`;
     case 'standaloneMember':
-      return `/agent-collaborations/${segment(subject.hostRunId)}/agent-runs/${segment(subject.agentRunId)}/file-change-content`
-        + `?memberAddress=${segment(subject.memberAddress)}&${pathQuery}`;
+      // A run on a peer node keeps its files there (autobyteus-278); it lists none here, so none is opened.
+      throw new Error(`AgentRun '${subject.agentRunId}' runs on another node; its files are kept there.`);
   }
 };

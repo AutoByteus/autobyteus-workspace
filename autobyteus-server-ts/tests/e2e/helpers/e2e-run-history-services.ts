@@ -35,7 +35,7 @@ export const setE2eRunHistoryServices = (input: Readonly<{
     setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree, agentRunHistoryService, teamRunHistoryService })),
     setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree })),
     ...(input.orgMembers ? [setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree }))] : []),
-    setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ memoryDir: input.memoryDir, tree })),
+    setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ tree })),
   ];
   return () => { for (const release of releases.splice(0).reverse()) release(); };
 };

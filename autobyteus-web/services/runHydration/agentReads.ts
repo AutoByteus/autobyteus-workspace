@@ -1,5 +1,7 @@
 import type { TaskExecutionDto as TeamTaskExecutionDto, TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
 import { GetAgentOrgMemberRunProjection, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries';
+import type { AgentRunCollaborationIndex } from '~/services/agentCollaboration/agentRunCollaborationIndex';
 import type { AgentOrgExecutionViewIndex } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import type { TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
@@ -10,13 +12,14 @@ import { fetchRunProjection } from './runStoredStateLoader';
 import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages';
 
 /**
- * Which subject reads one agent of a Team or Org view, and that subject's reads (autobyteus-461 CR-461-010, CR-461-015).
- * A run the view's run delegated to is a run of its own: it is read by its own identity (an agent child as its own run,
- * a member of a team child as a member of that team run), never as a member of the view. Every read of an agent in
- * these views asks its view kind's owner for the subject (`teamAgentReadSubject`, `orgAgentReadSubject`) and reads it
- * through `readsOf`: its stored state at selection and at open, and its trace pages, files and file content.
+ * Which subject reads one agent of a view, and that subject's reads (autobyteus-461 CR-461-010, CR-461-015, CR-461-022).
+ * A run the view's run delegated to on this node is a run of its own: it is read by its own identity (an agent child as
+ * its own run, a member of a team child as a member of that team run), never as a member of the view. A child on a peer
+ * node is read through the run that delegated to it (autobyteus-278). Every read of an agent in a view asks its view
+ * kind's owner for the subject (`teamAgentReadSubject`, `orgAgentReadSubject`, `agentRunAgentReadSubject`) and reads it
+ * through `readsOf`: its stored state at selection and at open, its trace pages and files, and its Team tab's messages.
  */
-export type AgentViewReadSubject = Exclude<AgentRunReadSubject, { kind: 'standaloneMember' }>;
+export type AgentViewReadSubject = AgentRunReadSubject;
 
 /** One agent's stored state, whichever subject it is read through. */
 export type AgentStoredProjection = TeamMemberRunProjectionPayload;
@@ -53,6 +56,27 @@ export const orgAgentReadSubject = (orgRunId: string, index: AgentOrgExecutionVi
   const address = agent?.address ?? index.remoteAgents.get(agentRunId)?.address;
   if (address === undefined) throw new Error(`AgentRun '${agentRunId}' is not an agent of AgentOrg run '${orgRunId}'.`);
   return Object.freeze({ kind: 'agentOrgMember', orgRunId, memberAddress: address, agentRunId });
+};
+
+/**
+ * The subject that reads one agent of an agent run's view: the run's own agent as its run; a child on this node by its
+ * own identity; a child on a peer node through this run. An agent the view does not hold is refused.
+ */
+export const agentRunAgentReadSubject = (
+  hostRunId: string,
+  index: Pick<AgentRunCollaborationIndex, 'agents' | 'remoteAgents'>,
+  agentRunId: string,
+): AgentViewReadSubject => {
+  if (agentRunId === hostRunId) return Object.freeze({ kind: 'run', runId: hostRunId });
+  const local = index.agents.get(agentRunId);
+  if (local?.kind === 'task_team_member' && local.teamRunId) {
+    // A child team's member address is in the team run's own space, as the server sends it.
+    return Object.freeze({ kind: 'teamMember', teamRunId: local.teamRunId, memberAddress: local.address, agentRunId });
+  }
+  if (local) return Object.freeze({ kind: 'run', runId: agentRunId });
+  const remote = index.remoteAgents.get(agentRunId);
+  if (remote) return Object.freeze({ kind: 'standaloneMember', hostRunId, memberAddress: remote.address, agentRunId });
+  throw new Error(`AgentRun '${agentRunId}' is not an agent of Agent run '${hostRunId}'.`);
 };
 
 const graphqlErrors = (errors: readonly { message: string }[] | undefined): string | null =>
@@ -95,6 +119,24 @@ const fetchExactOrgMemberProjection = async (orgRunId: string, memberAddress: st
   return state;
 };
 
+/** A peer child's stored state, read from its node by this node's server through the run that delegated to it. */
+const fetchPeerChildProjection = async (hostRunId: string, memberAddress: string, agentRunId: string): Promise<AgentStoredProjection> => {
+  type PeerChildProjection = AgentStoredProjection & Readonly<{ memberAddress: string }>;
+  const response = await getApolloClient().query<{ agentRunCollaborationMemberProjection: PeerChildProjection | null }>({
+    query: GetAgentRunCollaborationMemberProjection,
+    variables: { hostRunId, memberAddress, agentRunId },
+    fetchPolicy: 'network-only', context: { queryDeduplication: false },
+  });
+  const errors = graphqlErrors(response.errors);
+  if (errors) throw new Error(errors);
+  const projection = response.data?.agentRunCollaborationMemberProjection;
+  if (!projection || projection.agentRunId !== agentRunId || projection.memberAddress !== memberAddress) {
+    throw new Error(`Projection identity mismatch for '${agentRunId}'.`);
+  }
+  const { memberAddress: _address, ...state } = projection;
+  return state;
+};
+
 /** A run's own stored state, keyed like a member's (`agentRunId`). */
 const fetchRunProjectionAsAgent = async (runId: string): Promise<AgentStoredProjection> => {
   const { runId: agentRunId, ...state } = await fetchRunProjection(runId);
@@ -107,20 +149,27 @@ export const readsOf = (subject: AgentViewReadSubject): Readonly<{
   fetchProjection(): Promise<AgentStoredProjection>;
   fetchFileChanges(): Promise<RunFileChangeArtifact[]>;
 }> => Object.freeze({
-  fetchProjection: () => subject.kind === 'run'
-    ? fetchRunProjectionAsAgent(subject.runId)
-    : subject.kind === 'teamMember'
-      ? fetchExactTeamMemberProjection(subject.teamRunId, subject.agentRunId)
-      : fetchExactOrgMemberProjection(subject.orgRunId, subject.memberAddress, subject.agentRunId),
+  fetchProjection: () => {
+    switch (subject.kind) {
+      case 'run': return fetchRunProjectionAsAgent(subject.runId);
+      case 'teamMember': return fetchExactTeamMemberProjection(subject.teamRunId, subject.agentRunId);
+      case 'agentOrgMember': return fetchExactOrgMemberProjection(subject.orgRunId, subject.memberAddress, subject.agentRunId);
+      case 'standaloneMember': return fetchPeerChildProjection(subject.hostRunId, subject.memberAddress, subject.agentRunId);
+    }
+  },
   fetchFileChanges: () => fetchRunFileChanges(subject),
 });
 
 /**
  * The participant-messages key of the subject that reads an agent: the log of the run it is read through, by its own
- * identity (a delegated child's own run, or the view's root for its own agents; CR-461-020).
+ * identity (a delegated child's own run, or the view's root for its own agents; CR-461-020); a peer child's messages
+ * are in the log of the run that delegated to it (CR-461-022).
  */
-export const participantMessagesKeyOf = (subject: AgentViewReadSubject): ParticipantMessagesKey => subject.kind === 'run'
-  ? Object.freeze({ rootKind: 'agent', rootRunId: subject.runId, agentRunId: subject.runId })
-  : subject.kind === 'teamMember'
-    ? Object.freeze({ rootKind: 'agent_team', rootRunId: subject.teamRunId, agentRunId: subject.agentRunId })
-    : Object.freeze({ rootKind: 'agent_org', rootRunId: subject.orgRunId, agentRunId: subject.agentRunId });
+export const participantMessagesKeyOf = (subject: AgentViewReadSubject): ParticipantMessagesKey => {
+  switch (subject.kind) {
+    case 'run': return Object.freeze({ rootKind: 'agent', rootRunId: subject.runId, agentRunId: subject.runId });
+    case 'teamMember': return Object.freeze({ rootKind: 'agent_team', rootRunId: subject.teamRunId, agentRunId: subject.agentRunId });
+    case 'agentOrgMember': return Object.freeze({ rootKind: 'agent_org', rootRunId: subject.orgRunId, agentRunId: subject.agentRunId });
+    case 'standaloneMember': return Object.freeze({ rootKind: 'agent', rootRunId: subject.hostRunId, agentRunId: subject.agentRunId });
+  }
+};

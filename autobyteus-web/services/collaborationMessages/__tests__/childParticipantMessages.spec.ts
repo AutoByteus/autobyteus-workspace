@@ -5,7 +5,7 @@ import { teamCollaborationMessagesView } from '~/services/teamExecution/teamColl
 import { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { AgentOrgExecutionViewIndex } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
-import { buildChildRunsContext } from '~/services/agentCollaboration/__tests__/agentRootChildRunsFixture'
+import { buildChildRunsContext, childRunsView } from '~/services/agentCollaboration/__tests__/agentRootChildRunsFixture'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
@@ -89,5 +89,22 @@ describe('an agent-run view', () => {
     expect(loadsOf(child)).toEqual({ rootKind: 'agent', rootRunId: 'cua-run', agentRunId: 'cua-run' })
     expect(child.referenceContentPath('m-1', 'r-1')).toBe('agent-collaborations/cua-run/communication/messages/m-1/references/r-1/content')
     expect(loadsOf(context.messagesView('pp-run'))).toEqual({ rootKind: 'agent_team', rootRunId: 'team-run', agentRunId: 'pp-run' })
+  })
+
+  // CR-461-022: a child on a peer node has no run here; its messages are in the log of the run that delegated to it.
+  it('reads a child on a peer node through the run that delegated to it', () => {
+    const view = childRunsView()
+    view.remote_task_executions = [{
+      kind: 'agent', address: '/publisher', agent_run_id: 'publisher-run', node_id: 'srv_docker', node_name: 'docker',
+      delegator_agent_run_id: 'host-run', started_at: '2026-09-30T00:00:01.000Z',
+    }] as never
+    const peer = buildChildRunsContext(view).messagesView('publisher-run')
+    // Its node keeps its log: this node asks nothing for it (as for a peer child of a team or org view) and shows it loaded.
+    peer.loadMessages()
+    expect(io.fetch).not.toHaveBeenCalled()
+    expect(peer.messagesStatus()).toEqual({ state: 'loaded', error: null })
+    expect(peer.listMessages()).toEqual([])
+    // A reference in it is the delegating run's, never asked of a run this node does not have.
+    expect(peer.referenceContentPath('m-1', 'r-1')).toBe('agent-collaborations/host-run/communication/messages/m-1/references/r-1/content')
   })
 })

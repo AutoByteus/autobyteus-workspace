@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { GetAgentOrgMemberFileChanges, GetRunFileChanges, GetTeamMemberFileChanges } from '~/graphql/queries/runHistoryQueries';
-import { GetAgentRunCollaborationMemberFileChanges } from '~/graphql/queries/collaboratorQueries';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { commitMemberRunStates, fetchMemberRunState } from '../memberRunStateHydration';
@@ -48,11 +47,13 @@ describe('fetchRunFileChanges', () => {
       .resolves.toEqual([artifact('o.png')]);
     expect(query).toHaveBeenLastCalledWith(read(GetAgentOrgMemberFileChanges, { orgRunId: 'org-1', memberAddress: '/team/lead', agentRunId: RUN }));
 
-    query.mockResolvedValueOnce({ data: { agentRunCollaborationMemberFileChanges: [artifact('c.png')] } });
-    await expect(fetchRunFileChanges({ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }))
-      .resolves.toEqual([artifact('c.png')]);
-    expect(query).toHaveBeenLastCalledWith(read(GetAgentRunCollaborationMemberFileChanges, { hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }));
     expect(query).not.toHaveBeenCalledWith(expect.objectContaining({ query: GetRunFileChanges }));
+  });
+
+  it('a run on a peer node keeps its files there: none, and nothing is asked (autobyteus-461 CR-461-022)', async () => {
+    await expect(fetchRunFileChanges({ kind: 'standaloneMember', hostRunId: 'hub-1', memberAddress: '/reviewer', agentRunId: RUN }))
+      .resolves.toEqual([]);
+    expect(query).not.toHaveBeenCalled();
   });
 
   it('throws on GraphQL errors', async () => {

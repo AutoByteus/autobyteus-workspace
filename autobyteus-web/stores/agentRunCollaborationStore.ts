@@ -13,6 +13,7 @@ import { listedAgentRunTaskRows } from '~/services/agentCollaboration/agentRunLi
 import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore'
 import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
+import { agentRunAgentReadSubject } from '~/services/runHydration/agentReads'
 import {
   acceptLocalSubmission,
   beginLocalUserSubmission,
@@ -337,8 +338,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       context,
       workspaceRootPath: local ? local.source.launchConfiguration.workspaceRootPath : null,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
-      // A child is not a top-level run package: its pages come from the host's collaboration package.
-      browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),
+      // A child is read by the subject this view kind's owner gives it: its own run on this node, else through this run.
+      browse: agentRunAgentReadSubject(hostRunId, collaboration.index, child.agentRunId),
       // A child is always addressable: a message wakes it (and its host) through the stream.
       access: 'live' as const,
       interaction: Object.freeze({

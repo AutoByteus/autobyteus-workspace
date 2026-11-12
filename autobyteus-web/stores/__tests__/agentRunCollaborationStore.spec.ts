@@ -78,17 +78,16 @@ describe('agentRunCollaborationStore', () => {
     expect(childHydration.hydrate.mock.calls.map(([input]) => input.agentRunId)).toEqual(['pp-run', 'cua-run'])
   })
 
-  it('reads a child\'s earlier events from the host\'s collaboration package, not as a top-level run (CR-002)', async () => {
+  // autobyteus-461 CR-461-022: a child on this node is a run of its own, read by its own identity, never through the host.
+  it('reads a child\'s earlier events by its own identity: an agent child as its run, a team child\'s member through that team run', async () => {
     const store = useAgentRunCollaborationStore()
     await store.inspect('host-run')
     store.selectChild('host-run', 'pp-run')
     expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
+      kind: 'teamMember', teamRunId: 'team-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run',
     })
     store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')?.browse).toEqual({
-      kind: 'standaloneMember', hostRunId: 'host-run', memberAddress: '/computer_use_agent', agentRunId: 'cua-run',
-    })
+    expect(store.childTargetFor('host-run')?.browse).toEqual({ kind: 'run', runId: 'cua-run' })
   })
 
   it('sending to a child goes over the view\'s stream, which never restores the host, and carries mentions (SR-045, SR-046)', async () => {

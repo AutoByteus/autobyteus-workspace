@@ -206,7 +206,7 @@ export const composeCollaboration = async (input: Readonly<{
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
     releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
       globalRouter: new GlobalAgentRunMessageRouter({ crossRun }), crossRunAddresses: addresses })));
-    releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ memoryDir, tree })));
+    releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ tree })));
     releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree })));
     releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree })));
     const agentRunHistory = new AgentRunHistoryService(memoryDir, { tree, workGuard: runs.delegatedWorkGuard });

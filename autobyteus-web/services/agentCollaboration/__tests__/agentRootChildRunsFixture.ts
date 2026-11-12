@@ -36,7 +36,11 @@ export const childRunsView = () => {
 
 export const buildChildRunsContext = (view = childRunsView()) => new AgentRunCollaborationContext({
   hostRunId: 'host-run', view,
-  entries: [...new AgentRunCollaborationIndex(view.execution_tree).agents.values()].map((agent) => {
+  // Its children on this node and on peer nodes, each with its context.
+  entries: (() => {
+    const index = new AgentRunCollaborationIndex(view.execution_tree, view.remote_task_executions)
+    return [...index.agents.values(), ...index.remoteAgents.values()]
+  })().map((agent) => {
     const state = new AgentRunState(agent.agentRunId, { id: agent.agentRunId, messages: [], createdAt: created, updatedAt: created, agentDefinitionId: 'x', agentName: agent.address })
     state.currentStatus = AgentStatus.Offline
     return { agentRunId: agent.agentRunId, memberAddress: agent.address,

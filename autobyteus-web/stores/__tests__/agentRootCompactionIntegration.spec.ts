@@ -7,7 +7,8 @@ import { AgentRunState } from '~/types/agent/AgentRunState'
 import { agentRootView, launch } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
-import { GetAgentRunCollaborationMemberFileChanges, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
+import { GetAgentRunCollaboration } from '~/graphql/queries/collaboratorQueries'
+import { GetRunFileChanges, GetRunProjection, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { useAgentRunStore } from '../agentRunStore'
 import { useAgentContextsStore } from '../agentContextsStore'
@@ -44,19 +45,25 @@ const nativeView = () => {
 const envelope = (view: ReturnType<typeof nativeView> | null) => ({ data: { agentRunCollaboration: view && {
   root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view,
 } } })
-const emptyProjection = ({ query, variables }: any) => query === GetAgentRunCollaborationMemberFileChanges
-  ? { data: { agentRunCollaborationMemberFileChanges: [] } }
-  : { data: { agentRunCollaborationMemberProjection: {
-    agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
-    conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-  } } }
+/** A child's stored state, read by its own identity (autobyteus-461 CR-461-022): an agent child as its run, a team child's member through its team run. */
+const emptyProjection = ({ query, variables }: any) => {
+  if (query === GetTeamMemberFileChanges) return { data: { getTeamMemberFileChanges: [] } }
+  if (query === GetRunFileChanges) return { data: { getRunFileChanges: [] } }
+  if (query === GetRunProjection) return { data: { getRunProjection: {
+    runId: variables.runId, conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false } } }
+  if (query === GetTeamMemberRunProjection) return { data: { getTeamMemberRunProjection: {
+    agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+  throw new Error('Unexpected query')
+}
+/** The run's view read, else a child's stored state. */
+const answer = (input: any) => input.query === GetAgentRunCollaboration ? envelope(view) : emptyProjection(input)
 const memberRequests = (query: unknown, agentRunId: string) =>
   io.query.mock.calls.filter(([input]) => input.query === query && input.variables.agentRunId === agentRunId).length
 const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve() }
 let view: ReturnType<typeof nativeView>
 beforeEach(() => {
   setActivePinia(createPinia()); vi.clearAllMocks(); io.streams.length = 0; view = nativeView()
-  io.query.mockImplementation(async (input) => input.variables.runId ? envelope(view) : emptyProjection(input))
+  io.query.mockImplementation(async (input) => answer(input))
 })
 afterEach(() => { useAgentRunCollaborationStore().release('host-run') })
 const seed = (context: AgentContext, operation = context.state.runId, phase: any = 'started') => {
@@ -148,7 +155,7 @@ it('inspection failure after success keeps the stopped host and its children\'s 
   expect(activities.getCompactionActivities('host-run')[0].phase).toBe('stopped')
   expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
   setActivePinia(createPinia())
-  io.query.mockImplementation(async input => input.variables.runId ? envelope(view) : emptyProjection(input))
+  io.query.mockImplementation(async input => answer(input))
   await useAgentRunCollaborationStore().inspect('host-run')
   expect(useAgentActivityStore().getActivities('cua-run')).toEqual([])
 })
@@ -158,11 +165,11 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   store.selectChild('host-run', 'pp-run'); store.toggleTaskTeam('host-run', 'team-run')
   await flush()
   expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
-  const projectionsBefore = memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run')
+  const projectionsBefore = memberRequests(GetTeamMemberRunProjection, 'pp-run')
   const delay = deferred(); io.query.mockImplementation(async input => {
-    if ((point === 'view' && input.variables.runId)
-      || (point === 'member' && input.query === GetAgentRunCollaborationMemberProjection && input.variables.agentRunId === 'pp-run')) await delay.promise
-    return input.variables.runId ? envelope(view) : emptyProjection(input)
+    if ((point === 'view' && input.query === GetAgentRunCollaboration)
+      || (point === 'member' && input.query === GetTeamMemberRunProjection && input.variables.agentRunId === 'pp-run')) await delay.promise
+    return answer(input)
   })
   const pending = store.inspect('host-run'); await flush()
   seed(store.contextFor('host-run')!.getAgentContext('pp-run')!, 'concurrent')
@@ -176,7 +183,7 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
   expect(activities.getActivityContentRevision('pp-run')).toBeGreaterThan(revision)
   // A change during the member fetch costs one retry; during the view fetch, nothing.
-  expect(memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)
+  expect(memberRequests(GetTeamMemberRunProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)
   expect(store.selectedChild('host-run')).toBe('pp-run'); expect(store.isTaskTeamExpanded('host-run', 'team-run')).toBe(true)
 })
 
