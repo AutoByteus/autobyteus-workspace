@@ -51,7 +51,7 @@ import type { CollaborationAgentPlatformBindingChange } from "../../agent-collab
 import { TeamAgentPlatformBindingCommitter } from "../services/team-agent-platform-binding-committer.js";
 import type { FrozenTeamRunTerminationScope } from "./frozen-team-run-termination-scope.js";
 import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-gate.js";
-import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/peer-child-stop.js";
 import { TaskWorkerStatusNotice } from "../../agent-collaboration/execution/task/task-worker-status-notice.js";
 
 export type RootTeamRunPackageSnapshot = Readonly<{
@@ -165,10 +165,9 @@ export class RootTeamRun {
   }
 
   /** The user's Stop of a peer child, by its node (DEC-804). A run delegated on this node is stopped as itself. */
-  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    const stopped = await stopRemoteChild(this.remoteLinks, target);
-    if (!stopped) throw new Error("A run delegated on this node is stopped as itself.");
-    return stopped;
+  /** The user's Stop of a run this run delegated to a peer node; `null` for any other run (a local one is stopped as itself). */
+  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult | null> {
+    return stopRemoteChild(this.remoteLinks, target);
   }
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }

@@ -1,7 +1,6 @@
 import { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
 import { runOwnStatus } from "../../agent-collaboration/execution/task/task-run-control.js";
-import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
-import { createDelegatedChildLaunches } from "../../run-history/services/delegated-child-launches.js";
+import { PeerChildStop } from "../../agent-collaboration/execution/remote/peer-child-stop.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -86,7 +85,7 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
-  readonly delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
+  readonly peerChildStop: PeerChildStop;
   /** Archive and delete wait for the runs a run delegated to (REQ-007), by their own statuses (SR-047). */
   readonly delegatedWorkGuard: DelegatedWorkGuard;
   private readonly agentRunManager: AgentRunManager;
@@ -327,11 +326,7 @@ export class GeneralProcessRunSupervisor {
       bindProcessAgentRunService(agentRunService);
       agentRunServiceBound = true;
 
-      this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
-        teams: agentTeamRunManager, orgs: agentOrgRunManager, agents: standaloneRootManager, agentRuns: agentRunService, teamRuns: teamRunService,
-        children: createDelegatedChildLaunches({ memoryDir, tree: input.delegationIndex, agentRuns: agentRunService, teamManager: agentTeamRunManager,
-          activeAgentRun: (agentRunId) => agentRunManager!.getActiveRun(agentRunId), modelOptions: input.modelSelectionValidator }),
-      });
+      this.peerChildStop = new PeerChildStop({ teams: agentTeamRunManager, orgs: agentOrgRunManager, agents: standaloneRootManager });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;

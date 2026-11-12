@@ -414,7 +414,7 @@ export const buildStudioServer = async (input: {
       definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
       collaborationRootHistoryService: generalProcessRunSupervisor.collaborationRootHistoryService,
       runModelConfigService,
-      delegatedLaunchSelectionService: generalProcessRunSupervisor.delegatedLaunchSelectionService,
+      peerChildStop: generalProcessRunSupervisor.peerChildStop,
       runViewChildren: currentCollaboration.runViewChildren, delegatedRunAgents: currentCollaboration.delegatedRunAgents,
     });
     agentRuntimeStatus = composeAgentRuntimeStatus({

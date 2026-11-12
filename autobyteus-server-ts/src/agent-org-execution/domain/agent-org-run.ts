@@ -6,7 +6,7 @@ import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collabora
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
 import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/peer-child-stop.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -124,10 +124,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   assertExecutionInputAllowed(_agentRunId: string): void { this.assertAdmitting(); }
 
   /** The user's Stop of a peer child, by its node (DEC-804). A run delegated on this node is stopped as itself. */
-  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    const stopped = await stopRemoteChild(this.remoteLinks, target);
-    if (!stopped) throw new Error("A run delegated on this node is stopped as itself.");
-    return stopped;
+  /** The user's Stop of a run this run delegated to a peer node; `null` for any other run (a local one is stopped as itself). */
+  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult | null> {
+    return stopRemoteChild(this.remoteLinks, target);
   }
 
   get orgRunId(): string { return this.tree.rootOrg.orgRunId; }

@@ -1,5 +1,5 @@
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
-import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/peer-child-stop.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
@@ -230,10 +230,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return Promise.resolve({ accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not a run this Agent run delegated to another node.` });
   }
   /** The user's Stop of a peer child, by its node (DEC-804). A local delegated run is stopped as itself. */
-  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    const stopped = await stopRemoteChild(this.remoteLinks, target);
-    if (!stopped) throw new Error("A run delegated on this node is stopped as itself.");
-    return stopped;
+  /** The user's Stop of a run this run delegated to a peer node; `null` for any other run (a local one is stopped as itself). */
+  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult | null> {
+    return stopRemoteChild(this.remoteLinks, target);
   }
 
   /** The run's own agent presents on its own Agent stream; nothing else of this run presents here. */

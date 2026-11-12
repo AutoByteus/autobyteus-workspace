@@ -12,7 +12,7 @@ import {
   getStudioApplicationPackageQueries,
   getStudioCollaborationRootHistoryService,
   getStudioDefinitionAdmissionService,
-  getStudioDelegatedLaunchSelectionService,
+  getStudioPeerChildStop,
   getStudioRunModelConfigService,
   getStudioTeamRunService,
 } from "../../../../src/api/graphql/studio-application-api-services.js";
@@ -31,7 +31,7 @@ const buildServices = () => ({
   definitionAdmissionService: { subject: "definition-admission" },
   collaborationRootHistoryService: { subject: "collaboration-root-history" },
   runModelConfigService: { subject: "run-model-config" },
-  delegatedLaunchSelectionService: { subject: "delegated-launch-selection" },
+  peerChildStop: { subject: "peer-child-stop" },
   runViewChildren: { subject: "run-view-children" },
   delegatedRunAgents: { subject: "delegated-run-agents" },
   bundleService: { subject: "bundle" },
@@ -59,7 +59,7 @@ describe("Studio application API service registration", () => {
     expect(getStudioDefinitionAdmissionService()).toBe(services.definitionAdmissionService);
     expect(getStudioCollaborationRootHistoryService()).toBe(services.collaborationRootHistoryService);
     expect(getStudioRunModelConfigService()).toBe(services.runModelConfigService);
-    expect(getStudioDelegatedLaunchSelectionService()).toBe(services.delegatedLaunchSelectionService);
+    expect(getStudioPeerChildStop()).toBe(services.peerChildStop);
     expect(getStudioApplicationBundleService()).toBe(services.bundleService);
     expect(getStudioApplicationCapabilityService()).toBe(services.capabilityService);
     expect(getStudioApplicationPackageQueries()).toBe(services.packageQueries);
@@ -87,7 +87,7 @@ describe("Studio application API service registration", () => {
     "definitionAdmissionService",
     "collaborationRootHistoryService",
     "runModelConfigService",
-    "delegatedLaunchSelectionService",
+    "peerChildStop",
     "bundleService",
     "capabilityService",
     "packageQueries",

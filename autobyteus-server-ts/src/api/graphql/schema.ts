@@ -7,7 +7,7 @@ import { ApplicationCapabilityResolver } from './types/application-capability.js
 import { SkillResolver } from './types/skills.js';
 import { AgentRunResolver } from './types/agent-run.js';
 import { AgentTeamRunResolver } from './types/agent-team-run.js';
-import { DelegatedLaunchSelectionResolver } from './types/delegated-launch-selection.js';
+import { PeerChildStopResolver } from './types/peer-child-stop.js';
 import { WorkspaceResolver } from './types/workspace.js';
 import { AgentDefinitionResolver } from './types/agent-definition.js';
 import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
@@ -61,7 +61,7 @@ export async function buildGraphqlSchema() {
       AgentRunResolver,
       AgentBackgroundTaskViewResolver,
       AgentTeamRunResolver,
-      DelegatedLaunchSelectionResolver,
+      PeerChildStopResolver,
       WorkspaceResolver,
       AgentDefinitionResolver,
       AgentTeamDefinitionResolver,
