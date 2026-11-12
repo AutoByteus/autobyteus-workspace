@@ -249,7 +249,11 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
         The poll's `row` is the identity alone, which is all the run list reads. The view and the list share the identity builder, so they agree by construction, and the launch is never cached;
       - `statuses`: every agent of that child, with its address from the tree's per-run agents and its status from the child's own root when active, else `offline`.
 
-      Peer children keep their own state source, as today.
+      **Peer children are in the answer too** (SR-057, CR-461-027; REQ-002 "whoever delegated it", autobyteus-278's peer rows kept by REQ-009):
+      - each has a `row` with its identity from `DelegationTree.peerChildrenOf(X)`: the Task entry's `nodeId`, `recipientAddress`, `members` with their addresses, the delegator and `linkedAt`;
+      - it has **no `statuses`**: no call to the peer node is made per poll.
+
+      At base a listed run's peer rows came from its stored link, and their statuses only from the remote summary events of an open view, so a listed, not-open run showed them without a live status. The web shows them so again: under their delegator, marked with their node, without a live status. The open view keeps the remote observation (summary and live stream) for their live statuses, as today.
   - **Web, one rule for every listed run that is not open, desktop and phone:**
     - `runHistoryStore`'s listed runs (all kinds, `listedRuns`) are polled in one read.
     - The run list's delegated rows of each such run come **from the answer**: each `children[].row` is placed under its delegating agent or member, as in the open view, with its `statuses` applied, in `runHistoryNavigationProjection` (desktop) and `mobileRunTreeProjection` (phone).
@@ -261,6 +265,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
     - the row leaves within one poll after the child's Task closes, and returns on a reopen;
     - a listed, not-open **agent run** does the same, with no view read per poll;
     - the open run's rows are unchanged by the poll;
+    - a listed, not-open run with a child on a peer node shows the peer row under its delegator, marked with its node, without a status and without any request to the peer per poll; opening the run gives the peer row its live status;
     - the 100-run limit holds.
 - **A peer child's launch details** (each agent's runtime, model and launch source; REQ-009) are read from the peer while the view is open (SR-038). The peer's run summary (`peer-run-view-answers.ts`, `remote-run-view-provider.ts`, autobyteus-278) gains `launches` per agent, read from the run's own file on its node. `remote-task-execution-dto-projection.ts` fills `RemoteTaskExecutionDto.launches` from that answer instead of the stored link. A peer that cannot answer gives no launch details, as it gives no statuses. Nothing is stored on the delegating node; the delegation result's launch notes are unchanged. Tests: the row shows the peer's launches from the summary; a changed launch on the peer shows on the next summary; no launches while the peer is unreachable.
 - The web keeps today's rows, selection and buttons. A local child's status and live output reach the view the way a remote child's do; its commands go to its own root (above).

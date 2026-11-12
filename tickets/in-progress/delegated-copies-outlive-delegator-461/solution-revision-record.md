@@ -1092,3 +1092,13 @@
 - The four CRR-012 Local Fixes are committed by the Implementation Engineer (`e208080b3c`, `b6ea7d241c`, `438d64a85c`, `e423b15cff`).
 
 - ARCH-REV-031 (2026-11-12): Pass, no finding. The reviewer corrects its ARCH-REV-030 premise (the launch is not fixed for the run's life), and verifies at `827f1e68dc` that the run list's delegated rows show no launch details, so identity-only rows lose nothing. `walkthrough.py --check` passes.
+
+### SR-057 — A listed run's peer children are in the poll's answer (answers CRR-013 Design Impact CR-461-027)
+
+- Triggering: code review round 8 (CRR-013, a full review of the whole change) found CR-461-027. A listed, not-open run no longer shows its peer children: SR-055's answer carried local children only (`RunViewChildren.listed` filters `nodeId === undefined`), and SR-055 withdrew the stored-view read that used to show them. That fails REQ-002 ("whoever delegated it") and autobyteus-278's peer rows, which REQ-009 keeps.
+- The Solution Designer's gap: SR-055 left peer children out of the answer and withdrew their only list source.
+- Read: at base, a listed run's peer rows came from its stored link (`remote_task_executions`). Their statuses came only from `remote_task_execution_summary` events while a view streamed (`applyRemoteSummaryStatuses`), else the agent's offline default.
+- Decision (the reviewer's option, as at base): the poll's answer includes each peer child, with its identity from `DelegationTree.peerChildrenOf(X)`, which reads the Task entry's `nodeId`, `recipientAddress`, `members`, delegator and `linkedAt` from memory, and **no statuses**. No request goes to a peer per poll. The web shows the peer row under its delegator, marked with its node, without a live status, as at base. The open view keeps the remote observation for live peer statuses.
+- Done: the design's DS-8 poll section and its test. `walkthrough.py --check` passes.
+- The five Local Fixes of CRR-013 (CR-461-022 … -026) are the Implementation Engineer's.
+
