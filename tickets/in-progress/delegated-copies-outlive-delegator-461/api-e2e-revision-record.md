@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-007, round 1 | SR-053, IR-004, CRR-007 | N/A | Fail / 61% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-011, round 2 | SR-054, ARCH-REV-029, IR-005 … IR-007, CRR-008 … CRR-011 | Fail / 61% | Fail / 66% |
+| API-REV-003 | Code Reviewer, `code-review-report.md` CRR-015, round 3 | SR-055 … SR-057, CR-461-017 … CR-461-029, CRR-012 … CRR-015 | Fail / 66% | Fail / 71% |
 
 ## Revision Entries
 
@@ -74,3 +75,52 @@ None
 - Remaining risks, blocked evidence, or untested scope:
   - the stale-suite and probe rewrites, first in the next round (the investigation lists each file);
   - then API-I01, API-L01, API-F01 on the fixed code.
+
+### API-REV-003: round 3; the stale tests first, F-6 … F-10 rechecked, new prompt, header, mention, nesting and team-send findings
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-015 at `da80596b0a`, merged state `8a47481617`), API/E2E round 3
+- Triggering finding or case IDs:
+  - CR-461-017 … -021 (F-6 … F-10 answered), CR-461-022 (own-identity child reads), CR-461-023 … -029 (refactors);
+  - SR-055/056 (one listed-runs poll, `runCollaborationStatuses`), SR-057 (peer children with their node, no statuses);
+  - C8-09 (does a delivery error leave a sender's tool call waiting?);
+  - the reviewer's order: stale tests first (autobyteus-agents-107), API-E02, API-B01, the deferred cases.
+- Related revision IDs: SR-055 … SR-057, CR-461-017 … CR-461-029, CRR-012 … CRR-015
+- Why this revision was recorded: the fix round's validation, the stale-test rewrites, and the prior-failure rechecks
+- Coverage decisions or durable test paths changed:
+  - shared harness and helpers on the new poll and own-run reads;
+  - nine server suites rewritten or confirmed, one removed with its reason (`agent-run-collaboration-member-file-changes`, CR-461-022);
+  - `collaboration-prompt-wording` checked against the requirements and kept (it found F-11 … F-13), strengthened, with CPW-M5 added;
+  - the stories gain the SR-057 poll check, and K-9's text is corrected;
+  - the desktop probe gains the F-9 Team-tab check and a strict helper step;
+  - the phone cases' own-member step is fixed;
+  - web probes moved to the new poll (some not yet run).
+  - The investigation's plan lists every file ("Rewritten in round 3", "Next Round").
+- Cases added, changed, removed, or rechecked:
+  - Pass: API-E02, API-E03 (rerun), API-B01 phone (MSP-50 … 52), API-B02 (rechecked).
+  - Fail: API-B01 desktop; API-E01 (CPW).
+  - Partly Pass: API-E01 (the rewritten suites).
+  - Next Round: API-E01 full, API-I01, API-B03, API-L01, API-F01, the rendered peer rows.
+- Commands, environment, fixture, or broader-validation delta:
+  - ENV-3 no longer needs a probe copy (the duplicate `MSP-32` is renumbered);
+  - the phone bundle was rebuilt from this code;
+  - two power-offs; the interrupted desktop run was rerun, and its leftover temp root removed.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-6 the run-ID delivery text | Local Fix | Resolved | API-E02 §5.1 S4, S7, S9 |
+| F-7 a delegated team's member messaging the org; the sender's call waiting | Local Fix | Resolved; C8-09: no call left waiting | API-E02 §5.3 O6, O7 |
+| F-8 the team view's message to its worker lost | Local Fix | The first message is delivered; the second is refused every time: F-15 | API-B01 SDV-02 |
+| F-9 the worker's Team tab error panel | Local Fix | Resolved | API-B01 SDV-02 (`workerTeamTab`) |
+| F-10 the phone's stopped team and org without their workers | Local Fix | Resolved | API-B01 phone MSP-51, MSP-52 |
+
+- Canonical artifacts and sections updated: the coverage investigation (meta, plan, deferred, ambiguities), the execution report (all sections), the progress log, `evidence/api-e2e/*r3*`
+- Prior result and confidence: Fail / 66%
+- Current result and confidence: Fail / 71%
+- New or remaining failure IDs: F-11, F-12, F-13 (server), F-14 (web/design), F-15 (web)
+- Recommended owner: Implementation Engineer (F-11, F-12, F-13, F-15), Solution Designer (F-14; F-11 row 5 if confirmed), confirmed by failure-origin review
+- Remaining risks, blocked evidence, or untested scope:
+  - the remaining stale-suite and probe rewrites, first in the next round;
+  - the rendered peer rows (a peer node in the browser probes);
+  - then API-E01 full, API-I01, API-L01, API-F01 on the fixed code.

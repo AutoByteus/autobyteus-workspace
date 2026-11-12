@@ -171,7 +171,7 @@ const createRoot = async (kind, ids) => {
 /** Whether a root's own run is active, as the server reports it. */
 const isActive = async (root) => {
   // The run's own agent (the run list's status), not whether its collaboration root object is loaded
-  // (`agentRunCollaborationStatuses.isActive` is the latter: a child command loads the root without starting the agent).
+  // (the listed-runs poll's `isActive` answers whether the run is managed; the run's own status is what the list shows).
   if (root.kind === 'agent') return Boolean((await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}', { id: root.rootId }))
     .getAgentRunResumeConfig?.isActive);
   if (root.kind === 'team') return Boolean((await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}', { id: root.rootId })).getTeamRunResumeConfig.isActive);
@@ -197,18 +197,11 @@ const managerInput = async (root) => {
       content, context_file_paths: [], image_urls: [] } }));
   return { send, close: () => socket.close() };
 };
+/** The runs a root delegated to (one hop), from the listed-runs poll for every run kind (autobyteus-461 SR-055 … SR-057). */
 const childRunIds = async (root) => {
-  const tree = root.kind === 'agent'
-    ? (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration
-    : root.kind === 'team' ? (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree
-      // An org's children are in its inspection (the view's child rows, autobyteus-461 DS-8); its stored tree holds its own units only.
-      : (await gql('query($id:String!){getAgentOrgRunInspection(orgRunId:$id)}', { id: root.rootId })).getAgentOrgRunInspection;
-  const found = new Set();
-  const visit = (v) => { if (Array.isArray(v)) v.forEach(visit); else if (v && typeof v === 'object') {
-    const startedAt = v.startedAt ?? v.started_at; const id = v.agentRunId ?? v.agent_run_id;
-    if (startedAt && id && id !== root.managerRunId) found.add(id); Object.values(v).forEach(visit); } };
-  visit(tree);
-  return [...found];
+  const kind = root.kind === 'agent' ? 'agent' : root.kind === 'team' ? 'agent_team' : 'agent_org';
+  const answer = (await gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind, runId: root.rootId }] })).runCollaborationStatuses;
+  return (answer?.[0]?.children ?? []).map((child) => child.row.kind === 'agent' ? child.row.agentRunId : child.row.coordinatorAgentRunId);
 };
 /** A root of one kind whose Manager delegated a Task (a project Task) to the worker; returns the worker's run ID. */
 const setupRoot = async (kind, label) => {
@@ -318,6 +311,16 @@ const childWhileStopped = async (s, page, out) => {
     });
   out.workerAnsweredLive = true;
   out.sentMessages = s.sentMessages?.slice(-3) ?? null;
+  // Round 2 F-9: the selected worker's Team tab shows its messages, or nothing, never the "can't be shown" error panel.
+  const teamTab = page.locator('[data-test="right-side-tab-list"]').locator('button, [role="tab"]', { hasText: /Team/ }).first();
+  if (await teamTab.count()) {
+    await teamTab.click();
+    await sleep(3000);
+    const panel = await page.locator('[data-test="right-side-tab-content-shell"]').innerText().catch(() => '');
+    out.workerTeamTab = panel.slice(0, 300);
+    await shot(page, `sdv-${root.kind}-worker-team-tab`);
+    assert(!panel.includes("These messages can't be shown"), `${root.kind}: the worker's Team tab shows the error panel`, out);
+  } else out.workerTeamTab = 'no Team tab for the selected worker';
   if (await isActive(root)) {
     // Which run received the marker (the worker's own run and the root's agent that should stay stopped).
     const workerConv = JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: s.worker }).catch((e) => ({ error: String(e) }))));
@@ -328,15 +331,30 @@ const childWhileStopped = async (s, page, out) => {
   // The worker delegates further: the new row appears live under it (no reload).
   await send(page, callTool('delegate_task', { recipient_address: `/${segment(s.names.helper)}`, description: 'Collect the links.' }));
   const helperId = await until('helper delegated', async () => {
-    const tree = (await gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId statuses}}', { ids: [s.worker] }).catch(() => null));
+    // The worker's own children, from the listed-runs poll (autobyteus-461 SR-055: one poll for every run kind).
+    const tree = (await gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: s.worker }] }).catch(() => null));
     const ids = JSON.stringify(tree ?? {}).match(new RegExp(`${segment(s.names.helper)}_[0-9a-f]+`, 'g'));
     return ids?.[0] ?? null;
   }, 90000).catch(() => null);
   out.helperRunId = helperId;
-  if (helperId) {
-    await page.locator(`[data-agent-run-id="${helperId}"], [data-test="agent-org-task-agent-row-${helperId}"]`).first().waitFor({ state: 'visible', timeout: 30000 });
-    out.helperRowLive = true;
+  if (!helperId) {
+    // The worker's delegation must happen: a missing helper fails the case with what the worker received.
+    const workerConv = (await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: s.worker }).catch((e) => ({ error: String(e) })));
+    out.workerConversationTail = JSON.stringify(workerConv).slice(-1500);
+    out.sentMessages = s.sentMessages?.slice(-3) ?? null;
+    await shot(page, `sdv-${root.kind}-helper-not-delegated`);
+    assert(false, `${root.kind}: the worker did not delegate to the helper`, out);
   }
+  // REQ-002: a run delegated by a delegated run is shown under the run that delegated it (the worker's row), live.
+  await page.locator(`[data-agent-run-id="${helperId}"], [data-test="agent-org-task-agent-row-${helperId}"]`).first().waitFor({ state: 'visible', timeout: 30000 })
+    .catch(async (error) => {
+      out.helperRunId = helperId;
+      out.rowsShown = await page.locator('[data-agent-run-id]').evaluateAll((els) => els.map((el) => el.getAttribute('data-agent-run-id'))).catch(() => null);
+      await shot(page, `sdv-${root.kind}-helper-row-missing`);
+      error.details = out;
+      throw error;
+    });
+  out.helperRowLive = true;
   assert(!(await isActive(root)), `${root.kind}: the root started when its worker delegated`);
 };
 

@@ -12,7 +12,7 @@ import { until } from "./agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
 import { restoreByMemberMessage } from "./restore-by-member-message.js";
-import { projectionByOwnRun } from "./own-run-reads.js";
+import { childRunsOf, descendantRunsOf, ownRunOfAgent, projectionByOwnRun, type RunKind } from "./own-run-reads.js";
 
 /**
  * Drives real Agent, Agent Team and Agent Org roots on a test-owned Studio server with the scripted AGY CLI
@@ -202,15 +202,52 @@ export const startCollaborationHarness = async (label: string) => {
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
     const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-    const sendTo = (agentRunId: string, content: string, mentions?: Mention[]) => {
+    const rootRef = { kind: (kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org") as RunKind, runId: rootId };
+    const ownStreams = new Map<string, Promise<WebSocket>>();
+    /**
+     * A run two or more hops below the root is not a row of the root's view (autobyteus-461: a view commands its own
+     * one-hop child rows only, AR-011): the user reaches it on its own run's stream (an agent run's input channel, a team
+     * run's view), as from that run's own view. `false`: the agent is the root's own or a one-hop child's.
+     */
+    const viaOwnRun = async (agentRunId: string, content: string, extra: Rec): Promise<boolean> => {
+      if (agentRunId === rootId || agentRunId === managerRunId || Object.values(members).includes(agentRunId)) return false;
+      const oneHop = (await childRunsOf(graphql, rootRef)).some((child) => child.agentRunId === agentRunId || child.members.some((m) => m.agentRunId === agentRunId));
+      if (oneHop) return false;
+      const own = await ownRunOfAgent(path.join(dataDir, "memory"), agentRunId);
+      if (!own) return false;
+      const key = own.kind === "agent" ? `agent:${agentRunId}` : `agent_team:${own.teamRunId}`;
+      if (!ownStreams.has(key)) ownStreams.set(key, own.kind === "agent"
+        ? connect("agent", agentRunId, (frames) => frames.some((f) => f.type === "CONNECTED")).then((c) => c.socket)
+        : connect("agent-team", own.teamRunId, (frames) => frames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")).then((c) => c.socket));
+      sendE2eSendMessageCommand(await ownStreams.get(key)!, { agent_run_id: agentRunId, content, ...extra });
+      return true;
+    };
+    const sendTo = async (agentRunId: string, content: string, mentions?: Mention[]) => {
       const extra = mentions ? { mentions } : {};
+      if (await viaOwnRun(agentRunId, content, extra)) return;
+      const commandId = randomUUID();
       if (kind === "org") view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent_org", root_run_id: rootId, target_agent_run_id: agentRunId,
-        command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [], ...extra } }));
+        command_id: commandId, message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [], ...extra } }));
       else if (kind === "agent" && agentRunId !== rootId) view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        root_subject_kind: "agent", root_run_id: rootId, target_agent_run_id: agentRunId, command_id: randomUUID(),
+        root_subject_kind: "agent", root_run_id: rootId, target_agent_run_id: agentRunId, command_id: commandId,
         content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds(), ...extra } }));
-      else sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: agentRunId, content, ...extra });
+      else {
+        const from = view.frames.length;
+        sendE2eSendMessageCommand(kind === "agent" ? inputChannel!.socket : view.socket, { agent_run_id: agentRunId, content, ...extra });
+        if (kind !== "team") return;
+        // The team view has no command ack: a refused message is an ERROR frame naming the target.
+        await new Promise((resolve) => setTimeout(resolve, 1_500));
+        const refused = view.frames.slice(from).find((f) => f.type === "ERROR" && JSON.stringify(f.payload).includes(agentRunId));
+        if (refused) throw new Error(`The team view refused the message for ${agentRunId}: ${JSON.stringify(refused.payload)}`);
+        return;
+      }
+      // A view command is acknowledged: a refused or failed one fails the step with its code, not as a later timeout.
+      let ack: Frame | undefined;
+      await until(() => (ack = view.frames.find((f) => f.type === "AGENT_COMMAND_ACK" && (f.payload as Rec)?.command_id === commandId)) !== undefined,
+        `the ${kind} view acknowledges the message for ${agentRunId}`);
+      const state = (ack!.payload as Rec).state;
+      if (state !== "accepted") throw new Error(`The ${kind} view ${String(state)} the message for ${agentRunId}: ${JSON.stringify(ack!.payload)}`);
     };
     const liveTree = async () => {
       if (kind === "agent") return (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: rootId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
@@ -223,8 +260,6 @@ export const startCollaborationHarness = async (label: string) => {
         return (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation ?? [];
       }
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation;
-      if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-        { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
       if (kind === "team") return (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`, { id: rootId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
       return (await graphql(`query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}`,
         { id: rootId, a: agentRunId, m: address })).getAgentOrgMemberRunProjection?.conversation;
@@ -232,16 +267,18 @@ export const startCollaborationHarness = async (label: string) => {
     /** One scripted tool call by an agent of the root; returns the tool result it reports. */
     const calls = async (agentRunId: string, address: string, content: string, mentions?: Mention[]): Promise<Rec> => {
       const before = calledResults(await conversationOf(agentRunId, address)).length;
-      sendTo(agentRunId, content, mentions);
+      await sendTo(agentRunId, content, mentions);
       let results: string[] = [];
       await until(async () => { results = calledResults(await conversationOf(agentRunId, address)); return results.length > before; },
         `${kind} ${address} tool result for ${content.slice(0, 110)}`, 60_000)
         .catch(async (error) => { throw new Error(`${error}; the agent's conversation ends: ${JSON.stringify(stringsOf(await conversationOf(agentRunId, address)).slice(-8)).slice(0, 2000)}; raw trace tail:\n${await tracesOf(agentRunId)}`); });
       return toolResult(results[before]!);
     };
-    const taskAgents = async () => taskAgentsIn(await liveTree());
+    // The runs delegated from this root and, one hop at a time, from them (autobyteus-461: each is a run of its own, found
+    // through its delegating run's children, not inside the root's tree).
+    const taskAgents = async () => descendantRunsOf(graphql, { kind: kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org", runId: rootId });
     const waitForTaskAgent = async (id: string) => {
-      let found: ReturnType<typeof taskAgentsIn>[number] | undefined;
+      let found: Awaited<ReturnType<typeof taskAgents>>[number] | undefined;
       await until(async () => Boolean(found = (await taskAgents()).find((agent) => agent.agentRunId === id || agent.teamRunId === id)), `${kind}: task agent ${id} recorded`, 60_000);
       return found!;
     };

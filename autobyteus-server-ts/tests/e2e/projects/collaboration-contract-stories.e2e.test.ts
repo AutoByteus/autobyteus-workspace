@@ -234,8 +234,8 @@ const KNOWN_DIFFERENCES: Array<{ pattern: RegExp; reason: string; states?: strin
     reason: "A delegated team run's own file records where each launch came from: design-spec DS-10 (E6 row) and the DelegatedRunStarter ('its resolved launch, address and launchSource') name rootTeam.defaultLaunchSource and the members' launchSource; the contract's §3.2 team example omits them.",
   },
   {
-    pattern: /^result\[0\]\.message: expected "Message delivered\.", got "Delivered message to (\S+)\. \1 continues with its conversation\."$/,
-    reason: "Today's text when a message continues the run of a reopened Task is 'Delivered message to X. X continues with its conversation.' (base 827f1e68dc root-task-execution-lifecycle.ts:301; kept in cross-run-message-delivery.ts:104; the update_task description names it). The product keeps it (REQ-009); the model writes the plain run-ID text. A contract-model note, not a product difference.",
+    pattern: /^result\[0\]\.message: expected "Message delivered\.", got "Message delivered\. (\S+) continues with its conversation\."$/,
+    reason: "Today's text when a message by run ID continues the run of a reopened Task is the run-ID text followed by 'X continues with its conversation.': base 827f1e68dc root-task-execution-lifecycle.ts:301 appends it to the delivery's message, which by run ID on this node is 'Message delivered.' (contract §2, SR-054); kept in cross-run-message-delivery.ts:105; the update_task description names it. The product keeps it (REQ-009); the model writes the plain run-ID text. A contract-model note, not a product difference. (Round 2 quoted 'Delivered message to X. …', the text F-6 had changed.)",
     states: ["S11"],
   },
   {
@@ -659,6 +659,13 @@ suite("The collaboration contract's stories, run against the built server (autob
         const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", description: "Market study …" });
         const problem = ctx.bindings.bind("adhoc_task_7c7c", r.task_id as string); if (problem) throw new Error(problem);
         await ctx.bindRun("research_team_77aa", r.target_team_run_id as string, "B");
+        // SR-057: the listed-runs poll answers the peer child among M's children, with its node and no statuses.
+        const answer = (await ctx.nodes.A!.gql(`query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}`,
+          { runs: [{ kind: "agent", runId: ctx.real(M) }] })).runCollaborationStatuses as Rec[];
+        const peer = ((answer[0]?.children ?? []) as Rec[]).find((child) => child.row?.teamRunId === r.target_team_run_id);
+        expect(peer, `M's children: ${JSON.stringify(answer).slice(0, 1500)}`).toBeTruthy();
+        expect(peer!.node, JSON.stringify(peer)).toMatchObject({ nodeId: ctx.nodes.B!.nodeId });
+        expect(peer!.statuses, JSON.stringify(peer)).toEqual([]);
       },
       S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" }); },
       S19: async (ctx) => {

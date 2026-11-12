@@ -19,7 +19,7 @@
 //   MSP-24 AC-001, AC-003, AC-004, AC-005  50 s with nothing changing: phone-other reads the batched statuses about once per
 //                  refresh and the PTM's collaboration view never. The PTM closes Task A and Task B: on phone-other both
 //                  delegated rows leave within 10 s of each close (before the fix: still listed after 120 s), on phone-host
-//                  within 1 s; phone-other re-reads the PTM's view at most once per close and not again afterwards. The PTM
+//                  within 1 s; neither phone reads the PTM's view (since autobyteus-461 SR-055 the rows come with the poll). The PTM
 //                  reopens Task A: its row returns on phone-other within 10 s.
 //   MSP-25 AC-006  phone-other in the background (page hidden) when the PTM closes Task A again: no history, statuses or view
 //                  read while hidden; shown again, the row leaves within 10 s.
@@ -30,8 +30,8 @@
 //                  this one); 12 s with no view read; the PTM closes Task B: its Team row leaves the desktop list within
 //                  10 s. Runs last (no later case uses alpha's Task B).
 //   MSP-34 autobyteus-435 AC-011-1, AC-011-2  On delta, after MSP-26: the PTM delegates Task D and is stopped; another PTM
-//                  run closes Task D: its row leaves both phones within 10 s, each phone re-reads the stopped host's view at
-//                  most once per digest value, and the host stays stopped. Set back to TODO, both phones agree with the
+//                  run closes Task D: its row leaves both phones within 10 s with no view read of the stopped host (SR-055),
+//                  and the host stays stopped. Set back to TODO, both phones agree with the
 //                  node's stored view.
 //   MSP-35 autobyteus-435 AC-011-1  The same on alpha's desktop window (after MSP-27): the PTM delegates Task E and is
 //                  stopped; another PTM run closes Task E: its row leaves the desktop list within 10 s; TODO: the list agrees
@@ -44,21 +44,16 @@ import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 
 const PHONE_HOST = '192.168.77.30';
 const MODEL = 'gemini-3.8-flash-low';
-const STATUS_OP = 'GetAgentRunCollaborationStatuses';
+// The listed-runs poll (autobyteus-461 SR-055): it carries the delegated rows and their states; the per-change view re-read is withdrawn.
+const STATUS_OP = 'GetRunCollaborationStatuses';
 const VIEW_OP = 'GetAgentRunCollaboration';
 const HISTORY_OP = 'ListWorkspaceRunHistory';
 
 /**
- * Whether a host's `agentRunCollaboration` view lists the run as a delegated row: a node of its `execution_tree` that
- * its `closed_task_executions` do not name. Since autobyteus-469 a stopped copy of a closed Task leaves the tree, so
- * the view names it in neither list; before 469 it stayed in the tree and was named closed. The query answers
- * `{ root_subject_kind, root_run_id, root_agent: { execution_tree, closed_task_executions, … } }`.
+ * Whether the node lists the run as a delegated row of its host: one of the host's children in the listed-runs poll
+ * (`runCollaborationStatuses`, autobyteus-461 SR-055/057), which carries only the runs that hold an open Task.
  */
-const listedOnNode = (view, runId) => {
-  const root = view?.root_agent ?? null;
-  return JSON.stringify(root?.execution_tree ?? null).includes(`"${runId}"`)
-    && !JSON.stringify(root?.closed_task_executions ?? []).includes(`"${runId}"`);
-};
+const listedOnNode = (answer, runId) => (answer?.children ?? []).some((child) => JSON.stringify(child.row).includes(`"${runId}"`));
 
 /**
  * @param probe the probe's helpers: `runCase`, `serverAt`, `freePort`, `chromium`, `executablePath`, `outputDir`,
@@ -87,7 +82,7 @@ export const runClosedTaskRowsCases = async (probe) => {
   /** Every GraphQL read a page starts: operation, the run IDs it names, time. */
   const recordReads = (page, net) => page.on('request', (request) => {
     if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
-    try { const body = JSON.parse(request.postData() ?? '{}'); net.push({ at: Date.now(), op: body.operationName ?? null, runId: body.variables?.runId ?? null, runIds: body.variables?.runIds ?? null }); } catch { /* not JSON */ }
+    try { const body = JSON.parse(request.postData() ?? '{}'); net.push({ at: Date.now(), op: body.operationName ?? null, runId: body.variables?.runId ?? null, runIds: body.variables?.runs?.map((run) => run.runId) ?? body.variables?.runIds ?? null }); } catch { /* not JSON */ }
   });
   const reads = (net, from, to = Date.now()) => net.filter(entry => entry.at >= from && entry.at <= to);
 
@@ -156,7 +151,7 @@ export const runClosedTaskRowsCases = async (probe) => {
       assert(writerRun && teamRun && liveLead && leadTaskRun, 'the delegations on delta', { writerRun, teamRun, liveLead, leadTaskRun });
       evidence.closedTaskRows = { runs: { ptm, other, writerRun, teamRun, liveTeam: liveTeam.teamRunId, liveLead, leadTaskRun }, tasks: { a: taskA.taskKey, b: taskB.taskKey, c: taskC.taskKey } };
       const closeTask = (by, taskId, status) => callTool(by, 'update_task', { task_id: taskId, status });
-      const viewOnDelta = async (runId) => (await delta.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration;
+      const viewOnDelta = async (runId) => (await delta.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId }] })).runCollaborationStatuses[0];
 
       // ---- the phones -------------------------------------------------------------------------------------------------
       phoneBrowser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
@@ -272,7 +267,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         assert(quietCounts.statuses >= 8 && quietCounts.statuses <= quietCounts.history + 1 && quietCounts.statusesNamingPtm === quietCounts.statuses, 'one batched statuses read per refresh, naming the PTM (AC-005)', details);
         assert(goneMs.otherA !== null && goneMs.otherA <= 10_000 && goneMs.otherB !== null && goneMs.otherB <= 10_000, 'phone-other: both delegated rows leave within 10 s (AC-001)', details);
         assert(goneMs.hostA !== null && goneMs.hostA <= 1_000 && goneMs.hostB !== null && goneMs.hostB <= 1_000, 'phone-host (the PTM open): both rows leave within 1 s (AC-004)', details);
-        assert(viewReadsAfterClose >= 1 && viewReadsAfterClose <= 2 && viewReadsAfterGone === 0, 'one view re-read per close, none afterwards (QR-002)', details);
+        assert(viewReadsAfterClose === 0 && viewReadsAfterGone === 0, 'the rows leave through the poll: no view read of the PTM (SR-055 withdrew the per-close re-read)', details);
         assert(nodeListedBeforeClose, 'before the close the node lists the copy (the check below reads the node)', details);
         assert(afterTodo.phoneHost === afterTodo.phoneOther && afterTodo.phoneOther === afterTodo.nodeListed, 'after TODO alone both phones agree with the node (REQ-002: the same way)', details);
         assert(reopenMs.other !== null && reopenMs.other <= 10_000 && reopenMs.host !== null, 'the reopened copy\'s row returns on both phones, within 10 s on phone-other (AC-003)', details);
@@ -325,7 +320,7 @@ export const runClosedTaskRowsCases = async (probe) => {
       await runCase('MSP-34', async () => {
         // autobyteus-435 REQ-011 (AC-011-1, AC-011-2): the PTM delegates Task D, then stops; another PTM run (the PM in the
         // user's report, after the first one stopped) closes Task D. The stopped host's delegated row leaves both phones
-        // within one refresh, its view re-read at most once per digest value; the host stays stopped.
+        // within one refresh, with no view read (SR-055); the host stays stopped.
         currentCase = 'MSP-34';
         const taskD = await task('Write the upgrade guide.');
         const copy = pickId(await callTool({ runId: ptm }, 'delegate_task', { recipient_address: '/release_notes_writer', task_id: taskD.taskId }), 'target_agent_run_id');
@@ -334,7 +329,7 @@ export const runClosedTaskRowsCases = async (probe) => {
           for (const phone of [phoneHost, phoneOther]) await unfold(phone, `agent:${ptm}`);
           return (await listed(phoneHost, copy)) && (await listed(phoneOther, copy));
         }, 60_000);
-        const statusOf = async () => (await delta.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive closedTaskExecutionsDigest}}', { ids: [ptm] })).agentRunCollaborationStatuses[0];
+        const statusOf = async () => (await delta.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: ptm }] })).runCollaborationStatuses[0];
         const stopped = (await delta.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: ptm })).terminateAgentRun;
         assert(stopped.success, 'the PTM stopped', stopped);
         await waitFor('the PTM inactive on delta', async () => (await statusOf())?.isActive === false, 30_000);
@@ -368,8 +363,8 @@ export const runClosedTaskRowsCases = async (probe) => {
           [stoppedBefore.status?.isActive === false && stoppedBefore.nodeListed && stoppedBefore.listed.phoneHost && stoppedBefore.listed.phoneOther, 'the stopped host\'s delegated row is listed on the node and on both phones'],
           [stoppedBefore.statusReadsNamingPtm >= 1 && stoppedBefore.viewReads.phoneHost === 0 && stoppedBefore.viewReads.phoneOther === 0, 'a stopped host is in the status read; no view read while nothing changes (QR-002)'],
           [afterClose.goneAfterCloseMs.phoneOther !== null && afterClose.goneAfterCloseMs.phoneOther <= 10_000 && afterClose.goneAfterCloseMs.phoneHost !== null && afterClose.goneAfterCloseMs.phoneHost <= 10_000, 'the closed Task\'s row leaves both phones within 10 s while its host is stopped (AC-011-1)'],
-          [afterClose.status?.isActive === false && afterTodo.status?.isActive === false && typeof afterClose.status?.closedTaskExecutionsDigest === 'string', 'the host stays stopped; the node answers its digest'],
-          [afterClose.viewReads.phoneHost <= 1 && afterClose.viewReads.phoneOther <= 1 && afterTodo.viewReads.phoneHost <= 1 && afterTodo.viewReads.phoneOther <= 1, 'at most one view re-read per digest value (AC-011-2)'],
+          [afterClose.status?.isActive === false && afterTodo.status?.isActive === false, 'the host stays stopped'],
+          [afterClose.viewReads.phoneHost === 0 && afterClose.viewReads.phoneOther === 0 && afterTodo.viewReads.phoneHost === 0 && afterTodo.viewReads.phoneOther === 0, 'no view read of the stopped host: the rows follow the poll (SR-055)'],
           [afterTodo.listed.phoneHost === nodeListed && afterTodo.listed.phoneOther === nodeListed, 'after TODO both phones agree with the node\'s stored view (AC-011-1, reopened)'],
         ].filter(([ok]) => !ok).map(([, label]) => label);
         assert(failures.length === 0, failures.join('; '), details);
@@ -386,7 +381,7 @@ export const runClosedTaskRowsCases = async (probe) => {
     await runCase('MSP-27', async () => {
       // The PTM active, and read as active by the window before the close.
       await stack.agentSay(stack.ptm, 'Status check before the close.');
-      const ptmActive = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive}}', { ids: [stack.ptm] })).agentRunCollaborationStatuses[0]?.isActive === true;
+      const ptmActive = async () => (await alpha.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: stack.ptm }] })).runCollaborationStatuses[0]?.isActive === true;
       await waitFor('the PTM active on alpha', ptmActive, 60_000);
       const context = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
       await attachToBrowserContext(context);
@@ -452,7 +447,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         { input: { projectId: stack.project, title: 'Translate the release notes.', description: 'Translate the release notes. Marker TASK-E.' } })).createProjectTask;
       const copy = pickId(await stack.agentCall(stack.ptm, 'delegate_task', { recipient_address: '/release_notes_writer', task_id: taskE.taskId }), 'target_agent_run_id');
       assert(copy, 'the PTM delegated Task E', { copy });
-      const statusOf = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive closedTaskExecutionsDigest}}', { ids: [stack.ptm] })).agentRunCollaborationStatuses[0];
+      const statusOf = async () => (await alpha.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: stack.ptm }] })).runCollaborationStatuses[0];
       const context = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
       await attachToBrowserContext(context);
       await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
@@ -481,7 +476,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         await sleep(12_000);
         const quietFrom = Date.now();
         await sleep(12_000);
-        const before = { listed: await desktopListed(), nodeListed: listedOnNode((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration, copy), viewReads: reads(net, quietFrom).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length,
+        const before = { listed: await desktopListed(), nodeListed: listedOnNode((await alpha.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: stack.ptm }] })).runCollaborationStatuses[0], copy), viewReads: reads(net, quietFrom).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length,
           statusReadsNamingPtm: reads(net, quietFrom).filter(e => e.op === STATUS_OP && e.runIds?.includes(stack.ptm)).length };
         await page.screenshot({ path: path.join(outputDir, 'MSP-35-desktop-stopped-host-before.png') });
         const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: stack.ids.ptm, ...stack.runConfig } })).createAgentRun;
@@ -497,7 +492,7 @@ export const runClosedTaskRowsCases = async (probe) => {
         const todoFrom = Date.now();
         await stack.agentCall(created.runId, 'update_task', { task_id: taskE.taskId, status: 'TODO' });
         await sleep(15_000);
-        const nodeListed = listedOnNode((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: stack.ptm })).agentRunCollaboration, copy);
+        const nodeListed = listedOnNode((await alpha.gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: stack.ptm }] })).runCollaborationStatuses[0], copy);
         const afterTodo = { status: await statusOf(), nodeListed, listed: await desktopListed(), viewReads: reads(net, todoFrom).filter(e => e.op === VIEW_OP && e.runId === stack.ptm).length };
         const details = { copy, manager: created.runId, taskE: taskE.taskKey, openRun: new URL(page.url()).searchParams.get('id'), before, afterClose, afterTodo };
         const failures = [
@@ -505,7 +500,7 @@ export const runClosedTaskRowsCases = async (probe) => {
           [before.listed && before.nodeListed && before.statusReadsNamingPtm >= 1 && before.viewReads === 0, 'the stopped host is in the status read, its row listed, no view read while nothing changes'],
           [afterClose.goneAfterCloseMs !== null && afterClose.goneAfterCloseMs <= 10_000, 'the closed Task\'s row leaves the desktop list within 10 s while its host is stopped (AC-011-1)'],
           [afterClose.status?.isActive === false && afterTodo.status?.isActive === false, 'the host stays stopped'],
-          [afterClose.viewReads <= 1 && afterTodo.viewReads <= 1, 'at most one view re-read per digest value (AC-011-2)'],
+          [afterClose.viewReads === 0 && afterTodo.viewReads === 0, 'no view read of the stopped host: the row follows the poll (SR-055)'],
           [afterTodo.listed === nodeListed, 'after TODO the desktop list agrees with the node\'s stored view'],
         ].filter(([ok]) => !ok).map(([, label]) => label);
         assert(failures.length === 0, failures.join('; '), details);

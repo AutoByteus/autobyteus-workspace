@@ -33,7 +33,6 @@
   "tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts": 1,
   "tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts": 2,
   "tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts": 1,
-  "tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts": 1,
   "tests/e2e/projects/project-change-feed.e2e.test.ts": 1,
   "tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts": 1,
   "tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts": 3,

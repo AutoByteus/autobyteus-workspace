@@ -212,9 +212,23 @@ export const runStoppedDelegatorCases = async (probe) => {
       assert(!out.rootActiveAfterChild, `${kind}: the stopped root was started by a message to its worker`, out);
       await shot(page, `${id.toLowerCase()}-worker-answered`);
       await showsStopped(root, 15_000, 'after a child command', out);
-      // The user's message to the root's own member (the Manager) starts it.
-      const managerRow = kind === 'agent' ? page.locator(`[data-testid="mobile-run-row-${root.key}"]`).first()
-        : page.locator(`[data-test="mobile-run-row"][data-testid^="mobile-run-row-${root.key}"]`).filter({ hasText: root.names.manager }).first();
+      // The user's message to the root's own member (the Manager) starts it: back on the list, the root's own row (agent)
+      // or its Manager member's row (team, org: by the member's run ID in its key, else its member name `manager`).
+      await toList();
+      await unfold(root);
+      let managerRow = page.locator(`[data-testid="mobile-run-row-${root.key}"]`).first();
+      if (kind !== 'agent') {
+        managerRow = null;
+        const rows = [];
+        for (const candidate of await page.locator(`[data-test="mobile-run-row"][data-testid^="mobile-run-row-${root.key}"]`).all()) {
+          const key = await candidate.getAttribute('data-testid');
+          const name = (await candidate.locator('[data-testid="mobile-run-name"]').first().innerText().catch(() => '')).trim();
+          rows.push({ key, name });
+          if (!managerRow && !key.includes(root.worker) && (key.includes(root.managerRunId) || /^manager$/i.test(name))) managerRow = candidate;
+        }
+        out.ownRows = rows;
+        assert(managerRow, `${kind}: the Manager's row is listed under the root`, out);
+      }
       await openRow(managerRow);
       const ownMarker = `PHONE-OWN-${kind}`;
       const beforeOwn = okCount(await conversation());

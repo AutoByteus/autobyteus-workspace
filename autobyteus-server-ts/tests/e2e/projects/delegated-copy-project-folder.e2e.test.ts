@@ -9,7 +9,7 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "../helpers/agy-run-capsule.js";
-import { calledResults, callTool, objectsIn, segment, startCollaborationHarness, taskAgentsIn, toolResult,
+import { calledResults, callTool, objectsIn, segment, startCollaborationHarness, toolResult,
   type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
@@ -83,7 +83,12 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     await until(() => Boolean(capsule = findAgyRunCapsule(memory(), runId)), `capsule of ${runId}`, 60_000);
     let addDirs: string[] = [];
     await until(() => (addDirs = addDirsOf(argvLog, capsule!.path)).length > 0, `launch of ${runId}`, 60_000);
-    return { recorded: recordedFolders(nodeOf(await root.liveTree(), runId)), capsule: capsule!.workspacePath, addDirs };
+    // A run two hops down (sub-work of a worker) is a child of the worker, not a row of the root's view (autobyteus-461):
+    // its recorded folder is in its own file.
+    const inRootView = recordedFolders(nodeOf(await root.liveTree(), runId));
+    const ownFile = path.join(memory(), "agents", runId, "run_metadata.json");
+    const recorded = inRootView.length || !fs.existsSync(ownFile) ? inRootView : [JSON.parse(fs.readFileSync(ownFile, "utf8")).workspaceRootPath];
+    return { recorded, capsule: capsule!.workspacePath, addDirs };
   };
   const expectIn = (launch: { recorded: string[]; capsule: string; addDirs: string[] }, folder: string) => {
     expect(launch.recorded).toEqual([folder]);
@@ -159,7 +164,7 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
   it("DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G", async () => {
     const taskId = await createTask(projects.P, callTool("delegate_task", { recipient_address: `/${segment(names.helper)}`, description: "Reply OK." }));
     const delegated = delegatedOk(await agentRoot.calls(agentRoot.rootId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.writer)}`, task_id: taskId })));
-    let sub: ReturnType<typeof taskAgentsIn>[number] | undefined;
+    let sub: Awaited<ReturnType<typeof agentRoot.taskAgents>>[number] | undefined;
     await until(async () => Boolean(sub = (await agentRoot.taskAgents()).find((agent) => agent.delegatorAgentRunId === delegated.target_agent_run_id)), "sub-work started", 60_000);
     const launch = await launchOf(agentRoot, sub!.agentRunId!);
     expectIn(launch, folders.F);
@@ -184,7 +189,7 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     evidence.dcf05 = launch;
   }, 120_000);
 
-  it("DCF-06: a first link that does not exist, or is a file, refuses with a coded error naming the Project and the folder; no Task entry, no copy", async () => {
+  it("DCF-06: a first link that does not exist, or is a file, refuses naming the Project and the folder; no Task entry, no copy", async () => {
     const results: Rec = {};
     for (const [key, projectId, folder] of [["missing", projects.gone, folders.missing], ["file", projects.file, folders.file]] as const) {
       const taskId = await createTask(projectId, "Reply OK.");
@@ -192,8 +197,10 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
       const refused = await agentRoot.calls(agentRoot.rootId, "/", callTool("delegate_task", { recipient_address: `/${segment(names.writer)}`, task_id: taskId }));
       const text = JSON.stringify(refused);
       expect(refused.delegated, text).not.toBe(true);
-      expect(text).toContain("TASK_PROJECT_FOLDER_UNAVAILABLE");
+      // A refused delegate_task is `{ delegated: false, message }` with no code (contract §2, SR-054); the message names the
+      // Project's folder and says nothing was started.
       expect(text).toContain(folder);
+      expect(text).toContain("Nothing was started.");
       expect((await agentRoot.taskAgents()).length).toBe(before);
       const resources = path.join(h.dataDir, "projects", projectId, "tasks", taskId, "agent_run_resources.json");
       const entries = fs.existsSync(resources) ? (JSON.parse(fs.readFileSync(resources, "utf8")) as Rec).executionResources as unknown[] : [];
