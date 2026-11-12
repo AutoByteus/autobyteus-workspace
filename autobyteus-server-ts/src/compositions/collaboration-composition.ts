@@ -6,7 +6,6 @@ import path from "node:path";
 import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
-import { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { LocalChildFollowers } from "../agent-collaboration/execution/delegation/local-child-followers.js";
 import { peerRunIdOf, peerRunLinksOf } from "../agent-collaboration/execution/remote/peer-run-link.js";
@@ -188,14 +187,9 @@ export const composeCollaboration = async (input: Readonly<{
     });
 
     // 7. The views' owners (SR-061 … SR-063): the rows' statuses followed into each run's view stream, base's row events
-    // from the tree, the rows' records, child commands.
+    // from the tree, the rows' records.
     const followers = new LocalChildFollowers({ tree,
       agents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents }, taskSide.viewStreams);
-    const commands = new DelegatedRunCommands({
-      tree, standaloneRuns: runs.standaloneRootManager,
-      activeAgentRun: (agentRunId) => runs.agentRunService.getAgentRun(agentRunId),
-      teamRun: (teamRunId, restore) => restore ? runs.teamRunService.resolveManagedTeamRun(teamRunId) : Promise.resolve(runs.teamRunService.getActiveTeamRun(teamRunId)),
-    });
     const projection: ChildRowProjection = { rowOf: async (child) => {
       if (child.nodeId === undefined) {
         const row = await delegatedChildDto(child, memoryDir, tree);
@@ -223,7 +217,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
-    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, followers }, commands, registrations: input.activeRoots });
+    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, followers }, registrations: input.activeRoots });
     return Object.freeze({
       tasks, views, runViewChildren, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },

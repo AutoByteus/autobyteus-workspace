@@ -1,4 +1,3 @@
-import type { ChildPostResult, DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -47,6 +46,9 @@ const errorMessage = (
 
 const TEAM_SEND_MESSAGE_REJECTED = "TEAM_SEND_MESSAGE_REJECTED";
 
+/** A member's post: its result, and, when a mention was refused, the collaborator the notice names. */
+type MemberPostResult = AgentOperationResult & Readonly<{ collaboratorName?: string }>;
+
 /** A user's message as a run's input: its content (with its mention note, when composed), files and identity. */
 const userMessage = (payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"], content: string): AgentInputUserMessage => {
   const contextFiles = [
@@ -62,10 +64,11 @@ const userMessage = (payload: Extract<TeamStreamClientMessage, { type: "SEND_MES
 const TEAM_SEND_MESSAGE_FAILED = "TEAM_SEND_MESSAGE_FAILED";
 
 /**
- * The team run stream `/ws/agent-team/:teamRunId` (autobyteus-461 DS-8, SR-046): one view session per connection
- * (`TeamViewSession`), active or stopped, which never restores the run to serve the view. A command to a child row goes
- * to the child's own run (`DelegatedRunCommands`); a message to one of the team's own members restores a stopped team
- * through its service, on that first input; an interrupt or tool approval for a member of a stopped team is refused.
+ * The team run stream `/ws/agent-team/:teamRunId` (autobyteus-461 DS-8, SR-046, SR-061): one view session per connection
+ * (`TeamViewSession`), active or stopped, which never restores the run to serve the view. Commands are for the team's
+ * own agents (a peer run's through the root, autobyteus-278); a delegated run is reached by its own stream (rule 2). A
+ * message to one of the team's own members restores a stopped team through its service, on that first input; an
+ * interrupt or tool approval for a member of a stopped team is refused.
  */
 export class AgentTeamStreamHandler {
   private readonly sessions = new Map<string, Readonly<{ view: TeamViewSession; egress: TeamStreamEgress }>>();
@@ -75,7 +78,6 @@ export class AgentTeamStreamHandler {
     private readonly teamRunService: Pick<TeamRunService, "getActiveTeamRun" | "resolveManagedTeamRun" | "recordRunActivity">,
     private readonly sources: Omit<TeamViewSources, "activeTeamRun">,
     /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
-    private readonly children: Pick<DelegatedRunCommands, "execute" | "postUserMessage">,
   ) {}
 
   async connect(connection: WebSocketConnection, teamRunIdInput: string): Promise<string | null> {
@@ -121,8 +123,9 @@ export class AgentTeamStreamHandler {
           await this.teamRunService.getActiveTeamRun(teamRunId)?.remoteChildren.refresh();
           return;
         }
-        const routed: MemberCommands = { executeAgentCommand: async (agentRunId, command) =>
-          await this.children.execute(createTeamRootExecutionIdentity(teamRunId), agentRunId, command) ?? this.memberCommand(session.view, agentRunId, command) };
+        // A command to one of the team's agents (a peer run's through the root); a delegated run is reached by its own
+        // stream (SR-061 rule 2).
+        const routed: MemberCommands = { executeAgentCommand: (agentRunId, command) => this.memberCommand(session.view, agentRunId, command) };
         if (message.type === "SEND_MESSAGE") {
           await this.handleSendMessage(session.view, message.payload, session.egress);
         } else if (message.type === "INTERRUPT_GENERATION") {
@@ -162,10 +165,8 @@ export class AgentTeamStreamHandler {
   }
 
   /**
-   * A user's message. To a child row's agent (CR-461-032), it goes with its mentions to the child's own run, which
-   * resolves them and posts, live or stopped, whether or not this team is; its acceptance is acknowledged here by the
-   * message's identity (CR-461-034), since the child's input is its own run's event. To one of the team's own members,
-   * the team's root resolves the mentions, restoring a stopped team (the message is its first input), then posts.
+   * A user's message to one of the team's own agents: the team's root resolves its mentions, restoring a stopped team
+   * (the message is its first input), then posts.
    */
   private async handleSendMessage(
     view: TeamViewSession,
@@ -176,16 +177,9 @@ export class AgentTeamStreamHandler {
     const agentRunId = parseCommandAgentRunId(payload);
     if (!agentRunId) return this.sendInvalidTarget(sink, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
     const mentions = toCollaboratorMentions(payload.mentions);
-    let result: ChildPostResult;
+    let result: MemberPostResult;
     try {
-      const child = await this.children.postUserMessage(createTeamRootExecutionIdentity(teamRunId), agentRunId,
-        { message: userMessage(payload, payload.content), mentions });
-      if (child?.accepted) {
-        sink.send(parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: { command_type: "SEND_MESSAGE", state: "accepted",
-          agent_run_id: agentRunId, message_id: payload.message_id, dedupe_key: payload.dedupe_key } }));
-        return;
-      }
-      result = child ?? await this.postToMember(view, agentRunId, payload, mentions);
+      result = await this.postToMember(view, agentRunId, payload, mentions);
     } catch (error) {
       sink.send(errorMessage(TEAM_SEND_MESSAGE_FAILED, error instanceof Error ? error.message : String(error), agentRunId));
       return;
@@ -216,7 +210,7 @@ export class AgentTeamStreamHandler {
     agentRunId: string,
     payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"],
     mentions: ReturnType<typeof toCollaboratorMentions>,
-  ): Promise<ChildPostResult> {
+  ): Promise<MemberPostResult> {
     let content = payload.content;
     if (mentions.length) {
       const root = this.teamRunService.getActiveTeamRun(view.teamRunId) ?? await this.teamRunService.resolveManagedTeamRun(view.teamRunId);

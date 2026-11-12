@@ -1,6 +1,5 @@
 import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import type { RunViewRowSources } from "../services/agent-streaming/run-view-rows.js";
-import type { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { AgentMemoryLayout } from "../agent-memory/store/agent-memory-layout.js";
 import { validateAgentOrgExecutionTree } from "../agent-org-execution/services/agent-org-state-package-validator.js";
@@ -15,8 +14,6 @@ export type RunViewSources = Readonly<{
   streams: RunViewStreams;
   /** The rows under a run: read with a snapshot's base, their records after it, their statuses followed (SR-061, SR-063). */
   rows: RunViewRowSources;
-  /** A child row's command, to the child's own run (AR-011). */
-  commands: DelegatedRunCommands;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   readStoredTeamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   readStoredOrgTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null>;
@@ -27,7 +24,6 @@ export const createRunViewSources = (input: Readonly<{
   memoryDir: string;
   streams: RunViewStreams;
   rows: RunViewRowSources;
-  commands: DelegatedRunCommands;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
 }>): RunViewSources => {
   const layout = new AgentMemoryLayout(input.memoryDir);
@@ -36,7 +32,6 @@ export const createRunViewSources = (input: Readonly<{
   return Object.freeze({
     streams: input.streams,
     rows: input.rows,
-    commands: input.commands,
     registrations: input.registrations,
     readStoredTeamTree: (teamRunId) => teamTrees.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),
     readStoredOrgTree: async (orgRunId) => {

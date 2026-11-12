@@ -43,9 +43,9 @@ export async function registerWebsocketRoutes(
     app,
     undefined,
     new AgentTeamStreamHandler(new AgentSessionManager(AgentTeamSession), dependencies.teamRunService,
-      { streams: views.streams, rows: views.rows, registrations: views.registrations, readStoredTree: views.readStoredTeamTree }, views.commands),
+      { streams: views.streams, rows: views.rows, registrations: views.registrations, readStoredTree: views.readStoredTeamTree }),
     new AgentOrgStreamHandler(dependencies.agentOrgRunService,
-      { streams: views.streams, rows: views.rows, registrations: views.registrations, readStoredTree: views.readStoredOrgTree }, views.commands),
+      { streams: views.streams, rows: views.rows, registrations: views.registrations, readStoredTree: views.readStoredOrgTree }),
     new AgentCollaborationStreamHandler(dependencies.standaloneRoots, views.rows),
   );
   await registerApplicationBackendNotificationWebsocket(app, {

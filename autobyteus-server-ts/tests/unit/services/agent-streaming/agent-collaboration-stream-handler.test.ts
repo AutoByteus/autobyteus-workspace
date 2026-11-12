@@ -2,61 +2,64 @@ import { CollaborationStreamServerMessageSchema, type CollaborationStreamServerM
 import { describe, expect, it, vi } from "vitest";
 import { AgentCollaborationStreamHandler } from "../../../../src/services/agent-streaming/agent-collaboration-stream-handler.js";
 import { createAgentRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { delegatedChild, followTestChildRows, noFollowers, noViewChildren } from "../../../helpers/child-rows-feed.js";
+import { delegatedChild, followTestChildRows } from "../../../helpers/child-rows-feed.js";
 
 /**
- * The agent run's view stream (design DS-8): connecting never starts the run's agent; a local child row's command goes to
- * the child's own run (`DelegatedRunCommands`), a peer child's through the root to its node.
+ * The agent run's view stream (design DS-8; autobyteus-461 SR-061 … SR-063): connecting never starts the run's agent; the
+ * view is in base's shapes, from the run's one `RunViewStream`: a snapshot with its rows read at its base, then every
+ * frame after it in order (base's row events with their records). A delegated run is reached by its own stream; a peer
+ * run's command goes through the root to its node.
  */
 const HOST = "host-run";
 const host = { address: "/assistant" as never, agentRunId: HOST, agentDefinitionId: "assistant" };
+const createdAt = "2026-09-30T00:00:00.000Z";
 
-const fakeRoot = (hostLive = true) => ({
-  rootIdentity: createAgentRootExecutionIdentity(HOST),
-  ensureHostReady: vi.fn(async () => ({ runId: HOST })),
-  isHostLive: () => hostLive,
-  localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
-  openPackageSnapshotConnection: vi.fn(async () => ({
-    snapshot: { host, createdAt: "2026-09-30T00:00:00.000Z", statuses: [] },
-    baseChangeSequence: 0, liveSequenceId: "live-hub-1", lastMessageChangeSequence: 0,
-    subscribe: vi.fn(() => () => undefined),
-    close: vi.fn(),
-  })),
-  resolveCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, launchNotes: [], collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer", presence: "not_in_run" as const }] })),
-  // A peer child's command, through its node.
-  executeAgentCommand: vi.fn(async () => ({ accepted: true })),
-});
+const fakeRoot = (feed: ReturnType<typeof followTestChildRows>, hostLive = true) => {
+  const identity = createAgentRootExecutionIdentity(HOST);
+  const stream = feed.streams.streamOf(identity);
+  return {
+    rootIdentity: identity,
+    ensureHostReady: vi.fn(async () => ({ runId: HOST })),
+    isHostLive: () => hostLive,
+    remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
+    // The run's view stream's snapshot connection, as the root opens it (SR-063): the rows at the base, then its own parts.
+    openViewSnapshotConnection: vi.fn((atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) =>
+      stream.openSnapshotConnection(() => { const rows = atBase(); return read({ host, createdAt, statuses: [] }, rows); })),
+    resolveCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, launchNotes: [], collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer", presence: "not_in_run" as const }] })),
+    executeAgentCommand: vi.fn(async () => ({ accepted: true })),
+    stream,
+  };
+};
 
-/** The child-command route: `child-run` is a local child; any other target is not this route's. */
-const childCommands = () => ({ execute: vi.fn(async (_parent: unknown, target: string) => target === "child-run" ? { accepted: true } : null),
-  postUserMessage: vi.fn(async (_parent: unknown, target: string, _input: unknown) => target === "child-run" ? { accepted: true } : null) });
-
-const connect = async (roots: ConstructorParameters<typeof AgentCollaborationStreamHandler>[0], children = childCommands(), feed = followTestChildRows()) => {
+const connect = async (roots: ConstructorParameters<typeof AgentCollaborationStreamHandler>[0], feed: ReturnType<typeof followTestChildRows>) => {
   const wire: CollaborationStreamServerMessage[] = [];
   const close = vi.fn();
-  const handler = new AgentCollaborationStreamHandler(roots, { streams: feed.streams, children: noViewChildren(), followers: noFollowers() }, children as never);
+  const handler = new AgentCollaborationStreamHandler(roots, feed.rows);
   const sessionId = await handler.connect({ send: (raw) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close }, HOST);
-  return { handler, sessionId, wire, close, children };
+  return { handler, sessionId, wire, close };
 };
 
 const send = (overrides: Record<string, unknown> = {}) => JSON.stringify({ type: "SEND_MESSAGE", payload: {
-  root_subject_kind: "agent", root_run_id: HOST, target_agent_run_id: "child-run", command_id: "c1",
+  root_subject_kind: "agent", root_run_id: HOST, target_agent_run_id: "peer-run", command_id: "c1",
   content: "hello", context_file_paths: [], image_urls: [], message_id: "m1", dedupe_key: "d1", ...overrides,
 } });
 
 describe("AgentCollaborationStreamHandler", () => {
-  it("resolves the run's root on connect without starting its agent, then sends the view snapshot (REQ-004)", async () => {
-    const root = fakeRoot();
+  it("resolves the run's root on connect without starting its agent, then sends the view snapshot in base's shape (REQ-004)", async () => {
+    const feed = followTestChildRows();
+    const root = fakeRoot(feed);
     const resolveRoot = vi.fn(async () => root as never);
-    const { wire } = await connect({ resolveRoot, getActive: () => null });
+    const { wire } = await connect({ resolveRoot, getActive: () => null }, feed);
     expect(resolveRoot).toHaveBeenCalledWith(HOST);
     expect(root.ensureHostReady).not.toHaveBeenCalled();
     expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);
-    expect(wire[1]).toMatchObject({ payload: { root_subject_kind: "agent", root_run_id: HOST, root_agent: { is_active: true } } });
+    expect(wire[1]).toMatchObject({ payload: { root_subject_kind: "agent", root_run_id: HOST,
+      root_agent: { is_active: true, closed_task_executions: [], live_sequence_id: root.stream.liveSequenceId } } });
   });
 
   it("reports the agent's real state in the snapshot", async () => {
-    const { wire } = await connect({ resolveRoot: async () => fakeRoot(false) as never, getActive: () => null });
+    const feed = followTestChildRows();
+    const { wire } = await connect({ resolveRoot: async () => fakeRoot(feed, false) as never, getActive: () => null }, feed);
     expect(wire[1]).toMatchObject({ payload: { root_agent: { is_active: false } } });
   });
 
@@ -65,109 +68,67 @@ describe("AgentCollaborationStreamHandler", () => {
       [{ resolveRoot: vi.fn(async () => null), getActive: () => null }, `Agent run '${HOST}' is not a collaboration run.`],
       [{ resolveRoot: vi.fn(async () => { throw Object.assign(new Error("not found"), { code: "AGENT_ROOT_UNAVAILABLE" }); }), getActive: () => null }, "not found"],
     ] as const) {
-      const { sessionId, wire, close } = await connect(roots as never);
+      const { sessionId, wire, close } = await connect(roots as never, followTestChildRows());
       expect(sessionId).toBeNull();
       expect(wire).toEqual([{ type: "ERROR", payload: { code: "AGENT_ROOT_UNAVAILABLE", message } }]);
       expect(close).toHaveBeenCalledWith(4004);
     }
   });
 
-  it("autobyteus-461 CR-461-032: a local child's message goes, mentions and all, to the child's own run, which resolves them (AR-011)", async () => {
-    const root = fakeRoot();
-    const { handler, sessionId, wire, children } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
-    await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
-    expect(children.postUserMessage).toHaveBeenCalledWith(root.rootIdentity, "child-run", {
-      message: expect.objectContaining({ content: "hello" }), mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    expect(root.resolveCollaboratorMentions).not.toHaveBeenCalled();
-    expect(root.executeAgentCommand).not.toHaveBeenCalled();
-    expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { root_subject_kind: "agent", state: "accepted" } });
-
-    await handler.handleMessage(sessionId!, send({ root_subject_kind: "agent_org", command_id: "c3" }));
-    expect(wire.at(-1)).toMatchObject({ payload: { state: "failed", code: "AGENT_ROOT_COMMAND_FAILED" } });
-  });
-
-  it("a child's refused mention is the send's notice, naming the collaborator", async () => {
-    const root = fakeRoot();
-    const children = childCommands();
-    children.postUserMessage.mockResolvedValueOnce({ accepted: false, code: "COLLABORATOR_ADD_FAILED", message: "No such collaborator.", collaboratorName: "Nobody" } as never);
-    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never }, children);
-    await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "nobody" }] }));
-    expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "COLLABORATOR_ADD_FAILED", collaborator_name: "Nobody" } });
-  });
-
-  it("the run's own agent: its own root resolves the mentions and posts the composed message", async () => {
-    const root = fakeRoot();
-    const { handler, sessionId } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
-    await handler.handleMessage(sessionId!, send({ target_agent_run_id: HOST, mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
-    expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    expect(root.executeAgentCommand).toHaveBeenCalledWith(HOST, expect.objectContaining({ kind: "post_message",
-      message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer: delegate the task to it/) }) }));
-  });
-
-  it("sends a peer child's command through the root, and never starts the agent for a child's command", async () => {
-    const root = fakeRoot(false);
-    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
+  it("a peer run's command goes through the root, its mentions resolved there (autobyteus-278); nothing starts the agent", async () => {
+    const feed = followTestChildRows();
+    const root = fakeRoot(feed, false);
+    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never }, feed);
     await handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: {
       root_subject_kind: "agent", root_run_id: HOST, target_agent_run_id: "peer-run", command_id: "c2",
     } }));
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_type: "INTERRUPT_GENERATION", state: "accepted" } });
     expect(root.executeAgentCommand).toHaveBeenCalledWith("peer-run", { kind: "interrupt" });
+    await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
+    expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "peer-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    expect(root.executeAgentCommand).toHaveBeenLastCalledWith("peer-run", expect.objectContaining({ kind: "post_message",
+      message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer/) }) }));
     expect(root.ensureHostReady).not.toHaveBeenCalled();
+    await handler.handleMessage(sessionId!, send({ root_subject_kind: "agent_org", command_id: "c3" }));
+    expect(wire.at(-1)).toMatchObject({ payload: { state: "failed", code: "AGENT_ROOT_COMMAND_FAILED" } });
   });
 
-  it("sends pending reply text before a projection-failure ERROR, then closes (autobyteus-139)", async () => {
-    let listener: ((event: unknown) => void) | null = null;
-    const root = { ...fakeRoot(), openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { host, createdAt: "2026-09-30T00:00:00.000Z", statuses: [] },
-      baseChangeSequence: 0, liveSequenceId: "live-hub-1", lastMessageChangeSequence: 0,
-      subscribe: vi.fn((next: (event: unknown) => void) => { listener = next; return () => undefined; }),
-      close: vi.fn(),
-    })) };
-    const { wire, close } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
-    listener!({ changeSequence: 1, event: { kind: "agent_presentation", execution: { memberAddress: "/helper", agentRunId: "child-run" },
-      message: { type: "SEGMENT_CONTENT", payload: { segment_id: "s-1", turn_id: "t-1", segment_type: "text", delta: "partial" } } } });
-    expect(wire).toHaveLength(3);
-    listener!({ changeSequence: 2, event: { kind: "agent_presentation", execution: { memberAddress: "/helper", agentRunId: "child-run" },
-      message: { type: "NOT_A_MESSAGE" } } });
-    expect(wire.slice(3)).toMatchObject([
-      { type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1, change_sequence_through: 1, event: { kind: "agent_presentation_batch" } } },
-      { type: "ERROR", payload: { code: "AGENT_ROOT_STREAM_PROJECTION_FAILED" } },
-    ]);
-    await Promise.resolve();
-    expect(close).toHaveBeenCalledWith(1011);
-  });
-
-  it("autobyteus-461 SR-042 … SR-044: an open view gets each child-row change, unsequenced, after its snapshot, even when its agent is not live", async () => {
+  it("autobyteus-461 SR-061 … SR-063: a delegation is base's task_execution_started in the run's sequence, with its record; a closure is task_executions_closed", async () => {
     const feed = followTestChildRows();
-    try {
-      const root = fakeRoot(false);
-      const hostRun = createAgentRootExecutionIdentity(HOST);
-      // A delegation committed while the snapshot is being built: held, then sent right after it.
-      root.openPackageSnapshotConnection.mockImplementationOnce(async () => {
-        feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
-        await feed.settled();
-        return { snapshot: { host, createdAt: "2026-09-30T00:00:00.000Z", statuses: [] }, baseChangeSequence: 0, liveSequenceId: "live-hub-1",
-          lastMessageChangeSequence: 0, subscribe: vi.fn(() => () => undefined), close: vi.fn() };
-      });
-      const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null }, childCommands(), feed);
-      expect(wire.map((message) => message.type)).toEqual(["CONNECTED", "ROOT_EXECUTION_VIEW_SNAPSHOT", "CHILD_RUNS_CHANGED", "ROOT_LIFECYCLE"]);
-      // SR-045: the lifecycle frame is the run's agent's own state; a stopped run's view keeps its stream.
-      expect(wire[3]).toMatchObject({ payload: { is_active: false } });
-      expect(wire[2]).toEqual({ type: "CHILD_RUNS_CHANGED", payload: { root_subject_kind: "agent", root_run_id: HOST,
-        event: { kind: "child_runs_changed", run_id: HOST, added: [expect.objectContaining({ agentRunId: "writer", address: "/writer" })], removed: [] } } });
-      feed.report({ run: hostRun, added: [], removed: [{ agentRunId: "writer" }] });
-      feed.report({ run: createAgentRootExecutionIdentity("another-run"), added: [delegatedChild("other")], removed: [] });
-      await feed.settled();
-      expect(wire.at(-1)).toMatchObject({ type: "CHILD_RUNS_CHANGED", payload: { event: { added: [], removed: [{ agentRunId: "writer" }] } } });
-      expect(wire).toHaveLength(5);
-      expect(root.ensureHostReady).not.toHaveBeenCalled();
-      handler.disconnect(sessionId!);
-      feed.report({ run: hostRun, added: [delegatedChild("late")], removed: [] });
-      await feed.settled();
-      expect(wire).toHaveLength(5);
-    } finally {
-      feed.release();
-    }
+    const root = fakeRoot(feed, false);
+    const hostRun = createAgentRootExecutionIdentity(HOST);
+    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null }, feed);
+    feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
+    feed.report({ run: createAgentRootExecutionIdentity("another-run"), added: [delegatedChild("other")], removed: [] });
+    await feed.settled();
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
+      event: { kind: "task_execution_started", host_kind: "root", host_run_id: HOST, execution: { agentRunId: "writer", address: "/writer" } } } });
+    feed.report({ run: hostRun, added: [], removed: [{ agentRunId: "writer" }] });
+    await feed.settled();
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2,
+      event: { kind: "task_executions_closed", task_executions: [{ agentRunId: "writer" }] } } });
+    expect(wire).toHaveLength(5);
+    handler.disconnect(sessionId!);
+    feed.report({ run: hostRun, added: [delegatedChild("late")], removed: [] });
+    await feed.settled();
+    expect(wire).toHaveLength(5);
+  });
+
+  it("a row reported while the snapshot is read is in the snapshot or after it, never both (SR-063)", async () => {
+    const feed = followTestChildRows();
+    const root = fakeRoot(feed);
+    const hostRun = createAgentRootExecutionIdentity(HOST);
+    root.openViewSnapshotConnection.mockImplementationOnce((atBase, read) => root.stream.openSnapshotConnection(async () => {
+      const rows = atBase();
+      // A delegation committed while the run's own parts are read: after the base, so a frame after the snapshot.
+      feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
+      return read({ host, createdAt, statuses: [] }, rows);
+    }));
+    const { wire } = await connect({ resolveRoot: async () => root as never, getActive: () => null }, feed);
+    await feed.settled();
+    const snapshot = wire.find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");
+    expect(snapshot).toMatchObject({ payload: { root_agent: { base_change_sequence: 0, execution_tree: { taskExecutions: [] } } } });
+    expect(wire.filter((message) => message.type === "ROOT_EXECUTION_EVENT")).toEqual([expect.objectContaining({ payload: expect.objectContaining({
+      change_sequence: 1, event: expect.objectContaining({ kind: "task_execution_started" }) }) })]);
   });
 });
-

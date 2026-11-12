@@ -1,5 +1,3 @@
-import type { ChildPostResult, DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
-import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -63,8 +61,9 @@ const agentCommandOf = (message: Exclude<AgentCommand, { type: "SEND_MESSAGE" }>
 
 /**
  * Native AgentOrg stream `/ws/agent-org/:orgRunId` (autobyteus-461 DS-8, SR-046): one view session per connection
- * (`OrgViewSession`), active or stopped, which never restores the run to serve the view. A command to a child row goes
- * to the child's own run; a message to one of the Org's own agents restores a stopped Org through its service, on that
+ * (`OrgViewSession`), active or stopped, which never restores the run to serve the view. Commands are for the Org's own
+ * agents (a peer run's through the run, autobyteus-278); a delegated run is reached by its own stream (SR-061 rule 2). A
+ * message to one of the Org's own agents restores a stopped Org through its service, on that
  * first input; an interrupt or tool approval for an agent of a stopped Org is refused.
  */
 export class AgentOrgStreamHandler {
@@ -72,8 +71,6 @@ export class AgentOrgStreamHandler {
   constructor(
     private readonly service: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">,
     private readonly sources: OrgViewSources,
-    /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
-    private readonly children: Pick<DelegatedRunCommands, "execute" | "postUserMessage">,
   ) {}
 
   async connect(connection: WebSocketConnection, orgRunIdInput: string): Promise<string | null> {
@@ -132,19 +129,6 @@ export class AgentOrgStreamHandler {
         throw new Error("AgentOrg command root correlation mismatch.");
       }
       const target = message.payload.target_agent_run_id;
-      const identity = createAgentOrgRootExecutionIdentity(orgRunId);
-      // AR-011: a child row's command goes to the child's own run (not this Org's activity); a message's mentions are
-      // resolved by the child's own root with the post (CR-461-032).
-      const child: ChildPostResult | null = message.type === "SEND_MESSAGE"
-        ? await this.children.postUserMessage(identity, target, {
-          message: userMessage(message.payload, message.payload.content), mentions: toCollaboratorMentions(message.payload.mentions) })
-        : await this.children.execute(identity, target, agentCommandOf(message));
-      if (child) {
-        session.egress.send(commandAck(message, child.accepted ? "accepted" : "rejected",
-          child.accepted ? null : child.code ?? "AGENT_ORG_COMMAND_REJECTED", child.message ?? null,
-          child.collaboratorName));
-        return;
-      }
       let run = this.service.getActive(orgRunId);
       if (!run) {
         if (message.type !== "SEND_MESSAGE") {
