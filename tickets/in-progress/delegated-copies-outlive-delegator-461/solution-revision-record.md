@@ -1216,3 +1216,23 @@
   - **The snapshot is made exact by the reviewer's option (i):** the view's base, the tree's rows and the observed statuses (all in memory) are read in one synchronous step. The run's own parts are captured as base did: in a live root's gate, with its queue; from the files for a stopped run, which produces no events. Every outside frame after the base is then a change after the snapshot, so no idempotence and no web change are needed.
 - Done: the design's "The frontend contract" (the owner and its duties, the exact snapshot, the SR-044 row, tests). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-025). ARCH-REV-038 passed it. Its wording note was applied: DS-8 "Switching modes" now sends the in-band snapshot through the same snapshot connection, at the current view sequence and under the same `liveSequenceId`, not as a new base; "What this replaces" says the hold now lives in the snapshot connection.
+
+### SR-064 — An agent run's own stream follows its run; a child's Settings save is composed by the web (answers IR-013)
+
+- **Triggering:** the Implementation Engineer's IR-013. Two parts of rule 2 (SR-061) were left open.
+  1. `AgentStreamHandler` binds a session only at connect, when the run is already active, or on the session's own send. A delegator's Task message restores a stopped delegated agent run, and a user watching that run's own stream would see no live output.
+  2. DS-8's SR-039 item still described the server composition of the Settings save, which rule 2 removes.
+- **The Solution Designer's gap:** SR-061 moved the delegated run onto its own stream without checking that this stream follows a run restored by someone else. It also left two DS-8 items unmarked as superseded: the child commands and the Settings save.
+- **Decision 1, option (a), on the merits:** an agent stream session follows its run by run ID, the rule the team and org sessions already follow (SR-046).
+  - It binds whenever the run becomes active, from the root lifecycle, before anything is posted to the run. It unbinds when the run stops.
+  - Binding is idempotent.
+  - The web is unchanged.
+  - Option (b), a web reconnect on the row's status, was rejected: it depends on timing, and it would put a relationship-specific rule into the web, against rule 2.
+- **Decision 2:** the Settings save keeps SR-039's behavior: check first, apply in row order, report a partial failure. The editor now composes it from each run's own stopped-run save. The server's `updateDelegatedLaunchSelections`, `DelegatedLaunchSelectionService`, `DelegatedChildLaunches` and `stopDelegatedExecution` are removed. A child that starts after the check is refused by its own save (`RUN_ACTIVE`) and reported as the failure.
+- **No requirement change:** the intended behavior is unchanged.
+- **Done:**
+  - rule 2 gains both paragraphs, with tests;
+  - the two DS-8 items are marked as superseded;
+  - the revision line is updated.
+- **Next action:** the Implementation Engineer. Both decisions follow from rule 2, which ARCH-REV-038 passed, so this is not routed to review again. It is visible in the next code review.
+
