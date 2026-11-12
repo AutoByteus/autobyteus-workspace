@@ -272,3 +272,57 @@ The current code and `implementation-handoff.md` remain authoritative.
   - A standalone copy's `get_handoff_rules` is offered only when it inherits rules (an org copy). At base a task agent in a team or org root had it with no rules.
   - A restored org member got no instruction at base (`mode === "fresh"`); a delegated org copy reads it at every activation.
   - The full server unit and integration suites, and the web specs, are not yet rerun for this round.
+
+### IR-012 — Each run's collaboration map, from the forest (SR-060); CR-461-033 held for SR-061 — in progress
+
+- Triggering role, report path, and round: Solution Designer, SR-060 (commit `4e43b030ae`, on the user's direction), ARCH-REV-035 Pass with three notes. Then SR-061 announced: the web side of CR-461-033 and further work on the child-command and child-observation owners are held until it arrives.
+- Triggering finding IDs: SR-060; CR-461-033 (carried from IR-011). Large / High unchanged.
+- Prior authoritative result: IR-011 at `ef31136ad1` + `518a3aac8a`.
+- Current authoritative result: `5531101a87` (SR-060 server fold).
+- Related solution / architecture-review revision IDs: SR-060 (ARCH-REV-035); SR-061 pending.
+- Implementation delta (`5531101a87`):
+  - **The forest.** `DelegationTree` is a forest:
+    - `topOf` is derived by walking up the parents, so a run whose own entries go with their Task tops its own tree with its subtree;
+    - `nodeOf` is `byRunId`, and `agentOf` is `byAgentRunId` (run, address, top);
+    - one `RunFilesReader` reads a run's parts, an org's placements and a configured placement.
+  - **`RunCollaborationMap`** (`delegationTree.mapOf(run)`, derived, never stored) answers:
+    - `assigners`, step 2's order;
+    - `stepTwo`, the one enumeration;
+    - `resolve`, step 2 plus the old-address correction;
+    - `ownReceiverOf`, steps 1 and 3 from the run's own file;
+    - `reachingAddressOf`;
+    - `delegationPlacementAt`;
+    - `agentCollaboration` (role, plus an org copy's rules and org definition);
+    - `inOrganization`;
+    - `rows`, the open subtree with each row's parent;
+    - `canMessage` and `subtree`.
+  - **Folded:**
+    - `CrossRunAddressResolution` is removed; the `send_message_to` dispatcher resolves through `mapOf(sender)`, and `CrossRunMessageDelivery` and `TaskDelegation` take the sender address from `mapOf(receiver)`.
+    - `ReachableAgents` and `RunCollaborationContext` are removed; the roots' collaborator ports, the standalone, team and org member context builders and the in-run delegation placements read the map. The standalone root manager takes `orgInstruction` (the supervisor's org definitions).
+    - `composeTaskSide` and the hosts no longer carry the old owners.
+- Tests:
+  - `delegation-tree-forest.test.ts`: the derived top, `byRunId` and `byAgentRunId`, nested rows, and a deleted Task's run topping its own tree;
+  - `run-collaboration-map-own-step.test.ts`: for a team run and an org run, the map's own step equals the loaded index's `getMessagePlacement` / `memberOfInstance` for every address;
+  - the reach, context and in-run tests moved onto the map (`run-collaboration-map-reach`, `-context`, `-in-run`).
+- **The old index callers, against the design's inventory** (`827f1e68dc` methods; callers in the branch at `5531101a87`):
+
+  | Old methods | Callers now | Answer used |
+  | --- | --- | --- |
+  | `getAgent`, `requireAgent`, `getTeam`, `requireTeam`, `agentAddressOf` | `root-team-run.ts`, `agent-org-run.ts`, `team-run-message-delivery.ts`, `agent-org-run-message-delivery.ts`, `team-run-resolver.ts`, `*-state-package-validator.ts`, `collaboration-participant-messages.ts` (`isAgentOfTree`), `catalog-delegation.ts`, `mention-viewer.ts`, `standalone-root-message-delivery.ts`, the location services | the run's own index (its own parts) |
+  | `getTaskExecution`, `listTaskExecutions`, `listChildAgents`, `listTaskExecutionChainForAgent` | none | removed; the rows are `mapOf(run).rows()` |
+  | `listAgents`, `listDirect…`, `listTeamAncestorsDeepestFirst`, `listContainingTeamAncestorsForAgent` | `root-team-run.ts`, `agent-org-agent-status-snapshot-projector.ts`, `agent-org-run-manager.ts`, the two location services | the run's own index |
+  | `getMessagePlacement`, `getConfiguredPlacement`, `teamInstancesOf`, `memberOfInstance`, `isOwnTeamAddress`, `instanceDefinitionsOf` | `message-recipient-resolution.ts`, `mention-viewer.ts`, `catalog-delegation.ts`, `team-recipient-resolver.ts`, `agent-org-recipient-resolver.ts`, the two location services | steps 1 and 3 and CM-1: the run's own index; step 2, the addresses in use and the sender address: `mapOf(run)` |
+  | `getPhysicalScopeForAgent`, `getMemoryPlacementForAgent` | `agent-org-execution-tree-location-service.ts`, `team-run-execution-tree-location-service.ts` | the run's own root and folder |
+
+  **Escalated, no answer in the table:**
+  - The member trace pages' sender addresses (`team-member-run-view-projection-service.ts:79, 100`; `agent-org-member-run-view-projection-service.ts:87, 108`) look up each sender in the run's own index only. A sender from another run, such as a delegator, is shown with no address.
+  - The table's row 1 ("an agent of another run: `byAgentRunId`") would show that run's own-space address, but §2.5 shows an address only where the receiver's reach resolves it.
+- **Held for SR-061** (not on the branch): CR-461-033's rows at every depth.
+  - Server: the tree's reports to ancestors, `RunViewChildren` / `LocalChildObservation` / `DelegatedRunCommands` / the feed over `mapOf(run).rows()`.
+  - Contract: the team DTO's `task_executions` removed.
+  - Web: nesting by delegator in the three builders and the team tree selector.
+  - Kept as `stash@{0}` and as `evidence/implementation/HELD-CR-461-033-rows-at-every-depth.patch`. Its focused runs passed: server unit 468 files with one expectation updated; contracts 21; the web nesting spec 5. The web specs that construct team rows with `task_executions` still needed updating.
+- Local validation and result:
+  - server type gate PASS (1013);
+  - focused server unit areas at `5531101a87`: 468 files and 3866 tests pass, after the vocabulary test's file list moved to the map.
+- Next recipient or routing: none; waiting for SR-061.
