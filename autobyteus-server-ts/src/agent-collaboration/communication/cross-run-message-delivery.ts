@@ -1,4 +1,4 @@
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { MESSAGE_DELIVERED_TEXT, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationTree } from "../delegation/delegation-tree.js";
 import type { CollaborationCommunicationMessage } from "../execution/communication/collaboration-communication-message.js";
 import type { PreparedRunSend } from "../execution/communication/root-communication-engine.js";
@@ -100,7 +100,8 @@ export class CrossRunMessageDelivery {
       return reactivated ? { ...accepted, message: `${accepted.message ?? "The message was not delivered."} ${input.targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` } : accepted;
     }
     await sender.commitSentToRun(prepared.message);
-    const delivered = accepted.message ?? `Delivered message to ${input.shownAs ?? input.targetAgentRunId}.`;
+    // Today's text (REQ-009, contract §2): by address it names the address; by run ID, "Message delivered." (CR-461-017).
+    const delivered = accepted.message ?? (input.shownAs ? `Delivered message to ${input.shownAs}.` : MESSAGE_DELIVERED_TEXT);
     return { ...accepted, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
   }
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { MESSAGE_DELIVERED_TEXT, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 
 const NonBlankAgentRunIdSchema = z.string().trim().min(1);
 
@@ -29,7 +29,7 @@ export const toSendMessageToResult = (
 ): SendMessageToResult => SendMessageToResultSchema.parse({
   accepted: result.accepted,
   code: result.code ?? (result.accepted ? "DELIVERED" : "SEND_MESSAGE_TO_FAILED"),
-  message: result.message ?? (result.accepted ? "Message delivered." : "send_message_to failed."),
+  message: result.message ?? (result.accepted ? MESSAGE_DELIVERED_TEXT : "send_message_to failed."),
   ...(result.accepted ? { target_agent_run_id: result.agentRunId } : {}),
 });
 

@@ -52,7 +52,9 @@ const harness = async () => {
     receiverRoot: async (r) => { await beforeReceive.hook(); return receiverRoot(r); } });
   const send = (from: RootExecutionIdentity, sender: string, target: string) => delivery.route({ sender: agent(from, sender), senderDisplayName: sender,
     targetAgentRunId: target, content: "hello", messageType: "agent_message", referenceFiles: [] });
-  return { tasks, tree, log, send, beforeReceive };
+  const sendAs = (from: RootExecutionIdentity, sender: string, target: string, shownAs: string) => delivery.route({ sender: agent(from, sender),
+    senderDisplayName: sender, targetAgentRunId: target, shownAs, content: "hello", messageType: "agent_message", referenceFiles: [] });
+  return { tasks, tree, log, send, sendAs, beforeReceive };
 };
 
 describe("CrossRunMessageDelivery (DS-2)", () => {
@@ -67,9 +69,16 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   ])("%s: delivered; the receiver's log first, then the sender's, with one message ID (CM-9)", async (_case, from, sender, target) => {
     const h = await harness();
     const result = await h.send(from, sender, target);
-    expect(result).toMatchObject({ accepted: true, agentRunId: target });
+    // Today's text by run ID (REQ-009, contract §2; CR-461-017).
+    expect(result).toMatchObject({ accepted: true, agentRunId: target, message: "Message delivered." });
     const receiverRun = rootExecutionIdentityKey((await h.tree.runOfAgent(target))!);
     expect(h.log).toEqual([`receiver-log:${receiverRun.split("\0")[1]}:m-${sender}-${target}`, `sender-log:${from.rootRunId}:m-${sender}-${target}`]);
+  });
+
+  it("by address, the result names the address the sender used (CR-461-017)", async () => {
+    const h = await harness();
+    const result = await h.sendAs(E, "coder", "manager", "/manager");
+    expect(result).toMatchObject({ accepted: true, agentRunId: "manager", message: "Delivered message to /manager." });
   });
 
   it("R-7: runs of different Tasks are refused with today's text; nothing is written", async () => {
