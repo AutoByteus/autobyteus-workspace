@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../helpers/view-streams.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { RunViewChildren } from "../../../src/services/agent-streaming/run-view-children.js";
@@ -169,7 +169,7 @@ const buildNode = async (input: Readonly<{
     },
     rootDependencies: {
       taskRecords: resources,
-      delegationIndex: taskSide.tree, viewStreams: new RunViewStreams(),
+      delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
       remoteRunChannel: () => client,
     },
   });

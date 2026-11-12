@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../helpers/view-streams.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 /**
@@ -15,7 +15,7 @@ import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaborati
 import { configureRunProjects } from "../../../src/agent-execution/domain/run-project-context.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
+const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-project-start",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

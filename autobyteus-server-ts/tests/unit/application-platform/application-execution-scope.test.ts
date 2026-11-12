@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../helpers/view-streams.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -85,7 +85,7 @@ const createScope = async () => {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
-    delegationIndex: noDelegations(), viewStreams: new RunViewStreams(),
+    delegationIndex: noDelegations(), viewStreams: testViewStreams(),
     taskRecords: openTaskRecords(),
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;

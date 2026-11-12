@@ -1,7 +1,8 @@
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
 import { ChildRowsStreams } from "../../src/agent-collaboration/delegation/child-rows-streams.js";
-import type { ChildRowsChange, DelegatedChild } from "../../src/agent-collaboration/delegation/delegation-index.js";
+import type { ChildRowsChange } from "../../src/agent-collaboration/delegation/delegation-index.js";
+import type { SubtreeRow } from "../../src/agent-collaboration/delegation/collaboration-tree.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** A local child's row as the views project it (`delegatedChildDto`). */
@@ -11,8 +12,10 @@ export const agentChildRow = (agentRunId: string, address = `/${agentRunId}`): C
     launchConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null } },
 }) as CollaborationTaskExecutionDto;
 
-export const delegatedChild = (agentRunId: string): DelegatedChild => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "delegator",
-  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}` });
+/** A row under `parent` (default: a run `delegating`, the view's own run in most tests). */
+export const delegatedChild = (agentRunId: string, parent: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "delegating" }): SubtreeRow => ({
+  run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "delegator",
+  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent });
 
 /**
  * A `ChildRowsFeed` following a test's own tree reports (autobyteus-461 SR-042), with local rows projected by
@@ -21,8 +24,8 @@ export const delegatedChild = (agentRunId: string): DelegatedChild => ({ run: { 
 export const followTestChildRows = () => {
   let report: ((change: ChildRowsChange) => void) | null = null;
   const streams = new ChildRowsStreams();
-  const feed = new ChildRowsFeed({ rowOf: async (_parent, child) => "agentRunId" in child.run
-    ? { kind: "local", row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null }, streams);
+  const feed = new ChildRowsFeed({ rowOf: async (child) => "agentRunId" in child.run
+    ? { kind: "local" as const, row: agentChildRow(child.run.agentRunId, child.recipientAddress) } : null }, streams);
   feed.follow({ subscribeChildRows: (listener: (change: ChildRowsChange) => void) => { report = listener; return () => { report = null; }; } });
   return {
     feed,

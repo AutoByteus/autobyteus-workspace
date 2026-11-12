@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../helpers/view-streams.js";
 import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { createCollaboratorAdmission } from "../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { ActiveCollaborationRootDirectory } from "../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -30,7 +30,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       terminateHost: (hostRunId) => input.lifecycleService.terminateHost(hostRunId),
       readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
     },
-    rootDependencies: { delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
+    rootDependencies: { delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
         isAgentHidden: () => false,

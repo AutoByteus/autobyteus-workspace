@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "./view-streams.js";
 import { noDelegations, openTaskRecords } from "./no-delegations.js";
 import { vi } from "vitest";
 import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../src/agent-execution/backends/agent-run-backend.js";
@@ -91,7 +91,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     activityInspector: new AgentConversationActivityInspector() };
   const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir, tokenUsageRunStore: store,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
-    scopeBuilder: new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(), ...dependencies,
+    scopeBuilder: new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(), ...dependencies,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(dependencies),
       orgDefinitions: { getDefinitionById: unavailable }, teamDefinitions: { getDefinitionById: unavailable },
     }),

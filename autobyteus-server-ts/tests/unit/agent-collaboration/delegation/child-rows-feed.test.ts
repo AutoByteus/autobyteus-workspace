@@ -1,18 +1,19 @@
 import { ChildRowsStreams } from "../../../../src/agent-collaboration/delegation/child-rows-streams.js";
 import { describe, expect, it, vi } from "vitest";
 import { ChildRowsFeed, type ChildRowsEvent } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
-import type { ChildRowsChange, DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { ChildRowsChange,  } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { SubtreeRow } from "../../../../src/agent-collaboration/delegation/collaboration-tree.js";
 import { ChildRowsStreamSession } from "../../../../src/services/agent-streaming/child-rows-stream-session.js";
 
 /** autobyteus-461 DS-8, SR-042 … SR-044 (ARCH-REV-019 residual): the feed to open views and each stream's order. */
 const M = { rootSubjectKind: "agent" as const, rootRunId: "manager" };
 const OTHER = { rootSubjectKind: "agent_team" as const, rootRunId: "eng" };
-const child = (agentRunId: string, nodeId?: string): DelegatedChild => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "manager",
-  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, ...(nodeId ? { nodeId } : {}) });
+const child = (agentRunId: string, nodeId?: string): SubtreeRow => ({ run: { agentRunId }, taskId: "T1", delegatorAgentRunId: "manager",
+  entryAgentRunId: agentRunId, started: true, linkedAt: "2026-11-01T00:00:00.000Z", recipientAddress: `/${agentRunId}`, parent: M, ...(nodeId ? { nodeId } : {}) });
 const row = (agentRunId: string) => ({ kind: "local" as const, row: { agentRunId } as never });
 
-type RowOf = (parent: unknown, child: DelegatedChild) => Promise<ReturnType<typeof row> | null>;
-const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (_parent, c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
+type RowOf = (child: SubtreeRow) => Promise<ReturnType<typeof row> | null>;
+const harness = (rowOf: ReturnType<typeof vi.fn<RowOf>> = vi.fn<RowOf>(async (c) => row("agentRunId" in c.run ? c.run.agentRunId : "team"))) => {
   let report: (change: ChildRowsChange) => void = () => undefined;
   const streams = new ChildRowsStreams();
   const feed = new ChildRowsFeed({ rowOf }, streams);
@@ -51,7 +52,7 @@ describe("ChildRowsFeed", () => {
   it("publishes in reported order even when an earlier row is slower to read; an unreadable row is left out", async () => {
     let release!: () => void;
     const slow = new Promise<void>((resolve) => { release = resolve; });
-    const h = harness(vi.fn<RowOf>(async (_parent, c) => {
+    const h = harness(vi.fn<RowOf>(async (c) => {
       if ("agentRunId" in c.run && c.run.agentRunId === "slow") { await slow; return row("slow"); }
       return "agentRunId" in c.run && c.run.agentRunId === "missing" ? null : row("x");
     }));

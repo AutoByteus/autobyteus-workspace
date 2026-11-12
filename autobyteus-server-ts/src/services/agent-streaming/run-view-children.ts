@@ -1,27 +1,27 @@
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
-import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
-import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import { describeRemoteTaskExecutions, peerNodeNames } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import { childRunIdentity, peerChildRunIdentity } from "./child-run-identity.js";
+import { describeRemoteTaskExecutions } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import { delegatedChildDto } from "./delegated-children-dtos.js";
 import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projection.js";
 
 /**
- * A run view's children (design DS-8), as every view kind and the history poll read them: the runs on this node it
- * delegated to that hold an open Task (`DelegationIndex.openChildrenOf`, one hop, each read from its own file), its open
- * peer runs (their Task entries, with this owner's node names; the view never waits for a peer), and its local
- * children's agents with their live statuses. Opening a view starts nothing. Created by the composition root (SR-047
+ * A run view's rows (design DS-8), as every view kind and the history poll read them: its open subtree, from its
+ * collaboration map (`collaborationTreeOf(run).rows()`, CR-461-033, SR-060), each row under the run that delegated it: the runs on
+ * this node (each read from its own file), the peer runs (their Task entries, with this owner's node names; the view
+ * never waits for a peer, and a peer run's own delegations live on its node), and the local rows' agents with their
+ * live statuses. Opening a view starts nothing. Created by the composition root (SR-047
  * step 7) and passed to the view sessions and the GraphQL reads.
  */
 export class RunViewChildren {
   constructor(private readonly input: Readonly<{
     memoryDir: string;
-    tree: Pick<DelegationIndex, "openChildrenOf" | "peerChildrenOf" | "agentsOf">;
+    tree: Pick<DelegationIndex, "collaborationTreeOf" | "peerChildrenOf" | "agentsOf">;
     followers: Pick<LocalChildFollowers, "statuses">;
     /** This node's channel to its peers; `null` where the node has none. */
     channel: () => RemoteRunChannel | null;
@@ -30,7 +30,7 @@ export class RunViewChildren {
   /** Its local child rows; a run whose own file cannot be read is left out with a warning naming it (DESIGN.md rule 7). */
   async rows(run: RootExecutionIdentity): Promise<CollaborationTaskExecutionDto[]> {
     const rows: CollaborationTaskExecutionDto[] = [];
-    for (const child of this.input.tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
+    for (const child of this.input.tree.collaborationTreeOf(run).rows().filter((candidate) => candidate.nodeId === undefined)) {
       try {
         const row = await delegatedChildDto(child, this.input.memoryDir, this.input.tree);
         if (row) rows.push(row);
@@ -41,10 +41,12 @@ export class RunViewChildren {
     return rows;
   }
 
-  /** Its open peer runs. */
+  /** Its open peer runs, at every depth: each local row's (and the run's own) open peer runs. */
   async remote(run: RootExecutionIdentity): Promise<readonly RemoteTaskExecutionDto[]> {
-    return (await describeRemoteTaskExecutions(peerRunLinksOf(run, this.input.tree).filter((link) => link.open), this.input.channel()))
-      .map(projectRemoteTaskExecution);
+    const rows = this.input.tree.collaborationTreeOf(run).rows();
+    const parents = new Map(rows.filter((row) => row.nodeId !== undefined).map((row) => [rootExecutionIdentityKey(row.parent), row.parent]));
+    const links = [...parents.values()].flatMap((parent) => peerRunLinksOf(parent, this.input.tree).filter((link) => link.open));
+    return (await describeRemoteTaskExecutions(links, this.input.channel())).map(projectRemoteTaskExecution);
   }
 
   /** Every agent of its open local children with its live status. */

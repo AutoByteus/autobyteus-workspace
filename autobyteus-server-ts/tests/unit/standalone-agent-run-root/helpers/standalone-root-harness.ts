@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../../helpers/view-streams.js";
 import type { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
@@ -122,7 +122,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
       }),
       readMetadata: async () => currentMetadata,
     },
-    rootDependencies: { taskRecords: taskExecutionResources, delegationIndex, viewStreams: new RunViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
+    rootDependencies: { taskRecords: taskExecutionResources, delegationIndex, viewStreams: testViewStreams(), collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
   const hostIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,

@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../helpers/view-streams.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { describe, expect, it, vi } from "vitest";
@@ -38,7 +38,7 @@ const buildCallbacks = async () => {
     "product-team": "Ship the product UI.",
   };
   const lookup = { getDefinitionById: async (id: string) => ({ instructions: instructions[id] ?? null }) };
-  await new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
+  await new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: testViewStreams(), taskRecords: openTaskRecords(),
     flatTeamExecutionFactory: { beginMaterialization: (input) => ({ prepare: () => materialize(input), cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) }) } as never,
     agentRunManager: testActivationManager({ newPreparation: vi.fn() }) as never,
     orgDefinitions: lookup as never,

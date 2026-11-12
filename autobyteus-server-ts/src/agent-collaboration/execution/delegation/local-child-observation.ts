@@ -14,7 +14,7 @@ export type LocalChildRootEvent =
 
 /** What a view needs of its local children; created by the composition root (SR-047 step 7). */
 export type LocalChildPorts = Readonly<{
-  tree: Pick<DelegationIndex, "openChildrenOf" | "subscribe" | "agentsOf">;
+  tree: Pick<DelegationIndex, "collaborationTreeOf" | "subscribe" | "agentsOf">;
   /** A run's own agents' output and live statuses (an agent run's agent; a team run's members). */
   agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
 }>;
@@ -23,14 +23,15 @@ export type LocalChildPorts = Readonly<{
 export type LocalChildAgentStatus = Readonly<{ agentRunId: string; memberAddress: string; status: string }>;
 
 /**
- * Every agent of a run's open local children with its live status, `offline` when not running (SR-040: the history
+ * Every agent of a run's open local rows (its open subtree, CR-461-033) with its live status, `offline` when not running (SR-040: the history
  * poll's answer, the same projection as the view's rows). Addresses come from the `DelegationIndex`'s per-run agents
  * (read once from each run's own file), statuses from each child's own root; nothing is started or restored.
  */
 export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts): Promise<LocalChildAgentStatus[]> => {
   const tree = ports.tree;
   const statuses: LocalChildAgentStatus[] = [];
-  for (const child of tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
+  // Every local row under the run, at every depth (CR-461-033).
+  for (const child of tree.collaborationTreeOf(run).rows().filter((candidate) => candidate.nodeId === undefined)) {
     const kind = "agentRunId" in child.run ? "agent" : "agent_team";
     const childRun = "agentRunId" in child.run ? { rootSubjectKind: "agent" as const, rootRunId: child.run.agentRunId }
       : { rootSubjectKind: "agent_team" as const, rootRunId: child.run.teamRunId };
@@ -91,7 +92,7 @@ export class LocalChildObservation {
     const ports = this.options.ports;
     const tree = ports.tree;
     if (this.disposed || this.viewers === 0) return;
-    const current = tree.openChildrenOf(this.options.run).filter((child) => child.nodeId === undefined);
+    const current = tree.collaborationTreeOf(this.options.run).rows().filter((child) => child.nodeId === undefined);
     const keys = new Set(current.map((child) => keyOf(child.run)));
     for (const [key, entry] of [...this.followed.entries()].filter(([candidate]) => !keys.has(candidate))) { this.close(entry); this.followed.delete(key); }
     for (const child of current) {

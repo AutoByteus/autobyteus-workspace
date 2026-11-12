@@ -1,3 +1,6 @@
+import { isStandaloneRootMessageEvent } from "../standalone-agent-run-root/domain/standalone-root-event.js";
+import { isTeamRunMessageEvent } from "../agent-team-execution/domain/team-run-event.js";
+import { isAgentOrgMessageEvent } from "../agent-org-execution/domain/agent-org-run-event.js";
 import { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import path from "node:path";
 import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
@@ -92,7 +95,8 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir));
   tree.build();
   resources.setEntriesListener(tree);
-  return Object.freeze({ resources, tree, viewStreams: new RunViewStreams(), taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
+  return Object.freeze({ resources, tree, // Each run's view stream; which events are messages is each root kind's rule (SR-062).
+    viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent }), taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */
@@ -193,13 +197,13 @@ export const composeCollaboration = async (input: Readonly<{
       teamRun: (teamRunId, restore) => restore ? runs.teamRunService.resolveManagedTeamRun(teamRunId) : Promise.resolve(runs.teamRunService.getActiveTeamRun(teamRunId)),
     });
     const streams = new ChildRowsStreams();
-    const projection: ChildRowProjection = { rowOf: async (parent, child) => {
+    const projection: ChildRowProjection = { rowOf: async (child) => {
       if (child.nodeId === undefined) {
         const row = await delegatedChildDto(child, memoryDir, tree);
         return row ? { kind: "local", row } : null;
       }
       const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;
-      const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(parent, tree).filter((link) => peerRunIdOf(link) === runId), input.remoteChannel());
+      const [peer] = await describeRemoteTaskExecutions(peerRunLinksOf(child.parent, tree).filter((link) => peerRunIdOf(link) === runId), input.remoteChannel());
       return peer ? { kind: "peer", row: projectRemoteTaskExecution(peer) } : null;
     } };
     const feed = new ChildRowsFeed(projection, streams);

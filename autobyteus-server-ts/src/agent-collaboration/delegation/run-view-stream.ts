@@ -124,16 +124,19 @@ export class RunViewStream<TEvent> {
 /**
  * The composition root's view stream registry (SR-062): each run's one `RunViewStream`, created on its first use and
  * kept for the life of the process. A run's root, its view sessions, `ChildRowsFeed` and `LocalChildObservation` all
- * take the run's stream from here.
+ * take the run's stream from here. Which events are messages is each root kind's rule, given by the composition root.
  */
 export class RunViewStreams {
   private readonly streams = new Map<string, RunViewStream<unknown>>();
 
-  streamOf<TEvent>(run: RootExecutionIdentity, options: RunViewStreamOptions<TEvent>): RunViewStream<TEvent> {
+  constructor(private readonly isMessageEvent: Readonly<Record<RootExecutionIdentity["rootSubjectKind"], (event: never) => boolean>>) {}
+
+  streamOf<TEvent>(run: RootExecutionIdentity): RunViewStream<TEvent> {
     const key = rootExecutionIdentityKey(run);
     const existing = this.streams.get(key);
     if (existing) return existing as RunViewStream<TEvent>;
-    const stream = new RunViewStream<TEvent>(options);
+    const isMessageEvent = this.isMessageEvent[run.rootSubjectKind] as (event: TEvent) => boolean;
+    const stream = new RunViewStream<TEvent>({ isMessageEvent });
     this.streams.set(key, stream as RunViewStream<unknown>);
     return stream;
   }

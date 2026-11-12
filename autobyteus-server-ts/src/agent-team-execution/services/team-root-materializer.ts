@@ -57,7 +57,7 @@ export const materializeTeamRoot = async (
 ): Promise<RootTeamRun> => {
   const rootIdentity = createTeamRootExecutionIdentity(input.tree.rootTeam.teamRunId);
   // The run's one view stream, living as long as the process: the root hands its events to it (SR-062, SR-063).
-  const publisher = input.viewStreams.streamOf<TeamRunEvent>(rootIdentity, { isMessageEvent: isTeamRunMessageEvent });
+  const publisher = input.viewStreams.streamOf<TeamRunEvent>(rootIdentity);
   const physicalScope = createRootExecutionPhysicalScope({ root: rootIdentity, ancestorTeamRunIds: [] });
   let root: RootTeamRun | null = null;
   const requireActiveRoot = (): RootTeamRun => {

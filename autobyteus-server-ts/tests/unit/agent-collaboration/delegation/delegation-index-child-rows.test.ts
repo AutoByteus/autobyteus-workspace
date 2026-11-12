@@ -76,7 +76,8 @@ describe("DelegationIndex child rows", () => {
     h.changes.length = 0;
     h.tasks.close("T1");
     expect(h.changes).toEqual([
-      { run: M, added: [], removed: [{ teamRunId: "eng" }] },
+      // M's rows are its open subtree (CR-461-033): the team's own rows leave M's view with it.
+      { run: M, added: [], removed: [{ teamRunId: "eng" }, { agentRunId: "helper" }, { agentRunId: "aide" }] },
       { run: lead, added: [], removed: [{ agentRunId: "helper" }, { agentRunId: "aide" }] },
     ]);
     h.changes.length = 0;

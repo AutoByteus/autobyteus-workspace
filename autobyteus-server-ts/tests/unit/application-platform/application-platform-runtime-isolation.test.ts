@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../helpers/view-streams.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -86,7 +86,7 @@ describe("application platform runtime isolation", () => {
       const get = vi.fn(() => '{malformed current setting');
       const setDurably = vi.fn();
       const runtime = buildApplicationPlatformRuntime({
-        delegationIndex: noDelegations(), viewStreams: new RunViewStreams(),
+        delegationIndex: noDelegations(), viewStreams: testViewStreams(),
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
@@ -226,7 +226,7 @@ describe("application platform runtime isolation", () => {
 
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
-        delegationIndex: noDelegations(), viewStreams: new RunViewStreams(),
+        delegationIndex: noDelegations(), viewStreams: testViewStreams(),
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,

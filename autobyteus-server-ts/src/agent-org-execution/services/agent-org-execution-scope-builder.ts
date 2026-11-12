@@ -57,7 +57,7 @@ export class AgentOrgExecutionScopeBuilder {
   }>): Promise<AgentOrgRun> {
     const root = createAgentOrgRootExecutionIdentity(input.state.executionTree.rootOrg.orgRunId);
     // The run's one view stream, living as long as the process (SR-062, SR-063).
-    const publisher = this.dependencies.viewStreams.streamOf<AgentOrgRunEvent>(root, { isMessageEvent: isAgentOrgMessageEvent });
+    const publisher = this.dependencies.viewStreams.streamOf<AgentOrgRunEvent>(root);
     let run: AgentOrgRun | null = null;
     const retainedAgentEvents: Array<Readonly<{
       identity: Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>[0];

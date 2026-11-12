@@ -50,4 +50,22 @@ describe("the DelegationIndex as a forest", () => {
     expect(tree.collaborationTreeOf(M).rows()).toEqual([]);
     expect(tree.collaborationTreeOf(C).rows().map((row) => "agentRunId" in row.run ? row.run.agentRunId : null)).toEqual(["helper"]);
   });
+
+  it("a row under a row is reported live to every run above it: when delegated, and when its Task closes (CR-461-033)", async () => {
+    const tasks = new InMemoryTaskExecutionResources();
+    const tree = new DelegationIndex(() => tasks, readerOfAgents(async (run) => [{ agentRunId: run.rootRunId, address: `/${run.rootRunId}`, agentDefinitionId: null }]));
+    tree.build(); tasks.setEntriesListener(tree);
+    const reports: Array<[string, string[], string[]]> = [];
+    tree.subscribeChildRows((change) => reports.push([change.run.rootRunId,
+      change.added.map((row) => `${row.parent.rootRunId}>${"agentRunId" in row.run ? row.run.agentRunId : ""}`),
+      change.removed.map((run) => "agentRunId" in run ? run.agentRunId : "")]));
+    tasks.addTask("T1"); tasks.addTask("T2");
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/worker", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
+    reports.length = 0;
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/helper", delegatedFrom: { delegatingRun: C, delegatorAgentRunId: "worker" }, execution: { agentRunId: "helper" } });
+    expect(reports.sort()).toEqual([["manager", ["worker>helper"], []], ["worker", ["worker>helper"], []]]);
+    reports.length = 0;
+    tasks.close("T2");
+    expect(reports.sort()).toEqual([["manager", [], ["helper"]], ["worker", [], ["helper"]]]);
+  });
 });

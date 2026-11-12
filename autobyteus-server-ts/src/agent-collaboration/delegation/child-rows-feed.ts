@@ -3,7 +3,8 @@ import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-st
 import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import type { ChildRowsStreams } from "./child-rows-streams.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
-import type { ChildRowsChange, DelegatedChild, DelegationIndex } from "./delegation-index.js";
+import type { ChildRowsChange, DelegationIndex } from "./delegation-index.js";
+import type { SubtreeRow } from "./collaboration-tree.js";
 
 /** One child row as a view projects it: a run on this node (from its own file), or a peer's run. */
 export type ChildRowRecord =
@@ -17,9 +18,9 @@ export type ChildRowsEvent = Readonly<{
   removed: readonly TaskExecutionReference[];
 }>;
 
-/** The views' own projection of one child row; `null` when its record cannot be read. Bound by the composition. */
+/** The views' own projection of one row (at any depth, under its `parent`); `null` when its record cannot be read. Bound by the composition. */
 export type ChildRowProjection = Readonly<{
-  rowOf(parent: RootExecutionIdentity, child: DelegatedChild): Promise<ChildRowRecord | null>;
+  rowOf(row: SubtreeRow): Promise<ChildRowRecord | null>;
 }>;
 
 /**
@@ -54,7 +55,7 @@ export class ChildRowsFeed {
   private async publish(change: ChildRowsChange): Promise<void> {
     const added: ChildRowRecord[] = [];
     for (const child of change.added) {
-      const record = await this.projection.rowOf(change.run, child).catch((error: unknown) => {
+      const record = await this.projection.rowOf(child).catch((error: unknown) => {
         console.warn(`A child row of ${change.run.rootSubjectKind} run '${change.run.rootRunId}' could not be read:`, error);
         return null;
       });

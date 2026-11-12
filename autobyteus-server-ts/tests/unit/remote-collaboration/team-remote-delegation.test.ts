@@ -1,4 +1,4 @@
-import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { testViewStreams } from "../../helpers/view-streams.js";
 import { DelegatedRunStarter } from "../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { peerCallerOf } from "../../helpers/peer-caller.js";
 import fs from "node:fs/promises";
@@ -117,7 +117,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     },
     rootDependencies: {
       taskRecords: resources,
-      delegationIndex: taskSide.tree, viewStreams: new RunViewStreams(),
+      delegationIndex: taskSide.tree, viewStreams: testViewStreams(),
       remoteRunChannel: () => client,
     },
   });
@@ -208,7 +208,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       teamScoped: true, collaborationRole: "team_member", inOrganization: false,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCapability }) } as never,
     taskRecords: new InMemoryTaskExecutionResources(),
-    delegationIndex: noDelegations(), viewStreams: new RunViewStreams(),
+    delegationIndex: noDelegations(), viewStreams: testViewStreams(),
     modelSelectionValidator: { validate: async ({ selection }: any) => ({ kind: "valid", selection }), validateMany: async () => [] } as never,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
   });

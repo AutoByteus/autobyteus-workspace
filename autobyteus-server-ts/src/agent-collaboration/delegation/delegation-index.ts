@@ -4,7 +4,7 @@ import {
   type PeerRunMember, type RunDelegatedFrom, type TaskEntriesListener, type TaskExecutionResourcePort, type TaskRunEntry,
 } from "../execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
-import { CollaborationTree, type RunFilesReader } from "./collaboration-tree.js";
+import { CollaborationTree, type RunFilesReader, type SubtreeRow } from "./collaboration-tree.js";
 
 /**
  * An agent of a run: its run, its address in the run's own space (`null`: an agent run not yet collaborating), and its
@@ -50,10 +50,10 @@ export type DelegatedChild = Readonly<{
   members?: readonly PeerRunMember[];
 }>;
 
-/** A run's open children changed (DS-8, SR-042): the rows that came and the runs that left its view. */
+/** A run's rows changed (DS-8, SR-042; at every depth, CR-461-033): the rows that came and the runs that left its view. */
 export type ChildRowsChange = Readonly<{
   run: RootExecutionIdentity;
-  added: readonly DelegatedChild[];
+  added: readonly SubtreeRow[];
   removed: readonly TaskExecutionReference[];
 }>;
 
@@ -120,15 +120,7 @@ export class DelegationIndex implements TaskEntriesListener {
    * A run whose parent is not a node (its own entries were deleted with their Task) is the top of a tree of its own.
    */
   topOf(run: RootExecutionIdentity): RootExecutionIdentity {
-    const seen = new Set<string>();
-    let current = run;
-    for (;;) {
-      seen.add(keyOf(current));
-      const reference = runReferenceOf(current);
-      const parent = reference ? this.parentOf(reference)?.delegatingRun : undefined;
-      if (!parent || seen.has(keyOf(parent))) return current;
-      current = parent;
-    }
+    return this.chainOf(run).at(-1)!;
   }
 
   /** `byAgentRunId` (contract §4): the run an agent run is in, its address in that run's own space, and its tree's top. */
@@ -154,8 +146,8 @@ export class DelegationIndex implements TaskEntriesListener {
   }
 
   /**
-   * Told, inside a Task's change and after the tree is updated, of each run whose open children changed (DS-8, SR-042):
-   * one report per run per change. A listener must not wait.
+   * Told, inside a Task's change and after the tree is updated, of each run whose rows changed (DS-8, SR-042; its open
+   * subtree, so a run and every ancestor, CR-461-033): one report per run per change. A listener must not wait.
    */
   subscribeChildRows(listener: (change: ChildRowsChange) => void): () => void {
     this.childRowsListeners.add(listener);
@@ -164,20 +156,36 @@ export class DelegationIndex implements TaskEntriesListener {
 
   /** The Task side's change notice: that Task's entries are read again from its memory (no file read). */
   entriesChanged(taskId: string): void {
-    // The runs whose children this change can move: the delegating runs of the Task's entries before and after it.
-    const parents = new Map([...this.byTask.get(taskId) ?? [], ...this.source().entriesOf(taskId)]
-      .map((entry) => [keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun] as const));
-    const before = new Map([...parents].map(([key, run]) => [key, this.openChildrenOf(run)]));
+    // The runs whose rows this change can move (CR-461-033): the delegating runs of the Task's entries before and after
+    // it, and every ancestor of each, before and after (a row is under every run above it).
+    const delegating = [...this.byTask.get(taskId) ?? [], ...this.source().entriesOf(taskId)].map((entry) => entry.delegatedFrom.delegatingRun);
+    const affected = new Map<string, RootExecutionIdentity>();
+    const withAncestors = () => { for (const run of delegating) for (const above of this.chainOf(run)) affected.set(keyOf(above), above); };
+    withAncestors();
+    const before = new Map([...affected].map(([key, run]) => [key, this.collaborationTreeOf(run).rows()]));
     this.forgetTask(taskId);
     this.indexTask(taskId);
     this.rebuildEntryAgents();
     this.notify();
-    for (const [key, run] of parents) this.reportChildRows(run, before.get(key)!);
+    withAncestors();
+    for (const [key, run] of affected) this.reportChildRows(run, before.get(key) ?? []);
   }
 
-  private reportChildRows(run: RootExecutionIdentity, before: readonly DelegatedChild[]): void {
+  /** A run and each run above it, up to its tree's top. */
+  private chainOf(run: RootExecutionIdentity): RootExecutionIdentity[] {
+    const chain = [run];
+    for (let current = run; ;) {
+      const reference = runReferenceOf(current);
+      const parent = reference ? this.parentOf(reference)?.delegatingRun : undefined;
+      if (!parent || chain.some((seen) => keyOf(seen) === keyOf(parent))) return chain;
+      chain.push(parent);
+      current = parent;
+    }
+  }
+
+  private reportChildRows(run: RootExecutionIdentity, before: readonly SubtreeRow[]): void {
     const childKey = (child: DelegatedChild): string => keyOf(runIdentityOf(child.run));
-    const after = this.openChildrenOf(run);
+    const after = this.collaborationTreeOf(run).rows();
     const held = new Set(before.map(childKey));
     const kept = new Set(after.map(childKey));
     const change: ChildRowsChange = { run, added: after.filter((child) => !held.has(childKey(child))),
