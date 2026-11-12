@@ -1136,4 +1136,4 @@
 
   One owner (`ReachableAgents`, beside `CrossRunAddressResolution`) computes it. The mention note, `list_available_agents` and `delegate_task`'s in-run placements read it, and the root port's read becomes async. The notes are then base's (`run_agent` / `in_run`), and what an agent is told it can talk with is exactly what it can reach. The delegation answers for these addresses are base's, captured by a characterization test at `827f1e68dc` (SR-052's method).
 - Done: the design's "What a delegated run sees as in its run" (before DS-4), with tests. `walkthrough.py --check` passes; the model does not cover mentions or lists.
-
+- ARCH-REV-034 (2026-11-12): Pass. Its two notes are applied in the design: one step-2 enumeration (`CrossRunAddressResolution` looks up `ReachableAgents`' address map; open Tasks in Task-ID order, else all, first match), §2.3's order for a definition at two addresses, and `addressesInUse` from the same set.

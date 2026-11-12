@@ -130,7 +130,12 @@ Each new name says what its owner owns.
 - for a run that works on a Task, step 2, the standing agents of the run that assigned it (`DelegationTree.assignersOf` its open Tasks → `standingOf`, each with its definition from the tree's per-run agents);
 - step 3, its own run's standing agents.
 
-One owner computes that set, beside `CrossRunAddressResolution` (`ReachableAgents`), and the `CollaboratorRootPort`'s in-run read becomes async to include it. Its readers:
+One owner computes that set, beside `CrossRunAddressResolution` (`ReachableAgents`), and the `CollaboratorRootPort`'s in-run read becomes async to include it (ARCH-REV-034):
+- **One step-2 enumeration.** `CrossRunAddressResolution` resolves step 2 by looking up `ReachableAgents`' address map, never by its own walk: the open Tasks in Task-ID order, else all the run's Tasks, and their assigners in run order, first match winning. So a run can send to an address exactly when its note and list say it is in the run, also when all its Tasks are closed.
+- **One definition at two addresses** is preferred in §2.3's order: its own team first, then step 2, then step 3.
+- **`addressesInUse`** is taken from the same set. A catalog address therefore never lands on an address step 2 already resolves, as at base, where a hosted copy used its host's addresses in use.
+
+Its readers:
 - **the `@` mention note** (`CollaboratorAdmission.resolveMentions`): an assigner's own agent (an agent run the user started) is `run_agent`, as at base: "talk with it using send_message_to; you can't delegate to it". An assigner's configured placement is `in_run`, at the address step 2 resolves: "talk with it using send_message_to".
 - **`list_available_agents`**: it lists them at those addresses.
 - **`delegate_task`'s in-run placements:** the same set, so an address step 2 reaches is answered as base answered it for a hosted copy. A characterization test **at `827f1e68dc`** captures the exact answers for the assigner's own agent and for an assigner's configured placement. The branch asserts the same (SR-052's method).
