@@ -18,7 +18,6 @@ export const GetProjectRunHistory = gql`
           isActive
           shouldConnectStream
           statusSource
-          hasCollaboration
         }
       }
       teamDefinitions {

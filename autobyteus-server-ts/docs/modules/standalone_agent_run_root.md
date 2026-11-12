@@ -167,25 +167,15 @@ message ID (CM-9); the run's view shows the messages of its own log.
   child's goes through the root to its node. A run that is not a collaboration run closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stopped run's view and
-  never restores. `agentRunCollaborationStatuses(runIds)` (at most 100 IDs, else `BAD_USER_INPUT`)
-  is the small read the clients' history poll uses for listed runs that are not open: per run
-  `{ runId, isActive, statuses }`. Every run, active or stopped, answers every agent of its open
-  local children (the agents of its view's rows, with their addresses from the `DelegationTree`)
-  with its status from the child's own run, `offline` when not running (`localChildStatuses`), so a
-  stopped delegator's working child shows its status too. There is no closed-set digest: a child
-  whose Task closed has left the view (autobyteus-461 SR-040/041). It never restores or starts a
-  host. `agentRunCollaborationMemberProjection` and
-  `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation from its own
-  run. `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` returns a
-  child's Agent Artifacts, located among the runs this run delegated to (one hop, the Task entries),
-  through `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection`:
-  - While the child's own run is active, the result is its live projection.
-  - Otherwise it is the child's stored `file_changes.json`.
-
-  A child's file content is served the same way, hub-scoped, by
-  `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
-  (`StandaloneRootMemberViewProjectionService.resolveFileChangeEntry`); a run this run did not
-  delegate to answers 404 `File change not found`.
+  never restores. The clients' history poll for listed runs that are not open is
+  `runCollaborationStatuses(runs)` (every run kind; see [Run History](./run_history.md)): each run's
+  activity and its open children, here (each by its identity with its agents' statuses) and on peer
+  nodes (each by its Task entry, with its node, without statuses); it never restores or starts a run.
+  A child on this node is a run of its own and is read by its own identity (its run, or its team
+  run's member: conversation, trace pages, Agent Artifacts and file content; autobyteus-461
+  CR-461-022). `agentRunCollaborationMemberProjection(hostRunId, memberAddress, agentRunId)` reads a
+  child on a peer node through this run, from its node (`StandaloneRootMemberViewProjectionService`,
+  which answers only this run's peer children); a peer child's trace and files stay on its node.
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
   the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
   for Agent roots.

@@ -183,7 +183,6 @@ export class AgentRunHistoryService {
       this.statusProjectionService.getCatalogListStatusProjection(row.runId),
     );
     const terminatedInactive = Boolean(row.terminatedAt) && !projection.isActive;
-    const hasCollaboration = row.hasCollaboration === true;
     return {
       runId: row.runId,
       summary: row.summary,
@@ -192,10 +191,9 @@ export class AgentRunHistoryService {
       shouldConnectStream: projection.shouldConnectStream,
       statusSource: terminatedInactive ? "TERMINATED_METADATA" : projection.statusSource,
       createdAt: row.createdAt,
-      lastActivityAt: await this.lastActivity.forAgentRun({ runId: row.runId, createdAt: row.createdAt, hasCollaboration }),
+      lastActivityAt: await this.lastActivity.forAgentRun({ runId: row.runId, createdAt: row.createdAt, hasCollaboration: row.hasCollaboration === true }),
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
-      hasCollaboration,
     };
   }
 

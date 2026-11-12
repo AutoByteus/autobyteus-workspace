@@ -106,7 +106,7 @@ const equalWorkspace = (a: WorkspaceHistoryWorkspaceNode, b: WorkspaceHistoryWor
     && equalRows(a.runs, b.runs, (a, b) => a.runId === b.runId && a.summary === b.summary
       && a.lastActivityAt === b.lastActivityAt && a.currentStatus === b.currentStatus
       && a.lastKnownStatus === b.lastKnownStatus && a.isActive === b.isActive
-      && a.hasCollaboration === b.hasCollaboration && a.source === b.source && a.isDraft === b.isDraft))
+      && a.source === b.source && a.isDraft === b.isDraft))
   && equalRows(a.agentOrgDefinitions, b.agentOrgDefinitions, (a, b) => a.stableKey === b.stableKey
     && a.definitionId === b.definitionId && a.name === b.name && equalRows(a.runs, b.runs, (a, b) => a === b));
 

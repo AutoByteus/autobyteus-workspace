@@ -45,8 +45,9 @@ owner's tree and never searches all saved runs:
 | Standalone run | `getRunFileChanges(runId)` | `/runs/:runId/file-change-content?path=...` |
 | Team member (configured member or team task agent) | `getTeamMemberFileChanges(teamRunId, agentRunId)` | `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content?path=...` |
 | Org member (direct agent, member-team member or task agent) | `getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)` | `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...` |
-| Delegated copy under a standalone run (hub) | `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` | `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...` |
 
+- A run another run delegated to on this node is a run of its own (autobyteus-461): its artifacts are read by its own
+  identity (the run-id reads, or its team run's member reads); a run on a peer node keeps its artifacts there.
 - The run-id reads serve standalone runs only. A run is standalone exactly when
   it has standalone run metadata, whether it is running or saved; being active
   does not decide it, because collaboration members share the same activation

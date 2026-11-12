@@ -38,9 +38,6 @@ class RunHistoryItemObject {
   @Field(() => String, { nullable: true })
   terminatedAt?: string | null;
 
-  @Field(() => Boolean)
-  hasCollaboration!: boolean;
-
   @Field(() => String)
   status!: string;
 

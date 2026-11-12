@@ -267,7 +267,7 @@ const agentRootView = async (runId) => (await gql('query($id:String!){agentRunCo
 // autobyteus-358: the run's view carries no messages; the host's Team tab loads its messages with this query.
 const hostMessages = async (runId) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: runId, a: runId }).catch(() => null))?.collaborationParticipantMessages?.messages ?? []
 const agentRunActive = async (runId) => {
-  const r = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { agentDefinitions { runs { runId isActive status hasCollaboration } } } }')
+  const r = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { agentDefinitions { runs { runId isActive status } } } }')
   return r.listWorkspaceRunHistory.flatMap((w) => w.agentDefinitions).flatMap((a) => a.runs).find((run) => run.runId === runId)?.isActive ?? null
 }
 const teamTree = async (teamRunId) => (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: teamRunId })).getTeamRunResumeConfig.executionTree

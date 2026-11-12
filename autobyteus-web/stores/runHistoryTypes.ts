@@ -20,8 +20,6 @@ export interface RunHistoryItem {
   isActive: boolean;
   shouldConnectStream?: boolean;
   statusSource?: string;
-  /** The run has a collaboration package (task children brought in with `@`). */
-  hasCollaboration?: boolean;
 }
 
 export interface RunHistoryAgentGroup {
@@ -241,19 +239,6 @@ export interface TeamMemberRunProjectionPayload {
   summary?: string | null;
   lastActivityAt?: string | null;
   hasEarlierActiveTraceEvents: boolean;
-}
-
-export interface GetTeamMemberRunProjectionQueryData {
-  getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
-}
-
-export interface GetTeamRunResumeConfigQueryData {
-  getTeamRunResumeConfig: {
-    teamRunId: string;
-    isActive: boolean;
-    executionTree: unknown;
-    modelConfigEditability: RunModelConfigEditability;
-  };
 }
 
 export interface GetTeamRunExecutionCheckpointQueryData {

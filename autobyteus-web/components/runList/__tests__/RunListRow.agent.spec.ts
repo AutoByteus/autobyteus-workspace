@@ -39,7 +39,7 @@ const agentEntry = (): RunListEntry => ({
   isActive: false, folderRootPath: '/ws/a', agentDefinitionId: 'pm', avatarUrl: null,
   run: {
     runId: HOST, summary: 'Plan the release', lastActivityAt: '2026-11-06T00:00:00.000Z', createdAt: '2026-11-06T00:00:00.000Z',
-    currentStatus: AgentStatus.Offline, isActive: false, source: 'history', hasCollaboration: true,
+    currentStatus: AgentStatus.Offline, isActive: false, source: 'history',
   } as never,
 });
 

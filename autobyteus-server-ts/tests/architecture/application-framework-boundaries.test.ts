@@ -2937,7 +2937,6 @@ describe("application framework architecture boundaries", () => {
       "agentToolMcpRunSessionDeactivator:",
       "flatTeamExecutionFactory,",
       "bindProcessAgentRunService(agentRunService)",
-      "bindProcessTeamRunService(teamRunService)",
     ]) {
       expect(generalSupervisor).toContain(requiredConstruction);
     }
@@ -2950,7 +2949,6 @@ describe("application framework architecture boundaries", () => {
     expect(publicAgentRun).not.toContain("AgentRunManager");
     expect(publicTeamRun).toContain("getStudioTeamRunService");
     expect(publicTeamRun).toContain("getStudioRunModelConfigService");
-    expect(publicTeamRun).not.toMatch(/\bgetTeamRunService\b/);
 
     const publicAgentHistory = readServerSource("api/graphql/types/run-history.ts");
     const publicTeamHistory = readServerSource("api/graphql/types/team-run-history.ts");
@@ -3033,7 +3031,7 @@ describe("application framework architecture boundaries", () => {
         if (!bindings || !ts.isNamedImports(bindings)) continue;
         for (const binding of bindings.elements) {
           const exported = binding.propertyName?.text ?? binding.name.text;
-          if (exported === "getAgentRunService" || exported === "getTeamRunService") {
+          if (exported === "getAgentRunService") {
             imported.push(`${normalizePath(relative(REPOSITORY_ROOT, file))}:${exported}`);
           }
         }
@@ -3046,8 +3044,7 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/compositions/model-routing-composition.ts:getAgentRunService",
       // Process startup root (autobyteus-349): one stage removes empty never-started runs through the run service bound in buildStudioServer.
       "autobyteus-server-ts/src/server-runtime.ts:getAgentRunService",
-      // autobyteus-461 DS-8: a child row's command to a team run the viewed run delegated to goes to that team run's own
-      // root, through the process team run service (as the Team stream's own commands do).
+      // The standalone agent stream handler's default run service: the process's, bound at startup.
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
     ].sort());
   });

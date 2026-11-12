@@ -34,8 +34,6 @@ import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org
 import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import {
   TeamRunService,
-  bindProcessTeamRunService,
-  releaseProcessTeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
 import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
 import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
@@ -119,7 +117,6 @@ export class GeneralProcessRunSupervisor {
     let agentRunService: AgentRunService | null = null;
     let teamRunService: TeamRunService | null = null;
     let agentRunServiceBound = false;
-    let teamRunServiceBound = false;
     // One admission coordinator over the injected definition services (no ambient definition getters).
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
@@ -324,8 +321,6 @@ export class GeneralProcessRunSupervisor {
 
       bindProcessAgentRunService(agentRunService);
       agentRunServiceBound = true;
-      bindProcessTeamRunService(teamRunService);
-      teamRunServiceBound = true;
 
       this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
         teams: agentTeamRunManager, orgs: agentOrgRunManager, agents: standaloneRootManager, agentRuns: agentRunService, teamRuns: teamRunService,
@@ -364,9 +359,6 @@ export class GeneralProcessRunSupervisor {
         orgRuns: agentOrgRunManager,
       });
     } catch (error) {
-      if (teamRunServiceBound && teamRunService) {
-        releaseProcessTeamRunService(teamRunService);
-      }
       if (agentRunServiceBound && agentRunService) {
         releaseProcessAgentRunService(agentRunService);
       }
@@ -425,7 +417,6 @@ export class GeneralProcessRunSupervisor {
       errors.push(error);
     }
     try {
-      releaseProcessTeamRunService(this.teamRunService);
       releaseProcessAgentRunService(this.agentRunService);
       AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
       releaseProcessStandaloneRunCommandPort(this.standaloneRootManager);

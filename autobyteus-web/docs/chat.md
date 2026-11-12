@@ -532,8 +532,8 @@ target mode.
   place), which asks the Agent run's view for a fresh read.
 - **Delegated-run Artifacts.**
   - A delegated run's recorded Agent Artifacts load when that run is opened,
-    together with its projection, through the hub-scoped
-    `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`.
+    together with its projection, by its own identity (a run of its own;
+    a run on a peer node keeps its artifacts there).
     The rows themselves never fetch any run's artifacts.
   - They are committed with its Activity and conversation in one step. This goes
     through `services/agentCollaboration/agentRunCollaborationChildHydration.ts`

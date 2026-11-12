@@ -130,7 +130,6 @@ export declare const runCollaborationStatusesDtoSchema: z.ZodArray<z.ZodObject<{
 /** At most this many runs per read. */
 export declare const RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
 export type ChildRunIdentityDto = z.infer<typeof childRunIdentityDtoSchema>;
-export type ChildRunAgentStatusDto = z.infer<typeof childRunAgentStatusDtoSchema>;
 export type ListedRunRefDto = z.infer<typeof listedRunRefDtoSchema>;
 export type ListedRunChildDto = z.infer<typeof listedRunChildDtoSchema>;
 export type ChildRunNodeDto = z.infer<typeof childRunNodeDtoSchema>;

@@ -22,8 +22,6 @@ export interface RunHistoryItem {
   lastActivityAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
-  /** The run hosts delegated copies (a stored or active Agent root package exists). */
-  hasCollaboration: boolean;
 }
 
 export interface RunHistoryAgentGroup {

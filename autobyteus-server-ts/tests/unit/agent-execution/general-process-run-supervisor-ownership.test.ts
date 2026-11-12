@@ -16,7 +16,6 @@ import {
   getAgentRunService,
   releaseProcessAgentRunService,
 } from "../../../src/agent-execution/services/agent-run-service.js";
-import { getTeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
@@ -91,7 +90,6 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskRecords: input.taskRecords, delegationTree: input.delegationTree }));
     expect(initializeOrg).toHaveBeenCalledOnce();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
-    expect(getTeamRunService()).toBe(supervisor.teamRunService);
     expect(getRunFileChangeService()).toBeInstanceOf(RunFileChangeService);
     expect(getRunFileChangeService()).toBe(wiredRunFileChangeService(supervisor));
 

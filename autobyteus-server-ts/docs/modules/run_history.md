@@ -560,8 +560,8 @@ Standalone agent persisted files:
 - V2 catalog index: `memory/run_history_index.json`, with rows containing only
   `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`,
   `createdAt`, `archivedAt`, `terminatedAt`, and the optional
-  `hasCollaboration: true` (written by the run's first delegation;
-  `RunHistoryItem.hasCollaboration` in GraphQL)
+  `hasCollaboration: true` (written by the run's first delegation; it
+  tells the last-activity read to include the run's delegated work)
 - metadata: `memory/agents/<runId>/run_metadata.json`, containing resume/config
   and prepared/start facts such as `runId`, `agentDefinitionId`,
   `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
@@ -1216,3 +1216,20 @@ cannot validate a complete current Team V2 or AgentOrg V1 package, that root is
 excluded and restore fails clearly instead of guessing identity or ownership.
 Termination updates catalog activity only after backend termination succeeds; a
 failed termination preserves the active local state.
+
+## Listed Runs' Children (The History Poll)
+
+`runCollaborationStatuses(runs: [{ kind, runId }])` (`api/graphql/types/run-collaboration-statuses.ts`;
+autobyteus-461 SR-055 … SR-057) is the clients' poll for the delegated rows of listed runs that are not
+open, for every run kind, at most 100 runs per read (else `BAD_USER_INPUT`). It never reads a view and
+never restores or starts a run. Per run it answers `isActive` (its own root) and its open children, one
+hop, from `RunViewChildren.listed` over the `DelegationTree`:
+
+- a child on this node: its identity (`childRunIdentity`: address, run, a team's members and coordinator,
+  delegator, `startedAt`, definitions; read once per run, never a file per poll), the delegator's address,
+  and its agents' statuses from the child's own root, else `offline`;
+- a child on a peer node: its identity from its Task entry (`peerChildRunIdentity`), its node named from
+  this node's own peer registry, and no statuses: nothing is asked of a peer per poll.
+
+A run's open view builds its child rows from the same identities, so a listed run's rows and its open
+view agree.

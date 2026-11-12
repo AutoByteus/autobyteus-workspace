@@ -228,7 +228,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     { kind: 'Org', selector: 'button[aria-label="Stop Agent Org"]', action: 'onTerminateAgentOrg', target: null },
   ] as const)('$kind root Stop is red when enabled, muted while disabled, and keeps its exact target', async (variant) => {
     const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Running,
-      lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: true, hasCollaboration: false, source: 'history', isDraft: false };
+      lastActivityAt: '2026-06-30T00:00:00.000Z', isActive: true, source: 'history', isDraft: false };
     const agent = { agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] };
     const group = agentOrgDefinitionGroup();
     const { wrapper, actions, state, team } = mountSubject({ agents: [agent], agentOrgDefinitions: [group], teamExpanded: false });
@@ -638,7 +638,7 @@ describe('WorkspaceHistoryWorkspaceSection Task summary run opening', () => {
 
   it('opens the Agent run\'s own conversation (as its run row does) for an Agent host\'s open-run', async () => {
     const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Idle, lastActivityAt: '2026-06-30T00:00:00.000Z',
-      isActive: true, hasCollaboration: true, source: 'history', isDraft: false };
+      isActive: true, source: 'history', isDraft: false };
     const { wrapper, actions } = mountSubject({
       workspaceTeams: [],
       agents: [{ agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] }],

@@ -187,7 +187,7 @@ flowchart LR
 | --- | --- | --- |
 | Agent Artifact store | `autobyteus-web/stores/runFileChangesStore.ts` | Owns hydrated/live rows for touched files and generated outputs. |
 | Agent Artifact stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | Applies `FILE_CHANGE` payloads into the Agent Artifact store. |
-| Agent Artifact fetch/commit | `autobyteus-web/services/runHydration/runFileChangeHydrationService.ts` | `fetchRunFileChanges(subject)` takes the run's owner subject (`AgentRunReadSubject` in `types/agent/agentRunReadSubject.ts`) and sends that owner's list query: `getRunFileChanges(runId)` for a standalone run, `getTeamMemberFileChanges` for a team member, `getAgentOrgMemberFileChanges` for an org member, `agentRunCollaborationMemberFileChanges` for a delegated copy. It writes rows into the store, by replacing them (`hydrateRunFileChanges`) or by merging them so live entries with a newer `updatedAt` are kept (`mergeHydratedRunFileChanges`). |
+| Agent Artifact fetch/commit | `autobyteus-web/services/runHydration/runFileChangeHydrationService.ts` | `fetchRunFileChanges(subject)` takes the run's owner subject (`AgentRunReadSubject` in `types/agent/agentRunReadSubject.ts`) and sends that owner's list query: `getRunFileChanges(runId)` for a standalone run, `getTeamMemberFileChanges` for a team member, `getAgentOrgMemberFileChanges` for an org member; a run on a peer node keeps its files there, so it has none here. A run another run delegated to is read by its own identity (autobyteus-461). It writes rows into the store, by replacing them (`hydrateRunFileChanges`) or by merging them so live entries with a newer `updatedAt` are kept (`mergeHydratedRunFileChanges`). |
 | Standalone Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads a standalone run's artifacts with its run context. |
 | Collaboration member run-state hydration | `autobyteus-web/services/runHydration/memberRunStateHydration.ts` | Shared owner for Team members, Agent Org members and the delegated runs of a standalone run (`services/agentCollaboration/agentRunCollaborationHydration.ts`). `fetchMemberRunState` fetches a member's projection and its artifacts in parallel. `commitMemberRunStates` commits all member Activity in one revision-guarded replacement, then merges each member's artifacts. On a revision conflict nothing is written, artifacts included. |
 | Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel, and passes the active workspace target's owner subject (`activeWorkspaceTarget.browse`) to the viewer. |
@@ -218,7 +218,6 @@ opening workspace files directly.
    - standalone run: `/runs/:runId/file-change-content?path=...`
    - team member: `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content?path=...`
    - org member: `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
-   - delegated copy: `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
 
    The server reads only that owner's tree. A member's run id sent to the
    run-id route gets 404, so the viewer never uses it for members.

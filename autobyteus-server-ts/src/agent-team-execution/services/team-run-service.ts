@@ -299,22 +299,6 @@ export class TeamRunService {
   }
 }
 
-let cached: TeamRunService | null = null;
-export const bindProcessTeamRunService = (service: TeamRunService): void => {
-  if (!service) {
-    throw new Error("A process TeamRunService instance is required.");
-  }
-  if (cached) {
-    throw new Error("The process TeamRunService is already initialized.");
-  }
-  cached = service;
-};
-export const releaseProcessTeamRunService = (service: TeamRunService): void => {
-  if (cached === service) {
-    cached = null;
-  }
-};
-export const getTeamRunService = (): TeamRunService => cached ??= new TeamRunService();
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
   if (!normalized) throw new Error(`${field} is required.`);

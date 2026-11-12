@@ -155,7 +155,6 @@ export const taskExecutionReferenceDtoSchema = z.union([
   z.object({ agentRunId: nonEmptyStringSchema }).strict(),
   z.object({ teamRunId: nonEmptyStringSchema }).strict(),
 ]);
-export type TaskExecutionReferenceDto = Readonly<z.infer<typeof taskExecutionReferenceDtoSchema>>;
 /**
  * Live (autobyteus-461 DS-8, SR-042 … SR-044): the run's open child rows changed. `added` holds each new or reopened
  * child's row record, as the view projects it (a run on this node, or a peer's run); `removed` the runs that left the

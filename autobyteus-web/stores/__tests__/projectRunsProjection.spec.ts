@@ -19,7 +19,7 @@ const snapshot = (projectId: string, runIds: string[]): ProjectRunsSnapshot => (
   projectId,
   agentDefinitions: runIds.length ? [{ agentDefinitionId: 'pm', agentName: 'Project Task Manager', runs: runIds.map((runId) => ({
     runId, summary: `run ${runId}`, createdAt: '2026-10-31T00:00:00.000Z', lastActivityAt: '2026-10-31T00:00:00.000Z', archivedAt: null, terminatedAt: null, status: AgentStatus.Offline,
-    isActive: false, shouldConnectStream: false, statusSource: 'TEST', hasCollaboration: true,
+    isActive: false, shouldConnectStream: false, statusSource: 'TEST',
   })) }] : [],
   teamDefinitions: [],
 })

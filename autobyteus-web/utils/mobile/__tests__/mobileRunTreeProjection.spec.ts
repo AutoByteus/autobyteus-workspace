@@ -6,7 +6,7 @@ import { buildMobileRunTreeRows, openAgentRunIdOf, type MobileRunTreeSources } f
 
 const agentRun = (runId: string, status = AgentStatus.Idle) => ({
   runId, summary: `[User Requirement]: ${runId} title`, lastActivityAt: '2026-11-06T10:00:00.000Z', currentStatus: status,
-  lastKnownStatus: status, isActive: true, hasCollaboration: true, source: 'history' as const, isDraft: false,
+  lastKnownStatus: status, isActive: true, source: 'history' as const, isDraft: false,
 })
 const agentEntry = (runId: string): RunListEntry => ({
   kind: 'agent', key: `agent:${runId}`, runId, name: 'Project Task Manager', lastActivityAt: '2026-11-06T10:00:00.000Z',

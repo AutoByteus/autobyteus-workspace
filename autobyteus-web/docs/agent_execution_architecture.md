@@ -129,8 +129,10 @@ A child's stored details load on demand (`agentRunCollaborationChildHydration.ts
   selected child after every publication, including the snapshot that follows a
   new delegation or a settings Save. Unopened children are never loaded;
   previously opened ones load again when selected again.
-- **What.** One member projection request and one hub-scoped artifact request
-  (`agentRunCollaborationMemberFileChanges`, never the run-id `getRunFileChanges`).
+- **What.** The child's stored state and artifacts by the subject the view's owner gives it
+  (`agentRunAgentReadSubject` in `services/runHydration/agentReads.ts`): a child on this node by its
+  own identity (`getRunProjection` and `getRunFileChanges`, or its team run's member reads); a child on
+  a peer node through the run (`agentRunCollaborationMemberProjection`; its files stay on its node).
 - **Ownership.** The store is the only owner of in-flight loads, keyed by
   (published context, child). A load whose context is no longer published, because
   it was republished or the host is stopping, ends `superseded` and writes nothing.
