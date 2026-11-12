@@ -28,9 +28,10 @@ describe("RunOwnAgentsReader", () => {
       children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] }), "team-b"));
     const reader = new RunOwnAgentsReader(memory);
     expect(await reader.agentsOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" }))
-      .toEqual([{ agentRunId: "lead-b", address: "/lead" }, { agentRunId: "writer-b", address: "/writer" }]);
-    // An agent run with no stored address (not collaborating yet): its one agent, with no address.
-    expect(await reader.agentsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual([{ agentRunId: "manager", address: null }]);
+      .toEqual([{ agentRunId: "lead-b", address: "/lead", agentDefinitionId: "agent-lead" },
+        { agentRunId: "writer-b", address: "/writer", agentDefinitionId: "agent-writer" }]);
+    // An agent run with no stored address (not collaborating yet) and no stored metadata: its one agent, with neither.
+    expect(await reader.agentsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual([{ agentRunId: "manager", address: null, agentDefinitionId: null }]);
     expect(await reader.agentsOf({ rootSubjectKind: "agent_team", rootRunId: "gone" })).toBeNull();
     expect(await reader.agentsOf({ rootSubjectKind: "agent_org", rootRunId: "gone" })).toBeNull();
   });
