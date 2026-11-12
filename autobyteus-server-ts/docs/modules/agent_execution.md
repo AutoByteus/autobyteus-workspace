@@ -987,6 +987,19 @@ new kill authority, idle timer change or change to `hasRunningBackgroundTasks`
 is introduced. Claude/Antigravity continue through their existing event-stream
 view and `BACKGROUND_TASK_UPDATED` behavior.
 
+An event-stream run answers the view with its current tasks (autobyteus-473):
+the `event-stream` inspection's `current()` lists the tasks its runtime knows
+now, and `AgentBackgroundTaskEventStream.tasks` carries them
+(`AgentBackgroundTask`: `taskId`, `kind`, `description`, `command`, `status`,
+`summary`, `startedAt`). A viewer that opens the run, or reloads, after a task
+started therefore sees it at once; later changes still arrive as
+`BACKGROUND_TASK_UPDATED`. Claude lists its registry's view (running and ended
+tasks until the process ends), AutoByteus its `BackgroundProcessManager.list()`
+(none while the run has no manager), Antigravity the tasks running now (its
+monitor keeps no ended ones). The web client seeds its store from the answer:
+an unknown task is added, a running one takes an end the answer shows, and an
+ended one is never replaced, so an older answer cannot undo a newer event.
+
 ### Native command scope at application shutdown
 
 Studio and standalone hosts own `NativeCommandShutdown`, passing its scope into

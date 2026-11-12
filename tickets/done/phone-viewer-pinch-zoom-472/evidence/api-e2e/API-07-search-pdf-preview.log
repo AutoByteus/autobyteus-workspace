@@ -1,0 +1,11 @@
+# API-07 search-pdf-preview; commit 9176e10bb7; 2026-11-11T18:08:17Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:search-pdf-preview /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/tickets/in-progress/phone-viewer-pinch-zoom-472/evidence/api-e2e/API-07-search-pdf-preview
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":13366,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":12445,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

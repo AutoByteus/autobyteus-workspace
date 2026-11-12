@@ -44,6 +44,7 @@ import {
   type ClaudeSdkStreamingSession,
 } from "../../../../runtime-management/claude/client/claude-sdk-streaming-session.js";
 import type { ClaudeSdkQueryKind, ClaudeSdkSelectedBinding } from "../../../domain/claude-sdk-usage.js";
+import type { AgentBackgroundTask } from "../../../domain/agent-background-task.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
@@ -157,6 +158,10 @@ export class ClaudeSession {
 
   hasRunningBackgroundTasks(): boolean {
     return this.taskRegistry.hasRunningTasks();
+  }
+
+  listBackgroundTasks(): readonly AgentBackgroundTask[] {
+    return this.taskRegistry.list();
   }
 
   getStatusSnapshotSource() {

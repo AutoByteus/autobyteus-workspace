@@ -1,0 +1,2574 @@
+[2026-11-11T13:42:48+00:00] Creating /home/autobyteus/data/.env with default server configuration
+[2026-11-11T13:42:48+00:00] Handing over to base entrypoint
+2026-11-11 13:42:49,162 INFO Included extra file "/etc/supervisor/conf.d/base.conf" during parsing
+2026-11-11 13:42:49,162 INFO Included extra file "/etc/supervisor/conf.d/supervisor-autobyteus-server.conf" during parsing
+2026-11-11 13:42:49,162 INFO Set uid to user 0 succeeded
+2026-11-11 13:42:49,173 INFO RPC interface 'supervisor' initialized
+2026-11-11 13:42:49,173 INFO supervisord started with pid 1
+2026-11-11 13:42:50,178 INFO spawned: 'dbus' with pid 31
+2026-11-11 13:42:50,181 INFO spawned: 'tigervnc' with pid 32
+2026-11-11 13:42:50,184 INFO spawned: 'xfce' with pid 33
+2026-11-11 13:42:50,188 INFO spawned: 'fcitx' with pid 35
+2026-11-11 13:42:50,192 INFO spawned: 'disable_screensaver' with pid 43
+2026-11-11 13:42:50,196 INFO spawned: 'copyq' with pid 45
+2026-11-11 13:42:50,200 INFO spawned: 'chrome' with pid 48
+2026-11-11 13:42:50,204 INFO spawned: 'socat' with pid 52
+2026-11-11 13:42:50,208 INFO spawned: 'websockify' with pid 58
+2026-11-11 13:42:50,210 INFO spawned: 'autobyteus_server' with pid 62
+2026-11-11 13:42:50,211 DEBG 'tigervnc' stderr output:
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+
+2026-11-11 13:42:50,211 DEBG 'xfce' stdout output:
+/usr/bin/startxfce4: X server already running on display :99
+
+2026-11-11 13:42:50,211 DEBG 'xfce' stderr output:
+xrdb: Connection refused
+xrdb: Can't open display ':99'
+
+2026-11-11 13:42:50,211 DEBG 'disable_screensaver' stderr output:
+
+** (light-locker-command:57): WARNING **: 13:42:50.209: Unknown option -k
+
+2026-11-11 13:42:50,211 INFO success: disable_screensaver entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2026-11-11 13:42:50,212 DEBG 'tigervnc' stderr output:
+
+Xvnc TigerVNC 1.13.1 - built 2024-04-01 08:26
+Copyright (C) 1999-2022 TigerVNC Team and many others (see README.rst)
+See https://www.tigervnc.org for information on TigerVNC.
+Underlying X server release 12101011
+
+
+Wed Nov 11 13:42:50 2026
+ vncext:      VNC extension running!
+
+2026-11-11 13:42:50,212 DEBG 'tigervnc' stderr output:
+ vncext:      Listening for VNC connections on all interface(s), port 5900
+ vncext:      created VNC server for screen 0
+
+2026-11-11 13:42:50,219 DEBG 'dbus' stdout output:
+unix:path=/run/user/1000/bus,guid=02dc74adf2385748a30a0bd76af470da
+
+2026-11-11 13:42:50,220 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.freedesktop.systemd1' requested by ':1.0' (uid=1000 pid=49 comm="systemctl --user list-jobs")
+
+2026-11-11 13:42:50,222 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activated service 'org.freedesktop.systemd1' failed: Process org.freedesktop.systemd1 exited with status 1
+
+2026-11-11 13:42:50,313 DEBG 'tigervnc' stderr output:
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Could not resolve keysym XF86CameraAccessEnable
+> Warning:          Could not resolve keysym XF86CameraAccessDisable
+> Warning:          Could not resolve keysym XF86CameraAccessToggle
+> Warning:          Could not resolve keysym XF86NextElement
+> Warning:          Could not resolve keysym XF86PreviousElement
+> Warning:          Could not resolve keysym XF86AutopilotEngageToggle
+> Warning:          Could not resolve keysym XF86MarkWaypoint
+> Warning:          Could not resolve keysym XF86Sos
+> Warning:          Could not resolve keysym XF86NavChart
+> Warning:          Could not resolve keysym XF86FishingChart
+> Warning:          Could not resolve keysym XF86SingleRangeRadar
+> Warning:          Could not resolve keysym XF86DualRangeRadar
+> Warning:          Could not resolve keysym XF86RadarOverlay
+> Warning:          Could not resolve keysym XF86TraditionalSonar
+> Warning:          Could not resolve keysym XF86ClearvuSonar
+> Warning:          Could not resolve keysym XF86SidevuSonar
+> Warning:          Could not resolve keysym XF86NavInfo
+Errors from xkbcomp are not fatal to the X server
+
+2026-11-11 13:42:50,315 DEBG 'tigervnc' stderr output:
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaabddc0ec0 for event 2
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaabddc0ec0 for event 3
+
+2026-11-11 13:42:50,341 DEBG 'disable_screensaver' stderr output:
+server does not have extension for -dpms option
+
+2026-11-11 13:42:50,346 DEBG 'disable_screensaver' stdout output:
+Screen locking and screensaver have been disabled
+
+2026-11-11 13:42:50,346 DEBG fd 29 closed, stopped monitoring <POutputDispatcher at 281473509814864 for <Subprocess at 281473509778720 with name disable_screensaver in state RUNNING> (stderr)>
+2026-11-11 13:42:50,346 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473509815120 for <Subprocess at 281473509778720 with name disable_screensaver in state RUNNING> (stdout)>
+2026-11-11 13:42:50,357 DEBG 'chrome' stderr output:
+Failed to move to new namespace:
+2026-11-11 13:42:50,357 INFO exited: disable_screensaver (exit status 0; expected)
+2026-11-11 13:42:50,357 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:50,358 DEBG 'chrome' stderr output:
+ PID namespaces supported,
+2026-11-11 13:42:50,358 DEBG 'chrome' stderr output:
+ Network namespace supported,
+2026-11-11 13:42:50,358 DEBG 'chrome' stderr output:
+ but failed: errno = Operation not permitted
+
+2026-11-11 13:42:50,358 DEBG 'chrome' stderr output:
+[48:48:1111/134250.358417:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-11 13:42:50,360 DEBG 'copyq' stderr output:
+DEBUG: Server "/home/vncuser/.config/copyq/.copyq_s" started.
+
+2026-11-11 13:42:50,364 DEBG 'chrome' stderr output:
+[1111/134250.363811:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+
+2026-11-11 13:42:50,364 DEBG 'chrome' stderr output:
+[1111/134250.364492:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-11 13:42:50,387 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-11T13:42:50.385Z","starter":"server-started","pid":107,"version":"1.5.13-beta.4","source":"builtIn"}
+
+2026-11-11 13:42:50,387 DEBG fd 35 closed, stopped monitoring <POutputDispatcher at 281473510425776 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stdout)>
+2026-11-11 13:42:50,387 DEBG fd 39 closed, stopped monitoring <POutputDispatcher at 281473510426448 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stderr)>
+2026-11-11 13:42:50,387 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-11 13:42:50,387 INFO reaped unknown pid 95 (exit status 0)
+2026-11-11 13:42:50,387 INFO reaped unknown pid 97 (exit status 0)
+2026-11-11 13:42:50,387 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:50,392 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.a11y.Bus' requested by ':1.2' (uid=1000 pid=33 comm="xfce4-session")
+
+2026-11-11 13:42:50,396 DEBG 'copyq' stderr output:
+DEBUG: Geometry: Window "MainWindow": New geometry "Options/MainWindow_geometry": 645x421,637,329 -> 645x421,637,329
+
+2026-11-11 13:42:50,402 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.a11y.Bus'
+
+2026-11-11 13:42:50,402 INFO reaped unknown pid 104 (exit status 0)
+2026-11-11 13:42:50,402 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:50,410 DEBG 'copyq' stderr output:
+DEBUG: Loading configuration
+
+2026-11-11 13:42:50,413 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.xfce.Xfconf' requested by ':1.4' (uid=1000 pid=33 comm="xfce4-session")
+
+2026-11-11 13:42:50,426 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.xfce.Xfconf'
+
+2026-11-11 13:42:50,430 DEBG 'dbus' stderr output:
+dbus-daemon[120]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=33 comm="xfce4-session")
+
+2026-11-11 13:42:50,436 DEBG 'dbus' stderr output:
+dbus-daemon[120]: Successfully activated service 'org.a11y.atspi.Registry'
+
+2026-11-11 13:42:50,436 DEBG 'dbus' stdout output:
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+2026-11-11 13:42:50,444 DEBG 'xfce' stderr output:
+_IceTransmkdir: ERROR: euid != 0,directory /tmp/.ICE-unix will not be created.
+
+2026-11-11 13:42:50,445 DEBG 'xfce' stderr output:
+/usr/bin/iceauth:  creating new authority file /run/user/1000/ICEauthority
+
+2026-11-11 13:42:50,447 DEBG 'websockify' stderr output:
+WebSocket server settings:
+  - Listen on :6080
+  - Web server. Web root: /usr/local/share/websockify
+  - No SSL/TLS support (no cert file)
+
+2026-11-11 13:42:50,447 DEBG 'websockify' stderr output:
+  - proxying from :6080 to localhost:5900
+
+2026-11-11 13:42:50,467 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+App root directory: /opt/autobyteus/server-package
+
+2026-11-11 13:42:50,467 DEBG 'autobyteus_server' stdout output:
+App data directory: /home/autobyteus/data
+
+2026-11-11 13:42:50,467 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-11 13:42:50,467 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-11 13:42:50,468 DEBG 'autobyteus_server' stdout output:
+◇ injected env (1) from ../../../home/autobyteus/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+
+2026-11-11 13:42:50,468 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-11 13:42:50,469 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:59343
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:59343
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+APP DATA DIRECTORY: /home/autobyteus/data
+DB DIRECTORY: /home/autobyteus/data/db
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-11 13:42:50,470 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-11 13:42:50,470 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+
+2026-11-11 13:42:50,470 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-11 13:42:50,476 DEBG 'xfce' stderr output:
+gpg-agent[147]: directory '/home/vncuser/.gnupg' created
+
+2026-11-11 13:42:50,476 DEBG 'xfce' stderr output:
+gpg-agent[147]: directory '/home/vncuser/.gnupg/private-keys-v1.d' created
+
+2026-11-11 13:42:50,476 DEBG 'xfce' stderr output:
+gpg-agent[148]: gpg-agent (GnuPG) 2.4.4 started
+
+2026-11-11 13:42:50,479 DEBG 'copyq' stderr output:
+DEBUG: Configuration loaded
+
+2026-11-11 13:42:50,481 DEBG 'copyq' stderr output:
+DEBUG: Starting monitor
+
+2026-11-11 13:42:50,483 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq --clipboard-access monitorClipboard
+
+2026-11-11 13:42:50,485 DEBG 'copyq' stderr output:
+DEBUG: Starting callback: onStart
+
+2026-11-11 13:42:50,486 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq onStart
+
+2026-11-11 13:42:50,498 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Creating new tab
+
+2026-11-11 13:42:50,509 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Saving 0 items
+
+2026-11-11 13:42:50,515 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.Daemon' requested by ':1.9' (uid=1000 pid=149 comm="xfwm4")
+
+2026-11-11 13:42:50,521 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Items saved
+
+2026-11-11 13:42:50,531 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.Daemon'
+
+2026-11-11 13:42:50,584 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq eval -- runMenuCommandFilters()
+
+2026-11-11 13:42:50,584 INFO reaped unknown pid 163 (exit status 1)
+2026-11-11 13:42:50,584 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:51,296 DEBG 'xfce' stderr output:
+
+(xfwm4:149): xfwm4-WARNING **: 13:42:51.295: Another compositing manager is running on screen 0
+
+2026-11-11 13:42:51,296 INFO success: xfce entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-11 13:42:51,296 INFO success: fcitx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-11 13:42:51,296 INFO success: socat entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-11 13:42:51,296 INFO success: websockify entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-11 13:42:51,330 DEBG 'xfce' stderr output:
+
+(xfsettingsd:169): libupower-glib-WARNING **: 13:42:51.330: Couldn't connect to proxy: Could not connect: No such file or directory
+
+2026-11-11 13:42:51,660 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.freedesktop.thumbnails.Thumbnailer1' requested by ':1.15' (uid=1000 pid=188 comm="xfdesktop")
+
+2026-11-11 13:42:51,661 INFO spawned: 'chrome' with pid 200
+2026-11-11 13:42:51,672 DEBG 'xfce' stderr output:
+Connection failure: Connection refused
+pa_context_connect() failed: Connection refused
+
+2026-11-11 13:42:51,698 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.freedesktop.systemd1' requested by ':1.17' (uid=1000 pid=213 comm="systemctl --user start xfce4-notifyd.service")
+
+2026-11-11 13:42:51,702 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activated service 'org.freedesktop.systemd1' failed: Process org.freedesktop.systemd1 exited with status 1
+
+2026-11-11 13:42:51,708 DEBG 'xfce' stderr output:
+
+** (xiccd:210): CRITICAL **: 13:42:51.708: Failed to connect to colord: Could not connect: No such file or directory
+
+2026-11-11 13:42:51,727 DEBG 'xfce' stderr output:
+
+(polkit-gnome-authentication-agent-1:203): polkit-gnome-1-WARNING **: 13:42:51.725: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+
+2026-11-11 13:42:51,734 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='ca.desrt.dconf' requested by ':1.18' (uid=1000 pid=217 comm="light-locker")
+
+2026-11-11 13:42:51,736 DEBG 'xfce' stderr output:
+
+** (light-locker:217): ERROR **: 13:42:51.735: session_id is not set, is /proc mounted with hidepid>0?
+
+2026-11-11 13:42:51,745 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'ca.desrt.dconf'
+
+2026-11-11 13:42:51,766 DEBG 'chrome' stderr output:
+Failed to move to new namespace:
+2026-11-11 13:42:51,766 DEBG 'chrome' stderr output:
+ PID namespaces supported,
+2026-11-11 13:42:51,766 DEBG 'chrome' stderr output:
+ Network namespace supported,
+2026-11-11 13:42:51,766 DEBG 'chrome' stderr output:
+ but failed: errno = Operation not permitted
+
+2026-11-11 13:42:51,767 DEBG 'chrome' stderr output:
+[200:200:1111/134251.767093:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-11 13:42:51,774 DEBG 'chrome' stderr output:
+[1111/134251.773036:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1111/134251.773086:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-11 13:42:51,788 DEBG 'xfce' stderr output:
+
+(nm-applet:196): nm-applet-WARNING **: 13:42:51.788: Error connecting to system D-Bus: Could not connect: No such file or directory
+
+2026-11-11 13:42:51,788 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473509843104 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stdout)>
+2026-11-11 13:42:51,788 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473509842400 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stderr)>
+2026-11-11 13:42:51,789 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-11 13:42:51,789 INFO reaped unknown pid 254 (exit status 0)
+2026-11-11 13:42:51,789 INFO reaped unknown pid 258 (exit status 0)
+2026-11-11 13:42:51,789 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:51,789 DEBG 'xfce' stderr output:
+
+(nm-applet:196): nm-applet-WARNING **: 13:42:51.788: Could not connect: No such file or directory
+
+2026-11-11 13:42:51,790 DEBG 'xfce' stderr output:
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.790: ((src/libnm-client-impl/nm-client.c:4115)): assertion '<dropped>' failed
+
+2026-11-11 13:42:51,792 DEBG 'xfce' stderr output:
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4066)): assertion '<dropped>' failed
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4166)): assertion '<dropped>' failed
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4214)): assertion '<dropped>' failed
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4253)): assertion '<dropped>' failed
+
+2026-11-11 13:42:51,793 DEBG 'xfce' stderr output:
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4287)): assertion '<dropped>' failed
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4326)): assertion '<dropped>' failed
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4847)): assertion '<dropped>' failed
+
+(nm-applet:196): nm-CRITICAL **: 13:42:51.792: ((src/libnm-client-impl/nm-client.c:4847)): assertion '<dropped>' failed
+
+2026-11-11 13:42:51,938 DEBG 'xfce' stderr output:
+system-config-printer-applet: failed to connect to system D-Bus
+
+2026-11-11 13:42:51,938 INFO reaped unknown pid 257 (exit status 0)
+2026-11-11 13:42:51,938 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:51,968 DEBG 'xfce' stderr output:
+xfce4-panel-Message: 13:42:51.968: Plugin "(null)-7" was not found and has been removed from the configuration
+
+2026-11-11 13:42:51,971 DEBG 'xfce' stderr output:
+xfce4-panel-Message: 13:42:51.971: Plugin "power-manager-plugin-9" was not found and has been removed from the configuration
+
+2026-11-11 13:42:52,006 DEBG 'xfce' stderr output:
+libclock-Message: 13:42:52.006: could not get proxy for org.freedesktop.login1
+
+(xfce4-panel:173): libclock-WARNING **: 13:42:52.006: could not instantiate a sleep monitor
+
+2026-11-11 13:42:52,030 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.UDisks2VolumeMonitor' requested by ':1.16' (uid=1000 pid=199 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-11 13:42:52,035 DEBG 'dbus' stderr output:
+
+(process:284): GVFS-UDisks2-WARNING **: 13:42:52.035: Failed to connect to UDisks: Could not connect: No such file or directory
+
+(process:284): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 13:42:52.035: monitor says it's not supported
+
+2026-11-11 13:42:52,036 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.UDisks2VolumeMonitor'
+
+2026-11-11 13:42:52,037 DEBG 'dbus' stderr output:
+
+(process:284): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 13:42:52.037: monitor says it's not supported
+
+2026-11-11 13:42:52,037 DEBG 'dbus' stderr output:
+
+(tumblerd:199): GVFS-RemoteVolumeMonitor-WARNING **: 13:42:52.037: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+
+2026-11-11 13:42:52,038 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.AfcVolumeMonitor' requested by ':1.16' (uid=1000 pid=199 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-11 13:42:52,047 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.AfcVolumeMonitor'
+
+2026-11-11 13:42:52,050 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.GoaVolumeMonitor' requested by ':1.16' (uid=1000 pid=199 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-11 13:42:52,058 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.GoaVolumeMonitor'
+
+2026-11-11 13:42:52,061 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.GPhoto2VolumeMonitor' requested by ':1.16' (uid=1000 pid=199 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-11 13:42:52,072 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.GPhoto2VolumeMonitor'
+
+2026-11-11 13:42:52,076 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.MTPVolumeMonitor' requested by ':1.16' (uid=1000 pid=199 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-11 13:42:52,082 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.MTPVolumeMonitor'
+
+2026-11-11 13:42:52,089 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.freedesktop.thumbnails.Thumbnailer1'
+
+2026-11-11 13:42:52,112 DEBG 'dbus' stderr output:
+
+(process:284): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 13:42:52.112: monitor says it's not supported
+
+2026-11-11 13:42:52,112 DEBG 'xfce' stderr output:
+
+(xfdesktop:188): GVFS-RemoteVolumeMonitor-WARNING **: 13:42:52.112: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+
+2026-11-11 13:42:52,151 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.Metadata' requested by ':1.15' (uid=1000 pid=188 comm="xfdesktop")
+
+2026-11-11 13:42:52,156 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.gtk.vfs.Metadata'
+
+2026-11-11 13:42:52,222 DEBG 'xfce' stderr output:
+
+** (xfdesktop:188): WARNING **: 13:42:52.222: Failed to get system bus: Could not connect: No such file or directory
+
+2026-11-11 13:42:52,222 INFO success: tigervnc entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
+2026-11-11 13:42:52,535 DEBG 'xfce' stderr output:
+
+(xfce4-session:33): xfce4-session-WARNING **: 13:42:52.535: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-11 13:42:52,538 DEBG 'xfce' stderr output:
+
+(xfce4-session:33): xfce4-session-WARNING **: 13:42:52.538: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-11 13:42:52,542 DEBG 'xfce' stderr output:
+
+(xfce4-session:33): xfce4-session-WARNING **: 13:42:52.542: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-11 13:42:52,605 DEBG 'autobyteus_server' stdout output:
+AgentFactory (Singleton) initialized.
+
+2026-11-11 13:42:53,010 DEBG 'autobyteus_server' stdout output:
+Running Prisma migrations...
+
+2026-11-11 13:42:53,013 DEBG 'autobyteus_server' stdout output:
+Using Prisma engine overrides from bundled: /opt/autobyteus/server-package/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+
+2026-11-11 13:42:53,332 DEBG 'autobyteus_server' stdout output:
+Prisma schema loaded from prisma/schema.prisma
+
+2026-11-11 13:42:53,332 INFO success: autobyteus_server entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2026-11-11 13:42:53,341 DEBG 'autobyteus_server' stdout output:
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/data/db/production.db"
+
+2026-11-11 13:42:53,443 DEBG 'autobyteus_server' stdout output:
+
+SQLite database production.db created at file:/home/autobyteus/data/db/production.db
+
+2026-11-11 13:42:53,454 DEBG 'autobyteus_server' stdout output:
+
+27 migrations found in prisma/migrations
+
+
+2026-11-11 13:42:53,467 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260203074245_init`
+
+2026-11-11 13:42:53,549 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260208094000_add_external_channel_tables`
+
+2026-11-11 13:42:53,605 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+
+2026-11-11 13:42:53,634 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260209213000_remove_agent_conversation_tables`
+
+2026-11-11 13:42:53,655 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260210101500_add_agent_avatar`
+
+2026-11-11 13:42:53,673 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260210192000_add_agent_team_avatar`
+
+2026-11-11 13:42:53,696 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+
+2026-11-11 13:42:53,830 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260212070000_remove_workflow_definition`
+
+2026-11-11 13:42:53,831 INFO spawned: 'chrome' with pid 422
+2026-11-11 13:42:53,858 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+
+2026-11-11 13:42:53,921 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-11 13:42:53,922 DEBG 'chrome' stderr output:
+[422:422:1111/134253.922086:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-11 13:42:53,927 DEBG 'chrome' stderr output:
+[1111/134253.927422:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1111/134253.927509:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-11 13:42:53,943 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+
+2026-11-11 13:42:53,944 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473509842400 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stdout)>
+2026-11-11 13:42:53,944 DEBG 'chrome' stderr output:
+[443:443:0100/000000.943781:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-11 13:42:53,944 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-11 13:42:53,944 INFO reaped unknown pid 438 (exit status 0)
+2026-11-11 13:42:53,944 INFO reaped unknown pid 440 (exit status 0)
+2026-11-11 13:42:53,944 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:53,971 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260331102000_remove_channel_bindings_table`
+
+2026-11-11 13:42:53,971 INFO reaped unknown pid 443 (exit status 0)
+2026-11-11 13:42:53,971 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:53,993 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+2026-11-11 13:42:54,080 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260517090000_add_app_data_migration_records`
+
+2026-11-11 13:42:54,106 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260624090000_add_token_usage_ledger_events`
+
+2026-11-11 13:42:54,145 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+
+2026-11-11 13:42:54,222 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260629120000_add_token_usage_display_fields`
+
+2026-11-11 13:42:54,266 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260702093000_token_usage_execution_address`
+
+2026-11-11 13:42:54,290 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260726090000_add_secret_vault`
+
+2026-11-11 13:42:54,315 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+2026-11-11 13:42:54,330 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260801090000_token_usage_member_display_name`
+
+2026-11-11 13:42:54,345 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+2026-11-11 13:42:54,356 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260819090000_add_token_usage_run_records`
+
+2026-11-11 13:42:54,385 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+2026-11-11 13:42:54,401 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260822090000_add_token_usage_analytics`
+
+2026-11-11 13:42:54,439 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+2026-11-11 13:42:54,451 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260924120000_remove_external_channel_tables`
+
+2026-11-11 13:42:54,468 DEBG 'autobyteus_server' stdout output:
+Applying migration `20261009120000_token_meter_context_readings`
+
+2026-11-11 13:42:54,482 DEBG 'autobyteus_server' stdout output:
+
+
+2026-11-11 13:42:54,483 DEBG 'autobyteus_server' stdout output:
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+
+2026-11-11 13:42:54,505 DEBG 'autobyteus_server' stdout output:
+Database migrations completed successfully.
+
+2026-11-11 13:42:54,509 DEBG 'autobyteus_server' stderr output:
+(node:107) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+2026-11-11 13:42:54,521 DEBG 'autobyteus_server' stdout output:
+prisma:info Starting a sqlite pool with 21 connections.
+
+2026-11-11 13:42:54,555 DEBG 'autobyteus_server' stdout output:
+[2026-11-11T13:42:54.555Z] [INFO] [secret-management.vault] Secret vault: application database
+
+2026-11-11 13:42:55,098 DEBG 'autobyteus_server' stdout output:
+Initialized server settings service with 32 predefined settings
+
+2026-11-11 13:42:55,178 DEBG 'autobyteus_server' stdout output:
+AgentRunManager initialized.
+
+2026-11-11 13:42:55,178 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-11-11 13:42:55,178 INFO reaped unknown pid 445 (exit status 0)
+2026-11-11 13:42:55,178 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:55,186 DEBG 'autobyteus_server' stdout output:
+AgentRunManager initialized.
+
+2026-11-11 13:42:55,338 DEBG 'autobyteus_server' stdout output:
+Loading workspace packages to trigger registration...
+
+2026-11-11 13:42:55,338 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-11-11 13:42:55,338 DEBG 'autobyteus_server' stdout output:
+Successfully loaded workspace packages.
+
+2026-11-11 13:42:55,339 DEBG 'autobyteus_server' stdout output:
+Creating temp workspace at: /home/autobyteus/workspace
+
+2026-11-11 13:42:55,340 DEBG 'autobyteus_server' stdout output:
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+
+2026-11-11 13:42:55,340 DEBG 'autobyteus_server' stdout output:
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+
+2026-11-11 13:42:55,340 DEBG 'autobyteus_server' stdout output:
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+
+2026-11-11 13:42:55,340 DEBG 'autobyteus_server' stdout output:
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+
+2026-11-11 13:42:55,340 DEBG 'autobyteus_server' stdout output:
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+2026-11-11 13:42:55,341 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'read_file'
+
+2026-11-11 13:42:55,342 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'write_file'
+
+2026-11-11 13:42:55,342 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'edit_file'
+
+2026-11-11 13:42:55,342 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'run_bash'
+
+2026-11-11 13:42:55,342 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+
+2026-11-11 13:42:55,342 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+
+2026-11-11 13:42:55,357 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'get_project_task'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'create_task'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'update_task'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'delegate_task'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'generate_image'
+
+2026-11-11 13:42:55,358 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'edit_image'
+
+2026-11-11 13:42:55,359 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'generate_speech'
+
+2026-11-11 13:42:55,359 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+
+2026-11-11 13:42:55,359 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Task Delegation Tools
+
+2026-11-11 13:42:55,359 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Media Tools
+
+2026-11-11 13:42:55,377 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+2026-11-11 13:42:55,377 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Agent Discovery Tools
+
+2026-11-11 13:42:55,378 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+
+2026-11-11 13:42:55,379 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Browser Tools
+
+2026-11-11 13:42:55,379 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'publish_artifacts'
+
+2026-11-11 13:42:55,379 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Published Artifact Tools
+
+2026-11-11 13:42:55,380 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_memory'
+
+2026-11-11 13:42:55,380 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Memory Tools
+
+2026-11-11 13:42:55,380 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'send_message_to'
+
+2026-11-11 13:42:55,380 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+
+2026-11-11 13:42:55,384 DEBG 'autobyteus_server' stderr output:
+Overwriting existing tool definition for name: 'search_web'
+
+2026-11-11 13:42:55,384 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+
+2026-11-11 13:42:55,400 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1794404575400,"pid":107,"hostname":"d3ea611cc8d3","msg":"Server listening at http://127.0.0.1:46443"}
+
+2026-11-11 13:42:55,446 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1794404575445,"pid":107,"hostname":"d3ea611cc8d3","msg":"Server listening at http://127.0.0.1:8000"}
+{"level":30,"time":1794404575445,"pid":107,"hostname":"d3ea611cc8d3","msg":"Server listening at http://172.17.0.6:8000"}
+[2026-11-11T13:42:55.445Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+
+2026-11-11 13:42:55,447 DEBG 'autobyteus_server' stdout output:
+Scheduling Studio-only non-critical startup tasks...
+
+2026-11-11 13:42:55,464 DEBG 'autobyteus_server' stdout output:
+Background cache pre-loading process has started.
+
+2026-11-11 13:42:55,464 DEBG 'autobyteus_server' stdout output:
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+
+2026-11-11 13:42:55,465 DEBG 'autobyteus_server' stdout output:
+Populating MCP server config cache for the first time...
+
+2026-11-11 13:42:55,465 DEBG 'autobyteus_server' stdout output:
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+
+2026-11-11 13:42:55,486 DEBG 'autobyteus_server' stdout output:
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+
+2026-11-11 13:42:55,487 DEBG 'autobyteus_server' stdout output:
+MCP server config cache populated with 0 items.
+
+2026-11-11 13:42:55,487 DEBG 'autobyteus_server' stdout output:
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+
+2026-11-11 13:42:55,487 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 0 MCP server configs into cache.
+
+2026-11-11 13:42:55,488 DEBG 'autobyteus_server' stdout output:
+Finished loading and registering all MCP server configurations.
+
+2026-11-11 13:42:55,489 DEBG 'autobyteus_server' stdout output:
+Background task 'MCP Tool Registration' completed successfully.
+
+2026-11-11 13:42:55,490 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 33 LLM models into cache.
+
+2026-11-11 13:42:55,490 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+2026-11-11 13:42:57,497 INFO spawned: 'chrome' with pid 506
+2026-11-11 13:42:57,568 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-11 13:42:57,568 DEBG 'chrome' stderr output:
+[506:506:1111/134257.568299:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-11 13:42:57,572 DEBG 'chrome' stderr output:
+[1111/134257.572644:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1111/134257.572704:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-11 13:42:57,590 DEBG 'chrome' stderr output:
+[525:525:0100/000000.589815:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-11 13:42:57,590 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473509843104 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stdout)>
+2026-11-11 13:42:57,590 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473509842400 for <Subprocess at 281473509438832 with name chrome in state STARTING> (stderr)>
+2026-11-11 13:42:57,590 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-11 13:42:57,590 INFO reaped unknown pid 522 (exit status 0)
+2026-11-11 13:42:57,590 INFO reaped unknown pid 526 (exit status 0)
+2026-11-11 13:42:57,590 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:57,590 INFO gave up: chrome entered FATAL state, too many start retries too quickly
+2026-11-11 13:42:57,665 DEBG 'autobyteus_server' stdout output:
+Agent Definition created successfully with ID: reporter
+
+2026-11-11 13:42:57,665 INFO reaped unknown pid 525 (exit status 0)
+2026-11-11 13:42:57,665 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:42:57,670 DEBG 'autobyteus_server' stdout output:
+Creating new workspace for rootPath: /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:42:57,670 DEBG 'autobyteus_server' stdout output:
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/ws-471.
+
+2026-11-11 13:42:57,672 DEBG 'autobyteus_server' stdout output:
+Created and registered workspace ID: agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:42:57,686 DEBG 'autobyteus_server' stdout output:
+Creating new workspace for rootPath: /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:42:57,686 DEBG 'autobyteus_server' stdout output:
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace/ws-471.
+Reusing registered workspace ID: agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:42:57,791 DEBG 'autobyteus_server' stdout output:
+AGY compaction detection off for run reporter_560df74af0f3481a93100860b8328dce: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+2026-11-11 13:42:57,836 DEBG 'autobyteus_server' stdout output:
+Agent websocket attached for run reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:42:57,837 DEBG 'autobyteus_server' stdout output:
+Created agent session f79cae10-3c7d-44b2-b6cf-fb0682b1e9f1 for run reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:42:57,838 DEBG 'autobyteus_server' stdout output:
+Agent WebSocket connected: session=f79cae10-3c7d-44b2-b6cf-fb0682b1e9f1, run=reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:42:58,942 DEBG 'autobyteus_server' stdout output:
+Closed agent session f79cae10-3c7d-44b2-b6cf-fb0682b1e9f1
+
+2026-11-11 13:42:58,942 DEBG 'autobyteus_server' stdout output:
+Agent WebSocket disconnected: f79cae10-3c7d-44b2-b6cf-fb0682b1e9f1
+
+2026-11-11 13:42:58,945 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:42:58,952 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:42:58,956 DEBG 'autobyteus_server' stdout output:
+Agent websocket attached for run reporter_560df74af0f3481a93100860b8328dce
+Created agent session 1bf85c99-64e8-443b-9055-b5b2cb5aca90 for run reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:42:58,956 DEBG 'autobyteus_server' stdout output:
+Agent WebSocket connected: session=1bf85c99-64e8-443b-9055-b5b2cb5aca90, run=reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:43:00,066 DEBG 'autobyteus_server' stdout output:
+Closed agent session 1bf85c99-64e8-443b-9055-b5b2cb5aca90
+Agent WebSocket disconnected: 1bf85c99-64e8-443b-9055-b5b2cb5aca90
+
+2026-11-11 13:43:00,067 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:43:00,574 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:43:46,700 DEBG 'autobyteus_server' stderr output:
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 172.17.0.1
+
+2026-11-11 13:43:46,702 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794404626701,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-f","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":2.241208999999799,"msg":"http request completed"}
+
+2026-11-11 13:43:46,702 DEBG 'autobyteus_server' stderr output:
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 172.17.0.1
+
+2026-11-11 13:43:46,703 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794404626703,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-g","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.6201250000012806,"msg":"http request completed"}
+
+2026-11-11 13:43:46,703 DEBG 'autobyteus_server' stderr output:
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 172.17.0.1
+
+2026-11-11 13:43:46,704 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794404626704,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-h","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.31370800000149757,"msg":"http request completed"}
+
+2026-11-11 13:43:46,706 DEBG 'autobyteus_server' stderr output:
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 172.17.0.1
+
+2026-11-11 13:43:46,707 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794404626706,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-i","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.850417000001471,"msg":"http request completed"}
+
+2026-11-11 13:43:46,713 DEBG 'autobyteus_server' stderr output:
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 172.17.0.1
+
+2026-11-11 13:43:46,713 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794404626713,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-k","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.8100829999966663,"msg":"http request completed"}
+
+2026-11-11 13:43:46,714 DEBG 'autobyteus_server' stderr output:
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 172.17.0.1
+
+2026-11-11 13:43:46,715 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794404626715,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-l","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":1.4496670000007725,"msg":"http request completed"}
+
+2026-11-11 13:44:17,002 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:17,190 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:44:17,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:17,248 DEBG 'autobyteus_server' stdout output:
+Agent websocket attached for run reporter_560df74af0f3481a93100860b8328dce
+Created agent session ae9719a1-1903-4400-a4e8-7c1b3d296391 for run reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:44:17,249 DEBG 'autobyteus_server' stdout output:
+Agent WebSocket connected: session=ae9719a1-1903-4400-a4e8-7c1b3d296391, run=reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:44:22,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:27,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:32,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:37,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:42,231 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:47,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:52,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:44:57,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:02,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:07,259 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:12,256 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:17,331 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:22,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:27,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:32,231 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:37,232 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:42,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:44,791 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:45:47,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:52,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:45:57,231 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:02,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:07,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:12,251 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:17,258 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:22,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:27,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:32,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:37,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:42,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:43,783 DEBG 'autobyteus_server' stdout output:
+Created WorkspaceFileExplorer for agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be (graphql-folder-children).
+
+2026-11-11 13:46:43,812 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:46:43,888 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:46:43,888 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 0e71efb1-f0f3-4fa6-b3e2-1749def2b8a8 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:46:43,889 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 0e71efb1-f0f3-4fa6-b3e2-1749def2b8a8 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:46:43,889 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 0e71efb1-f0f3-4fa6-b3e2-1749def2b8a8 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:46:43,889 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:46:47,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:52,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:46:57,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:02,256 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:07,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:12,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:17,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:22,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:27,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:32,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:37,232 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:42,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:47,232 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:52,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:47:52,235 INFO reaped unknown pid 199 (exit status 0)
+2026-11-11 13:47:52,236 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:47:54,240 INFO reaped unknown pid 126 (exit status 0)
+2026-11-11 13:47:54,240 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:47:57,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:02,232 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:07,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:12,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:17,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:22,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:27,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:32,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:37,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:38,094 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:48:38,094 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:48:38,094 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: 0e71efb1-f0f3-4fa6-b3e2-1749def2b8a8
+
+2026-11-11 13:48:38,095 DEBG 'autobyteus_server' stdout output:
+Closed file explorer session 0e71efb1-f0f3-4fa6-b3e2-1749def2b8a8. Active sessions: 0
+File explorer WebSocket disconnected: 0e71efb1-f0f3-4fa6-b3e2-1749def2b8a8
+
+2026-11-11 13:48:38,676 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:48:38,739 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:48:38,739 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: d3e52b80-6148-4651-840f-fae5c32c375e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:48:38,740 DEBG 'autobyteus_server' stdout output:
+Created file explorer session d3e52b80-6148-4651-840f-fae5c32c375e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:48:38,740 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: d3e52b80-6148-4651-840f-fae5c32c375e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:48:42,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:47,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:52,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:48:57,247 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:02,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:07,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:12,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:17,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:22,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:27,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:32,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:37,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:39,088 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:49:39,092 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: d3e52b80-6148-4651-840f-fae5c32c375e
+Closed file explorer session d3e52b80-6148-4651-840f-fae5c32c375e. Active sessions: 0
+File explorer WebSocket disconnected: d3e52b80-6148-4651-840f-fae5c32c375e
+
+2026-11-11 13:49:39,142 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:49:39,256 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 8272f870-ad9c-4377-84ec-14f5a8b4e31e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 8272f870-ad9c-4377-84ec-14f5a8b4e31e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:49:39,256 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 8272f870-ad9c-4377-84ec-14f5a8b4e31e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:49:39,256 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:49:39,257 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 8272f870-ad9c-4377-84ec-14f5a8b4e31e
+Closed file explorer session 8272f870-ad9c-4377-84ec-14f5a8b4e31e. Active sessions: 0
+File explorer WebSocket disconnected: 8272f870-ad9c-4377-84ec-14f5a8b4e31e
+
+2026-11-11 13:49:39,764 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:49:39,848 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:49:39,848 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 04cd4aaf-6a47-4957-ba7e-23d9b29f6578 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 04cd4aaf-6a47-4957-ba7e-23d9b29f6578 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:49:39,849 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 04cd4aaf-6a47-4957-ba7e-23d9b29f6578 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:49:42,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:47,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:52,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:49:57,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:02,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:07,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:12,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:17,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:22,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:27,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:32,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:37,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:39,942 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:50:39,942 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:50:39,942 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: 04cd4aaf-6a47-4957-ba7e-23d9b29f6578
+Closed file explorer session 04cd4aaf-6a47-4957-ba7e-23d9b29f6578. Active sessions: 0
+
+2026-11-11 13:50:39,942 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket disconnected: 04cd4aaf-6a47-4957-ba7e-23d9b29f6578
+
+2026-11-11 13:50:39,998 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:50:40,065 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5bf245d4-c4e4-4f74-b4ae-af05437be21e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:50:40,065 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 5bf245d4-c4e4-4f74-b4ae-af05437be21e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: 5bf245d4-c4e4-4f74-b4ae-af05437be21e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:50:42,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:47,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:52,254 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:50:57,260 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:02,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:07,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:12,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:17,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:22,262 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:27,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:32,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:37,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:40,168 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:51:40,169 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:51:40,169 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: 5bf245d4-c4e4-4f74-b4ae-af05437be21e
+Closed file explorer session 5bf245d4-c4e4-4f74-b4ae-af05437be21e. Active sessions: 0
+File explorer WebSocket disconnected: 5bf245d4-c4e4-4f74-b4ae-af05437be21e
+
+2026-11-11 13:51:40,232 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:51:40,303 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:51:40,303 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: d5879b32-a2a4-4782-9195-c43917ec0cbc for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session d5879b32-a2a4-4782-9195-c43917ec0cbc for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: d5879b32-a2a4-4782-9195-c43917ec0cbc for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:51:40,304 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:51:42,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:47,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:52,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:51:57,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:02,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:07,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:12,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:17,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:22,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:27,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:32,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:37,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:40,373 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:52:40,374 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: d5879b32-a2a4-4782-9195-c43917ec0cbc
+
+2026-11-11 13:52:40,374 DEBG 'autobyteus_server' stdout output:
+Closed file explorer session d5879b32-a2a4-4782-9195-c43917ec0cbc. Active sessions: 0
+File explorer WebSocket disconnected: d5879b32-a2a4-4782-9195-c43917ec0cbc
+
+2026-11-11 13:52:40,427 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:52:40,486 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:52:40,486 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 58edebc1-f9c7-43c6-b71a-d33dbe32fbd6 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 58edebc1-f9c7-43c6-b71a-d33dbe32fbd6 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:52:40,486 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 58edebc1-f9c7-43c6-b71a-d33dbe32fbd6 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:52:42,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:47,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:51,309 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.xfce.Xfconf' requested by ':1.12' (uid=1000 pid=173 comm="xfce4-panel")
+
+2026-11-11 13:52:51,315 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.xfce.Xfconf'
+
+2026-11-11 13:52:52,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:52:57,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:02,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:07,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:12,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:17,247 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:22,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:27,233 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:32,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:37,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:40,566 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 58edebc1-f9c7-43c6-b71a-d33dbe32fbd6
+Closed file explorer session 58edebc1-f9c7-43c6-b71a-d33dbe32fbd6. Active sessions: 0
+File explorer WebSocket disconnected: 58edebc1-f9c7-43c6-b71a-d33dbe32fbd6
+
+2026-11-11 13:53:40,607 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405220607,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-cs","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Fmissing-471.md","statusCode":404,"elapsedMs":2.0406249999068677,"msg":"http request completed"}
+
+2026-11-11 13:53:40,616 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:53:40,674 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:53:40,674 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: e679e65a-e6aa-4d27-9b29-f4f36e2909ea for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session e679e65a-e6aa-4d27-9b29-f4f36e2909ea for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:53:40,674 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: e679e65a-e6aa-4d27-9b29-f4f36e2909ea for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:53:42,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:47,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:52,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:53:57,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:02,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:07,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:10,741 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:54:10,741 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: e679e65a-e6aa-4d27-9b29-f4f36e2909ea
+Closed file explorer session e679e65a-e6aa-4d27-9b29-f4f36e2909ea. Active sessions: 0
+File explorer WebSocket disconnected: e679e65a-e6aa-4d27-9b29-f4f36e2909ea
+
+2026-11-11 13:54:10,797 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405250797,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-dd","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Freports-471.md","statusCode":400,"elapsedMs":1.2579169999808073,"msg":"http request completed"}
+
+2026-11-11 13:54:10,811 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:54:10,862 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:54:10,862 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: d062b051-d871-4a4a-96cc-cf7ae4794d03 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:54:10,862 DEBG 'autobyteus_server' stdout output:
+Created file explorer session d062b051-d871-4a4a-96cc-cf7ae4794d03 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:54:10,862 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: d062b051-d871-4a4a-96cc-cf7ae4794d03 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:54:10,862 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:54:12,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:17,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:22,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:27,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:32,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:37,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:40,941 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:54:40,942 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: d062b051-d871-4a4a-96cc-cf7ae4794d03
+Closed file explorer session d062b051-d871-4a4a-96cc-cf7ae4794d03. Active sessions: 0
+File explorer WebSocket disconnected: d062b051-d871-4a4a-96cc-cf7ae4794d03
+
+2026-11-11 13:54:40,997 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405280997,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-dy","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Fdevice-471.txt","statusCode":400,"elapsedMs":1.2863329999381676,"msg":"http request completed"}
+
+2026-11-11 13:54:41,005 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:54:41,059 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:54:41,059 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:54:41,059 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 372b3716-4c3b-400f-aa5d-fe91b4f65533 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:54:41,059 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 372b3716-4c3b-400f-aa5d-fe91b4f65533 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:54:41,060 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 372b3716-4c3b-400f-aa5d-fe91b4f65533 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:54:42,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:47,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:52,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:54:57,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:02,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:07,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:11,166 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:55:11,167 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 372b3716-4c3b-400f-aa5d-fe91b4f65533
+
+2026-11-11 13:55:11,167 DEBG 'autobyteus_server' stdout output:
+Closed file explorer session 372b3716-4c3b-400f-aa5d-fe91b4f65533. Active sessions: 0
+File explorer WebSocket disconnected: 372b3716-4c3b-400f-aa5d-fe91b4f65533
+
+2026-11-11 13:55:11,193 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:55:11,202 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405311202,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-ej","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Fdevice-471.txt","statusCode":400,"elapsedMs":14.893083999981172,"msg":"http request completed"}
+
+2026-11-11 13:55:11,257 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:55:11,257 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: f8cff108-d265-4563-9f76-a8c9be52fb88 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session f8cff108-d265-4563-9f76-a8c9be52fb88 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:55:11,257 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: f8cff108-d265-4563-9f76-a8c9be52fb88 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:55:12,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:17,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:22,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:27,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:32,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:37,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:42,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:47,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:52,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:55:57,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:02,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:07,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:12,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:13,365 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:13,365 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:56:13,366 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: f8cff108-d265-4563-9f76-a8c9be52fb88
+Closed file explorer session f8cff108-d265-4563-9f76-a8c9be52fb88. Active sessions: 0
+
+2026-11-11 13:56:13,366 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket disconnected: f8cff108-d265-4563-9f76-a8c9be52fb88
+
+2026-11-11 13:56:13,944 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:14,005 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:14,006 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: f9b1e853-48fc-45fd-a226-88a4877b8f10 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session f9b1e853-48fc-45fd-a226-88a4877b8f10 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:14,006 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: f9b1e853-48fc-45fd-a226-88a4877b8f10 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:14,006 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:14,672 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:14,672 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: f9b1e853-48fc-45fd-a226-88a4877b8f10
+Closed file explorer session f9b1e853-48fc-45fd-a226-88a4877b8f10. Active sessions: 0
+File explorer WebSocket disconnected: f9b1e853-48fc-45fd-a226-88a4877b8f10
+
+2026-11-11 13:56:14,702 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:14,761 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e88f436d-0e26-45c3-be23-17d595e647d6 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:14,761 DEBG 'autobyteus_server' stdout output:
+Created file explorer session e88f436d-0e26-45c3-be23-17d595e647d6 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: e88f436d-0e26-45c3-be23-17d595e647d6 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:14,762 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:15,262 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:15,262 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:56:15,262 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: e88f436d-0e26-45c3-be23-17d595e647d6
+
+2026-11-11 13:56:15,262 DEBG 'autobyteus_server' stdout output:
+Closed file explorer session e88f436d-0e26-45c3-be23-17d595e647d6. Active sessions: 0
+File explorer WebSocket disconnected: e88f436d-0e26-45c3-be23-17d595e647d6
+
+2026-11-11 13:56:15,822 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:15,875 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:15,875 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: ddf303ca-5635-4321-bc52-511d23481368 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session ddf303ca-5635-4321-bc52-511d23481368 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:15,875 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: ddf303ca-5635-4321-bc52-511d23481368 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:15,875 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:16,564 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:16,564 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: ddf303ca-5635-4321-bc52-511d23481368
+Closed file explorer session ddf303ca-5635-4321-bc52-511d23481368. Active sessions: 0
+File explorer WebSocket disconnected: ddf303ca-5635-4321-bc52-511d23481368
+
+2026-11-11 13:56:16,619 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:16,679 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:16,679 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 23a51723-ffb6-49cc-8dc3-f9a81cefb613 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 23a51723-ffb6-49cc-8dc3-f9a81cefb613 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:16,679 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 23a51723-ffb6-49cc-8dc3-f9a81cefb613 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:17,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:17,341 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:17,341 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 23a51723-ffb6-49cc-8dc3-f9a81cefb613
+Closed file explorer session 23a51723-ffb6-49cc-8dc3-f9a81cefb613. Active sessions: 0
+File explorer WebSocket disconnected: 23a51723-ffb6-49cc-8dc3-f9a81cefb613
+
+2026-11-11 13:56:17,400 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:17,460 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 535c3dfb-bafe-4acf-b625-3ac851fca2e0 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 535c3dfb-bafe-4acf-b625-3ac851fca2e0 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:17,460 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 535c3dfb-bafe-4acf-b625-3ac851fca2e0 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:18,129 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:18,129 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 535c3dfb-bafe-4acf-b625-3ac851fca2e0
+Closed file explorer session 535c3dfb-bafe-4acf-b625-3ac851fca2e0. Active sessions: 0
+File explorer WebSocket disconnected: 535c3dfb-bafe-4acf-b625-3ac851fca2e0
+
+2026-11-11 13:56:18,181 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:18,244 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 2a66ef6e-91cc-4ca8-9efd-59c68b5f9c2a for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:18,244 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 2a66ef6e-91cc-4ca8-9efd-59c68b5f9c2a for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:18,245 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 2a66ef6e-91cc-4ca8-9efd-59c68b5f9c2a for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:19,777 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:19,778 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 2a66ef6e-91cc-4ca8-9efd-59c68b5f9c2a
+Closed file explorer session 2a66ef6e-91cc-4ca8-9efd-59c68b5f9c2a. Active sessions: 0
+File explorer WebSocket disconnected: 2a66ef6e-91cc-4ca8-9efd-59c68b5f9c2a
+
+2026-11-11 13:56:19,822 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405379821,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-ga","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Fmissing-471.md","statusCode":404,"elapsedMs":0.7164999999804422,"msg":"http request completed"}
+
+2026-11-11 13:56:19,829 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:19,886 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 422fcedd-265c-4739-ae84-bd8f30937e34 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 422fcedd-265c-4739-ae84-bd8f30937e34 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:19,886 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 422fcedd-265c-4739-ae84-bd8f30937e34 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:20,247 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:20,248 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 422fcedd-265c-4739-ae84-bd8f30937e34
+Closed file explorer session 422fcedd-265c-4739-ae84-bd8f30937e34. Active sessions: 0
+File explorer WebSocket disconnected: 422fcedd-265c-4739-ae84-bd8f30937e34
+
+2026-11-11 13:56:20,289 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405380289,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-gd","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Freports-471.md","statusCode":400,"elapsedMs":1.2865420000161976,"msg":"http request completed"}
+
+2026-11-11 13:56:20,297 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:20,355 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:56:20,355 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 0f2aff00-82ab-45f0-9083-af68226d431b for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 0f2aff00-82ab-45f0-9083-af68226d431b for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:20,355 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 0f2aff00-82ab-45f0-9083-af68226d431b for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:20,743 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:20,743 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 0f2aff00-82ab-45f0-9083-af68226d431b
+Closed file explorer session 0f2aff00-82ab-45f0-9083-af68226d431b. Active sessions: 0
+File explorer WebSocket disconnected: 0f2aff00-82ab-45f0-9083-af68226d431b
+
+2026-11-11 13:56:20,798 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405380798,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-gg","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Fdevice-471.txt","statusCode":400,"elapsedMs":2.1641250000102445,"msg":"http request completed"}
+
+2026-11-11 13:56:20,816 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:20,892 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:20,892 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 95bfe368-cafd-459e-9783-f5f000ac5758 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 95bfe368-cafd-459e-9783-f5f000ac5758 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: 95bfe368-cafd-459e-9783-f5f000ac5758 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:20,892 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:21,258 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 95bfe368-cafd-459e-9783-f5f000ac5758
+Closed file explorer session 95bfe368-cafd-459e-9783-f5f000ac5758. Active sessions: 0
+File explorer WebSocket disconnected: 95bfe368-cafd-459e-9783-f5f000ac5758
+
+2026-11-11 13:56:21,295 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:21,302 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405381300,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-gj","method":"GET","url":"/rest/node-files/content?path=%2Fsrv%2Fabtest471%2Fdevice-471.txt","statusCode":400,"elapsedMs":9.885750000015832,"msg":"http request completed"}
+
+2026-11-11 13:56:21,356 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:21,356 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: ffa13912-53b5-4c64-8e10-c4442396d018 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session ffa13912-53b5-4c64-8e10-c4442396d018 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:21,356 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: ffa13912-53b5-4c64-8e10-c4442396d018 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:22,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:24,889 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:24,889 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: ffa13912-53b5-4c64-8e10-c4442396d018
+Closed file explorer session ffa13912-53b5-4c64-8e10-c4442396d018. Active sessions: 0
+File explorer WebSocket disconnected: ffa13912-53b5-4c64-8e10-c4442396d018
+
+2026-11-11 13:56:24,940 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:25,000 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:25,000 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 0022e0f1-ec6a-497d-a8a4-de29156e03d2 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 0022e0f1-ec6a-497d-a8a4-de29156e03d2 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:25,000 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 0022e0f1-ec6a-497d-a8a4-de29156e03d2 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:25,662 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:25,663 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 0022e0f1-ec6a-497d-a8a4-de29156e03d2
+Closed file explorer session 0022e0f1-ec6a-497d-a8a4-de29156e03d2. Active sessions: 0
+File explorer WebSocket disconnected: 0022e0f1-ec6a-497d-a8a4-de29156e03d2
+
+2026-11-11 13:56:25,720 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:25,795 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 690f360e-063e-409f-9ce4-35f7018ed9f9 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 690f360e-063e-409f-9ce4-35f7018ed9f9 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:25,795 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 690f360e-063e-409f-9ce4-35f7018ed9f9 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:26,451 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:26,452 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 690f360e-063e-409f-9ce4-35f7018ed9f9
+Closed file explorer session 690f360e-063e-409f-9ce4-35f7018ed9f9. Active sessions: 0
+File explorer WebSocket disconnected: 690f360e-063e-409f-9ce4-35f7018ed9f9
+
+2026-11-11 13:56:26,492 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:26,559 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:26,559 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 16b229e1-a878-4a72-a0af-e73ff5923b5e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 16b229e1-a878-4a72-a0af-e73ff5923b5e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: 16b229e1-a878-4a72-a0af-e73ff5923b5e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:27,248 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:28,006 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:28,006 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:56:28,006 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession closed: 16b229e1-a878-4a72-a0af-e73ff5923b5e
+Closed file explorer session 16b229e1-a878-4a72-a0af-e73ff5923b5e. Active sessions: 0
+File explorer WebSocket disconnected: 16b229e1-a878-4a72-a0af-e73ff5923b5e
+
+2026-11-11 13:56:32,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:37,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:42,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:47,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:52,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:55,760 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:55,824 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:55,824 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 2072821e-2968-4004-9dc5-22faf080b83e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 2072821e-2968-4004-9dc5-22faf080b83e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:55,824 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 2072821e-2968-4004-9dc5-22faf080b83e for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:55,824 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:56,008 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:56,008 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 2072821e-2968-4004-9dc5-22faf080b83e
+Closed file explorer session 2072821e-2968-4004-9dc5-22faf080b83e. Active sessions: 0
+File explorer WebSocket disconnected: 2072821e-2968-4004-9dc5-22faf080b83e
+
+2026-11-11 13:56:56,042 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:56,101 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 13:56:56,101 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: d0d244ac-dcfd-4de1-b609-d1e9825a7896 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session d0d244ac-dcfd-4de1-b609-d1e9825a7896 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: d0d244ac-dcfd-4de1-b609-d1e9825a7896 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:56,288 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: d0d244ac-dcfd-4de1-b609-d1e9825a7896
+
+2026-11-11 13:56:56,288 DEBG 'autobyteus_server' stdout output:
+Closed file explorer session d0d244ac-dcfd-4de1-b609-d1e9825a7896. Active sessions: 0
+File explorer WebSocket disconnected: d0d244ac-dcfd-4de1-b609-d1e9825a7896
+
+2026-11-11 13:56:56,330 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:56,388 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 83b24240-2259-472d-bdb0-00c455d0e8b3 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:56,388 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 83b24240-2259-472d-bdb0-00c455d0e8b3 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+File explorer WebSocket connected: 83b24240-2259-472d-bdb0-00c455d0e8b3 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:56,388 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:56,568 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 83b24240-2259-472d-bdb0-00c455d0e8b3
+Closed file explorer session 83b24240-2259-472d-bdb0-00c455d0e8b3. Active sessions: 0
+
+2026-11-11 13:56:56,568 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket disconnected: 83b24240-2259-472d-bdb0-00c455d0e8b3
+
+2026-11-11 13:56:57,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:56:57,614 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 13:56:57,689 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 13:56:57,689 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 6f1c1f03-7e3d-4b61-900a-62ff677d15c9 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 6f1c1f03-7e3d-4b61-900a-62ff677d15c9 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 13:56:57,690 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 6f1c1f03-7e3d-4b61-900a-62ff677d15c9 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 13:56:59,511 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 13:56:59,512 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 6f1c1f03-7e3d-4b61-900a-62ff677d15c9
+Closed file explorer session 6f1c1f03-7e3d-4b61-900a-62ff677d15c9. Active sessions: 0
+File explorer WebSocket disconnected: 6f1c1f03-7e3d-4b61-900a-62ff677d15c9
+
+2026-11-11 13:57:02,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:07,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:12,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:17,270 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:22,265 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:23,828 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:57:27,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:30,851 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405450844,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-ih","method":"GET","url":"/rest/node-files/content?path=%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fabtest471-node-b-37JT8j%2Fworkspace%2Fb-notes-471.txt","statusCode":404,"elapsedMs":38.06499999994412,"msg":"http request completed"}
+
+2026-11-11 13:57:32,254 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:37,247 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:42,271 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:47,271 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:52,251 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:57:52,252 INFO reaped unknown pid 669 (exit status 0)
+2026-11-11 13:57:52,252 DEBG received SIGCHLD indicating a child quit
+2026-11-11 13:57:57,270 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:02,275 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:07,364 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:12,283 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:17,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:22,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:27,249 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:32,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:37,236 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:42,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:45,346 DEBG 'autobyteus_server' stdout output:
+{"level":40,"time":1794405525345,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-jr","method":"GET","url":"/rest/node-files/content?path=%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fabtest471-node-b-37JT8j%2Fworkspace%2Fb-notes-471.txt","statusCode":404,"elapsedMs":2.1070830000098795,"msg":"http request completed"}
+
+2026-11-11 13:58:47,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:52,237 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:58:57,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:02,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:07,245 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:12,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:17,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:18,522 DEBG 'autobyteus_server' stdout output:
+Agent websocket attached for run reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:59:18,522 DEBG 'autobyteus_server' stdout output:
+Created agent session 0024f79e-1c76-41b8-9d24-f02ffe4e9a07 for run reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:59:18,523 DEBG 'autobyteus_server' stdout output:
+Agent WebSocket connected: session=0024f79e-1c76-41b8-9d24-f02ffe4e9a07, run=reporter_560df74af0f3481a93100860b8328dce
+
+2026-11-11 13:59:19,731 DEBG 'autobyteus_server' stdout output:
+Closed agent session 0024f79e-1c76-41b8-9d24-f02ffe4e9a07
+Agent WebSocket disconnected: 0024f79e-1c76-41b8-9d24-f02ffe4e9a07
+
+2026-11-11 13:59:22,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:23,759 DEBG 'autobyteus_server' stderr output:
+Memory file missing: /home/autobyteus/data/memory/agents/reporter_560df74af0f3481a93100860b8328dce/raw_traces_manifest.json
+
+2026-11-11 13:59:27,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:32,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:37,240 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:42,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:47,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:52,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 13:59:57,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:02,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:07,250 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:09,768 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 14:00:09,850 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 14:00:09,850 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 89a3508e-06bd-45d0-88ea-464d7d6f8547 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+Created file explorer session 89a3508e-06bd-45d0-88ea-464d7d6f8547 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 14:00:09,850 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 89a3508e-06bd-45d0-88ea-464d7d6f8547 for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 14:00:09,850 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 14:00:11,641 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 14:00:11,641 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 89a3508e-06bd-45d0-88ea-464d7d6f8547
+Closed file explorer session 89a3508e-06bd-45d0-88ea-464d7d6f8547. Active sessions: 0
+File explorer WebSocket disconnected: 89a3508e-06bd-45d0-88ea-464d7d6f8547
+
+2026-11-11 14:00:12,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:17,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:22,272 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:27,250 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:32,255 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:37,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:42,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:47,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:52,250 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:00:57,248 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:02,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:07,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:12,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:17,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:22,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:27,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:32,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:37,239 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:42,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:47,245 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:52,245 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:01:57,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:02,346 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:07,245 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:12,235 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:17,238 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:22,234 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:27,241 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:32,242 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:37,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:42,259 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:47,266 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:51,312 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.xfce.Xfconf' requested by ':1.12' (uid=1000 pid=173 comm="xfce4-panel")
+
+2026-11-11 14:02:51,332 DEBG 'dbus' stderr output:
+dbus-daemon[31]: [session uid=1000 pid=31] Successfully activated service 'org.xfce.Xfconf'
+
+2026-11-11 14:02:52,249 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:02:57,261 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:02,284 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:07,246 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:12,247 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:17,252 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:22,273 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:27,257 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:32,253 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:37,264 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:42,257 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:47,243 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:52,288 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:03:57,256 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:02,252 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:07,266 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:12,005 DEBG 'autobyteus_server' stdout output:
+FileSystemWatcher initialized for '/home/autobyteus/workspace/ws-471' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+2026-11-11 14:04:12,126 DEBG 'autobyteus_server' stdout output:
+Started filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+
+2026-11-11 14:04:12,127 DEBG 'autobyteus_server' stdout output:
+Acquired file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 1
+
+2026-11-11 14:04:12,127 DEBG 'autobyteus_server' stdout output:
+FileExplorerSession created: 44d151b9-589e-40d9-ae88-c9423dd8d69a for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 14:04:12,127 DEBG 'autobyteus_server' stdout output:
+Created file explorer session 44d151b9-589e-40d9-ae88-c9423dd8d69a for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be. Active sessions: 1
+
+2026-11-11 14:04:12,127 DEBG 'autobyteus_server' stdout output:
+File explorer WebSocket connected: 44d151b9-589e-40d9-ae88-c9423dd8d69a for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 14:04:12,127 DEBG 'autobyteus_server' stdout output:
+File explorer websocket attached for workspace agent_ws_94c695753003af57289cb4205151878140e6ee019074158859701432429c56be
+
+2026-11-11 14:04:12,262 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:15,020 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1794405855018,"pid":107,"hostname":"d3ea611cc8d3","reqId":"req-pl","err":{"type":"GraphQLError","message":"The path must be relative to the workspace root.","stack":"Error: The path must be relative to the workspace root.\n    at WriteFileOperation.execute (file:///opt/autobyteus/server-package/dist/file-explorer/operations/write-file-operation.js:17:19)\n    at WorkspaceFileExplorer.writeFileContent (file:///opt/autobyteus/server-package/dist/file-explorer/file-explorer.js:71:26)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async FileExplorerResolver.writeFileContent (file:///opt/autobyteus/server-package/dist/api/graphql/types/file-explorer.js:110:33)\n    at async Object.fastifyGraphQl [as graphql] (/opt/autobyteus/server-package/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["writeFileContent"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"The path must be relative to the workspace root."}
+
+2026-11-11 14:04:17,265 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:22,249 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:27,278 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:32,261 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:37,268 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:42,276 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:47,289 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:52,254 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:04:57,289 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:02,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:07,253 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:12,252 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:17,256 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:22,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:27,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:32,244 DEBG 'autobyteus_server' stderr output:
+Task agent 'publisher_1a34f27934944fbc8c9bb3020fb83726' of agent run 'reporter_560df74af0f3481a93100860b8328dce' is not available: its own file is missing.
+
+2026-11-11 14:05:32,406 DEBG 'autobyteus_server' stdout output:
+Released file watcher lease for /home/autobyteus/workspace/ws-471 (file-explorer-websocket); active leases: 0
+
+2026-11-11 14:05:32,409 DEBG 'autobyteus_server' stdout output:
+Logically stopped filesystem watcher for workspace /home/autobyteus/workspace/ws-471
+FileExplorerSession closed: 44d151b9-589e-40d9-ae88-c9423dd8d69a
+Closed file explorer session 44d151b9-589e-40d9-ae88-c9423dd8d69a. Active sessions: 0
+File explorer WebSocket disconnected: 44d151b9-589e-40d9-ae88-c9423dd8d69a
+
+2026-11-11 14:05:32,410 DEBG 'autobyteus_server' stdout output:
+Closed agent session ae9719a1-1903-4400-a4e8-7c1b3d296391
+Agent WebSocket disconnected: ae9719a1-1903-4400-a4e8-7c1b3d296391
+

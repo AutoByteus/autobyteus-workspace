@@ -1,0 +1,327 @@
+{
+  "results": {
+    "notes": {
+      "text": "notes-471.md Notes 471 NOTES-MARKER-471: the release notes an agent wrote. one two",
+      "alert": "",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 662,
+      "requests": [
+        "node-file 200"
+      ],
+      "typedChanges": false
+    },
+    "picture": {
+      "text": "notes-471.md picture-471.png 100% Scroll to zoom • Drag to pan • Double-click to reset",
+      "alert": "",
+      "image": [
+        {
+          "w": 120,
+          "h": 80
+        }
+      ],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 669,
+      "requests": [
+        "node-file 200"
+      ]
+    },
+    "plan": {
+      "text": "notes-471.md picture-471.png plan-471.pdf",
+      "alert": "",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 1,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 662,
+      "requests": [
+        "node-file 200"
+      ]
+    },
+    "tone": {
+      "text": "notes-471.md picture-471.png plan-471.pdf tone-471.wav",
+      "alert": "",
+      "image": [],
+      "audio": [
+        {
+          "blob": true,
+          "duration": 1,
+          "readyState": 4
+        }
+      ],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 664,
+      "requests": [
+        "node-file 200"
+      ]
+    },
+    "inside": {
+      "text": "notes-471.md picture-471.png plan-471.pdf tone-471.wav inside-471.md Inside 471 INSIDE-MARKER-471: a file in the run folder.",
+      "alert": "",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 1526,
+      "requests": []
+    },
+    "missing": {
+      "text": "notes-471.md picture-471.png plan-471.pdf tone-471.wav inside-471.md missing-471.md Error!This file was not found on the computer.",
+      "alert": "Error!This file was not found on the computer.",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 355,
+      "requests": [
+        "node-file 404"
+      ]
+    },
+    "folder": {
+      "text": "notes-471.md picture-471.png plan-471.pdf tone-471.wav inside-471.md missing-471.md reports-471.md Error!This path is a folder, not a file.",
+      "alert": "Error!This path is a folder, not a file.",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 362,
+      "requests": [
+        "node-file 400"
+      ]
+    },
+    "device": {
+      "text": "notes-471.md picture-471.png plan-471.pdf tone-471.wav inside-471.md missing-471.md reports-471.md device-471.txt Error!The file preview could not be opened.",
+      "alert": "Error!The file preview could not be opened.",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 378,
+      "requests": [
+        "node-file 400"
+      ]
+    }
+  },
+  "reopened": {
+    "picture": {
+      "text": "picture-471.png 100% Scroll to zoom • Drag to pan • Double-click to reset",
+      "alert": "",
+      "image": [
+        {
+          "w": 120,
+          "h": 80
+        }
+      ],
+      "audio": [],
+      "pdf": {
+        "canvases": 0,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 656,
+      "requests": [
+        "node-file 200"
+      ]
+    },
+    "plan": {
+      "text": "picture-471.png plan-471.pdf",
+      "alert": "",
+      "image": [],
+      "audio": [],
+      "pdf": {
+        "canvases": 1,
+        "frames": []
+      },
+      "editControls": 0,
+      "status": "",
+      "settled": true,
+      "ms": 664,
+      "requests": [
+        "node-file 200"
+      ]
+    }
+  },
+  "lifecycle": {
+    "nodeFileTabsOpen": [
+      {
+        "file": "notes-471.md",
+        "type": "Text",
+        "blob": false,
+        "readOnly": true,
+        "error": null
+      },
+      {
+        "file": "picture-471.png",
+        "type": "Image",
+        "blob": true,
+        "readOnly": true,
+        "error": null
+      },
+      {
+        "file": "plan-471.pdf",
+        "type": "PDF",
+        "blob": true,
+        "readOnly": true,
+        "error": null
+      },
+      {
+        "file": "tone-471.wav",
+        "type": "Audio",
+        "blob": true,
+        "readOnly": true,
+        "error": null
+      },
+      {
+        "file": "inside-471.md",
+        "type": "Text",
+        "blob": false,
+        "readOnly": true,
+        "error": null
+      },
+      {
+        "file": "missing-471.md",
+        "type": "Text",
+        "blob": false,
+        "readOnly": true,
+        "error": "node-file-preview:not-found"
+      },
+      {
+        "file": "reports-471.md",
+        "type": "Text",
+        "blob": false,
+        "readOnly": true,
+        "error": "node-file-preview:folder"
+      },
+      {
+        "file": "device-471.txt",
+        "type": "Text",
+        "blob": false,
+        "readOnly": true,
+        "error": "node-file-preview:failed"
+      }
+    ],
+    "storeObjectUrls": 5,
+    "revokedOfThem": 5,
+    "openAfterClose": 0,
+    "openAfterSecondClose": 0,
+    "createdTotal": 15,
+    "revokedTotal": 9,
+    "createdNotRevoked": 6
+  },
+  "requests": [
+    {
+      "route": "node-file",
+      "path": "/home/autobyteus/shared/notes-471.md",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/home/autobyteus/shared/notes-471.md",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/home/autobyteus/shared/picture-471.png",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/plan-471.pdf",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/tone-471.wav",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/missing-471.md",
+      "status": 404
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/reports-471.md",
+      "status": 400
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/device-471.txt",
+      "status": 400
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/device-471.txt",
+      "status": 400
+    },
+    {
+      "route": "node-file",
+      "path": "/home/autobyteus/shared/picture-471.png",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/plan-471.pdf",
+      "status": 200
+    },
+    {
+      "route": "node-file",
+      "path": "/srv/abtest471/plan-471.pdf",
+      "status": 200
+    }
+  ],
+  "hostWorkspaceText": false,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+  ]
+}

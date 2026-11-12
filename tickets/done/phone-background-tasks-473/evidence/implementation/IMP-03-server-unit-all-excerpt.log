@@ -1,0 +1,10 @@
+# IMP-03 server-unit-all
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Environment mode: shell
+# Commit: 2d01ca639d (branch codex/phone-background-tasks-473)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12T05:10:56Z
+# Excerpt of IMP-03-server-unit-all.log (full log kept out of git): totals
+ Test Files  984 passed | 5 skipped (989)
+      Tests  8419 passed | 9 skipped (8428)
+# Exit status: 0

@@ -1,0 +1,11 @@
+# API-05 full mobile-shell probe; commit b49b5c539f; 2026-11-11T14:09:23Z; env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<API-05-mobile-shell>
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-05-mobile-shell
+
+mobile-shell probe: Fail
+Error: Build the phone bundle first: pnpm -C autobyteus-web build:mobile-web
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:203:87)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web/tests/e2e/mobile-shell-probe.mjs:2454:3
+ ELIFECYCLE  Command failed with exit code 1.

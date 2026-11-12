@@ -1,0 +1,324 @@
+{
+  "startedAt": "2026-11-11T16:41:29.134Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 62539,
+      "nodeId": "srv_Q73-9dDR_Pdf5WJLw-XR_pEfB-aKvt2l",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 62540,
+      "nodeId": "srv_DeqZy-RYevEzZRghyb0lu6MDIBRtihR4",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "delta": {
+      "port": 62784,
+      "nodeId": "srv_ZKHssHwGloxhuumPb0wT4ujtApX68b51",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_cdb60b125a1249db99fe0a6e6fea9cbe",
+    "writerRun": "release_notes_writer_d25db0dd0f124936b00ac57c6b4108c1",
+    "squadRun": "docs_review_team_b5b16d3eba254eee98748ed7ef5dd8d3",
+    "reviewer": "release_notes_writer_850f6be505da4b008cb73a46b753a18f",
+    "memberDelegated": "fact_checker_8a4a557e833f427bae1489b4baa777ed",
+    "remoteAgentRun": "publisher_b5e088f5347445aebac76751a3ce232f",
+    "remoteTeamRun": "studio_team_5883a0c6da624d849fe50bf03d364054",
+    "plain": [
+      "fact_checker_8e8fdd68c26b467081c2fb35b6369e6f",
+      "fact_checker_336701ec74a64228b094b5078a1130e6",
+      "fact_checker_3ff76e9cda71410896f86bbff84491e7"
+    ],
+    "org": "delivery_org_82675bba3ace4a9f9d06c2c65c049ad8",
+    "orgPlanner": "release_notes_writer_03655f3743ac4465b3ce264adebbf0e5",
+    "reviewOrg": "review_org_01faa7743dc94443b9dee9be338c4525",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_52037c5918e64dbfb8e2a2acdaf510e2",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_2ec56a010d6c4ca98bf9816d23016ef7",
+    "deliveryLead": "fact_checker_22ed21e4b00e4bfba6d5c604c19f9c42",
+    "deliveryMate": "release_notes_writer_504b755223434284a1fe6671579270db",
+    "leadDelegated": "changelog_helper_5b590eb9d6a949f1a412c6f537f304ee",
+    "approver": "approver_458e283fb69d45a89ed7a025d9d1213f",
+    "taskA": "launch-2ae8fc-1",
+    "taskB": "launch-2ae8fc-2"
+  },
+  "cases": {
+    "MSP-24": {
+      "result": "Pass",
+      "seconds": 84.9,
+      "quiet": {
+        "seconds": 50,
+        "history": 10,
+        "statuses": 10,
+        "statusesNamingPtm": 10,
+        "ptmViewReads": 0
+      },
+      "goneAfterCloseMs": {
+        "otherA": 3840,
+        "otherB": 2794,
+        "hostA": -367,
+        "hostB": -428
+      },
+      "viewReadsAfterClose": 1,
+      "viewReadsInThe15sAfterGone": 0,
+      "nodeListedBeforeClose": true,
+      "afterTodoOnly": {
+        "phoneHost": false,
+        "phoneOther": false,
+        "nodeListed": false
+      },
+      "rowBackAfterReactivationMs": {
+        "other": 663,
+        "host": -435
+      },
+      "listedOnOtherAtEnd": {
+        "writerRun": true,
+        "teamRun": false
+      }
+    },
+    "MSP-25": {
+      "result": "Pass",
+      "seconds": 15.4,
+      "hiddenMs": 14975,
+      "closedWhileHiddenAfterMs": 2969,
+      "whileHidden": {
+        "history": 0,
+        "statuses": 0,
+        "views": 0,
+        "all": [
+          {
+            "op": "GetTaskWorkerTasks",
+            "afterHiddenMs": 2478,
+            "runId": null,
+            "runIds": null
+          },
+          {
+            "op": "GetTaskWorkerTasks",
+            "afterHiddenMs": 2620,
+            "runId": null,
+            "runIds": null
+          }
+        ]
+      },
+      "rowListedWhenShown": true,
+      "goneAfterShownMs": 119,
+      "firstHistoryReadAfterShownMs": 21
+    },
+    "MSP-26": {
+      "result": "Pass",
+      "seconds": 2.8,
+      "listedBefore": true,
+      "goneAfterCloseMs": -343,
+      "openRunOnPhone": "Other"
+    },
+    "MSP-34": {
+      "result": "Pass",
+      "seconds": 66.3,
+      "copy": "release_notes_writer_c27787f20e7847c08f74bf7769f4d964",
+      "manager": "project_task_manager_c7355bfc8f014cd4906491b4da78ffcc",
+      "taskD": "closed-rows-ad9b1c-4",
+      "stoppedBefore": {
+        "status": {
+          "runId": "project_task_manager_5cf9f03e8c4d4de7906c6a11ffe99cf5",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "2:bf5c2da4"
+        },
+        "nodeListed": true,
+        "listed": {
+          "phoneHost": true,
+          "phoneOther": true
+        },
+        "viewReads": {
+          "phoneHost": 0,
+          "phoneOther": 0
+        },
+        "statusReadsNamingPtm": 2
+      },
+      "afterClose": {
+        "status": {
+          "runId": "project_task_manager_5cf9f03e8c4d4de7906c6a11ffe99cf5",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:0f1e7af4"
+        },
+        "goneAfterCloseMs": {
+          "phoneOther": 1281,
+          "phoneHost": 4011
+        },
+        "viewReads": {
+          "phoneHost": 1,
+          "phoneOther": 1
+        }
+      },
+      "afterTodo": {
+        "status": {
+          "runId": "project_task_manager_5cf9f03e8c4d4de7906c6a11ffe99cf5",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:0f1e7af4"
+        },
+        "nodeListed": false,
+        "listed": {
+          "phoneHost": false,
+          "phoneOther": false
+        },
+        "viewReads": {
+          "phoneHost": 0,
+          "phoneOther": 0
+        }
+      }
+    },
+    "MSP-27": {
+      "result": "Pass",
+      "seconds": 25.4,
+      "openRun": "fact_checker_8e8fdd68c26b467081c2fb35b6369e6f",
+      "openRunAtEnd": "fact_checker_8e8fdd68c26b467081c2fb35b6369e6f",
+      "quietSeconds": 12,
+      "quietViewReads": 0,
+      "quietStatusReads": 2,
+      "goneAfterCloseMs": 1553,
+      "viewReadsAfterClose": 1
+    },
+    "MSP-35": {
+      "result": "Pass",
+      "seconds": 61.7,
+      "copy": "release_notes_writer_877e6468fa594a39ba9df06e9d09061e",
+      "manager": "project_task_manager_7d387470415149f2aa91b16bafee63c8",
+      "taskE": "launch-2ae8fc-3",
+      "openRun": "fact_checker_8e8fdd68c26b467081c2fb35b6369e6f",
+      "before": {
+        "listed": true,
+        "nodeListed": true,
+        "viewReads": 0,
+        "statusReadsNamingPtm": 3
+      },
+      "afterClose": {
+        "status": {
+          "runId": "project_task_manager_cdb60b125a1249db99fe0a6e6fea9cbe",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:b1a3df79"
+        },
+        "goneAfterCloseMs": 3483,
+        "viewReads": 1
+      },
+      "afterTodo": {
+        "status": {
+          "runId": "project_task_manager_cdb60b125a1249db99fe0a6e6fea9cbe",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:b1a3df79"
+        },
+        "nodeListed": false,
+        "listed": false,
+        "viewReads": 0
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "closedTaskRows": {
+    "runs": {
+      "ptm": "project_task_manager_5cf9f03e8c4d4de7906c6a11ffe99cf5",
+      "other": "fact_checker_0cfec91e4f7a4676959536c267104cc0",
+      "writerRun": "release_notes_writer_a86ab71e579441928e1bf5bdea64123e",
+      "teamRun": "docs_review_team_3070eea471ba4ed38276944bb315bc73",
+      "liveTeam": "live_team_5d7183356c4847808ce9b15dd2fa4d3c",
+      "liveLead": "live_lead_31a8cbab0fdc43b8824150f1e5e72859",
+      "leadTaskRun": "release_notes_writer_77279dd9924e4e5cb1cdd4e02442b3dd"
+    },
+    "tasks": {
+      "a": "closed-rows-ad9b1c-1",
+      "b": "closed-rows-ad9b1c-2",
+      "c": "closed-rows-ad9b1c-3"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-24": "Pass",
+      "MSP-25": "Pass",
+      "MSP-26": "Pass",
+      "MSP-34": "Pass",
+      "MSP-27": "Pass",
+      "MSP-35": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-11T16:47:39.067Z"
+}

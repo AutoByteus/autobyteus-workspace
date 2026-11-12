@@ -80,6 +80,15 @@ describe('MobileFileViewer', () => {
     expect(wrapper.find('[data-testid="mobile-file-preview-content"]').exists()).toBe(false);
   });
 
+  it('shows a text file of any size in full: no limit, no "too large" state (autobyteus-471 REQ-004)', () => {
+    const content = `${'x'.repeat(129_990)}\nLAST-LINE-471`;
+    const wrapper = mountSubject({ path: '/w/big.md', type: 'Text', mode: 'preview', content, url: null, contentRevision: 0,
+      relativeResourceContext: null, isLoading: false, error: null });
+    expect(content.length).toBeGreaterThan(130_000);
+    expect(wrapper.get('[data-testid="mobile-file-preview-content"]').text()).toContain('LAST-LINE-471');
+    expect(wrapper.text()).not.toMatch(/too large/i);
+  });
+
   it('its bar is ← and the file name', async () => {
     const wrapper = mountSubject({ path: 'docs/notes.md', type: 'Text', mode: 'preview', content: '# a', url: null, contentRevision: 0, relativeResourceContext: null, isLoading: false, error: null });
     expect(wrapper.get('[data-testid="mobile-screen-title"]').text()).toBe('notes.md');

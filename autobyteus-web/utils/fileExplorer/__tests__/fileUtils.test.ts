@@ -234,8 +234,7 @@ describe('fileUtils', () => {
 
       const modifyChange: ModifyChange = {
         type: 'modify',
-        node_id: 'file1-id',
-        parent_id: 'root-id'
+        path: 'root/unloaded/file.txt'
       };
       const event: FileSystemChangeEvent = { changes: [modifyChange] };
 

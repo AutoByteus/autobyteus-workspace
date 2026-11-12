@@ -1,0 +1,274 @@
+{
+  "startedAt": "2026-11-12T05:03:39.225Z",
+  "contents": [
+    {
+      "href": "#the-approach-spine-first-practices-in-context",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 3528
+    },
+    {
+      "href": "#project-specific-design-principles",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 10008
+    },
+    {
+      "href": "#terminology",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 12788
+    },
+    {
+      "href": "#core-principles",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 16088
+    },
+    {
+      "href": "#1-approved-behavior-and-production-reality",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 17012
+    },
+    {
+      "href": "#2-data-flow-spine-inventory-and-clarity",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 20768
+    },
+    {
+      "href": "#3-ownership-clarity-and-boundary-encapsulation",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 28292
+    },
+    {
+      "href": "#4-off-spine-concerns-around-the-spine",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 34400
+    },
+    {
+      "href": "#5-current-schema-runtime-and-proportionate-persisted-data-transitions",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 36976
+    },
+    {
+      "href": "#6-supported-product-scenario-and-reachability-gate",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 43444
+    },
+    {
+      "href": "#7-no-dead-code",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 54860
+    },
+    {
+      "href": "#8-clean-cut-replacement-and-explicit-removal",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 58852
+    },
+    {
+      "href": "#9-dependency-direction",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 61220
+    },
+    {
+      "href": "#10-interfaces-follow-ownership",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 65478
+    },
+    {
+      "href": "#11-reusable-owned-structures-stay-tight",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 67678
+    },
+    {
+      "href": "#12-file-responsibility-and-placement",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 71858
+    },
+    {
+      "href": "#13-one-owner-for-coordination-policy-no-empty-layers",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 74738
+    },
+    {
+      "href": "#14-a-spine-first-concrete-design-document",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 80918
+    },
+    {
+      "href": "#15-one-vocabulary-one-word-one-meaning-one-meaning-one-word",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 83062
+    },
+    {
+      "href": "#16-visible-dependencies-one-composition-root",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 86570
+    },
+    {
+      "href": "#practical-application-guide",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 94873
+    },
+    {
+      "href": "#structural-triggers",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 97353
+    },
+    {
+      "href": "#task-design-health-assessment",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 101925
+    },
+    {
+      "href": "#task-size-and-architectural-risk",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 110361
+    },
+    {
+      "href": "#common-local-patterns",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 118789
+    },
+    {
+      "href": "#the-approach-spine-first-practices-in-context",
+      "urlUnchanged": true,
+      "found": true,
+      "offsetFromViewerTop": 0,
+      "inView": true,
+      "scrollTop": 3528
+    }
+  ],
+  "relativeInDoc": {
+    "href": "ticket-scope.md#common-situations",
+    "urlUnchanged": true,
+    "docStillShown": true,
+    "popups": 1
+  },
+  "linksFile": [
+    {
+      "href": "#no-such-heading",
+      "urlUnchanged": true,
+      "linksFileStillShown": true,
+      "notFoundShown": false,
+      "popups": 1
+    },
+    {
+      "href": "other.md",
+      "urlUnchanged": true,
+      "linksFileStillShown": true,
+      "notFoundShown": false,
+      "popups": 1
+    },
+    {
+      "href": "other.md#x",
+      "urlUnchanged": true,
+      "linksFileStillShown": true,
+      "notFoundShown": false,
+      "popups": 1
+    },
+    {
+      "href": "/x.md",
+      "urlUnchanged": true,
+      "linksFileStillShown": true,
+      "notFoundShown": false,
+      "popups": 1
+    },
+    {
+      "href": "./x.md",
+      "urlUnchanged": true,
+      "linksFileStillShown": true,
+      "notFoundShown": false,
+      "popups": 1
+    }
+  ],
+  "error": null,
+  "totals": {
+    "contentsEntries": 26,
+    "contentsFound": 26,
+    "contentsInView": 26,
+    "contentsUrlUnchanged": 26,
+    "linksUrlUnchanged": 5,
+    "popups": [
+      {
+        "step": "start",
+        "url": "about:blank"
+      }
+    ]
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  }
+}

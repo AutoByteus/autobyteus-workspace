@@ -10,7 +10,7 @@ vi.mock('~/composables/mobile/useMobileNavigation', () => ({ useMobileNavigation
 vi.mock('~/composables/mobile/mobileFileOpening', () => pathOpen);
 const toasts = vi.hoisted(() => ({ addToast: vi.fn() }));
 vi.mock('~/composables/useToasts', () => ({ useToasts: () => toasts }));
-vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string) => key }) }));
+vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string, params?: Record<string, string>) => (params?.node ? `${key}:${params.node}` : key) }) }));
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ initialized: true, nodeBaseUrl: 'http://node.example', getBoundEndpoints: () => ({ rest: 'http://node.example/rest' }) }),
 }));
@@ -42,10 +42,11 @@ describe('useMobileAttachmentOpening', () => {
     expect(windowOpen).not.toHaveBeenCalled();
   });
 
-  it('a path the phone cannot open here (another node\'s run) says so as file links do, and navigates nowhere (DEC-006)', async () => {
-    pathOpen.openMobileFilePath.mockResolvedValue({ status: 'unavailable' });
+  it('a path in another node\'s run says the file is on that node, as file links do, and navigates nowhere (DEC-006, autobyteus-471)', async () => {
+    pathOpen.openMobileFilePath.mockResolvedValue({ status: 'unavailable', nodeName: 'studio' });
     await useMobileAttachmentOpening().open(createWorkspaceContextAttachment('/elsewhere/a.md', 'Markdown'));
-    expect(toasts.addToast).toHaveBeenCalledWith('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host', 'info');
+    expect(toasts.addToast).toHaveBeenCalledWith(expect.stringContaining('file_on_other_node'), 'info');
+    expect(String(toasts.addToast.mock.calls.at(-1)?.[0])).toContain('studio');
     expect(windowOpen).not.toHaveBeenCalled();
 
     pathOpen.openMobileFilePath.mockResolvedValue({ status: 'failed' });

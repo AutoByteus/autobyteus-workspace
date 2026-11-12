@@ -8,7 +8,11 @@ export const AgentBackgroundTaskView = gql`
         agentRunId runInstanceId observedAt
         tasks { taskId kind description command status exitCode startedAt }
       }
-      ... on AgentBackgroundTaskEventStream { agentRunId }
+      ... on AgentBackgroundTaskEventStream {
+        agentRunId
+        # Aliased: both union members have a \`tasks\` field, with different row types.
+        currentTasks: tasks { taskId kind description command status summary startedAt }
+      }
       ... on AgentBackgroundTaskUnsupported { agentRunId reason }
       ... on AgentBackgroundTaskUnavailable { agentRunId reason }
     }

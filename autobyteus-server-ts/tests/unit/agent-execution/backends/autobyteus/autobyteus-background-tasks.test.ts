@@ -43,7 +43,10 @@ suite("AutoByteusAgentRunBackend background tasks", () => {
     }, { isActive: () => true, removeAgent: vi.fn().mockResolvedValue(true), tools: stubAutoByteusRunTools() });
     const events: AgentRunEvent[] = [];
     backend.subscribeToSourceEventBatches((batch) => { events.push(...batch); });
-    expect(backend.backgroundTaskInspection).toEqual({ kind: "event-stream" });
+    expect(backend.backgroundTaskInspection.kind).toBe("event-stream");
+    if (backend.backgroundTaskInspection.kind !== "event-stream") return;
+    const current = backend.backgroundTaskInspection.current;
+    expect(current()).toEqual([]);
     expect(backend.hasRunningBackgroundTasks()).toBe(false);
 
     const { started } = await manager.run("sleep 0.3; exit 3", cwd, { background: true });
@@ -51,11 +54,29 @@ suite("AutoByteusAgentRunBackend background tasks", () => {
     expect(backend.backgroundTaskNotices.kind).toBe("platform");
     if (backend.backgroundTaskNotices.kind !== "platform") return;
     expect(backend.backgroundTaskNotices.listRunning().map((t) => t.pid)).toEqual([started[0]!.pid]);
+    // autobyteus-473: a viewer that opens the run now starts from the task.
+    expect(current().map((t) => [t.taskId, t.status, t.command])).toEqual([[String(started[0]!.pid), "running", "sleep 0.3; exit 3"]]);
 
     const updates = () => events.filter((e) => e.eventType === AgentRunEventType.BACKGROUND_TASK_UPDATED).map((e) => [e.payload.status, e.payload.summary]);
     await vi.waitFor(() => expect(updates()).toEqual([["running", null], ["failed", "exit code 3"]]), { timeout: 5000 });
     expect(backend.hasRunningBackgroundTasks()).toBe(false);
+    // An ended task stays in the view with its end.
+    expect(current().map((t) => [t.status, t.summary])).toEqual([["failed", "exit code 3"]]);
     expect(backend.backgroundTaskNotices.takeUnreportedEnds().map((e) => [e.pid, e.outcome])).toEqual([[started[0]!.pid, { exitCode: 3 }]]);
     expect(backend.backgroundTaskNotices.takeUnreportedEnds()).toEqual([]);
+  });
+});
+
+describe("AutoByteusAgentRunBackend current background tasks without a process manager", () => {
+  it("lists none while the run has no background-process manager (autobyteus-473 R-2)", () => {
+    const context = new AgentRunContext({ runId: "agent-2",
+      config: new AgentRunConfig({ runtimeKind: RuntimeKind.AUTOBYTEUS, agentDefinitionId: "def-1", llmModelIdentifier: "model-1", autoExecuteTools: false }), runtimeContext: null });
+    const backend = new AutoByteusAgentRunBackend(context, {
+      agentId: "agent-2", getCompactionRecovery: () => null, authorizeCompactionRetry: () => "stale",
+      revokeUnusedCompactionRetry: () => "stale", currentStatus: "idle", context: null as never,
+    }, { isActive: () => true, removeAgent: vi.fn().mockResolvedValue(true), tools: stubAutoByteusRunTools() });
+    expect(backend.backgroundTaskInspection.kind).toBe("event-stream");
+    if (backend.backgroundTaskInspection.kind !== "event-stream") return;
+    expect(backend.backgroundTaskInspection.current()).toEqual([]);
   });
 });

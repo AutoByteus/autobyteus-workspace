@@ -27,7 +27,7 @@ import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event
 import { projectAutoByteusAgentLifecycleSnapshot } from "./events/autobyteus-status-projector.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { PendingSystemInstructionEvent } from "../../events/pending-system-instruction-event.js";
-import { AutoByteusBackgroundTaskReporter } from "./autobyteus-background-task-reporter.js";
+import { AutoByteusBackgroundTaskReporter, toAgentBackgroundTask } from "./autobyteus-background-task-reporter.js";
 
 export type AutoByteusAgentLike = {
   agentId: string;
@@ -106,8 +106,11 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 });
 
 export class AutoByteusAgentRunBackend implements AgentRunBackend {
-  /** Native background tasks stream as `BACKGROUND_TASK_UPDATED` events (see the reporter). */
-  readonly backgroundTaskInspection = { kind: 'event-stream' } as const;
+  /** Native background tasks stream as `BACKGROUND_TASK_UPDATED` events (see the reporter); `current()` lists them now. */
+  readonly backgroundTaskInspection = {
+    kind: 'event-stream',
+    current: () => (this.backgroundProcesses?.list() ?? []).map(toAgentBackgroundTask),
+  } as const;
   /** The run's `BackgroundProcessManager` owns its background tasks; the platform delivers their notices. */
   readonly backgroundTaskNotices: Extract<AgentRunBackgroundTaskNoticesCapability, { kind: "platform" }> = {
     kind: "platform",

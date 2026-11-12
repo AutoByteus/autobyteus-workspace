@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRef } from 'vue';
+import { computed, onBeforeUnmount, provide, ref, toRef } from 'vue';
 import { useWorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
@@ -58,7 +58,7 @@ import {
   useEventMonitorActiveTraceBrowse,
 } from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
 import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
-import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun';
+import { FILE_ON_OTHER_NODE_MESSAGE_KEY, RUN_VIEW_FILES_KEY, remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
 import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
@@ -93,18 +93,24 @@ const browse = useEventMonitorActiveTraceBrowse({
   presentationRevision: () => props.presentationRevision ?? 0,
 });
 
-// autobyteus-278: a file path in a remote run's conversation names a file on the other node.
-const remote = useRemoteRun(() => effectiveRunId.value);
 const { t } = useLocalization();
+// A path attachment of a message in a remote run is on that run's node: this status line says so and nothing is read
+// (autobyteus-471 REQ-003). File links decide the same in `useEventMonitorFilePreview`.
+provide(RUN_VIEW_FILES_KEY, {
+  refuseRemoteRunPath: () => {
+    const node = remoteRunFileNode(effectiveRunId.value);
+    if (node) filePreviewStatus.value = t(FILE_ON_OTHER_NODE_MESSAGE_KEY, { node });
+    return node !== null;
+  },
+});
 const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<void> => {
-  if (remote.value) { filePreviewStatus.value = t('remote.filePath', { node: remote.value.nodeName }); return; }
   // Keep the launcher effect boundary out of Markdown rendering and passive
   // message arrival. It is created only for explicit user activation.
   const originRunId = effectiveRunId.value;
   const isOriginCurrent = () => isLive && effectiveRunId.value === originRunId;
   const { useEventMonitorFilePreview } = await import('~/composables/useEventMonitorFilePreview');
   if (!isOriginCurrent()) return;
-  const result = await useEventMonitorFilePreview({ revealTool, mobileNavigation, isOriginCurrent }).openPath(action);
+  const result = await useEventMonitorFilePreview({ revealTool, mobileNavigation, isOriginCurrent, originRunId: () => originRunId }).openPath(action);
   if (!isOriginCurrent()) return;
   filePreviewStatus.value = result.status === 'opened' ? '' : result.message;
 };

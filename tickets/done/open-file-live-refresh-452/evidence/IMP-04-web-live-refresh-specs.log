@@ -1,0 +1,94 @@
+# Check: IMP-04
+# Command: pnpm -C autobyteus-web exec vitest run stores/__tests__/fileExplorerLiveRefresh.spec.ts against the base stores/fileExplorerTreeActions.ts (red), then against the change (green)
+# Commit: base 827f1e68dc + working tree = e0bb6399c7
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11
+
+## RED: base tree actions
+   × fileExplorerStore: live refresh of an open file from a path-based modify > reads an open text file in a folder the tree never loaded 9ms
+   × fileExplorerStore: live refresh of an open file from a path-based modify > makes an open Image viewer load again without a text read 2ms
+   × fileExplorerStore: live refresh of an open file from a path-based modify > makes an open PDF viewer load again without a text read 1ms
+   ✓ fileExplorerStore: live refresh of an open file from a path-based modify > reads nothing for a change to a file that is not open 4ms
+   × fileExplorerStore: live refresh of an open file from a path-based modify > keeps an unsaved draft when the open file changes on disk 6ms
+   × fileExplorerStore: live refresh of an open file from a path-based modify > does not read back the window's own save, and reads the next outside change 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+## GREEN: with the change
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > getFilePathsFromFolder > should return all file paths from the tree 23ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine file type as Image for image files 1ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine SVG file type as Image for diagram.svg 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine SVG file type as Image for DIAGRAM.SVG 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine SVG file type as Image for nested/assets/diagram.svg 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine file type as Text for text files 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine file type as Audio for audio files 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine file type as Video for video files 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should determine file type as Excel for spreadsheet files 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should be case-insensitive 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should classify unsupported archives and binaries as Unsupported 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > determineFileType > should classify recognized text and extensionless text files as Text 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > findNodeById > should find a node by its id 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > findNodeById > should return null if node is not found 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > createNodeIdToNodeDictionary > should create a dictionary mapping node ids to nodes 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle add change 9ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle delete change 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle rename change 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle rename change and update child paths 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle move change and update child paths 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle modify change without altering the tree 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle multiple changes 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle add change when parent does not exist 0ms
+ ✓ utils/fileExplorer/__tests__/fileUtils.test.ts > fileUtils > handleFileSystemChange > should handle nested folder additions similarly to server-side nested creation 0ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > a first open reads the file once, at revision 0 6ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads a text file again on every open (link, link again, Files tab), one read each 15ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > keeps an unsaved edit: the committed content is read again, the draft stays 3ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > bumps the revision of a media file (same URL) and reads nothing itself 1ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > reads an embedded window's local text file again through the desktop app 4ms
+ ✓ stores/__tests__/fileExplorerReopen.spec.ts > fileExplorerStore: an explicit open of an already-open file > switching tabs (setActiveFile) reads nothing 3ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts > fileExplorerStore: live refresh of an open file from a path-based modify > reads an open text file in a folder the tree never loaded 6ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts > fileExplorerStore: live refresh of an open file from a path-based modify > makes an open Image viewer load again without a text read 1ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts > fileExplorerStore: live refresh of an open file from a path-based modify > makes an open PDF viewer load again without a text read 0ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts > fileExplorerStore: live refresh of an open file from a path-based modify > reads nothing for a change to a file that is not open 4ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts > fileExplorerStore: live refresh of an open file from a path-based modify > keeps an unsaved draft when the open file changes on disk 3ms
+ ✓ stores/__tests__/fileExplorerLiveRefresh.spec.ts > fileExplorerStore: live refresh of an open file from a path-based modify > does not read back the window's own save, and reads the next outside change 4ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > search retains loaded tree object identity and creates relative lazy results in server order 8ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > ignores superseded search completion during ordinary query changes 1ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > deleteFileOrFolder removes file state and applies the file-explorer tree update 8ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > deleteFileOrFolder removes a containing folder from open files and falls back activeFile to a remaining file 1ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > loads folder children into the tree when the backend returns a valid folder payload 1ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children GraphQL errors instead of converting them to an empty tree 7ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children payload errors instead of converting them to an empty tree 4ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > registers workspace metadata without creating file-explorer tree state 27ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > throws error if mutation fails 16ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > replaces stale metadata entries with the same root path and clears file-explorer state 5ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > fetchAllWorkspaces > populates metadata from query without file-explorer tree payloads 3ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > fetchAllWorkspaces > ignores stale query results when backend binding revision changes mid-flight 2ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > removeWorkspace > removes workspace metadata and clears file explorer live state after backend success 6ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > removeWorkspace > keeps workspace and file explorer state when backend removal fails 8ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer delegation > delegates structural changes to fileExplorerStore-owned tree state 2ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer delegation > ignores a streamed structural echo that was already applied by a mutation path 2ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > resetWorkspaceStateForBackendContextChange > disconnects all streams and clears metadata/file-explorer state without reload 2ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > opens one stream for multiple visible consumers and disconnects after final release 7ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > returns an idempotent release function for duplicate consumer acquisition 3ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > refreshes already-open folders in fileExplorerStore when a visible file explorer is reacquired 13ms
+ ✓ stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > aborts snapshot refresh generation and ignores late folder responses after final release 2ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts > FileExplorerTabs unsaved content during peer modification (AC-010) > retains the editor draft for Save, peer modify=false 30ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.unsaved.spec.ts > FileExplorerTabs unsaved content during peer modification (AC-010) > retains the editor draft for Save, peer modify=true 35ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > keeps visible draft "local draft" and the same editor through pending peer reload 100ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > keeps visible draft "" and the same editor through pending peer reload 101ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > refreshes a clean reader and one returned to clean by undo 19ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > keeps drafts through tab/workspace selection, reopening an open path, and component remount 36ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > keeps drafts through Zen remount and previews committed bytes without exposing a draft 74ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > retains failed-save drafts and later keystrokes while a save is pending 13ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > shows a refresh error without hiding an existing draft 5ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > discards only on explicit close and reopens committed content, not the retired draft 7ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-001 revert to the pre-save committed text: stays visible, unsaved, and is the next Save payload 20ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-002 clear to empty text: stays visible, unsaved, and is the next Save payload 28ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-003 later input that ends equal to the saved content leaves the editor clean 14ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-004a failed Save keeps a later input that differs from committed text, with the error 24ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-004b failed Save with later input equal to the unchanged committed text is clean and refreshes 26ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-005 a different later edit survives Save completion and is the next Save payload 34ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > AC-008 an ordinary Save with no later input clears the draft 33ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.draftViewer.spec.ts > FileExplorerTabs visible draft lifecycle > later input while a Save is pending > keeps a pending Save in one workspace/path from affecting another 18ms
+ Test Files  7 passed (7)
+      Tests  75 passed (75)

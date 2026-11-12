@@ -63,4 +63,31 @@ describe('agentBackgroundTaskStore', () => {
 
     expect(store.getTasks('member-b')).toEqual([]);
   });
+
+  // autobyteus-473: the background-task view's answer seeds a run's tasks the store does not know yet.
+  it('seeds unknown tasks, finishes a running one the answer shows ended, and never replaces an ended one', () => {
+    const store = useAgentBackgroundTaskStore();
+    store.upsertTask('run-1', task({ taskId: 'running-here' }));
+    store.upsertTask('run-1', task({ taskId: 'ended-here', status: 'stopped', summary: 'stopped by the user' }));
+
+    store.seedTasks('run-1', [
+      task({ taskId: 'new', description: 'new one' }),
+      task({ taskId: 'running-here', status: 'failed', summary: 'exit code 1' }),
+      task({ taskId: 'ended-here', status: 'running' }),
+    ]);
+
+    const byId = Object.fromEntries(store.getTasks('run-1').map((item) => [item.taskId, [item.status, item.summary]]));
+    expect(byId).toEqual({
+      new: ['running', null],
+      'running-here': ['failed', 'exit code 1'],
+      'ended-here': ['stopped', 'stopped by the user'],
+    });
+  });
+
+  it('keeps a running task as it is when the answer also shows it running', () => {
+    const store = useAgentBackgroundTaskStore();
+    store.upsertTask('run-1', task({ taskId: 'a', command: 'from the stream' }));
+    store.seedTasks('run-1', [task({ taskId: 'a', command: null })]);
+    expect(store.getTasks('run-1')[0]!.command).toBe('from the stream');
+  });
 });

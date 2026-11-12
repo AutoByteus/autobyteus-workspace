@@ -41,7 +41,7 @@ describe('MarkdownRenderer', () => {
       global: { plugins: [pinia] },
     });
 
-    expect(wrapper.html()).toContain('<h1>Hello World</h1>');
+    expect(wrapper.html()).toContain('<h1 id="user-content-hello-world">Hello World</h1>');
   });
 
   it('keeps the generic renderer inert and enables scoped file actions only when opted in', async () => {

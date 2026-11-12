@@ -1,0 +1,8 @@
+{
+  "before": "docker-a-471\n\n127.0.0.1:64405\n\nNeeds connecting. This desktop has no key for docker-a-471 yet. On that computer, run “autobyteus-docker setup-code <node>” (Docker) or “node dist/node-access-cli.js setup-code --data-dir <data folder>” (server install), then ent",
+  "after": "docker-a-471\n\n127.0.0.1:64405\n\nServer 1.5.13-beta.4\n\nUpdate automatically\nKeep this node on this app's version.\n\nAgents here can't work with docker-a-471 yet.\n\nTurn on\n\n/home/autobyteus/server-packages is not this node's own volume, so an update would be lost ",
+  "dialog": null,
+  "openButtons": [
+    "node-open-srv_ulCAlG6ufGktAqpfWn3H37M6R1wZ088B"
+  ]
+}

@@ -1,0 +1,21 @@
+# IMP-12 web-nuxt-tests
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run
+# Environment mode: shell
+# Commit: 1b5b7f5b0e (branch codex/phone-viewer-pinch-zoom-472)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T18:22:13Z
+# Excerpt of IMP-12-web-nuxt-tests.log (full log kept out of git): the zoom specs, the two failures (timeouts in an unrelated spec; rerun alone as IMP-12b) and the totals
+ ✓ composables/__tests__/usePdfPinchZoom.spec.ts (9 tests) 122ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.zoom.spec.ts (3 tests) 366ms
+ ✓ composables/__tests__/usePictureZoom.spec.ts (13 tests) 210ms
+ ✓ components/fileExplorer/__tests__/FileViewer.touchZoom.spec.ts (2 tests) 16ms
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts (12 tests) 299ms
+ ✓ composables/mobile/__tests__/useMobileFileDownload.spec.ts (5 tests) 20ms
+   × Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list 5354ms
+   × Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows 5665ms
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > reveals and opens the last reference with the server identity; switching member collapses the list
+ FAIL  components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts > Collaboration messages on a large Agent Org root > applies a live communication message with one projection and identity work bounded by the visible rows
+     → Test timed out in 5000ms.
+ Test Files  1 failed | 754 passed (755)
+      Tests  2 failed | 5697 passed | 2 skipped (5701)
+# Exit status: 1

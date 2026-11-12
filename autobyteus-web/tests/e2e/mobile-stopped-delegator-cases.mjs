@@ -1,6 +1,6 @@
 // A stopped delegator's run on the phone (autobyteus-461 SCN-005 / AC-007, REQ-002, REQ-004, SR-045 … SR-048; code review O-1).
 // Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after its other cases
-// (`--cases=MSP-37,MSP-38,MSP-39` runs only these). The desktop layout of the same journeys is
+// (`--cases=MSP-50,MSP-51,MSP-52` runs only these). The desktop layout of the same journeys is
 // `stopped-delegator-views-probe.mjs` (SDV-01 … SDV-03).
 //
 // Stack (owned by these cases, removed at their end, inside the probe's temp root): eta, one more node from this worktree's
@@ -16,7 +16,7 @@
 //   - the root stays stopped on the node and its row keeps showing stopped for 15 s after that child command (O-1);
 //   - the user opens the root and messages its own member (the Manager): the root starts (agent) or is restored (team,
 //     org) and the Manager's reply shows live.
-//   MSP-37 agent root, MSP-38 team root, MSP-39 org root.
+//   MSP-50 agent root, MSP-51 team root, MSP-52 org root.
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
@@ -32,7 +32,7 @@ const RUNNING = new Set(['running', 'initializing', 'idle', 'active']);
  */
 export const runStoppedDelegatorCases = async (probe) => {
   const { runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact } = probe;
-  const ids = ['MSP-37', 'MSP-38', 'MSP-39'];
+  const ids = ['MSP-50', 'MSP-51', 'MSP-52'];
   if (!ids.some((id) => !selected || selected.has(id))) return;
   const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) }).catch(() => undefined);
   const eta = await serverAt('eta', await freePort(), { AGY_FAKE_CASE: 'linked_skills' });
@@ -226,9 +226,9 @@ export const runStoppedDelegatorCases = async (probe) => {
       assert(errors.length === 0, 'phone page errors', errors);
       return out;
     });
-    await journey('MSP-37', 'agent');
-    await journey('MSP-38', 'team');
-    await journey('MSP-39', 'org');
+    await journey('MSP-50', 'agent');
+    await journey('MSP-51', 'team');
+    await journey('MSP-52', 'org');
   } finally {
     await phoneBrowser?.close().catch(() => undefined);
     await eta.stop?.().catch(() => undefined);

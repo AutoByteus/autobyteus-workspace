@@ -65,6 +65,16 @@ Multiple WebSocket sessions for the same workspace share one underlying watcher 
 
 `WorkspaceFileExplorer.subscribe()` is valid only while a watcher lease has started the watcher. Callers that need live events must acquire a lease first; snapshot callers must not subscribe.
 
+### Content-change events (`modify`)
+
+A client must be able to refresh an open file whatever its tree has loaded (autobyteus-452).
+
+- `watchdog-handler` sends `modify` with the file's workspace-relative `path` (POSIX separators) for:
+  - a file `change`, whether or not the path is in the tree;
+  - a file `add`, after the structural `add`;
+  - a file move, after the structural move: the watcher pairs a temp file's unlink with the add at its final path, so an atomic rewrite arrives as a move.
+- Clients use `modify` only to reload a file they have open. They ignore other paths, so a burst of changes causes no reads.
+
 ## Watcher Runtime Isolation
 
 The backend parent process owns File Explorer tree state, watcher leases, event subscribers, path validation, ignored-path policy, search, and mutation echo suppression. It does **not** own native chokidar watcher lifecycle directly.

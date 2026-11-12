@@ -3,18 +3,8 @@ import { useLocalization } from '~/composables/useLocalization';
 import type { OpenFileState } from '~/stores/fileExplorerState';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
-import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
+import { loadNodeFileFromUrl, NODE_FILE_REFUSAL_MESSAGE_KEYS, nodeFileContentUrl } from '~/utils/fileExplorer/nodeFileContent';
 import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
-
-const NODE_FILE_MESSAGE_KEYS: Readonly<Record<string, string>> = {
-  NODE_FILE_NOT_FOUND: 'workspace.components.mobile.views.MobileFiles.node_file_not_found',
-  NODE_FILE_IS_FOLDER: 'workspace.components.mobile.views.MobileFiles.node_file_is_folder',
-};
-const OTHER_FAILURE_KEY = 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed';
-
-/** The node-file URL for one absolute path (autobyteus-436, `GET /rest/node-files/content?path=`). */
-export const nodeFileContentUrl = (restBaseUrl: string, absolutePath: string): string =>
-  `${restBaseUrl.replace(/\/$/, '')}/node-files/content?path=${encodeURIComponent(absolutePath)}`;
 
 /**
  * A node file the phone viewer opens: a file on the node's computer by its absolute path (autobyteus-436), or a file
@@ -33,9 +23,9 @@ const contentUrlOf = (source: MobileNodeFileSource, restBaseUrl: string): string
 
 /**
  * The phone's open-file state for one node file, read-only (autobyteus-436 DS-001). It is fetched once with the phone
- * credential; its type comes from its name; text is kept as content, anything else as an object URL (revoked when the
- * file closes, so the blob never outlives the viewer). A refusal becomes the viewer's message: not found, a folder, or
- * "could not be opened".
+ * credential by the shared node-file loader (`nodeFileContent.ts`, autobyteus-471); its type comes from its name; text
+ * is kept as content, anything else as an object URL (revoked when the file closes, so the blob never outlives the
+ * viewer). A refusal becomes the viewer's message: not found, a folder, or "could not be opened".
  */
 export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
   const { t } = useLocalization();
@@ -50,12 +40,6 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     objectUrl = null;
   };
 
-  const refusalMessage = async (response: Response): Promise<string> => {
-    const body = await response.json().catch(() => null) as { code?: unknown } | null;
-    const key = typeof body?.code === 'string' ? NODE_FILE_MESSAGE_KEYS[body.code] : undefined;
-    return t(key ?? OTHER_FAILURE_KEY);
-  };
-
   const load = async (next: MobileNodeFileSource): Promise<void> => {
     const serial = ++loadSerial;
     const name = mobileNodeFileName(next);
@@ -66,32 +50,20 @@ export function useMobileNodeFile(source: Ref<MobileNodeFileSource | null>) {
     };
     fileState.value = state;
     errorMessage.value = null;
-    try {
-      const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest;
-      const response = await authorizedFetch(contentUrlOf(next, restBaseUrl));
-      if (serial !== loadSerial) return;
-      if (!response.ok) {
-        const message = await refusalMessage(response);
-        if (serial !== loadSerial) return;
-        errorMessage.value = message;
-        fileState.value = { ...state, isLoading: false, error: message };
-        return;
-      }
-      if (type === 'Text') {
-        const content = await response.text();
-        if (serial !== loadSerial) return;
-        fileState.value = { ...state, content, isLoading: false };
-        return;
-      }
-      const blob = await response.blob();
-      if (serial !== loadSerial) return;
-      objectUrl = URL.createObjectURL(blob);
-      fileState.value = { ...state, url: objectUrl, isLoading: false };
-    } catch {
-      if (serial !== loadSerial) return;
-      errorMessage.value = t(OTHER_FAILURE_KEY);
+    const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest;
+    const loaded = await loadNodeFileFromUrl(contentUrlOf(next, restBaseUrl), type === 'Text');
+    if (serial !== loadSerial) return;
+    if (loaded.kind === 'refused') {
+      errorMessage.value = t(NODE_FILE_REFUSAL_MESSAGE_KEYS[loaded.refusal]);
       fileState.value = { ...state, isLoading: false, error: errorMessage.value };
+      return;
     }
+    if (loaded.kind === 'text') {
+      fileState.value = { ...state, content: loaded.content, isLoading: false };
+      return;
+    }
+    objectUrl = URL.createObjectURL(loaded.blob);
+    fileState.value = { ...state, url: objectUrl, isLoading: false };
   };
 
   // Keyed by value: a new object for the same file does not read it again.

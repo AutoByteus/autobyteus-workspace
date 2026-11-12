@@ -1,0 +1,1084 @@
+{
+  "startedAt": "2026-11-11T18:49:15.787Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 64710,
+      "nodeId": "srv_YmdO81bGsf-t8IPmRw4kjPm8qLM1-0wC",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 64711,
+      "nodeId": "srv_77YCv6DifuLgRoLAX3W5NWFy8uZgkWqc",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "epsilon": {
+      "port": 65298,
+      "nodeId": "srv_ixINgR2M7Fc83y0pAixZSHeW8jGsUMsW",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "zeta": {
+      "port": 65299,
+      "nodeId": "srv_TyZOr2nTQHS9xkfixI2j3aRZaDtuE3WA",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_5bcd7d76d29843ff8ffd884b3d5b8546",
+    "writerRun": "release_notes_writer_680841f1428243ec84c7da58eb9a8dee",
+    "squadRun": "docs_review_team_306f726e12354ba59852667abf1d1dbe",
+    "reviewer": "release_notes_writer_be044c12f980487b901acce796a0eb44",
+    "memberDelegated": "fact_checker_83244fcaa11745c5893764a0c04aee16",
+    "remoteAgentRun": "publisher_c065828fbc7e446296453bbe2fe67db0",
+    "remoteTeamRun": "studio_team_d388ff4459504910abfcb41a76eca8a9",
+    "plain": [
+      "fact_checker_9a725ed04bcc4a61b54cbc0877c7eb6c",
+      "fact_checker_bafd814d486c44809a32cb3c2cd7391f",
+      "fact_checker_23fb4b34bfe5413ba191267298b6ef10"
+    ],
+    "org": "delivery_org_d0e137ecf2964afc9f3032854987b2d7",
+    "orgPlanner": "release_notes_writer_acad37e33eb249a3a0598cb255d41ea5",
+    "reviewOrg": "review_org_451573a4861843ca82ca02afaff30408",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_52b8b14a41bb45a28df2f0953911bcdd",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_18387650308e422ba3430ea078ed9bd5",
+    "deliveryLead": "fact_checker_a1dd6816c89d4628a97846521563c57a",
+    "deliveryMate": "release_notes_writer_040866b8dfdb42c0837e008ab388c183",
+    "leadDelegated": "changelog_helper_5ef560ee0d7348649577801142b9c80b",
+    "approver": "approver_28f6d690f76e48c5bf774b762d1ab6de",
+    "taskA": "launch-be2ab7-1",
+    "taskB": "launch-be2ab7-2"
+  },
+  "cases": {
+    "MSP-16": {
+      "result": "Pass",
+      "seconds": 130,
+      "bigChars": 130061,
+      "draftPath": "alpha/workspace/drafts/draft-v3.txt",
+      "outsidePath": "alpha/outside-427/private.txt",
+      "workspaceId": "agent_ws_eabe61e428d57ad233087db9cc8f658de21151a84e4e793f7dcd2fe5f64f1bbd",
+      "links": {
+        "draft": 1,
+        "outside": 1,
+        "draftLabel": "draft-v3.txt",
+        "draftAria": "Open draft-v3.txt in Files"
+      },
+      "before": "?row=team:delivery_team_18387650308e422ba3430ea078ed9bd5&screen=run",
+      "opened": {
+        "viewer": 1,
+        "text": true,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "workspace": "agent_ws_eabe61e428d57ad233087db9cc8f658de21151a84e4e793f7dcd2fe5f64f1bbd",
+          "file": "drafts/draft-v3.txt"
+        },
+        "status": 0
+      },
+      "back": {
+        "state": "open",
+        "query": "?row=team:delivery_team_18387650308e422ba3430ea078ed9bd5&screen=run",
+        "name": "lead",
+        "link": 1,
+        "composer": 1
+      },
+      "outside": {
+        "viewer": 1,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nQAbFv/alpha/outside-427/private.txt"
+        },
+        "text": "private.txt\n1\n2\nOUTSIDE-TEXT-9090 opens read-only on the phone.",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "notes": {
+        "viewer": 1,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nQAbFv/alpha/outside-427/notes-436.md"
+        },
+        "text": "notes-436.md\nNOTES-436\n\nREAD-ONLY-NOTES-436 from a worktree.",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "image": {
+        "viewer": 1,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nQAbFv/alpha/outside-427/diagram-436.png"
+        },
+        "text": "diagram-436.png",
+        "error": "",
+        "image": 1,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "missing": {
+        "viewer": 1,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nQAbFv/alpha/outside-427/gone-436.md"
+        },
+        "text": "gone-436.md\n\nThis file was not found on the computer.",
+        "error": "This file was not found on the computer.",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "folder": {
+        "viewer": 1,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nQAbFv/alpha/outside-427/reports-436.md"
+        },
+        "text": "reports-436.md\n\nThis path is a folder, not a file.",
+        "error": "This path is a folder, not a file.",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "big": {
+        "viewer": 1,
+        "query": {
+          "row": "team:delivery_team_18387650308e422ba3430ea078ed9bd5",
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nQAbFv/alpha/outside-427/big-471.md"
+        },
+        "text": "big-471.md\nBIG-471\n\nParagraph 1 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 2 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 3 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 4 of the big file, written to pass the old 120,000-character limit.\n\nParagraph 5 of the big file, written to pass the old 120,000-cha",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "lastLineVisible": true,
+        "tooLarge": false,
+        "shownChars": 130069,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "consoleLines": [
+        "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "error: Failed to load resource: the server responded with a status of 400 (Bad Request)"
+      ]
+    },
+    "MSP-39": {
+      "result": "Pass",
+      "seconds": 9.7,
+      "base": 358,
+      "pdfStart": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": 358,
+        "pagesTransform": "",
+        "pagesRect": {
+          "left": 16,
+          "top": 64
+        },
+        "canvases": [
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          },
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          },
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          },
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          }
+        ],
+        "scrollLeft": 0,
+        "scrollTop": 0,
+        "pictureTransform": null,
+        "download": true
+      },
+      "pinched": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": 716,
+        "pagesTransform": "",
+        "pagesRect": {
+          "left": -163,
+          "top": -292
+        },
+        "canvases": [
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          }
+        ],
+        "scrollLeft": 179,
+        "scrollTop": 356,
+        "pictureTransform": null,
+        "download": true
+      },
+      "anchor": {
+        "x": 179,
+        "y": 356
+      },
+      "anchorNow": {
+        "x": 195,
+        "y": 420
+      },
+      "centre": [
+        195,
+        420
+      ],
+      "panned2": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": 716,
+        "pagesTransform": "",
+        "pagesRect": {
+          "left": -163,
+          "top": -442
+        },
+        "canvases": [
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          }
+        ],
+        "scrollLeft": 179,
+        "scrollTop": 506,
+        "pictureTransform": null,
+        "download": true
+      },
+      "scrolled": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": 716,
+        "pagesTransform": "",
+        "pagesRect": {
+          "left": -163,
+          "top": -999
+        },
+        "canvases": [
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          }
+        ],
+        "scrollLeft": 179,
+        "scrollTop": 1063,
+        "pictureTransform": null,
+        "download": true
+      },
+      "backToFit": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": 358,
+        "pagesTransform": "",
+        "pagesRect": {
+          "left": 16,
+          "top": -290
+        },
+        "canvases": [
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          },
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          },
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          },
+          {
+            "cssWidth": 358,
+            "bitmapWidth": 716
+          }
+        ],
+        "scrollLeft": 0,
+        "scrollTop": 354,
+        "pictureTransform": null,
+        "download": true
+      },
+      "doubleTapped": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": 716,
+        "pagesTransform": "",
+        "pagesRect": {
+          "left": -163,
+          "top": -1000
+        },
+        "canvases": [
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          },
+          {
+            "cssWidth": 716,
+            "bitmapWidth": 1432
+          }
+        ],
+        "scrollLeft": 179,
+        "scrollTop": 1064,
+        "pictureTransform": null,
+        "download": true
+      },
+      "pdfDownloaded": {
+        "name": "resume-472.pdf",
+        "sameBytes": true,
+        "url": "blob:"
+      },
+      "imageStart": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": null,
+        "pagesTransform": null,
+        "pagesRect": null,
+        "canvases": [],
+        "scrollLeft": null,
+        "scrollTop": null,
+        "pictureTransform": "translate(0px, 0px) scale(1)",
+        "download": true
+      },
+      "imagePinched": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": null,
+        "pagesTransform": null,
+        "pagesRect": null,
+        "canvases": [],
+        "scrollLeft": null,
+        "scrollTop": null,
+        "pictureTransform": "translate(-195px, -398px) scale(2)",
+        "download": true
+      },
+      "imageFit": {
+        "zoomScale": 1,
+        "dpr": 2,
+        "back": {
+          "x": 4,
+          "y": 0
+        },
+        "pagesWidth": null,
+        "pagesTransform": null,
+        "pagesRect": null,
+        "canvases": [],
+        "scrollLeft": null,
+        "scrollTop": null,
+        "pictureTransform": "translate(0px, 0px) scale(1)",
+        "download": true
+      },
+      "pngDownloaded": {
+        "name": "photo-472.png",
+        "sameBytes": true,
+        "url": "blob:"
+      }
+    },
+    "MSP-28": {
+      "result": "Pass",
+      "seconds": 5.2,
+      "draftThumbnail": {
+        "blob": true,
+        "width": 4
+      },
+      "draftFullScreen": {
+        "blob": true,
+        "width": 4
+      },
+      "draftPdf": {
+        "shown": {
+          "title": "spec-450.pdf",
+          "image": null,
+          "pdfCanvases": 1,
+          "error": null
+        },
+        "ready": true,
+        "backToConversation": true
+      },
+      "draftText": {
+        "shown": {
+          "title": "notes-450.txt",
+          "image": null,
+          "pdfCanvases": 3,
+          "error": null
+        },
+        "ready": true,
+        "backToConversation": true
+      },
+      "draftsKeptAfterViewer": true,
+      "sentThumbnail": {
+        "blob": true,
+        "width": 4
+      },
+      "sentPng": {
+        "shown": {
+          "title": "photo-450.png",
+          "image": {
+            "blob": true,
+            "width": 4,
+            "height": 3
+          },
+          "pdfCanvases": 0,
+          "error": null
+        },
+        "ready": true,
+        "backToConversation": true
+      },
+      "sentPdf": {
+        "shown": {
+          "title": "spec-450.pdf",
+          "image": null,
+          "pdfCanvases": 1,
+          "error": null
+        },
+        "ready": true,
+        "backToConversation": true
+      },
+      "sentText": {
+        "shown": {
+          "title": "notes-450.txt",
+          "image": null,
+          "pdfCanvases": 3,
+          "error": null
+        },
+        "ready": true,
+        "backToConversation": true
+      },
+      "workspacePath": {
+        "shown": {
+          "title": "brief.txt",
+          "image": null,
+          "pdfCanvases": 3,
+          "error": null
+        },
+        "ready": true,
+        "backToConversation": true
+      },
+      "refused": [],
+      "mainFrameNodeNavigations": [],
+      "newWindows": [],
+      "attachedFileReads": [
+        {
+          "path": "/rest/context-files/upload",
+          "status": 200,
+          "type": "xhr"
+        },
+        {
+          "path": "/rest/context-files/upload",
+          "status": 200,
+          "type": "xhr"
+        },
+        {
+          "path": "/rest/context-files/upload",
+          "status": 200,
+          "type": "xhr"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_6aa38212cac4__spec-450.pdf",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_73dcd9458877__notes-450.txt",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/drafts/agent-runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/context-files/finalize",
+          "status": 200,
+          "type": "xhr"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_6aa38212cac4__spec-450.pdf",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_73dcd9458877__notes-450.txt",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        },
+        {
+          "path": "/rest/runs/content_creator_…/context-files/ctx_7ec6b98b7b71__photo-450.png",
+          "status": 200,
+          "type": "fetch"
+        }
+      ]
+    },
+    "MSP-29": {
+      "result": "Pass",
+      "seconds": 0.8,
+      "notice": true,
+      "toast": "This file is on zeta-node, where this run runs.",
+      "viewerOpened": false,
+      "stillOnConversation": true,
+      "mainFrameNodeNavigations": [],
+      "refused": []
+    },
+    "MSP-30": {
+      "result": "Pass",
+      "seconds": 8.3,
+      "first": {
+        "post": {
+          "ready": true,
+          "backToConversation": true,
+          "title": "post.md",
+          "image": null,
+          "version": "VERSION-ONE-1111"
+        },
+        "chart": {
+          "ready": true,
+          "backToConversation": true,
+          "title": "chart.png",
+          "image": {
+            "blob": true,
+            "width": 2,
+            "height": 1
+          },
+          "version": null
+        }
+      },
+      "newLinks": {
+        "post": {
+          "ready": true,
+          "backToConversation": true,
+          "title": "post.md",
+          "image": null,
+          "version": "VERSION-TWO-2222"
+        },
+        "chart": {
+          "ready": true,
+          "backToConversation": true,
+          "title": "chart.png",
+          "image": {
+            "blob": true,
+            "width": 3,
+            "height": 1
+          },
+          "version": null
+        }
+      },
+      "oldLinks": {
+        "post": {
+          "ready": true,
+          "backToConversation": true,
+          "title": "post.md",
+          "image": null,
+          "version": "VERSION-TWO-2222"
+        },
+        "chart": {
+          "ready": true,
+          "backToConversation": true,
+          "title": "chart.png",
+          "image": {
+            "blob": true,
+            "width": 3,
+            "height": 1
+          },
+          "version": null
+        }
+      }
+    },
+    "MSP-31": {
+      "result": "Pass",
+      "seconds": 18.4,
+      "first": "VERSION-ONE-1111",
+      "newLink": "VERSION-TWO-2222",
+      "sameOldLink": "VERSION-TWO-2222",
+      "filesTab": "VERSION-TWO-2222",
+      "editToggles": [
+        {
+          "width": 28,
+          "height": 28,
+          "x": 1331,
+          "y": 67,
+          "inView": true
+        }
+      ],
+      "unsavedEdit": {
+        "typed": true,
+        "previewAfterLink": "VERSION-THREE-3333",
+        "keptAfterRewriteAndOpen": true,
+        "editorAfter": "# Reopen VERSION-TWO-2222 the rewritten post. UNSAVED-EDIT-450"
+      }
+    },
+    "MSP-37": {
+      "result": "Pass",
+      "seconds": 191.3,
+      "markdown": {
+        "text": "notes-471.md NOTES-471 NODE-FILE-ON-DESKTOP-471 opened from outside the run folder.",
+        "alert": "",
+        "image": 0,
+        "editControls": 0,
+        "status": "",
+        "typedChanges": false
+      },
+      "image": {
+        "text": "notes-471.md chart-471.png 100% Scroll to zoom • Drag to pan • Double-click to reset",
+        "alert": "",
+        "image": 1,
+        "editControls": 0,
+        "status": "",
+        "typedChanges": false
+      },
+      "missing": {
+        "text": "notes-471.md chart-471.png gone-471.md Error!This file was not found on the computer.",
+        "alert": "Error!This file was not found on the computer.",
+        "image": 0,
+        "editControls": 0,
+        "status": "",
+        "typedChanges": false
+      },
+      "folder": {
+        "text": "notes-471.md chart-471.png gone-471.md reports-471.md Error!This path is a folder, not a file.",
+        "alert": "Error!This path is a folder, not a file.",
+        "image": 0,
+        "editControls": 0,
+        "status": "",
+        "typedChanges": false
+      },
+      "nodeFileRequests": [
+        {
+          "file": "notes-471.md",
+          "status": 200
+        },
+        {
+          "file": "chart-471.png",
+          "status": 200
+        },
+        {
+          "file": "gone-471.md",
+          "status": 404
+        },
+        {
+          "file": "reports-471.md",
+          "status": 400
+        }
+      ],
+      "hostWorkspaceText": false,
+      "unchanged": true
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "MSP-16",
+      "line": "phone console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true
+    },
+    {
+      "case": "MSP-16",
+      "line": "phone console: Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "known": true
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "file-open-setup",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-28",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-29",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-29",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-29",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-30",
+      "line": "phone-epsilon console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "MSP-37",
+      "line": "desktop console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true,
+      "cause": "the refused node files of AC-002 (the missing path and the folder)"
+    },
+    {
+      "case": "MSP-37",
+      "line": "desktop console: Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "known": true,
+      "cause": "the refused node files of AC-002 (the missing path and the folder)"
+    }
+  ],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "fileOpen": {
+    "runs": {
+      "run": "content_creator_dba5687f389547c8a0da6a32a68e41fe",
+      "remoteRun": "publisher_c17ae87cd8bc4fb1a101fed0ef7362a4"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-16": "Pass",
+      "MSP-39": "Pass",
+      "MSP-28": "Pass",
+      "MSP-29": "Pass",
+      "MSP-30": "Pass",
+      "MSP-31": "Pass",
+      "MSP-37": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-11T18:56:27.833Z"
+}

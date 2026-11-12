@@ -116,9 +116,9 @@ contract, while the rendered DOM contains only the render-scoped action ID and
 display label. Empty-authority absolute URIs such as `file:///tmp/report.md`
 can become actions; authorities, query strings, fragments, malformed escapes,
 relative/empty paths, and unsupported file types remain inert. A valid URI may
-still be unavailable in a browser/remote runtime, in which case the existing
-localized host-only/unavailable state is shown before Files, mobile, workspace,
-or filesystem access.
+still be unavailable: a path of a run on another node shows "This file is on
+<node>, where this run runs." before Files, mobile, workspace, or filesystem
+access.
 
 Path recognition rejects incomplete or placeholder components such as `.`, `..`,
 `...`, and the Unicode ellipsis `…` before action/type classification. Complete
@@ -165,10 +165,12 @@ contract is detailed in [Event Monitor Preview Requests](./file_explorer.md#even
 
 Runtime access remains environment-specific: an embedded node binding plus
 trusted Electron local-file bridge may use the native boundary, while
-browser/remote/mobile clients must map the host path inside the selected
-workspace to a workspace-relative locator. A remote-node Electron window must
-not use client-local reads even if a bridge exists. Unmapped
-paths remain copyable and show a localized host-only/unavailable state.
+browser/remote/mobile clients open a path inside the selected workspace as a
+workspace-relative locator and any other absolute path as a **node file**, read
+only, from the run's node (`GET /rest/node-files/content?path=`, autobyteus-436
+and autobyteus-471). A remote-node Electron window must not use client-local
+reads even if a bridge exists. A path of a run on another node shows "This file
+is on <node>, where this run runs." and opens nothing.
 `AgentEventMonitor` shows that status line (`filePreviewStatus`, a polite live
 region) in its own block, so a read-only conversation (a finished run, the
 phone's read-only run screen) shows the same text with no composer.
@@ -278,6 +280,24 @@ transport and completion ownership boundaries.
 - **Syntax Highlighting**: Uses PrismJS for code blocks.
 - **Math Support**: Uses KaTeX for explicit LaTeX equations (`$...$`, `$$...$$`, `\(...\)`, `\[...\]`, and `math` fences). The renderer does not infer inline math from ordinary prose or file paths.
 - **Mermaid Diagrams**: Native support for Mermaid diagrams.
+- **Heading links**: a Contents list's `[Section](#section)` scrolls to that heading (below).
+
+### Heading Links
+
+A `#section` link scrolls within its own rendered document, as on GitHub (autobyteus-480). This holds in conversations, the Files panel, the Skills page preview and the phone viewer.
+
+- **Heading ids (`useMarkdownSegments`, `utils/markdownHeadingAnchors.ts`):**
+  - After parsing, each heading gets `id="user-content-<slug>"`.
+  - The slug follows GitHub's rule (`githubHeadingSlug`): lowercase, characters other than letters, marks, numbers, connector punctuation, spaces and hyphens removed, then each space a hyphen.
+  - A repeated heading is numbered `-1`, `-2`, … by a per-document slugger.
+  - The `user-content-` prefix keeps the ids clear of the app's own element ids and of DOM-property names, and DOMPurify keeps them.
+  - The slug is a small own function, not a library, so no dependency or lockfile change was needed.
+- **Clicks (`MarkdownRenderer.handleLinkClick`, also on Enter):**
+  - A `#anchor` is decoded and looked up only inside this renderer's root element, so two messages with the same headings never scroll to each other. The heading is brought to the top of its scroll container.
+  - The URL does not change: the app's hash router would read `#section` as a route.
+  - A missing anchor does nothing.
+  - A link with no scheme (`other.md`, `other.md#x`, `/x.md`, `./x.md`) does nothing instead of opening a 404. Opening such files is FU-001.
+  - These rules run before the external-link rule. External `http(s)` links still open once in a new tab, `mailto:` is left to the browser, and file actions keep their own handling.
 
 ### Workspace-Relative Images
 

@@ -71,6 +71,23 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
     ]);
   });
 
+  // autobyteus-473: a viewer that opens the run later starts from the view as it is now.
+  it("lists the view now: running and ended tasks with their latest snapshot, none after the process ends", () => {
+    const { registry, feed } = createRegistry();
+    expect(registry.list()).toEqual([]);
+    feed(bgChanged([["bg1", "first"], ["bg2", "second"]]), taskStarted("bg1", true), taskStarted("bg2", true));
+    expect(registry.list()).toEqual([running("bg1", "first"), running("bg2", "second")]);
+
+    feed(taskNotification("bg1", "failed", "Background command failed (exit code 1)"));
+    expect(registry.list()).toEqual([
+      { ...running("bg1", "first"), status: "failed", summary: "Background command failed (exit code 1)" },
+      running("bg2", "second"),
+    ]);
+
+    registry.clear();
+    expect(registry.list()).toEqual([]);
+  });
+
   it("reports a running background task until its last task ends, for the idle-shutdown quiet check", () => {
     const { registry, feed } = createRegistry();
     expect(registry.hasRunningTasks()).toBe(false);

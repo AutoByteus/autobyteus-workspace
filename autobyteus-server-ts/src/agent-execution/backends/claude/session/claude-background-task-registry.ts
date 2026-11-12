@@ -235,6 +235,11 @@ export class ClaudeBackgroundTaskRegistry {
     this.carryOver = this.carryOver.filter((completion) => !sent.has(completion.taskId));
   }
 
+  /** The background tasks in the view now, running and ended (autobyteus-473: a late viewer starts from them). */
+  list(): readonly AgentBackgroundTask[] {
+    return [...this.view.values()];
+  }
+
   /** Whether any background task in the view is still running. */
   hasRunningTasks(): boolean {
     for (const task of this.view.values()) if (task.status === "running") return true;

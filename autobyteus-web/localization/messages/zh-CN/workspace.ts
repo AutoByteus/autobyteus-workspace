@@ -99,8 +99,8 @@ const messages = {
     "关闭图表查看器",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
     "在文件中打开 {{file}}",
-  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
-    "此文件仅在主机工作区中可用。",
+  "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_on_other_node":
+    "此文件在 {{node}} 上，该运行在那里运行。",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "无法打开文件预览。",
   "workspace.components.mobile.views.MobileFiles.node_file_not_found":

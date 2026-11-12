@@ -87,6 +87,7 @@ import SkillRequestChips from '~/components/conversation/SkillRequestChips.vue';
 import MessageAttachmentThumbnail from '~/components/conversation/MessageAttachmentThumbnail.vue';
 import { useMobileAttachmentOpening } from '~/composables/mobile/useMobileAttachmentOpening';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import { useRunViewFiles } from '~/composables/remoteRuns/remoteRunFile';
 
 const props = defineProps<{
   message: UserMessage;
@@ -101,6 +102,8 @@ const avatarLoadError = ref(false);
 // The phone opens attachments in its own viewer (autobyteus-450). Taken in setup: its navigation reads the route through inject.
 const mobileAttachments = isMobileRemoteAccessRuntime() ? useMobileAttachmentOpening() : null;
 const failedAttachmentPreviewKeys = ref(new Set<string>());
+// The run view this message is shown in: a path of a remote run is on that run's node (autobyteus-471 REQ-003).
+const runViewFiles = useRunViewFiles();
 
 // Skill tags travel as an instruction prefix in the content; show them as chips and the user's own text.
 const skillRequest = computed(() => skillRequestInstruction.parse(props.message.text ?? ''));
@@ -159,6 +162,7 @@ const openAttachment = (attachment: ContextAttachment): void => {
     void mobileAttachments.open(attachment);
     return;
   }
+  if (attachment.kind === 'workspace_path' && runViewFiles?.refuseRemoteRunPath()) return;
   contextAttachmentPresentation.openAttachment(attachment, {
     workspaceId: workspaceId.value,
     isEmbeddedElectronRuntime: isEmbeddedElectronRuntime.value,

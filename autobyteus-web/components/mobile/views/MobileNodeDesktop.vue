@@ -147,7 +147,7 @@ import { Icon } from '@iconify/vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import MobileNodeDesktopClipboard from '~/components/mobile/views/MobileNodeDesktopClipboard.vue';
 import { useDesktopFullScreenDisplay } from '~/composables/mobile/useDesktopFullScreenDisplay';
-import { useNodeDesktopZoom } from '~/composables/mobile/useNodeDesktopZoom';
+import { usePictureZoom } from '~/composables/usePictureZoom';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useLocalization } from '~/composables/useLocalization';
 import { useNodeDesktopConnection } from '~/composables/useNodeDesktopConnection';
@@ -167,7 +167,7 @@ const { offer, openViewOnly, switchMode } = useNodeDesktopConnection(session, sc
 
 const fullScreen = computed(() => navigation.desktopFullScreen.value);
 const leaveFullScreen = () => { void navigation.back(); };
-const { scale, transform, reset: resetZoom } = useNodeDesktopZoom(gestureLayer, {
+const { scale, transform, reset: resetZoom } = usePictureZoom(gestureLayer, {
   // View only, full screen: one tap anywhere shows the controls again.
   onSingleTap: () => { if (fullScreen.value) leaveFullScreen(); },
   picture: () => screen.value?.querySelector('canvas') ?? null,

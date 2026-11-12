@@ -39,7 +39,7 @@ describe('FileExplorerTabs unsaved content during peer modification (AC-010)', (
       await nextTick()
       if (peerModify) {
         store.handleFileSystemChange(workspaceId, {
-          changes: [{ type: 'modify', node_id: node.id, parent_id: state.tree.id }],
+          changes: [{ type: 'modify', path: node.path }],
         })
         await flushPromises()
         expect(query).toHaveBeenCalledWith(expect.objectContaining({

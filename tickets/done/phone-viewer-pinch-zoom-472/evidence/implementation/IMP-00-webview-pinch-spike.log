@@ -1,0 +1,167 @@
+# IMP-00 webview-pinch-spike (R-1: prove the two-finger pinch in the Android WebView first)
+# Command: ANDROID_SERIAL=emulator-5602 ./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.autobyteus.mobile.PinchSpike472Test; then adb logcat -d -s PINCH_SPIKE_472:I
+# Commit: ed481ae4ca + the uncommitted spike test (source below; not committed)
+# Environment: my own AVD impl472_api35 (system-images;android-35;google_apis;arm64-v8a, pixel_6, 1080x2400), headless, port 5602; macOS 26.5.2
+# Date: 2026-11-11T16:29:47Z
+# Page: a scroll container with touch-action: pan-x pan-y; non-passive touchstart/touchmove; preventDefault when two touches are down. Gestures injected as real MotionEvents (UiAutomation.injectInputEvent).
+
+11-11 17:29:27.880  3887  3938 I PINCH_SPIKE_472: screen 0,0 1080x2400
+11-11 17:29:27.880  3887  3938 I PINCH_SPIKE_472: before={"starts":0,"moves2":0,"cancelable2":0,"prevented2":0,"maxScale":1,"minScale":1,"ends":0,"pointercancel":0,"scrollTop":0,"scrollLeft":0,"vvScale":1}
+11-11 17:29:27.881  3887  3938 I PINCH_SPIKE_472: afterPinchOut={"starts":2,"moves2":12,"cancelable2":12,"prevented2":12,"maxScale":4.0000005006790875,"minScale":1,"ends":2,"pointercancel":0,"scrollTop":0,"scrollLeft":0,"vvScale":1}
+11-11 17:29:27.881  3887  3938 I PINCH_SPIKE_472: afterPinchIn={"starts":4,"moves2":24,"cancelable2":24,"prevented2":24,"maxScale":4.0000005006790875,"minScale":0.33333331942558264,"ends":4,"pointercancel":0,"scrollTop":0,"scrollLeft":0,"vvScale":1}
+11-11 17:29:27.881  3887  3938 I PINCH_SPIKE_472: afterTwoFingerDrag={"starts":6,"moves2":36,"cancelable2":36,"prevented2":36,"maxScale":4.0000005006790875,"minScale":0.33333331942558264,"ends":6,"pointercancel":0,"scrollTop":0,"scrollLeft":0,"vvScale":1}
+11-11 17:29:27.881  3887  3938 I PINCH_SPIKE_472: afterOneFinger={"starts":7,"moves2":36,"cancelable2":36,"prevented2":36,"maxScale":4.0000005006790875,"minScale":0.33333331942558264,"ends":7,"pointercancel":1,"scrollTop":296.76190185546875,"scrollLeft":0,"vvScale":1}
+
+# Reading: pinch out and in: all two-finger touchmoves cancelable and prevented (12/12, 24/24), scale 4.0 and 0.33 seen, scrollTop/Left 0, visualViewport.scale 1.
+# Two-finger drag: prevented (36/36), no scroll. One finger: native scroll (scrollTop 296.8; one pointercancel as the browser takes the scroll).
+
+## Spike source
+package org.autobyteus.mobile
+
+import android.os.SystemClock
+import android.view.InputDevice
+import android.view.MotionEvent
+import android.webkit.WebView
+import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import org.autobyteus.mobile.connection.SavedNodeStore
+import org.json.JSONObject
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+
+/**
+ * SPIKE for autobyteus-472 R-1 (not committed): does a two-finger pinch reach the page's touch listeners in the
+ * Android WebView, with `touch-action: pan-x pan-y` on a scrolling container and preventDefault on two-finger
+ * touchmove, without the container scrolling or the page zooming? And does one finger still scroll natively?
+ */
+@RunWith(AndroidJUnit4::class)
+class PinchSpike472Test {
+    private val instrumentation = InstrumentationRegistry.getInstrumentation()
+
+    @Before
+    fun clean() { SavedNodeStore(instrumentation.targetContext).clear() }
+
+    private val page = """
+        <!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+        <body style="margin:0">
+        <div id="c" style="height:100vh;overflow:auto;touch-action:pan-x pan-y">
+          <div style="width:1500px;height:6000px;background:linear-gradient(#fdd,#ddf)">content</div>
+        </div>
+        <script>
+          const c = document.getElementById('c');
+          const r = window.r = { starts: 0, moves2: 0, cancelable2: 0, prevented2: 0, maxScale: 1, minScale: 1, ends: 0, pointercancel: 0 };
+          let startDist = 0;
+          const dist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+          c.addEventListener('touchstart', (e) => { r.starts++; if (e.touches.length === 2) { startDist = dist(e.touches); e.preventDefault(); } }, { passive: false });
+          c.addEventListener('touchmove', (e) => {
+            if (e.touches.length !== 2) return;
+            r.moves2++; if (e.cancelable) { r.cancelable2++; e.preventDefault(); r.prevented2++; }
+            const s = dist(e.touches) / startDist; r.maxScale = Math.max(r.maxScale, s); r.minScale = Math.min(r.minScale, s);
+          }, { passive: false });
+          c.addEventListener('touchend', () => { r.ends++; });
+          c.addEventListener('pointercancel', () => { r.pointercancel++; });
+        </script></body></html>
+    """.trimIndent()
+
+    private fun state(webView: WebView): JSONObject {
+        val latch = CountDownLatch(1)
+        var out = "{}"
+        instrumentation.runOnMainSync {
+            webView.evaluateJavascript(
+                "JSON.stringify(Object.assign({}, window.r, { scrollTop: c.scrollTop, scrollLeft: c.scrollLeft, vvScale: visualViewport.scale }))",
+            ) { out = it; latch.countDown() }
+        }
+        latch.await(5, TimeUnit.SECONDS)
+        return JSONObject(JSONObject("{\"v\":$out}").getString("v"))
+    }
+
+    private fun inject(event: MotionEvent) {
+        instrumentation.uiAutomation.injectInputEvent(event, true)
+        event.recycle()
+    }
+
+    private fun motion(down: Long, action: Int, points: List<Pair<Float, Float>>): MotionEvent {
+        val props = points.indices.map { MotionEvent.PointerProperties().apply { id = it; toolType = MotionEvent.TOOL_TYPE_FINGER } }.toTypedArray()
+        val coords = points.map { (x, y) -> MotionEvent.PointerCoords().apply { this.x = x; this.y = y; pressure = 1f; size = 1f } }.toTypedArray()
+        return MotionEvent.obtain(down, SystemClock.uptimeMillis(), action, points.size, props, coords, 0, 0, 1f, 1f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0)
+    }
+
+    /** Two fingers from (a1,b1) to (a2,b2) in [steps]. */
+    private fun twoFingers(from: List<Pair<Float, Float>>, to: List<Pair<Float, Float>>, steps: Int = 12) {
+        val down = SystemClock.uptimeMillis()
+        inject(motion(down, MotionEvent.ACTION_DOWN, listOf(from[0])))
+        Thread.sleep(20)
+        inject(motion(down, MotionEvent.ACTION_POINTER_DOWN or (1 shl MotionEvent.ACTION_POINTER_INDEX_SHIFT), from))
+        for (i in 1..steps) {
+            Thread.sleep(16)
+            val t = i.toFloat() / steps
+            inject(motion(down, MotionEvent.ACTION_MOVE, from.indices.map { from[it].first + (to[it].first - from[it].first) * t to from[it].second + (to[it].second - from[it].second) * t }))
+        }
+        inject(motion(down, MotionEvent.ACTION_POINTER_UP or (1 shl MotionEvent.ACTION_POINTER_INDEX_SHIFT), to))
+        inject(motion(down, MotionEvent.ACTION_UP, listOf(to[0])))
+        Thread.sleep(400)
+    }
+
+    private fun oneFinger(from: Pair<Float, Float>, to: Pair<Float, Float>, steps: Int = 12) {
+        val down = SystemClock.uptimeMillis()
+        inject(motion(down, MotionEvent.ACTION_DOWN, listOf(from)))
+        for (i in 1..steps) {
+            Thread.sleep(16)
+            val t = i.toFloat() / steps
+            inject(motion(down, MotionEvent.ACTION_MOVE, listOf(from.first + (to.first - from.first) * t to from.second + (to.second - from.second) * t)))
+        }
+        inject(motion(down, MotionEvent.ACTION_UP, listOf(to)))
+        Thread.sleep(600)
+    }
+
+    @Test
+    fun spike() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            lateinit var webView: WebView
+            val loaded = CountDownLatch(1)
+            scenario.onActivity { activity ->
+                webView = WebView(activity)
+                webView.settings.javaScriptEnabled = true
+                // As the app's WebView: no WebView zoom.
+                webView.settings.setSupportZoom(false)
+                webView.settings.builtInZoomControls = false
+                webView.webViewClient = object : android.webkit.WebViewClient() {
+                    override fun onPageFinished(view: WebView, url: String) { loaded.countDown() }
+                }
+                activity.setContentView(webView)
+                webView.loadDataWithBaseURL("http://192.168.77.40:29695/", page, "text/html", "utf-8", null)
+            }
+            loaded.await(10, TimeUnit.SECONDS)
+            Thread.sleep(800)
+            val loc = IntArray(2)
+            var w = 0; var h = 0
+            instrumentation.runOnMainSync { webView.getLocationOnScreen(loc); w = webView.width; h = webView.height }
+            val cx = loc[0] + w / 2f
+            val cy = loc[1] + h / 2f
+            val before = state(webView)
+            // Pinch out: fingers apart.
+            twoFingers(listOf(cx - 60f to cy, cx + 60f to cy), listOf(cx - 240f to cy, cx + 240f to cy))
+            val afterPinchOut = state(webView)
+            // Pinch in.
+            twoFingers(listOf(cx - 240f to cy, cx + 240f to cy), listOf(cx - 80f to cy, cx + 80f to cy))
+            val afterPinchIn = state(webView)
+            // Two fingers moving together upward (a two-finger drag).
+            twoFingers(listOf(cx - 80f to cy + 300f, cx + 80f to cy + 300f), listOf(cx - 80f to cy - 300f, cx + 80f to cy - 300f))
+            val afterTwoFingerDrag = state(webView)
+            // One finger drag upward: native scroll.
+            oneFinger(cx to cy + 400f, cx to cy - 400f)
+            val afterOneFinger = state(webView)
+            android.util.Log.i("PINCH_SPIKE_472", "screen ${loc[0]},${loc[1]} ${w}x$h")
+            android.util.Log.i("PINCH_SPIKE_472", "before=$before")
+            android.util.Log.i("PINCH_SPIKE_472", "afterPinchOut=$afterPinchOut")
+            android.util.Log.i("PINCH_SPIKE_472", "afterPinchIn=$afterPinchIn")
+            android.util.Log.i("PINCH_SPIKE_472", "afterTwoFingerDrag=$afterTwoFingerDrag")
+            android.util.Log.i("PINCH_SPIKE_472", "afterOneFinger=$afterOneFinger")
+        }
+    }
+}
+# Exit status: 0

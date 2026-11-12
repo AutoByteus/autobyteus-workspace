@@ -6,7 +6,7 @@ vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ initialized: true, nodeBaseUrl: 'http://node.example/', getBoundEndpoints: () => ({ rest: 'http://node.example/rest/' }) }) }));
 const transport = vi.hoisted(() => ({ fetch: vi.fn() }));
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ authorizedFetch: transport.fetch }));
-import { nodeFileContentUrl, useMobileNodeFile, type MobileNodeFileSource } from '../useMobileNodeFile';
+import { useMobileNodeFile, type MobileNodeFileSource } from '../useMobileNodeFile';
 
 /** Mounts the composable in a component (its lifetime is the component's). */
 /** Mounts the composable in a component (its lifetime is the component's), with a node path as its source. */
@@ -28,11 +28,6 @@ describe('useMobileNodeFile (autobyteus-436)', () => {
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation((url: string) => { revoked.push(url); });
   });
   afterEach(() => vi.restoreAllMocks());
-
-  it('builds the node-file URL from the bound REST base, the path encoded', () => {
-    expect(nodeFileContentUrl('http://node.example/rest/', '/Users/a b/x#1.md'))
-      .toBe('http://node.example/rest/node-files/content?path=%2FUsers%2Fa%20b%2Fx%231.md');
-  });
 
   it('keeps a text file as content, read-only, without an object URL', async () => {
     transport.fetch.mockResolvedValue(new Response('# Contract', { status: 200 }));

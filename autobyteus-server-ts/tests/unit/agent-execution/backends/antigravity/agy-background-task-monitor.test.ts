@@ -36,6 +36,22 @@ describe("AgyBackgroundTaskMonitor (DS-003)", () => {
     expect(emitted).toEqual([[running, { ...running, taskId: `${conversation}/task-4`, kind: "other", description: "browser_subagent", command: null }]]);
   });
 
+  // autobyteus-473: a viewer that opens the run later starts from the tasks running now (RSK-001: ended ones are gone).
+  it("lists the tasks running now, until each exits or AGY stops", async () => {
+    const { monitor, scans } = setup();
+    expect(monitor.list()).toEqual([]);
+    monitor.track([daemon]);
+    expect(monitor.list()).toEqual([running]);
+    scans.push({ settledFiles: ["m.json"], exits: [{ stepIndex: 2, exitCode: 0, summary: "The command exited with code 0." }], problem: null });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(monitor.list()).toEqual([]);
+
+    const stopped = setup();
+    stopped.monitor.track([daemon]);
+    stopped.monitor.stopAll();
+    expect(stopped.monitor.list()).toEqual([]);
+  });
+
   it("reports a running task from track until its exit, and none after AGY stops, for the idle-shutdown quiet check", async () => {
     const { monitor, scans } = setup();
     expect(monitor.hasRunningTasks()).toBe(false);

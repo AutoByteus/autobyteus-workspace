@@ -144,7 +144,7 @@ An explicit open of a file that is already open reads it again (autobyteus-450, 
 - **Text:** the cached `content` is cleared and fetched again (`network-only`). An `editorDraft` stays, and the link's read-only preview shows the new committed text.
 - **Other types** (image, PDF, audio, video, spreadsheet): `contentRevision` is bumped, and the viewer fetches the file again.
 
-So each open shows the file's current content. A viewer that is left open does not refresh by itself when the file changes later. Drafts are not persisted across
+So each open shows the file's current content. A workspace file that is already open also refreshes by itself while the workspace's live stream is open ([Open Files Follow The Disk](#open-files-follow-the-disk)). Files opened by absolute path outside the workspace do not (autobyteus-452 FU-001). Drafts are not persisted across
 application/page restarts. This does not add remote notifications, automatic
 merge, competing-write arbitration, or an outage-isolation guarantee.
 
@@ -206,8 +206,8 @@ The runtime locator rules are deliberately different by environment:
 | Runtime | Locator / behavior |
 | --- | --- |
 | Embedded Electron | An embedded node binding **and** trusted local-file bridge permit an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
-| Browser / remote / missing local bridge | The path must be contained by the selected workspace root and converted to a workspace-relative locator before the existing authorized content route is used. A remote-node Electron window never falls back to client-local bytes. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
-| Phone-first `/mobile` | The path must lie in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only; `MobileFiles` reads it only when the entry's workspace is the open agent's, and shows the unavailable state otherwise. |
+| Browser / remote / missing local bridge | A path inside the selected workspace root is converted to a workspace-relative locator and read through the existing authorized content route. Any other absolute path opens read-only in the Files panel as a **node file** from the run's node (autobyteus-471): the store fetches it once through the shared loader (`utils/fileExplorer/nodeFileContent.ts`, `GET /rest/node-files/content?path=` with the window's credential); text becomes content, other types an object URL revoked when the file is closed or reloaded. A missing path shows "This file was not found on the computer.", a folder "This path is a folder, not a file.", any other refusal "The file preview could not be opened.". Every node file opens read-only, whoever opens it (a link, an attachment): the store gives it a read-only access intent (`source: 'node-file'`) when the caller gave none. A remote-node Electron window never falls back to client-local bytes. A path of a run on another node, a file link or a path attachment of its messages, shows "This file is on <node>, where this run runs." on the run view's file status line without a content request (`remoteRunFileNode`, `composables/remoteRuns/remoteRunFile.ts`, the one decision for both). |
+| Phone-first `/mobile` | A path in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) opens as a workspace file, any other absolute path as a node file through the same loader (`useMobileNodeFile`, autobyteus-436). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only, whatever its size (autobyteus-471). A path of a run on another node shows "This file is on <node>, where this run runs.". |
 
 Path recognition is opt-in to the Event Monitor Markdown renderer and passive
 output is inert. Explicit pointer or keyboard activation is required. The
@@ -267,8 +267,9 @@ remain literal and inert; they do not fall through to generic browser
 navigation. Raw URI provenance is transient and never enters DOM attributes,
 persisted File Explorer state, references/artifacts, workspace requests, or API
 payloads. A valid URI that cannot map in the active browser/remote workspace
-remains an action with the localized host-only/unavailable result before any
-Files/mobile/content access.
+remains an action: it opens as a node file, or, in a run on another node, shows
+"This file is on <node>, where this run runs." before any Files/mobile/content
+access.
 
 Incomplete placeholder components (`.`, `..`, `...`, and `…`) are rejected
 before a preview action is created, including on POSIX and Windows paths.
@@ -974,6 +975,19 @@ The backend WebSocket route resolves the workspace and asks its file explorer fo
 Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend parent process logically stops the watcher: subscribers and pending timers are closed, the current watcher generation is detached, and a stop command is sent to a child watcher runtime process.
 
 The child watcher runtime owns native chokidar start/close and sends raw events back to the parent over IPC with `{ watcherId, generation }` identity. Physical chokidar close can block or be force-killed without blocking unrelated backend routes such as Terminal. Stale child messages from a previous generation are ignored after close/restart.
+
+#### Open Files Follow The Disk
+
+An open workspace file refreshes when it changes on disk, in the desktop window and on the phone (autobyteus-452). This holds whether or not its folder was ever expanded, and for text, images and PDFs alike.
+
+- **The node:**
+  - On a file `change`, `watchdog-handler` sends `modify` with the file's workspace-relative `path` (POSIX separators), whether or not the path is in its tree.
+  - On a file `add`, and on a file move (the watcher pairs a temp file's unlink with the add at its final path), it sends the structural change as before, plus `modify` for the destination path. So an atomic rewrite (write elsewhere, then rename over the file) also refreshes.
+- **The window (`fileExplorerTreeActions`):** structural changes apply as before. For each `modify`:
+  - a path marked as the window's own save is unmarked and nothing else happens;
+  - a path that is open is reloaded through `_reloadOpenFile`: text keeps an `editorDraft`, and other types bump `contentRevision`;
+  - any other path is ignored, so files that are not open cause no reads.
+- **Batching:** a burst of changes arrives in the stream's usual batched frames. In testing, 200 changes came as one frame of about 10 KB and caused no reads.
 
 Event delivery intentionally stays simple. The backend keeps the existing lightweight batching and bounded queues for `FILE_SYSTEM_CHANGE`. If the runtime fails or an event queue overflows, the stream closes with an error; the frontend reconnect path refreshes a snapshot instead of attempting semantic event reconciliation.
 

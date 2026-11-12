@@ -89,10 +89,30 @@ describe('selected background inspection panel', () => {
     panel.unmount(); wrapper = undefined; await vi.advanceTimersByTimeAsync(10_000); expect(io.query).toHaveBeenCalledTimes(2);
   });
   it('selects the existing reactive event store and stops polling for an event-stream capability', async () => {
-    io.query.mockResolvedValue({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1' } } });
+    io.query.mockResolvedValue({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', currentTasks: [] } } });
     const panel = show(); await flushPromises(); const store = useAgentBackgroundTaskStore();
     store.upsertTask('run-1', { ...row, kind: 'shell', status: 'completed', summary: 'recorded outcome' }); await flushPromises();
     expect(panel.text()).toContain('recorded outcome'); expect(panel.get('[data-test="background-tasks-counts"]').text()).toBe('0 running · 1 total');
     await vi.advanceTimersByTimeAsync(10_000); expect(io.query).toHaveBeenCalledTimes(1);
+  });
+
+  // autobyteus-473 REQ-003 / AC-003: after a reload (an empty store), the answer brings the tasks the node knows now.
+  const eventStream = (currentTasks: unknown[]) => ({ data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskEventStream', agentRunId: 'run-1', currentTasks } } });
+  const known = { taskId: 'bg-1', kind: 'shell', description: 'Run the probe', command: 'pnpm test:e2e', status: 'running', summary: null, startedAt: '2026-11-12T10:00:00.000Z' };
+  it('shows the tasks a late viewer gets in the answer, as running, from an empty store', async () => {
+    io.query.mockResolvedValue(eventStream([known])); const panel = show(); await flushPromises();
+    expect(panel.findAll('[data-test="background-task-row"]')).toHaveLength(1);
+    expect(panel.get('[data-test="background-task-row"]').attributes('data-status')).toBe('running');
+    expect(panel.text()).toContain('Run the probe');
+    expect(panel.get('[data-test="background-tasks-counts"]').text()).toBe('1 running · 1 total');
+  });
+  it('lets a stream event win over an older answer, and an answer finish a task the stream left running (R-1)', async () => {
+    const store = useAgentBackgroundTaskStore();
+    store.upsertTask('run-1', { ...known, taskId: 'ended', status: 'completed', summary: 'exit code 0' } as never);
+    store.upsertTask('run-1', { ...known, taskId: 'missed' } as never);
+    io.query.mockResolvedValue(eventStream([{ ...known, taskId: 'ended' }, { ...known, taskId: 'missed', status: 'failed', summary: 'exit code 1' }]));
+    show(); await flushPromises();
+    const byId = Object.fromEntries(store.getTasks('run-1').map((task) => [task.taskId, [task.status, task.summary]]));
+    expect(byId).toEqual({ ended: ['completed', 'exit code 0'], missed: ['failed', 'exit code 1'] });
   });
 });

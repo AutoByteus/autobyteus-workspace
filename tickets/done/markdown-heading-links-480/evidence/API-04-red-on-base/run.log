@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.13-beta.5 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/markdown-heading-links-480/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-45 --output-dir=/tmp/api480-red-1
+
+[mobile-shell] MSP-45 …
+[mobile-shell] MSP-45 Fail: every Contents entry brings its heading into view in the Skills page preview, URL unchanged (AC-002)
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.

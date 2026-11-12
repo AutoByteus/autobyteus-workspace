@@ -1,0 +1,32 @@
+# FS-01 fresh-start build; commit f33b3c772a; clone /tmp/abtest473/fs01; 2026-11-12T06:22:11Z
+clone exit 0 at f33b3c772
+ls: /tmp/abtest473/fs01/autobyteus-server-ts/dist: No such file or directory
+ls: /tmp/abtest473/fs01/autobyteus-web/electron-dist: No such file or directory
+## pnpm install --frozen-lockfile
+install exit 0
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 10.4s using pnpm v10.28.2
+## build:electron:mac -- --arm64
+build exit 0
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 43.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.7s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+  '/private/tmp/abtest473/fs01/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.5.zip.blockmap',
+  '/private/tmp/abtest473/fs01/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.5.zip'
+]
+## Verify bundled Prisma ARM64 engine target
+schema engine darwin-arm64: present
+query engine darwin-arm64: present
+## Verify packaged terminal runtime ARM64
+[terminal-runtime] node-pty root: /private/tmp/abtest473/fs01/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/abtest473/fs01/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/abtest473/fs01/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+verify resources exit 0
+[terminal-runtime] node-pty root: /private/tmp/abtest473/fs01/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /private/tmp/abtest473/fs01/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /private/tmp/abtest473/fs01/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+verify app exit 0
+FS-01 done 2026-11-12T06:30:39Z

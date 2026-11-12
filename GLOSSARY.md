@@ -102,8 +102,8 @@ delegated run, …) are defined in the
   `remote-access/allowed-local-networks.json`.
 - **Shell bridge:** the Android app's `AutoByteusShell` object in its WebView,
   given only to the main frame of the open node's origin: the page tells the
-  app it paired, or asks it to show its node list or its scanner. It carries
-  no credential.
+  app it paired, or asks it to show its node list or its scanner, or to save a
+  PDF or image to the phone's Downloads (`saveFile`). It carries no credential.
 - **Server package:** one release's server for one architecture: a
   self-contained folder with `server-package.json`, `package.json`, `dist/`,
   `prisma/`, `node_modules/` and `mobile-web/`. A release publishes it as
@@ -127,9 +127,11 @@ delegated run, …) are defined in the
   one.
 - **Node file:** a file on the node's computer (a Docker node: inside its
   container) addressed by its absolute path, not through a workspace: the phone
-  opens one read-only when a conversation names a path outside the run's folder
-  (`GET /rest/node-files/content?path=`, `NodeFileReader`, `nodeFile`,
-  autobyteus-436). It is not a media file (`/rest/files/`).
+  and the desktop window open one read-only when a conversation names a path
+  outside the run's folder (`GET /rest/node-files/content?path=`,
+  `NodeFileReader`, `nodeFile`, autobyteus-436, autobyteus-471). A path of a run
+  on another node opens nothing and says which node it is on. It is not a media
+  file (`/rest/files/`).
 - **Node desktop:** the virtual graphical desktop inside a Docker node (Xvnc
   display `:99`, RFB on `127.0.0.1:5900` inside the node) that its agents use,
   shown in the VNC Viewer tab through the node's own server
@@ -365,8 +367,10 @@ delegated run, …) are defined in the
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.
 - **Background task:** work a run started that continues beyond its tool call and
-  is reported separately (`BACKGROUND_TASK_UPDATED`, the Background Tasks panel,
-  notices): a Claude `run_in_background` task, an Antigravity daemon step, or, on
+  is reported separately (`BACKGROUND_TASK_UPDATED`, the Background Tasks panel
+  and the phone's Activity, notices; a viewer that opens the run later reads its
+  current tasks from the run's background-task view, `AgentBackgroundTaskView`,
+  autobyteus-473): a Claude `run_in_background` task, an Antigravity daemon step, or, on
   the AutoByteus runtime, a command started with `run_bash(run_in_background: true)`
   or an `&` job of a foreground `run_bash` call still running when the call's
   foreground part ended. Processes that detach themselves (`nohup`, `setsid`,

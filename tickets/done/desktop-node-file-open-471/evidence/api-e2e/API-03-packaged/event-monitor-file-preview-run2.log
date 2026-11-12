@@ -1,0 +1,15 @@
+# API-03 event-monitor-file-preview (packaged app, --build), run 2; commit 08d804cbb9; 2026-11-11T13:21:56Z
+# pnpm -C autobyteus-web test:e2e:event-monitor-file-preview --output-dir <API-03-packaged/event-monitor-file-preview> (the user's shell env with AUTOBYTEUS_* unset; the instance's server gets a baseline env)
+
+> autobyteus@1.5.13-beta.4 test:e2e:event-monitor-file-preview /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/autobyteus-web
+> node tests/e2e/event-monitor-file-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-03-packaged/event-monitor-file-preview
+
+{"ok":false,"evidence":"/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-node-file-open-471/tickets/in-progress/desktop-node-file-open-471/evidence/api-e2e/API-03-packaged/event-monitor-file-preview/evidence.json","cases":{"N-001":"Pass","N-002":"Pass","N-003":"Fail","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-56258-274d","wasRunning":true,"forced":false,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-oelvSw","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"fixtureRemoved":true,"instances":{"instances":[]}}}
+ ELIFECYCLE  Command failed with exit code 1.
+
+# Review note (API/E2E): run 2 launched the packaged app (build OK); N-001 and N-002 Pass, N-003 Fail at `assert(result.tabFocused)`
+# (probe line 94) while its own failureState, read just after, shows the user.md tab focused. Cause (TESTING.md Rule 9): the link
+# handler focuses the tab one task after `revealTool` resolves (`useEventMonitorFilePreview.ts` setTimeout 0), so the content can
+# be visible one 50 ms poll earlier; the probe asserted focus on that sample. This ticket does not change that order (it adds
+# only a synchronous remote-run lookup before the file opens; the embedded window's local-file load is unchanged). Baseline test
+# fix: `activate` waits for the focus and records the delay; the run after it uses the same packaged build (--skip-build).

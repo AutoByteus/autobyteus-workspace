@@ -78,7 +78,7 @@ const state = () => page.evaluate(() => {
     drawer: !!document.querySelector('[data-test="workspace-right-tool-drawer"]'),
     dock: !!document.querySelector('[data-test="workspace-right-panel"]'),
     tabFocused: !!tab && document.activeElement === tab,
-    focusText: document.activeElement?.textContent, hostOnly: document.body.innerText.includes('available only on the host workspace') };
+    focusText: document.activeElement?.textContent, otherNode: document.body.innerText.includes('where this run runs') };
 });
 const waitState = async predicate => {
   const until = Date.now() + 30000; let last;
@@ -88,10 +88,15 @@ const waitState = async predicate => {
 const link = label => page.getByText(label, { exact: true });
 const activate = async (label, options = {}) => {
   await link(label).click();
-  const result = await waitState(s => s.visible && !s.preview?.isLoading && (options.error ? s.preview?.error === options.error : s.text?.includes(options.content || 'NATIVE SELECTED B PROOF')));
-  assert.equal(result.target.runId, selectedId); assert.equal(result.hostOnly, false); assert.equal(result.preview.accessIntent.readOnly, true);
-  if (options.error) { assert(result.alert); assert(!result.alert.includes('host workspace')); }
-  else assert(result.tabFocused);
+  let result = await waitState(s => s.visible && !s.preview?.isLoading && (options.error ? s.preview?.error === options.error : s.text?.includes(options.content || 'NATIVE SELECTED B PROOF')));
+  assert.equal(result.target.runId, selectedId); assert.equal(result.otherNode, false); assert.equal(result.preview.accessIntent.readOnly, true);
+  if (options.error) { assert(result.alert); assert(!result.alert.includes('where this run runs')); }
+  else {
+    // The link handler focuses the tab one task after the Files panel is revealed, so the content can show one poll
+    // earlier: wait for the focus (a state timeout fails the case) and record how long it took.
+    const shownAt = Date.now();
+    result = await waitState(s => s.tabFocused); result.focusAfterContentMs = Date.now() - shownAt;
+  }
   return result;
 };
 const navigate = async (orgRunId, memberAddress = '/team/lead', agentRunId = selectedId) => {

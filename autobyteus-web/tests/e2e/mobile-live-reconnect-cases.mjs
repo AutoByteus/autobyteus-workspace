@@ -189,8 +189,26 @@ export const runLiveReconnectCases = async (probe) => {
     const openPhone = async (label) => {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: 'UTC',
         ...(paired ? { storageState: paired } : {}) });
+      const phone = { label, context, page: null, sockets: [], reads: [], attempts: [] };
+      // Every socket the page starts, when it starts it (the page's `Date.now()`, the same clock as `now()`). Playwright
+      // reports no `websocket` event for a socket that fails while connecting: the refused path drops a connection at
+      // once, and Chrome ends it either in the handshake (ERR_CONNECTION_RESET, reported) or before it
+      // (ERR_SOCKET_NOT_CONNECTED, not reported). An attempt counts where it starts, whatever its outcome.
+      await context.exposeBinding('__probeSocketAttempt', (_source, url, at) => {
+        phone.attempts.push({ url: redact(String(url)).replace(phoneOrigin.replace(/^http/, 'ws'), ''), at: at - t0 });
+      });
+      await context.addInitScript(() => {
+        const Native = window.WebSocket;
+        window.WebSocket = class extends Native {
+          constructor(...args) {
+            const at = Date.now();
+            super(...args);
+            Promise.resolve(window.__probeSocketAttempt?.(String(args[0]), at)).catch(() => undefined);
+          }
+        };
+      });
       const page = await context.newPage();
-      const phone = { label, context, page, sockets: [], reads: [] };
+      phone.page = page;
       // Every GraphQL read the phone starts (a refused one too): the agent stream's catch-up is a `GetRunProjection` read.
       page.on('request', (request) => {
         if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
@@ -266,16 +284,18 @@ export const runLiveReconnectCases = async (probe) => {
       return phone;
     };
     const socketsOf = (phone, from) => phone.sockets.filter(entry => entry.openedAt >= from && /\/ws\/agent(-team|-org)?\//.test(entry.url));
+    /** The run streams a phone started since `from` (each attempt, whatever its outcome; see `openPhone`). */
+    const streamAttemptsOf = (phone, from) => phone.attempts.filter(entry => entry.at >= from && /\/ws\/agent(-team|-org)?\//.test(entry.url));
     /**
      * The reconnect attempts of the run a phone shows, and nothing of the other streams it keeps: the Team phone's Team
      * stream; the agent phone's catch-up reads of that run (`GetRunProjection`, read before the stream opens) and its stream.
      */
     const ownAttempts = (phone, from, to = Infinity) => {
       const inWindow = at => at >= from && at < to;
-      if (phone.kind === 'team') return phone.sockets.filter(e => inWindow(e.openedAt) && e.url.startsWith(`/ws/agent-team/${team.teamRunId}`)).map(e => ({ socket: '/ws/agent-team/…', at: e.openedAt - from }));
+      if (phone.kind === 'team') return phone.attempts.filter(e => inWindow(e.at) && e.url.startsWith(`/ws/agent-team/${team.teamRunId}`)).map(e => ({ socket: '/ws/agent-team/…', at: e.at - from }));
       return [
         ...phone.reads.filter(e => inWindow(e.at) && e.op === 'GetRunProjection' && e.runId === agentRun).map(e => ({ read: 'GetRunProjection', at: e.at - from })),
-        ...phone.sockets.filter(e => inWindow(e.openedAt) && e.url.startsWith(`/ws/agent/${agentRun}`)).map(e => ({ socket: '/ws/agent/…', at: e.openedAt - from })),
+        ...phone.attempts.filter(e => inWindow(e.at) && e.url.startsWith(`/ws/agent/${agentRun}`)).map(e => ({ socket: '/ws/agent/…', at: e.at - from })),
       ].sort((a, b) => a.at - b.at);
     };
 
@@ -339,7 +359,7 @@ export const runLiveReconnectCases = async (probe) => {
       await sleep(5_000);
       for (const phone of Object.values(pair)) await setVisibility(phone, 'visible');
       await sleep(3_000);
-      const glanceSockets = Object.fromEntries(Object.values(pair).map(phone => [phone.label, socketsOf(phone, glance).length]));
+      const glanceSockets = Object.fromEntries(Object.values(pair).map(phone => [phone.label, streamAttemptsOf(phone, glance).length]));
       const glanceNext = {};
       for (const [kind, phone] of Object.entries(pair)) glanceNext[kind] = await phoneDelay(phone, kind, mark(kind), 15_000);
 
@@ -351,7 +371,7 @@ export const runLiveReconnectCases = async (probe) => {
       await Promise.all(Object.entries(meanwhile).map(([kind, id]) => producedAt(kind, id)));
       await sleep(35_000 - (now() - hiddenFrom));
       const shownWhileHidden = Object.fromEntries(await Promise.all(Object.entries(pair).map(async ([kind, phone]) => [kind, await shows(phone, `REPLY:${meanwhile[kind]}`)])));
-      const openedWhileHidden = Object.fromEntries(Object.values(pair).map(phone => [phone.label, socketsOf(phone, hiddenFrom).length]));
+      const openedWhileHidden = Object.fromEntries(Object.values(pair).map(phone => [phone.label, streamAttemptsOf(phone, hiddenFrom).length]));
       const visibleAt = Date.now();
       outage(false);
       for (const phone of Object.values(pair)) await setVisibility(phone, 'visible');

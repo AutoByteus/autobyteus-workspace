@@ -1,0 +1,107 @@
+{
+  "startedAt": "2026-11-12T06:21:04.230Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/pages/__background-tasks-panel-probe.vue",
+  "routePath": "/__background-tasks-panel-probe",
+  "scenarios": {
+    "BT-UI-001": {
+      "result": "Fail",
+      "description": "To-Do is gone; Background Tasks sits above Activity, collapsed, with 0 counts; Activity expanded by default (AC-001, AC-002)",
+      "failure": {
+        "id": "BT-UI-001",
+        "description": "To-Do is gone; Background Tasks sits above Activity, collapsed, with 0 counts; Activity expanded by default (AC-001, AC-002)",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Current count unavailable'\n- '0 running · 0 total'\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Current count unavailable'\n- '0 running · 0 total'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs:166:12\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs:90:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs:162:3"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "WebSocket connection to 'ws://127.0.0.1:65534/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22workspaces%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentTeamDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 83395,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "log": "closed",
+    "fixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "BT-UI-001",
+      "description": "To-Do is gone; Background Tasks sits above Activity, collapsed, with 0 counts; Activity expanded by default (AC-001, AC-002)",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Current count unavailable'\n- '0 running · 0 total'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Current count unavailable'\n- '0 running · 0 total'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs:166:12\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs:90:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs:162:3"
+    }
+  ],
+  "port": 60789,
+  "result": "Fail",
+  "finishedAt": "2026-11-12T06:21:19.317Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/tickets/in-progress/phone-background-tasks-473/evidence/api-e2e/API-04-background-tasks-panel/evidence.json",
+    "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/tickets/in-progress/phone-background-tasks-473/evidence/api-e2e/API-04-background-tasks-panel/nuxt.log"
+  }
+}

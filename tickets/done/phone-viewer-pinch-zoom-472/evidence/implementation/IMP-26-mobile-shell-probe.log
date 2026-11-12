@@ -1,0 +1,16 @@
+# IMP-26 mobile-shell-probe
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.nfwtTr4rZk/mobile-shell --cases=MSP-43
+# Environment mode: clean
+# Commit: 43ef1748da (branch codex/phone-viewer-pinch-zoom-472)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-11T21:01:59Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.4 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-pinch-zoom-472/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.nfwtTr4rZk/mobile-shell --cases=MSP-43
+
+[mobile-shell] MSP-43 …
+[mobile-shell] MSP-43 Pass
+mobile-shell probe: Pass
+# Exit status: 0

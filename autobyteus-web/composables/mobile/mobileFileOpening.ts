@@ -1,5 +1,5 @@
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { remoteRunFileNode } from '~/composables/remoteRuns/remoteRunFile';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import type { MobileFileNavigation } from '~/composables/mobile/useMobileNavigation';
@@ -7,7 +7,8 @@ import type { MobileFileNavigation } from '~/composables/mobile/useMobileNavigat
 /** How a phone open of a node path ended; the caller words the refusal. */
 export type MobileFileOpenOutcome =
   | { status: 'opened'; path: string }
-  | { status: 'unavailable' }
+  /** A run another node runs: the file is on that node (`nodeName`), autobyteus-471. */
+  | { status: 'unavailable'; nodeName: string }
   | { status: 'failed' };
 
 /**
@@ -25,7 +26,8 @@ export const openMobileFilePath = async (input: Readonly<{
   const activeContextStore = useActiveContextStore();
   const target = activeContextStore.activeWorkspaceTarget;
   const workspaceRootPath = target?.workspaceRootPath;
-  if (target && useRemoteRunsStore().runOfAgentRun(target.context.state.runId)) return { status: 'unavailable' };
+  const remoteNode = target ? remoteRunFileNode(target.context.state.runId) : null;
+  if (remoteNode) return { status: 'unavailable', nodeName: remoteNode };
   let locator: ReturnType<typeof mapAbsolutePathToWorkspaceRelative> = null;
   if (target && workspaceRootPath) {
     const metadata = await useWorkspaceStore().resolveWorkspaceMetadataByRootPath(workspaceRootPath);

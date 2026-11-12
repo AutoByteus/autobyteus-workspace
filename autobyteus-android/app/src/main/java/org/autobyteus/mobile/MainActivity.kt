@@ -34,7 +34,9 @@ import org.autobyteus.mobile.ui.sheets.RemoveNodeSheet
 import org.autobyteus.mobile.ui.sheets.TypeAddressSheet
 import org.autobyteus.mobile.ui.start.StartScreen
 import org.autobyteus.mobile.web.AutoByteusWebView
+import org.autobyteus.mobile.web.DownloadsSaver
 import org.autobyteus.mobile.web.ShellBridge
+import org.autobyteus.mobile.web.ShellBridgeAction
 import org.autobyteus.mobile.web.WebFileChooserCoordinator
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -49,6 +51,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private lateinit var externalActions: AndroidExternalActions
     private lateinit var qrScanCoordinator: QrScanCoordinator
     private lateinit var fileChooserCoordinator: WebFileChooserCoordinator
+    /** Saves the page's PDFs and images to Downloads (autobyteus-472). */
+    private lateinit var downloadsSaver: DownloadsSaver
     private lateinit var ui: ShellUi
     private lateinit var startScreen: StartScreen
     private lateinit var scanScreen: ScanScreen
@@ -89,6 +93,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             },
         )
         fileChooserCoordinator = WebFileChooserCoordinator(this) { diagnostic -> showWebDiagnostic(diagnostic) }
+        downloadsSaver = DownloadsSaver(this).also { it.restoreState(savedInstanceState) }
 
         // A recreated activity already handled the share that started it (autobyteus-426 REQ-003, CRR-003 F-API-002).
         val sharedText = OpenPageRestore.sharedTextToHandle(extractSharedText(intent), recreated = savedInstanceState != null)
@@ -107,6 +112,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     /** Only a saved node's page is kept; a pairing page that has not paired yet is not. */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        downloadsSaver.saveState(outState)
         val webHost = currentWebHost ?: return
         val url = webHost.webView.url ?: return
         if (screen == Screen.Web && isPageSaved()) OpenPageRestore.save(outState, webHost.entry.id, url)
@@ -131,6 +137,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     @Deprecated("Framework activity-result callback keeps the dependency-light Android shell compatible.")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (downloadsSaver.handleActivityResult(requestCode, resultCode, data)) return
         fileChooserCoordinator.handleActivityResult(requestCode, resultCode, data)
     }
 
@@ -159,6 +166,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         reachability.cancel()
         scanScreen.close()
         destroyWebHost()
+        downloadsSaver.close()
         checks.shutdownNow()
         super.onDestroy()
     }
@@ -228,6 +236,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         }
         override fun onDesktopFullScreen(on: Boolean) =
             fullScreenRequest.onRequest(on, plainPageOnScreen = screen == Screen.Web && pageState.overlay == null)
+        override fun onSaveFile(file: ShellBridgeAction.SaveFile) = downloadsSaver.save(file)
     }
 
     private fun showStart() = renderList(Screen.Start)

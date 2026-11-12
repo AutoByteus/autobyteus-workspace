@@ -27,7 +27,8 @@ import { useLocalization } from '~/composables/useLocalization';
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import MermaidDiagram from './MermaidDiagram.vue'; 
-import { resolveExternalHttpUrl } from './externalHttpLink';
+import { readAnchorHref, resolveExternalHttpUrl } from './externalHttpLink';
+import { HEADING_ANCHOR_ID_PREFIX } from '~/utils/markdownHeadingAnchors';
 import 'prismjs/themes/prism.css'; 
 // Import KaTeX CSS for math rendering
 import 'katex/dist/katex.min.css';
@@ -122,12 +123,40 @@ const handleFileAction = (event: Event, target: Element) => {
   return true;
 };
 
+const URL_SCHEME = /^[a-z][a-z\d+.-]*:/i;
+
+/** Scrolls to the heading with this anchor in this renderer only, so two messages never cross; nothing if none. */
+const scrollToHeading = (encodedAnchor: string) => {
+  let anchorName = encodedAnchor;
+  try {
+    anchorName = decodeURIComponent(encodedAnchor);
+  } catch {
+    // A malformed escape is looked up as written.
+  }
+  const headingId = `${HEADING_ANCHOR_ID_PREFIX}${anchorName}`;
+  const headings = markdownRendererContainer.value?.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5, h6') ?? [];
+  [...headings].find((heading) => heading.id === headingId)?.scrollIntoView({ block: 'start' });
+};
+
 const handleLinkClick = (event: MouseEvent) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
   if (handleFileAction(event, target)) return;
   const anchor = target.closest('a');
   if (!anchor) return;
+
+  // Same-document and scheme-less links are decided here, before the external rule would resolve them
+  // against the page's own http(s) address; the browser default would hand them to the router (a 404).
+  const href = readAnchorHref(anchor)?.trim() ?? '';
+  if (href.startsWith('#')) {
+    event.preventDefault();
+    scrollToHeading(href.slice(1));
+    return;
+  }
+  if (href && !URL_SCHEME.test(href) && !href.startsWith('//')) {
+    event.preventDefault();
+    return;
+  }
 
   const externalUrl = resolveExternalHttpUrl(anchor, window.location.href);
   if (!externalUrl) return;

@@ -216,6 +216,7 @@ import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode'
 import { Icon } from '@iconify/vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { localFilePreviewErrorCode } from '~/utils/fileExplorer/localFileError'
+import { nodeFilePreviewErrorMessageKey } from '~/utils/fileExplorer/nodeFileContent'
 
 // Viewer components
 import FileViewer from '~/components/fileExplorer/FileViewer.vue'
@@ -248,7 +249,10 @@ const localFileErrorMessageKey: Record<string, string> = {
 const activeFileErrorMessage = computed(() => {
   const error = activeFileData.value?.error
   const code = localFilePreviewErrorCode(error)
-  return code ? t(localFileErrorMessageKey[code]) : error
+  if (code) return t(localFileErrorMessageKey[code])
+  // A node file the node refused (autobyteus-471): the plain reason, as on the phone.
+  const nodeFileMessageKey = nodeFilePreviewErrorMessageKey(error)
+  return nodeFileMessageKey ? t(nodeFileMessageKey) : error
 })
 
 const showSaveSuccess = ref(false)
