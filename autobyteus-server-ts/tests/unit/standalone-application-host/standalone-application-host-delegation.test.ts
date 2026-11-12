@@ -181,7 +181,7 @@ describe("the standalone application host composes delegation (autobyteus-461 SR
       const commands: MemberTaskCapability = {
         root: senderRun,
         delegationSource: async (caller) => ({
-          sender: caller, senderRun, delegatorAddress: null,
+          sender: caller, senderRun,
           // The sender root's placement: a catalog agent of this node (an application-bound root finds none, SR-052).
           resolvePlacement: async (address) => ({ kind: "agent", address, source: { agentDefinitionId: "code-reviewer",
             launchConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: "model-1", llmConfig: null, autoExecuteTools: false,

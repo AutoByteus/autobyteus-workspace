@@ -144,14 +144,13 @@ export class AgentOrgRunMessageDelivery {
   }
 
   /**
-   * What this Org answers when one of its agents delegates (SR-049): the sender, after its identity check; this run; the
-   * sender's address; this run's own placement (never to the caller itself, a teammate or its own Team). The root adds
+   * What this Org answers when one of its agents delegates (SR-049): the sender, after its identity check; this run;
+   * this run's own placement (never to the caller itself, a teammate or its own Team). The root adds
    * its gate and its view's peer-run notice; the delegation itself is the tool path's.
    */
   delegationSource(context: TaskDelegationContext): Omit<DelegationSource, "peerRunLinked"> {
     this.options.authorizeIdentity(context.identity);
     return Object.freeze({ sender: context.identity, senderRun: context.identity.root,
-      delegatorAddress: reachingAddressOf(this.options.getIndex(), null, context.identity),
       resolvePlacement: async (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) =>
         localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, address, work, folder)) });
   }

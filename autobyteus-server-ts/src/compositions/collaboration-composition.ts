@@ -173,6 +173,7 @@ export const composeCollaboration = async (input: Readonly<{
         return resolved.root.acceptWorkPacket(packet);
       },
       recordCollaborating: (agentRunId, address) => runs.agentRunService.recordCollaborating(agentRunId, address),
+      reachingAddress: (sender, receiverRun) => addresses.reachingAddress(sender, receiverRun),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);

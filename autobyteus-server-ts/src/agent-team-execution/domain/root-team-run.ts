@@ -259,13 +259,13 @@ export class RootTeamRun {
 
   /**
    * What this team run answers when one of its agents delegates, in its gate (SR-049): the sender, after its identity
-   * check; this run; the sender's address; this run's own placement (its catalog address map and own refusals, in its
+   * check; this run; this run's own placement (its catalog address map and own refusals, in its
    * gate again); its view's notice of a peer run. The delegation itself is the tool path's.
    */
   delegationSource(context: TaskDelegationContext): Promise<DelegationSource> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
-      return Object.freeze({ sender: context.identity, senderRun: context.identity.root, delegatorAddress: this.delivery.delegatorAddressOf(context.identity),
+      return Object.freeze({ sender: context.identity, senderRun: context.identity.root,
         resolvePlacement: (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) => this.materializationGate.run(async () =>
           localPlacement(await this.delivery.resolveDelegationPlacement(context.identity, address, work, folder))),
         peerRunLinked: (link: Parameters<DelegationSource["peerRunLinked"]>[0]) => this.remoteChildren.linkCommitted(link) });

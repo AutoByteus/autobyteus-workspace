@@ -25,6 +25,7 @@ export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: ()
     tasks: () => tasks, tree: () => tree,
     starter: { startAgent: notInThisTest, startTeam: notInThisTest } as never,
     deliverWorkPacket: notInThisTest, discard: async () => undefined, recordCollaborating: async () => undefined,
+    reachingAddress: async () => null,
     deliverToRun: notInThisTest,
     // A test that gives no channel uses the process's, as it did before the channel was required of the delegation.
     channel: channel ?? (() => resolveRemoteRunChannel()),
@@ -37,7 +38,7 @@ export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: ()
       const source = await sourceOf(root, context);
       if (!("sender" in source)) return source;
       if (input.node !== undefined) return remote.delegate({ ...input, node: input.node }, source);
-      return delegation.toNewRun({ sender: source.sender, senderRun: source.senderRun, delegatorAddress: source.delegatorAddress, spawn: input,
+      return delegation.toNewRun({ sender: source.sender, senderRun: source.senderRun, spawn: input,
         resolvePlacement: (work, folder) => source.resolvePlacement(input.recipient_address, work, folder) });
     },
     assign: async (root: DelegatingRoot, context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> => {

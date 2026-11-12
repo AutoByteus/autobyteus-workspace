@@ -25,7 +25,7 @@ export class TaskDelegationToolService {
     const spawn = input.input;
     if (spawn.node !== undefined) return toDelegateTaskResult(await this.delegations.remote.delegate({ ...spawn, node: spawn.node }, source));
     return toDelegateTaskResult(await this.delegations.delegation.toNewRun({ sender: source.sender, senderRun: source.senderRun,
-      delegatorAddress: source.delegatorAddress, spawn, resolvePlacement: (work, folder) => source.resolvePlacement(spawn.recipient_address, work, folder) }));
+      spawn, resolvePlacement: (work, folder) => source.resolvePlacement(spawn.recipient_address, work, folder) }));
   }
 }
 

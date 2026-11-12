@@ -99,6 +99,11 @@ export class TaskDelegation {
     channel(): RemoteRunChannel | null;
     /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
     recordCollaborating(agentRunId: string, address: AgentTeamAddress): Promise<void>;
+    /**
+     * The sender's address as the new run may use it (contract §2.5, `CrossRunAddressResolution.reachingAddress`): the
+     * one owner of the work packet's sender address for every delegator kind (CR-461-031); `null`: run ID only.
+     */
+    reachingAddress(sender: CollaborationMemberExecutionIdentity, receiverRun: RootExecutionIdentity): Promise<string | null>;
   }>) {}
 
   /**
@@ -167,7 +172,6 @@ export class TaskDelegation {
   async toNewRun(input: Readonly<{
     sender: CollaborationMemberExecutionIdentity;
     senderRun: RootExecutionIdentity;
-    delegatorAddress: AgentTeamAddress | null;
     spawn: SpawnTaskInput;
     resolvePlacement(work: DelegationWork, folder: string | null): Promise<LocalDelegationPlacement>;
   }>): Promise<TaskDelegationOutcome> {
@@ -229,11 +233,13 @@ export class TaskDelegation {
       await this.dependencies.discard(execution).catch((error) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(error) }));
       return { delegated: false, message: CLOSED_DURING_START };
     }
-    // 5. The work packet starts the run in its own root.
+    // 5. The work packet starts the run in its own root. Its sender address is the one the new run can reach the sender
+    // by (§2.5), read once its Task entry and the sender's own address are recorded.
     const run = copy.kind === "agent" ? { rootSubjectKind: "agent" as const, rootRunId: copy.agentRunId } : { rootSubjectKind: "agent_team" as const, rootRunId: copy.teamRunId };
     let delivered: AgentOperationResult;
     try {
-      delivered = await this.dependencies.deliverWorkPacket(run, { delegator: input.sender, delegatorAddress: input.delegatorAddress,
+      const delegatorAddress = await this.dependencies.reachingAddress(input.sender, run) as AgentTeamAddress | null;
+      delivered = await this.dependencies.deliverWorkPacket(run, { delegator: input.sender, delegatorAddress,
         description: work.description, comments: work.comments, ...(work.task ? { task: work.task } : {}), referenceFiles: work.referenceFiles,
         assertAllowed: () => { if (!tasks.isOpen(execution)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", CLOSED_DURING_START); } });
     } catch (error) {

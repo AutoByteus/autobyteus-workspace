@@ -700,7 +700,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     const taskCapability = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
       // SR-049: the root answers for its own run; the tool path delegates.
-      delegationSource: vi.fn(async (caller: CollaborationMemberExecutionIdentity) => ({ sender: caller, senderRun: createTeamRootExecutionIdentity("team-1"), delegatorAddress: null,
+      delegationSource: vi.fn(async (caller: CollaborationMemberExecutionIdentity) => ({ sender: caller, senderRun: createTeamRootExecutionIdentity("team-1"),
         resolvePlacement: vi.fn(), peerRunLinked: vi.fn() })),
       ownedTaskOf: () => null,
     });

@@ -108,9 +108,6 @@ export class TeamRunMessageDelivery {
       delegatorNode: input.fromNodeName, description: input.description, referenceFiles: [] }), coordinatorAgentRunId);
   }
 
-  /** The delegator's own address when it reaches exactly that agent run-wide (the work packet's reply line). */
-  delegatorAddressOf(identity: CollaborationMemberExecutionIdentity) { return reachingAddressOf(this.options.getIndex(), null, identity); }
-
   /** DS-1: the work packet of a local delegation that created this team run: the coordinator's first input. */
   acceptWorkPacket(packet: WorkPacket, coordinatorAgentRunId: string,
     post: (message: AgentInputUserMessage, agentRunId: string) => Promise<AgentOperationResult>): Promise<AgentOperationResult> {

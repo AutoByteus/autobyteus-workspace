@@ -1,7 +1,8 @@
-import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
+import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
+import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
 import { describe, expect, it, vi } from "vitest";
 import { acceptWorkPacketIfAllowed, TaskDelegation, type LocalDelegationPlacement, type WorkPacket } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationTree, type RunPartsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { DelegatedRunStartError } from "../../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
@@ -16,9 +17,9 @@ const agentPlacement: LocalDelegationPlacement = { kind: "agent", address: "/ima
 const teamPlacement: LocalDelegationPlacement = { kind: "agent_team", address: "/product_team" as never, coordinatorAddress: "/product_team/designer" as never,
   source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" as never, members: [], handoffs: [], defaultLaunchConfiguration: launch } };
 
-const harness = () => {
+const harness = (reader: RunPartsReader = NO_RUN_PARTS) => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+  const tree = new DelegationTree(() => tasks, reader);
   tree.build();
   tasks.setEntriesListener(tree);
   const starter = { startAgent: vi.fn(async () => ({ agentRunId: "image_maker_33f0" })),
@@ -26,14 +27,48 @@ const harness = () => {
   const deliverWorkPacket = vi.fn(async (_run: unknown, _packet: WorkPacket) => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
+  const addresses = new CrossRunAddressResolution({ tree: () => tree });
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
-    deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null });
+    deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
+    reachingAddress: (sender, receiverRun) => addresses.reachingAddress(sender, receiverRun) });
   const folders: (string | null)[] = [];
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
-    senderRun, delegatorAddress: null, spawn: spawn as never, resolvePlacement: async (_work, folder) => { folders.push(folder); return placement; } });
+    senderRun, spawn: spawn as never, resolvePlacement: async (_work, folder) => { folders.push(folder); return placement; } });
   return { tasks, tree, starter, deliverWorkPacket, discard, recordCollaborating, delegate, folders };
 };
+
+/**
+ * CR-461-031 (contract §2.5, §5.4.3 E-4): the work packet's sender address is the one the new run can reach the sender
+ * by, from one owner (`CrossRunAddressResolution.reachingAddress`) for every delegator kind: the assigner's address when
+ * the sender's run assigned the Task; the run ID only for sub-work of a Task another run assigned.
+ */
+describe("the work packet's sender address (CR-461-031)", () => {
+  const ORG: RootExecutionIdentity = { rootSubjectKind: "agent_org", rootRunId: "org_5aa1" };
+  const reader = readerOfAgents(async (run) => ({
+    [M.rootRunId]: [{ agentRunId: M.rootRunId, address: `/${M.rootRunId}`, agentDefinitionId: null }],
+    [E.rootRunId]: [{ agentRunId: "designer", address: "/designer", agentDefinitionId: null }],
+    [ORG.rootRunId]: [{ agentRunId: "ceo", address: "/ceo", agentDefinitionId: null }],
+  } as Record<string, { agentRunId: string; address: string | null; agentDefinitionId: null }[]>)[run.rootRunId]
+    ?? [{ agentRunId: run.rootRunId, address: null, agentDefinitionId: null }]);
+  const headerOf = (h: ReturnType<typeof harness>) => (h.deliverWorkPacket.mock.calls.at(-1)![1] as WorkPacket).delegatorAddress;
+
+  it.each([["an agent run", M, M.rootRunId], ["a team run's member", E, "designer"], ["an org run's agent", ORG, "ceo"]] as const)(
+    "%s that assigns the Task is shown by its own address", async (_kind, run, sender) => {
+      const h = harness(reader);
+      await expect(h.delegate(run, sender, { recipient_address: "/image_maker", description: "Draw." })).resolves.toMatchObject({ delegated: true });
+      expect(headerOf(h)).toBe(`/${sender}`);
+    });
+
+  it("E-4: sub-work of a Task another run assigned shows the run ID only (the new run cannot reach that address)", async () => {
+    const h = harness(reader);
+    h.tasks.addTask("project_task_440e", "Build it", "abc-1");
+    await h.tasks.linkNewTaskExecution({ role: "assigned", taskId: "project_task_440e", recipientAddress: "/software_engineering_team",
+      delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "designer" });
+    await expect(h.delegate(E, "designer", { recipient_address: "/image_maker", description: "Draw part of it." })).resolves.toMatchObject({ delegated: true });
+    expect(headerOf(h)).toBeNull();
+  });
+});
 
 describe("TaskDelegation.toNewRun", () => {
   it.each([["an agent run", undefined], ["a team run", "team"]] as const)(
@@ -159,7 +194,7 @@ describe("TaskDelegation.toNewRun", () => {
       tree.build();
       tasks.setEntriesListener(tree);
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined) });
+        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null });
       const delegate = () => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
         senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it." } as never, placement });
       return { tasks, tree, delegate };
@@ -203,7 +238,7 @@ describe("TaskDelegation.toNewRun", () => {
         delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
       await tasks.markStarted({ teamRunId: E.rootRunId });
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
-        channel: () => null, recordCollaborating: vi.fn(async () => undefined) });
+        channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null });
       const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
         sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
         assign: { copy: copy as never, taskId } });

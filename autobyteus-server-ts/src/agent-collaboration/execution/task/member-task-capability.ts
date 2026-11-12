@@ -16,14 +16,13 @@ export type DelegationRefusal = Extract<TaskDelegationOutcome, { delegated: fals
 
 /**
  * What the sender's root answers for its own run when one of its agents delegates (autobyteus-461 SR-049), read in its
- * gate: the sender, its run and its address; its own catalog address map with the own-address, own-team and
+ * gate: the sender and its run; its own catalog address map with the own-address, own-team and
  * own-definition refusals (`resolvePlacement`, in its gate again); and its view's notice of a peer run it delegated to.
  * The delegation itself (the Task side, the new run, the work packet) is the tool path's, through `TaskDelegation`.
  */
 export type DelegationSource = Readonly<{
   sender: CollaborationMemberExecutionIdentity;
   senderRun: RootExecutionIdentity;
-  delegatorAddress: AgentTeamAddress | null;
   resolvePlacement(address: string, work: DelegationWork, folder: string | null): Promise<LocalDelegationPlacement>;
   peerRunLinked(link: PeerRunLink): void;
 }>;

@@ -150,14 +150,13 @@ export class StandaloneRootMessageDelivery {
   }
 
   /**
-   * What this run answers when its agent delegates (SR-049): the sender, after its identity check; this run; its
-   * address; and this run's own placement (its catalog address map and own refusals). The root adds its gate and its
+   * What this run answers when its agent delegates (SR-049): the sender, after its identity check; this run; and this
+   * run's own placement (its catalog address map and own refusals). The root adds its gate and its
    * view's peer-run notice; the delegation itself is the tool path's.
    */
   delegationSource(context: TaskDelegationContext): Omit<DelegationSource, "peerRunLinked"> {
     this.options.authorizeIdentity(context.identity);
     return Object.freeze({ sender: context.identity, senderRun: this.options.root,
-      delegatorAddress: this.options.getIndex().agentAddressOf(context.identity.agentRunId),
       resolvePlacement: async (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) =>
         localPlacement(await this.options.recipients.resolveDelegationPlacement(context.identity, address, work, folder)) });
   }
