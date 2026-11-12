@@ -456,3 +456,18 @@ a team run; else `placementOf(row of row.parent)`. **Do not apply the held patch
 `task_executions`**: it is base's nesting field. The held patch's web nesting is dropped (SR-061). Base's started event
 names its placement (`parent_team_run_id`, team stream). Base also sent `closed_task_executions` in the snapshot
 (`:61`) and `task_executions` references in the closed/reopened events (`:99`).
+
+Step 4/5 in progress (WIP commit after `9440032ec0`): the three stream contracts are back at `3228eff74b` (base's shapes:
+`closed_task_executions` + digest, `task_execution_started` / `TASK_EXECUTION_STARTED`, `task_executions_closed` /
+`_reopened`, `remote_task_execution_started`; the team ack is interrupt-only; no `CHILD_RUNS_CHANGED`), minus what stays
+removed (the launch selections: `user_launch_selection`, `teamCopyAgentLaunch` / `collaborationCopyAgentLaunch`,
+`delegated_launch_selections_changed`), plus SR-038's peer launches. Contract tests: team 19, collaboration 47 pass;
+presentation 21/22: `agent-runtime-names.test.mjs` fails on `deepseek_harness`, which came with the merge (autobyteus-387),
+not this ticket (follow-up). Server: `runCollaborationStatuses` and `RunViewChildren.listed()` removed;
+`ChildRunIdentityDto` is a server type (`child-run-identity.ts`). Server compiles (type gate PASS). **41 unit tests fail**,
+all in the three stream handlers' tests and the org inspection tests: the views still send `CHILD_RUNS_CHANGED` and a
+snapshot without `closed_task_executions`. Next: the agent view first (`agent-collaboration-stream-handler.ts`): its
+snapshot through the run's stream with the tree's rows read first (sync), base's nesting and closed set; `ChildRowsFeed`
+publishing base's row events into each affected run's stream (a record-carrying event, so the projector reads nothing);
+then the team and org views (both modes); then remove `ChildRowsStreams`, `ChildRowsStreamSession`, `DelegatedRunCommands`,
+the child `@` handling, followers' output relay.

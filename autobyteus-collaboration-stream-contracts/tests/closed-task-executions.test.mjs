@@ -1,0 +1,95 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { RootExecutionEventDtoSchema, RootExecutionViewDtoSchema } from "../dist/index.js";
+
+const launch = { runtimeKind: "autobyteus", llmModelIdentifier: "model", llmConfig: null, autoExecuteTools: false, workspaceRootPath: null };
+const at = "2026-10-06T00:00:00.000Z";
+const taskAgent = (address, agentRunId) => ({ address, agentRunId, platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: at,
+  source: { kind: "agent", agentDefinitionId: "agent", launchConfiguration: launch } });
+const taskTeam = (address, teamRunId, memberRunId, taskExecutions = []) => ({
+  address, teamRunId, startedAt: at, delegatorAgentRunId: "host-run",
+  members: [{ address: `${address}/lead`, agentRunId: memberRunId, platformAgentRunId: null }], taskExecutions,
+  source: { kind: "agent_team", teamDefinitionId: "team", coordinatorAddress: `${address}/lead`, handoffs: [], defaultLaunchConfiguration: launch,
+    members: [{ address: `${address}/lead`, agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true }] },
+});
+
+const agentView = (closed) => ({
+  root_subject_kind: "agent", root_run_id: "host-run",
+  root_agent: {
+    base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null, is_active: false,
+    execution_tree: {
+      subjectKind: "agent", createdAt: at,
+      host: { address: "/manager", agentRunId: "host-run", agentDefinitionId: "manager" },
+      taskExecutions: [taskAgent("/writer", "writer-run"), taskTeam("/review", "review-team", "review-lead", [taskAgent("/helper", "helper-run")])],
+    },
+    closed_task_executions: closed,
+    agent_statuses: [], agent_input_states: [], remote_task_executions: [],
+  },
+});
+
+const orgView = (closed) => ({
+  root_subject_kind: "agent_org", root_run_id: "org-run",
+  root_org: {
+    base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null, is_active: false,
+    execution_tree: { subjectKind: "agent_org", createdAt: at, archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: {
+      address: "/", orgDefinitionId: "org", orgDefinitionName: "Org", orgRunId: "org-run", defaultLaunchConfiguration: launch,
+      members: [
+        { address: "/manager", agentDefinitionId: "manager", role: null, description: null, agentRunId: "manager-run", platformAgentRunId: null, launchConfiguration: launch },
+        { address: "/team", teamDefinitionId: "team", role: null, description: null, teamRunId: "team-run", coordinatorAddress: "/team/lead",
+          defaultLaunchConfiguration: launch,
+          members: [{ address: "/team/lead", agentDefinitionId: "lead", role: null, description: null, agentRunId: "lead-run", platformAgentRunId: null, launchConfiguration: launch }],
+          taskExecutions: [taskAgent("/team/worker", "team-worker-run")] },
+      ],
+      taskExecutions: [taskAgent("/writer", "writer-run")],
+    } },
+    closed_task_executions: closed,
+    agent_statuses: [], agent_input_states: [], remote_task_executions: [],
+  },
+});
+
+test("Agent root views require closed task executions and keep closed nodes in the tree", () => {
+  const parsed = RootExecutionViewDtoSchema.parse(agentView([{ agentRunId: "writer-run" }, { teamRunId: "review-team" }, { agentRunId: "helper-run" }]));
+  assert.deepEqual(parsed.root_agent.closed_task_executions, [{ agentRunId: "writer-run" }, { teamRunId: "review-team" }, { agentRunId: "helper-run" }]);
+  const missing = agentView([]);
+  delete missing.root_agent.closed_task_executions;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
+});
+
+test("a closed reference must identify a task execution node of the tree", () => {
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView([{ agentRunId: "unknown-run" }])), /closed task execution 'agent:unknown-run'/);
+  // A Team member and the host are not task executions.
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView([{ agentRunId: "review-lead" }])), /not a task execution/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView([{ agentRunId: "host-run" }])), /not a task execution/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView([{ teamRunId: "writer-run" }])), /not a task execution/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView([{ agentRunId: "writer-run", teamRunId: "review-team" }])));
+});
+
+test("AgentOrg views correlate closed references with root and configured-Team task executions", () => {
+  const parsed = RootExecutionViewDtoSchema.parse(orgView([{ agentRunId: "writer-run" }, { agentRunId: "team-worker-run" }]));
+  assert.equal(parsed.root_org.closed_task_executions.length, 2);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(orgView([{ teamRunId: "team-run" }])), /AgentOrg closed task execution 'team:team-run'/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(orgView([{ agentRunId: "manager-run" }])), /not a task execution/);
+  const missing = orgView([]);
+  delete missing.root_org.closed_task_executions;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
+});
+
+test("task_executions_closed is a strict, non-empty sequenced event for Agent and Org roots", () => {
+  for (const [root_subject_kind, root_run_id] of [["agent", "host-run"], ["agent_org", "org-run"]]) {
+    const event = { kind: "task_executions_closed", task_executions: [{ agentRunId: "writer-run" }, { teamRunId: "review-team" }] };
+    assert.deepEqual(RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 7, event }).event, event);
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 7, event: { ...event, task_executions: [] } }));
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 7, event: { ...event, extra: true } }));
+  }
+});
+
+test("task_executions_reopened mirrors the closed event for Agent and Org roots: strict, non-empty, same references", () => {
+  for (const [root_subject_kind, root_run_id] of [["agent", "host-run"], ["agent_org", "org-run"]]) {
+    const event = { kind: "task_executions_reopened", task_executions: [{ agentRunId: "writer-run" }] };
+    assert.deepEqual(RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8, event }).event, event);
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8, event: { ...event, task_executions: [] } }));
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8, event: { ...event, extra: true } }));
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8,
+      event: { ...event, task_executions: [{ agent_run_id: "writer-run" }] } }));
+  }
+});

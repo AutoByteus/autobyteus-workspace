@@ -1,9 +1,17 @@
 import { z } from "zod";
-import { remoteTaskExecutionDtoSchema } from "@autobyteus/agent-presentation-contracts";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
 import { taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema } from "./team-execution-view-dtos.js";
 
-/** Identity of one child row (a run on this node the Team delegated to, or a peer's run). */
+/** A delegated child (task Agent or task Team) was committed under its host TeamRun. */
+export const teamTaskExecutionStartedPayloadSchema = z.object({
+  change_sequence: z.number().int().positive(),
+  parent_team_run_id: nonEmptyStringSchema,
+  execution: z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema]),
+}).strict();
+
+export type TeamTaskExecutionStartedPayload = Readonly<z.infer<typeof teamTaskExecutionStartedPayloadSchema>>;
+
+/** Identity of one task execution node (a task Agent or a task Team) of the root's execution tree. */
 export const teamTaskExecutionReferenceDtoSchema = z.union([
   z.object({ agent_run_id: nonEmptyStringSchema }).strict(),
   z.object({ team_run_id: nonEmptyStringSchema }).strict(),
@@ -11,21 +19,25 @@ export const teamTaskExecutionReferenceDtoSchema = z.union([
 
 export type TeamTaskExecutionReferenceDto = Readonly<z.infer<typeof teamTaskExecutionReferenceDtoSchema>>;
 
-/** A child row on this node with the Team run it is listed under, as the view projects it. */
-export const teamChildRunRowDtoSchema = z.object({
-  parent_team_run_id: nonEmptyStringSchema,
-  execution: z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema]),
+/** These task executions were closed (their Task became DONE); the tree keeps them, the Workspaces listing leaves them out. */
+export const teamTaskExecutionsClosedPayloadSchema = z.object({
+  change_sequence: z.number().int().positive(),
+  task_executions: z.array(teamTaskExecutionReferenceDtoSchema).min(1),
 }).strict();
+
+export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskExecutionsClosedPayloadSchema>>;
 
 /**
- * The Team run's child rows changed (autobyteus-461 DS-8, SR-042 … SR-044): each new or reopened child's row (a run on
- * this node with its parent Team run, or a peer's run), and the runs that left the view. Unsequenced: the client applies
- * it by membership (a held added row is skipped, an unknown removed row ignored), never through a recovery.
+ * These closed task executions were reactivated by their assigner, or given another Task, and are in the tree again
+ * (autobyteus-469 D-8). Each carries its record and parent Team run, as "started" does, so a view that no longer holds
+ * the run (it left the tree when its Task closed) inserts it; one that holds it lists it again.
  */
-export const teamChildRunsChangedPayloadSchema = z.object({
-  run_id: nonEmptyStringSchema,
-  added: z.array(z.union([teamChildRunRowDtoSchema, remoteTaskExecutionDtoSchema])),
-  removed: z.array(teamTaskExecutionReferenceDtoSchema),
+export const teamTaskExecutionsReopenedPayloadSchema = z.object({
+  change_sequence: z.number().int().positive(),
+  executions: z.array(z.object({
+    parent_team_run_id: nonEmptyStringSchema,
+    execution: z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema]),
+  }).strict()).min(1),
 }).strict();
 
-export type TeamChildRunsChangedPayload = Readonly<z.infer<typeof teamChildRunsChangedPayloadSchema>>;
+export type TeamTaskExecutionsReopenedPayload = Readonly<z.infer<typeof teamTaskExecutionsReopenedPayloadSchema>>;

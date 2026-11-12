@@ -1,4 +1,5 @@
-import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type ChildRunIdentityDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
+import type { ChildRunIdentityDto } from "./child-run-identity.js";
+import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";

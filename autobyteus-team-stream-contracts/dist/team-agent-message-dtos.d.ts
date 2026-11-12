@@ -667,7 +667,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     agent_run_id: z.ZodNullable<z.ZodString>;
     collaborator_name: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>]>;
-export declare const teamCommandAckPayloadSchema: z.ZodUnion<readonly [z.ZodObject<{
+export declare const teamInterruptCommandAckPayloadSchema: z.ZodUnion<readonly [z.ZodObject<{
     command_type: z.ZodLiteral<"INTERRUPT_GENERATION">;
     command_id: z.ZodString;
     state: z.ZodLiteral<"accepted">;
@@ -682,12 +682,6 @@ export declare const teamCommandAckPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     code: z.ZodString;
     message: z.ZodString;
     agent_run_id: z.ZodString;
-}, z.core.$strict>, z.ZodObject<{
-    command_type: z.ZodLiteral<"SEND_MESSAGE">;
-    state: z.ZodLiteral<"accepted">;
-    agent_run_id: z.ZodString;
-    message_id: z.ZodString;
-    dedupe_key: z.ZodString;
 }, z.core.$strict>]>;
 export type TeamAgentMessageType = keyof typeof teamAgentPayloadSchemas;
 export type TeamAgentPayload<T extends TeamAgentMessageType> = Readonly<z.infer<(typeof teamAgentPayloadSchemas)[T]>>;

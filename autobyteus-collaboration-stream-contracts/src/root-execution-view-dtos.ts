@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { collaboratorMentionsDtoSchema, nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
-import { agentOrgExecutionEventDtoSchema, agentOrgExecutionViewDtoSchema, childRunsChangedEventDtoSchema } from "./agent-org-execution-dtos.js";
+import { agentOrgExecutionEventDtoSchema, agentOrgExecutionViewDtoSchema } from "./agent-org-execution-dtos.js";
 import {
   agentRunCollaborationEventDtoSchema,
   agentRunCollaborationViewDtoSchema,
@@ -20,9 +20,51 @@ const addCorrelationIssue = (context: z.RefinementCtx, message: string): void =>
 };
 
 type TaskExecutionReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
-/** The one key of a run a Task entry names, `agent:<agentRunId>` or `team:<teamRunId>`. */
+/** A tree node that can host task executions directly or through its Team members. */
+type TaskExecutionHolder = Readonly<{ members?: readonly unknown[]; taskExecutions?: readonly IdentityNode[] }>;
+/** The one key of a task execution, `agent:<agentRunId>` or `team:<teamRunId>`, used by the node and the client. */
 export const taskExecutionReferenceKey = (reference: TaskExecutionReference): string =>
   "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
+
+/**
+ * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
+ * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this
+ * one function, so a run list can tell that a host's closed set changed without reading it (autobyteus-446).
+ */
+export const closedTaskExecutionsDigest = (references: readonly TaskExecutionReference[]): string => {
+  const keys = [...new Set(references.map(taskExecutionReferenceKey))].sort();
+  let hash = 0x811c9dc5;
+  for (const char of keys.join("\n")) {
+    hash ^= char.codePointAt(0)!;
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return `${keys.length}:${hash.toString(16).padStart(8, "0")}`;
+};
+
+/** Each closed reference must identify a task execution node (at any depth), never a configured or member node. */
+const validateClosedTaskExecutions = (
+  closed: readonly TaskExecutionReference[],
+  holders: readonly TaskExecutionHolder[],
+  label: string,
+  context: z.RefinementCtx,
+): void => {
+  const taskExecutionKeys = new Set<string>();
+  const visit = (holder: TaskExecutionHolder): void => {
+    for (const task of holder.taskExecutions ?? []) {
+      taskExecutionKeys.add(taskExecutionReferenceKey(task));
+      if ("teamRunId" in task) visit(task);
+    }
+    for (const member of holder.members ?? []) {
+      if (typeof member === "object" && member !== null && "teamRunId" in member) visit(member as TaskExecutionHolder);
+    }
+  };
+  holders.forEach(visit);
+  for (const reference of closed) {
+    if (!taskExecutionKeys.has(taskExecutionReferenceKey(reference))) {
+      addCorrelationIssue(context, `${label} closed task execution '${taskExecutionReferenceKey(reference)}' is not a task execution of the execution tree.`);
+    }
+  }
+};
 
 const positiveSequence = z.number().int().positive();
 export const AgentTeamRootExecutionViewDtoSchema = z.object({
@@ -65,6 +107,8 @@ const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context:
       addCorrelationIssue(context, "Agent root status identity mismatch.");
     }
   }
+  validateClosedTaskExecutions(view.closed_task_executions,
+    [view.execution_tree as TaskExecutionHolder], "Agent root", context);
 };
 
 /** A live view names its live sequence and its latest message sequence (at most its base); a stored view neither. */
@@ -166,6 +210,9 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
   for (const agentRunId of statusRequiredAgentRunIds) {
     if (!statusRunIds.has(agentRunId)) addCorrelationIssue(context, `AgentOrg AgentRun '${agentRunId}' has no status record.`);
   }
+  const rootOrg = value.root_org.execution_tree.rootOrg;
+  validateClosedTaskExecutions(value.root_org.closed_task_executions,
+    [rootOrg as TaskExecutionHolder], "AgentOrg", context);
 });
 
 /**
@@ -203,9 +250,6 @@ export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type
   z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
   z.object({ type: z.literal("ROOT_EXECUTION_VIEW_SNAPSHOT"), payload: RootExecutionViewDtoSchema }).strict(),
   z.object({ type: z.literal("ROOT_EXECUTION_EVENT"), payload: RootExecutionEventDtoSchema }).strict(),
-  /** A run's child rows changed (autobyteus-461 SR-042 … SR-044): unsequenced, sent on every open view of the run. */
-  z.object({ type: z.literal("CHILD_RUNS_CHANGED"), payload: z.object({ root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
-    event: childRunsChangedEventDtoSchema }).strict() }).strict(),
   z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: commandAck }).strict(),
   z.object({ type: z.literal("ERROR"), payload: z.object({ code: nonEmptyStringSchema, message: nonEmptyStringSchema }).strict() }).strict(),

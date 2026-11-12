@@ -1,4 +1,19 @@
-import type { ChildRunIdentityDto } from "@autobyteus/collaboration-stream-contracts";
+/**
+ * A run a run delegated to on this node, by what does not change while it runs (autobyteus-461 SR-055, SR-056; a
+ * server type since SR-061): its address, its run and agents (a team run's coordinator among them), its delegator and
+ * when it started. A view's row is this identity plus the run's launch details, read fresh.
+ */
+export type ChildRunIdentityDto = Readonly<{
+  /** Its name under the delegating run: the address it was delegated to (an agent run's own address once stored). */
+  address: string;
+  /** The agent of the delegating run that delegated to it; absent for a run recorded before its delegator was stored. */
+  delegatorAgentRunId?: string;
+  startedAt: string;
+}> & (
+  | Readonly<{ kind: "agent"; agentRunId: string; agentDefinitionId: string | null }>
+  | Readonly<{ kind: "agent_team"; teamRunId: string; coordinatorAgentRunId: string;
+    members: readonly Readonly<{ address: string; agentRunId: string; agentDefinitionId: string | null }>[] }>
+);
 import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 

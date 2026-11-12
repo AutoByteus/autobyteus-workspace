@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseTeamStreamServerMessage, taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema } from "../dist/index.js";
+import { taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema } from "../dist/index.js";
 
 /** autobyteus-461 CR-461-007: a child row carries the launch its own run has; there is no recorded copy choice. */
 const claude = { runtime_kind: "claude_agent_sdk", llm_model_identifier: "opus", llm_config: null, auto_execute_tools: false, workspace_root_path: "/w" };
@@ -20,9 +20,3 @@ test("a child row has its run's launch; a recorded copy choice is refused", () =
   assert.throws(() => taskTeamExecutionDtoSchema.parse({ ...team, members: [{ ...team.members[0], user_launch_selection: choice }] }));
 });
 
-test("a child's accepted message is acknowledged by its identity (autobyteus-461 CR-461-034)", () => {
-  const ack = { command_type: "SEND_MESSAGE", state: "accepted", agent_run_id: "child", message_id: "m", dedupe_key: "d" };
-  assert.deepEqual(parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: ack }).payload, ack);
-  assert.throws(() => parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: { ...ack, state: "rejected" } }));
-  assert.throws(() => parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: { ...ack, message_id: undefined } }));
-});

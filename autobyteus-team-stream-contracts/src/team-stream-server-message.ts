@@ -8,7 +8,7 @@ import { z } from "zod";
 import {
   teamAgentErrorPayloadSchema,
   teamAgentPayloadSchemas,
-  teamCommandAckPayloadSchema,
+  teamInterruptCommandAckPayloadSchema,
   teamSegmentContentBatchPayloadSchema,
   type TeamAgentMessageType,
 } from "./team-agent-message-dtos.js";
@@ -17,7 +17,12 @@ import {
   teamMemberInputMessagePayloadSchema,
 } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamChildRunsChangedPayloadSchema } from "./team-task-execution-message-dtos.js";
+import {
+  teamTaskExecutionReferenceDtoSchema,
+  teamTaskExecutionStartedPayloadSchema,
+  teamTaskExecutionsClosedPayloadSchema,
+  teamTaskExecutionsReopenedPayloadSchema,
+} from "./team-task-execution-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
 import {
   teamAgentStatusDtoSchema,
@@ -35,6 +40,7 @@ export const teamExecutionViewSnapshotPayloadSchema = z.object({
   /** The sequence of the Team's latest message through `base_change_sequence` (0 when none). */
   last_message_change_sequence: z.number().int().nonnegative(),
   execution_tree: teamRunExecutionTreeDtoSchema,
+  closed_task_executions: z.array(teamTaskExecutionReferenceDtoSchema),
   agent_statuses: z.array(teamAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
   /** The runs this Team delegated to other nodes (autobyteus-278); their summaries arrive as messages. */
@@ -42,6 +48,8 @@ export const teamExecutionViewSnapshotPayloadSchema = z.object({
 }).strict();
 
 const changeSequence = { change_sequence: z.number().int().positive() };
+/** A run this Team delegated to another node was recorded (autobyteus-278). */
+export const teamRemoteTaskExecutionStartedPayloadSchema = z.object({ ...changeSequence, execution: remoteTaskExecutionDtoSchema }).strict();
 /** What a remote run's node answered about it (autobyteus-278). */
 export const teamRemoteTaskExecutionSummaryPayloadSchema = remoteTaskExecutionSummaryDtoSchema.extend(changeSequence).strict();
 
@@ -76,10 +84,13 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("CONNECTED"), payload: teamConnectedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_RUN_LIFECYCLE"), payload: teamRunLifecyclePayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
-  z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamCommandAckPayloadSchema }).strict(),
-  z.object({ type: z.literal("CHILD_RUNS_CHANGED"), payload: teamChildRunsChangedPayloadSchema }).strict(),
+  z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
+  z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
+  z.object({ type: z.literal("TASK_EXECUTIONS_CLOSED"), payload: teamTaskExecutionsClosedPayloadSchema }).strict(),
+  z.object({ type: z.literal("TASK_EXECUTIONS_REOPENED"), payload: teamTaskExecutionsReopenedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
+  z.object({ type: z.literal("REMOTE_TASK_EXECUTION_STARTED"), payload: teamRemoteTaskExecutionStartedPayloadSchema }).strict(),
   z.object({ type: z.literal("REMOTE_TASK_EXECUTION_SUMMARY"), payload: teamRemoteTaskExecutionSummaryPayloadSchema }).strict(),
   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
 ]);
@@ -97,10 +108,13 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "CONNECTED"; payload: z.infer<typeof teamConnectedPayloadSchema> }>
   | Readonly<{ type: "TEAM_RUN_LIFECYCLE"; payload: z.infer<typeof teamRunLifecyclePayloadSchema> }>
   | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>
-  | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamCommandAckPayloadSchema> }>
-  | Readonly<{ type: "CHILD_RUNS_CHANGED"; payload: z.infer<typeof teamChildRunsChangedPayloadSchema> }>
+  | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamInterruptCommandAckPayloadSchema> }>
+  | Readonly<{ type: "TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema> }>
+  | Readonly<{ type: "TASK_EXECUTIONS_CLOSED"; payload: z.infer<typeof teamTaskExecutionsClosedPayloadSchema> }>
+  | Readonly<{ type: "TASK_EXECUTIONS_REOPENED"; payload: z.infer<typeof teamTaskExecutionsReopenedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
+  | Readonly<{ type: "REMOTE_TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamRemoteTaskExecutionStartedPayloadSchema> }>
   | Readonly<{ type: "REMOTE_TASK_EXECUTION_SUMMARY"; payload: z.infer<typeof teamRemoteTaskExecutionSummaryPayloadSchema> }>
   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;
 
