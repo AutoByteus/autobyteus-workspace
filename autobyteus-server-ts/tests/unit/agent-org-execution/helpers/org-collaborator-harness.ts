@@ -18,7 +18,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
-import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
@@ -97,7 +97,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
         physicalScope: { root, ancestorTeamRunIds: [member.teamRunId] }, callbacks, activationMode: "fresh" })).commitAfterDurability();
     }
   }
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
   run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,

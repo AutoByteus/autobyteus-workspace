@@ -6,7 +6,7 @@ import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execu
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
-import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
@@ -22,7 +22,7 @@ export type AgentOrgRunOptions = Readonly<{
     teams: RootTeamExecutionDirectory;
     callbacks: FlatTeamExecutionCallbacks;
     persistence: AgentOrgRunPersistenceCoordinator;
-    publisher: RootEventPublisher<AgentOrgRunEvent>;
+    publisher: RunViewStream<AgentOrgRunEvent>;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children (SR-047). */
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf">;

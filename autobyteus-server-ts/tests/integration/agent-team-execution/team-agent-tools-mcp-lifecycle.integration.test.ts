@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -184,7 +185,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             : { kind: "none" as const }),
         },
       });
-      const teamRunManager = new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+      const teamRunManager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
         memberExecutionContextBuilder: {

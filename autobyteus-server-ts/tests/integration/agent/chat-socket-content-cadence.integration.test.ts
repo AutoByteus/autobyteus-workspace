@@ -1,7 +1,7 @@
 /**
  * Content cadence on the sequenced chat sockets (autobyteus-139): Team `/ws/agent-team`, Org
  * `/ws/agent-org` and delegated agents `/ws/agent-collaboration`. Real handlers, real
- * RootEventPublisher and real WebSockets; root events are published directly, as a live root would.
+ * RunViewStream and real WebSockets; root events are published directly, as a live root would.
  *
  * Cases (each per socket): AC-001 30-delta burst with identical "running" statuses; AC-002 every
  * root sequence covered exactly once and in order; AC-003 interval change; AC-004 boundaries flush
@@ -18,7 +18,7 @@ import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboratio
 import { parseTeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import {
   createAgentOrgRootExecutionIdentity,
   createAgentRootExecutionIdentity,
@@ -114,7 +114,7 @@ const teamScenario: Scenario = {
       rootTeamRunId: "team-run-root",
       messages: validateCollaborationCommunicationMessageArray((json("app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team", "team_communication_messages.json") as { messages: unknown }).messages),
     });
-    const publisher = new RootEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
+    const publisher = new RunViewStream<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const root = {
       teamRunId: "team-run-root",
       openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => ({ tree, messages, inputStates: [], statuses: [] })),
@@ -171,7 +171,7 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
     const execution = (agent: AgentKey) => createCollaborationMemberExecutionIdentity({
       root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: `/member-${agent}` as never, agentRunId: runIds[agent],
     });
-    const publisher = new RootEventPublisher<AgentOrgRunEvent & StandaloneRootEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+    const publisher = new RunViewStream<AgentOrgRunEvent & StandaloneRootEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     const present = (agent: AgentKey, event: TeamAgentEvent) => {
       const team = projectTeamAgentEventMessage(createTeamAgentExecutionBinding({
         root: createTeamRootExecutionIdentity("presentation"), memberAddress: `/member-${agent}`, agentRunId: runIds[agent],

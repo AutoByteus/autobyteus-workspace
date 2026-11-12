@@ -1,7 +1,7 @@
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
@@ -18,6 +18,8 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+  /** Each run's view stream (SR-062). */
+  viewStreams: RunViewStreams;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
   collaboratorAdmission?: CollaboratorAdmission;
@@ -54,7 +56,8 @@ export class StandaloneRootBuilder {
       hostHandle: input.hostHandle,
       rootLaunchConfiguration: input.rootLaunchConfiguration,
       persistence,
-      publisher: new RootEventPublisher<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent }),
+      // The run's one view stream, living as long as the process (SR-062, SR-063).
+      publisher: this.dependencies.viewStreams.streamOf<StandaloneRootEvent>(createAgentRootExecutionIdentity(input.host.agentRunId), { isMessageEvent: isStandaloneRootMessageEvent }),
       taskRecords: this.dependencies.taskRecords,
       delegationIndex: this.dependencies.delegationIndex,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,

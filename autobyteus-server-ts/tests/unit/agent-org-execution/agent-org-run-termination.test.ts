@@ -1,7 +1,7 @@
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
@@ -53,7 +53,7 @@ describe("AgentOrgRun termination stabilization", () => {
     const persistence = {
       drain: vi.fn(async () => { order.push("persistence-drain"); }),
     };
-    const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+    const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     const run = new AgentOrgRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({
@@ -109,7 +109,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       teams: { list: vi.fn(() => []), freezeForRootTermination: vi.fn(() => []) } as never,
       callbacks: {} as never,
       persistence: persistence as never,
-      publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
+      publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
       onTerminated,
     });
     run.activate();

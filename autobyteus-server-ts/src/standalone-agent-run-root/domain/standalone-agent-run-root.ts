@@ -18,7 +18,7 @@ import type { WorkPacket } from "../../agent-collaboration/execution/task/task-d
 import { RootCommunicationEngine, type RunSendInput } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CrossRunAcceptInput } from "../../agent-collaboration/communication/cross-run-accept-input.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { RootEventPublisher, RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStream, RootSnapshotConnection } from "../../agent-collaboration/delegation/run-view-stream.js";
 import { OWN_RUN_LOG, OTHER_RUN_LOG } from "../../run-history/store/message-log-owners.js";
 import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
@@ -85,7 +85,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     hostHandle: StandaloneHostAgentHandle;
     rootLaunchConfiguration: AgentLaunchConfiguration;
     persistence: StandaloneRootPersistenceCoordinator;
-    publisher: RootEventPublisher<StandaloneRootEvent>;
+    publisher: RunViewStream<StandaloneRootEvent>;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
     /** The relationships between runs: its peer children, its own Task, and its collaboration tree (step 2's reach, SR-060). */
@@ -240,7 +240,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   onAgentExecutionEvent(identity: CollaborationMemberExecutionIdentity): void {
     if (!sameRootExecutionIdentity(identity.root, this.options.root)) throw new Error("Agent-root event belongs to another root.");
   }
-  subscribeToEvents(listener: Parameters<RootEventPublisher<StandaloneRootEvent>["subscribe"]>[0]) {
+  subscribeToEvents(listener: Parameters<RunViewStream<StandaloneRootEvent>["subscribe"]>[0]) {
     return this.options.publisher.subscribe(listener);
   }
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<StandaloneRootPackageSnapshot, StandaloneRootEvent>> {
@@ -279,7 +279,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       await this.options.persistence.drain();
       this.lifecycle = "terminated";
       this.options.publisher.publish({ kind: "lifecycle", isActive: false });
-      this.options.publisher.clear();
+      // The run's view stream outlives its root (SR-062): its views stay subscribed.
       this.options.onTerminated?.();
       return { accepted: true };
     })();

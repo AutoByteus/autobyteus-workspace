@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import path from "node:path";
 import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { ChildRowsStreams } from "../agent-collaboration/delegation/child-rows-streams.js";
@@ -66,6 +67,8 @@ const taskChangeMarks: ProjectChangeMarks = {
 export type TaskSide = Readonly<{
   resources: TaskExecutionResourceService;
   tree: DelegationIndex;
+  /** Each run's one view stream, for the life of the process (SR-062, SR-063). */
+  viewStreams: RunViewStreams;
   taskRecords: RunTaskRecords;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
@@ -89,7 +92,7 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir));
   tree.build();
   resources.setEntriesListener(tree);
-  return Object.freeze({ resources, tree, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
+  return Object.freeze({ resources, tree, viewStreams: new RunViewStreams(), taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */

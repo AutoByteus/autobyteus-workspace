@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { isStandaloneRootMessageEvent, type StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { isAgentOrgMessageEvent, type AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
@@ -10,9 +10,9 @@ import { isTeamRunMessageEvent, TeamRunEventSourceType, type TeamRunEvent } from
 // SR-008), so a client keeps its message lists across a reconnect in which no message was published.
 const noMessages = { isMessageEvent: () => false };
 
-describe("RootEventPublisher live sequence", () => {
+describe("RunViewStream live sequence", () => {
   it("names its change sequence once per instance and gives the name with every snapshot connection", async () => {
-    const publisher = new RootEventPublisher<string>(noMessages);
+    const publisher = new RunViewStream<string>(noMessages);
     const before = await publisher.openSnapshotConnection(() => "first");
     before.close();
     publisher.publish("event");
@@ -37,7 +37,7 @@ describe("RootEventPublisher live sequence", () => {
   });
 
   it("gives another instance (a stop and resume, or a restart) another name although its sequence starts again", async () => {
-    const first = new RootEventPublisher<string>(noMessages);
+    const first = new RunViewStream<string>(noMessages);
     first.publish("event");
     const second = new TeamRunEventPublisher<string>(noMessages);
 
@@ -50,14 +50,14 @@ describe("RootEventPublisher live sequence", () => {
 
 describe("each root's message predicate (SR-008): a message advances the latest message sequence, a presentation does not", () => {
   it("Agent root", () => {
-    const publisher = new RootEventPublisher<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent });
+    const publisher = new RunViewStream<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent });
     publisher.publish({ kind: "communication", message: {} } as never);
     publisher.publish({ kind: "agent_presentation", execution: {}, message: {} } as never);
     expect(publisher.getLivePosition()).toMatchObject({ changeSequence: 2, lastMessageChangeSequence: 1 });
   });
 
   it("Org", () => {
-    const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+    const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     publisher.publish({ kind: "agent_presentation", execution: {}, message: {} } as never);
     publisher.publish({ kind: "communication", message: {} } as never);
     publisher.publish({ kind: "agent_presentation", execution: {}, message: {} } as never);

@@ -14,7 +14,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { AgentOrgCommunicationMessagesStore } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { FlatTeamExecutionFactory } from "../../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import type { FlatTeamExecutionCallbacks } from "../../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
-import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import type { TaskExecutionIdleTimers } from "../../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
@@ -80,7 +80,7 @@ export const buildOrg = async (kind: "agent" | "team") => {
         physicalScope: { root, ancestorTeamRunIds: [member.teamRunId] }, callbacks, activationMode: "fresh" })).commitAfterDurability();
     }
   }
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const published: AgentOrgRunEvent[] = [];
   publisher.subscribe(({ event }) => published.push(event));
   const clock = manualTimers();

@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { NO_RUN_PARTS } from "../../helpers/run-agents-reader.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
@@ -50,7 +51,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/eng", teamCoordinatorAgentRunId: "lead",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager-run" }, execution: run });
     await tasks.markStarted(run);
-    const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/closure-stop-during-delivery-team",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

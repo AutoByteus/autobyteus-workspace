@@ -214,6 +214,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         taskRecords: input.taskRecords,
         delegationIndex: input.delegationIndex,
+        viewStreams: input.viewStreams,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -228,6 +229,7 @@ export class GeneralProcessRunSupervisor {
           flatTeamExecutionFactory,
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
+        viewStreams: input.viewStreams,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
@@ -268,6 +270,7 @@ export class GeneralProcessRunSupervisor {
         rootDependencies: {
           taskRecords: input.taskRecords,
           delegationIndex: input.delegationIndex,
+        viewStreams: input.viewStreams,
           agentRunManager: generalAgentRunManager,
           collaboratorAdmission,
         },

@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { noDelegations, noWorkGuard, openTaskRecords } from "../../helpers/no-delegations.js";
 import { setProcessTeamRunHistoryService, TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import { setProcessTeamMemberRunViewProjectionService, TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
@@ -162,7 +163,7 @@ describe("Run file changes API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
       memoryDir: getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,

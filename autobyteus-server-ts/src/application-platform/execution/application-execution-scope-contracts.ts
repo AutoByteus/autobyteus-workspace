@@ -1,3 +1,4 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -45,6 +46,8 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   modelSelectionValidator: RunModelSelectionValidator;
   /** The relationships between runs (the Task entries); an application's team roots read their own (SR-047). */
   delegationIndex: DelegationIndex;
+  /** Each run's view stream, from the composition root (SR-062). */
+  viewStreams: RunViewStreams;
   /** The run side's Task records (SR-053). */
   taskRecords: RunTaskRecords;
   applicationAgentTools: ApplicationAgentToolCapability;

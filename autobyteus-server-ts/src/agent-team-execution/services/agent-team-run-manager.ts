@@ -1,3 +1,4 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { recordRunProjectStart } from "../../agent-execution/domain/run-project-context.js";
 import { isDeepStrictEqual } from "node:util";
@@ -48,6 +49,8 @@ export type AgentTeamRunManagerOptions = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationIndex: DelegationIndex;
+  /** Each run's view stream (SR-062). */
+  viewStreams: RunViewStreams;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationStore;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -65,6 +68,7 @@ export class AgentTeamRunManager {
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskRecords: RunTaskRecords;
   private readonly delegationIndex: DelegationIndex;
+  private readonly viewStreams: RunViewStreams;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
@@ -109,6 +113,7 @@ export class AgentTeamRunManager {
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskRecords = options.taskRecords;
     this.delegationIndex = options.delegationIndex;
+    this.viewStreams = options.viewStreams;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
     this.modelSelectionValidator = options.modelSelectionValidator;
@@ -378,6 +383,7 @@ export class AgentTeamRunManager {
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
       taskRecords: this.taskRecords,
       delegationIndex: this.delegationIndex,
+      viewStreams: this.viewStreams,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
     } as const;

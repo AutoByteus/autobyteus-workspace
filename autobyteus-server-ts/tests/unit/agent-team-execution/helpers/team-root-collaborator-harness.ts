@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { NOT_DELEGATED } from "../../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -73,7 +74,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always passes the Task side; every delegated copy belongs to a Task.
     taskRecords: taskExecutionResources,
-    delegationIndex: taskSide.tree,
+    delegationIndex: taskSide.tree, viewStreams: new RunViewStreams(),
     onTerminated: vi.fn(),
   };
   const config = testTeamRunConfig({

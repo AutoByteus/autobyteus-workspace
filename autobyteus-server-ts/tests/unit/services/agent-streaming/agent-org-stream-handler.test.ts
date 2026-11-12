@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
 import { AgentOrgStreamHandler } from "../../../../src/services/agent-streaming/agent-org-stream-handler.js";
-import { RootEventPublisher } from "../../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -53,7 +53,7 @@ const connection = () => {
 
 const harness = (snapshot = { tree, messages, statuses, inputStates: [] },
   options: Readonly<{ stopped?: boolean; children?: ReturnType<typeof noChildCommands> }> = {}) => {
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const executeAgentCommand = vi.fn(async () => ({ accepted: true }));
   const executeAgentCommandWithExecutionKind = vi.fn(async (agentRunId: string) => ({
     result: { accepted: true },

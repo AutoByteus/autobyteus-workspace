@@ -408,7 +408,7 @@ export class RootTeamRun {
     this.teamRunResolver.clear();
     this.unsubscribeIdleEvents();
     this.options.disposeRootSubjects?.();
-    this.options.publisher.clear();
+    // The run's view stream outlives its root (SR-062): its views stay subscribed.
     this.lifecycle = "terminated";
     this.options.onTerminated?.(committed ? "idle_shutdown" : "stopped");
     return { accepted: true };

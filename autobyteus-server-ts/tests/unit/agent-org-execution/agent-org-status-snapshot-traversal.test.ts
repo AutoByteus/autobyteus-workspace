@@ -4,7 +4,7 @@ import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboratio
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaborationAgentStatusSnapshot } from "../../../src/agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
@@ -77,7 +77,7 @@ const buildRun = () => {
     teams: teams as never,
     callbacks: {} as never,
     persistence: persistence as never,
-    publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
+    publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
   });
   run.activate();
   return { run, runs, rootAgents, teams, frozenScopes, persistence };

@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -80,7 +81,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       enterPersistenceFailStop: vi.fn(),
     });
     const enclosingDefinitionLookup = vi.fn(() => { throw new Error("Restore must not read fresh enclosing instructions"); });
-    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: {} as never,
       orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,

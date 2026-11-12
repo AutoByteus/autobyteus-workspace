@@ -1,7 +1,7 @@
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
@@ -30,7 +30,7 @@ describe("AgentOrgRun command execution kind", () => {
       } as never,
       callbacks: {} as never,
       persistence: {} as never,
-      publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
+      publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
     });
     run.activate();
     const command = { kind: "interrupt" as const };

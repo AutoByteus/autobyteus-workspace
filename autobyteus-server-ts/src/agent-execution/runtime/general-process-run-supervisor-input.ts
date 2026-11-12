@@ -1,3 +1,4 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
@@ -41,6 +42,8 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries, built by the composition root (SR-047 step 2). */
   delegationIndex: DelegationIndex;
+  /** Each run's view stream, from the composition root (SR-062). */
+  viewStreams: RunViewStreams;
   /**
    * Platform notices that ride along with each run's next external input, told when runs are
    * published and released (the host composition owns and closes it). None by default.
@@ -82,6 +85,7 @@ export const requireGeneralProcessRunSupervisorInput = (
     || typeof input.modelSelectionValidator.listOptions !== "function"
     || !input.taskRecords
     || !input.delegationIndex
+    || !input.viewStreams
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }

@@ -16,7 +16,7 @@ import type { DelegationSource } from "../../agent-collaboration/execution/task/
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { buildMemberInputPresentationEvent } from "../../agent-collaboration/execution/events/member-input-presentation-event-builder.js";
@@ -48,7 +48,7 @@ export class AgentOrgRunMessageDelivery {
     getCommunication(): RootCommunicationEngine;
     rootAgents: RootAgentExecutionRegistry;
     teams: RootTeamExecutionDirectory;
-    publisher: RootEventPublisher<AgentOrgRunEvent>;
+    publisher: RunViewStream<AgentOrgRunEvent>;
     remoteLinks: RemoteRunLinks;
     remoteSend: RemoteMessageSend;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;

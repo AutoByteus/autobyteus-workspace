@@ -17,7 +17,7 @@ import type { DelegationSource } from "../../agent-collaboration/execution/task/
 import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStream } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { type CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
@@ -37,7 +37,7 @@ import { AgentOrgRunMessageDelivery } from "../services/agent-org-run-message-de
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RootSnapshotConnection } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
 import { RootOperationGate } from "../../agent-collaboration/execution/services/root-operation-gate.js";
@@ -266,7 +266,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     }
   }
 
-  subscribeToEvents(listener: Parameters<RootEventPublisher<AgentOrgRunEvent>["subscribe"]>[0]) {
+  subscribeToEvents(listener: Parameters<RunViewStream<AgentOrgRunEvent>["subscribe"]>[0]) {
     return this.options.publisher.subscribe(listener);
   }
 
@@ -317,7 +317,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       message: local.message ?? local.code ?? "AgentOrg local termination failed" };
     this.lifecycle = "terminated";
     this.options.publisher.publish({ kind: "lifecycle", isActive: false });
-    this.options.publisher.clear();
+    // The run's view stream outlives its root (SR-062): its views stay subscribed.
     this.options.onTerminated?.();
     return { accepted: true };
   }

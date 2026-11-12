@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 
 export type SequencedRootEvent<TEvent> = Readonly<{
   changeSequence: number;
@@ -12,7 +13,7 @@ export type SequencedRootEvent<TEvent> = Readonly<{
 export type RootLivePosition = Readonly<{ liveSequenceId: string; changeSequence: number; lastMessageChangeSequence: number }>;
 
 /** Which of a root's events are messages: the ones a client adds to its participant message lists (SR-008). */
-export type RootEventPublisherOptions<TEvent> = Readonly<{ isMessageEvent(event: TEvent): boolean }>;
+export type RunViewStreamOptions<TEvent> = Readonly<{ isMessageEvent(event: TEvent): boolean }>;
 
 export type RootEventListener<TEvent> = (
   event: SequencedRootEvent<TEvent>,
@@ -30,13 +31,17 @@ export type RootSnapshotConnection<TSnapshot, TEvent> = Readonly<{
 }>;
 
 /**
- * One non-persisted order/barrier owner for a collaboration root. Publication is
- * synchronous and subscriber failures are isolated from domain operations.
+ * The one order/barrier owner of a run's view (autobyteus-461 SR-062, SR-063): base's `RootEventPublisher`, moved out of
+ * the root. It numbers every frame of the run's view in one sequence: the run's own events (its live root hands them
+ * over), the tree's row events (`ChildRowsFeed`) and the delegated rows' status events (`LocalChildObservation`). One
+ * per run, from the composition root's `RunViewStreams`, living as long as the process, so the run's view exists
+ * whether or not its root is loaded. Non-persisted; publication is synchronous and subscriber failures are isolated.
  */
-export class RootEventPublisher<TEvent> {
+export class RunViewStream<TEvent> {
   /**
-   * Names this publisher's change sequence (autobyteus-358, SR-005): it starts at 0 for every instance, so a
-   * sequence number is comparable only with others of the same ID (a stop/resume or a restart starts another).
+   * Names this stream's change sequence (autobyteus-358, SR-005): it starts at 0 for every instance, so a sequence
+   * number is comparable only with others of the same ID. The instance lives as long as the process, so a stop and a
+   * restore of the run keep it; a server restart starts another.
    */
   readonly liveSequenceId = randomUUID();
   private changeSequence = 0;
@@ -44,7 +49,7 @@ export class RootEventPublisher<TEvent> {
   private readonly listeners = new Set<RootEventListener<TEvent>>();
   private readonly barriers = new Set<SequencedRootEvent<TEvent>[]>();
 
-  constructor(private readonly options: RootEventPublisherOptions<TEvent>) {}
+  constructor(private readonly options: RunViewStreamOptions<TEvent>) {}
 
   getCurrentChangeSequence(): number {
     return this.changeSequence;
@@ -114,8 +119,22 @@ export class RootEventPublisher<TEvent> {
     }
   }
 
-  clear(): void {
-    this.listeners.clear();
-    this.barriers.clear();
+}
+
+/**
+ * The composition root's view stream registry (SR-062): each run's one `RunViewStream`, created on its first use and
+ * kept for the life of the process. A run's root, its view sessions, `ChildRowsFeed` and `LocalChildObservation` all
+ * take the run's stream from here.
+ */
+export class RunViewStreams {
+  private readonly streams = new Map<string, RunViewStream<unknown>>();
+
+  streamOf<TEvent>(run: RootExecutionIdentity, options: RunViewStreamOptions<TEvent>): RunViewStream<TEvent> {
+    const key = rootExecutionIdentityKey(run);
+    const existing = this.streams.get(key);
+    if (existing) return existing as RunViewStream<TEvent>;
+    const stream = new RunViewStream<TEvent>(options);
+    this.streams.set(key, stream as RunViewStream<unknown>);
+    return stream;
   }
 }

@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -58,7 +59,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, saved);
   writeAttachmentSidecars(packageDir, 'team');
-  const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
+  const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), viewStreams: new RunViewStreams(), taskRecords: openTaskRecords(), memoryDir, flatTeamExecutionFactory, memberExecutionContextBuilder,
     executionTreeStore: { read, write } as any, modelSelectionValidator: new RunModelSelectionService(catalog, capacity) });
   return { manager, read, write, capacity, saved: () => saved };
 };

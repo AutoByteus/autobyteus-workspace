@@ -6,7 +6,7 @@ import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError 
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createRootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
-import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -38,6 +38,8 @@ export class AgentOrgExecutionScopeBuilder {
     taskRecords: RunTaskRecords;
     /** The relationships between runs, from the Task entries (SR-047). */
     delegationIndex: DelegationIndex;
+    /** Each run's view stream (SR-062). */
+    viewStreams: RunViewStreams;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
     agentRunManager?: AgentRunManager;
@@ -54,7 +56,8 @@ export class AgentOrgExecutionScopeBuilder {
     onTerminated?(): void;
   }>): Promise<AgentOrgRun> {
     const root = createAgentOrgRootExecutionIdentity(input.state.executionTree.rootOrg.orgRunId);
-    const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+    // The run's one view stream, living as long as the process (SR-062, SR-063).
+    const publisher = this.dependencies.viewStreams.streamOf<AgentOrgRunEvent>(root, { isMessageEvent: isAgentOrgMessageEvent });
     let run: AgentOrgRun | null = null;
     const retainedAgentEvents: Array<Readonly<{
       identity: Parameters<FlatTeamExecutionCallbacks["publishAgentEvent"]>[0];

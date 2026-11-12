@@ -10,7 +10,7 @@ import {
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher, type SequencedRootEvent } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream, type SequencedRootEvent } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgCommunicationPort } from "../../../src/agent-org-execution/services/agent-org-communication-port.js";
 import type { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
@@ -62,7 +62,7 @@ const runConversation = async (engine: RootCommunicationEngine, root: RootExecut
   expect(engine.getMessages().map((message) => message.content)).toEqual(["first local", "to remote", "reply from remote", "second local"]);
 };
 
-const collect = <TEvent>(publisher: RootEventPublisher<TEvent>) => {
+const collect = <TEvent>(publisher: RunViewStream<TEvent>) => {
   const events: SequencedRootEvent<TEvent>[] = [];
   publisher.subscribe((event) => events.push(event));
   return events;
@@ -76,7 +76,7 @@ const expectConsecutive = (sequences: readonly number[]) => {
 describe("messages with a remote endpoint keep the root view stream consecutive (CR-001)", () => {
   it("Team root: no COMMUNICATION event for them; the member-input of the reply follows without a gap", async () => {
     const root = createTeamRootExecutionIdentity("team-root");
-    const publisher = new RootEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
+    const publisher = new RunViewStream<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const events = collect(publisher);
     const adapter = createTeamCommunicationPort({
       rootTeamRunId: "team-root",
@@ -111,7 +111,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
     {
       kind: "Agent root (standalone)",
       root: createAgentRootExecutionIdentity(LEAD),
-      build: (root: RootExecutionIdentity, publisher: RootEventPublisher<StandaloneRootEvent>) => createStandaloneRootCommunicationPort({
+      build: (root: RootExecutionIdentity, publisher: RunViewStream<StandaloneRootEvent>) => createStandaloneRootCommunicationPort({
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", hostRunId: LEAD, messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
@@ -122,7 +122,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
     {
       kind: "Org root",
       root: createAgentOrgRootExecutionIdentity("org-root"),
-      build: (root: RootExecutionIdentity, publisher: RootEventPublisher<AgentOrgRunEvent>) => createAgentOrgCommunicationPort({
+      build: (root: RootExecutionIdentity, publisher: RunViewStream<AgentOrgRunEvent>) => createAgentOrgCommunicationPort({
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
@@ -131,7 +131,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent({ orgRunId: "org-root" } as never, event),
     },
   ] as const)("$kind: only the local messages are published, with consecutive sequences", async ({ root, build, project }) => {
-    const publisher = new RootEventPublisher<never>({ isMessageEvent: () => false });
+    const publisher = new RunViewStream<never>({ isMessageEvent: () => false });
     const events = collect(publisher);
     await runConversation(new RootCommunicationEngine(build(root, publisher as never) as never), root);
 

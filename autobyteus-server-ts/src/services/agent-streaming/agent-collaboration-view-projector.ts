@@ -5,7 +5,7 @@ import {
   type RootExecutionEventDto,
   type RootExecutionViewDto,
 } from "@autobyteus/collaboration-stream-contracts";
-import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { StandaloneRootPackageSnapshot } from "../../standalone-agent-run-root/domain/standalone-agent-run-root.js";
 import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain/standalone-root-event.js";
 import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";

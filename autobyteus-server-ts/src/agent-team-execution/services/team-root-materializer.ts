@@ -1,3 +1,4 @@
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
@@ -32,6 +33,8 @@ export type TeamRootMaterializationInput = Readonly<{
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskRecords: RunTaskRecords;
   delegationIndex: DelegationIndex;
+  /** Each run's view stream (SR-062). */
+  viewStreams: RunViewStreams;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
@@ -52,8 +55,9 @@ const requireCommitted = async (
 export const materializeTeamRoot = async (
   input: TeamRootMaterializationInput,
 ): Promise<RootTeamRun> => {
-  const publisher = new TeamRunEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
   const rootIdentity = createTeamRootExecutionIdentity(input.tree.rootTeam.teamRunId);
+  // The run's one view stream, living as long as the process: the root hands its events to it (SR-062, SR-063).
+  const publisher = input.viewStreams.streamOf<TeamRunEvent>(rootIdentity, { isMessageEvent: isTeamRunMessageEvent });
   const physicalScope = createRootExecutionPhysicalScope({ root: rootIdentity, ancestorTeamRunIds: [] });
   let root: RootTeamRun | null = null;
   const requireActiveRoot = (): RootTeamRun => {

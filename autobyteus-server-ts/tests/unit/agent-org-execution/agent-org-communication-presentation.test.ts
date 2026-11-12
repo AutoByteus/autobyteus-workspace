@@ -6,7 +6,7 @@ import {
   createAgentOrgRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
+import { RunViewStream } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import type { AgentRunInputReservationResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
@@ -50,7 +50,7 @@ const createSubject = (options: Readonly<{
   const reservations: ReservedAgentInput[] = [];
   const events: AgentOrgRunEvent[] = [];
   const sequences: number[] = [];
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
+  const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   publisher.subscribe(({ event, changeSequence }) => {
     events.push(event);
     sequences.push(changeSequence);

@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const cutState = vi.hoisted(() => ({ cut: null as string | null }));
@@ -149,7 +150,7 @@ const createHarness = (input: {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
-    delegationIndex: noDelegations(),
+    delegationIndex: noDelegations(), viewStreams: new RunViewStreams(),
     taskRecords: openTaskRecords(),
   };
   return {

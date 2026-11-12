@@ -8,7 +8,7 @@ import {
 } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
-import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+import type { SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 import { projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";

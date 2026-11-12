@@ -9,7 +9,7 @@ import { MemberExecutionContext,MemberCollaborationContext } from '../../../src/
 import { AgentTeamStreamHandler } from '../../../src/services/agent-streaming/agent-team-stream-handler.js';
 import { AgentOrgStreamHandler } from '../../../src/services/agent-streaming/agent-org-stream-handler.js';
 import { AgentSessionManager } from '../../../src/services/agent-streaming/agent-session-manager.js';
-import { RootEventPublisher } from '../../../src/agent-collaboration/execution/services/root-event-publisher.js';
+import { RunViewStream } from '../../../src/agent-collaboration/delegation/run-view-stream.js';
 import { testAgentOrgExecutionTree,testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { noChildCommands, testViewSources } from "../../helpers/child-rows-feed.js";
 
@@ -30,7 +30,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   memoryLocator:{getMemoryDir:()=>'/unused/test-owned'} as any});
  const activation=await handle.prepareConfiguredActivation();activation.commitAfterDurability();
  const send=vi.fn(); const connection={send,close:vi.fn()};
- const publisher=new RootEventPublisher<any>({ isMessageEvent: () => false });
+ const publisher=new RunViewStream<any>({ isMessageEvent: () => false });
  const executeAgentCommand=async (id:string,command:any)=>{
   expect(id).toBe(f.run.runId);expect(command.kind).toBe('post_message');
   expect(command.message.senderType).toBe('user');return handle.postMessage(command.message);

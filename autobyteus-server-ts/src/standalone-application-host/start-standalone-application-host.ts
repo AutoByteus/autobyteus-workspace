@@ -263,7 +263,7 @@ export const startStandaloneApplicationHost = async (
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
         taskRecords: taskSide.taskRecords,
-        delegationIndex: taskSide.tree,
+        delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
        
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
@@ -277,7 +277,7 @@ export const startStandaloneApplicationHost = async (
       remoteChannel: () => null });
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
-      delegationIndex: taskSide.tree,
+      delegationIndex: taskSide.tree, viewStreams: taskSide.viewStreams,
      
       taskRecords: taskSide.taskRecords,
       contextFilePathEnvironment,
