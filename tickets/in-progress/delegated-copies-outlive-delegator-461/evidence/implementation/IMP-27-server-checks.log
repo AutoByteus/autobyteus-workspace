@@ -1,0 +1,8 @@
+# IMP-27 server type gate and unit suite (CR-461-009, CR-461-011)
+# commands: node autobyteus-server-ts/scripts/typecheck.mjs; (autobyteus-server-ts) pnpm test:unit
+# commit: d188941869; macOS, Node v22.23.1; 2026-11-12T02:50Z
+
+[typecheck] production errors: 0; test-file errors: 1014 in 318 files (baseline 1014 in 318 files)
+[typecheck] PASS
+ Test Files  959 passed | 5 skipped (964)
+      Tests  7897 passed | 9 skipped (7906)
