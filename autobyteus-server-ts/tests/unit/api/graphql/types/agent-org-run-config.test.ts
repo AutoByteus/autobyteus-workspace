@@ -8,9 +8,15 @@ import { readFileSync } from 'node:fs';
 const io = vi.hoisted(() => ({ getRunConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunConfig: vi.fn(),
   archiveStoredRun: vi.fn(), deleteStoredRun: vi.fn() }));
 const memberViews = vi.hoisted(() => ({ getProjection: vi.fn(), getActiveTracePage: vi.fn(), getFileChanges: vi.fn() }));
-vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io }));
+const viewStreams = vi.hoisted(() => ({ current: null as unknown }));
+vi.mock('../../../../../src/agent-org-execution/services/agent-org-run-manager.js', async (original) => ({
+  ...await original<object>(), AgentOrgRunManager: { getInstance: () => ({ getActive: () => null }) } }));
+vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io,
+  getStudioRunViewStreams: () => viewStreams.current }));
 vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => memberViews }));
 import { AgentOrgRunResolver } from '../../../../../src/api/graphql/types/agent-org-run.js';
+import { RunViewStreams } from '../../../../../src/agent-collaboration/delegation/run-view-stream.js';
+import { createAgentOrgRootExecutionIdentity } from '../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { buildGraphqlSchema } from '../../../../../src/api/graphql/schema.js';
 const tree = { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
   applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'definition', orgDefinitionName: 'Org',
@@ -97,4 +103,15 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
     expect(io.deleteStoredRun).toHaveBeenCalledExactlyOnceWith("org-run");
   });
 
+});
+
+describe('AgentOrg execution checkpoint (autobyteus-461 SR-045, SR-062)', () => {
+  it('a stopped Org\'s checkpoint is its view\'s sequence, with no open work of its own', () => {
+    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false });
+    const stream = streams.streamOf(createAgentOrgRootExecutionIdentity('org-stopped'))
+    stream.publish({ kind: 'a row event' }); stream.publish({ kind: 'a status event' })
+    viewStreams.current = streams
+    expect(new AgentOrgRunResolver().getAgentOrgExecutionCheckpoint('org-stopped'))
+      .toEqual({ orgRunId: 'org-stopped', changeSequence: 2, hasOpenExecutionWork: false });
+  });
 });

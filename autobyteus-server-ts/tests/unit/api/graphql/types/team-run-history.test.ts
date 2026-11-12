@@ -1,3 +1,5 @@
+import { RunViewStreams } from "../../../../../src/agent-collaboration/delegation/run-view-stream.js";
+import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import "reflect-metadata";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   projectExecutionTree: vi.fn((tree: unknown) => tree),
   // autobyteus-461: the peer runs a run delegated to come from its Task entries, by the run's identity.
   peerDtos: [] as unknown[],
+  viewStreams: null as unknown,
   remoteTaskExecutionDtos: vi.fn(async (_run: unknown) => mocks.peerDtos),
 }));
 
@@ -24,7 +27,8 @@ vi.mock(
   }),
   // SR-047: the run's children as the views read them, from the framework-edge container.
   getStudioRunViewChildren: () => ({ read: async (run: unknown) => ({ statuses: [],
-    rows: { taskExecutions: [], closedTaskExecutions: [], remoteTaskExecutions: await mocks.remoteTaskExecutionDtos(run) } }) }) }),
+    rows: { taskExecutions: [], closedTaskExecutions: [], remoteTaskExecutions: await mocks.remoteTaskExecutionDtos(run) } }) }),
+  getStudioRunViewStreams: () => mocks.viewStreams }),
 );
 vi.mock(
   "../../../../../src/run-history/services/team-run-history-service.js",
@@ -110,10 +114,13 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
     expect(getExecutionCheckpoint).toHaveBeenCalledTimes(1);
   });
 
-  it("rejects a checkpoint request for a non-active root", () => {
+  it("a stopped run's checkpoint is its view's sequence, with no open work of its own (autobyteus-461 SR-045, SR-062)", async () => {
     mocks.getActiveTeamRun.mockReturnValue(null);
-    expect(() => new TeamRunHistoryResolver().getTeamRunExecutionCheckpoint("team-run-1"))
-      .toThrow("Active RootTeamRun 'team-run-1' was not found.");
+    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false });
+    streams.streamOf(createTeamRootExecutionIdentity("team-run-1")).publish({ kind: "a row event" });
+    mocks.viewStreams = streams;
+    expect(new TeamRunHistoryResolver().getTeamRunExecutionCheckpoint("team-run-1"))
+      .toEqual({ rootTeamRunId: "team-run-1", changeSequence: 1, hasOpenExecutionWork: false });
   });
 
   it("preserves the existing non-null empty Team member projection payload", async () => {

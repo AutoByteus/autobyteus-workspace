@@ -60,7 +60,7 @@ const createHarness = (input: {
     }),
     executeAgentCommand,
     getExecutionTreeSnapshot: () => tree,
-    localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
+    localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined },
   };
   // The run's registration (SR-046): managed (live) or stopped; a restore registers it, a stop unregisters it.
   let managed = !input.stopped;
@@ -317,6 +317,21 @@ describe("AgentTeamStreamHandler current root stream", () => {
       sessions.push({ handler: harness.handler, id: sessionId! });
       await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "nested-task-agent-run-001", command_id: "c-1" } }));
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "failed", code: "TEAM_RUN_STOPPED" } });
+      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+    });
+
+    it("SR-066 (ARCH-REV-039 note 1): a peer child's message and interrupt reach its node through its handle; the stopped team stays stopped", async () => {
+      const harness = createHarness({ stopped: true });
+      const peer = { kind: "agent" as const, runId: "peer-run", postMessage: vi.fn(async () => ({ accepted: true })), interrupt: vi.fn(async () => ({ accepted: true })) };
+      (harness.feed.rows as { peerRunOf: unknown }).peerRunOf = (id: string) => id === "peer-run" ? peer : null;
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "status?", context_file_paths: [], image_urls: [],
+        agent_run_id: "peer-run", message_id: "m-1", dedupe_key: "d-1" } }));
+      expect(peer.postMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "status?", messageId: "m-1", dedupeKey: "d-1" }));
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "peer-run", command_id: "c-2" } }));
+      expect(peer.interrupt).toHaveBeenCalledOnce();
       expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });

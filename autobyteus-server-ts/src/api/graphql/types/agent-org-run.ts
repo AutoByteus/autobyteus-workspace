@@ -1,3 +1,5 @@
+import { createAgentOrgRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getStudioRunViewStreams } from "../studio-application-api-services.js";
 import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { requiredRuntimeKind, RunModelConfigEditabilityObject, RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
 import { GraphQLJSON } from "graphql-scalars";
@@ -189,8 +191,10 @@ export class AgentOrgRunResolver {
     @Arg("orgRunId", () => String) orgRunId: string,
   ): AgentOrgExecutionCheckpointPayload {
     const run = AgentOrgRunManager.getInstance().getActive(orgRunId);
-    if (!run) throw new Error(`Active AgentOrg '${orgRunId}' was not found.`);
-    return run.getExecutionCheckpoint();
+    if (run) return run.getExecutionCheckpoint();
+    // A stopped run's open view streams too (SR-045): its view's sequence, and no open work of its own (SR-062).
+    const stream = getStudioRunViewStreams().streamOf(createAgentOrgRootExecutionIdentity(orgRunId.trim()));
+    return { orgRunId: orgRunId.trim(), changeSequence: stream.getCurrentChangeSequence(), hasOpenExecutionWork: false };
   }
 
   @Query(() => TokenUsageRunSummaryGraphql)

@@ -2,7 +2,7 @@ import { configureStudioApplicationApiServices } from "../../src/api/graphql/stu
 
 const SERVICE_NAMES = ["agentDefinitionService", "agentTeamDefinitionService", "agentOrgDefinitionService", "agentRunService",
   "teamRunService", "agentOrgRunService", "definitionAdmissionService", "collaborationRootHistoryService", "runModelConfigService",
-  "delegatedLaunchSelectionService", "runViewChildren", "delegatedRunAgents", "bundleService", "capabilityService",
+  "runViewChildren", "delegatedRunAgents", "runViewStreams", "bundleService", "capabilityService",
   "packageQueries", "packageCommands"] as const;
 
 /**

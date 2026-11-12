@@ -415,6 +415,7 @@ export const buildStudioServer = async (input: {
       collaborationRootHistoryService: generalProcessRunSupervisor.collaborationRootHistoryService,
       runModelConfigService,
       runViewChildren: currentCollaboration.runViewChildren, delegatedRunAgents: currentCollaboration.delegatedRunAgents,
+      runViewStreams: taskSide.viewStreams,
     });
     agentRuntimeStatus = composeAgentRuntimeStatus({
       codexClientManager: getCodexAppServerClientManager(),

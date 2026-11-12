@@ -12,7 +12,7 @@ describe("reloadAgentPackageDefinitions GraphQL boundary", () => {
   const reloadAgentPackageDefinitions = vi.fn<AgentDefinitionService["reloadAgentPackageDefinitions"]>();
 
   beforeAll(() => {
-    const handle = configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never,
+    const handle = configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never, runViewStreams: {} as never,
       agentDefinitionService: { reloadAgentPackageDefinitions } as unknown as AgentDefinitionService,
       agentTeamDefinitionService: {} as never,
       agentOrgDefinitionService: {} as never,

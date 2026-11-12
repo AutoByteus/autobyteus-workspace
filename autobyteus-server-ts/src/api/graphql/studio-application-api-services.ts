@@ -13,6 +13,7 @@ import type { DefinitionAdmissionService } from "../../collaboration-definition-
 import type { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
 import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
 import type { DelegatedRunAgentsReader } from "../../run-history/services/delegated-run-agents-reader.js";
+import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -28,6 +29,8 @@ type StudioApplicationApiServices = Readonly<{
   runViewChildren: RunViewChildren;
   /** The agents of the runs a run delegated to, open or closed (token totals, the Team tab's past participants). */
   delegatedRunAgents: DelegatedRunAgentsReader;
+  /** Each run's one view stream (SR-062): a checkpoint answers its sequence, a stopped run's too. */
+  runViewStreams: Pick<RunViewStreams, "streamOf">;
   bundleService: ApplicationBundleService;
   capabilityService: ApplicationCapabilityService;
   packageQueries: ApplicationPackageRegistryService;
@@ -51,6 +54,7 @@ export const configureStudioApplicationApiServices = (
     || !services.runModelConfigService
     || !services.runViewChildren
     || !services.delegatedRunAgents
+    || !services.runViewStreams
     || !services.bundleService
     || !services.capabilityService
     || !services.packageQueries
@@ -125,6 +129,9 @@ export const getStudioApplicationPackageCommands =
 
 export const getStudioRunViewChildren = (): RunViewChildren =>
   requireConfiguredServices().runViewChildren;
+
+export const getStudioRunViewStreams = (): Pick<RunViewStreams, "streamOf"> =>
+  requireConfiguredServices().runViewStreams;
 
 export const getStudioDelegatedRunAgents = (): DelegatedRunAgentsReader =>
   requireConfiguredServices().delegatedRunAgents;

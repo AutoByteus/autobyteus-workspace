@@ -65,7 +65,7 @@ const harness = (snapshot = { tree, messages, statuses, inputStates: [] },
     orgRunId,
     isActive: () => true,
     getExecutionTreeSnapshot: () => snapshot.tree,
-    localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined }, remoteChildren: { viewerAttached: vi.fn(), viewerDetached: vi.fn(), refresh: vi.fn(async () => undefined) },
+    localChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined },
     openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => snapshot),
     openViewSnapshotConnection: (atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) =>
       publisher.openSnapshotConnection(() => { const rows = atBase(); return read(snapshot, rows); }),
@@ -306,6 +306,23 @@ describe("AgentOrgStreamHandler", () => {
       await test.feed.settled();
       expect(parse(client).at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
         event: { kind: "task_execution_started", host_kind: "root", host_run_id: orgRunId, execution: { agentRunId: "analyst" } } } });
+    });
+
+    it("SR-066 (ARCH-REV-039 note 1): a peer child's message and interrupt reach its node through its handle; the stopped Org stays stopped", async () => {
+      const test = harness(undefined, { stopped: true }); const client = connection();
+      const peer = { kind: "agent" as const, runId: "peer-run", postMessage: vi.fn(async () => ({ accepted: true })), interrupt: vi.fn(async () => ({ accepted: true })) };
+      (test.feed.rows as { peerRunOf: unknown }).peerRunOf = (id: string) => id === "peer-run" ? peer : null;
+      const sessionId = await test.handler.connect(client.socket, orgRunId);
+      await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
+        target_agent_run_id: "peer-run", command_id: "c-send", content: "status?", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1" } }));
+      expect(peer.postMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "status?", messageId: "m-1", dedupeKey: "d-1" }));
+      expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "accepted" } });
+      await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
+        target_agent_run_id: "peer-run", command_id: "c-interrupt" } }));
+      expect(peer.interrupt).toHaveBeenCalledOnce();
+      expect(test.service.restore).not.toHaveBeenCalled();
+      expect(test.executeAgentCommand).not.toHaveBeenCalled();
+      test.handler.disconnect(sessionId!);
     });
 
     it("an interrupt for an agent of the stopped Org is refused and restores nothing; a message to it restores the Org, then one live snapshot", async () => {

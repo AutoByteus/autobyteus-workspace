@@ -1,3 +1,4 @@
+import { RunViewStreams } from "../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
@@ -52,6 +53,7 @@ export const configureE2eStudioApplicationApiServices = (
   return configureStudioApplicationApiServices({
     runViewChildren: overrides.runViewChildren ?? NO_DELEGATIONS_VIEW_CHILDREN,
     delegatedRunAgents: overrides.delegatedRunAgents ?? NO_DELEGATIONS_RUN_AGENTS,
+    runViewStreams: overrides.runViewStreams ?? new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }),
     agentDefinitionService,
     agentTeamDefinitionService,
     agentOrgDefinitionService: overrides.agentOrgDefinitionService

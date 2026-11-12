@@ -1,3 +1,5 @@
+import { createTeamRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getStudioRunViewStreams } from "../studio-application-api-services.js";
 import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
@@ -154,8 +156,10 @@ export class TeamRunHistoryResolver {
     @Arg("teamRunId", () => String) teamRunId: string,
   ): TeamRunExecutionCheckpointPayload {
     const root = getAgentTeamRunManager().getActiveTeamRun(teamRunId);
-    if (!root) throw new Error(`Active RootTeamRun '${teamRunId}' was not found.`);
-    return root.getExecutionCheckpoint();
+    if (root) return root.getExecutionCheckpoint();
+    // A stopped run's open view streams too (SR-045): its view's sequence, and no open work of its own (SR-062).
+    const stream = getStudioRunViewStreams().streamOf(createTeamRootExecutionIdentity(teamRunId.trim()));
+    return { rootTeamRunId: teamRunId.trim(), changeSequence: stream.getCurrentChangeSequence(), hasOpenExecutionWork: false };
   }
 
   @Query(() => EventMonitorActiveTracePageObject)
