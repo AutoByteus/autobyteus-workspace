@@ -1215,5 +1215,4 @@
   - `RunViewStream` **is** base's `RootEventPublisher` moved out of the root. It carries a `liveSequenceId` per instance, which lives as long as the process, so a stop and a restore share one live sequence and a restart starts another. It carries `lastMessageChangeSequence`, in the view's numbers, counting only the run's own message events. It carries its snapshot connection.
   - **The snapshot is made exact by the reviewer's option (i):** the view's base, the tree's rows and the observed statuses (all in memory) are read in one synchronous step. The run's own parts are captured as base did: in a live root's gate, with its queue; from the files for a stopped run, which produces no events. Every outside frame after the base is then a change after the snapshot, so no idempotence and no web change are needed.
 - Done: the design's "The frontend contract" (the owner and its duties, the exact snapshot, the SR-044 row, tests). `walkthrough.py --check` passes.
-- Next action: architecture review (AR-025)
-
+- Next action: architecture review (AR-025). ARCH-REV-038 passed it. Its wording note was applied: DS-8 "Switching modes" now sends the in-band snapshot through the same snapshot connection, at the current view sequence and under the same `liveSequenceId`, not as a new base; "What this replaces" says the hold now lives in the snapshot connection.
