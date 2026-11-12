@@ -166,7 +166,7 @@ describe("DelegationIndex (autobyteus-461, contract §2.6)", () => {
   });
 
   it("D8: a peer's run is a node with its members from its entry, never read from a file, and never in the local subtree", async () => {
-    const reader = { partsOf: vi.fn(async () => null), orgPlacementsOf: async () => null, configuredPlacementOf: async () => null };
+    const reader = { partsOf: vi.fn(async () => null), orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true };
     await boot({ T1: [{ role: "assigned", delegatedFrom: from("agent", M.rootRunId, M.rootRunId), recipientAddress: "/research_team",
       agentRun: team("research_team_77aa", "lead_0c11"), nodeId: "node-b-1f0e",
       members: [{ address: "/research_team/lead", agentRunId: "lead_0c11" }, { address: "/research_team/analyst", agentRunId: "analyst_5d20" }],

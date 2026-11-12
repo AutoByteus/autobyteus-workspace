@@ -48,7 +48,7 @@ const mocks = vi.hoisted(() => {
     agentOrgRunService: { getActive: vi.fn(() => null), restore: vi.fn() },
     standaloneRootManager: { pairedAgents: {}, resolveRoot: vi.fn(async (runId: string) => (runId === "child-run" ? childRoot : null)) },
     teamRunHistoryService: {},
-    delegatedWorkGuard: { refusal: () => null },
+    delegatedWorkGuard: { guard: (_run: unknown, _action: unknown, perform: () => Promise<unknown>) => perform() },
     close: vi.fn(async () => undefined),
   };
   const hostDefinitionServices = {

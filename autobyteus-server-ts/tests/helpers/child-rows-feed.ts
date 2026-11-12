@@ -37,7 +37,7 @@ export const followTestChildRows = () => {
   const followers = { follow: () => () => undefined, cachedStatuses: () => [] };
   return {
     streams,
-    rows: { feed, projection, followers },
+    rows: { feed, projection, followers, peers: { follow: () => () => undefined, refresh: async () => undefined }, peerRunOf: () => null },
     report: (change: Readonly<{ run: RootExecutionIdentity; added: readonly SubtreeRow[]; removed: ChildRowsChange["removed"] }>) => {
       const key = rootExecutionIdentityKey(change.run);
       const removed = new Set(change.removed.map((run) => "agentRunId" in run ? run.agentRunId : run.teamRunId));

@@ -279,6 +279,53 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
   return result
 }
 
+// --- Where each row's Save goes (autobyteus-461 SR-064, rule 2) ---
+
+/**
+ * The run a delegated row's change is saved to, by that run's own stopped-run save: an agent row's own run; a Team row
+ * the Team run at `/` (with its members that follow it); a Team member row the Team run at the member's address in the
+ * Team run's own space.
+ */
+export type DelegatedSaveTarget =
+  | Readonly<{ kind: 'agent'; agentRunId: string }>
+  | Readonly<{ kind: 'team'; teamRunId: string; followerAddresses: readonly string[] }>
+  | Readonly<{ kind: 'team_member'; teamRunId: string; memberAddress: string }>
+
+type SaveTask = Readonly<{ agentRunId: string } | { teamRunId: string; members: readonly Readonly<{ address: string; agentRunId: string }>[];
+  followerAddresses: readonly string[]; children: readonly SaveTask[] }>
+
+const saveTargetsOf = (tasks: readonly SaveTask[]): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
+  const targets = new Map<TargetKey, DelegatedSaveTarget>()
+  const visit = (list: readonly SaveTask[]): void => {
+    for (const task of list) {
+      if ('agentRunId' in task) { targets.set(`agent:${task.agentRunId}`, Object.freeze({ kind: 'agent', agentRunId: task.agentRunId })); continue }
+      targets.set(`team:${task.teamRunId}`, Object.freeze({ kind: 'team', teamRunId: task.teamRunId, followerAddresses: task.followerAddresses }))
+      for (const member of task.members) {
+        targets.set(`agent:${member.agentRunId}`, Object.freeze({ kind: 'team_member', teamRunId: task.teamRunId, memberAddress: member.address }))
+      }
+      visit(task.children)
+    }
+  }
+  visit(tasks)
+  return targets
+}
+
+/** A Team root's delegated rows' save targets (snake_case DTOs). */
+export const teamDelegatedSaveTargets = (tree: TeamRunExecutionTreeDto): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
+  const of = (tasks: readonly TeamTaskExecutionDto[]): SaveTask[] => tasks.map((task) => task.kind === 'task_agent' ? { agentRunId: task.agent_run_id }
+    : { teamRunId: task.team_run_id, members: task.members.map((member) => ({ address: member.address, agentRunId: member.agent_run_id })),
+      followerAddresses: task.source.members.filter((member) => member.follows_team).map((member) => member.address), children: of(task.task_executions) })
+  return saveTargetsOf(of(tree.root_team.task_executions))
+}
+
+/** An Org or Agent root's delegated rows' save targets (camelCase DTOs). */
+export const collaborationDelegatedSaveTargets = (taskExecutions: readonly CollaborationTaskExecutionDto[]): ReadonlyMap<TargetKey, DelegatedSaveTarget> => {
+  const of = (tasks: readonly CollaborationTaskExecutionDto[]): SaveTask[] => tasks.map((task) => 'agentRunId' in task ? { agentRunId: task.agentRunId }
+    : { teamRunId: task.teamRunId, members: task.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId })),
+      followerAddresses: task.source.members.filter((member) => member.followsTeam).map((member) => member.address), children: of(task.taskExecutions) })
+  return saveTargetsOf(of(taskExecutions))
+}
+
 // --- Copies another node runs (autobyteus-32 REQ-009) ---
 
 const remoteSource = (source: RemoteAgentLaunchDto['source']): RecordedSource => ({

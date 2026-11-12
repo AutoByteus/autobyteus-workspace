@@ -73,9 +73,11 @@ import {
 import {
   agentRunIdsOf,
   collaborationDelegatedLaunchNodes,
+  collaborationDelegatedSaveTargets,
   delegatedRowsByKey,
   remoteDelegatedLaunchNodes,
   teamDelegatedLaunchNodes,
+  teamDelegatedSaveTargets,
   type DelegatedRowControl,
 } from '~/utils/runSettings/delegatedLaunchRows'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
@@ -84,7 +86,7 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { planExistingTeamModelConfigPatches } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import { planExistingAgentOrgModelConfigPatches } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import { existingAgentOrgWorkspacesDirty, planExistingAgentOrgWorkspacePatches } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
-import type { DelegatedConfiguredPatch, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
+import type { DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { RunMemberDelegatedFacts } from '~/utils/runSettings/runMemberTree'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { useLocalization } from '~/composables/useLocalization'
@@ -304,6 +306,20 @@ const localDelegatedRows = computed<readonly RunMemberNode[]>(() => {
   }, deps, delegatedControl.value)
 })
 const delegatedByKey = computed(() => delegatedRowsByKey(delegatedRows.value))
+/** Where each local delegated row's change is saved: its own run (SR-064). Peer rows keep no editable launch. */
+const delegatedSaveTargets = computed(() => {
+  const current = draft.value
+  if (!current) return new Map()
+  if (current.kind === 'team') return teamDelegatedSaveTargets(current.executionTree)
+  const view = current.kind === 'agent' ? (current.isActive
+    ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot) : null
+  if (current.kind === 'agent' && !view) return new Map()
+  const org = current.kind === 'agent_org' ? current.executionTree.rootOrg : null
+  return collaborationDelegatedSaveTargets(collaborationTaskExecutionLists({
+    taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [],
+  }))
+})
+watch(delegatedSaveTargets, (targets) => delegatedDraft.setTargets(targets), { immediate: true })
 
 /** The agent focused in the left tree: a hub's selected copy or the hub itself, a Team's focused member, an Org's selection. */
 const focusedAgentRunId = computed<string | null>(() => {
@@ -380,14 +396,6 @@ const stopDelegated = (reference: NonNullable<RunMemberDelegatedFacts['stop']>):
   if (root) void delegatedDraft.stop(root, reference)
 }
 
-/** On a stopped run, its own changed settings, saved with the copies' choices in one Save (AR-004). */
-const configuredPatches = (): DelegatedConfiguredPatch[] => {
-  const current = draft.value
-  if (!current || current.isActive || !draftStore.dirty) return []
-  if (current.kind === 'team') return planExistingTeamModelConfigPatches(current.planner).map((patch) => ({ ...patch }))
-  if (current.kind === 'agent_org') return planExistingAgentOrgModelConfigPatches(current.planner).map((patch) => ({ ...patch }))
-  return [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/', ...current.draftSelection }]
-}
 const orgWorkspaceDirty = computed(() => draft.value?.kind === 'agent_org'
   && existingAgentOrgWorkspacesDirty(draft.value.executionTree, draft.value.workspaceDraft))
 const canSave = computed(() => {
@@ -396,10 +404,15 @@ const canSave = computed(() => {
   return delegatedEditable.value && delegatedDraft.changesAllowed && !orgWorkspaceDirty.value
     && (!draftStore.dirty || draftStore.canSave)
 })
+/** One Save (SR-064): the run's own settings by its own save, then each delegated run's by its own, in row order. */
 const save = async (): Promise<void> => {
   if (!delegatedDraft.dirty) { await draftStore.save(); return }
   if (!canSave.value) return
-  await delegatedDraft.save(configuredPatches(), () => draftStore.reloadCanonical(true))
+  // The run's own changes first; a refusal keeps them and saves nothing else (a failed refresh after a committed save does not).
+  if (draftStore.dirty) { await draftStore.save(); if (draftStore.dirty) return }
+  const rowOf = (key: string) => [...delegatedByKey.value.values()].find((row) => row.delegated?.target === key)
+  await delegatedDraft.save({ running: (key) => Boolean(rowOf(key)?.delegated?.running), nameOf: (key) => rowOf(key)?.name ?? key },
+    () => draftStore.reloadCanonical(true))
 }
 const cancel = (): void => {
   draftStore.discardChanges()

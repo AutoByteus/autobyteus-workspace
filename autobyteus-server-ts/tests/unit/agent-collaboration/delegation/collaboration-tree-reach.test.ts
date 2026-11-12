@@ -41,7 +41,7 @@ const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
   const reads: string[] = [];
-  const tree = new DelegationIndex(() => tasks, { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: async (r) => {
+  const tree = new DelegationIndex(() => tasks, { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: async (r) => {
     reads.push(r.rootRunId);
     return STANDING[r.rootRunId] ? partsOf(STANDING[r.rootRunId]!) : null;
   } });

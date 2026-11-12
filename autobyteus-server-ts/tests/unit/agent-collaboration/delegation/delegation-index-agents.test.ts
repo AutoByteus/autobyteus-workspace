@@ -11,7 +11,7 @@ describe("DelegationIndex.agentsOf", () => {
   it("reads a run's agents once from its own file and keeps them; an agent run without a stored address shows its delegation address", async () => {
     const tasks = new InMemoryTaskExecutionResources();
     tasks.addTask("T1");
-    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: vi.fn(async (run: { rootRunId: string }) => parts(run.rootRunId === "eng"
+    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: vi.fn(async (run: { rootRunId: string }) => parts(run.rootRunId === "eng"
       ? [{ agentRunId: "lead", address: "/lead", agentDefinitionId: "lead" }, { agentRunId: "coder", address: "/coder", agentDefinitionId: "coder" }]
       : [{ agentRunId: run.rootRunId, address: null, agentDefinitionId: "writer" }])) };
     const tree = new DelegationIndex(() => tasks, reader);
@@ -29,7 +29,7 @@ describe("DelegationIndex.agentsOf", () => {
   it("a peer's run has its agents from its entry, never from a file", async () => {
     const tasks = new InMemoryTaskExecutionResources();
     tasks.addTask("T1");
-    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: vi.fn(async () => null) };
+    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: vi.fn(async () => null) };
     const tree = new DelegationIndex(() => tasks, reader);
     tree.build(); tasks.setEntriesListener(tree);
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/research_team", delegatedFrom: from, execution: { teamRunId: "far" },
@@ -41,7 +41,7 @@ describe("DelegationIndex.agentsOf", () => {
   it("one answer for an agent run with no stored address; a run whose file is absent or unreadable is left out with a warning (CR-461-023, -024)", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const tasks = new InMemoryTaskExecutionResources();
-    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: vi.fn(async (run: { rootRunId: string }) => {
+    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: vi.fn(async (run: { rootRunId: string }) => {
       if (run.rootRunId === "broken") throw new Error("bad JSON");
       return run.rootRunId === "gone" ? null : parts([{ agentRunId: run.rootRunId, address: null, agentDefinitionId: "writer" }]);
     }) };
@@ -65,7 +65,7 @@ describe("DelegationIndex.agentsOf", () => {
     const tasks = new InMemoryTaskExecutionResources();
     tasks.addTask("T1");
     const org = { rootSubjectKind: "agent_org" as const, rootRunId: "org" };
-    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: vi.fn(async (run: { rootRunId: string }) => run.rootRunId === "org"
+    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true, partsOf: vi.fn(async (run: { rootRunId: string }) => run.rootRunId === "org"
       ? { agents: [{ agentRunId: "ceo", address: "/ceo", agentDefinitionId: null }, { agentRunId: "lead", address: "/dev/lead", agentDefinitionId: null }],
         coordinatorAddress: null, mountedTeams: [{ address: "/dev", coordinatorAgentRunId: "lead" }] }
       : { agents: [{ agentRunId: "tutor", address: "/tutor", agentDefinitionId: null }], coordinatorAddress: "/tutor", mountedTeams: [] }) };

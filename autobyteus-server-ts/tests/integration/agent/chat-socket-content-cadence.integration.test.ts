@@ -142,7 +142,7 @@ const teamScenario: Scenario = {
         start: (agent) => agentEvent(agent, "start"),
         content: (agent, delta) => agentEvent(agent, "content", delta),
         boundary: (agent, boundary) => boundary === "root_event"
-          ? publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event: { kind: "remote_task_execution_summary", summary: { nodeId: "node-b", runId: "peer-run-1", reachable: true, title: null, statuses: [], launches: [] } } } as never)
+          ? publisher.publish({ kind: "remote_task_execution_summary", summary: { nodeId: "node-b", runId: "peer-run-1", reachable: true, title: null, statuses: [], launches: [] } } as never)
           : agentEvent(agent, boundary),
         currentSequence: () => publisher.getCurrentChangeSequence(),
         subscribeRoot: (listener) => publisher.subscribe(listener),

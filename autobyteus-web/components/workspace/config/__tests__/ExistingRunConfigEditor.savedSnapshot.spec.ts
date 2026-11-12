@@ -25,7 +25,16 @@ const readableOptions = () => ({ status: 'ready', options: { currentModelIdentif
 const options = () => mocks.unreadable
   ? { status: 'unavailable', options: null, message: 'The model list of Codex App Server could not be read. Try again.' } : readableOptions()
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async original => ({ ...await original<object>(),
-  loadDelegatedLaunchModelOptions: async () => ({ 'agent:copy': options(), 'team:team-copy': options(), 'agent:follower': options(), 'agent:own': options() }), updateDelegatedLaunchSelections: mocks.mutate,
+  // Each row's options from its own run's query; each run's change by its own save (autobyteus-461 SR-064, SR-065).
+  loadDelegatedRunOptions: async (targets: ReadonlyMap<string, unknown>) => ({ options: Object.fromEntries([...targets.keys()].map((key) => [key, options()])), complete: true }),
+  saveDelegatedRuns: mocks.mutate,
+}))
+// The run's own setting is saved by its own save, before the delegated runs' (autobyteus-461 SR-064).
+vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
+  updateStoppedAgentSelection: async (input: { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown }) => ({ success: true, outcome: 'UPDATED',
+    message: 'Saved.', isActive: false, editability: { editable: true, reason: null }, fieldErrors: [],
+    canonicalSelection: { runtimeKind: input.runtimeKind, llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig } }),
+  updateStoppedTeamSelections: vi.fn(),
 }))
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: async () => ({ '/': options() }) }))
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ subject: { kind: 'agent_run', runId: 'host' } }) }))
@@ -133,7 +142,8 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   const store = useExistingRunConfigStore()
   store.updateAgentModelConfig({ llmModelIdentifier: 'new', llmConfig: null })
   await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
-  mocks.read.mockRejectedValueOnce(new Error('read unavailable'))
+  // The run's own save and the delegated runs' saves each read the run again after (SR-064): both reads fail.
+  mocks.read.mockRejectedValueOnce(new Error('read unavailable')).mockRejectedValueOnce(new Error('read unavailable'))
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(store.reconciliationRequired).toBe(true)
   expect(store.dirty).toBe(false)
@@ -175,7 +185,8 @@ it('Cancel writes nothing and rejected Save keeps the recoverable edit without S
   expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Copy running')
   expect(useDelegatedLaunchDraftStore().dirty).toBe(true)
-  expect(mocks.read).toHaveBeenCalledTimes(1)
+  // A refused Save reads the rows again (SR-064: a run that saved keeps its save).
+  expect(mocks.read).toHaveBeenCalledTimes(2)
   wrapper.unmount()
 })
 

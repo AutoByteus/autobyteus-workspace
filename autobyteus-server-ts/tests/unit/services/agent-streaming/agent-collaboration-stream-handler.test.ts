@@ -8,7 +8,7 @@ import { delegatedChild, followTestChildRows } from "../../../helpers/child-rows
  * The agent run's view stream (design DS-8; autobyteus-461 SR-061 … SR-063): connecting never starts the run's agent; the
  * view is in base's shapes, from the run's one `RunViewStream`: a snapshot with its rows read at its base, then every
  * frame after it in order (base's row events with their records). A delegated run is reached by its own stream; a peer
- * run's command goes through the root to its node.
+ * run's command goes to its handle (SR-066).
  */
 const HOST = "host-run";
 const host = { address: "/assistant" as never, agentRunId: HOST, agentDefinitionId: "assistant" };
@@ -25,7 +25,7 @@ const fakeRoot = (feed: ReturnType<typeof followTestChildRows>, hostLive = true)
     // The run's view stream's snapshot connection, as the root opens it (SR-063): the rows at the base, then its own parts.
     openViewSnapshotConnection: vi.fn((atBase: () => unknown, read: (own: unknown, rows: unknown) => unknown) =>
       stream.openSnapshotConnection(() => { const rows = atBase(); return read({ host, createdAt, statuses: [] }, rows); })),
-    resolveCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, launchNotes: [], collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer", presence: "not_in_run" as const }] })),
+    resolveCollaboratorMentions: vi.fn(),
     executeAgentCommand: vi.fn(async () => ({ accepted: true })),
     stream,
   };
@@ -75,21 +75,29 @@ describe("AgentCollaborationStreamHandler", () => {
     }
   });
 
-  it("a peer run's command goes through the root, its mentions resolved there (autobyteus-278); nothing starts the agent", async () => {
+  it("SR-066: a peer row's command goes to its handle, never through the root; @ mentions to it and a local run are refused", async () => {
     const feed = followTestChildRows();
     const root = fakeRoot(feed, false);
-    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never }, feed);
-    await handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: {
+    const peer = { kind: "agent" as const, runId: "peer-run", interrupt: vi.fn(async () => ({ accepted: true })), postMessage: vi.fn(async () => ({ accepted: true })) };
+    const wire: CollaborationStreamServerMessage[] = [];
+    const handler = new AgentCollaborationStreamHandler({ resolveRoot: async () => root as never, getActive: () => root as never },
+      { ...feed.rows, peerRunOf: (id) => id === "peer-run" ? peer as never : null });
+    const sessionId = (await handler.connect({ send: (raw) => wire.push(CollaborationStreamServerMessageSchema.parse(JSON.parse(raw))), close: vi.fn() }, HOST))!;
+    await handler.handleMessage(sessionId, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: {
       root_subject_kind: "agent", root_run_id: HOST, target_agent_run_id: "peer-run", command_id: "c2",
     } }));
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_type: "INTERRUPT_GENERATION", state: "accepted" } });
-    expect(root.executeAgentCommand).toHaveBeenCalledWith("peer-run", { kind: "interrupt" });
-    await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
-    expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "peer-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    expect(root.executeAgentCommand).toHaveBeenLastCalledWith("peer-run", expect.objectContaining({ kind: "post_message",
-      message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer/) }) }));
+    expect(peer.interrupt).toHaveBeenCalledOnce();
+    await handler.handleMessage(sessionId, send());
+    expect(peer.postMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "hello", messageId: "m1", dedupeKey: "d1" }));
+    await handler.handleMessage(sessionId, send({ command_id: "c4", mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
+    expect(wire.at(-1)).toMatchObject({ payload: { state: "rejected", code: "REMOTE_RUN_MENTIONS_UNSUPPORTED" } });
+    expect(root.resolveCollaboratorMentions).not.toHaveBeenCalled();
+    await handler.handleMessage(sessionId, send({ command_id: "c5", target_agent_run_id: "local-child-run" }));
+    expect(wire.at(-1)).toMatchObject({ payload: { state: "rejected", code: "RUN_NOT_FOUND" } });
+    expect(root.executeAgentCommand).not.toHaveBeenCalled();
     expect(root.ensureHostReady).not.toHaveBeenCalled();
-    await handler.handleMessage(sessionId!, send({ root_subject_kind: "agent_org", command_id: "c3" }));
+    await handler.handleMessage(sessionId, send({ root_subject_kind: "agent_org", command_id: "c3" }));
     expect(wire.at(-1)).toMatchObject({ payload: { state: "failed", code: "AGENT_ROOT_COMMAND_FAILED" } });
   });
 

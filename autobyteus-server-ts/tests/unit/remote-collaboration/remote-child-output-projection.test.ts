@@ -34,12 +34,10 @@ describe("remote children in the root streams", () => {
       change_sequence: 6, node_id: "srv_docker", run_id: "researcher-run", reachable: false, title: null, statuses: [], launches: [] } });
   });
 
-  it("the Team root's own consumers do not take a remote frame for a local agent's status", () => {
+  it("the Team root's idle shutdown follows its own agents' status (a peer run's frames never reach the root: SR-066)", () => {
     const timers = { setTimeout: vi.fn(() => "timer"), clearTimeout: vi.fn() };
     const idle = new DelegatedTeamIdleShutdown({ teamRunId: "team-run", shutDownIfQuiet: async () => false, gracePeriodMs: () => 1000, timers });
     expect(timers.setTimeout).toHaveBeenCalledTimes(1);
-    idle.onRootEvent({ eventSourceType: TeamRunEventSourceType.REMOTE, event: frame });
-    expect(timers.clearTimeout).not.toHaveBeenCalled();
     const local: TeamRunEvent = { eventSourceType: TeamRunEventSourceType.AGENT,
       execution: createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity("team-run"), memberAddress: "/lead" as never, agentRunId: "lead" }),
       payload: { eventType: "AGENT_STATUS", details: { status: "running", trigger: null, toolName: null, errorMessage: null, errorDetails: null, recoverableBlock: null }, statusHint: "ACTIVE" } } as never;
