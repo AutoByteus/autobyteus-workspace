@@ -3008,7 +3008,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-org-definition/services/agent-org-definition-service.ts",
       "autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts",
       "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
-      "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
       "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
       "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
       "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
