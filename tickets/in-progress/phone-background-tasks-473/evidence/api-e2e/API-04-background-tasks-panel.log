@@ -1,0 +1,8 @@
+# API-04 background-tasks-panel; commit 9b921e9489; 2026-11-12T06:21:02Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.5 test:e2e:background-tasks-panel /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node tests/e2e/background-tasks-panel-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/tickets/in-progress/phone-background-tasks-473/evidence/api-e2e/API-04-background-tasks-panel
+
+Background tasks browser probe failed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/tickets/in-progress/phone-background-tasks-473/evidence/api-e2e/API-04-background-tasks-panel/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
