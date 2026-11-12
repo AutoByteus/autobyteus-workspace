@@ -397,3 +397,44 @@ Steps, each committed when its checks pass:
 7. Rule 3: a per-story characterization at `827f1e68dc` (`evidence/collaboration-model/stories.py`) of the snapshots,
    events and list reads the web receives; the branch asserts the same except rule 2's moves.
 8. Sequencing tests (design "Sequencing tests"); Round 35 notes (derived tree; map and loaded root agree on step 1: done).
+
+### IR-013 progress and the technical plan for steps 3–6
+
+Done: step 1 (`909e471587`), step 2 (`6861bc22ca`, renames; focused units 143 files pass).
+
+Step 3, `RunViewStream`, as read at `6861bc22ca`:
+- `src/agent-collaboration/execution/services/root-event-publisher.ts` is base's, unchanged (diff empty vs `827f1e68dc`).
+  Its users:
+  - `new RootEventPublisher` in `standalone-root-builder.ts:57` and `agent-org-execution-scope-builder.ts:57`;
+  - the team side through `team-run-event-publisher.ts` (a re-export), passed to `materializeTeamRoot` as `publisher`;
+  - each root's `openPackageSnapshotConnection()` wraps `options.publisher.openSnapshotConnection(capture)`.
+- The move: `git mv` it to `agent-collaboration/delegation/run-view-stream.ts` as `RunViewStream`. A composition-root
+  registry (`RunViewStreams`, created at step 2 next to the index, process-lived) answers `streamOf(run)`, creating one per
+  run on first ask. The three builders take the run's stream from it instead of `new`, so a stop and a restore keep it
+  (`liveSequenceId` per instance).
+- The view sessions (`team-view-session.ts`, `org-view-session.ts`, the agent collaboration stream handler) open
+  `streamOf(run).openSnapshotConnection(capture)` in both modes. `capture` first reads the base, `collaborationTreeOf(run).rows()`
+  and `LocalChildObservation`'s cached statuses synchronously (to be added: a sync `snapshotRead` hook run before the
+  first await), then the own parts: a live root via its gate (today's `openPackageSnapshotConnection` capture), a
+  stopped run from its files (today's stored-mode reads). The `stored-` live sequence IDs and the base-0 stored snapshot go.
+  A mode switch is an in-band snapshot through the same connection at the current sequence.
+- `ChildRowsStreams` and the unsequenced `CHILD_RUNS_CHANGED` go. `ChildRowsFeed` publishes base's row events into
+  `streamOf(run)` (`task_execution_started` with the record built from the tree's row, `task_executions_closed`,
+  `task_executions_reopened`; for a team `TASK_EXECUTION` / `TASK_EXECUTIONS_CLOSED` / `TASK_EXECUTIONS_REOPENED`
+  sources, base `team-run-event.ts:11-61`). Peer rows: `remote_task_execution_started` / `_summary` as base.
+- Each root's event union gets base's row kinds back (base `standalone-root-event.ts:17-21`, `agent-org-run-event.ts:12-16`,
+  `team-run-event.ts`), plus a status event for a delegated row's agent (as base projected a hosted copy's `AGENT_STATUS`).
+  `isMessageEvent` stays the run's own messages only, so `lastMessageChangeSequence` ignores row and status frames.
+- Checkpoints (`getTeamRunExecutionCheckpoint`, `getAgentOrgExecutionCheckpoint`): `changeSequence` = the stream's
+  current sequence; `hasOpenExecutionWork` = the run's own root's open work (false when not loaded).
+
+Step 4, the shapes: the snapshot DTOs nest the rows under their delegator (base's placement) from `rows()`; the
+closed set comes back (a row whose Tasks are all closed while its run still runs; the tree needs `closedRunningOf(run)`
+using the Task side's open flags and the runs' live state); `agentRunCollaborationStatuses` (base's GraphQL query and
+digest) and the team and org history reads with delegated rows return; `runCollaborationStatuses` goes.
+
+Step 6, the web: restore `autobyteus-web` and the stream contracts to `3228eff74b` (this ticket's changes undone),
+then re-apply only:
+1. SR-045, the view stream kept for a stopped run;
+2. rule 2, a delegated row binds to its own run's context and stream, and its Settings save goes to its own save.
+List the re-applied hunks in the handoff. The contracts follow the server's base shapes.
