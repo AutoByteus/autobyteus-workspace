@@ -5,7 +5,7 @@ import { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
 import { AgentRunCollaborationIndex } from '../agentRunCollaborationIndex'
 import { agentRootMessages, agentRootView, created, launch } from './agentRootFixture'
 
-/** An Agent run's view with several child rows, one a delegated Team with work of its own (autobyteus-461 DS-8). */
+/** An Agent run's view with several child rows, two of them delegated Teams (autobyteus-461 DS-8). */
 const agentSource = { kind: 'agent' as const, agentDefinitionId: 'computer-use', launchConfiguration: launch }
 const teamSource = { kind: 'agent_team' as const, teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
   members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch, followsTeam: true },
@@ -24,9 +24,8 @@ export const childRunsView = () => {
           { address: '/product_team/prototyper', agentRunId: 'rp-run', platformAgentRunId: null },
           { address: '/product_team/bootstrapper', agentRunId: 'rb-run', platformAgentRunId: null },
         ],
-        taskExecutions: [
-          { address: '/computer_use_agent', agentRunId: 'helper-run', platformAgentRunId: null, delegatorAgentRunId: 'rp-run', startedAt: created, source: agentSource },
-        ],
+        // One hop (autobyteus-461 DS-8): a child team's own children are its own view's.
+        taskExecutions: [],
         source: teamSource },
       { address: '/computer_use_agent', agentRunId: 'other-task-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created, source: agentSource },
     ],

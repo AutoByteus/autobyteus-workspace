@@ -7,7 +7,7 @@ import { AgentOrgExecutionViewIndex } from '~/services/agentOrgExecution/agentOr
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { copyAgentSourceOf, copyTeamSourceOf, teamAgentSourceOf } from '../agentSourceSelectors'
-import { readsAsDisplayName } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import { readsAsDisplayNameAmong } from '~/services/teamExecution/teamExecutionTreeSelectors'
 
 const created = '2026-09-30T00:00:00.000Z'
 const launch = { runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'root-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null }
@@ -78,11 +78,11 @@ describe('copy sources', () => {
 
   it('display names (D-7): a configured member, its copies and the root keep basenames; a catalog copy reads as a spaced name', () => {
     const tree = withRootTeam(teamTree(), { task_executions: [reviewerCopy, productTeamCopy] })
-    expect(readsAsDisplayName(tree, '/researcher')).toBe(false)
-    expect(readsAsDisplayName(tree, '/researcher/nested')).toBe(false)
-    expect(readsAsDisplayName(tree, '/')).toBe(false)
-    expect(readsAsDisplayName(tree, '/code_reviewer')).toBe(true)
-    expect(readsAsDisplayName(tree, '/product_team/prototyper')).toBe(true)
+    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/researcher')).toBe(false)
+    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/researcher/nested')).toBe(false)
+    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/')).toBe(false)
+    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/code_reviewer')).toBe(true)
+    expect(readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), '/product_team/prototyper')).toBe(true)
   })
 
   it('a catalog copy and its members take their source from the copy (REQ-011)', () => {

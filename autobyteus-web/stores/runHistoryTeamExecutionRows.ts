@@ -1,11 +1,10 @@
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { ListedRunAnswer } from '~/services/listedRuns/listedRunChildrenQuery';
-import { withListedChildRows } from './runHistoryTeamListedChildRows';
+import { teamRunHistoryRows } from './runHistoryTeamChildRows';
+import { childOfRemoteExecution, childOfTeamTask, inDelegationOrder, listedRunChildren } from '~/services/delegatedChildren/delegatedChildRuns';
 import type {
   RunHistoryStableExecutionRow,
   RunHistoryTeamExecutionRow,
-  RunHistoryTransientExecutionRow,
   TeamMemberTreeRow,
   TeamTreeNode,
 } from './runHistoryTypes';
@@ -32,8 +31,9 @@ const flattenStableRows = (
 }, ...flattenStableRows(row.children, depth + 1)]);
 
 /**
- * A Team run's history rows: the open run's from its view, else its members with the runs it delegated to from the
- * history poll's answer (`listed`, autobyteus-461 SR-055), or its members alone before the first answer.
+ * A Team run's history rows: its members with the runs it delegated to, by the one builder (autobyteus-461 CR-461-025),
+ * from the open run's view, else from the history poll's answer (`listed`, SR-055), or its members alone before the
+ * first answer.
  */
 export const buildRunHistoryTeamExecutionRows = (
   team: TeamTreeNode,
@@ -41,82 +41,21 @@ export const buildRunHistoryTeamExecutionRows = (
   listed: ListedRunAnswer | null,
 ): RunHistoryTeamExecutionRow[] => {
   const stableSource = team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
-  if (!context) return listed ? withListedChildRows(team.teamRunId, flattenStableRows(stableSource), listed) : flattenStableRows(stableSource);
-  const rootTeamRunId = context.view.getRootTeamRunId();
-  if (team.teamRunId !== rootTeamRunId) {
-    throw new Error(`Team history root '${team.teamRunId}' does not match execution root '${rootTeamRunId}'.`);
+  const members = flattenStableRows(stableSource);
+  if (context) {
+    const rootTeamRunId = context.view.getRootTeamRunId();
+    if (team.teamRunId !== rootTeamRunId) {
+      throw new Error(`Team history root '${team.teamRunId}' does not match execution root '${rootTeamRunId}'.`);
+    }
+    // The view's child rows are the open ones (autobyteus-461), here and on peer nodes.
+    return teamRunHistoryRows({ teamRunId: rootTeamRunId, members,
+      children: inDelegationOrder([...context.view.getExecutionTree().root_team.task_executions.map(childOfTeamTask),
+        ...context.view.listRemoteExecutions().map(childOfRemoteExecution)]),
+      statusOf: (agentRunId) => context.view.getAgentContext(agentRunId)?.state.currentStatus,
+      delegatorAddressOf: (agentRunId) => context.view.getMemberAddress(agentRunId) });
   }
-  // The view's child rows are the open ones (autobyteus-461): a child whose Task closed has left the view.
-  const navigationRows = context.view.listNavigationRows();
-  const rootRowKey = `team:${rootTeamRunId}`;
-  const rootRows = navigationRows.filter((row) => row.key === rootRowKey);
-  const rootRow = rootRows[0];
-  if (
-    rootRows.length !== 1
-    || rootRow?.kind !== 'configured_team'
-    || rootRow.teamRunId !== rootTeamRunId
-    || rootRow.address !== '/'
-    || rootRow.depth !== 0
-    || rootRow.parentKey !== null
-  ) {
-    throw new Error(`Team history execution root '${rootTeamRunId}' is invalid.`);
-  }
-  const navigationByKey = new Map(navigationRows.map((row) => [row.key, row]));
-  const descendantRows = navigationRows.filter((row) => row !== rootRow).map((row) => {
-    const parent = row.parentKey ? navigationByKey.get(row.parentKey) : undefined;
-    // Only sidebar task-Agent leaves are lifted to their parent's level, as its siblings. Shared navigation and real
-    // Team/task-Team containment remain authoritative everywhere else.
-    if (row.kind === 'task_agent'
-      && (parent?.kind === 'configured_agent' || parent?.kind === 'task_team_agent')) {
-      return { ...row, parentKey: parent.parentKey, depth: parent.depth };
-    }
-    return row;
-  });
-  const parentRowKeys = new Set(descendantRows.flatMap((row) => row.parentKey ? [row.parentKey] : []));
-  const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
-  const remoteRuns = useRemoteRunsStore();
-  return descendantRows.flatMap((execution): RunHistoryTeamExecutionRow[] => {
-    if (execution.depth < 1) {
-      throw new Error(`Team history descendant '${execution.key}' is outside execution root '${rootTeamRunId}'.`);
-    }
-    const depth = execution.depth - 1;
-    const hasChildren = execution.expandable || parentRowKeys.has(execution.key);
-    const stable = stableByKey.get(execution.key);
-    // Below the root, the only configured rows are the root Team's Agents (Teams are flat).
-    if (execution.kind === 'configured_agent') {
-      if (!stable) {
-        throw new Error(`Configured Team history row '${execution.key}' is absent from root '${rootTeamRunId}'.`);
-      }
-      return [{
-        ...stable,
-        displayName: execution.displayName || stable.displayName,
-        depth,
-        hasChildren: hasChildren || stable.hasChildren,
-      }];
-    }
-    const transientKind = execution.kind === 'task_agent'
-      ? 'task_agent'
-      : execution.kind === 'task_team'
-        ? 'task_team'
-        : 'task_team_child';
-    // autobyteus-278: a run another node runs carries its node.
-    const remoteRun = execution.teamRunId ? remoteRuns.run(execution.teamRunId) : remoteRuns.runOfAgentRun(execution.agentRunId);
-    const transient: RunHistoryTransientExecutionRow = {
-      kind: 'transient_execution',
-      transientKind,
-      rowKey: execution.key,
-      teamRunId: context.view.getRootTeamRunId(),
-      memberAddress: execution.address,
-      agentRunId: execution.agentRunId,
-      teamRunIdForNode: execution.teamRunId,
-      memberKind: execution.agentRunId ? 'agent' : 'agent_team',
-      displayName: execution.displayName,
-      currentStatus: execution.currentStatus,
-      delegatedBy: execution.delegatedBy,
-      depth,
-      hasChildren,
-      remote: remoteRun ? Object.freeze({ runId: remoteRun.runId, nodeName: remoteRun.nodeName }) : null,
-    };
-    return [transient];
-  });
+  if (!listed) return members;
+  const answer = listedRunChildren(listed);
+  return teamRunHistoryRows({ teamRunId: team.teamRunId, members, children: answer.children, statusOf: answer.statusOf,
+    delegatorAddressOf: answer.delegatorAddressOf });
 };

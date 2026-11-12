@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentOrgConfiguredTeamNode } from '~/types/collaboration/agentOrgExecution';
-import { projectAgentOrgTaskTeamStatus, projectAgentOrgTeamBranchStatus } from '../agentOrgTeamBranchStatus';
+import { projectAgentOrgTeamBranchStatus } from '../agentOrgTeamBranchStatus';
 
 const launch = {
   runtimeKind: 'codex_app_server' as const,
@@ -105,29 +105,6 @@ describe('projectAgentOrgTeamBranchStatus', () => {
     })).toBe(AgentStatus.Running);
     expect(projectAgentOrgTeamBranchStatus({
       team, runAlive: false, statusForAgentRunId: () => AgentStatus.Running,
-    })).toBe(AgentStatus.Offline);
-  });
-});
-
-describe('projectAgentOrgTaskTeamStatus', () => {
-  type TaskTeam = Extract<AgentOrgConfiguredTeamNode['taskExecutions'][number], { teamRunId: string }>;
-  const taskTeam = team.taskExecutions[1] as TaskTeam;
-  /** The Team the task Team's lead delegated in turn (Teams are flat; a Team is never a member). */
-  const innerTaskTeam = taskTeam.taskExecutions[1] as TaskTeam;
-
-  it('counts the agents in a delegated Team subtree, Teams it delegated included', () => {
-    const statusForAgentRunId = vi.fn((runId: string) => runId === 'inner-reviewer' ? AgentStatus.Error : AgentStatus.Idle);
-    expect(projectAgentOrgTaskTeamStatus({ team: taskTeam, runAlive: true, statusForAgentRunId }))
-      .toBe(AgentStatus.Error);
-    expect(statusForAgentRunId.mock.calls.map(([runId]) => runId)).toEqual([
-      'task-team-lead', 'task-team-child-task', 'inner-reviewer', 'inner-child-task',
-    ]);
-    expect(projectAgentOrgTaskTeamStatus({
-      team: innerTaskTeam, runAlive: true,
-      statusForAgentRunId: (runId) => runId === 'inner-child-task' ? AgentStatus.Running : AgentStatus.Offline,
-    })).toBe(AgentStatus.Running);
-    expect(projectAgentOrgTaskTeamStatus({
-      team: taskTeam, runAlive: false, statusForAgentRunId: () => AgentStatus.Running,
     })).toBe(AgentStatus.Offline);
   });
 });

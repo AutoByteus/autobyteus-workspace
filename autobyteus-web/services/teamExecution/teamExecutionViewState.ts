@@ -55,6 +55,8 @@ export interface TeamExecutionViewState {
   listNavigationRows(): readonly TeamExecutionNavigationRow[];
   /** An agent of a run this Team delegated to another node (autobyteus-278): its messages stay on its node. */
   isRemoteAgent(agentRunId: string): boolean;
+  /** The runs this Team delegated to other nodes (autobyteus-278), as its view lists them. */
+  listRemoteExecutions(): readonly RemoteTaskExecutionDto[];
   applySnapshot(message: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>): TeamExecutionApplyResult;
   applyMessage(message: Exclude<TeamStreamServerMessage,
     { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult;
@@ -433,6 +435,7 @@ export const createTeamExecutionViewState = (
         agentRunId, memberAddress, agentContext: publication.value.contexts.get(agentRunId)!,
       }))),
     listNavigationRows: navigationRows,
+    listRemoteExecutions: () => publication.value.remote,
     isRemoteAgent: (agentRunId: string) => isRemoteAgentRun(publication.value.remote, agentRunId),
     applySnapshot,
     applyMessage,

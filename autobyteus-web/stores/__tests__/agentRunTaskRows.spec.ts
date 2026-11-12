@@ -4,7 +4,6 @@ import { shallowReactive } from 'vue'
 import type { AgentRunCollaborationViewDto, RunCollaborationStatusesDto } from '@autobyteus/collaboration-stream-contracts'
 import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { buildChildRunsContext } from '~/services/agentCollaboration/__tests__/agentRootChildRunsFixture'
-import { listedAgentRunTaskRows } from '~/services/agentCollaboration/agentRunListedTaskRows'
 import { agentRunAnswerFor } from '~/services/listedRuns/__tests__/listedRunAnswerFixture'
 import { buildMobileRunTreeRows, type MobileRunTreeSources } from '~/utils/mobile/mobileRunTreeProjection'
 import type { RunListEntry } from '~/utils/runListProjection'
@@ -48,6 +47,13 @@ const openWithView = async (view: AgentRunCollaborationViewDto) => {
 type Answer = RunCollaborationStatusesDto[number]
 const answerFor = (view: AgentRunCollaborationViewDto, statusOf?: (agentRunId: string) => string): Answer =>
   ({ ...agentRunAnswerFor(view, statusOf), isActive: false })
+/** The view with a child on a peer node of each kind (autobyteus-278), delegated after its children here. */
+const withPeers = (view: AgentRunCollaborationViewDto): AgentRunCollaborationViewDto => ({ ...view, remote_task_executions: [
+  { kind: 'agent', address: '/far_writer', agent_run_id: 'far-run', node_id: 'node-b', node_name: 'docker',
+    delegator_agent_run_id: 'host-run', started_at: '2026-09-30T00:00:05.000Z' },
+  { kind: 'agent_team', address: '/far_team', team_run_id: 'far-team', coordinator_address: '/far_team/lead', node_id: 'node-b', node_name: 'docker',
+    members: [{ address: '/far_team/lead', agent_run_id: 'far-lead' }], delegator_agent_run_id: 'host-run', started_at: '2026-09-30T00:00:06.000Z' },
+] as never })
 const poll = async (answer: Answer) => {
   io.query.mockResolvedValueOnce({ data: { runCollaborationStatuses: [answer] } })
   await useListedRunChildrenStore().refresh([{ kind: 'agent', runId: 'host-run' }])
@@ -111,12 +117,34 @@ describe('a listed agent run that is not open', () => {
     expect(store.selectedChild('host-run')).toBeNull()
   })
 
-  it('its rows are the view\'s rows for the same children', () => {
-    const view = agentRootView()
-    const expanded = () => true
-    expect(listedAgentRunTaskRows('host-run', answerFor(view), expanded)).toEqual(buildChildRunsContext(view).listTaskRows(expanded))
-    const collapsed = () => false
-    expect(listedAgentRunTaskRows('host-run', answerFor(view), collapsed)).toEqual(buildChildRunsContext(view).listTaskRows(collapsed))
+  // CR-461-025: one builder; the same children give the same rows whether the run is open or listed.
+  it('its rows are the open view\'s rows for the same children, here and on a peer node, collapsed or expanded', async () => {
+    const store = useAgentRunCollaborationStore()
+    const view = withPeers(agentRootView())
+    await poll(answerFor(view))
+    const listed = () => store.taskRows('host-run')
+    const before = { collapsed: listed() }
+    store.toggleTaskTeam('host-run', 'team-run'); store.toggleTaskTeam('host-run', 'far-team')
+    const expanded = listed()
+    await openWithView(view)
+    expect(store.taskRows('host-run')).toEqual(expanded)
+    store.toggleTaskTeam('host-run', 'team-run'); store.toggleTaskTeam('host-run', 'far-team')
+    expect(store.taskRows('host-run')).toEqual(before.collapsed)
+  })
+
+  // SR-057: a child on a peer node is listed too, marked with its node, with no status: nothing is asked of a peer per poll.
+  it('lists a child on a peer node under the run, marked with its node and without a status; opening the run gives its live status', async () => {
+    const store = useAgentRunCollaborationStore()
+    const view = withPeers(agentRootView())
+    await poll(answerFor(view, () => 'running'))
+    const peer = () => store.taskRows('host-run').find(({ row }) => row.rowKey === 'agent:far-run')!.row
+    expect(peer()).toMatchObject({ remote: { runId: 'far-run', nodeName: 'docker' }, currentStatus: 'offline', delegatedBy: 'research assistant' })
+    // The poll's one read is all that was asked.
+    expect(io.query.mock.calls.map(([input]) => input.query.definitions[0].name.value)).toEqual(['GetRunCollaborationStatuses'])
+    await openWithView(view)
+    // The open view observes it live (autobyteus-278: its node's summary sets its agent's status).
+    store.contextFor('host-run')!.getAgentContext('far-run')!.state.currentStatus = 'running' as never
+    expect(peer().currentStatus).toBe('running')
   })
 
   it('phone: the same rows unfold under the run, each opening through the run', async () => {

@@ -15,10 +15,10 @@ const startedAt = '2026-11-12T00:00:00.000Z'
 const answer = (kind: 'agent' | 'agent_team' | 'agent_org', runId: string, worker: string, lead: string) => ({
   kind, runId, isActive: false, children: [
     { row: { kind: 'agent', address: '/worker', agentRunId: 'worker-run', agentDefinitionId: null, delegatorAgentRunId: 'd', startedAt },
-      delegatorAddress: '/d', statuses: [{ agentRunId: 'worker-run', memberAddress: '/worker', status: worker }] },
+      delegatorAddress: '/d', statuses: [{ agentRunId: 'worker-run', memberAddress: '/worker', status: worker }], node: null },
     { row: { kind: 'agent_team', address: '/qa', teamRunId: 'qa-run', coordinatorAgentRunId: 'lead-run', delegatorAgentRunId: 'd', startedAt,
       members: [{ address: '/lead', agentRunId: 'lead-run', agentDefinitionId: null }] },
-      delegatorAddress: '/d', statuses: [{ agentRunId: 'lead-run', memberAddress: '/lead', status: lead }] },
+      delegatorAddress: '/d', statuses: [{ agentRunId: 'lead-run', memberAddress: '/lead', status: lead }], node: null },
   ],
 })
 

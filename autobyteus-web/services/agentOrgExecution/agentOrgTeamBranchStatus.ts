@@ -5,8 +5,6 @@ import type {
 } from '~/types/collaboration/agentOrgExecution';
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus';
 
-type AgentOrgTaskTeamNode = Extract<AgentOrgTaskExecutionNode, { teamRunId: string }>;
-
 type AgentOrgTeamStatusInput<TTeam> = Readonly<{
   team: TTeam;
   /** The Org run is live; a stopped Org's Teams are offline. */
@@ -38,14 +36,5 @@ export const projectAgentOrgTeamBranchStatus = (
 ): TeamStatus => {
   const agentRunIds = input.team.members.map((member) => member.agentRunId);
   for (const task of input.team.taskExecutions) appendTaskAgentRunIds(task, agentRunIds);
-  return resolveStatus(agentRunIds, input);
-};
-
-/** A delegated Team under an Org run (also one delegated inside another): the agents in its subtree. */
-export const projectAgentOrgTaskTeamStatus = (
-  input: AgentOrgTeamStatusInput<AgentOrgTaskTeamNode>,
-): TeamStatus => {
-  const agentRunIds: string[] = [];
-  appendTaskAgentRunIds(input.team, agentRunIds);
   return resolveStatus(agentRunIds, input);
 };

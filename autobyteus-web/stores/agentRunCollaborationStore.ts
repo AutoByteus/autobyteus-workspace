@@ -9,7 +9,8 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
 import { readAgentRunCollaboration, buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
-import { listedAgentRunTaskRows } from '~/services/agentCollaboration/agentRunListedTaskRows'
+import { agentRunTaskRows } from '~/services/agentCollaboration/agentRunTaskRows'
+import { listedRunChildren } from '~/services/delegatedChildren/delegatedChildRuns'
 import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore'
 import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
@@ -275,7 +276,10 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const taskRows = (hostRunId: string): AgentRunTaskTreeRow[] => {
     const expanded = (teamRunId: string) => isTaskTeamExpanded(hostRunId, teamRunId)
     const answer = isOpen(hostRunId) ? null : listedChildren.answerOf('agent', hostRunId)
-    return answer ? listedAgentRunTaskRows(hostRunId, answer, expanded) : contextFor(hostRunId)?.listTaskRows(expanded) ?? []
+    if (!answer) return contextFor(hostRunId)?.listTaskRows(expanded) ?? []
+    const listed = listedRunChildren(answer)
+    return agentRunTaskRows({ hostRunId, children: listed.children, statusOf: listed.statusOf, delegatorAddressOf: listed.delegatorAddressOf,
+      isActive: answer.isActive, isTeamExpanded: expanded })
   }
 
   /** The host's Team tab: messages with its children, once it has any. */

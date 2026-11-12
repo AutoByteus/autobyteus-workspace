@@ -14,7 +14,10 @@ const runFor = (tree: OrgTree): AgentOrgRunHistoryItem => ({
 
 const fixtureTree = () => structuredClone(taskBearingView().execution_tree) as OrgTree
 
-/** The delegated '/team' execution itself delegates the mounted '/reviewers' Team. */
+/**
+ * The fixture with a second mounted Team, '/reviewers'. A delegated Team's own delegations are its own view's (one hop,
+ * autobyteus-461 DS-8), so the Org's tree never nests them.
+ */
 const nestedTree = (): OrgTree => {
   const tree = fixtureTree()
   const launch = tree.rootOrg.defaultLaunchConfiguration
@@ -31,17 +34,6 @@ const nestedTree = (): OrgTree => {
         teamRunId: 'reviewers-configured', coordinatorAddress: '/reviewers/chair', defaultLaunchConfiguration: launch,
         members: [reviewerAgent('/reviewers/chair', 'agent-chair-configured')], taskExecutions: [],
       }],
-      taskExecutions: tree.rootOrg.taskExecutions.map((task) => 'teamRunId' in task ? {
-        ...task,
-        taskExecutions: [{
-          address: '/reviewers', teamRunId: 'reviewers-task',
-          members: [{ address: '/reviewers/chair', agentRunId: 'agent-chair-task', platformAgentRunId: null }],
-          taskExecutions: [], delegatorAgentRunId: 'agent-task-lead', startedAt: '2026-09-01T00:00:03.000Z',
-          source: { kind: 'agent_team', teamDefinitionId: 'reviewers-definition', coordinatorAddress: '/reviewers/chair', handoffs: [],
-            defaultLaunchConfiguration: launch, defaultLaunchSource: { origin: 'configured', fallbacks: [] },
-            members: [{ address: '/reviewers/chair', agentDefinitionId: 'definition-agent-chair-configured', launchConfiguration: launch, followsTeam: true }] },
-        }],
-      } : task),
     },
   } as OrgTree
 }
@@ -70,16 +62,6 @@ describe('projectAgentOrgHistoryRows delegated Team disclosure', () => {
     expect(keys(rows).at(-1)).toBe('task-team:team-task')
     expect(teamRow.hasFollowingSibling).toBe(false)
     expect(find(rows, 'task-agent:agent-worker-task').hasFollowingSibling).toBe(true)
-  })
-
-  it('collapses a nested delegated Team independently of its enclosing delegated Team', () => {
-    const rows = project(nestedTree(), (teamRunId) => teamRunId !== 'reviewers-task')
-    expect(find(rows, 'task-team:team-task').row).toMatchObject({ expanded: true })
-    expect(find(rows, 'task-team:reviewers-task').row).toMatchObject({ expanded: false, hasChildren: true, depth: 1 })
-    expect(keys(rows)).toContain('task-team-agent:agent-task-worker')
-    expect(keys(rows)).not.toContain('task-team-agent:agent-chair-task')
-    expect(find(rows, 'task-team-agent:agent-task-worker').hasFollowingSibling).toBe(true)
-    expect(find(rows, 'task-team:reviewers-task').hasFollowingSibling).toBe(false)
   })
 
   /** API-TTRC-001 (REQ-003 / AC-003, E-005): the same Team delegated twice keeps one state per teamRunId. */
@@ -139,23 +121,22 @@ const statusOf = (rows: AgentOrgHistoryDisplayRow[], key: string) => (find(rows,
 
 /** delegated-team-aggregate-status REQ-001..005, AC-001..007/009 (Org runs). */
 describe('projectAgentOrgHistoryRows Team status', () => {
-  it('gives delegated, nested delegated and Org-internal Teams the universal status, collapsed included', () => {
+  it('gives delegated and Org-internal Teams the universal status, collapsed included', () => {
     const rows = projectLive(nestedTree(), {
       'agent-task-lead': AgentStatus.Idle,
-      'agent-chair-task': AgentStatus.Running,
+      'agent-task-worker': AgentStatus.Running,
       'agent-lead-configured': AgentStatus.Idle,
       'agent-team-worker-configured': AgentStatus.Error,
       'agent-chair-configured': AgentStatus.Initializing,
     }, { isTaskTeamExpanded: (teamRunId) => teamRunId !== 'team-task' })
-    expect(keys(rows)).not.toContain('task-team:reviewers-task')
+    expect(keys(rows)).not.toContain('task-team-agent:agent-task-worker')
     expect(statusOf(rows, 'task-team:team-task')).toBe(AgentStatus.Running)
     expect(statusOf(rows, 'team:team-configured')).toBe(AgentStatus.Error)
     // A starting member counts as busy on a Team row; the agent row keeps its own status.
     expect(statusOf(rows, 'team:reviewers-configured')).toBe(AgentStatus.Running)
     expect(statusOf(rows, 'agent:agent-chair-configured')).toBe(AgentStatus.Initializing)
 
-    const expanded = projectLive(nestedTree(), { 'agent-chair-task': AgentStatus.Running, 'agent-task-lead': AgentStatus.Idle })
-    expect(statusOf(expanded, 'task-team:reviewers-task')).toBe(AgentStatus.Running)
+    const expanded = projectLive(nestedTree(), { 'agent-task-worker': AgentStatus.Running, 'agent-task-lead': AgentStatus.Idle })
     expect(statusOf(expanded, 'task-team:team-task')).toBe(AgentStatus.Running)
   })
 
@@ -173,17 +154,17 @@ describe('projectAgentOrgHistoryRows Team status', () => {
       source: { kind: 'agent', agentDefinitionId: 'worker-definition', launchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
     }]
     const statuses = {
-      'agent-task-lead': AgentStatus.Idle, 'agent-chair-task': AgentStatus.Running,
-      'agent-lead-configured': AgentStatus.Idle, 'agent-configured-helper': AgentStatus.Running,
+      'agent-task-lead': AgentStatus.Idle, 'agent-lead-configured': AgentStatus.Idle, 'agent-configured-helper': AgentStatus.Running,
     }
     const open = projectLive(tree, statuses)
-    expect(statusOf(open, 'task-team:team-task')).toBe(AgentStatus.Running)
+    // A delegated Team counts its own members (its own delegations are its own view's).
+    expect(statusOf(open, 'task-team:team-task')).toBe(AgentStatus.Idle)
     expect(statusOf(open, 'team:team-configured')).toBe(AgentStatus.Running)
   })
 
   it('reads every Team gray when the Org run is not live', () => {
     const rows = project(nestedTree())
-    for (const key of ['task-team:team-task', 'task-team:reviewers-task', 'team:team-configured', 'team:reviewers-configured']) {
+    for (const key of ['task-team:team-task', 'team:team-configured', 'team:reviewers-configured']) {
       expect(statusOf(rows, key)).toBe(AgentStatus.Offline)
     }
   })

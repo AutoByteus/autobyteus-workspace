@@ -18,13 +18,13 @@ const peer = { kind: 'agent', address: '/far', agent_run_id: 'far-run', node_id:
 describe('Agent run child rows', () => {
   beforeEach(() => { setActivePinia(createPinia()) })
 
-  it('lists every child row the view has, with the work under a delegated Team', () => {
+  it('lists every child row the view has, a delegated Team with its members', () => {
     const context = buildChildRunsContext()
     expect(listed(context)).toEqual([
       'agent:cua-run', 'team:team-run', 'agent:pp-run', 'agent:pb-run',
-      'agent:writer-run', 'team:review-team', 'agent:rp-run', 'agent:rb-run', 'agent:helper-run', 'agent:other-task-run',
+      'agent:writer-run', 'team:review-team', 'agent:rp-run', 'agent:rb-run', 'agent:other-task-run',
     ])
-    expect(['writer-run', 'helper-run', 'other-task-run'].every((id) => context.isListed(id))).toBe(true)
+    expect(['writer-run', 'rp-run', 'other-task-run'].every((id) => context.isListed(id))).toBe(true)
   })
 
   it('reads the view again for a new, reopened or peer delegation, and for a closure or deletion that removes a row', () => {
@@ -40,6 +40,6 @@ describe('Agent run child rows', () => {
     const writer = context.view.execution_tree.taskExecutions.find((task) => 'agentRunId' in task && task.agentRunId === 'writer-run')!
     expect(context.applyChildRunsChanged(event([writer], [{ agentRunId: 'unknown-run' }, { teamRunId: 'unknown-team' }]))).toBe('applied')
     expect(context.applyChildRunsChanged(event([], []))).toBe('applied')
-    expect(listed(context)).toHaveLength(10)
+    expect(listed(context)).toHaveLength(9)
   })
 })

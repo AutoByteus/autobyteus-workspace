@@ -28,13 +28,18 @@ type Child = Answer['children'][number]
 const startedAt = '2026-09-01T00:00:01.000Z'
 const agentChild = (agentRunId: string, address: string, delegator: [string, string | null], status: string): Child => ({
   row: { kind: 'agent', address, agentRunId, agentDefinitionId: 'd', delegatorAgentRunId: delegator[0], startedAt },
-  delegatorAddress: delegator[1], statuses: [{ agentRunId, memberAddress: address, status }],
+  delegatorAddress: delegator[1], statuses: [{ agentRunId, memberAddress: address, status }], node: null,
+})
+/** A child on a peer node (SR-057): its identity from its Task entry, its node, and no statuses. */
+const peerChild = (agentRunId: string, address: string, delegator: [string, string | null]): Child => ({
+  row: { kind: 'agent', address, agentRunId, agentDefinitionId: null, delegatorAgentRunId: delegator[0], startedAt: '2026-09-01T00:00:09.000Z' },
+  delegatorAddress: delegator[1], statuses: [], node: { nodeId: 'node-b', nodeName: 'docker' },
 })
 const teamChild = (teamRunId: string, address: string, members: [string, string, string][], delegator: [string, string | null]): Child => ({
   row: { kind: 'agent_team', address, teamRunId, coordinatorAgentRunId: members[0]![1], delegatorAgentRunId: delegator[0], startedAt,
     members: members.map(([memberAddress, agentRunId]) => ({ address: memberAddress, agentRunId, agentDefinitionId: null })) },
   delegatorAddress: delegator[1],
-  statuses: members.map(([memberAddress, agentRunId, status]) => ({ agentRunId, memberAddress, status })),
+  statuses: members.map(([memberAddress, agentRunId, status]) => ({ agentRunId, memberAddress, status })), node: null,
 })
 
 beforeEach(() => {
@@ -125,6 +130,13 @@ describe('a listed Team run that is not open', () => {
     expect(shape().map(([key]) => key)).toContain('agent:worker-run')
   })
 
+  it('desktop: a child on a peer node follows the members at the top level, marked with its node, with no status (SR-057)', async () => {
+    await poll(runs, [{ kind: 'agent_team', runId: ROOT, isActive: false, children: [...children, peerChild('far-run', '/manager', ['manager-run', '/manager'])] }])
+    const peer = rows().at(-1)!
+    expect(rows().map((row) => row.rowKey).at(-1)).toBe('agent:far-run')
+    expect(peer).toMatchObject({ depth: 0, remote: { runId: 'far-run', nodeName: 'docker' }, currentStatus: AgentStatus.Offline, delegatedBy: 'manager' })
+  })
+
   it('desktop: the navigation projection draws a listed Team that is not open from its answer, an open one from its view', async () => {
     const context = viewContext()
     const rootTeam = { ...context.view.getExecutionTree().root_team, task_executions: [] }
@@ -205,6 +217,17 @@ describe('a listed Org run that is not open', () => {
     expect(keys()).not.toContain('task-agent:agent-worker-task')
     await poll(runs, [{ kind: 'agent_org', runId: 'org-run', isActive: false, children: children('running') }])
     expect(keys()).toContain('task-agent:agent-worker-task')
+  })
+
+  it('desktop and phone: a child on a peer node is the shared delegated row with its node, without a status (SR-057)', async () => {
+    await poll(runs, [{ kind: 'agent_org', runId: 'org-run', isActive: false, children: [...children('running'), peerChild('far-run', '/far', ['agent-director', '/director'])] }])
+    const remote = rows().find(({ row }) => row.key === 'agent:far-run')!.row
+    expect(remote).toMatchObject({ kind: 'remote', openAgentRunId: 'far-run', openAddress: '/far',
+      transient: { remote: { runId: 'far-run', nodeName: 'docker' }, currentStatus: AgentStatus.Offline, delegatedBy: 'director' } })
+    const entry: RunListEntry = { kind: 'org', key: 'org:org-run', runId: 'org-run', name: 'Org', lastActivityAt: '', isActive: false,
+      folderRootPath: null, orgRun: run() } as never
+    const phone = buildMobileRunTreeRows(phoneSources({ entries: [entry], orgRows: () => rows(), isAgentOrgRunExpanded: () => true }))
+    expect(phone.at(-1)).toMatchObject({ name: 'far', remote: { nodeName: 'docker', reachable: true }, open: { kind: 'orgExecution', agentRunId: 'far-run' } })
   })
 
   it('matches the view\'s rows for the same children', async () => {

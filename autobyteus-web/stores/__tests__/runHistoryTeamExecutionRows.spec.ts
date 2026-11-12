@@ -146,10 +146,10 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     ]);
   });
 
-  it('retains settled task-Team descendants and the delegations inside them for inactive history rows', () => {
+  // autobyteus-461 DS-8: one hop. A child team's own children are its own view's, so its row shows its members only.
+  it('keeps a stopped Team\'s task-Team row with its members for an inactive history row', () => {
     const solution = testAgentNode('/solution_designer', { agentRunId: 'solution-designer-run' });
     const reviewLead = '/SoftwareEngineeringTeam/review_lead';
-    // A settled task Team whose lead delegated an Agent and a further task Team (Teams are flat).
     const context = buildTestTeamContext({
       teamRunId: ROOT,
       coordinatorAddress: solution.address,
@@ -163,21 +163,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
           kind: 'task_team_agent', address: reviewLead,
           agent_run_id: 'settled-review-lead-run', platform_agent_run_id: null,
         }],
-        task_executions: [
-          {
-            kind: 'task_agent', address: reviewLead, agent_run_id: 'settled-nested-agent-run',
-            platform_agent_run_id: null, delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt, source: { kind: 'agent', agent_definition_id: 'agent', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
-          {
-            kind: 'task_team', address: '/SoftwareEngineeringTeam/research', team_run_id: 'settled-research-team-run',
-            delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt,
-            source: teamSource('/SoftwareEngineeringTeam/research', '/SoftwareEngineeringTeam/research/analyst'),
-            members: [{
-              kind: 'task_team_agent', address: '/SoftwareEngineeringTeam/research/analyst',
-              agent_run_id: 'settled-analyst-run', platform_agent_run_id: null,
-            }],
-            task_executions: [],
-          },
-        ],
+        task_executions: [],
       }],
     });
     const stableChildren = [stableRow(solution.address, [], { agentRunId: solution.agentRunId })];
@@ -188,9 +174,6 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
       ['solution-designer-run', 'stable_member', 0, false],
       ['settled-task-team-run', 'task_team', 0, true],
       ['settled-review-lead-run', 'task_team_child', 1, false],
-      ['settled-nested-agent-run', 'task_agent', 1, false],
-      ['settled-research-team-run', 'task_team', 1, true],
-      ['settled-analyst-run', 'task_team_child', 2, false],
     ]);
 
     const projection = buildRunHistoryNavigationProjection({
@@ -199,7 +182,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
       workspacesById: {}, agentContexts: new Map(), teamContexts: [context], agentOrgHistory: [],
     });
     expect(projection.memberAncestorExecutionKeysByIdentity[
-      runHistoryMemberIndexKey(ROOT, 'settled-analyst-run')
-    ]).toEqual(['team:settled-task-team-run', 'team:settled-research-team-run']);
+      runHistoryMemberIndexKey(ROOT, 'settled-review-lead-run')
+    ]).toEqual(['team:settled-task-team-run']);
   });
 });
