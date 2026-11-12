@@ -1,0 +1,20 @@
+# IMP-11 mobile-shell-probe
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.XBZMBgMwO9/mobile-shell --cases=MSP-44,MSP-45,MSP-46
+# Environment mode: clean
+# Commit: 2d01ca639d (branch codex/phone-background-tasks-473)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12T05:08:15Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.13-beta.5 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.XBZMBgMwO9/mobile-shell --cases=MSP-44,MSP-45,MSP-46
+
+[mobile-shell] MSP-44 …
+[mobile-shell] MSP-44 Pass
+[mobile-shell] MSP-45 …
+[mobile-shell] MSP-45 Pass
+[mobile-shell] MSP-46 …
+[mobile-shell] MSP-46 Pass
+mobile-shell probe: Pass
+# Exit status: 0

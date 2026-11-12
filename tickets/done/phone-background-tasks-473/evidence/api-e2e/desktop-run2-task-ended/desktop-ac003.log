@@ -1,0 +1,9 @@
+# AC-003 desktop window; run builder_fc4078b36a914685be3a01879fcb4e99; 2026-11-12T05:51:50.820Z
+opened: {"url":"/chat?id=builder_fc4078b36a914685be3a01879fcb4e99","selected":"a run","rows":["Run delayed echo command in backgroundRunningShell·sleep 240; echo BG-473-THREE; exit 0","Run delayed echo command in backgroundCompletedShell·sleep 45; echo BG-473-TWO; exit 0Background command \"Run delayed echo command in background\" completed (exit code 0)","Run delayed echo command in backgroundFailedShell·sleep 60; echo BG-473-ONE; exit 3Background command \"Run delayed echo command in background\" failed with exit code 3"],"header":"Background Tasks 1 running · 3 total"}
+after reload: {"url":"/chat?id=builder_fc4078b36a914685be3a01879fcb4e99","selected":"a run","rows":["Run delayed echo command in backgroundCompletedShell·sleep 240; echo BG-473-THREE; exit 0Background command \"Run delayed echo command in background\" completed (exit code 0)","Run delayed echo command in backgroundCompletedShell·sleep 45; echo BG-473-TWO; exit 0Background command \"Run delayed echo command in background\" completed (exit code 0)","Run delayed echo command in backgroundFailedShell·sleep 60; echo BG-473-ONE; exit 3Background command \"Run delayed echo command in background\" failed with exit code 3"],"header":"Background Tasks 0 running · 3 total"}
+background-task view reads after the reload: ["AgentBackgroundTaskView"]
+PASS the running task is listed when the window opens the run
+FAIL after a reload the Progress/Activity panel lists the running task (AC-003)
+result Fail
+
+# Review note (API/E2E): this run's reload read came after the 240 s task had ended (started 05:47:59Z, read ~05:52:30Z); the panel correctly listed it Completed (exit code 0) with the two earlier ended tasks. Rerun with a 600 s task in desktop/.

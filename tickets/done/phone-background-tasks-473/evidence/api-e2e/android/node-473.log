@@ -1,0 +1,5 @@
+# autobyteus-473 node; commit 9b921e9489; 2026-11-12T05:43:44.639Z
+node on http://127.0.0.1:51964 (emulator: http://10.0.2.2:51964); desktop frontend allowed: http://127.0.0.1:5473
+Claude run builder_fc4078b36a914685be3a01879fcb4e99 (haiku) in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abtest473-node-o5eYVK/workspace/ws-473
+pairing session 201 (link in /tmp/abtest473/pairing-link.txt, not evidence). Waiting for /tmp/abtest473/stop
+node done

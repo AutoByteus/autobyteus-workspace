@@ -8,7 +8,8 @@
  * Cases (the IDs of the ticket's acceptance criteria):
  *   BGT-01  run_in_background start < 2 s with pid, cwd, outputFile; `tail` while running and after; idle run woken
  *           by one notice within 5 s of the end; panel events and event-stream view; journal lines; a definition
- *           naming the four retired tools starts with run_bash only (AC-001, AC-003, AC-007, AC-008, AC-011, QR-004)
+ *           naming the four retired tools starts with run_bash only (AC-001, AC-003, AC-007, AC-008, AC-011, QR-004);
+ *           autobyteus-473 AC-004: the event-stream view lists the task running, then completed
  *   BGT-02  a command that fails while the agent is busy: one notice right after the turn, naming exit code 3 (AC-002)
  *   BGT-03  three commands ending within 1 s: exactly one notice naming all three, and the one still running (AC-004)
  *   BGT-04  `npm run dev` with a child process: `kill <pid>` stops everything; the end is in the kill's own result;
@@ -302,6 +303,12 @@ describeGated("Native background tasks through the real server (scripted model)"
       // AC-007 while running.
       expect(third!.toolResults[0]).toContain("first-line");
       expect(third!.toolResults[0]).not.toContain("done-line");
+      // autobyteus-473 AC-004: a viewer that opens the run now gets the running task in the event-stream view.
+      const runningView = await harness.gql<{ agentBackgroundTaskView: { __typename: string; currentTasks: Array<Record<string, unknown>> } }>(
+        `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename
+          ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId kind command status summary startedAt } } } }`, { id: session.runId });
+      expect(runningView.agentBackgroundTaskView.currentTasks).toContainEqual(expect.objectContaining({
+        taskId: String(pid), kind: "shell", command, status: "running", summary: null }));
 
       // AC-003 / QR-002: the idle run is woken by one notice within 5 s of the end.
       const notice = (await requests("BGT-01", 4, 30_000))[3]!;
@@ -314,9 +321,12 @@ describeGated("Native background tasks through the real server (scripted model)"
       // Panel contract: running → completed with the exit code; the panel reads the native run as an event stream.
       expect(statusPath(taskFrames(frames, pid))).toEqual(["running", "completed"]);
       expect(completed.payload).toMatchObject({ task_id: String(pid), kind: "shell", command, summary: "exit code 0" });
-      const view = await harness.gql<{ agentBackgroundTaskView: { __typename: string } }>(
-        "query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename } }", { id: session.runId });
+      const view = await harness.gql<{ agentBackgroundTaskView: { __typename: string; currentTasks: Array<Record<string, unknown>> } }>(
+        `query($id: String!) { agentBackgroundTaskView(agentRunId: $id) { __typename
+          ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status summary } } } }`, { id: session.runId });
       expect(view.agentBackgroundTaskView.__typename).toBe("AgentBackgroundTaskEventStream");
+      // autobyteus-473 AC-004: the ended task stays in the view with its end.
+      expect(view.agentBackgroundTaskView.currentTasks).toContainEqual({ taskId: String(pid), status: "completed", summary: "exit code 0" });
       const systemNotice = await until(() => frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === NOTICE_SENDER), "SYSTEM_TASK_NOTIFICATION");
       expect(String(systemNotice.payload.content)).toBe(notice.lastUser.slice(notice.lastUser.indexOf(BACKGROUND_TASK_NOTICE_HEADER)));
 

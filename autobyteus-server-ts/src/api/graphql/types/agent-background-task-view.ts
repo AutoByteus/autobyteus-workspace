@@ -1,11 +1,33 @@
 import { Arg, createUnionType, Field, Int, ObjectType, Query, registerEnumType, Resolver } from 'type-graphql';
 import { AgentRunManager } from '../../../agent-execution/services/agent-run-manager.js';
 import type { AgentBackgroundTaskView, AgentBackgroundTaskViewStatus } from '../../../agent-execution/domain/agent-background-task-view.js';
+import {
+  AGENT_BACKGROUND_TASK_KINDS,
+  AGENT_BACKGROUND_TASK_STATUSES,
+  type AgentBackgroundTaskKind as AgentBackgroundTaskKindValue,
+  type AgentBackgroundTaskStatus as AgentBackgroundTaskStatusValue,
+} from '../../../agent-execution/domain/agent-background-task.js';
 
 const BackgroundTaskViewStatus = { running: 'running', completed: 'completed', failed: 'failed', stopped: 'stopped', unknown: 'unknown' } as const;
 const BackgroundTaskViewReason = { unsupported: 'unsupported', inactive: 'inactive', inspection_failed: 'inspection_failed', incomplete: 'incomplete' } as const;
 registerEnumType(BackgroundTaskViewStatus, { name: 'BackgroundTaskViewStatus' });
 registerEnumType(BackgroundTaskViewReason, { name: 'BackgroundTaskViewReason' });
+const AgentBackgroundTaskKind = Object.fromEntries(AGENT_BACKGROUND_TASK_KINDS.map((kind) => [kind, kind]));
+const AgentBackgroundTaskStatus = Object.fromEntries(AGENT_BACKGROUND_TASK_STATUSES.map((status) => [status, status]));
+registerEnumType(AgentBackgroundTaskKind, { name: 'AgentBackgroundTaskKind' });
+registerEnumType(AgentBackgroundTaskStatus, { name: 'AgentBackgroundTaskStatus' });
+
+/** A run's background task as an event-stream runtime knows it now (the domain `AgentBackgroundTask`, autobyteus-473). */
+@ObjectType()
+export class AgentBackgroundTask {
+  @Field(() => String) taskId!: string;
+  @Field(() => AgentBackgroundTaskKind) kind!: AgentBackgroundTaskKindValue;
+  @Field(() => String) description!: string;
+  @Field(() => String, { nullable: true }) command!: string | null;
+  @Field(() => AgentBackgroundTaskStatus) status!: AgentBackgroundTaskStatusValue;
+  @Field(() => String, { nullable: true }) summary!: string | null;
+  @Field(() => String) startedAt!: string;
+}
 
 @ObjectType()
 export class AgentBackgroundTaskViewRow {
@@ -29,6 +51,8 @@ export class AgentBackgroundTaskSnapshot {
 export class AgentBackgroundTaskEventStream {
   readonly kind = 'event-stream' as const;
   @Field(() => String) agentRunId!: string;
+  /** The tasks the runtime knows now; later changes arrive as `BACKGROUND_TASK_UPDATED` stream events. */
+  @Field(() => [AgentBackgroundTask]) tasks!: AgentBackgroundTask[];
 }
 @ObjectType()
 export class AgentBackgroundTaskUnsupported {

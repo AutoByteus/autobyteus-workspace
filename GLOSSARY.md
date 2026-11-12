@@ -368,8 +368,10 @@ delegated run, …) are defined in the
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.
 - **Background task:** work a run started that continues beyond its tool call and
-  is reported separately (`BACKGROUND_TASK_UPDATED`, the Background Tasks panel,
-  notices): a Claude `run_in_background` task, an Antigravity daemon step, or, on
+  is reported separately (`BACKGROUND_TASK_UPDATED`, the Background Tasks panel
+  and the phone's Activity, notices; a viewer that opens the run later reads its
+  current tasks from the run's background-task view, `AgentBackgroundTaskView`,
+  autobyteus-473): a Claude `run_in_background` task, an Antigravity daemon step, or, on
   the AutoByteus runtime, a command started with `run_bash(run_in_background: true)`
   or an `&` job of a foreground `run_bash` call still running when the call's
   foreground part ended. Processes that detach themselves (`nohup`, `setsid`,

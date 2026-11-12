@@ -1,0 +1,10 @@
+# IMP-06 web-nuxt-tests
+# Command: pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run
+# Environment mode: shell
+# Commit: 2d01ca639d (branch codex/phone-background-tasks-473)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12T05:25:37Z
+# Excerpt of IMP-06-web-nuxt-tests.log (full log kept out of git): totals
+ Test Files  758 passed (758)
+      Tests  5717 passed | 2 skipped (5719)
+# Exit status: 0

@@ -57,7 +57,14 @@ export const useBackgroundTaskPanelView = (runId: Ref<string>, expanded: Ref<boo
         const view = data.agentBackgroundTaskView;
         switch (view.__typename) {
           case 'AgentBackgroundTaskSnapshot': snapshot.value = view; mode.value = 'snapshot'; break;
-          case 'AgentBackgroundTaskEventStream': snapshot.value = null; mode.value = 'event-stream'; break;
+          case 'AgentBackgroundTaskEventStream':
+            snapshot.value = null; mode.value = 'event-stream';
+            // The tasks the node knows now: a viewer that opened the run after they started sees them (autobyteus-473).
+            stream.seedTasks(selected, view.currentTasks.map((task) => ({
+              taskId: task.taskId, kind: task.kind, description: task.description, command: task.command ?? null,
+              status: task.status, summary: task.summary ?? null, startedAt: task.startedAt,
+            })));
+            break;
           case 'AgentBackgroundTaskUnsupported': mode.value = 'unsupported'; break;
           default: mode.value = 'unavailable';
         }
