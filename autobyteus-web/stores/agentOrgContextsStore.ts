@@ -30,6 +30,8 @@ import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 import { createRandomId } from '~/utils/randomId'
+import { orgDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
 
 const MAX_CONFIG_READ_ATTEMPTS = 3
 
@@ -160,7 +162,11 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
    */
   const ensureMemberLoaded = (id: string, agentRunId: string | null): boolean => {
     const org = contexts.value[id]
-    if (!org || !agentRunId || !org.getAgentContext(agentRunId) || memberLoader().isHydrated(loaderRoot(id), agentRunId)) return false
+    if (!org || !agentRunId || !org.getAgentContext(agentRunId)) return false
+    // A run this Org delegated on this node opens as its own run (autobyteus-461 rule 2); the Org reads only its own.
+    const own = orgDelegatedRunSubject(org.index, agentRunId)
+    if (own) { useDelegatedRunsStore().ensureOpen(own); return true }
+    if (memberLoader().isHydrated(loaderRoot(id), agentRunId)) return false
     void memberLoader().ensure(loaderRoot(id), agentRunId, () => contexts.value[id] === org ? orgMemberLoadTarget({
       orgRunId: id, context: org, agentRunId, liveToolAuthority: () => org.isActive && services.get(id)?.isReady() === true,
     }) : null).catch((cause) => console.warn(`[agentOrg] Could not load '${agentRunId}' of '${id}'.`, cause))
@@ -295,6 +301,12 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const target = contexts.value[id]?.selectedTarget()
     if (!target || !('address' in target)) return null
     const agentRunId = target.context.state.runId
+    // A run this Org delegated on this node: its own run's context, stream and reads (autobyteus-461 rule 2).
+    const own = orgDelegatedRunSubject(contexts.value[id]!.index, agentRunId)
+    if (own) {
+      const binding = useDelegatedRunsStore().bindingOf(own)
+      return binding ? Object.freeze({ ...target, access: 'live' as const, ...binding }) : null
+    }
     const send = (content: string, files: readonly ContextFilePath[]) => submit(id, agentRunId, target.address, target.context, content, files)
     const access = accessFor(id, agentRunId)
     const liveService = () => {

@@ -268,15 +268,21 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         attachmentDraftOwner?: DraftContextFileOwnerDescriptor
         /** A launch draft's first message: the `@` mentions chosen before the run existed (REQ-012). */
         mentions?: readonly RequestedCollaboratorMention[]
+        /**
+         * A member of a loaded Team run that is not the selected one: a delegated Team, reached by its own run ID from
+         * its delegator's view (autobyteus-461 rule 2).
+         */
+        member?: Readonly<{ teamRunId: string; agentRunId: string }>
       } = {},
     ) {
       const contexts = useAgentTeamContextsStore();
       const drafts = useTeamRunConfigStore();
       const selection = useAgentSelectionStore();
-      let team = contexts.activeTeamContext;
-      let draft = selection.selectedType === 'team_draft' && selection.selectedDraftId === drafts.selectedDraft?.draftId
+      let team = options.member ? contexts.getTeamContextById(options.member.teamRunId) : contexts.activeTeamContext;
+      let draft = !options.member && selection.selectedType === 'team_draft' && selection.selectedDraftId === drafts.selectedDraft?.draftId
         ? drafts.selectedDraft
         : null;
+      if (options.member && !team) throw new Error(`Team run '${options.member.teamRunId}' is not loaded.`);
       if (!team && !draft) throw new Error('No Team run or launch draft is selected.');
       if (draft) {
         const draftId = draft.draftId;
@@ -285,7 +291,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!draft || draft.draftId !== draftId) throw new Error('Selected Team launch draft changed before launch.');
       }
       let rootTeamRunId: string | null = team?.view.getRootTeamRunId() ?? null;
-      let targetAgentRunId = team?.view.getFocusedAgentRunId() ?? null;
+      let targetAgentRunId = options.member?.agentRunId ?? team?.view.getFocusedAgentRunId() ?? null;
       let localSubmission: LocalUserSubmissionHandle | null = null;
       let retryAttachments = contextAttachments.map(cloneContextAttachment);
       let draftOwnerId = draft?.draftId ?? rootTeamRunId;
@@ -349,8 +355,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         throw error;
       }
     },
-    async postToolExecutionApproval(invocationId: string, isApproved: boolean, reason: string | null = null, target: ToolApprovalTarget | null = null) {
-      const team = useAgentTeamContextsStore().activeTeamContext;
+    /** A tool decision on the selected Team run, or on the loaded Team run `teamRunId` (a delegated Team, rule 2). */
+    async postToolExecutionApproval(invocationId: string, isApproved: boolean, reason: string | null = null, target: ToolApprovalTarget | null = null, teamRunId?: string) {
+      const contexts = useAgentTeamContextsStore();
+      const team = teamRunId ? contexts.getTeamContextById(teamRunId) : contexts.activeTeamContext;
       if (!team) return;
       const service = teamStreamingServices.get(team.view.getRootTeamRunId());
       if (!service) return;

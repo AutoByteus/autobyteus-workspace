@@ -27,6 +27,8 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { teamDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
+import { useDelegatedRunsStore } from './delegatedRunsStore';
 
 /**
  * @store useActiveContextStore
@@ -42,6 +44,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   const contextFileUploadStore = useContextFileUploadStore();
   const agentOrgContextsStore = useAgentOrgContextsStore();
   const agentRunCollaborationStore = useAgentRunCollaborationStore();
+  const delegatedRunsStore = useDelegatedRunsStore();
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
   const windowNodeContextStore = useWindowNodeContextStore();
@@ -104,6 +107,15 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       const context = team?.view.getFocusedAgentContext() ?? null;
       if (!team || !context) return null;
       const teamView = standaloneTeamView(team);
+      // A run this Team delegated on this node: its own run's context, stream and reads (autobyteus-461 rule 2).
+      const own = teamDelegatedRunSubject(team.view.getExecutionTree(), team.view.getFocusedAgentRunId());
+      if (own) {
+        const binding = delegatedRunsStore.bindingOf(own);
+        return binding ? Object.freeze({
+          kind: 'standalone_team_member' as const, team: teamView, collaborationMessages: teamCollaborationMessagesView(team),
+          access: 'live' as const, ...binding,
+        }) : null;
+      }
       const target = {
         kind: 'standalone_team_member' as const, context, team: teamView,
         workspaceRootPath: team.view.getAgentWorkspaceRootPath(context.state.runId),

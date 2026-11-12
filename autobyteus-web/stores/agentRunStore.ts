@@ -100,17 +100,18 @@ export const useAgentRunStore = defineStore('agentRun', {
     /**
      * @action sendUserInputAndSubscribe
      * @description Creates a new agent run when needed, then sends the user's message over
-     * WebSocket and keeps the stream connected for live updates.
+     * WebSocket and keeps the stream connected for live updates. `runId` names a loaded run that is not the
+     * selected one: a delegated run, reached by its own run ID from its delegator's view (autobyteus-461 rule 2).
      */
-    async sendUserInputAndSubscribe(): Promise<void> {
+    async sendUserInputAndSubscribe(runIdToSend?: string): Promise<void> {
       const agentContextsStore = useAgentContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const workspaceStore = useWorkspaceStore();
       const contextFileUploadStore = useContextFileUploadStore();
-      const currentAgent = agentContextsStore.activeRun;
+      const currentAgent = runIdToSend ? agentContextsStore.getRun(runIdToSend) : agentContextsStore.activeRun;
 
       if (!currentAgent) {
-        throw new Error('No active agent selected.');
+        throw new Error(runIdToSend ? `Agent run '${runIdToSend}' is not loaded.` : 'No active agent selected.');
       }
 
       const { config, state } = currentAgent;

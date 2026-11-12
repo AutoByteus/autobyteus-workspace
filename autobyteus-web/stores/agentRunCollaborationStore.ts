@@ -33,6 +33,10 @@ import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collab
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { createRandomId } from '~/utils/randomId'
+import { agentRunDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
+
+const delegatedRuns = () => useDelegatedRunsStore()
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -97,8 +101,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    */
   const ensureChildHydrated = (hostRunId: string, agentRunId: string | null): boolean => {
     const context = contexts.value[hostRunId]
-    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId))
-      || memberLoader().isHydrated(loaderRoot(hostRunId), agentRunId)) return false
+    if (!agentRunId || !(context?.getChild(agentRunId) || context?.getRemoteChild(agentRunId))) return false
+    // A delegated run on this node is opened as its own run (autobyteus-461 rule 2); only a peer's goes through the host.
+    const own = agentRunDelegatedRunSubject(context.index, agentRunId)
+    if (own) { delegatedRuns().ensureOpen(own); return true }
+    if (memberLoader().isHydrated(loaderRoot(hostRunId), agentRunId)) return false
     void memberLoader().ensure(loaderRoot(hostRunId), agentRunId, () => {
       const published = contexts.value[hostRunId]
       return published === context && !terminations.has(hostRunId) ? hubChildLoadTarget({
@@ -353,7 +360,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
     const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     try {
-      // The view's stream, ready once its snapshot is applied; the child's message goes to the child's own run (SR-045).
+      // A peer's child (autobyteus-278): over the view's stream, ready once its snapshot is applied (SR-045).
       const service = attach(hostRunId)
       await service.whenReady()
       if (attachments.some((file) => isDraftUploadedContextAttachment(file) || coerceDraftUploadedContextAttachment(file))) {
@@ -377,7 +384,11 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     }
   }
 
-  /** The selected child of a standalone run, as the composer and center view target. */
+  /**
+   * The selected child of a standalone run, as the composer and center view target. A child on this node is bound to
+   * its own run's context, stream and reads (autobyteus-461 rule 2); null while that run opens. A child on a peer node
+   * keeps the route through the host (autobyteus-278).
+   */
   const childTargetFor = (hostRunId: string): ActiveAgentWorkspaceTarget | null => {
     const collaboration = contextFor(hostRunId)
     const agentRunId = selectedChild(hostRunId)
@@ -385,20 +396,32 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     // autobyteus-278: a remote child is opened like a local copy; its node keeps its workspace.
     const remote = agentRunId && !local ? collaboration?.getRemoteChild(agentRunId) : null
     const child = local ?? remote
-    const context = agentRunId ? collaboration?.getAgentContext(agentRunId) : null
-    if (!collaboration || !child || !context) return null
+    if (!collaboration || !child) return null
+    const kind = child.kind === 'task_team_member' || child.kind === 'remote_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const
+    const own = local ? agentRunDelegatedRunSubject(collaboration.index, child.agentRunId) : null
+    if (own) {
+      const binding = delegatedRuns().bindingOf(own)
+      if (!binding) return null
+      return Object.freeze({
+        kind, host: Object.freeze({ hostRunId }), address: child.address, agentRunId: child.agentRunId,
+        collaborationMessages: collaboration.messagesView(child.agentRunId),
+        access: 'live' as const, ...binding,
+      })
+    }
+    const context = collaboration.getAgentContext(child.agentRunId)
+    if (!context) return null
     const service = () => { assertNotTerminating(hostRunId); return services.get(hostRunId) }
     return Object.freeze({
-      kind: child.kind === 'task_team_member' || child.kind === 'remote_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
+      kind,
       host: Object.freeze({ hostRunId }),
       address: child.address,
       agentRunId: child.agentRunId,
       context,
-      workspaceRootPath: local ? local.source.launchConfiguration.workspaceRootPath : null,
+      workspaceRootPath: null,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
-      // A child is not a top-level run package: its pages come from the host's collaboration package.
+      // A peer's child is read through the host (autobyteus-278).
       browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),
-      // A child is always addressable: a message wakes it (and its host) through the stream.
+      // A peer's child is always addressable: a message wakes it through the host's stream.
       access: 'live' as const,
       interaction: Object.freeze({
         send: (content: string, files: readonly ContextFilePath[]) => submit(hostRunId, child.agentRunId, context, content, files),

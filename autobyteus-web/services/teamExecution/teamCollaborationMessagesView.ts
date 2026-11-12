@@ -2,6 +2,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows';
 import { projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective';
+import { delegatedRunMessagesKey, teamDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
 
 /**
  * A Team run's Team tab for its focused member: who each participant is, and the member's messages, loaded when
@@ -11,6 +12,7 @@ export const teamCollaborationMessagesView = (team: AgentTeamContext): Collabora
   const view = team.view;
   const entries = view.listAgentContextEntries();
   const focusedAgentRunId = view.getFocusedAgentRunId();
+  const own = teamDelegatedRunSubject(view.getExecutionTree(), focusedAgentRunId);
   return Object.freeze({
     rootKind: 'agent_team',
     rootRunId: view.getRootTeamRunId(),
@@ -21,7 +23,8 @@ export const teamCollaborationMessagesView = (team: AgentTeamContext): Collabora
       projectTeamCommunicationMemberIdentity(view, entry.agentRunId),
     ]))),
     ...participantMessagesView({
-      key: { rootKind: 'agent_team', rootRunId: view.getRootTeamRunId(), agentRunId: focusedAgentRunId },
+      // A delegated run's messages are in its own run's log (autobyteus-461 rule 2; CR-461-020).
+      key: own ? delegatedRunMessagesKey(own) : { rootKind: 'agent_team', rootRunId: view.getRootTeamRunId(), agentRunId: focusedAgentRunId },
       isRemote: view.isRemoteAgent(focusedAgentRunId),
       identityOf: (agentRunId) => view.getMemberAddress(agentRunId) ? projectTeamCommunicationMemberIdentity(view, agentRunId) : null,
     }),

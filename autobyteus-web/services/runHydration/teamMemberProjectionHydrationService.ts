@@ -7,6 +7,8 @@ import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { memberLoader, type MemberLoadTarget } from './memberLoader';
 import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
+import { teamDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 
 export type TeamMemberProjectionHydrationResult = Readonly<{
   disposition: 'authoritative' | 'hydrated' | 'superseded';
@@ -54,13 +56,22 @@ const teamMemberLoadTarget = (team: AgentTeamContext, agentRunId: string): Membe
   });
 };
 
-/** Loads one Team member's stored conversation, activities and files through the member loader, unless loaded. */
+/**
+ * Loads one Team member's stored conversation, activities and files through the member loader, unless loaded. A run
+ * this Team delegated on this node is not read through the Team: it opens as its own run (autobyteus-461 rule 2), and
+ * its row's context only shows its status.
+ */
 export const ensureAuthoritativeTeamMemberProjection = async (input: {
   team: AgentTeamContext;
   agentRunId: string;
   selectionIntent?: WorkspaceSelectionIntent;
 }): Promise<TeamMemberProjectionHydrationResult> => {
   const agentRunId = input.agentRunId.trim();
+  const own = teamDelegatedRunSubject(input.team.view.getExecutionTree(), agentRunId);
+  if (own) {
+    useDelegatedRunsStore().ensureOpen(own);
+    return Object.freeze({ disposition: 'authoritative', agentRunId });
+  }
   if (!teamMemberLoadTarget(input.team, agentRunId)) {
     throw new Error(`AgentRun '${agentRunId}' is not a retained member of Team '${input.team.view.getRootTeamRunId()}'.`);
   }

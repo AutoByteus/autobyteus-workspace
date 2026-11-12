@@ -48,6 +48,9 @@ import {
   AgentStreamWebSocketEgress,
   type AgentStreamServerMessageSink,
 } from "./websocket-egress/agent-stream-websocket-egress.js";
+import { followAgentRun, type AgentRunFollowSources } from "./agent-run-follower.js";
+import { getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
+import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -105,6 +108,8 @@ export class AgentStreamHandler {
   private statusProjectionService: AgentRunStatusProjectionService;
   private runtimeEventSequence = 0;
   private broadcaster: AgentStreamBroadcaster;
+  /** Each open session's follow of its run (SR-064): it binds whenever the run becomes ready, whoever readied it. */
+  private followers = new Map<string, () => void>();
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(),
@@ -113,6 +118,7 @@ export class AgentStreamHandler {
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
     commandCoordinator: AgentRunCommandCoordinator = getAgentRunCommandCoordinator(),
     statusProjectionService: AgentRunStatusProjectionService = getAgentRunStatusProjectionService(),
+    private readonly follow: AgentRunFollowSources | null = null,
   ) {
     this.sessionManager = sessionManager;
     this.agentRunService = agentRunService;
@@ -174,6 +180,10 @@ export class AgentStreamHandler {
       ),
     );
 
+    if (this.follow) this.followers.set(sessionId, followAgentRun(this.follow, agentRunId, {
+      ready: (run) => { this.bindSessionToRun(sessionId, run, egress); },
+      ended: () => { void this.unbindStoppedRun(sessionId, agentRunId, egress); },
+    }));
     logger.info(`Agent WebSocket connected: session=${sessionId}, run=${agentRunId}`);
     return sessionId;
   }
@@ -223,6 +233,8 @@ export class AgentStreamHandler {
 
   async disconnect(sessionId: string): Promise<void> {
     this.broadcaster.unregisterConnection(sessionId);
+    this.followers.get(sessionId)?.();
+    this.followers.delete(sessionId);
 
     const runUnsubscribe = this.activeRunUnsubscribers.get(sessionId);
     if (runUnsubscribe) {
@@ -236,6 +248,15 @@ export class AgentStreamHandler {
     this.sessionManager.closeSession(sessionId);
 
     logger.info(`Agent WebSocket disconnected: ${sessionId}`);
+  }
+
+  /** The run stopped (its root ended): the session stays open, unbound, with the run's stopped status (SR-064). */
+  private async unbindStoppedRun(sessionId: string, agentRunId: string, egress: AgentStreamWebSocketEgress): Promise<void> {
+    this.activeRunUnsubscribers.get(sessionId)?.();
+    this.activeRunUnsubscribers.delete(sessionId);
+    this.subscribedRunsBySessionId.delete(sessionId);
+    const projection = await this.statusProjectionService.getRunStatusProjection(agentRunId);
+    if (this.sessionEgresses.get(sessionId) === egress) egress.send(new ServerMessage(ServerMessageType.AGENT_STATUS, projection.statusPayload));
   }
 
   private ensureActiveSessionSubscription(sessionId: string, runId: string): boolean {
@@ -511,6 +532,7 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
       getAgentStreamBroadcaster(),
       getAgentRunCommandCoordinator(),
       getAgentRunStatusProjectionService(),
+      { registrations: getActiveCollaborationRootDirectory(), roots: { getActive: (hostRunId) => getStandaloneAgentRunRootManager().getActive(hostRunId) } },
     );
   }
   return cachedAgentStreamHandler;

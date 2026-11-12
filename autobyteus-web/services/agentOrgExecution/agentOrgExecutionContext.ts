@@ -32,6 +32,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { createAgentContext } from './agentOrgMemberContextFactory'
+import { delegatedRunMessagesKey, orgDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
 import {
   agentRunKey,
   collaborationTreeWalk,
@@ -413,7 +414,9 @@ export class AgentOrgExecutionContext {
       ]))),
       // A remote child's messages are in its own run's log on its node (autobyteus-278).
       ...participantMessagesView({
-        key: { rootKind: 'agent_org', rootRunId: this.orgRunId, agentRunId: focusedAgentRunId },
+        // A delegated run's messages are in its own run's log (autobyteus-461 rule 2; CR-461-020).
+        key: ((own) => own ? delegatedRunMessagesKey(own) : { rootKind: 'agent_org' as const, rootRunId: this.orgRunId, agentRunId: focusedAgentRunId })(
+          orgDelegatedRunSubject(this.index, focusedAgentRunId)),
         isRemote: this.index.remoteAgents.has(focusedAgentRunId),
         identityOf: (agentRunId) => this.index.agents.has(agentRunId) ? projectAgentOrgMessageIdentity(this.index, agentRunId) : null,
       }),

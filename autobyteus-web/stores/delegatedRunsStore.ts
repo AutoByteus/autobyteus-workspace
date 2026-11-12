@@ -1,0 +1,139 @@
+import { defineStore } from 'pinia'
+import { reactive } from 'vue'
+import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
+import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
+import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService'
+import type { DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
+import type { AgentContext } from '~/types/agent/AgentContext'
+import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject'
+import type { ContextFilePath } from '~/types/conversation'
+import type { ToolApprovalTarget } from '~/types/segments'
+import type { AgentInteractionPort } from '~/types/workspace/activeAgentWorkspaceTarget'
+import { useAgentContextsStore } from './agentContextsStore'
+import { useAgentRunStore } from './agentRunStore'
+import { useAgentTeamContextsStore } from './agentTeamContextsStore'
+import { useAgentTeamRunStore } from './agentTeamRunStore'
+import { useWorkspaceStore } from './workspace'
+
+/** A delegated run's own parts, as a delegator's view shows it when its row is selected. */
+export type DelegatedRunBinding = Readonly<{
+  context: AgentContext
+  workspaceRootPath: string | null
+  browse: AgentRunReadSubject
+  interaction: AgentInteractionPort
+}>
+
+const runKey = (subject: DelegatedRunSubject): string =>
+  subject.kind === 'agent' ? `agent:${subject.agentRunId}` : `agent_team:${subject.teamRunId}`
+
+/**
+ * Rule 2 of the frontend contract (autobyteus-461 SR-061, SR-064): a delegated run is reached like any run of its kind,
+ * through its own standard path, by its own run ID. Selecting its row in a delegator's view opens the run as its own
+ * open does (without selecting it) and keeps its own stream: `AgentStreamingService` for an agent run,
+ * `TeamStreamingService` for a team run. Its conversation and composer are that run's; its messages, `@` mentions,
+ * interrupts, tool decisions and Stop go to that run. Nothing about it goes through the delegator.
+ */
+export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
+  const opening = new Map<string, Promise<void>>()
+  /** The last open failure per run; selecting the row again retries. */
+  const errors = reactive<Record<string, string>>({})
+
+  const teamOf = (teamRunId: string) => useAgentTeamContextsStore().getTeamContextById(teamRunId) ?? null
+  const isLoaded = (subject: DelegatedRunSubject): boolean => subject.kind === 'agent'
+    ? Boolean(useAgentContextsStore().getRun(subject.agentRunId))
+    : Boolean(teamOf(subject.teamRunId))
+
+  const contextOf = (subject: DelegatedRunSubject): AgentContext | null => subject.kind === 'agent'
+    ? useAgentContextsStore().getRun(subject.agentRunId) ?? null
+    : teamOf(subject.teamRunId)?.view.getAgentContext(subject.agentRunId) ?? null
+
+  /** Keeps the run's own stream while its row is open, whether it runs or not (SR-045); it never starts the run. */
+  const connect = (subject: DelegatedRunSubject): void => {
+    if (subject.kind === 'agent') useAgentRunStore().connectToAgentStream(subject.agentRunId)
+    else useAgentTeamRunStore().connectToTeamStream(subject.teamRunId)
+  }
+
+  /** A Team member's stored conversation, read as the Team's own view reads an unfocused member. */
+  const loadMember = async (subject: Extract<DelegatedRunSubject, { kind: 'team_member' }>): Promise<void> => {
+    const team = teamOf(subject.teamRunId)
+    if (team) await ensureAuthoritativeTeamMemberProjection({ team, agentRunId: subject.agentRunId })
+  }
+
+  /** Opens the run's own context and stream, once (a load in flight is shared). */
+  const ensureOpen = (subject: DelegatedRunSubject): void => {
+    const key = runKey(subject)
+    if (opening.has(key)) return
+    let attempt: Promise<void>
+    if (isLoaded(subject)) {
+      connect(subject)
+      if (subject.kind === 'agent') return
+      attempt = loadMember(subject)
+    } else {
+      const resolveWorkspaceMetadataByRootPath = (rootPath: string) => useWorkspaceStore().resolveWorkspaceMetadataByRootPath(rootPath)
+      const open = subject.kind === 'agent'
+        ? openAgentRun({ runId: subject.agentRunId, fallbackAgentName: null, resolveWorkspaceMetadataByRootPath, selectRun: false })
+          .then(() => connect(subject))
+        : openTeamRun({ teamRunId: subject.teamRunId, agentRunId: subject.agentRunId, resolveWorkspaceMetadataByRootPath, selectRun: false })
+          .then(() => undefined)
+      attempt = open
+    }
+    const tracked = attempt
+      .then(() => { delete errors[key] })
+      .catch((cause: unknown) => {
+        errors[key] = cause instanceof Error ? cause.message : String(cause)
+        console.warn(`[delegatedRuns] Could not open delegated run '${key}'.`, cause)
+      })
+      .finally(() => { if (opening.get(key) === tracked) opening.delete(key) })
+    opening.set(key, tracked)
+  }
+
+  const errorFor = (subject: DelegatedRunSubject): string | null => errors[runKey(subject)] ?? null
+
+  const interactionOf = (subject: DelegatedRunSubject): AgentInteractionPort => {
+    if (subject.kind === 'agent') {
+      const runs = useAgentRunStore()
+      return Object.freeze({
+        // The composer writes the draft on the run's own context; its own send reads it there.
+        send: async () => { await runs.sendUserInputAndSubscribe(subject.agentRunId) },
+        interrupt: async () => { runs.interruptGeneration(subject.agentRunId) },
+        decideTool: async (invocationId: string, approved: boolean, reason: string | null) => {
+          await runs.postToolExecutionApproval(subject.agentRunId, invocationId, approved, reason)
+        },
+      })
+    }
+    const teams = useAgentTeamRunStore()
+    const member = Object.freeze({ teamRunId: subject.teamRunId, agentRunId: subject.agentRunId })
+    return Object.freeze({
+      send: async (content: string, paths: readonly ContextFilePath[]) => {
+        await teams.sendMessageToFocusedMember(content, [...paths], { member })
+      },
+      interrupt: async () => { teams.interruptFocusedMemberGeneration(member) },
+      decideTool: async (invocationId: string, approved: boolean, reason: string | null, target?: ToolApprovalTarget | null) => {
+        await teams.postToolExecutionApproval(invocationId, approved, reason, target ?? null, subject.teamRunId)
+      },
+    })
+  }
+
+  /** The run's own parts once it is open; null while it loads (or failed: see `errorFor`). */
+  const bindingOf = (subject: DelegatedRunSubject): DelegatedRunBinding | null => {
+    const context = contextOf(subject)
+    if (!context) return null
+    return Object.freeze({
+      context,
+      workspaceRootPath: subject.kind === 'agent'
+        ? context.config.workspaceMetadata?.workspaceRootPath ?? null
+        : teamOf(subject.teamRunId)?.view.getAgentWorkspaceRootPath(subject.agentRunId) ?? null,
+      browse: subject.kind === 'agent'
+        ? Object.freeze({ kind: 'run' as const, runId: subject.agentRunId })
+        : Object.freeze({ kind: 'teamMember' as const, teamRunId: subject.teamRunId, memberAddress: subject.memberAddress, agentRunId: subject.agentRunId }),
+      interaction: interactionOf(subject),
+    })
+  }
+
+  /** Stops the delegated run through its own Stop: the agent run, or the whole delegated Team run. */
+  const stop = (subject: DelegatedRunSubject): Promise<boolean> => subject.kind === 'agent'
+    ? useAgentRunStore().terminateRun(subject.agentRunId)
+    : useAgentTeamRunStore().terminateTeamRun(subject.teamRunId)
+
+  return { ensureOpen, bindingOf, errorFor, stop }
+})

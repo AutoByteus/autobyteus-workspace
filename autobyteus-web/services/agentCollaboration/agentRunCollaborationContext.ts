@@ -32,6 +32,8 @@ import {
 } from '~/utils/collaboration/taskExecutionClosure'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { applyRemoteSummaryStatuses, isRemoteExecutionKnown, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
+import { agentRunDelegatedRunSubject, delegatedRunMessagesKey } from '~/services/delegatedRuns/delegatedRunSubjects'
+import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
@@ -353,6 +355,12 @@ export class AgentRunCollaborationContext {
   }
 
   /** Messages between the host and its children, seen from one participant (the Team tab). */
+  /** Whose log holds a participant's messages: a delegated run's own (autobyteus-461 rule 2), else this run's. */
+  private participantMessagesKey(agentRunId: string): ParticipantMessagesKey {
+    const own = agentRunDelegatedRunSubject(this.index, agentRunId)
+    return own ? delegatedRunMessagesKey(own) : Object.freeze({ rootKind: 'agent', rootRunId: this.hostRunId, agentRunId })
+  }
+
   messagesView(focusedAgentRunId: string): CollaborationMessagesContextView {
     const focusedMemberAddress = this.index.addressOf(focusedAgentRunId)
     if (!focusedMemberAddress) throw new Error(`AgentRun '${focusedAgentRunId}' is not in this run.`)
@@ -362,7 +370,7 @@ export class AgentRunCollaborationContext {
         [this.hostRunId, ...this.index.agents.keys()].map((id) => [id, this.identityOf(id)]),
       )),
       ...participantMessagesView({
-        key: { rootKind: 'agent', rootRunId: this.hostRunId, agentRunId: focusedAgentRunId },
+        key: this.participantMessagesKey(focusedAgentRunId),
         isRemote: this.index.remoteAgents.has(focusedAgentRunId),
         identityOf: (agentRunId) => this.index.addressOf(agentRunId) ? this.identityOf(agentRunId) : null,
       }),
