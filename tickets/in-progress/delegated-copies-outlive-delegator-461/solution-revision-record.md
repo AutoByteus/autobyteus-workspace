@@ -1305,4 +1305,4 @@
   - the standalone member file-change and trace queries stay removed: rule 2 reads a local child by its own identity, and a peer's files stay on its node.
 - **Requirements:** unchanged.
 - **Next action:** architecture review.
-
+- **ARCH-REV-042 passed SR-068.** Its note is applied: item 2 of "What the web still changes" names a delegated row's file-change and trace panels, read by the run's own identity. The two web queries through the delegator are deleted.

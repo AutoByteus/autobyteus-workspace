@@ -323,7 +323,11 @@ So:
 
 **What the web still changes, and why:**
 1. The view stream is kept for a stopped run (SR-045).
-2. Selecting a delegated row binds the conversation and composer to that run's own context and stream (rule 2), and a child's Settings save goes to its own save.
+2. Selecting a delegated row binds the conversation and composer to that run's own context and stream (rule 2), and a child's Settings save goes to its own save. **Its file-change and trace panels** read by its own identity too (ARCH-REV-042 note):
+   - an agent child uses `GetRunFileChanges` and `GetRunEventMonitorActiveTracePage` by its own run ID;
+   - a member of a delegated team uses its own team's member queries, by the child team's run ID, never the delegator's.
+
+   The web queries `GetAgentRunCollaborationMemberFileChanges` (`collaboratorQueries.ts:66`) and `GetAgentRunCollaborationMemberEventMonitorActiveTracePage` (`runHistoryQueries.ts:236`) are deleted with their server queries (CR-461-022). A peer's files and trace pages stay on its node, as at base.
 
 Everything else on the web returns to base.
 
