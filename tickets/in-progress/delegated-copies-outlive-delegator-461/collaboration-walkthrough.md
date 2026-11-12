@@ -36,6 +36,8 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 | S24 | An old prefixed address is corrected | A-5, A-6 |
 | S25 | Refused: a saved Task to a peer node | DL-9, DL-11 |
+| S26 | Refused: the user deletes M while a run it delegated to works | T-5 |
+| S27 | The user stops the research agent and deletes M; the research agent's report is refused | T-4, T-8, R-11 |
 
 ---
 
@@ -2808,6 +2810,103 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **In memory:** unchanged.
 
 **Against today:** The same.
+
+**Checked on the user's data:** —
+
+---
+
+#### S26 — Refused: the user deletes M while a run it delegated to works [T-5]
+
+**Call:** The user deletes M from the run list.
+
+**Result:** refused; the user sees `RUN_DELEGATED_WORK_ACTIVE`: "This run can't be deleted while a run it delegated to is working (/research_agent). Try again when it has finished, or stop it first."
+
+**How:** M's open entries are asked: the research agent (S20) works on T2, so the delete is refused and its reason names it. A run on a peer node is asked too, through its node (REQ-013); the research team's T7 entry is closed (S19), so it is not asked. Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** Today deleting M ends the copies it hosts, so nothing is refused.
+
+**Checked on the user's data:** —
+
+---
+
+#### S27 — The user stops the research agent and deletes M; the research agent's report is refused [T-4, T-8, R-11]
+
+**Call:** The user stops the research agent, then deletes M. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`
+
+**Result:** refused, `{ "accepted": false, "code": "TARGET_AGENT_RUN_NOT_ACTIVE", "message": "No running agent has the run id 'project_task_manager_7c8d', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you." }`
+
+**How:** No run M delegated to works now, so M's folder and its row go. The Task entries that name M stay: they are T2's record, and its page still shows who delegated. The tree no longer has M: the research agent is the top of its own tree, and the run list shows it as a run of its own (TC-3). Address step 2 reaches nothing of M's, and a message to M's run ID is refused: no run has it.
+
+**On disk after this step:**
+
+**Removed:** node A: `memory/agents/project_task_manager_7c8d/` (memory folder)
+
+**Removed:** node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`
+
+**Removed:** node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`
+
+**Changed:** node A: `memory/run_history_index.json`, changed row:
+```json
+{
+  "runId": "research_agent_9b10",
+  "agentDefinitionId": "research-agent",
+  "agentName": "Research Agent",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-10T19:30:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": "2026-11-10T20:40:00.000Z"
+}
+```
+
+**Unchanged:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`, node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`, node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/research_agent_9b10/` (memory folder), node A: `memory/agents/research_agent_9b10/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+
+**In memory on node A (the `DelegationIndex`):**
+```json
+[
+  {
+    "run": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "tree": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "parent": null,
+    "tasks": [{"taskId": "project_task_6a6a", "role": "assigned", "open": false, "assigner": null}],
+    "agents": [
+      {"agentRunId": "architecture_reviewer_m_5c20", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_m_3b10", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_m_7d31", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_65a9", "address": "/solution_designer"}
+    ]
+  },
+  {
+    "run": {"kind": "agent", "runId": "upscaler_e1a1"},
+    "tree": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_0218"},
+    "delegatorAgentRunId": "solution_designer_65a9",
+    "tasks": [{"taskId": "project_task_6a6a", "role": "subWork", "open": false, "assigner": null}],
+    "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
+  },
+  {
+    "run": {"kind": "agent_team", "runId": "research_team_77aa"},
+    "tree": {"kind": "agent_team", "runId": "research_team_77aa"},
+    "parent": null,
+    "node": "node-b-1f0e",
+    "tasks": [{"taskId": "adhoc_task_7c7c", "role": "assigned", "open": false, "assigner": null}],
+    "agents": [{"agentRunId": "lead_0c11", "address": "/lead"}, {"agentRunId": "analyst_5d20", "address": "/analyst"}]
+  },
+  {
+    "run": {"kind": "agent", "runId": "research_agent_9b10"},
+    "tree": {"kind": "agent", "runId": "research_agent_9b10"},
+    "parent": null,
+    "tasks": [{"taskId": "project_task_2b2b", "role": "assigned", "open": true, "assigner": null}],
+    "agents": [{"agentRunId": "research_agent_9b10", "address": "/research_agent"}]
+  }
+]
+```
+
+**Against today:** Today the copies are deleted with M.
 
 **Checked on the user's data:** —
 

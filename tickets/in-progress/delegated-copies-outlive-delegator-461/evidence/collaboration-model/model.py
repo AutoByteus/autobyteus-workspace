@@ -14,6 +14,11 @@ CLOSED = ("This task agent's Task is closed. Only the agent that assigned the Ta
           "then message the task agent's run id (for a task agent team, its coordinator's run id).")
 OTHER_TASK = "You can't message this agent: it works on a different Task."
 
+DELEGATED_WORK = lambda action, names: (f"This run can't be {action} while a run it delegated to is working ({names}). "
+                                        "Try again when it has finished, or stop it first.")
+NOT_RUNNING = lambda r: (f"No running agent has the run id '{r}', so the message was not sent. Use an exact run id you were given: "
+                         "a sender run id (from a message or your new task), or a run id delegate_task returned to you.")
+
 SAVED_TASK_TO_PEER = "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
 
 class Refused(Exception):
@@ -150,11 +155,16 @@ class World:
                 run = (node, k[0], k[1]); local = self.run_file(*run) in self.disk
                 nodes[k] = {"run": {"kind": k[0], "runId": k[1]}, "parent": None, "tasks": [], "agents": self.agents_with_addresses(run) if local else []}
             return nodes[k]
+        stored = lambda k: self.run_file(node, k[0], k[1]) in self.disk
         for t, e in self.entries(node):
-            dr = e["delegatedFrom"]["delegatingRun"]; ensure((dr["kind"], dr["runId"]))
+            dr = e["delegatedFrom"]["delegatingRun"]; drk = (dr["kind"], dr["runId"])
+            # a deleted run is not a node (contract §4, T-8): an entry naming it keeps its record, but the tree skips it
+            if "nodeId" not in e and not stored(self.run_key_of_entry(e)): continue
+            if stored(drk): ensure(drk)
             n = ensure(self.run_key_of_entry(e))
-            n["parent"] = {"kind": dr["kind"], "runId": dr["runId"]}; n["delegatorAgentRunId"] = e["delegatedFrom"]["delegatorAgentRunId"]
-            asg = sorted(self.assigners(node, t))
+            if stored(drk):
+                n["parent"] = {"kind": dr["kind"], "runId": dr["runId"]}; n["delegatorAgentRunId"] = e["delegatedFrom"]["delegatorAgentRunId"]
+            asg = sorted(a for a in self.assigners(node, t) if stored(a))
             n["tasks"].append({"taskId": t, "role": e["role"], "open": e["closedAt"] is None,
                                "assigner": {"kind": asg[0][0], "runId": asg[0][1]} if asg else None})
             if "nodeId" in e: n["node"] = e["nodeId"]; n["agents"] = [{"agentRunId": m["agentRunId"], "address": m["address"]} for m in e["members"]]
@@ -193,6 +203,7 @@ class World:
             # was deleted is a run of its own and uses step 3 (§5.4.4)
             for t in sorted(self.open_tasks(node, run)) or sorted({t for t, e in self.entries_of(node, run)}):
                 for ak in sorted(self.assigners(node, t)):
+                    if self.run_file(node, ak[0], ak[1]) not in self.disk: continue  # a deleted assigner reaches nothing (T-8)
                     st = self.standing((node, ak[0], ak[1]))
                     if address in st: return st[address], 2
             if kind == "agent_team":  # after step 2 (ARCH-REV-011): it can never shadow an assigner's agent
@@ -330,7 +341,8 @@ class World:
         self._admit(sender, receiver)
         self._deliver(sender, receiver, content, message_type, message_id, at, address); return step
     def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message"):
-        self.run_of(receiver); self._admit(sender, receiver)
+        if receiver not in self.runs: raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))  # e.g. a deleted run (R-11)
+        self._admit(sender, receiver)
         self._deliver(sender, receiver, content, message_type, message_id, at, None)
     def handoff_rules(self, agent_id):
         node, kind, run_id = self.run_of(agent_id); own = self.agent_info(agent_id)[0]; f = self.file_of((node, kind, run_id))
@@ -468,6 +480,25 @@ class World:
                 # own node when it goes idle (base: remote-endpoint.ts closureFence; requirements: out of scope)
                 continue
             if not self.open_tasks(node, (node, k[0], k[1])): self.stop((node, k[0], k[1]), at)
+    def delete_run(self, run, at):
+        """The user deletes a run (REQ-007, TC-2, TC-3; T-5, T-8). Refused while a run it delegated to works, on this node
+        or a peer (its row there is not stopped). Otherwise the run's own files and row go. Task entries are the Task's
+        record and stay; the tree no longer has the run, so the runs it delegated to are the tops of their own trees."""
+        node, kind, run_id = run
+        node_of = {v: k for k, v in self.node_ids.items()}
+        working = []
+        for t, e in self.entries(node):
+            dr = e["delegatedFrom"]["delegatingRun"]
+            if (dr["kind"], dr["runId"]) != (kind, run_id) or e["closedAt"] is not None: continue
+            ck = self.run_key_of_entry(e); r = self.row(node_of[e["nodeId"]] if "nodeId" in e else node, ck[0], ck[1])
+            if r is not None and r["terminatedAt"] is None: working.append(e["recipientAddress"])
+        if working: raise Refused("RUN_DELEGATED_WORK_ACTIVE", DELEGATED_WORK("deleted", ", ".join(working)), tool="user")
+        folder = self.run_file(*run).rsplit("/", 1)[0] + "/"
+        for k in [k for k in self.disk if k.startswith(folder)]: del self.disk[k]
+        rows = self.disk.get(self.index_path(node, kind), [])
+        rows[:] = [r for r in rows if r[self.ROW_KEY[kind]] != run_id]
+        for a in [a for a, r in self.runs.items() if r == run]: del self.runs[a]
+        self.result = None
     def update_task(self, sender, task_key, status, at):
         node = self.run_of(sender)[0]; task = self.task_by_key(node, task_key)
         task["status"] = status; task["updatedAt"] = at

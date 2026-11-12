@@ -1275,3 +1275,20 @@
 - **Kept from SR-065:** each local child's model options come from its own queries.
 - **Next action:** architecture review.
 - **ARCH-REV-040 passed SR-066.** Its notes were applied: one shared `observe` per peer run across the open views, reference-counted, with each view numbering the frames in its own sequence; and one `PeerRunLink` builder (`peerRunLinksOf`) for `peerRunOf` and the roots.
+
+### SR-067 — Every data-flow spine walked for every case (the user's instruction)
+
+- **Triggering:** the user asked whether each complete data-flow spine had been validated for each case, and then said: "you should validate each data flow spine for each case because this is the way for you to validate by yourself whether your design holds or not".
+- **The Solution Designer's gap:** the spines had last been walked at contract revision 5, and only for whether each spine's data exists. The spine list was stale: DS-8 said one hop, and Settings, archive/delete and peer-started runs had no spine. The runtime and view paths had been checked revision by revision, never case by case.
+- **Done:** `evidence/spine-validation/spine-walk-2026-11-12.md` walks 19 spines (DS-1 … DS-14, with DS-8 in six parts) through their owners for every delegator kind, delegated kind, node and run state.
+- **Found and answered:**
+  - **G-1:** the archive/delete guard skipped working peer runs. It now asks each one through its handle's `status()`. An unreachable node does not block, and the result names that run.
+  - **G-2:** a deleted run stayed in the `DelegationIndex`, so its delegated runs still reached its agents, and the views disagreed with the list. Now `runDeleted` drops it from the tree, with the Task records kept. The model gains run deletion (S26, S27; contract T-5 with peers, T-8, R-11, §4), and the independent validator applies the same rule.
+  - **G-3:** an agent stream that connects after the run's registration now takes the current root at connect.
+  - **Stale design text:** the DS-8 head line, the SR-044 paragraph and the poll query are corrected or marked superseded.
+- **Requirements:** AC-008 now names peer runs (REQ-007 with REQ-013) and the reach after a delete. This is within the approved direction, and the user is informed.
+- **Checks:**
+  - `walkthrough.py --check`: three "match" lines, 43 states;
+  - `validate_contract_examples.py`: 0 findings.
+- **Next action:** architecture review.
+

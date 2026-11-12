@@ -394,6 +394,7 @@ DelegationIndex (global, in memory)
 The map is what every view, prompt, list and message route reads, so they cannot disagree. It is not an address space of its own: every address still belongs to one run's space (§2.1); the map lists what a run reaches.
 
 - **Not in the tree:** runs that no Task entry names (the 15 legacy runs, and the runs of a deleted Task). They are ordinary runs of their own, each the top of a tree of its own if it delegates.
+- **A deleted run is not in the tree** (T-8, S27). The Task entries that name it stay, because they are the Task's record. But the tree skips them: a run it delegated to has no parent and is the top of its own tree, and a Task it assigned has no assigner, so address step 2 reaches nothing of it. Its agents' run IDs are unknown: a message to one is refused as to any run ID that no run has (R-11).
 
 **Validated** (2026-11-11, read-only, `contract-revision-6-2026-11-11.txt`):
 - 183 nodes from the entries (181 on this node, 2 on a peer); no node has two parents;
@@ -486,6 +487,8 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 | S24 | An old prefixed address is corrected | A-5, A-6 |
 | S25 | Refused: a saved Task to a peer node | DL-9, DL-11 |
+| S26 | Refused: the user deletes M while a run it delegated to works | T-5 |
+| S27 | The user stops the research agent and deletes M; the research agent's report is refused | T-4, T-8, R-11 |
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
@@ -557,6 +560,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | R-8 | Anyone → a run whose Task is closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6 | S10 |
 | R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S16, 5.4.4 |
 | R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S18 |
+| R-11 | Anyone → an agent of a deleted run | Refused (`TARGET_AGENT_RUN_NOT_ACTIVE`): no run has that run ID | S27 |
 
 **Checked** (`task-centered-messaging-2026-11-11.txt`, every stored message between two runs, 1,604):
 - 1,540 are allowed as today: 103 by (a) and 1,437 by (b).
@@ -585,9 +589,10 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | T-2 | A Task is reopened, and its assigner messages a run it assigned | `closedAt: null` on that `assigned` entry (a `subWork` entry stays closed) | The Task open | R-6; the run is in its delegating run's view again |
 | T-3 | A Task is deleted | Its record removed (its open runs with no other open Task stopped first) | Its runs leave the tree | Runs of their own (TC-3), labeled from their own `delegatedFrom`; R-9 |
 | T-4 | The user stops a run | Its history row | — | That run only (TC-1); its next message restores it |
-| T-5 | The user archives or deletes a run whose delegated runs work | Refused with the reason (TC-2) | — | — |
+| T-5 | The user archives or deletes a run whose delegated runs work, on this node or a peer (REQ-013) | Refused with the reason, naming them (TC-2) | — | Its reason names them. S26 |
 | T-6 | The server restarts | — | The tree rebuilt from the Task entries | No run is running; each is restored by its next message |
 | T-7 | A delegated run goes quiet | — | — | Its own idle shutdown (P6); woken by its next message |
+| T-8 | The user deletes a run whose delegated runs have stopped | Its own folder and row removed; the Task entries that name it stay | It leaves the tree: the runs it delegated to are the tops of their own trees, and a Task it assigned has no assigner | Its delegated runs are runs of their own (TC-3); a message to it is refused (R-11). S27 |
 
 ## 6. Existing data: before → after the migration
 

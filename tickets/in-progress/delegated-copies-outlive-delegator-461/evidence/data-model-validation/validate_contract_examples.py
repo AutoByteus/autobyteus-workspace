@@ -64,6 +64,9 @@ for k, r in runs.items():
             if h["from"] not in ms: F.append(f"{k}: handoff from {h['from']} not a member")
             if h["to"] not in ms and "delegatedFrom" not in r: F.append(f"{k}: handoff to {h['to']} outside a team the user started")
     if k[0] == "agent_org" and r["rootOrg"]["address"] != "/": F.append(f"{k}: org root")
+# a run deleted in the walkthrough (T-8): its run file is shown as removed; the tree skips it as an assigner
+import re as _re
+deleted = {m for m in _re.findall(r"\*\*Removed:\*\* node \w: `memory/agents/([^/`]+)/run_metadata\.json`", text)}
 by_task = collections.defaultdict(list)
 for tid, e in entries:
     if tid: by_task[tid].append(e)
@@ -75,6 +78,7 @@ for n in nodes:
         if n["parent"] and (n["parent"]["kind"], n["parent"]["runId"]) != (dr["kind"], dr["runId"]): F.append(f"node {k}: parent {n['parent']} vs entry {dr}")
     for t in n.get("tasks", []):
         asg = [e["delegatedFrom"]["delegatingRun"] for e in by_task.get(t["taskId"], []) if e["role"] == "assigned"]
+        if t["assigner"] is None and asg and all(x["kind"] == "agent" and x["runId"] in deleted for x in asg): continue
         if asg and t["assigner"] not in asg: F.append(f"node {k}: assigner of {t['taskId']} {t['assigner']} vs {asg}")
     ag = agents_of(("agent_team" if n["run"]["kind"] == "agent_team" else n["run"]["kind"], n["run"]["runId"]))
     nag = {a["agentRunId"] if isinstance(a, dict) else a for a in n.get("agents", [])}

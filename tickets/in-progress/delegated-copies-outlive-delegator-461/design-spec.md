@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-066` (a peer child is reached by its own identity, through `PeerAgentRun` / `PeerTeamRun`, never through its delegator; REQ-013). Earlier: `SR-065` (each local child's model options come from its own queries; its peer route is replaced by SR-066). Earlier: `SR-064` (an agent run's own stream follows its run; a child's Settings save composed by the web from each run's own save). Earlier: `SR-063` (`RunViewStream` is base's `RootEventPublisher` moved out of the root). Earlier: `SR-061` (the frontend contract: views in base's shapes, every run reached the same way; the names `DelegationIndex` and `CollaborationTree`). Earlier: `SR-033` (the contract's Task rules as cases; SR-031: the contract's executable model and generated walkthrough). Earlier: `SR-027` (the contract starts from the runs the user starts and from talking inside one run: RUN-1 … RUN-4, IN-1 … IN-8). SR-026 was contract revision 7: every case in one file, checked case by case; TC-13, one place for an agent run's log. SR-025 answers ARCH-REV-008 AR-018: TC-12 revised, a delegated team run is rooted at `/`). SR-024 first added TC-12, raised by the Implementation Engineer. SR-023 answered ARCH-REV-006: AR-016, AR-017. SR-022 was contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationIndex`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
+- Current solution revision ID: `SR-067` (every spine walked for every case; G-1 archive/delete asks peer runs, G-2 a deleted run leaves the tree, G-3 the agent stream at connect). Earlier: `SR-066` (a peer child is reached by its own identity, through `PeerAgentRun` / `PeerTeamRun`, never through its delegator; REQ-013). Earlier: `SR-065` (each local child's model options come from its own queries; its peer route is replaced by SR-066). Earlier: `SR-064` (an agent run's own stream follows its run; a child's Settings save composed by the web from each run's own save). Earlier: `SR-063` (`RunViewStream` is base's `RootEventPublisher` moved out of the root). Earlier: `SR-061` (the frontend contract: views in base's shapes, every run reached the same way; the names `DelegationIndex` and `CollaborationTree`). Earlier: `SR-033` (the contract's Task rules as cases; SR-031: the contract's executable model and generated walkthrough). Earlier: `SR-027` (the contract starts from the runs the user starts and from talking inside one run: RUN-1 … RUN-4, IN-1 … IN-8). SR-026 was contract revision 7: every case in one file, checked case by case; TC-13, one place for an agent run's log. SR-025 answers ARCH-REV-008 AR-018: TC-12 revised, a delegated team run is rooted at `/`). SR-024 first added TC-12, raised by the Implementation Engineer. SR-023 answered ARCH-REV-006: AR-016, AR-017. SR-022 was contract revision 6: the run's own `delegatedFrom` and the in-memory `DelegationIndex`, the user's decisions TC-10 revised and TC-11). SR-021 passed architecture review ARCH-REV-005 (answering ARCH-REV-004: AR-005, narrowed again). SR-020 answered ARCH-REV-003 (AR-005). SR-019 answered ARCH-REV-002 (AR-004, AR-005, AR-008, AR-011 … AR-015). SR-018 was self-validated and approved by the user for review. SR-017 widened the scope to team and org runs (TC-4 revised). A new design on the 469 base. It replaces the design of SR-010, which was built on contract revision 2 and failed architecture review ARCH-REV-001 (AR-001 … AR-010, answered below).
 - Approved requirements baseline, who approved, and approval reference: `requirements-doc.md` with `target-collaboration-contract.md` revision 5. Every contract decision was taken by the user on 2026-11-11: TC-4 (revised), TC-7, TC-8, TC-9, TC-10 (revised in revision 6), TC-11, DEC-011 (quotes in `solution-revision-record.md` SR-014 … SR-016).
 - Behavior-defining supplements: `target-collaboration-contract.md` revision 5.
 - User approval of the design: `Obtained`, the user, 2026-11-11: "please validate by yourself and whether the design specification works … After validation by yourself to work, you will send to the review by yourself. Yeah. I think you'll get an approval from me. You sent your architecture reviewer to review."
@@ -83,14 +83,19 @@ Each new name says what its owner owns.
 | DS-1 | Primary | `delegate_task` by an agent of any run (standalone, team, org) → a new run working on the Task | `TaskDelegation` |
 | DS-2 | Primary | `send_message_to(run ID)` to another run → delivered, receiver woken | `GlobalAgentRunMessageRouter` with `CrossRunMessageDelivery` |
 | DS-3 | Primary | `send_message_to(address)` beyond the sender's own run → delivered | The sender's root resolution, then DS-2 |
-| DS-4 | Primary | The user stops a run → that run only | The run's own root |
+| DS-4 | Primary | The user stops a run → that run only | The run's own root; for a run on a peer, its `PeerAgentRun` / `PeerTeamRun` (SR-066) |
 | DS-5 | Primary | Task DONE/CANCELLED (or deleted) → each run of it stops | Task side → each run's own root |
 | DS-6 | Primary | Reopen + the assigner's message, or a follow-up Task → the run continues | DS-2 / `TaskDelegation` + the Task side |
 | DS-7 | Bounded local | A quiet delegated run → shut down; next message restores it | The run's own idle shutdown |
-| DS-8 | Primary | The user opens a run → its rows (one hop) with status and live output | The run's view projection |
+| DS-8 | Primary | The user opens a run → its snapshot and numbered frames (8a), its rows at every depth (8b), local and peer statuses and output (8c, 8d), a selected delegated run on its own path (8e), the view across the run's stop and restart (8f) | `RunViewStream`, `ChildRowsFeed`, `LocalChildObservation`, `PeerChildObservation`; rule 2 |
 | DS-9 | Operational | Update restart → busy runs resumed | `RestartResumer` |
 | DS-10 | Operational | First start after the update → stored data converted | One app-data migration |
 | DS-11 | Primary | The run list → each run once, at its right place | The history list projection with the Task side |
+| DS-12 | Primary | Save a delegated run's launch from its delegator's Settings → each run's own file | The editor, composing each run's own save (SR-064) |
+| DS-13 | Primary | Archive or delete a run → refused while a run it delegated to works (local or peer); a deleted run leaves the tree | `DelegatedWorkGuard`; the run services; `DelegationIndex.runDeleted` (SR-067) |
+| DS-14 | Bounded local | A run a peer started on this node → stopped, restored and watched as itself | Its own root (as base; BEH-008) |
+
+**Every spine is walked for every case** in `evidence/spine-validation/spine-walk-2026-11-12.md` (SR-067). The walk follows each spine through its owners, with the file of each step, for every delegator kind, the delegated run's kind and node, and each run's state. The stored data of each spine is the model's (`collaboration-walkthrough.md`).
 
 ### DS-1 Delegate to a new run
 
@@ -174,7 +179,7 @@ Tests: CPW-M2 and CPW-M5 read base's notes, plus that characterization test.
 
 ### DS-4 Stop
 
-`user: Stop → the run's service (agent run, team run or org run) → that run's root.stop() in its gate → its own agent, its own team members, or its own org units, only`
+`user: Stop → the run's service by its own run ID (agent run, team run or org run) → that run's root.stop() in its gate → its own agent, its own team members, or its own org units, only`. For a run on a peer: `the run's service → peerRunOf(runId).terminate() → ownerCommand(terminate)` on its node (SR-066)
 
 Nothing else stops (TC-1). A delegated run's later report wakes its stopped delegator (DS-2).
 
@@ -221,6 +226,7 @@ The same holds for a child's Settings: a launch edited in the delegator's Settin
   - **Finding the root:** the session finds it through `ActiveCollaborationRootDirectory.onRegistrationChanged`, the lifecycle the team and org sessions follow. A standalone root is committed there when it is created (`standalone-agent-run-root-manager.ts:366-369`), before anything is delivered through it.
   - **On registration:** the session binds to `root.activeHostRun()` if it is live, and subscribes to `root.onHostReady`.
   - **The binding:** `onHostReady` fires in `readyHost` (`standalone-root-message-delivery.ts:184`), inside the root's gate, after the run is made ready and before any message is posted. So the binding comes before the run's first event, for every kind of input. An `AgentRun` restored after an idle shutdown is a new run, and the session rebinds to it.
+  - **At connect** (SR-067, G-3): when the run's root is already registered, the session takes it at once. It binds to `activeHostRun()` if that is live and subscribes to `onHostReady`, so a stream opened while the run is registered but idle-shut-down still follows the next restore.
   - **On unregistration:** the session drops the root's subscription and unbinds.
 - **Idempotent:** binding a session that is already bound to the same `AgentRun` does nothing. The own-send `onActiveRunReady` stays, and becomes the same call.
 - **No web change:** the web opens the run's own stream as at base.
@@ -253,7 +259,8 @@ So:
     - `terminate()` → `ownerCommand(terminate)`. A team's goes to its coordinator, as base's `peerTeamCoordinatorRunId` does;
     - `postMessage(...)` and `interrupt(...)`, to a member for `PeerTeamRun` → `ownerCommand`;
     - `readConversation(agentRunId)` → `agentProjection`;
-    - `observe(observer)` → `observeRun`, which never reconnects (DEC-807), as at base.
+    - `observe(observer)` → `observeRun`, which never reconnects (DEC-807), as at base;
+    - `status()` → `runSummaries` (one request per node), for the archive and delete guard (DS-13, SR-067).
 
     Base's `executeRemoteChildCommand`, `stopRemoteChild` and the root's `RemoteChild` reads become these methods, now given the link from the tree instead of the root's `RemoteRunLinks`.
   - **No shared base class with the local `AgentRun` / team run.** A peer run has no tool approval, no Settings here and no local files, as at base. It has one failure the local run does not: "Couldn't reach {node}.". Where code treats both alike, it asks once whether the run is local or on a peer.
@@ -323,7 +330,7 @@ Everything else on the web returns to base.
 
 ### DS-8 View
 
-`user opens run X → X's root view: its own parts + rows from X's open subtree (DelegationIndex.openChildrenOf transitively, each row with its parent; the identity from the tree's per-run data, read once, and the launch read fresh, SR-056 and SR-058) → each child's status from its own root when active, "offline" otherwise → while someone watches, a child's live output becomes the view's agent_presentation, through the path a remote child uses today (N-402) → the client shows the rows under the delegator agent`
+`user opens run X → RunViewStream's snapshot connection: in one synchronous step the view's base sequence, collaborationTreeOf(X).rows (X's open subtree at every depth, each row with its parent) and the cached statuses, local and peer; then X's own parts (SR-063) → numbered frames after it: X's own events, row changes (ChildRowsFeed), local statuses (LocalChildObservation), peer statuses and output (PeerChildObservation) → the client shows the rows under their delegators; a selected delegated run uses its own path (rule 2)`. The frontend contract above governs this spine; where an item below says otherwise, the contract wins.
 
 - **Opening a view never starts a run** (REQ-004, AR-008). The collaboration stream's connect stops starting the host: `AgentCollaborationStreamHandler.readyRoot` (`services/agent-streaming/agent-collaboration-stream-handler.ts:59-62, 73, 148`) resolves the root without `ensureHostReady`, and the host starts on its first input. The same holds for the team and org streams' connect.
 - **Commands to a local child from the delegating run's view** (AR-011). *Superseded by rule 2 (SR-061): each child is reached through its own standard path. `DelegatedRunCommands` goes. The text below is kept as history.* a message, interrupt, tool approval or Stop on a child row goes to the child's own root by its identity. `DelegatedRunCommands` (owner: the command route of a view) resolves it through `ActiveCollaborationRootDirectory` (`resolveOrRestore` for a message; a live root only for interrupt and tool approval; Stop to its root). Tool approval works, because the child runs on this node. A remote child keeps the remote route (`remote-child-commands.ts`, no tool approval). This holds in the standalone, team and org views.
@@ -405,7 +412,7 @@ Everything else on the web returns to base.
 
       The stream, pending sends, interrupts and approvals are untouched. It never goes through `team_stream_recovery_required`, the manual recovery 469's CR-003 found.
     - **The agent-run and org clients** answer with `checkpoint_required`, as they answer `task_execution_started` today: an automatic re-read that keeps their streams.
-    - **Unsequenced and idempotent** (SR-044, ARCH-REV-018). The event carries no `change_sequence`. Child-row membership is owned by the `DelegationIndex`, not by the team run's ordered changes, so it must not need the run's root, which a stopped team does not have loaded. The Team client therefore does not advance or check its `changeSequence` for it, and applies it by membership:
+    - *Superseded by SR-062 and SR-063: row events are numbered frames of the view's sequence, and the snapshot connection makes the snapshot exact. The text below is kept as history.* **Unsequenced and idempotent** (SR-044, ARCH-REV-018). The event carries no `change_sequence`. Child-row membership is owned by the `DelegationIndex`, not by the team run's ordered changes, so it must not need the run's root, which a stopped team does not have loaded. The Team client therefore does not advance or check its `changeSequence` for it, and applies it by membership:
       - an `added` row the view already holds is skipped;
       - a `removed` row it does not hold is ignored;
       - a row in both, which happens when it left and came back between deliveries, ends as the event's `added` says.
@@ -426,7 +433,7 @@ Everything else on the web returns to base.
     - a Task deletion removes its children;
     - a delegation to a peer appears;
     - an open view of a stopped X gets the event and X stays stopped.
-- **The history poll for listed runs that are not open** (`runCollaborationStatuses(runs)`; autobyteus-426 REQ-009, kept by REQ-009 and REQ-002; SR-040, SR-041; **SR-055, every delegating kind**). Today the hosting run answered it from its copies, and a team's or org's list rows came from its own stored tree. Now it is answered from **the same projection as the view**, for every kind of run, so a listed run's rows and its open view agree by construction:
+- *Superseded in its query by SR-061 rule 1: base's `agentRunCollaborationStatuses` and base's team and org history reads return, filled from the tree; the rows and statuses it describes stand. The text below is kept as history.* **The history poll for listed runs that are not open** (`runCollaborationStatuses(runs)`; autobyteus-426 REQ-009, kept by REQ-009 and REQ-002; SR-040, SR-041; **SR-055, every delegating kind**). Today the hosting run answered it from its copies, and a team's or org's list rows came from its own stored tree. Now it is answered from **the same projection as the view**, for every kind of run, so a listed run's rows and its open view agree by construction:
   - **Server:** `runCollaborationStatuses(runs: [{ kind: agent | agent_team | agent_org, runId }])`, at most 100 runs, replaces `agentRunCollaborationStatuses`. It is a clean cut of the query, its GraphQL type, the web query and its hydration. For every listed run X, active or stopped, never restoring anything, the answer has:
     - `isActive`: X's own run;
     - `children`: one entry per local child row the view of X has (`DelegationIndex.openChildrenOf(X)`, one hop), each with:
@@ -555,6 +562,36 @@ This migration is terminal by then and does not run again. The residue is inert,
   - A run whose entries are all closed is not a top-level row, as after 469: its Task's page lists it, and the Memory page lists it like any run.
 - **Measured:** 11 delegated runs would show under their delegating run, 170 only on their Task's page, 15 as top-level rows (`evidence/data-model-validation/spines-on-data-2026-11-11.txt`).
 
+### DS-12 Settings of a delegated run
+
+`the delegator's Settings → the editor → each run's own stopped-run save: the delegator's own patches, then each delegated row in row order, at any depth` (SR-064, under rule 2). A peer run has no editable launch.
+
+### DS-13 Archive and delete (SR-067)
+
+`user: archive or delete run X → its service (agent, team or org) → DelegatedWorkGuard.refusal(X) → refused, naming the working runs; else the action → on delete, after its files are gone: DelegationIndex.runDeleted(X)`
+
+- **The guard asks every open delegated run of X** (one hop, `openChildrenOf(X)`):
+  - a local one by its own live status, as now;
+  - **a peer one through its handle's `status()`** (G-1). A working peer run refuses, as a local one does (REQ-007 with REQ-013). Otherwise its later report would find its delegator gone.
+  - **An unreachable node** does not block the action, because its node owns the run and may never come back. The action's result names the runs that were not asked. The guard becomes async.
+- **A deleted run leaves the tree** (G-2; contract §4, T-8, R-11; model S26, S27). `runDeleted(X)` drops X's node and its per-run agents. The Task entries that name X stay, as the Task's record. The tree then skips X:
+  - a run X delegated to has no parent and is the top of its own tree. The list already shows it as a run of its own (DS-11), so views, reach and the list now agree;
+  - a Task X assigned has no assigner, so address step 2 reaches nothing of X, and the `@` note and `list_available_agents` stop listing X's agents;
+  - X's agents' run IDs are unknown, so a message to one is refused with `TARGET_AGENT_RUN_NOT_ACTIVE`, as for any unknown run ID.
+
+  At startup the tree is built from the stored runs, so a deleted run is skipped there too.
+- **Archive keeps the tree.** An archived run is still a stored run. Its open delegated runs, which are stopped since the guard passed, stay under it and are hidden with it, as base hid the copies with their host. Unarchiving shows both again.
+- **Tests:**
+  - delete or archive with a working peer run is refused, naming it;
+  - with its node unreachable, the action goes ahead and the result names it as not asked;
+  - after a delete, the delegated run is a top-level row, and its `list_available_agents` has none of the deleted run's agents;
+  - its message to the deleted run's agent is refused with `TARGET_AGENT_RUN_NOT_ACTIVE`;
+  - a restart keeps all of this.
+
+### DS-14 A run a peer started on this node
+
+As at base (BEH-008): its own root and history row. Its user stops it here, and node A's owner commands are admitted by its back-link. It is restored by its delegator's message, and its open stream follows it (SR-064).
+
 ## Ordering Without A Shared Queue (was U-A)
 
 Today one queue per top run orders every transition of every copy. Two owners take its place:
@@ -626,6 +663,8 @@ The user asked for the data model and the design to be validated before review. 
 | Delegated runs have history rows (DS-11) | 0 of 196: a migration step and a listing rule were missing | same; **added: DS-11, migration step 8** |
 
 ### The spines walked against the model
+
+*Superseded by the walk of every spine for every case, `evidence/spine-validation/spine-walk-2026-11-12.md` (SR-067). The table below, from revision 5, checked only that each spine's data exists.*
 
 | Spine | The data it needs | Where it is in revision 5 | Result |
 | --- | --- | --- | --- |
