@@ -1161,4 +1161,7 @@
   `walkthrough.py --check` passes, and the examples have 0 findings.
 - Approval: the user's direction; no intended behavior changes. The map answers what the five owners answered, from one place.
 - Next action: architecture review; then the Implementation Engineer folds the owners, and confirms every caller of the old index methods against the inventory
-
+- ARCH-REV-035 (2026-11-12): Pass. Its notes are applied in the design:
+  - a node's tree is derived by walking up, never stored, and a run whose own entries are deleted becomes a top with its subtree;
+  - a test that the map and a loaded root agree on step 1, for a team and an org;
+  - and, the optional note decided on the merits, `CrossRunAddressResolution` goes. It would only forward to the map (an empty layer, Principle 13); the dispatcher resolves through `mapOf(sender)`.

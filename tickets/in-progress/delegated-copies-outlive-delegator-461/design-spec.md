@@ -127,7 +127,7 @@ Each new name says what its owner owns.
 
 **The delegation tree and each run's collaboration map** (SR-060; the user's direction of 2026-11-12; contract §4). The old containers' indexes answered every question about a run's collaboration world, and they were the map the user sees in the collaboration tree. This ticket removed the hosting, and with it the indexes' cross-run part. That part was then rebuilt question by question, by five owners: `CrossRunAddressResolution`'s step 2 and `reachingAddress`, `ReachableAgents`, `RunCollaborationContext`, the rows of `RunViewChildren`, and `addressesInUse`. That is why their details kept disagreeing (ARCH-REV-034). **They become one owner: each run's collaboration map, derived from the `DelegationTree`.**
 
-- **The `DelegationTree`** is a forest: one tree per run the user started, with `byAgentRunId` (agent run ID → run, address, tree) and `byRunId` for direct lookups (contract §4). It is restructured in `delegation-tree.ts` and created at composition step 2, as now.
+- **The `DelegationTree`** is a forest. A node's tree is **derived** by walking up its parents, never stored (ARCH-REV-035). When a Task deletion removes a run's own entries, that run becomes the top of a tree of its own, and its subtree moves with it. One tree per run the user started, with `byAgentRunId` (agent run ID → run, address, tree) and `byRunId` for direct lookups (contract §4). It is restructured in `delegation-tree.ts` and created at composition step 2, as now.
 - **`RunCollaborationMap`** (`agent-collaboration/delegation/run-collaboration-map.ts`), from `delegationTree.mapOf(run)`, is derived when asked and never stored. It works whether or not the run is loaded, because it reads only the tree's nodes and their per-run agents and files, read once. It answers:
   - **reach**, steps 1 to 3 of §2.3, in one enumeration, with the old-address correction after step 2;
   - **the addresses in use;**
@@ -137,9 +137,9 @@ Each new name says what its owner owns.
   - `canMessage`;
   - the subtree for token totals and the restart notice.
 
-  Steps 1 and 3 use the same run file that a loaded root's own index is built from, so the two agree.
+  Steps 1 and 3 use the same run file that a loaded root's own index is built from, so the two agree. A test asserts it, for a team run and an org run: the map's step 1 and the loaded root's `memberOfInstance` / `getMessagePlacement` give the same receiver for every address (ARCH-REV-035).
 - **The folded owners:**
-  - `CrossRunAddressResolution` keeps only the message route. It resolves addresses through the sender's map and owns no enumeration.
+  - `CrossRunAddressResolution` goes (ARCH-REV-035): with the enumeration in the map, it would only forward to it, an empty layer (Principle 13). The `send_message_to` dispatcher resolves an address through `mapOf(sender)` and hands the receiver to `CrossRunMessageDelivery`.
   - `ReachableAgents` and `RunCollaborationContext` are replaced by the map, and their callers read `mapOf(run)`: the mention note, `list_available_agents`, `delegate_task`'s in-run placements, and the member context builders.
   - The rows of `RunViewChildren`, `ChildRowsFeed` and the poll come from `mapOf(run).rows`. The row builder adds `source` for the view (SR-056).
 
