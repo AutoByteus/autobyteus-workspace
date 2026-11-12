@@ -30,10 +30,8 @@ export const runBackgroundTaskCases = async (probe) => {
   /** Starts a background step on the run and waits until the node's view lists it running. */
   const startTask = async (runId, seconds, exitCode, marker) => {
     await stack.agentSay(runId, `${marker} BACKGROUND_STEP:${JSON.stringify({ seconds, exitCode })}`);
-    return waitFor(`the node lists ${marker}'s task running`, async () => {
-      const tasks = await nodeTasks(runId);
-      return tasks.filter(task => task.status === 'running').length > 0 ? tasks : undefined;
-    }, 60_000);
+    await waitFor(`the node lists ${marker}'s task running`, async () => (await nodeTasks(runId)).some(task => task.status === 'running'), 60_000);
+    return nodeTasks(runId);
   };
   const nodeTasks = async (runId) => (await alpha.gql(`query($id:String!){ agentBackgroundTaskView(agentRunId:$id) { __typename
     ... on AgentBackgroundTaskEventStream { currentTasks: tasks { taskId status command summary startedAt } } } }`, { id: runId })).agentBackgroundTaskView?.currentTasks ?? [];
