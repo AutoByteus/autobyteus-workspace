@@ -107,7 +107,7 @@ An event-stream run (Claude, AutoByteus, Antigravity) now answers the background
 - Shared structures remain tight: `Yes`. The event-stream variant gains one method and its view one field. No new wrapper or port: each backend's `current` closes over its own tracker.
 - Canonical shared design guidance reapplied: `Yes`
 - Deviations from a design principle decided during implementation, each with the principle and why the reason holds for this case: `None`. The ownership change in assumption 3 follows the design's intent, with the screen owning its own state.
-- Changed source files stayed within the size guardrails: `Yes`. `MobileBackgroundTasks.vue` (new) 69 lines, `MobileActivity.vue` about 35; the server changes are a few lines per file.
+- Changed source files stayed within the size guardrails: `Yes`. `MobileBackgroundTasks.vue` (new) 77 lines, `MobileActivity.vue` 36; the server changes are a few lines per file.
 - Notes: none.
 
 ## Persisted Data Transition Check
