@@ -1,0 +1,22 @@
+# DEL-01 release smoke check (python3 scripts/release_smoke.py), run 2026-11-12T11:40:11Z-11:43:24Z on 29dbc5c3c2 (origin/personal a9f2b9f296 + this handoff document); exit 0. Nothing was written into the worktree during the run.
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    29dbc5c3c2c18e22b6ff6cd5209c54ef79e5cee3
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 163s, antigravity 19s, autobyteus 9s
+result    PASS
