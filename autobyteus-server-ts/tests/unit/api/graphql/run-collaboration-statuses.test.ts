@@ -6,7 +6,7 @@ import {
   bindProcessStandaloneAgentRunRootManager,
   releaseProcessStandaloneAgentRunRootManager,
 } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { DelegationTree, type RunAgentsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationTree, type RunPartsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { LocalChildFollowers } from "../../../../src/agent-collaboration/execution/delegation/local-child-followers.js";
 import { createAgentOrgRootExecutionIdentity, createAgentRootExecutionIdentity, createTeamRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RunViewChildren } from "../../../../src/services/agent-streaming/run-view-children.js";
@@ -31,9 +31,13 @@ const agentsByRun: Record<string, { agentRunId: string; address: string | null; 
 };
 const fixture = async () => {
   const reads: string[] = [];
-  const reader: RunAgentsReader = { agentsOf: async (run) => { reads.push(run.rootRunId); return agentsByRun[run.rootRunId] ?? null; } };
+  const reader: RunPartsReader = { partsOf: async (run) => {
+    reads.push(run.rootRunId);
+    const agents = agentsByRun[run.rootRunId];
+    return agents ? { agents, coordinatorAddress: null, mountedTeams: [] } : null;
+  } };
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, () => reader);
+  const tree = new DelegationTree(() => tasks, reader);
   tree.build(); tasks.setEntriesListener(tree);
   for (const id of ["T1", "T2", "T3", "T4"]) tasks.addTask(id);
   const link = (taskId: string, from: typeof runs.team, by: string, recipientAddress: string, execution: { agentRunId: string } | { teamRunId: string }, extra = {}) =>

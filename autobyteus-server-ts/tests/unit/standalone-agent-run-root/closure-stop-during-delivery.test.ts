@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../helpers/run-agents-reader.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TaskDelegation } from "../../../src/agent-collaboration/execution/task/task-delegation.js";
 import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
@@ -19,7 +20,7 @@ const flush = async () => { for (let i = 0; i < 20; i += 1) await new Promise((r
 describe("a closure stop and a follow-up Task delivered while the agent run stops", () => {
   it("waits for the stop, then restores the run in B with its work; never two roots", async () => {
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks);
+    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     tasks.addTask("A", "First", "task-a"); tasks.addTask("B", "Second", "task-b");
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/research_assistant",
@@ -30,6 +31,7 @@ describe("a closure stop and a follow-up Task delivered while the agent run stop
     const resolver = createCollaborationRootResolver({ standaloneRoots: h.manager, teamRuns: {} as never, orgRuns: {} as never });
     const roots = new Set<unknown>();
     const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
+      channel: () => null, recordCollaborating: vi.fn(async () => undefined),
       deliverToRun: async (input) => {
         const resolved = await resolver.resolveOrRestore(createAgentRootExecutionIdentity(HOST));
         if (resolved?.kind !== "agent") throw new Error("no root");

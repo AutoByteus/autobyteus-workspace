@@ -2,10 +2,6 @@ import type { DelegationTree } from "../delegation/delegation-tree.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runReferenceOf } from "../execution/task/task-execution-resource-port.js";
-import type { RunStanding } from "../../run-history/store/run-own-agents-reader.js";
-
-/** A run's standing agents, read from its own file (`RunOwnAgentsReader.standingOf`). */
-export type RunStandingReader = Readonly<{ standingOf(run: RootExecutionIdentity): Promise<RunStanding | null> }>;
 
 const NO_LONGER = (address: string) => `${address} is no longer an address: your team is addressed from its own root.`;
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
@@ -25,8 +21,8 @@ const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
  */
 export class CrossRunAddressResolution {
   constructor(private readonly dependencies: Readonly<{
-    tree(): Pick<DelegationTree, "tasksOf" | "assignersOf">;
-    standing: RunStandingReader;
+    /** The relationships, and each run's standing agents (the tree is their one owner, read once per run). */
+    tree(): Pick<DelegationTree, "tasksOf" | "assignersOf" | "standingOf">;
   }>) {}
 
   /** The receiving agent's run ID; `null` when the sender's run has no Task entries. Refusals throw. */
@@ -45,7 +41,7 @@ export class CrossRunAddressResolution {
    */
   async reachingAddress(sender: CollaborationMemberExecutionIdentity, receiverRun: RootExecutionIdentity): Promise<string | null> {
     const own = sender.memberAddress as string;
-    if ((await this.dependencies.standing.standingOf(receiverRun))?.agents.has(own)) return null;
+    if ((await this.dependencies.tree().standingOf(receiverRun))?.agents.has(own)) return null;
     return await this.assignersAgent(receiverRun, own) === sender.agentRunId ? own : null;
   }
 
@@ -59,7 +55,7 @@ export class CrossRunAddressResolution {
     const taskIds = open.length ? open : [...new Set(entries.map((entry) => entry.taskId))].sort();
     for (const taskId of taskIds) {
       for (const assigner of [...tree.assignersOf(taskId)].sort(byRun)) {
-        const agentRunId = (await this.dependencies.standing.standingOf(assigner))?.agents.get(address);
+        const agentRunId = (await this.dependencies.tree().standingOf(assigner))?.agents.get(address);
         if (agentRunId) return agentRunId;
       }
     }
@@ -69,7 +65,7 @@ export class CrossRunAddressResolution {
   private async correct(run: RootExecutionIdentity, address: string): Promise<void> {
     const reference = runReferenceOf(run);
     const prefixes = [...new Set((reference ? this.dependencies.tree().tasksOf(reference) : []).map((entry) => entry.recipientAddress))].sort();
-    const own = await this.dependencies.standing.standingOf(run);
+    const own = await this.dependencies.tree().standingOf(run);
     for (const prefix of prefixes) {
       if (address === prefix && own?.coordinatorAddress) {
         throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND",

@@ -3,27 +3,21 @@ import { runIdentityOf } from "../../agent-collaboration/execution/task/task-exe
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
-import { RunOwnAgentsReader } from "../store/run-own-agents-reader.js";
 
 /** An agent of a run delegated from a run: its run ID and its own address in its run. */
 export type DelegatedRunAgent = Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 
-/** The runs delegated from a run on this node, open or closed: the `DelegationTree` (contract §4). */
-type DelegatedRuns = Pick<DelegationTree, "childrenOf" | "subtreeOf">;
-
+/** The runs delegated from a run on this node, open or closed, and each run's agents: the `DelegationTree` (contract §4). */
+type DelegatedRuns = Pick<DelegationTree, "childrenOf" | "subtreeOf" | "agentsOf">;
 
 /**
  * The agents of the runs delegated from a run, open and closed (REQ-009's token roll-up of every run kind; the Team tab's
- * past participants): the runs come from the Task entries; each run's agents and addresses from its own file. A run whose own file cannot
- * be read gives none of its members (an agent run still gives its own ID). Reads only what is asked.
+ * past participants): the runs come from the Task entries; each run's agents from the tree, their one owner (read once
+ * per run; a run that cannot be read is left out, with the tree's warning). Reads only what is asked.
  */
 export class DelegatedRunAgentsReader {
-  private readonly own: RunOwnAgentsReader;
-
   /** `delegatedRuns`: the tree, created by the composition root (SR-047). */
-  constructor(memoryDir: string, private readonly delegatedRuns: DelegatedRuns) {
-    this.own = new RunOwnAgentsReader(memoryDir);
-  }
+  constructor(private readonly delegatedRuns: DelegatedRuns) {}
 
   /** The given agent run IDs that are agents of a run delegated from this run (one hop), with their own addresses. */
   async forAgentRunIds(root: RootExecutionIdentity, agentRunIds: Iterable<string>): Promise<DelegatedRunAgent[]> {
@@ -42,9 +36,9 @@ export class DelegatedRunAgentsReader {
     return (await Promise.all(runs.map((run) => this.agentsOf(run)))).flat().map((agent) => agent.agentRunId);
   }
 
+  /** A delegated run's agents; each has an address (a delegated agent run's is the one it was delegated to until stored). */
   private async agentsOf(run: TaskExecutionReference): Promise<DelegatedRunAgent[]> {
-    const standing = await this.own.standingOf(runIdentityOf(run)).catch(() => null);
-    if (standing?.agents.size) return [...standing.agents].map(([address, agentRunId]) => ({ agentRunId, address: address as AgentTeamAddress }));
-    return "agentRunId" in run ? [{ agentRunId: run.agentRunId, address: "/" as AgentTeamAddress }] : [];
+    return (await this.delegatedRuns.agentsOf(runIdentityOf(run)))
+      .flatMap((agent) => agent.address ? [{ agentRunId: agent.agentRunId, address: agent.address as AgentTeamAddress }] : []);
   }
 }

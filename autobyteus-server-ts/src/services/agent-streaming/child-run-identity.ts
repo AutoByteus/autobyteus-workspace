@@ -19,7 +19,9 @@ export const childRunIdentity = async (child: DelegatedChild, tree: Pick<Delegat
   const childRun = child.run;
   if ("agentRunId" in childRun) {
     const [agent] = agents;
-    return Object.freeze({ kind: "agent", ...common, address: (agent!.address ?? child.recipientAddress) as never,
+    // The tree gives a delegated agent run the address it was delegated to until its own is stored.
+    if (!agent!.address) throw new Error(`Agent run '${childRun.agentRunId}' has no address.`);
+    return Object.freeze({ kind: "agent", ...common, address: agent!.address as never,
       agentRunId: childRun.agentRunId, agentDefinitionId: agent!.agentDefinitionId });
   }
   return Object.freeze({ kind: "agent_team", ...common, address: child.recipientAddress as never, teamRunId: childRun.teamRunId,

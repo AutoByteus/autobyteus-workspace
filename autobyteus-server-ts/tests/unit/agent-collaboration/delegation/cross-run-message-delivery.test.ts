@@ -19,7 +19,7 @@ const agent = (root: RootExecutionIdentity, agentRunId: string) => createCollabo
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, () => readerOfAgentRunIds(async (r) => r.rootRunId === "eng" ? ["designer", "coder"] : r.rootRunId === "product" ? ["pd", "pm"] : null));
+  const tree = new DelegationTree(() => tasks, readerOfAgentRunIds(async (r) => r.rootRunId === "eng" ? ["designer", "coder"] : r.rootRunId === "product" ? ["pd", "pm"] : null));
   tree.build();
   tasks.setEntriesListener(tree);
   tasks.addTask("T1"); tasks.addTask("T2");
@@ -48,7 +48,7 @@ const harness = async () => {
     },
   });
   const beforeReceive = { hook: async () => undefined as void };
-  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never,
+  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null,
     receiverRoot: async (r) => { await beforeReceive.hook(); return receiverRoot(r); } });
   const send = (from: RootExecutionIdentity, sender: string, target: string) => delivery.route({ sender: agent(from, sender), senderDisplayName: sender,
     targetAgentRunId: target, content: "hello", messageType: "agent_message", referenceFiles: [] });
@@ -137,7 +137,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
 
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
-    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks,
+    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null,
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun: vi.fn() }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }) });

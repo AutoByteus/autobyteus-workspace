@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it } from "vitest";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { peerRunLinksOf, peerTeamCoordinatorRunId } from "../../../../src/agent-collaboration/execution/remote/peer-run-link.js";
@@ -14,7 +15,7 @@ const OTHER: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "oth
 describe("peerRunLinksOf", () => {
   it("one hop, in delegation order: a peer agent run and a peer team (team-local members, its coordinator); local runs and other delegators' runs are left out", async () => {
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks);
+    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
     tree.build();
     tasks.setEntriesListener(tree);
     tasks.addTask("T7"); tasks.addTask("T8");

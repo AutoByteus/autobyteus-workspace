@@ -35,8 +35,9 @@ const withDelegatedSolo = async <T>(run: () => Promise<T>): Promise<T> => {
     workspaceRootPath: "/w", memoryDir: path.join(memory, "agents", "solo"), llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true,
     runtimeKind: "autobyteus", platformAgentRunId: null } as never);
   vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({ getMemoryDir: () => memory } as never);
-  const port = { childrenOf: () => [{ agentRunId: "solo" }], subtreeOf: () => [{ agentRunId: "solo" }] } as never;
-  try { return await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(memory, port) }, run); }
+  const port = { childrenOf: () => [{ agentRunId: "solo" }], subtreeOf: () => [{ agentRunId: "solo" }],
+    agentsOf: async () => [{ agentRunId: "solo", address: "/solo", agentDefinitionId: "solo-definition" }] } as never;
+  try { return await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(port) }, run); }
   finally { await fs.rm(memory, { recursive: true, force: true }); }
 };
 
@@ -82,7 +83,7 @@ describe("collaborationParticipantMessages", () => {
       ] },
     } as never);
     vi.spyOn(AgentOrgRunManager, "getInstance").mockReturnValue(Object.create(AgentOrgRunManager.prototype));
-    const result = await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader("/unused", noDelegations()) },
+    const result = await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(noDelegations()) },
       () => readCollaborationParticipantMessages({ rootKind: "agent_org", rootRunId: "org-root", agentRunId: "configured-lead" }));
     expect(result.messages.map((entry) => entry.messageId)).toEqual(["o1"]);
     expect(records).toHaveBeenCalledWith("org-root");

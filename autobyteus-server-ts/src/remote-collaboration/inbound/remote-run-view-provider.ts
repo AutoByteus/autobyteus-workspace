@@ -64,7 +64,11 @@ export class RemoteRunViewProvider {
         runId: run.runId,
         title: await this.views.runTitle(run).catch(() => null),
         statuses: this.roots.pairedAgents(run.kind).pairedAgentStatuses(run.runId),
-        launches: await this.views.runLaunches(run).catch(() => Object.freeze([])),
+        // A run whose launches cannot be read answers none, with a warning naming it (`DESIGN.md` rule 7).
+        launches: await this.views.runLaunches(run).catch((error: unknown) => {
+          console.warn(`The launches of ${run.kind} run '${run.runId}' are left out of its summary: ${error instanceof Error ? error.message : String(error)}`);
+          return Object.freeze([]);
+        }),
       }));
     }
     return Object.freeze({ accepted: true as const, runs: Object.freeze(runs) });

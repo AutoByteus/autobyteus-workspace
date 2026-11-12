@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../helpers/run-agents-reader.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
@@ -42,7 +43,7 @@ const flush = async () => { for (let i = 0; i < 20; i += 1) await new Promise((r
 describe("a closure stop and a follow-up Task delivered while the team run stops", () => {
   it("waits for the end, restores the team run and delivers B's work; the ending root is never given the work", async () => {
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks);
+    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     tasks.addTask("A", "First", "task-a"); tasks.addTask("B", "Second", "task-b");
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/eng", teamCoordinatorAgentRunId: "lead",
@@ -64,6 +65,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     (manager as unknown as { register(root: RootTeamRun): void }).register(ending as unknown as RootTeamRun);
     const resolver = createCollaborationRootResolver({ standaloneRoots: {} as never, teamRuns: manager, orgRuns: {} as never });
     const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
+      channel: () => null, recordCollaborating: vi.fn(async () => undefined),
       deliverToRun: async (input) => {
         const resolved = await resolver.resolveOrRestore(createTeamRootExecutionIdentity("eng"));
         return (resolved!.root as unknown as { acceptFromRun(input: unknown): Promise<{ accepted: boolean }> }).acceptFromRun(input);

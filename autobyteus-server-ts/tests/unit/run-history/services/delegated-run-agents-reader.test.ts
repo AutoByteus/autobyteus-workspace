@@ -7,6 +7,7 @@ import { DelegationTree } from "../../../../src/agent-collaboration/delegation/d
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
+import { RunOwnAgentsReader } from "../../../../src/run-history/store/run-own-agents-reader.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -34,12 +35,12 @@ const world = async () => {
     validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "eng", coordinatorAddress: "/designer",
       children: [testAgentNode("/designer", { agentRunId: "designer" }), testAgentNode("/coder", { agentRunId: "coder" })] }), "eng"));
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks);
+  const tree = new DelegationTree(() => tasks, new RunOwnAgentsReader(memory));
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/eng", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { teamRunId: "eng" }, teamCoordinatorAgentRunId: "designer" });
   await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/image_maker", delegatedFrom: { delegatingRun: E, delegatorAgentRunId: "designer" }, execution: { agentRunId: "image" } });
-  return { reader: new DelegatedRunAgentsReader(memory, tree), tasks };
+  return { reader: new DelegatedRunAgentsReader(tree), tasks };
 };
 
 describe("DelegatedRunAgentsReader (runs delegated from a run)", () => {

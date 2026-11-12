@@ -19,30 +19,25 @@ afterEach(async () => {
 });
 
 describe("RunOwnAgentsReader", () => {
-  it("a team run's members from its own file; a standalone run is its one agent; a missing run is null", async () => {
+  it("partsOf: a team run's members and coordinator address; a missing run is null", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-agents-"));
     roots.push(memory);
-   
     const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-b", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(dir, validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "team-b", coordinatorAddress: "/lead",
       children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] }), "team-b"));
     const reader = new RunOwnAgentsReader(memory);
-    expect(await reader.agentsOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" }))
-      .toEqual([{ agentRunId: "lead-b", address: "/lead", agentDefinitionId: "agent-lead" },
-        { agentRunId: "writer-b", address: "/writer", agentDefinitionId: "agent-writer" }]);
-    // An agent run with no stored address (not collaborating yet) and no stored metadata: its one agent, with neither.
-    expect(await reader.agentsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual([{ agentRunId: "manager", address: null, agentDefinitionId: null }]);
-    expect(await reader.agentsOf({ rootSubjectKind: "agent_team", rootRunId: "gone" })).toBeNull();
-    expect(await reader.agentsOf({ rootSubjectKind: "agent_org", rootRunId: "gone" })).toBeNull();
+    expect(await reader.partsOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" })).toEqual({
+      agents: [{ agentRunId: "lead-b", address: "/lead", agentDefinitionId: "agent-lead" }, { agentRunId: "writer-b", address: "/writer", agentDefinitionId: "agent-writer" }],
+      coordinatorAddress: "/lead", mountedTeams: [] });
+    for (const rootSubjectKind of ["agent", "agent_team", "agent_org"] as const) {
+      expect(await reader.partsOf({ rootSubjectKind, rootRunId: "gone" })).toBeNull();
+    }
   });
 
-  it("standingOf (contract §2.3, model.py standing): a team's members and coordinator; an agent run's stored address; an org's agents, mounted members and mounted team addresses", async () => {
+  it("partsOf (contract §2.3, model.py standing): an agent run's stored address, or none before it collaborates; an org's agents, mounted members and mounted teams", async () => {
     const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-standing-"));
     roots.push(memory);
-   
     const layout = new AgentMemoryLayout(memory);
-    await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "team-b", ancestorTeamRunIds: [] }), validateTeamRunExecutionTreePayload(testExecutionTree({
-      rootTeamRunId: "team-b", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "lead-b" }), testAgentNode("/writer", { agentRunId: "writer-b" })] }), "team-b"));
     await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org-1"), testAgentOrgExecutionTree({ orgRunId: "org-1", members: [testOrgAgentNode("/ceo_agent", "ceo"),
       testOrgTeamNode({ address: "/dev_team", teamRunId: "dev-1", coordinatorAddress: "/dev_team/dev_lead",
         members: [testOrgAgentNode("/dev_team/dev_lead", "dev_lead"), testOrgAgentNode("/dev_team/qa", "qa")] })] }));
@@ -51,13 +46,14 @@ describe("RunOwnAgentsReader", () => {
     await new AgentRunMetadataStore(memory).writeMetadata("manager", { ...(metadata as object), address: "/project_task_manager" } as never);
     await new AgentRunMetadataStore(memory).writeMetadata("fresh", { ...(metadata as object), runId: "fresh", memoryDir: path.join(memory, "agents", "fresh") } as never);
     const reader = new RunOwnAgentsReader(memory);
-    expect(await reader.standingOf({ rootSubjectKind: "agent_team", rootRunId: "team-b" })).toEqual({
-      agents: new Map([["/lead", "lead-b"], ["/writer", "writer-b"]]), coordinatorAddress: "/lead" });
-    expect(await reader.standingOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual({ agents: new Map([["/project_task_manager", "manager"]]), coordinatorAddress: null });
-    // Not collaborating yet: no address fixed, so it has none another run could use.
-    expect(await reader.standingOf({ rootSubjectKind: "agent", rootRunId: "fresh" })).toEqual({ agents: new Map(), coordinatorAddress: null });
-    expect(await reader.standingOf({ rootSubjectKind: "agent_org", rootRunId: "org-1" })).toEqual({ agents: new Map([["/ceo_agent", "ceo"],
-      ["/dev_team/dev_lead", "dev_lead"], ["/dev_team/qa", "qa"], ["/dev_team", "dev_lead"]]), coordinatorAddress: null });
-    expect(await reader.standingOf({ rootSubjectKind: "agent", rootRunId: "gone" })).toBeNull();
+    expect(await reader.partsOf({ rootSubjectKind: "agent", rootRunId: "manager" })).toEqual({
+      agents: [{ agentRunId: "manager", address: "/project_task_manager", agentDefinitionId: "project-task-manager" }], coordinatorAddress: null, mountedTeams: [] });
+    // Not collaborating yet: no address fixed.
+    expect(await reader.partsOf({ rootSubjectKind: "agent", rootRunId: "fresh" })).toEqual({
+      agents: [{ agentRunId: "fresh", address: null, agentDefinitionId: "project-task-manager" }], coordinatorAddress: null, mountedTeams: [] });
+    expect(await reader.partsOf({ rootSubjectKind: "agent_org", rootRunId: "org-1" })).toEqual({
+      agents: [expect.objectContaining({ agentRunId: "ceo", address: "/ceo_agent" }), expect.objectContaining({ agentRunId: "dev_lead", address: "/dev_team/dev_lead" }),
+        expect.objectContaining({ agentRunId: "qa", address: "/dev_team/qa" })],
+      coordinatorAddress: null, mountedTeams: [{ address: "/dev_team", coordinatorAgentRunId: "dev_lead" }] });
   });
 });

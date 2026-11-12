@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "./run-agents-reader.js";
 import { DelegationTree } from "../../src/agent-collaboration/delegation/delegation-tree.js";
 import type { RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionResourcePort } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -7,7 +8,7 @@ type Source = Pick<TaskExecutionResourcePort, "taskIdsWithEntries" | "entriesOf"
 
 /** A `DelegationTree` built now from the Task side's loaded records (a test's read of the relationships). */
 export const delegationTreeOf = (source: Source): DelegationTree => {
-  const tree = new DelegationTree(() => source);
+  const tree = new DelegationTree(() => source, NO_RUN_PARTS);
   tree.build();
   return tree;
 };

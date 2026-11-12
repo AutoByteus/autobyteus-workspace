@@ -21,10 +21,11 @@ describe("getTeamRunTokenUsageSummary", () => {
     const port = {
       childrenOf: () => [],
       subtreeOf: (run: { rootSubjectKind: string }) => run.rootSubjectKind === kind ? subtree[kind] : [],
+      agentsOf: async (run: { rootRunId: string }) => [{ agentRunId: run.rootRunId, address: `/${run.rootRunId}`, agentDefinitionId: null }],
     };
     const summary = vi.spyOn(TokenUsageRunStore.prototype, "getTeamRunSummary").mockResolvedValue({ run_id: "root" } as never);
     try {
-      await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(memoryDir, port as never) },
+      await withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(port as never) },
         () => new TokenUsageStatisticsResolver().getTeamRunTokenUsageSummary("root").catch(() => undefined));
       expect(summary).toHaveBeenCalledWith("root", subtree[kind].map((run) => run.agentRunId));
     } finally {

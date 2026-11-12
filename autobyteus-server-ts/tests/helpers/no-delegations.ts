@@ -22,6 +22,7 @@ export const noDelegations = (): DelegationTree => ({
   canMessage: () => false,
   runOfAgent: async () => null,
   agentsOf: async () => [],
+  standingOf: async () => null,
   hasNode: () => false,
 }) as unknown as DelegationTree;
 

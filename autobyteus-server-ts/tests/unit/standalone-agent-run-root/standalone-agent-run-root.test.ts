@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../helpers/run-agents-reader.js";
 import { TaskDelegationError } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -89,7 +90,7 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
 
   it("the Task the run works on (get_project_task's scope) is its own current entry, by its own identity", async () => {
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks);
+    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     const h = await buildManager(tasks, tree);
     tasks.addTask("T1");

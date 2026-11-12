@@ -65,7 +65,7 @@ export class CrossRunMessageDelivery {
     /** The receiver's root, restored when it is stopped (DEC-001: a message wakes a stopped run). */
     receiverRoot(run: RootExecutionIdentity): Promise<CrossRunReceiverRoot | null>;
     /** The sender's own address when, from the receiver, it reaches the sender (contract §2.4); null otherwise. */
-    senderAddress?(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; receiverRun: RootExecutionIdentity; receiverAgentRunId: string }>): Promise<string | null>;
+    senderAddress(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; receiverRun: RootExecutionIdentity; receiverAgentRunId: string }>): Promise<string | null>;
   }>) {}
 
   async route(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
@@ -93,7 +93,7 @@ export class CrossRunMessageDelivery {
     try { receiver = await this.dependencies.receiverRoot(receiverRun); }
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
     if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_FOUND", `No agent has the run id '${input.targetAgentRunId}' on this node, so the message was not sent.`);
-    const senderAddress = await this.dependencies.senderAddress?.({ sender: input.sender, receiverRun, receiverAgentRunId: input.targetAgentRunId }) ?? null;
+    const senderAddress = await this.dependencies.senderAddress({ sender: input.sender, receiverRun, receiverAgentRunId: input.targetAgentRunId });
     const accepted = await receiver.acceptFromRun({ message: prepared.message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
       senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun) });
     if (!accepted.accepted) {

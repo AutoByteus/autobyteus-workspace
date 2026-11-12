@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it, vi } from "vitest";
 import { acceptWorkPacketIfAllowed, TaskDelegation, type LocalDelegationPlacement, type WorkPacket } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
@@ -17,7 +18,7 @@ const teamPlacement: LocalDelegationPlacement = { kind: "agent_team", address: "
 
 const harness = () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks);
+  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
   tree.build();
   tasks.setEntriesListener(tree);
   const starter = { startAgent: vi.fn(async () => ({ agentRunId: "image_maker_33f0" })),
@@ -25,7 +26,8 @@ const harness = () => {
   const deliverWorkPacket = vi.fn(async (_run: unknown, _packet: WorkPacket) => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
-  const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating });
+  const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
+    deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null });
   const folders: (string | null)[] = [];
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
@@ -153,11 +155,11 @@ describe("TaskDelegation.toNewRun", () => {
       startDelegatedRun: vi.fn(async () => started), deliverMessage: vi.fn(async () => delivered) });
     const peerHarness = (channel: ReturnType<typeof channelWith>) => {
       const tasks = new InMemoryTaskExecutionResources();
-      const tree = new DelegationTree(() => tasks);
+      const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
       tree.build();
       tasks.setEntriesListener(tree);
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-        channel: () => channel as never });
+        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined) });
       const delegate = () => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
         senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it." } as never, placement });
       return { tasks, tree, delegate };
@@ -193,14 +195,15 @@ describe("TaskDelegation.toNewRun", () => {
   describe("toExistingRun (S8, DS-6: a follow-up Task by run ID)", () => {
     const followUp = async (deliverToRun = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string })) => {
       const tasks = new InMemoryTaskExecutionResources();
-      const tree = new DelegationTree(() => tasks);
+      const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
       tree.build();
       tasks.setEntriesListener(tree);
       tasks.addTask("T1", "Build it", "abc-1"); tasks.addTask("T2", "Polish it", "abc-2");
       await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
         delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
       await tasks.markStarted({ teamRunId: E.rootRunId });
-      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun });
+      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
+        channel: () => null, recordCollaborating: vi.fn(async () => undefined) });
       const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
         sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
         assign: { copy: copy as never, taskId } });

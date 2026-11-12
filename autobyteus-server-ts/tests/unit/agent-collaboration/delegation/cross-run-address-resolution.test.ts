@@ -1,9 +1,7 @@
-import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it } from "vitest";
 import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationTree, type RunParts, type RunStanding } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { RunStanding } from "../../../../src/run-history/store/run-own-agents-reader.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /**
@@ -27,12 +25,26 @@ const STANDING: Record<string, RunStanding> = {
   helper: { agents: new Map([["/helper", "helper"]]), coordinatorAddress: null },
   xteam: { agents: new Map([["/x_lead", "x_lead"]]), coordinatorAddress: "/x_lead" },
 };
+/**
+ * Each run's parts as its own file says them, from its standing: an address whose agent also stands under it is an org's
+ * mounted team (its coordinator); the rest are agents.
+ */
+const partsOf = (standing: RunStanding): RunParts => {
+  const entries = [...standing.agents];
+  const mounted = entries.filter(([address, id]) => entries.some(([other, otherId]) => otherId === id && other.startsWith(`${address}/`)));
+  return { agents: entries.filter((entry) => !mounted.includes(entry)).map(([address, agentRunId]) => ({ agentRunId, address, agentDefinitionId: null })),
+    coordinatorAddress: standing.coordinatorAddress, mountedTeams: mounted.map(([address, coordinatorAgentRunId]) => ({ address, coordinatorAgentRunId })) };
+};
 const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: string) =>
   createCollaborationMemberExecutionIdentity({ root, memberAddress: memberAddress as never, agentRunId });
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, () => readerOfAgentRunIds(async (r) => [...(STANDING[r.rootRunId]?.agents.values() ?? [])]));
+  const reads: string[] = [];
+  const tree = new DelegationTree(() => tasks, { partsOf: async (r) => {
+    reads.push(r.rootRunId);
+    return STANDING[r.rootRunId] ? partsOf(STANDING[r.rootRunId]!) : null;
+  } });
   tree.build();
   tasks.setEntriesListener(tree);
   for (const taskId of ["T1", "T3", "T4", "T5"]) tasks.addTask(taskId);
@@ -43,8 +55,8 @@ const harness = async () => {
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/study_group", delegatedFrom: from(ORG, "ceo"), execution: { teamRunId: "study" }, teamCoordinatorAgentRunId: "tutor" });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T3", recipientAddress: "/helper", delegatedFrom: from(U, "u_designer"), execution: { agentRunId: "helper" } });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T5", recipientAddress: "/dev_team", delegatedFrom: from(ORG, "ceo"), execution: { teamRunId: "xteam" }, teamCoordinatorAgentRunId: "x_lead" });
-  const resolution = new CrossRunAddressResolution({ tree: () => tree, standing: { standingOf: async (r) => STANDING[r.rootRunId] ?? null } });
-  return { tasks, resolution };
+  const resolution = new CrossRunAddressResolution({ tree: () => tree });
+  return { tasks, resolution, reads };
 };
 
 describe("CrossRunAddressResolution (contract §2.3 step 2, the correction, §2.5)", () => {
@@ -96,6 +108,17 @@ describe("CrossRunAddressResolution (contract §2.3 step 2, the correction, §2.
     await expect(h.resolution.resolve(sender(E, "/solution_designer", "designer"), "/software_engineering_team/nobody")).resolves.toBeNull();
     // A delegated agent run has no team: nothing to correct.
     await expect(h.resolution.resolve(sender(H, "/helper", "helper"), "/helper/x")).resolves.toBeNull();
+  });
+
+  it("reads each run's own file once: a later message reads none (CR-461-024, the tree is the one owner)", async () => {
+    const h = await harness();
+    await expect(h.resolution.resolve(sender(S, "/tutor", "tutor"), "/dev_team/dev_lead")).resolves.toBe("dev_lead");
+    await expect(h.resolution.reachingAddress(sender(ORG, "/ceo_agent", "ceo"), S)).resolves.toBe("/ceo_agent");
+    const after = h.reads.length;
+    await expect(h.resolution.resolve(sender(S, "/tutor", "tutor"), "/dev_team")).resolves.toBe("dev_lead");
+    await expect(h.resolution.reachingAddress(sender(ORG, "/ceo_agent", "ceo"), S)).resolves.toBe("/ceo_agent");
+    expect(h.reads).toHaveLength(after);
+    expect(new Set(h.reads).size).toBe(h.reads.length);
   });
 
   describe("§2.5: the sender's address the receiver is shown", () => {

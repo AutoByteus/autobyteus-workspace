@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it } from "vitest";
 import { DelegationTree, type ChildRowsChange } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
@@ -13,7 +14,7 @@ const harness = () => {
   const tasks = new InMemoryTaskExecutionResources();
   tasks.addTask("T1");
   tasks.addTask("T2");
-  const tree = new DelegationTree(() => tasks);
+  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
   tree.build();
   tasks.setEntriesListener(tree);
   const changes: ChildRowsChange[] = [];

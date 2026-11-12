@@ -304,7 +304,7 @@ it("a message from a run the Org delegated to is presented and the Org stays up,
   const org = createAgentOrgRootExecutionIdentity("org-communication");
   const devTeam = { rootSubjectKind: "agent_team" as const, rootRunId: "dev-team-copy" };
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, () => readerOfAgentRunIds(async (run) =>
+  const tree = new DelegationTree(() => tasks, readerOfAgentRunIds(async (run) =>
     run.rootRunId === "dev-team-copy" ? ["dev-lead-run"] : run.rootRunId === "org-communication" ? ["direct-run", "observer-run"] : null));
   tree.build(); tasks.setEntriesListener(tree); tasks.addTask("T4");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/dev_team",
@@ -312,7 +312,7 @@ it("a message from a run the Org delegated to is presented and the Org stays up,
   await tasks.markStarted({ teamRunId: "dev-team-copy" });
   const senderLog: string[] = [];
   let next = 0;
-  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks,
+  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderAddress: async () => null,
     senderRoot: () => ({
       prepareSendToRun: (input: { senderIdentity: { agentRunId: string }; receiverAgentRunId: string; content: string }) => ({ ok: true as const,
         message: { messageId: `cross-${++next}`, senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,

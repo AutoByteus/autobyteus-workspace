@@ -85,7 +85,7 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   await resources.load();
   // The relationships between runs, from the Task records (TC-11); kept current inside each Task's ordered change
   // (AR-017). A run's agents are read from its own parts on the first need, never at startup (469 D-11).
-  const tree = new DelegationTree(() => resources, () => new RunOwnAgentsReader(input.memoryDir));
+  const tree = new DelegationTree(() => resources, new RunOwnAgentsReader(input.memoryDir));
   tree.build();
   resources.setEntriesListener(tree);
   return Object.freeze({ resources, tree, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
@@ -149,7 +149,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(() => getProjectChangePublisher().unbind());
 
     // 6. Delegation and messages between runs, through each run's own root (DS-1, DS-2; contract §2.3, §2.4).
-    const addresses = new CrossRunAddressResolution({ tree: () => tree, standing: new RunOwnAgentsReader(memoryDir) });
+    const addresses = new CrossRunAddressResolution({ tree: () => tree });
     const crossRun = new CrossRunMessageDelivery({
       senderAddress: (message) => addresses.reachingAddress(message.sender, message.receiverRun),
       tree: () => tree,
@@ -216,7 +216,7 @@ export const composeCollaboration = async (input: Readonly<{
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
     const views = createRunViewSources({ memoryDir, streams, children: runViewChildren, followers, commands, registrations: input.activeRoots });
     return Object.freeze({
-      tasks, views, runViewChildren, delegatedRunAgents: new DelegatedRunAgentsReader(memoryDir, tree),
+      tasks, views, runViewChildren, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },
     });
   } catch (error) {

@@ -19,7 +19,7 @@ export type E2eStudioApplicationApiServiceOverrides = Partial<
  */
 const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [], agentsOf: async () => [] });
 const NO_DELEGATIONS_VIEW_CHILDREN = new RunViewChildren({ memoryDir: "", tree: NO_DELEGATIONS, followers: { statuses: async () => [] }, channel: () => null });
-const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader("", NO_DELEGATIONS);
+const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader(NO_DELEGATIONS);
 
 const unavailableService = <T extends object>(serviceName: string): T =>
   new Proxy(Object.create(null) as T, {

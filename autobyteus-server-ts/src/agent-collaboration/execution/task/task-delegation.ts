@@ -1,6 +1,6 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
-import { resolveRemoteRunChannel, type RemoteAgentLaunch, type RemoteRunChannel } from "../remote/remote-run-channel.js";
+import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { DelegationTree } from "../../delegation/delegation-tree.js";
 import { DelegatedRunStartError, type DelegatedRunStarter } from "../delegation/delegated-run-starter.js";
@@ -86,19 +86,19 @@ const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
 export class TaskDelegation {
   constructor(private readonly dependencies: Readonly<{
     tasks(): TaskExecutionResourcePort;
-    tree(): Pick<DelegationTree, "currentTaskOf" | "tasksOf"> & Partial<Pick<DelegationTree, "runOfAgent">>;
+    tree(): Pick<DelegationTree, "currentTaskOf" | "tasksOf" | "runOfAgent">;
     /** A message to another run (DS-2, `CrossRunMessageDelivery`): stored in both runs' logs, the receiver woken. */
-    deliverToRun?(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderDisplayName: string; targetAgentRunId: string; content: string;
+    deliverToRun(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderDisplayName: string; targetAgentRunId: string; content: string;
       messageType: string; referenceFiles: readonly string[] }>): Promise<AgentOperationResult | null>;
     starter: Pick<DelegatedRunStarter, "startAgent" | "startTeam">;
     /** The new run's own root posts its work packet (it starts the agent, or the team's coordinator). */
     deliverWorkPacket(run: RootExecutionIdentity, packet: WorkPacket): Promise<AgentOperationResult>;
     /** Ends a run created for a delegation that did not go through (cancels a prepared agent run, ends a team run). */
     discard(run: TaskExecutionReference): Promise<void>;
-    /** The peer channel; by default the process's (none where remote collaboration is not composed). */
-    channel?(): RemoteRunChannel | null;
+    /** The peer channel; `null` where remote collaboration is not composed (the application host). */
+    channel(): RemoteRunChannel | null;
     /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
-    recordCollaborating?(agentRunId: string, address: AgentTeamAddress): Promise<void>;
+    recordCollaborating(agentRunId: string, address: AgentTeamAddress): Promise<void>;
   }>) {}
 
   /**
@@ -114,7 +114,7 @@ export class TaskDelegation {
     placement: Omit<RemoteAgentPlacement, "work">;
   }>): Promise<Readonly<{ outcome: TaskDelegationOutcome; launches: readonly RemoteAgentLaunch[] }>> {
     const refused = (text: string) => ({ outcome: { delegated: false as const, message: text }, launches: [] });
-    const channel = resolveRemoteRunChannel(this.dependencies.channel);
+    const channel = this.dependencies.channel();
     if (!channel) return refused(REMOTE_ROOT_REFUSAL_TEXT.off);
     const tasks = this.dependencies.tasks();
     let work: NewRunWork;
@@ -258,7 +258,7 @@ export class TaskDelegation {
   }
 
   private async recordCollaborating(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderRun: RootExecutionIdentity }>): Promise<void> {
-    if (input.senderRun.rootSubjectKind === "agent") await this.dependencies.recordCollaborating?.(input.senderRun.rootRunId, input.sender.memberAddress);
+    if (input.senderRun.rootSubjectKind === "agent") await this.dependencies.recordCollaborating(input.senderRun.rootRunId, input.sender.memberAddress);
   }
 
   /**
@@ -274,7 +274,7 @@ export class TaskDelegation {
     }
     const id = execution.agentRunId;
     if (tree.tasksOf({ teamRunId: id }).length) return refuse(`${id} is a task agent team's run id; use target_team_run_id "${id}".`);
-    const run = await tree.runOfAgent?.(id) ?? null;
+    const run = await tree.runOfAgent(id);
     if (run?.rootSubjectKind !== "agent_team") return null;
     const entries = tree.tasksOf({ teamRunId: run.rootRunId });
     if (!entries.length) return null;
@@ -319,8 +319,8 @@ export class TaskDelegation {
     }
     let delivered: AgentOperationResult | null;
     try {
-      delivered = await this.dependencies.deliverToRun?.({ sender: input.sender, senderDisplayName: getAgentTeamAddressBasename(input.sender.memberAddress) ?? input.sender.agentRunId,
-        targetAgentRunId: entryAgentRunId, content, messageType: TASK_ASSIGNMENT_MESSAGE_TYPE, referenceFiles }) ?? null;
+      delivered = await this.dependencies.deliverToRun({ sender: input.sender, senderDisplayName: getAgentTeamAddressBasename(input.sender.memberAddress) ?? input.sender.agentRunId,
+        targetAgentRunId: entryAgentRunId, content, messageType: TASK_ASSIGNMENT_MESSAGE_TYPE, referenceFiles });
     } catch (error) {
       delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: message(error) };
     }

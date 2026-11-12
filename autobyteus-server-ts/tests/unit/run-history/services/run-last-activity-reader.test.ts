@@ -1,3 +1,4 @@
+import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
 import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs";
 import os from "node:os";
@@ -56,7 +57,7 @@ describe("RunLastActivityReader (workspace-tree-vs-chooser DS-005, from autobyte
     traces(agentFolder("host"), "2026-02-01T00:00:00.000Z");
     traces(agentFolder("image"), "2026-11-05T08:00:00.000Z");
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks);
+    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     const r = reader({ tree }).reader;
     await expect(r.forAgentRun({ runId: "host", createdAt: CREATED })).resolves.toBe("2026-02-01T00:00:00.000Z");
