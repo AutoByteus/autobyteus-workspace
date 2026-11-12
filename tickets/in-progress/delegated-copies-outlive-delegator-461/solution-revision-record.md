@@ -1103,3 +1103,20 @@
 - The five Local Fixes of CRR-013 (CR-461-022 … -026) are the Implementation Engineer's.
 
 - ARCH-REV-032 (2026-11-12): Pass, no finding. The reviewer verified the premise at `827f1e68dc`: peer rows got titles and reachability only through a root's stream, so a listed, not-open run's peer rows had no live status at base either. `walkthrough.py --check` passes.
+
+### SR-058 — Rows at every depth, and a delegated run's collaboration context derived from the data (answers CRR-016 Design Impacts CR-461-030 and CR-461-033)
+
+- Triggering: the code review's failure-origin review of API/E2E round 3 (CRR-016) found two Design Impacts.
+  - **CR-461-030:** a delegated run's prompt context isn't derived. A delegated agent run, now an ordinary standalone root, always gets the standalone role (`standalone-host-member-context-builder.ts:48`) and loses the task-agent sections. A copy at an org's configured agent address loses that address's handoff rules and the org's authored instruction (row 5). A member of a delegated team in an org loses the organization line (row 8). All of these came from hosting, against the non-goal "no change to what an agent reads".
+  - **CR-461-033:** runs two levels down have no source of rows. The views and the poll carried one hop, and a child's own children were never read. At base, copies of copies were nested (REQ-002).
+- The Solution Designer's gaps: both are derived consumers of the removed hosting, which the design did not inventory. The prompt context is read from where a copy was hosted, and nesting relied on the hosting tree.
+- Decisions, both from the data model:
+  - **The collaboration context:** one owner, `RunCollaborationContext`, asked by every kind's member context builder.
+    - Role: task agent for an agent of a delegated agent run (its `delegatedFrom`).
+    - The organization line: when the run's Task's assigner is an org, which is exactly when step 2 reaches the org.
+    - A copy of an org's configured agent: when the run's `recipientAddress` is such an address, it inherits that address's handoff rules and the org's authored instruction, read at use from the delegating org's file through the tree. Nothing new is stored. A team copy keeps its handoffs in its own file (SR-054).
+  - **Rows at every depth:** the view snapshot, the feed and the poll carry X's open subtree. Each row has its parent and delegator, so the one row builder nests it, and the feed reports to X and its ancestors. Peer rows are not expanded beyond their members, as at base. The team DTO's always-empty `task_executions` is removed.
+- Done: the design's DS-8 ("Rows at every depth", "A delegated run's collaboration context"), with tests. `walkthrough.py --check` passes.
+- The three Local Fixes of CRR-016 (CR-461-031, -032, -034) are the Implementation Engineer's.
+- Next action: architecture review (narrow)
+
