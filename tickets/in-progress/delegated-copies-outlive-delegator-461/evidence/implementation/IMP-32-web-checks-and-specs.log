@@ -1,0 +1,12 @@
+# IMP-32 web checks and full spec suite (CR-461-016)
+# commands: (autobyteus-web) pnpm typecheck; guard:localization-boundary; audit:localization-literals; npx vitest run --no-watch
+# commit: 9f4709571b; macOS, Node v22.23.1; 2026-11-12T03:50Z
+
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+ Test Files  747 passed (747)
+      Tests  5636 passed | 2 skipped (5638)

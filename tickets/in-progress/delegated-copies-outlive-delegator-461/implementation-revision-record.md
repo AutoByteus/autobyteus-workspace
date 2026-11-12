@@ -12,6 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-004 | Code Reviewer CRR-006 (`code-review-report.md` "Round 3", Full Re-Audit of IR-003); round 4 | CR-461-008 | `Local Fix` | CRR-006 | Implemented; targeted re-review by Code Review |
 | IR-005 | Code Reviewer CRR-008 (failure-origin review of API/E2E round 1), Solution Designer SR-054; round 5 | CR-461-009, CR-461-010, CR-461-011 | `Local Fix` (CR-461-012/013 were Requirement Gaps, answered by SR-054 with no code change) | SR-054, CRR-008 | Implemented; targeted re-review by Code Review, then API/E2E |
 | IR-006 | Code Reviewer CRR-009 (`code-review-report.md` "Round 5", Full Re-Audit of IR-005); round 6 | CR-461-014, CR-461-015 | `Local Fix` | CRR-009 | Implemented; targeted re-review by Code Review, then API/E2E |
+| IR-007 | Code Reviewer CRR-010 (`code-review-report.md` "Round 6", Targeted Delta Review of IR-006); round 7 | CR-461-016 | `Local Fix` | CRR-010 | Implemented; targeted re-review by Code Review, then API/E2E |
 
 ## Revision Entries
 
@@ -162,3 +163,16 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: IMP-30 (web), IMP-31 (server) on `d3c57a8569`.
 - Next recipient or routing: Code Reviewer, targeted re-review of CR-461-014 and -015; then API/E2E.
 - Remaining limitations or risks: server E2E suites that read a delegated child through `getTeamMemberRunProjection` now get the member refusal; they go to API/E2E (CRR-009).
+
+### IR-007 — An agent an Org view does not index is refused loudly (CR-461-016)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` "Round 6" (CRR-010, Targeted Delta Review of IR-006 at `d3c57a8569`). Round 7.
+- Triggering finding IDs: CR-461-016. Classification: `Local Fix`; Large / High unchanged.
+- Prior authoritative result: IR-006 at `d3c57a8569` (+ `76e864ec60`). Current authoritative result: commit `9f4709571b`, and the handoff commit.
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-010.
+- Approved behavior or requirement IDs affected: none.
+- Implementation delta: `orgAgentReadSubject` (`autobyteus-web/services/runHydration/agentReads.ts`) throws `AgentRun '<id>' is not an agent of AgentOrg run '<org>'.` for an agent the view indexes neither as its own agent nor as a remote one, instead of returning an Org member read with the address `''` (Principles 13 and 16: a missing owner fails loudly). A child team's member uses its indexed `address` directly (the index already holds the address as sent, in the team's own space); the second lookup is gone. Every caller passes an indexed agent (the member loader checks first; the focused agent at open is a seed of the view; the browse subject is the selected indexed or remote agent).
+- Tests: `agentReads.spec.ts` asserts the child team member's exact subject and that an unknown agent throws.
+- Local validation and result: IMP-32 (web) on `9f4709571b`. No server code changed.
+- Next recipient or routing: Code Reviewer, targeted re-review of CR-461-016; then API/E2E.
+- Remaining limitations or risks: unchanged from IR-006.

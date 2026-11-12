@@ -20,11 +20,13 @@ Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 
 - Implementation cycle: `Rework` (round 3)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-006` (IR-001: the initial implementation; IR-002 … IR-005: rounds 2 … 5)
+- Current implementation revision ID: `IR-007` (IR-001: the initial implementation; IR-002 … IR-006: rounds 2 … 6)
 - Related solution revision IDs: SR-018 … SR-053 (this round: SR-045 the stream lives with the open view, SR-046 stored and live view sessions, SR-047 owners passed in from one composition root, SR-048 restore → live → post, SR-049 roots don't delegate, SR-052 the application host composes the same steps (replaces SR-050/051), SR-053 narrow `RunTaskRecords` port)
 - Related architecture-review revision IDs: ARCH-REV-005 … ARCH-REV-028
-- Related code-review revision IDs: CRR-002 … CRR-009 (CRR-008: failure-origin review of API/E2E round 1); delivery: `N/A`
-- Triggering finding IDs: CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+- Related code-review revision IDs: CRR-002 … CRR-010 (CRR-008: failure-origin review of API/E2E round 1); delivery: `N/A`
+- Triggering finding IDs: CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+
+**Round 7 (IR-007), CR-461-016:** `orgAgentReadSubject` throws for an agent the Org view does not index (no silent read with an empty address); a child team's member uses its indexed address directly.
 
 **Round 6 (IR-006):**
 - CR-461-014: the team member reads (projection, trace page) no longer answer a run the team delegated to; they answer only the team's own members, as the Org's do. FU-015 withdrawn.
@@ -169,7 +171,7 @@ macOS (Darwin 25.5), Node 22, pnpm; server tests with vitest 4.1; no provider ke
 
 ## Checks Run
 
-Evidence files are in `evidence/implementation/`. Round 1 (IMP-01 … IMP-10) ran on `3c95473e1c`. Round 2 (IMP-11 … IMP-17) ran on `7a32bb8832`; the handoff commit adds the ticket documents and one integration fixture fix (IMP-16). Round 3 (IMP-18 … IMP-25) ran on `4a3f221c72`, and the web checks on `296ad69b43` (one web test typing fix). Round 6 (IMP-30, IMP-31) ran on `d3c57a8569`. Round 5 (IMP-27 … IMP-29) ran on `d188941869`. Round 4 (IMP-26) ran on `a54e78ccb7`; integration and web specs were not rerun for it (removal of unread code and two mutations with no product caller; the affected unit and integration files passed before the commit: `Tests  135 passed`). The handoff commits add only the ticket documents and evidence.
+Evidence files are in `evidence/implementation/`. Round 1 (IMP-01 … IMP-10) ran on `3c95473e1c`. Round 2 (IMP-11 … IMP-17) ran on `7a32bb8832`; the handoff commit adds the ticket documents and one integration fixture fix (IMP-16). Round 3 (IMP-18 … IMP-25) ran on `4a3f221c72`, and the web checks on `296ad69b43` (one web test typing fix). Round 7 (IMP-32, web only; no server code changed) ran on `9f4709571b`. Round 6 (IMP-30, IMP-31) ran on `d3c57a8569`. Round 5 (IMP-27 … IMP-29) ran on `d188941869`. Round 4 (IMP-26) ran on `a54e78ccb7`; integration and web specs were not rerun for it (removal of unread code and two mutations with no product caller; the affected unit and integration files passed before the commit: `Tests  135 passed`). The handoff commits add only the ticket documents and evidence.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -204,6 +206,7 @@ Evidence files are in `evidence/implementation/`. Round 1 (IMP-01 … IMP-10) ra
 | IMP-29 | `pnpm test:integration:prepare && pnpm test:integration` (server) | `d188941869` | macOS, Node 22.23 | integration over team runs, Org inspection reads, REST and sockets | CR-461-009, CR-461-011 | Pass | `IMP-29-server-integration.log` | `Tests  483 passed | 69 skipped (552)`, no failures |
 | IMP-30 | web type gate, localization guards, full spec suite | `d3c57a8569` | macOS, Node 22.23 | the read-subject owners and every read site in Team and Org views | CR-461-015 | Pass | `IMP-30-web-checks-and-specs.log` | `[typecheck] PASS` at 93; `Passed.`; `Passed with zero unresolved findings.`; `Tests  5635 passed | 2 skipped (5637)` |
 | IMP-31 | server type gate; `pnpm test:unit`; `pnpm test:integration` (server) | `d3c57a8569` | macOS, Node 22.23 | the team member reads, all server unit and integration tests | CR-461-014 | Pass | `IMP-31-server-checks.log` | `[typecheck] PASS` at 1014; unit `Tests  7898 passed | 9 skipped (7907)`; integration `Tests  483 passed | 69 skipped (552)` |
+| IMP-32 | web type gate, localization guards, full spec suite | `9f4709571b` | macOS, Node 22.23 | `agentReads.ts` (`orgAgentReadSubject`) and every Team and Org read site | CR-461-016 | Pass | `IMP-32-web-checks-and-specs.log` | `[typecheck] PASS` at 93; `Passed.`; `Passed with zero unresolved findings.`; `Tests  5636 passed | 2 skipped (5638)` |
 
 - Not run, and why (round 3 adds): the contract model check (`walkthrough.py --check`): the contract and its model are unchanged since `7a32bb8832`, so IMP-17 holds; a browser check of the stream lifetime and SR-048 in both layouts; the agent-run root's reconnect after a WebSocket 1000 close (noted mid-round, not verified). Earlier: server E2E suites (`pnpm test:e2e`, gated runtime suites), browser probes, the isolated desktop instance, and the contract's stories run against two server instances (design "Validation", the acceptance test) — owned by API/E2E. `tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` needs a rewrite for the new model (Known Risks).
 
