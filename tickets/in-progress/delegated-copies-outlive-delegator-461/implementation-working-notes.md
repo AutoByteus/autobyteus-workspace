@@ -445,3 +445,14 @@ clear the stream; registry test. Focused units 215 files pass. Next, step 3b: th
 `streamOf(run).openSnapshotConnection` in both modes (a session needs the registry and the run's `isMessageEvent`), with the
 sync rows/status read first; `ChildRowsStreams` and the unsequenced `CHILD_RUNS_CHANGED` go; base's row events return
 into each root's event union and are published by `ChildRowsFeed` into the run's stream.
+
+**Base's nested placement (read at `827f1e68dc`, for step 4)**: base's snapshot nests rows by **team**, not by agent:
+`root_team.task_executions` (team stream, `team-execution-view-projector.ts:166`) and each task team's own
+`task_executions` (`:230`); the collaboration DTO likewise (`taskTeam.taskExecutions`). A copy was placed in the team
+containing its delegator: the root (the delegator is the run's own agent or member), a task team (the delegator is one of
+its members), or, for a delegator that is a task agent, the team that task agent is placed in. So from
+`collaborationTreeOf(X).rows()`: `placementOf(row)` = the root when `row.parent` is X; the row of `row.parent` when that is
+a team run; else `placementOf(row of row.parent)`. **Do not apply the held patch's removal of the team DTO's
+`task_executions`**: it is base's nesting field. The held patch's web nesting is dropped (SR-061). Base's started event
+names its placement (`parent_team_run_id`, team stream). Base also sent `closed_task_executions` in the snapshot
+(`:61`) and `task_executions` references in the closed/reopened events (`:99`).
