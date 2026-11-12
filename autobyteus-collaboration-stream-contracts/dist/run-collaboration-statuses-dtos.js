@@ -35,18 +35,23 @@ export const childRunAgentStatusDtoSchema = z.object({
 }).strict();
 /** A listed run, by its kind and run ID. */
 export const listedRunRefDtoSchema = z.object({ kind: collaborationRootKindSchema, runId: nonEmptyStringSchema }).strict();
+/** The peer node a child runs on (autobyteus-278), named from this node's own peer registry. */
+export const childRunNodeDtoSchema = z.object({ nodeId: nonEmptyStringSchema, nodeName: nonEmptyStringSchema }).strict();
 /**
  * One child of a listed run: its identity, the address of the agent of the listed run that delegated to it (the row's
- * "started by"; null when it has no delegator or that agent's address is unknown), and its agents' statuses.
+ * "started by"; null when it has no delegator or that agent's address is unknown), its agents' statuses, and the peer
+ * node it runs on (`null`: this node). A child on a peer node has its identity from its Task entry (no definitions)
+ * and no statuses: nothing is asked of a peer per poll (SR-057); an open view observes it live.
  */
 export const listedRunChildDtoSchema = z.object({
     row: childRunIdentityDtoSchema,
     delegatorAddress: agentAddressSchema.nullable(),
     statuses: z.array(childRunAgentStatusDtoSchema),
+    node: childRunNodeDtoSchema.nullable(),
 }).strict();
 /**
- * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055): for each listed run, whether it is active and the runs it
- * delegated to on this node that its view shows (one hop, each with its agents' statuses). Never restores a run.
+ * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055, SR-057): for each listed run, whether it is active and the
+ * runs it delegated to that its view shows, on this node and on peer nodes (one hop). Never restores a run.
  */
 export const runCollaborationStatusesDtoSchema = z.array(z.object({
     kind: collaborationRootKindSchema,

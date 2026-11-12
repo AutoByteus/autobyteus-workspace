@@ -51,15 +51,19 @@ export const remoteAgentAddressOf = (link: PeerRunLink, agentRunId: string): str
 export const remoteChildLinkOf = (links: readonly PeerRunLink[], agentRunId: string): PeerRunLink | null =>
   links.find((link) => remoteAgentAddressOf(link, agentRunId) !== null) ?? null;
 
+/** The names of peer nodes, from this node's own peer registry (no request to a peer); a node it does not name is its ID. */
+export const peerNodeNames = async (nodeIds: Iterable<string>, channel: RemoteRunChannel | null): Promise<ReadonlyMap<string, string>> => {
+  const names = new Map<string, string>();
+  for (const nodeId of new Set(nodeIds)) names.set(nodeId, (await channel?.peerName(nodeId).catch(() => null)) ?? nodeId);
+  return names;
+};
+
 /** A root's remote links with their node names, in delegation order (the root views list them). */
 export const describeRemoteTaskExecutions = async (
   links: readonly PeerRunLink[],
   channel: RemoteRunChannel | null,
 ): Promise<readonly RemoteTaskExecutionView[]> => {
-  const names = new Map<string, string>();
-  for (const nodeId of new Set(links.map((link) => link.nodeId))) {
-    names.set(nodeId, (await channel?.peerName(nodeId).catch(() => null)) ?? nodeId);
-  }
+  const names = await peerNodeNames(links.map((link) => link.nodeId), channel);
   return Object.freeze(links.map((link) => Object.freeze({ ...link, nodeName: names.get(link.nodeId)! })));
 };
 

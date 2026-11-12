@@ -19,13 +19,13 @@ test("a child run's identity is an agent run or a team run, with nothing a run c
 
 test("the listed-runs poll answers every kind with each run's activity and children (SR-055)", () => {
   const answer = [
-    { kind: "agent_team", runId: "team-run", isActive: false, children: [{ row: agentChild, delegatorAddress: "/manager", statuses: [{ agentRunId: "worker-run", memberAddress: "/worker", status: "running" }] }] },
+    { kind: "agent_team", runId: "team-run", isActive: false, children: [{ row: agentChild, delegatorAddress: "/manager", statuses: [{ agentRunId: "worker-run", memberAddress: "/worker", status: "running" }], node: null }] },
     { kind: "agent_org", runId: "org-run", isActive: true, children: [] },
-    { kind: "agent", runId: "host-run", isActive: false, children: [{ row: teamChild, delegatorAddress: null, statuses: [] }] },
+    { kind: "agent", runId: "host-run", isActive: false, children: [{ row: teamChild, delegatorAddress: null, statuses: [], node: { nodeId: "node-b", nodeName: "docker" } }] },
   ];
   assert.deepEqual(runCollaborationStatusesDtoSchema.parse(answer), answer);
   assert.throws(() => runCollaborationStatusesDtoSchema.parse([{ kind: "agent_team", runId: "t", isActive: false, children: [], statuses: [] }]));
   // Every child names its delegator's address, or null.
-  assert.throws(() => runCollaborationStatusesDtoSchema.parse([{ kind: "agent", runId: "h", isActive: false, children: [{ row: agentChild, statuses: [] }] }]));
+  assert.throws(() => runCollaborationStatusesDtoSchema.parse([{ kind: "agent", runId: "h", isActive: false, children: [{ row: agentChild, statuses: [], node: null }] }]));
   assert.equal(RUN_COLLABORATION_STATUSES_MAX_RUNS, 100);
 });

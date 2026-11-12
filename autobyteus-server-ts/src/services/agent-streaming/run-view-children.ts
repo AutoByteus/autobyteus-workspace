@@ -1,13 +1,13 @@
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 import type { CollaborationTaskExecutionDto, ListedRunChildDto } from "@autobyteus/collaboration-stream-contracts";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild, DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
-import { describeRemoteTaskExecutions } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import { childRunIdentity } from "./child-run-identity.js";
+import { describeRemoteTaskExecutions, peerNodeNames } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { childRunIdentity, peerChildRunIdentity } from "./child-run-identity.js";
 import { delegatedChildDto } from "./delegated-children-dtos.js";
 import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projection.js";
 
@@ -42,27 +42,36 @@ export class RunViewChildren {
   }
 
   /**
-   * Its local children for the listed-runs poll (autobyteus-461 SR-055, SR-056): each child's identity alone (no launch
-   * details, so no file is read per poll) with its agents' live statuses. A child whose own file was never readable is
-   * left out with a warning naming it, as from the view.
+   * Its children for the listed-runs poll (autobyteus-461 SR-055, SR-056, SR-057). A local child: its identity alone (no
+   * launch details, so no file is read per poll) with its agents' live statuses; one whose own file was never readable
+   * is left out with a warning naming it, as from the view. A child on a peer node: its identity from its Task entry,
+   * its node named from this node's registry, and no statuses (nothing is asked of a peer per poll).
    */
   async listed(run: RootExecutionIdentity): Promise<ListedRunChildDto[]> {
     const statuses = await this.statuses(run);
     const children: ListedRunChildDto[] = [];
-    const local = this.input.tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined);
+    const open = this.input.tree.openChildrenOf(run);
+    const local = open.filter((candidate) => candidate.nodeId === undefined);
+    const peers = this.input.tree.peerChildrenOf(run).filter((child) => child.open);
     // The delegators are agents of this run: their addresses from its per-run data, read once per run.
-    const own = local.length ? new Map((await this.input.tree.agentsOf(run)).map((agent) => [agent.agentRunId, agent.address])) : new Map();
+    const own = local.length || peers.length ? new Map((await this.input.tree.agentsOf(run)).map((agent) => [agent.agentRunId, agent.address])) : new Map();
+    const delegatorAddressOf = (child: DelegatedChild) => (own.get(child.delegatorAgentRunId) ?? null) as ListedRunChildDto["delegatorAddress"];
     for (const child of local) {
       try {
         const row = await childRunIdentity(child, this.input.tree);
         if (!row) continue;
         const agents = new Set(row.kind === "agent" ? [row.agentRunId] : row.members.map((member) => member.agentRunId));
-        children.push({ row, delegatorAddress: (own.get(child.delegatorAgentRunId) ?? null) as ListedRunChildDto["delegatorAddress"],
+        children.push({ row, delegatorAddress: delegatorAddressOf(child), node: null,
           statuses: statuses.filter((status) => agents.has(status.agentRunId))
           .map((status) => ({ agentRunId: status.agentRunId, memberAddress: status.memberAddress, status: status.status })) });
       } catch (error) {
         console.warn(`A run delegated from ${run.rootSubjectKind} run '${run.rootRunId}' was left out of its listed children: ${error instanceof Error ? error.message : String(error)}`);
       }
+    }
+    const names = await peerNodeNames(peers.map((child) => child.nodeId), this.input.channel());
+    for (const child of peers) {
+      children.push({ row: peerChildRunIdentity(child), delegatorAddress: delegatorAddressOf(child), statuses: [],
+        node: { nodeId: child.nodeId, nodeName: names.get(child.nodeId)! } });
     }
     return children;
   }

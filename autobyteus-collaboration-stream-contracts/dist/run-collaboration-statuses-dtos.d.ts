@@ -39,9 +39,16 @@ export declare const listedRunRefDtoSchema: z.ZodObject<{
     }>;
     runId: z.ZodString;
 }, z.core.$strict>;
+/** The peer node a child runs on (autobyteus-278), named from this node's own peer registry. */
+export declare const childRunNodeDtoSchema: z.ZodObject<{
+    nodeId: z.ZodString;
+    nodeName: z.ZodString;
+}, z.core.$strict>;
 /**
  * One child of a listed run: its identity, the address of the agent of the listed run that delegated to it (the row's
- * "started by"; null when it has no delegator or that agent's address is unknown), and its agents' statuses.
+ * "started by"; null when it has no delegator or that agent's address is unknown), its agents' statuses, and the peer
+ * node it runs on (`null`: this node). A child on a peer node has its identity from its Task entry (no definitions)
+ * and no statuses: nothing is asked of a peer per poll (SR-057); an open view observes it live.
  */
 export declare const listedRunChildDtoSchema: z.ZodObject<{
     row: z.ZodDiscriminatedUnion<[z.ZodObject<{
@@ -70,10 +77,14 @@ export declare const listedRunChildDtoSchema: z.ZodObject<{
         memberAddress: z.ZodString;
         status: z.ZodString;
     }, z.core.$strict>>;
+    node: z.ZodNullable<z.ZodObject<{
+        nodeId: z.ZodString;
+        nodeName: z.ZodString;
+    }, z.core.$strict>>;
 }, z.core.$strict>;
 /**
- * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055): for each listed run, whether it is active and the runs it
- * delegated to on this node that its view shows (one hop, each with its agents' statuses). Never restores a run.
+ * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055, SR-057): for each listed run, whether it is active and the
+ * runs it delegated to that its view shows, on this node and on peer nodes (one hop). Never restores a run.
  */
 export declare const runCollaborationStatusesDtoSchema: z.ZodArray<z.ZodObject<{
     kind: z.ZodEnum<{
@@ -110,6 +121,10 @@ export declare const runCollaborationStatusesDtoSchema: z.ZodArray<z.ZodObject<{
             memberAddress: z.ZodString;
             status: z.ZodString;
         }, z.core.$strict>>;
+        node: z.ZodNullable<z.ZodObject<{
+            nodeId: z.ZodString;
+            nodeName: z.ZodString;
+        }, z.core.$strict>>;
     }, z.core.$strict>>;
 }, z.core.$strict>>;
 /** At most this many runs per read. */
@@ -118,5 +133,6 @@ export type ChildRunIdentityDto = z.infer<typeof childRunIdentityDtoSchema>;
 export type ChildRunAgentStatusDto = z.infer<typeof childRunAgentStatusDtoSchema>;
 export type ListedRunRefDto = z.infer<typeof listedRunRefDtoSchema>;
 export type ListedRunChildDto = z.infer<typeof listedRunChildDtoSchema>;
+export type ChildRunNodeDto = z.infer<typeof childRunNodeDtoSchema>;
 export type RunCollaborationStatusesDto = z.infer<typeof runCollaborationStatusesDtoSchema>;
 //# sourceMappingURL=run-collaboration-statuses-dtos.d.ts.map

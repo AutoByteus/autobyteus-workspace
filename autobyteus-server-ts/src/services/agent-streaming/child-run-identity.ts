@@ -33,3 +33,16 @@ export const childRunIdentity = async (child: DelegatedChild, tree: Pick<Delegat
       return { address: agent.address as never, agentRunId: agent.agentRunId, agentDefinitionId: agent.agentDefinitionId };
     }) });
 };
+
+/**
+ * A child row's identity for a run on a peer node (autobyteus-461 SR-057): from its Task entry alone (its address, its
+ * run, a team's members and its coordinator, the member the delegation went to, its delegator and when it started),
+ * with no definitions (the peer keeps them). Nothing is asked of the peer.
+ */
+export const peerChildRunIdentity = (child: DelegatedChild): ChildRunIdentityDto => {
+  const common = { delegatorAgentRunId: child.delegatorAgentRunId, startedAt: child.linkedAt, address: child.recipientAddress as never };
+  const childRun = child.run;
+  if ("agentRunId" in childRun) return Object.freeze({ kind: "agent", ...common, agentRunId: childRun.agentRunId, agentDefinitionId: null });
+  return Object.freeze({ kind: "agent_team", ...common, teamRunId: childRun.teamRunId, coordinatorAgentRunId: child.entryAgentRunId,
+    members: (child.members ?? []).map((member) => ({ address: member.address as never, agentRunId: member.agentRunId, agentDefinitionId: null })) });
+};

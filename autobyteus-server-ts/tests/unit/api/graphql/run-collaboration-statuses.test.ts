@@ -51,7 +51,10 @@ const fixture = async () => {
   const live: Record<string, { agentRunId: string; status: string }[]> = { "writer-1": [{ agentRunId: "writer-1", status: "running" }] };
   const followers = new LocalChildFollowers({ tree,
     agents: () => ({ observePairedAgents: vi.fn(), pairedAgentStatuses: (runId: string) => live[runId] ?? [] }) as never });
-  const runViewChildren = new RunViewChildren({ memoryDir: "/unused", tree, followers, channel: () => null });
+  // This node's channel: only its own registry's names are read; any request to a peer would fail the test.
+  const channel = new Proxy({ peerName: vi.fn(async (nodeId: string) => nodeId === "node-b" ? "docker" : nodeId) } as Record<string, unknown>, {
+    get: (target, name) => name in target ? target[name as string] : () => { throw new Error(`A peer was asked: ${String(name)}`); } });
+  const runViewChildren = new RunViewChildren({ memoryDir: "/unused", tree, followers, channel: () => channel as never });
   const manager = Object.create(StandaloneAgentRunRootManager.prototype) as StandaloneAgentRunRootManager;
   Object.defineProperty(manager, "active", { value: new Map() });
   Object.defineProperty(manager, "pending", { value: new Map() });
@@ -63,7 +66,7 @@ const fixture = async () => {
     try { return await new RunCollaborationStatusesResolver().runCollaborationStatuses(asked); }
     finally { releaseProcessStandaloneAgentRunRootManager(manager); }
   });
-  return { tasks, reads, poll };
+  return { tasks, reads, poll, channel };
 };
 afterEach(() => { vi.clearAllMocks(); });
 
@@ -74,16 +77,30 @@ describe("runCollaborationStatuses (SR-055)", () => {
     expect(answer).toEqual([
       { kind: "agent_team", runId: "team-1", isActive: true, children: [{
         row: { kind: "agent", address: "/writer", agentRunId: "writer-1", agentDefinitionId: "writer", delegatorAgentRunId: "manager-1", startedAt: expect.any(String) },
-        delegatorAddress: "/manager", statuses: [{ agentRunId: "writer-1", memberAddress: "/writer", status: "running" }] }] },
+        delegatorAddress: "/manager", statuses: [{ agentRunId: "writer-1", memberAddress: "/writer", status: "running" }], node: null },
+        // A peer's run (SR-057): its identity from its Task entry, its node named here, no statuses.
+        { row: { kind: "agent", address: "/far", agentRunId: "far-1", agentDefinitionId: null, delegatorAgentRunId: "manager-1", startedAt: expect.any(String) },
+          delegatorAddress: "/manager", statuses: [], node: { nodeId: "node-b", nodeName: "docker" } }] },
       { kind: "agent_org", runId: "org-1", isActive: false, children: [{
         row: { kind: "agent_team", address: "/docs_team", teamRunId: "docs-team", coordinatorAgentRunId: "lead-1", delegatorAgentRunId: "ceo-1", startedAt: expect.any(String),
           members: [{ address: "/lead", agentRunId: "lead-1", agentDefinitionId: "lead" }, { address: "/checker", agentRunId: "checker-1", agentDefinitionId: "checker" }] },
-        delegatorAddress: "/ceo", statuses: [{ agentRunId: "lead-1", memberAddress: "/lead", status: "offline" }, { agentRunId: "checker-1", memberAddress: "/checker", status: "offline" }] }] },
+        delegatorAddress: "/ceo", node: null, statuses: [{ agentRunId: "lead-1", memberAddress: "/lead", status: "offline" }, { agentRunId: "checker-1", memberAddress: "/checker", status: "offline" }] }] },
       // An agent run with no stored address shows the address it was delegated to.
       { kind: "agent", runId: "host-1", isActive: false, children: [{
         row: { kind: "agent", address: "/helper", agentRunId: "helper-1", agentDefinitionId: "helper", delegatorAgentRunId: "host-1", startedAt: expect.any(String) },
-        delegatorAddress: "/host", statuses: [{ agentRunId: "helper-1", memberAddress: "/helper", status: "offline" }] }] },
+        delegatorAddress: "/host", node: null, statuses: [{ agentRunId: "helper-1", memberAddress: "/helper", status: "offline" }] }] },
     ]);
+  });
+
+  it("asks nothing of a peer per poll: a peer child is answered from its Task entry and this node's registry (SR-057)", async () => {
+    const f = await fixture();
+    await f.poll([{ kind: "agent_team", runId: "team-1" }]);
+    await f.poll([{ kind: "agent_team", runId: "team-1" }]);
+    expect((f.channel as unknown as { peerName: ReturnType<typeof vi.fn> }).peerName).toHaveBeenCalledWith("node-b");
+    // Its Task closes: it leaves the answer, as a local child does.
+    f.tasks.close("T4");
+    const [answer] = await f.poll([{ kind: "agent_team", runId: "team-1" }]) as Array<{ children: Array<{ node: unknown }> }>;
+    expect(answer!.children.every((child) => child.node === null)).toBe(true);
   });
 
   it("reads a delegated run's identity and its delegator's address once, not per poll; a closed child leaves the answer", async () => {
@@ -95,7 +112,8 @@ describe("runCollaborationStatuses (SR-055)", () => {
     expect(f.reads.filter((id) => id === "team-1")).toHaveLength(1);
     // Its Task closes: the next poll no longer lists it.
     f.tasks.close("T1");
-    await expect(f.poll([{ kind: "agent_team", runId: "team-1" }])).resolves.toEqual([{ kind: "agent_team", runId: "team-1", isActive: true, children: [] }]);
+    await expect(f.poll([{ kind: "agent_team", runId: "team-1" }])).resolves.toEqual([{ kind: "agent_team", runId: "team-1", isActive: true,
+      children: [expect.objectContaining({ node: { nodeId: "node-b", nodeName: "docker" } })] }]);
   });
 
   it("refuses more than 100 runs with BAD_USER_INPUT", async () => {
