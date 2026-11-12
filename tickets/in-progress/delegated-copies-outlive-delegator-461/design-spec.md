@@ -568,13 +568,15 @@ This migration is terminal by then and does not run again. The residue is inert,
 
 ### DS-13 Archive and delete (SR-067)
 
-`user: archive or delete run X → its service (agent, team or org) → DelegatedWorkGuard.refusal(X) → refused, naming the working runs; else the action → on delete, after its files are gone: DelegationIndex.runDeleted(X)`
+`user: archive or delete run X → its service (agent, team or org) → DelegatedWorkGuard.refusal(X) → refused, naming the working runs; else the action → on delete: DelegationIndex.runDeleted(X) first, then its files and row are removed`
 
 - **The guard asks every open delegated run of X** (one hop, `openChildrenOf(X)`):
   - a local one by its own live status, as now;
   - **a peer one through its handle's `status()`** (G-1). A working peer run refuses, as a local one does (REQ-007 with REQ-013). Otherwise its later report would find its delegator gone.
   - **An unreachable node** does not block the action, because its node owns the run and may never come back. The action's result names the runs that were not asked. The guard becomes async.
-- **A deleted run leaves the tree** (G-2; contract §4, T-8, R-11; model S26, S27). `runDeleted(X)` drops X's node and its per-run agents. The Task entries that name X stay, as the Task's record. The tree then skips X:
+- **A deleted run leaves the tree** (G-2; contract §4, T-8, R-11; model S26, S27). `runDeleted(X)` drops X's node and its per-run agents.
+  - **Order** (ARCH-REV-041 note): the index is told first, so no step 2 or message can find X while its files go. If removing the files then fails, the startup build adds X back, because it is still stored.
+  - **A message already past the tree** when X is deleted: `resolveOrRestore` meets a run with no files, and that answer maps to R-11 (`TARGET_AGENT_RUN_NOT_ACTIVE`). The Task entries that name X stay, as the Task's record. The tree then skips X:
   - a run X delegated to has no parent and is the top of its own tree. The list already shows it as a run of its own (DS-11), so views, reach and the list now agree;
   - a Task X assigned has no assigner, so address step 2 reaches nothing of X, and the `@` note and `list_available_agents` stop listing X's agents;
   - X's agents' run IDs are unknown, so a message to one is refused with `TARGET_AGENT_RUN_NOT_ACTIVE`, as for any unknown run ID.

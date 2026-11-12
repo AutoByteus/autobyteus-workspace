@@ -1291,4 +1291,4 @@
   - `walkthrough.py --check`: three "match" lines, 43 states;
   - `validate_contract_examples.py`: 0 findings.
 - **Next action:** architecture review.
-
+- **ARCH-REV-041 passed SR-067.** Its note is applied: `runDeleted` is called before the files are removed, and the startup build re-adds a run whose removal failed. A restore that meets a run with no files, which happens to a message already past the tree, answers R-11.
