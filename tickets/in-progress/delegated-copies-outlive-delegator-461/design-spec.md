@@ -125,6 +125,18 @@ Each new name says what its owner owns.
 
 `agent: send_message_to(address) → the send_message_to dispatcher (the tool service) → the sender's root, in its gate: (1) its own team, unchanged (resolveMessageRecipient's own-team step) → (2) new, for a run that works on a Task, asked by the dispatcher of CrossRunAddressResolution, not by the root: the standing agents of the run that assigned its Task: DelegationTree.assignerOf(each open Task of the sender's run) → DelegationTree.standingAgentsOf(that run), by address, read once from that run's own file (no root is restored to resolve an address) → (3) for a run the user started: its own run's standing agents, unchanged → DS-2's delivery step` (contract §2.3; the steps as the contract numbers them; a miss inside the own team never falls through)
 
+**What a delegated run sees as in its run** (the `@` note, `list_available_agents`, and the in-run part of `delegate_task`; REQ-009, the non-goal "no change to what an agent reads"; SR-059). At base a copy was hosted in its delegator's root, so the delegator's agents were "in the run" for it. Now the rule follows address reach: **a run's in-run set is exactly what it reaches by address (§2.3)**:
+- step 1, its own team;
+- for a run that works on a Task, step 2, the standing agents of the run that assigned it (`DelegationTree.assignersOf` its open Tasks → `standingOf`, each with its definition from the tree's per-run agents);
+- step 3, its own run's standing agents.
+
+One owner computes that set, beside `CrossRunAddressResolution` (`ReachableAgents`), and the `CollaboratorRootPort`'s in-run read becomes async to include it. Its readers:
+- **the `@` mention note** (`CollaboratorAdmission.resolveMentions`): an assigner's own agent (an agent run the user started) is `run_agent`, as at base: "talk with it using send_message_to; you can't delegate to it". An assigner's configured placement is `in_run`, at the address step 2 resolves: "talk with it using send_message_to".
+- **`list_available_agents`**: it lists them at those addresses.
+- **`delegate_task`'s in-run placements:** the same set, so an address step 2 reaches is answered as base answered it for a hosted copy. A characterization test **at `827f1e68dc`** captures the exact answers for the assigner's own agent and for an assigner's configured placement. The branch asserts the same (SR-052's method).
+
+Tests: CPW-M2 and CPW-M5 read base's notes, plus that characterization test.
+
 ### DS-4 Stop
 
 `user: Stop → the run's service (agent run, team run or org run) → that run's root.stop() in its gate → its own agent, its own team members, or its own org units, only`

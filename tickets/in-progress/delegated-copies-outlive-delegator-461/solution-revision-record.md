@@ -1120,3 +1120,20 @@
 - The three Local Fixes of CRR-016 (CR-461-031, -032, -034) are the Implementation Engineer's.
 - Next action: architecture review (narrow)
 - ARCH-REV-033 (2026-11-12): Pass, no finding. Its wording note is applied: the DS-8 spine now names the open-subtree rule and SR-056's identity from the tree. The reviewer notes that contract revision 8's "one hop" applies to the stored edge only, so the two do not conflict.
+
+### SR-059 — What a delegated run sees as in its run is what it reaches by address (the Implementation Engineer's Design Impact on CR-461-032)
+
+- Triggering: the Implementation Engineer (IR-011). With CR-461-032 a child row's message and its `@` mentions go to the child's own root, but the note it composes differs from base for agents the child reaches only by address step 2:
+  - CPW-M2: the agent the user started is offered "delegate the task to it", where base says "talk with it using send_message_to; you can't delegate to it";
+  - CPW-M5: a team member, likewise.
+
+  `CollaboratorAdmission.resolveMentions` reads only the resolving root's own in-run placements. At base the child was hosted in the delegator's root, so the delegator's agents were in the run.
+- The Solution Designer's gap: the in-run set of mentions, the list and delegation is another derived consumer of hosting.
+- Decision (on the data model's merits): **a run's in-run set is exactly what it reaches by address (§2.3)**:
+  - step 1, its own team;
+  - step 2, its Task's assigner's standing agents;
+  - step 3, its own run's agents.
+
+  One owner (`ReachableAgents`, beside `CrossRunAddressResolution`) computes it. The mention note, `list_available_agents` and `delegate_task`'s in-run placements read it, and the root port's read becomes async. The notes are then base's (`run_agent` / `in_run`), and what an agent is told it can talk with is exactly what it can reach. The delegation answers for these addresses are base's, captured by a characterization test at `827f1e68dc` (SR-052's method).
+- Done: the design's "What a delegated run sees as in its run" (before DS-4), with tests. `walkthrough.py --check` passes; the model does not cover mentions or lists.
+
