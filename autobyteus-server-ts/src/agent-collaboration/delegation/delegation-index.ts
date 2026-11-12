@@ -33,6 +33,8 @@ export type RunStanding = Readonly<{ agents: ReadonlyMap<string, string>; coordi
  */
 export interface RunPartsReader {
   partsOf(run: RootExecutionIdentity): Promise<RunParts | null>;
+  /** Whether the run's own file is stored, without reading it (SR-067: the startup build skips a deleted run). */
+  isStored(run: RootExecutionIdentity): Promise<boolean>;
 }
 
 /** A run that a run delegated to, whose Task work is open (one hop, DS-8). */
@@ -96,6 +98,8 @@ export class DelegationIndex implements TaskEntriesListener {
   /** Per run key: its parts, read once from its own file (an org run again on a miss). */
   private readonly partsByRun = new Map<string, RunParts>();
   private readonly membersRead = new Set<string>();
+  /** Deleted runs (SR-067 G-2): the entries naming them stay as the Task's record; the tree skips them. */
+  private readonly deleted = new Set<string>();
   private reading: Promise<void> | null = null;
   private readonly listeners = new Set<() => void>();
   private readonly childRowsListeners = new Set<(change: ChildRowsChange) => void>();
@@ -137,6 +141,33 @@ export class DelegationIndex implements TaskEntriesListener {
     for (const taskId of this.source().taskIdsWithEntries()) this.indexTask(taskId);
     this.rebuildEntryAgents();
     this.notify();
+  }
+
+  /**
+   * A run was deleted (SR-067 G-2; contract T-8, R-11; model S26, S27), told before its files go: its node and agents
+   * leave the tree, while the Task entries naming it stay as the Task's record. A run it delegated to is the top of its
+   * own tree, a Task it assigned has no assigner, and its agents' run IDs are unknown (a message to one is
+   * `TARGET_AGENT_RUN_NOT_ACTIVE`). Its ancestors' views lose its row and every row below it.
+   */
+  runDeleted(run: RootExecutionIdentity): void {
+    const key = keyOf(run);
+    if (this.deleted.has(key)) return;
+    const above = this.chainOf(run).slice(1);
+    const before = new Map(above.map((ancestor) => [keyOf(ancestor), this.collaborationTreeOf(ancestor).rows()]));
+    this.deleted.add(key);
+    this.forgetNode(key);
+    this.rebuildEntryAgents();
+    this.notify();
+    for (const ancestor of above) this.reportChildRows(ancestor, before.get(keyOf(ancestor)) ?? []);
+  }
+
+  /** At startup (SR-067): the runs the Task records name whose own files are gone were deleted; the tree skips them. */
+  async skipUnstored(): Promise<void> {
+    for (const [key, run] of [...this.nodes]) {
+      if (this.isPeerRun(key)) continue;
+      const stored = await this.reader.isStored(run).catch(() => true);
+      if (!stored) this.runDeleted(run);
+    }
   }
 
   /** Told after every change (a build, a Task's change), inside the Task's ordered change: a listener must not wait. */
@@ -204,7 +235,8 @@ export class DelegationIndex implements TaskEntriesListener {
 
   /** Who delegated this run (one hop): the newest entry's `delegatedFrom`; null for a run no Task names. */
   parentOf(run: TaskExecutionReference): RunDelegatedFrom | null {
-    return newest(this.tasksOf(run))?.delegatedFrom ?? null;
+    const parent = newest(this.tasksOf(run))?.delegatedFrom ?? null;
+    return parent && !this.deleted.has(keyOf(parent.delegatingRun)) ? parent : null;
   }
 
   /** The run's entry in each Task it works on, open or closed. */
@@ -226,14 +258,15 @@ export class DelegationIndex implements TaskEntriesListener {
 
   /** The run that assigned the Task: its newest `assigned` entry's delegating run. */
   assignerOf(taskId: string): RootExecutionIdentity | null {
-    return newest((this.byTask.get(taskId) ?? []).filter((entry) => entry.role === "assigned"))?.delegatedFrom.delegatingRun ?? null;
+    return newest((this.byTask.get(taskId) ?? []).filter((entry) => entry.role === "assigned"
+      && !this.deleted.has(keyOf(entry.delegatedFrom.delegatingRun))))?.delegatedFrom.delegatingRun ?? null;
   }
 
   /** Every run that assigned the Task: the delegating runs of its `assigned` entries (`model.py` `assigners`). */
   assignersOf(taskId: string): readonly RootExecutionIdentity[] {
     const runs = new Map<string, RootExecutionIdentity>();
     for (const entry of this.byTask.get(taskId) ?? []) {
-      if (entry.role === "assigned") runs.set(keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun);
+      if (entry.role === "assigned" && !this.deleted.has(keyOf(entry.delegatedFrom.delegatingRun))) runs.set(keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun);
     }
     return [...runs.values()];
   }
@@ -242,6 +275,7 @@ export class DelegationIndex implements TaskEntriesListener {
   openChildrenOf(run: RootExecutionIdentity): readonly DelegatedChild[] {
     const children: Array<DelegatedChild & { firstLinkedAt: string }> = [];
     for (const childKey of this.childrenOfRun.get(keyOf(run)) ?? []) {
+      if (this.deleted.has(childKey)) continue;
       const entries = [...this.byRun.get(childKey)?.values() ?? []];
       const current = newest(entries.filter((entry) => entry.open));
       if (!current || keyOf(current.delegatedFrom.delegatingRun) !== keyOf(run)) continue;
@@ -264,6 +298,7 @@ export class DelegationIndex implements TaskEntriesListener {
   peerChildrenOf(run: RootExecutionIdentity): readonly (DelegatedChild & { open: boolean; nodeId: string })[] {
     const children: Array<DelegatedChild & { open: boolean; nodeId: string; firstLinkedAt: string }> = [];
     for (const childKey of this.childrenOfRun.get(keyOf(run)) ?? []) {
+      if (this.deleted.has(childKey)) continue;
       const entries = [...this.byRun.get(childKey)?.values() ?? []];
       const current = newest(entries);
       if (!current || current.nodeId === undefined || keyOf(current.delegatedFrom.delegatingRun) !== keyOf(run)) continue;
@@ -276,9 +311,25 @@ export class DelegationIndex implements TaskEntriesListener {
     return children.sort((a, b) => a.firstLinkedAt.localeCompare(b.firstLinkedAt)).map(({ firstLinkedAt: _first, ...child }) => child);
   }
 
+  /**
+   * The run on a peer node named by this ID (SR-066): the Agent or Team run with this run ID, or the Team run this agent
+   * run is a member of, from its Task entries; null for a run that is not on a peer node.
+   */
+  peerRunNamed(id: string): TaskExecutionReference | null {
+    for (const entries of this.byRun.values()) {
+      for (const entry of entries.values()) {
+        if (entry.nodeId === undefined) continue;
+        const runId = "agentRunId" in entry.run ? entry.run.agentRunId : entry.run.teamRunId;
+        if (runId === id || entry.members?.some((member) => member.agentRunId === id)) return entry.run;
+      }
+    }
+    return null;
+  }
+
   /** Every local run this run delegated to, one hop, open or closed (past participants of its log; AR-012). */
   childrenOf(run: RootExecutionIdentity): readonly TaskExecutionReference[] {
     return [...this.childrenOfRun.get(keyOf(run)) ?? []].flatMap((childKey) => {
+      if (this.deleted.has(childKey)) return [];
       const entry = [...this.byRun.get(childKey)?.values() ?? []][0];
       return entry && entry.nodeId === undefined ? [entry.run] : [];
     });
@@ -290,7 +341,7 @@ export class DelegationIndex implements TaskEntriesListener {
     const found: TaskExecutionReference[] = [];
     const visit = (parentKey: string): void => {
       for (const childKey of this.childrenOfRun.get(parentKey) ?? []) {
-        if (seen.has(childKey)) continue;
+        if (seen.has(childKey) || this.deleted.has(childKey)) continue;
         seen.add(childKey);
         const entry = [...this.byRun.get(childKey)!.values()][0]!;
         if (entry.nodeId !== undefined) continue;
@@ -423,9 +474,9 @@ export class DelegationIndex implements TaskEntriesListener {
       const perTask = this.byRun.get(runKey) ?? new Map<string, TaskRunEntry>();
       perTask.set(taskId, entry);
       this.byRun.set(runKey, perTask);
-      this.nodes.set(runKey, run);
+      if (!this.deleted.has(runKey)) this.nodes.set(runKey, run);
       const parentKey = keyOf(entry.delegatedFrom.delegatingRun);
-      this.nodes.set(parentKey, entry.delegatedFrom.delegatingRun);
+      if (!this.deleted.has(parentKey)) this.nodes.set(parentKey, entry.delegatedFrom.delegatingRun);
       const children = this.childrenOfRun.get(parentKey) ?? new Set<string>();
       children.add(runKey);
       this.childrenOfRun.set(parentKey, children);
@@ -457,12 +508,17 @@ export class DelegationIndex implements TaskEntriesListener {
   private pruneNodes(): void {
     for (const key of [...this.nodes.keys()]) {
       if (!this.byRun.has(key) && !this.childrenOfRun.has(key)) {
-        this.nodes.delete(key);
-        this.membersRead.delete(key);
-        this.partsByRun.delete(key);
-        for (const [agentRunId, run] of [...this.memberAgents]) if (keyOf(run) === key) this.memberAgents.delete(agentRunId);
+        this.forgetNode(key);
       }
     }
+  }
+
+  /** A node and what was read of it leave the tree. */
+  private forgetNode(key: string): void {
+    this.nodes.delete(key);
+    this.membersRead.delete(key);
+    this.partsByRun.delete(key);
+    for (const [agentRunId, run] of [...this.memberAgents]) if (keyOf(run) === key) this.memberAgents.delete(agentRunId);
   }
 
   private rebuildEntryAgents(): void {
@@ -470,6 +526,7 @@ export class DelegationIndex implements TaskEntriesListener {
     for (const entries of this.byTask.values()) {
       for (const entry of entries) {
         const run = runIdentityOf(entry.run);
+        if (this.deleted.has(keyOf(run))) continue;
         this.entryAgents.set(entry.entryAgentRunId, run);
         for (const member of entry.members ?? []) this.entryAgents.set(member.agentRunId, run);
       }

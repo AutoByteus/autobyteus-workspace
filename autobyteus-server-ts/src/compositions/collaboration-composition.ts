@@ -48,6 +48,8 @@ import { setProcessStandaloneRootMemberViewProjectionService, StandaloneRootMemb
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 import { composeProjectRunLinks } from "./project-run-links-composition.js";
 import { createRunViewSources, type RunViewSources } from "./run-view-composition.js";
+import { createPeerRunOf } from "../agent-collaboration/execution/remote/peer-runs.js";
+import { PeerChildObservation } from "../agent-collaboration/delegation/peer-child-observation.js";
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -89,6 +91,8 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   // each run's collaboration tree from them (SR-060).
   const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir));
   tree.build();
+  // A run the Task records name whose own files are gone was deleted: the tree skips it (SR-067 G-2).
+  await tree.skipUnstored();
   resources.setEntriesListener(tree);
   return Object.freeze({ resources, tree, // Each run's view stream; which events are messages is each root kind's rule (SR-062).
     viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent }), taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
@@ -192,6 +196,9 @@ export const composeCollaboration = async (input: Readonly<{
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null });
     releases.push(feed.follow(tree));
     const runViewChildren = new RunViewChildren({ feed, projection, followers });
+    // A peer run, reached by its own identity (SR-066): its handle from the tree, its live status and output per view.
+    const peerRunOf = createPeerRunOf(tree, input.remoteChannel);
+    const peers = new PeerChildObservation({ tree, streams: taskSide.viewStreams, peerRunOf, channel: input.remoteChannel });
 
     // 8. Their consumers. Older singletons (their getters are FU-011) return the instance created here.
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
@@ -206,7 +213,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTeamRunHistoryService(runs.teamRunHistoryService));
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
-    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, followers }, registrations: input.activeRoots });
+    const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, followers, peers, peerRunOf }, registrations: input.activeRoots });
     return Object.freeze({
       tasks, views, runViewChildren, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },

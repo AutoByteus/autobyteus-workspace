@@ -1,3 +1,4 @@
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -99,6 +100,7 @@ export class TeamRunService {
   private readonly tokenUsageReadiness: Pick<TokenUsageCapability,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly admission: Pick<DefinitionAdmissionService, "requireAvailable">;
+  private readonly peerRunOf: PeerRunOf | null;
 
   constructor(options: {
     agentTeamRunManager?: AgentTeamRunManager;
@@ -112,6 +114,8 @@ export class TeamRunService {
     tokenUsageReadiness?: Pick<TokenUsageCapability,
       "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
     definitionAdmissionService?: Pick<DefinitionAdmissionService, "requireAvailable">;
+    /** A run on a peer node by its own ID (SR-066): its Stop goes to its node. */
+    peerRunOf?: PeerRunOf;
   } = {}) {
     this.manager = options.agentTeamRunManager ?? AgentTeamRunManager.getInstance();
     this.definitions = options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
@@ -121,6 +125,7 @@ export class TeamRunService {
     this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
     this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.admission = options.definitionAdmissionService ?? DefinitionAdmissionService.getInstance();
+    this.peerRunOf = options.peerRunOf ?? null;
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
@@ -255,6 +260,9 @@ export class TeamRunService {
     return (await this.catalog.getCatalogRow(teamRunId))?.summary || null;
   }
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
+    // A delegated team run on a peer node is stopped as itself, by its node through its coordinator (SR-066, REQ-013).
+    const peer = this.peerRunOf?.(teamRunId) ?? null;
+    if (peer?.kind === "agent_team" && peer.runId === teamRunId) return (await peer.terminate()).accepted;
     const success = await this.manager.terminateTeamRun(teamRunId);
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
     return success;

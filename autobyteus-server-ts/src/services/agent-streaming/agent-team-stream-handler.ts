@@ -1,3 +1,4 @@
+import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -77,7 +78,6 @@ export class AgentTeamStreamHandler {
     private readonly sessionManager: AgentSessionManager,
     private readonly teamRunService: Pick<TeamRunService, "getActiveTeamRun" | "resolveManagedTeamRun" | "recordRunActivity">,
     private readonly sources: Omit<TeamViewSources, "activeTeamRun">,
-    /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
   ) {}
 
   async connect(connection: WebSocketConnection, teamRunIdInput: string): Promise<string | null> {
@@ -120,7 +120,7 @@ export class AgentTeamStreamHandler {
         const teamRunId = session.view.teamRunId;
         if (message.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
           // Retry (autobyteus-278): the answers arrive as messages on this stream.
-          await this.teamRunService.getActiveTeamRun(teamRunId)?.remoteChildren.refresh();
+          await this.sources.rows.peers.refresh(createTeamRootExecutionIdentity(teamRunId));
           return;
         }
         // A command to one of the team's agents (a peer run's through the root); a delegated run is reached by its own
@@ -154,6 +154,9 @@ export class AgentTeamStreamHandler {
    */
   private async memberCommand(view: TeamViewSession, agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     const teamRunId = view.teamRunId;
+    // A peer row's command goes to its handle (SR-066), never through the team.
+    const peer = this.sources.rows.peerRunOf(agentRunId);
+    if (peer) return executePeerCommand(peer, agentRunId, command);
     const live = this.teamRunService.getActiveTeamRun(teamRunId);
     if (!live && command.kind !== "post_message") {
       return { accepted: false, code: "TEAM_RUN_STOPPED", message: `Team run '${teamRunId}' is stopped. A message to one of its members starts it.` };
@@ -211,6 +214,9 @@ export class AgentTeamStreamHandler {
     payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"],
     mentions: ReturnType<typeof toCollaboratorMentions>,
   ): Promise<MemberPostResult> {
+    // A peer row's message goes to its handle (SR-066): the team stays as it is.
+    const peer = this.sources.rows.peerRunOf(agentRunId);
+    if (peer) return mentions.length ? PEER_MENTIONS_REFUSAL : executePeerCommand(peer, agentRunId, { kind: "post_message", message: userMessage(payload, payload.content) });
     let content = payload.content;
     if (mentions.length) {
       const root = this.teamRunService.getActiveTeamRun(view.teamRunId) ?? await this.teamRunService.resolveManagedTeamRun(view.teamRunId);

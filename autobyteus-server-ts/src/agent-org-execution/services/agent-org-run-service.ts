@@ -62,7 +62,7 @@ export class AgentOrgRunService {
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
-    workGuard: Pick<DelegatedWorkGuard, "refusal">;
+    workGuard: Pick<DelegatedWorkGuard, "guard">;
   }>) {}
 
   /**
@@ -200,16 +200,12 @@ export class AgentOrgRunService {
 
   async archiveStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    const refused = this.dependencies.workGuard.refusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived");
-    if (refused) return { success: false as const, message: refused };
-    return this.dependencies.history.archiveStored(normalized);
+    return this.dependencies.workGuard.guard({ rootSubjectKind: "agent_org", rootRunId: normalized }, "archived", () => this.dependencies.history.archiveStored(normalized));
   }
 
   async deleteStoredRun(orgRunId: string) {
     const normalized = required(orgRunId, "orgRunId");
-    const refused = this.dependencies.workGuard.refusal({ rootSubjectKind: "agent_org", rootRunId: normalized }, "deleted");
-    if (refused) return { success: false as const, message: refused };
-    const result = await this.dependencies.history.deleteStored(normalized);
+    const result = await this.dependencies.workGuard.guard({ rootSubjectKind: "agent_org", rootRunId: normalized }, "deleted", () => this.dependencies.history.deleteStored(normalized));
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())
       .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));

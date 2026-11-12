@@ -149,8 +149,10 @@ export class RestartResumer {
         lifecycleObserver: restartNoticeLifecycleObserver(() => host ?? this.dependencies.liveRuns.getActiveRun(entry.agentRunId), message.content),
         onlyAsFirstInput: true,
       };
-      const result = resolved.kind === "agent" && host
-        ? postedResult(await resolved.root.postHostUserMessage({ message, postOptions }))
+      // A standalone root has one agent, its host; a Team or Org root posts to its member.
+      const result = resolved.kind === "agent"
+        ? host ? postedResult(await resolved.root.postHostUserMessage({ message, postOptions }))
+          : { accepted: false as const, code: "RUN_NOT_FOUND", message: `AgentRun '${entry.agentRunId}' is not this Agent run's agent.` }
         : await resolved.root.executeAgentCommand(entry.agentRunId, { kind: "post_message", message, postOptions });
       if (result.accepted) {
         console.info(`Restart resume resumed ${label}`);

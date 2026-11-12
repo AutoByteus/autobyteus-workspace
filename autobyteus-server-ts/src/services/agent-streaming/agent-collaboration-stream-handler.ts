@@ -1,3 +1,5 @@
+import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources } from "./run-view-rows.js";
 import { randomUUID } from "node:crypto";
 import {
@@ -133,9 +135,9 @@ export class AgentCollaborationStreamHandler {
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: root.isHostLive() },
       }));
-      // autobyteus-278: a viewer of the root observes its remote children while connected.
-      root.remoteChildren.viewerAttached();
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); root.remoteChildren.viewerDetached(); stopFollowing(); egress.dispose(); } });
+      // The view's peer rows, observed after its snapshot (SR-066): never through the root.
+      const stopPeers = this.views.peers.follow(root.rootIdentity);
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); stopPeers(); stopFollowing(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
@@ -160,7 +162,7 @@ export class AgentCollaborationStreamHandler {
     if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
       // Retry: the answers arrive as root events.
       if (parsed.payload.root_subject_kind === "agent" && parsed.payload.root_run_id === session.hostRunId) {
-        void this.roots.getActive(session.hostRunId)?.remoteChildren.refresh();
+        void this.views.peers.refresh(createAgentRootExecutionIdentity(session.hostRunId));
       }
       return;
     }
@@ -169,36 +171,25 @@ export class AgentCollaborationStreamHandler {
       if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.hostRunId) {
         throw new Error("Agent-root command root correlation mismatch.");
       }
-      // A peer run's command goes through the root to its node (autobyteus-278); a delegated run on this node is reached
-      // by its own stream (SR-061 rule 2), and the run's own agent by `/ws/agent/:runId`.
-      const root = this.roots.getActive(session.hostRunId) ?? await this.readyRoot(session.hostRunId);
+      // The view takes commands for its peer rows only, through each one's handle (SR-066): a delegated run on this node
+      // is reached by its own stream (rule 2), and the run's own agent by `/ws/agent/:runId`.
       const target = message.payload.target_agent_run_id;
+      const peer = this.views.peerRunOf(target);
+      if (!peer) {
+        session.egress.send(commandAck(message, "rejected", "RUN_NOT_FOUND", `AgentRun '${target}' is not a run on another node; it is reached by its own stream.`));
+        return;
+      }
       if (message.type === "SEND_MESSAGE") {
-        const mentions = toCollaboratorMentions(message.payload.mentions);
-        let content = message.payload.content;
-        if (mentions.length) {
-          const admission = await root.resolveCollaboratorMentions({ focusedAgentRunId: target, mentions });
-          if (!admission.admitted) {
-            session.egress.send(commandAck(message, "rejected", admission.code, admission.message,
-              "collaboratorName" in admission ? admission.collaboratorName : undefined));
-            return;
-          }
-          content = composeCollaboratorMentionNote(content, admission.collaborators);
-        }
-        const contextFiles = [
-          ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
-          ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
-        ];
-        const result = await root.executeAgentCommand(target, { kind: "post_message", message: AgentInputUserMessage.fromDict({
-          content,
-          context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
+        const result = toCollaboratorMentions(message.payload.mentions).length ? PEER_MENTIONS_REFUSAL
+          : await executePeerCommand(peer, target, { kind: "post_message", message: AgentInputUserMessage.fromDict({
+          content: message.payload.content,
           metadata: { input_origin: "user_message", message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key },
         }) });
         session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
           result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
         return;
       }
-      const result = await root.executeAgentCommand(target, message.type === "INTERRUPT_GENERATION"
+      const result = await executePeerCommand(peer, target, message.type === "INTERRUPT_GENERATION"
         ? { kind: "interrupt" }
         : { kind: "approve_tool", invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason });
       session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",

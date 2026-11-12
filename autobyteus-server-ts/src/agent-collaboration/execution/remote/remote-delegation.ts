@@ -64,9 +64,6 @@ export class RemoteDelegation {
     const started = await this.options.delegation.toPeerRun({ sender: source.sender, senderRun: source.senderRun, spawn: local as SpawnTaskInput, placement });
     const { outcome, launches } = started;
     if (!outcome.delegated) return outcome;
-    const runId = outcome.copy.kind === "agent" ? outcome.copy.agentRunId : outcome.copy.teamRunId;
-    const link = peerRunLinksOf(source.senderRun, this.options.tree).find((candidate) => peerRunIdOf(candidate) === runId);
-    if (link) source.peerRunLinked(link);
     const notes = remoteLaunchNotes(launches);
     return { ...outcome, ...(notes.length ? { launchNotes: notes } : {}) };
   }

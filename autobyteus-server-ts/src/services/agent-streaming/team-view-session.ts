@@ -1,6 +1,7 @@
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RootSnapshotConnection, RunViewStreams, SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { ChildRowRootEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
 import type { LocalChildAgentStatus, LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import { createTeamRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -30,7 +31,7 @@ export type TeamViewSources = Readonly<{
 export class TeamRunNotFoundError extends Error {}
 
 /** What a team run's view stream carries: the run's own events, its rows' (`ChildRowsFeed`) and their statuses. */
-type TeamViewEvent = TeamRunEvent | LocalChildRootEvent | ChildRowRootEvent;
+type TeamViewEvent = TeamRunEvent | LocalChildRootEvent | RemoteRunRootEvent | ChildRowRootEvent;
 type ViewSnapshot = Readonly<{ own: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>;
 
 const lifecycle = (isActive: boolean): TeamStreamServerMessage =>
@@ -109,9 +110,8 @@ export class TeamViewSession {
       async (own, atBase): Promise<ViewSnapshot> => ({ own, statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) }));
     try {
       const stopEvents = this.show(connection as RootSnapshotConnection<ViewSnapshot, TeamViewEvent>, true);
-      root.remoteChildren.viewerAttached();
       this.mode = { kind: "live", root };
-      this.leaveMode = () => { stopEvents(); root.remoteChildren.viewerDetached(); };
+      this.leaveMode = stopEvents;
     } catch (error) {
       connection.close();
       throw error;
@@ -153,12 +153,16 @@ export class TeamViewSession {
       });
     });
     this.sink.send(lifecycle(isActive));
-    return () => { open = false; unsubscribe(); };
+    // The view's peer rows, observed after its snapshot (SR-066): never through the root.
+    const stopPeers = this.sources.rows.peers.follow(this.identity);
+    return () => { open = false; unsubscribe(); stopPeers(); };
   }
 
   private async project(sequenced: SequencedRootEvent<TeamViewEvent>): Promise<TeamStreamServerMessage | null> {
     const event = sequenced.event;
-    if ("kind" in event && event.kind === "local_child_presentation") return projectTeamRemoteEvent(event, sequenced.changeSequence);
+    // The rows' statuses and the peer rows' summaries and output (SR-066), as base projected a hosted copy's and a peer's.
+    if ("kind" in event && (event.kind === "local_child_presentation" || event.kind === "remote_agent_presentation"
+      || event.kind === "remote_task_execution_summary")) return projectTeamRemoteEvent(event, sequenced.changeSequence);
     if (isChildRowRootEvent(event as { kind?: unknown })) {
       const rowEvent = await readRowEvent(this.sources.rows.projection, event as ChildRowRootEvent);
       return rowEvent ? projectTeamRowEvent(rowEvent, sequenced.changeSequence) : null;

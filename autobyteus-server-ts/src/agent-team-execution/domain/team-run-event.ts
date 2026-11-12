@@ -1,15 +1,11 @@
 import type { TeamAgentExecutionBinding } from "./team-agent-execution-binding.js";
 import type { TeamAgentEvent } from "./team-agent-event.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { RemoteRunRootEvent } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
-  /** autobyteus-278: a fact of a run this Team delegated to another node (read only by the stream projector). */
-  REMOTE = "REMOTE",
 }
 
 export type TeamRunMemberInputOrigin = "user_message" | "inter_agent_delivery";
@@ -40,8 +36,7 @@ export type TeamRunEvent =
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT;
       agentRunId: string;
       payload: TeamRunMemberInputEventPayload;
-    }>
-  | Readonly<{ eventSourceType: TeamRunEventSourceType.REMOTE; event: RemoteRunRootEvent | LocalChildRootEvent }>;
+    }>;
 
 /** The Team's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
 export const isTeamRunMessageEvent = (event: TeamRunEvent): boolean =>

@@ -1,3 +1,4 @@
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentRun } from "../domain/agent-run.js";
@@ -94,6 +95,7 @@ export class AgentRunService {
   private readonly provisioningService: AgentRunProvisioningService;
   private readonly lifecycleService: StandaloneAgentRunLifecycleService;
   private readonly standaloneRuns: StandaloneRunLifecyclePort | null;
+  private readonly peerRunOf: PeerRunOf | null;
 
   constructor(
     memoryDir: string,
@@ -110,6 +112,8 @@ export class AgentRunService {
        * process that hosts no eligible runs (application execution scopes run application-owned runs).
        */
       standaloneRuns?: StandaloneRunLifecyclePort;
+      /** A run on a peer node by its own ID (SR-066): its Stop goes to its node. */
+      peerRunOf?: PeerRunOf;
     },
   ) {
     if (!deps?.lifecycleService) {
@@ -130,9 +134,17 @@ export class AgentRunService {
     });
     this.lifecycleService = deps.lifecycleService;
     this.standaloneRuns = deps.standaloneRuns ?? null;
+    this.peerRunOf = deps.peerRunOf ?? null;
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
+    // A delegated run on a peer node is stopped as itself, by its node (SR-066, REQ-013).
+    const peer = this.peerRunOf?.(runId) ?? null;
+    if (peer?.kind === "agent" && peer.runId === runId) {
+      const result = await peer.terminate();
+      return result.accepted ? { success: true, message: "Stopped on its node.", route: "runtime", runtimeKind: null }
+        : { success: false, message: result.message ?? "The run on another node did not stop.", route: "not_found", runtimeKind: null };
+    }
     // An eligible run's root stops every child first, then its host, even when the host's own
     // runtime already died.
     const stopped = await this.standaloneRuns?.stopRoot(runId) ?? null;

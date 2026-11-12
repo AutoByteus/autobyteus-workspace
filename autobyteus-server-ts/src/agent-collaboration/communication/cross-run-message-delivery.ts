@@ -92,7 +92,8 @@ export class CrossRunMessageDelivery {
     let receiver: CrossRunReceiverRoot | null;
     try { receiver = await this.dependencies.receiverRoot(receiverRun); }
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
-    if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_FOUND", `No agent has the run id '${input.targetAgentRunId}' on this node, so the message was not sent.`);
+    // A run with no files (deleted while this message was past the tree): R-11, as for any unknown run ID (SR-067).
+    if (!receiver) return refusal("TARGET_AGENT_RUN_NOT_ACTIVE", `No running agent has the run id '${input.targetAgentRunId}', so the message was not sent.`);
     const senderAddress = await this.dependencies.senderAddress({ sender: input.sender, receiverRun, receiverAgentRunId: input.targetAgentRunId });
     const accepted = await receiver.acceptFromRun({ message: prepared.message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
       senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun) });

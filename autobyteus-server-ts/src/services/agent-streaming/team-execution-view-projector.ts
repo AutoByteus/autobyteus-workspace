@@ -83,9 +83,6 @@ export const projectSequencedTeamRunEvent = (
         sender_agent_run_id: event.payload.senderAgentRunId,
         parent_communication_message_id: event.payload.parentCommunicationMessageId,
       } });
-    case TeamRunEventSourceType.REMOTE:
-      // DS-8: a local child's output as a remote child's (its rows come from `ChildRowsFeed`).
-      return projectTeamRemoteEvent(event.event, changeSequence);
   }
 };
 

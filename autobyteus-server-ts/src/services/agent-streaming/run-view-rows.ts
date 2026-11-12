@@ -3,6 +3,8 @@ import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-st
 import type { ChildRowProjection, ChildRowRootEvent, ChildRowsFeed, PlacedRow } from "../../agent-collaboration/delegation/child-rows-feed.js";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
+import type { PeerChildObservation } from "../../agent-collaboration/delegation/peer-child-observation.js";
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { runIdentityOf } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -12,6 +14,10 @@ export type RunViewRowSources = Readonly<{
   feed: Pick<ChildRowsFeed, "rowsOf">;
   projection: ChildRowProjection;
   followers: Pick<LocalChildFollowers, "follow" | "cachedStatuses">;
+  /** The peer rows' live status and output (SR-066): followed after a view's snapshot; Retry asks again. */
+  peers: Pick<PeerChildObservation, "follow" | "refresh">;
+  /** A peer run by its own ID (SR-066): a view's command for a peer row goes to its handle, never through a root. */
+  peerRunOf: PeerRunOf;
 }>;
 
 /** The rows' part of a snapshot, read at its base in one synchronous step (SR-063): the placed rows and the statuses. */

@@ -24,7 +24,6 @@ export type DelegationSource = Readonly<{
   sender: CollaborationMemberExecutionIdentity;
   senderRun: RootExecutionIdentity;
   resolvePlacement(address: string, work: DelegationWork, folder: string | null): Promise<LocalDelegationPlacement>;
-  peerRunLinked(link: PeerRunLink): void;
 }>;
 
 /**

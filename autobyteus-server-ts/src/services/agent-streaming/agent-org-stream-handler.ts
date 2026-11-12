@@ -1,3 +1,5 @@
+import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -119,7 +121,7 @@ export class AgentOrgStreamHandler {
     if (parsed.type === "REFRESH_REMOTE_TASK_EXECUTIONS") {
       // Retry: the answers arrive as root events.
       if (parsed.payload.root_subject_kind === "agent_org" && parsed.payload.root_run_id === orgRunId) {
-        void this.service.getActive(orgRunId)?.remoteChildren.refresh();
+        void this.sources.rows.peers.refresh(createAgentOrgRootExecutionIdentity(orgRunId));
       }
       return;
     }
@@ -129,6 +131,16 @@ export class AgentOrgStreamHandler {
         throw new Error("AgentOrg command root correlation mismatch.");
       }
       const target = message.payload.target_agent_run_id;
+      // A peer row's command goes to its handle (SR-066): the Org stays as it is.
+      const peer = this.sources.rows.peerRunOf(target);
+      if (peer) {
+        const result = message.type !== "SEND_MESSAGE" ? await executePeerCommand(peer, target, agentCommandOf(message))
+          : message.payload.mentions?.length ? PEER_MENTIONS_REFUSAL
+          : await executePeerCommand(peer, target, { kind: "post_message", message: userMessage(message.payload, message.payload.content) });
+        session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
+          result.accepted ? null : result.code ?? "AGENT_ORG_COMMAND_REJECTED", result.message ?? null));
+        return;
+      }
       let run = this.service.getActive(orgRunId);
       if (!run) {
         if (message.type !== "SEND_MESSAGE") {

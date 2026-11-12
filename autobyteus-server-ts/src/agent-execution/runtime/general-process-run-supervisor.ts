@@ -1,6 +1,6 @@
+import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
 import { runOwnStatus } from "../../agent-collaboration/execution/task/task-run-control.js";
-import { PeerChildStop } from "../../agent-collaboration/execution/remote/peer-child-stop.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -85,7 +85,6 @@ export class GeneralProcessRunSupervisor {
   readonly teamRunHistoryService: TeamRunHistoryService;
   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
-  readonly peerChildStop: PeerChildStop;
   /** Archive and delete wait for the runs a run delegated to (REQ-007), by their own statuses (SR-047). */
   readonly delegatedWorkGuard: DelegatedWorkGuard;
   private readonly agentRunManager: AgentRunManager;
@@ -277,6 +276,8 @@ export class GeneralProcessRunSupervisor {
       bindProcessStandaloneAgentRunRootManager(standaloneRootManager);
       bindProcessStandaloneRunCommandPort(standaloneRootManager);
       standaloneRootManagerBound = true;
+      // A run on a peer node, by its own ID, from the tree (SR-066).
+      const peerRunOf = createPeerRunOf(input.delegationIndex);
       agentRunService = new AgentRunService(memoryDir, {
         agentRunManager,
         metadataService,
@@ -286,6 +287,7 @@ export class GeneralProcessRunSupervisor {
         provisioningService,
         lifecycleService,
         standaloneRuns: standaloneRootManager,
+        peerRunOf,
       });
       const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
         teamRunManager: agentTeamRunManager,
@@ -305,9 +307,10 @@ export class GeneralProcessRunSupervisor {
         teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
         tokenUsageReadiness,
         definitionAdmissionService: input.definitionAdmissionService,
+        peerRunOf,
       });
       const delegatedWorkGuard = new DelegatedWorkGuard({ tree: input.delegationIndex,
-        statusOf: (child) => runOwnStatus({ agentRuns: agentRunService!, teamRuns: teamRunService! }, child) });
+        statusOf: (child) => runOwnStatus({ agentRuns: agentRunService!, teamRuns: teamRunService! }, child), peerRunOf });
       this.delegatedWorkGuard = delegatedWorkGuard;
       const agentOrgRunService = new AgentOrgRunService({
         workGuard: delegatedWorkGuard,
@@ -326,7 +329,6 @@ export class GeneralProcessRunSupervisor {
       bindProcessAgentRunService(agentRunService);
       agentRunServiceBound = true;
 
-      this.peerChildStop = new PeerChildStop({ teams: agentTeamRunManager, orgs: agentOrgRunManager, agents: standaloneRootManager });
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;

@@ -41,13 +41,13 @@ export class TeamRunHistoryService {
   private readonly layout: AgentMemoryLayout;
   private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
-  private readonly workGuard: Pick<DelegatedWorkGuard, "refusal">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
 
   constructor(memoryDir: string, options: {
     /** The relationships between runs, from the Task entries (SR-047). */
     tree: Pick<DelegationIndex, "subtreeOf">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
-    workGuard: Pick<DelegatedWorkGuard, "refusal">;
+    workGuard: Pick<DelegatedWorkGuard, "guard">;
     executionTreeStore?: TeamRunExecutionTreeStore;
     catalogService?: TeamRunHistoryCatalogService;
     teamRunManager?: AgentTeamRunManager;
@@ -105,15 +105,11 @@ export class TeamRunHistoryService {
   }
 
   async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
-    const refused = this.workGuard.refusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "archived");
-    if (refused) return { success: false, message: refused };
-    return this.catalog.archiveTeamRun(teamRunId);
+    return this.workGuard.guard({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "archived", () => this.catalog.archiveTeamRun(teamRunId));
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    const refused = this.workGuard.refusal({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "deleted");
-    if (refused) return { success: false, message: refused };
-    const result = await this.catalog.deleteTeamRun(teamRunId);
+    const result = await this.workGuard.guard({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }, "deleted", () => this.catalog.deleteTeamRun(teamRunId));
     // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
     if (result.success) await (this.adHocTasks ?? getProjectTaskService())
       .deleteAdHocTasksDelegatedFrom(createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }));

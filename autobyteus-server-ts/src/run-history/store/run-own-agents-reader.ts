@@ -1,3 +1,4 @@
+import { promises as fs } from "node:fs";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { ConfiguredPlacement, OrgPlacements, RunFilesReader } from "../../agent-collaboration/delegation/collaboration-tree.js";
@@ -31,6 +32,17 @@ export class RunOwnAgentsReader implements RunFilesReader {
     team: new TeamRunExecutionTreeStore(), org: new AgentOrgRunExecutionTreeStore(), agents: new AgentRunMetadataStore(memoryRoot),
   }) {
     this.layout = new AgentMemoryLayout(memoryRoot);
+  }
+
+  /** Whether the run's own directory is stored (SR-067: the startup build skips a deleted run); nothing is read. */
+  async isStored(run: RootExecutionIdentity): Promise<boolean> {
+    const dir = run.rootSubjectKind === "agent" ? this.layout.getStandaloneRunDirPath(run.rootRunId)
+      : run.rootSubjectKind === "agent_team" ? this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] })
+      : this.layout.getOrgDirPath(run.rootRunId);
+    return fs.access(dir).then(() => true, (error: NodeJS.ErrnoException) => {
+      if (error.code === "ENOENT") return false;
+      throw error;
+    });
   }
 
   async partsOf(run: RootExecutionIdentity): Promise<RunParts | null> {

@@ -4,9 +4,6 @@ import { OTHER_RUN_LOG, OWN_RUN_LOG } from "../../run-history/store/message-log-
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
-import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
-import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/peer-child-stop.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
@@ -64,7 +61,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly delivery: AgentOrgRunMessageDelivery;
   private readonly remoteLinks: RemoteRunLinks;
   /** autobyteus-278: the live facts of the runs this Org delegated to other nodes (its stream viewers drive it). */
-  readonly remoteChildren: RemoteRunObservation;
   private readonly collaborators: AgentOrgRunCollaborators;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
@@ -84,8 +80,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
     });
     this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root, options.delegationIndex) });
-    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root, options.delegationIndex).filter((link) => link.open),
-      publish: (event) => options.publisher.publish(event) });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
@@ -124,10 +118,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   assertExecutionInputAllowed(_agentRunId: string): void { this.assertAdmitting(); }
 
   /** The user's Stop of a peer child, by its node (DEC-804). A run delegated on this node is stopped as itself. */
-  /** The user's Stop of a run this run delegated to a peer node; `null` for any other run (a local one is stopped as itself). */
-  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult | null> {
-    return stopRemoteChild(this.remoteLinks, target);
-  }
 
   get orgRunId(): string { return this.tree.rootOrg.orgRunId; }
   get rootIdentity(): RootExecutionIdentity { return this.options.root; }
@@ -216,11 +206,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       return Object.freeze({ ...own,
         resolvePlacement: (address: string, work: Parameters<DelegationSource["resolvePlacement"]>[1], folder: string | null) =>
           this.operationGate.run(() => own.resolvePlacement(address, work, folder)),
-        peerRunLinked: (link: Parameters<DelegationSource["peerRunLinked"]>[0]) => this.remoteChildren.linkCommitted(link) });
+      });
     });
   }
-  /** A local child's output for this run's views, sequenced in its own stream (DS-8; followed by `LocalChildFollowers`). */
-  publishLocalChildEvent(event: LocalChildRootEvent): void { this.options.publisher.publish(event); }
   /** The coordinator of a peer team run this org delegated to (`send_message_to` guidance); else null. */
   teamCoordinatorOf(teamRunId: string): string | null {
     const peer = this.remoteLinks.teamLinkFor(teamRunId);
@@ -300,7 +288,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
-    this.remoteChildren.dispose();
     this.communication.closeAdmission();
     void this.operationGate.closeAndDrain();
     // Stopping the org's own agents and mounted teams is runtime-only (the runs it delegated to are runs of their own),
@@ -343,10 +330,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     result: AgentOperationResult;
     executionKind: AgentOrgIndexedAgentExecution["executionKind"] | null;
   }>> {
-    // A remote child's command goes to its node, outside the gate (a peer call takes up to 20 s).
-    if (this.isAdmitting() && this.remoteLinks.has(agentRunId)) {
-      return executeRemoteChildCommand(this.remoteLinks, agentRunId, command).then((result) => ({ result, executionKind: null }));
-    }
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.delivery.executeAgentCommand(agentRunId, command);

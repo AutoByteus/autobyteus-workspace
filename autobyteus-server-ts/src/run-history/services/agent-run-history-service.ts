@@ -48,7 +48,7 @@ export class AgentRunHistoryService {
   private readonly statusProjectionService: AgentRunStatusProjectionService;
   private readonly visibility: Pick<InternalAgentVisibility, "hiddenDefinitionIds">;
   private readonly lastActivity: Pick<RunLastActivityReader, "forAgentRun">;
-  private readonly workGuard: Pick<DelegatedWorkGuard, "refusal">;
+  private readonly workGuard: Pick<DelegatedWorkGuard, "guard">;
 
   constructor(
     memoryDir: string,
@@ -56,7 +56,7 @@ export class AgentRunHistoryService {
       /** The relationships between runs, from the Task entries (SR-047). */
       tree: Pick<DelegationIndex, "subtreeOf">;
       /** Archive and delete wait for the runs it delegated to (REQ-007). */
-      workGuard: Pick<DelegatedWorkGuard, "refusal">;
+      workGuard: Pick<DelegatedWorkGuard, "guard">;
       catalogService?: AgentRunHistoryCatalogService;
       metadataStore?: AgentRunMetadataStore;
       statusProjectionService?: AgentRunStatusProjectionService;
@@ -198,9 +198,7 @@ export class AgentRunHistoryService {
   }
 
   async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
-    const refused = this.workGuard.refusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived");
-    if (refused) return { success: false, message: refused };
-    return this.catalogService.archiveRun(runId);
+    return this.workGuard.guard({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "archived", () => this.catalogService.archiveRun(runId));
   }
 
   /**
@@ -239,9 +237,7 @@ export class AgentRunHistoryService {
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
-    const refused = this.workGuard.refusal({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted");
-    if (refused) return { success: false, message: refused };
-    return this.catalogService.deleteRun(runId);
+    return this.workGuard.guard({ rootSubjectKind: "agent", rootRunId: runId.trim() }, "deleted", () => this.catalogService.deleteRun(runId));
   }
 }
 

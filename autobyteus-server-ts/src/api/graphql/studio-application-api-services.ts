@@ -11,7 +11,6 @@ import type { AgentOrgRunService } from "../../agent-org-execution/services/agen
 import type { StudioRunModelConfigService } from "../../run-history/services/studio-run-model-config-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
-import type { PeerChildStop } from "../../agent-collaboration/execution/remote/peer-child-stop.js";
 import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
 import type { DelegatedRunAgentsReader } from "../../run-history/services/delegated-run-agents-reader.js";
 
@@ -25,7 +24,6 @@ type StudioApplicationApiServices = Readonly<{
   definitionAdmissionService: DefinitionAdmissionService;
   collaborationRootHistoryService: CollaborationRootHistoryService;
   runModelConfigService: StudioRunModelConfigService;
-  peerChildStop: PeerChildStop;
   /** A run view's children and the history poll's child statuses (autobyteus-461 DS-8; SR-047). */
   runViewChildren: RunViewChildren;
   /** The agents of the runs a run delegated to, open or closed (token totals, the Team tab's past participants). */
@@ -51,7 +49,6 @@ export const configureStudioApplicationApiServices = (
     || !services.definitionAdmissionService
     || !services.collaborationRootHistoryService
     || !services.runModelConfigService
-    || !services.peerChildStop
     || !services.runViewChildren
     || !services.delegatedRunAgents
     || !services.bundleService
@@ -118,8 +115,7 @@ export const getStudioCollaborationRootHistoryService = (): CollaborationRootHis
 export const getStudioRunModelConfigService = (): StudioRunModelConfigService =>
   requireConfiguredServices().runModelConfigService;
 
-export const getStudioPeerChildStop = (): PeerChildStop =>
-  requireConfiguredServices().peerChildStop;
+
 
 export const getStudioApplicationPackageQueries =
   (): ApplicationPackageRegistryService => requireConfiguredServices().packageQueries;

@@ -1,7 +1,7 @@
 import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
-import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
-import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
+import { peerMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
+import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
@@ -42,7 +42,7 @@ export interface AgentOrgMemberRunProjection {
 }
 
 export class AgentOrgMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
+  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
@@ -50,7 +50,7 @@ export class AgentOrgMemberRunViewProjectionService {
 
   constructor(options: {
     /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationIndex, "peerChildrenOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
+    tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: AgentOrgExecutionTreeLocationService;
@@ -73,9 +73,9 @@ export class AgentOrgMemberRunViewProjectionService {
     memberAddress: string,
     agentRunId: string,
   ): Promise<AgentOrgMemberRunProjection> {
-    // N-403: a remote child's conversation is read from its node (autobyteus-278).
-    const remote = remoteChildOf(peerRunLinksOf({ rootSubjectKind: "agent_org", rootRunId: orgRunId.trim() }, this.tree), agentRunId.trim());
-    if (remote) return await remoteMemberProjection(remote, memberAddress) as AgentOrgMemberRunProjection;
+    // N-403, SR-066: an agent of a peer run is read from its node through the run's handle (autobyteus-278).
+    const peer = createPeerRunOf(this.tree)(agentRunId.trim());
+    if (peer) return await peerMemberProjection(peer, agentRunId.trim(), memberAddress) as AgentOrgMemberRunProjection;
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({
       runId: location.agentRunId,

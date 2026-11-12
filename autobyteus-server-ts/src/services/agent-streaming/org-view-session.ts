@@ -112,9 +112,8 @@ export class OrgViewSession {
     try {
       // The run's own end reaches the view as its unregistration (an in-band stored snapshot follows), not as a close.
       const stopEvents = this.show(connection, run.isActive());
-      run.remoteChildren.viewerAttached();
       this.mode = { kind: "live", run };
-      this.leaveMode = () => { stopEvents(); run.remoteChildren.viewerDetached(); };
+      this.leaveMode = stopEvents;
     } catch (error) {
       connection.close();
       throw error;
@@ -159,6 +158,8 @@ export class OrgViewSession {
       });
     });
     this.send(this.lifecycle(isActive));
-    return () => { open = false; unsubscribe(); };
+    // The view's peer rows, observed after its snapshot (SR-066): never through the root.
+    const stopPeers = this.sources.rows.peers.follow(this.identity);
+    return () => { open = false; unsubscribe(); stopPeers(); };
   }
 }
