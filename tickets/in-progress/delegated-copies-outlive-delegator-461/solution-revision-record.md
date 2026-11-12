@@ -1062,3 +1062,4 @@
 - Approval: these correct the contract to the approved requirements (REQ-009) and change no intended behavior. The user is informed.
 - The three Local Fixes of CRR-008 (CR-461-009, CR-461-010, CR-461-011) are the Implementation Engineer's.
 
+- ARCH-REV-029 (2026-11-12): Pass, no finding. The texts and the refusal were verified at `827f1e68dc`, and the org story follows a real path. `walkthrough.py --check` passes, and the example validator has 0 findings.
