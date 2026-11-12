@@ -15,3 +15,7 @@
 | 2026-11-12T06:21:53Z | FS-01 | Started | — | fresh clone, pnpm install --frozen-lockfile, build:electron:mac --arm64 |
 | 2026-11-12T06:31:31Z | FS-01 | Completed | Pass | fresh clone f33b3c772a: frozen install, build:electron:mac --arm64 (typecheck PASS at baseline), Prisma darwin-arm64 engines present, terminal runtime verified (resources and app); signing/notarization not tested (runner secrets) |
 | 2026-11-12T06:32:39Z | — | Round result | Pass | API-REV-001: AC-001..005 proven (Claude in the app, desktop reload, reconnect), FS-01 Pass; FU-001, FU-002; 95% |
+| 2026-11-12T06:35:53Z | — | Round 2 | — | delivery DR-001 blocked: duplicate MSP-44..46 after the merge with 480 (4ea0901811); renumbered ours to MSP-47..49 (6f667d2552); plan: server + phone bundle rebuild, full phone probe on the merged state |
+| 2026-11-12T06:36:48Z | API-04 | Started | — | round 2: full phone probe on the merged state |
+| 2026-11-12T07:05:02Z | API-04 | Completed | Pass | round 2: 49/49 MSP on the merged state incl. MSP-47..49 and 480's MSP-44..46 |
+| 2026-11-12T07:05:02Z | — | Round result | Pass | round 2 (API-REV-002): duplicate IDs fixed (MSP-47..49); 95% |

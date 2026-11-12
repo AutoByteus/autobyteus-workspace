@@ -3,9 +3,12 @@
 ## Round
 
 - Coverage investigation: `tickets/in-progress/phone-background-tasks-473/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1; Code Reviewer CRR-001 Pass; code `f33b3c772a`, handoff `66f87db2b5` + `9b921e9489` (base `origin/personal` @ `931a1feeb6`)
+- Round and trigger: round 2; Delivery Engineer DR-001 blocked at the re-integration: `origin/personal` moved `931a1feeb6` → `87b7f16c9d` (autobyteus-480, merged as `4ea0901811`), and the phone probe stopped on duplicate case IDs MSP-44…46 (this ticket's background-task cases and 480's heading-link cases). Merged-state code `6f667d2552` (the renumber below on `a0ee023441`).
+- Round 2 change: this ticket's cases renumbered MSP-44…46 → MSP-47…49 (`6f667d2552`: `mobile-background-tasks-cases.mjs` IDs, cross-references and four screenshot names; the case list and timing line in `mobile-shell-probe.mjs`); no case used MSP-47…49. Earlier records (implementation handoff IMP-11, code reviews, round 1 here) name them MSP-44…46, their IDs at the time.
+- Rerun plan: the merge brings 480's Markdown heading-link change (web, its own probe cases); this ticket's product code is unchanged, so its round-1 in-app, desktop and fresh-start cases stand (TESTING.md rerun by impact: they exercise nothing 480 changes). Rerun: the server build, the phone bundle and the full phone probe on the merged state.
+- Round 1 trigger (kept for reference): round 1; Code Reviewer CRR-001 Pass; code `f33b3c772a`, handoff `66f87db2b5` + `9b921e9489` (base `origin/personal` @ `931a1feeb6`)
 - Prior round reviewed: none
 - Deviations from the investigation's plan, and why:
   - API-02 needed four runs: run 1 never selected the run (a deep link does not select one; `desktop-run1/`); run 2 expanded the workspace in the left list, but the run is one level deeper (under its agent), so no run was selected (its folder was cleared before the next run, not kept); run 3 opened the run from the Runs view, but its 240 s task had ended before the reload read (timing; the panel then correctly showed it Completed; `desktop-run2-task-ended/`); run 4 (a 600 s task) is the result (`desktop/`).
@@ -39,17 +42,18 @@
 | API-02 | AC-003, REQ-002, REQ-003 | desktop window | `scripts/desktop-ac003.mjs` (run 4): a running `sleep 600` task; the Runs view → the run; Activity tab → Background Tasks; `page.reload()`; read again | ENV-2, ENV-3 | Pass | `desktop/desktop-ac003.log`, `desktop/desktop-opened.png`, `desktop/desktop-after-reload.png`; runs 1 and 3 in `desktop-run1/`, `desktop-run2-task-ended/` | `PASS the running task is listed when the window opens the run`; `PASS after a reload the Progress/Activity panel lists the running task (AC-003)`: "Background Tasks 1 running · 4 total", the running row first, the ended rows with their summaries; one `AgentBackgroundTaskView` read after the reload | run 1 shows a pre-existing "Checking…" with no run selected → FU-001 |
 | API-04 | AC-005 | phone probe; desktop panel probe | `env -i … pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…`; `… test:e2e:background-tasks-panel --output-dir …` | ENV-4 | Pass for this ticket's scope | `API-04-mobile-shell.log`, `API-04-mobile-shell/mobile-shell-probe.json`, `API-04-background-tasks-panel/evidence.json` | phone probe 46 of 46 `Pass` incl. MSP-44…46 and the tool-call and Codex cases, cleanup clean, `unknownBrowserErrors: 0`; panel probe BT-UI-001 `+ 'Current count unavailable' - '0 running · 0 total'` | the panel probe is stale since `7bd0bbea4a` (2026-10-26), after its last change (2026-10-05); the panel is unchanged by this ticket → FU-002 |
 | FS-01 | build (changed `generated/graphql.ts`) | fresh clone | `scripts/fs01-fresh-start.sh f33b3c772a <clone>`: `git clone --no-local`, `pnpm install --frozen-lockfile`, `NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=… CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64`, then release-desktop.yml's Prisma and terminal-runtime verify steps | ENV-5 | Pass | `FS-01-fresh-start.log` | `build exit 0`; `[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)`, `PASS`; `schema engine darwin-arm64: present`, `query engine darwin-arm64: present`; `verify resources exit 0`, `verify app exit 0` | signing and notarization need the runner's secrets: not tested |
+| API-04 r2 | AC-005, MSP-47…49 on the merged state | full phone probe after `pnpm -C autobyteus-server-ts build` and `build:mobile-web` on the merged state | `env -i … pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…` | ENV-4 (round 2, `6f667d2552`) | Pass | `r2-API-04-mobile-shell.log`, `r2-API-04-mobile-shell/mobile-shell-probe.json`, `r2-builds.log` | 49 of 49 `Pass`: this ticket's MSP-47…49 and 480's MSP-44…46 among them; the duplicate-ID guard passes; cleanup `rootRemoved: true`, `unknownBrowserErrors: 0` | — |
 | C-03 | Antigravity missed end (RSK-001) | — | — | — | Not seen | — | — | accepted residual; the in-app runs used Claude |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result |
 | --- | --- | --- | --- |
-| AC-001 | Yes | API-01 (Claude, Android app), R-IMP (MSP-44, AGY) | Proven |
-| AC-002 | Yes | API-01, R-IMP (MSP-45) | Proven |
-| AC-003 | Yes | API-02 (Claude, desktop window), R-IMP (MSP-46, AGY) | Proven |
+| AC-001 | Yes | API-01 (Claude, Android app), R-IMP and API-04 r2 (MSP-47, formerly MSP-44, AGY) | Proven |
+| AC-002 | Yes | API-01, R-IMP and API-04 r2 (MSP-48, formerly MSP-45) | Proven |
+| AC-003 | Yes | API-02 (Claude, desktop window), R-IMP and API-04 r2 (MSP-49, formerly MSP-46, AGY) | Proven |
 | AC-004 | Yes | R-IMP (IMP-02, IMP-04: AutoByteus end to end; registry, monitor, view units); API-01/02 (Claude's view through GraphQL, running and ended) | Proven |
-| AC-005 | Yes | API-04 (phone probe 46/46), R-IMP (IMP-03, IMP-06), API-02 | Proven; the panel probe is stale (FU-002) |
+| AC-005 | Yes | API-04 r2 (phone probe 49/49 on the merged state), API-04, R-IMP (IMP-03, IMP-06), API-02 | Proven; the panel probe is stale (FU-002) |
 
 ## Validation Confidence Scorecard (Mandatory)
 
@@ -82,7 +86,7 @@
 
 ## Durable Coverage Changed In The Codebase
 
-None by API/E2E.
+Round 2: `autobyteus-web/tests/e2e/mobile-background-tasks-cases.mjs` and `mobile-shell-probe.mjs` (`6f667d2552`, the MSP-44…46 → MSP-47…49 renumber, API/E2E). Round 1: none by API/E2E.
 
 ## Dependencies Mocked Or Emulated
 
@@ -104,7 +108,8 @@ None by API/E2E.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Next recipient: Code Reviewer — proportional test-code review
-- Follow-ups: FU-001 (no-run "Checking…" state), FU-002 (stale panel probe)
+- Result: `Pass` (round 2, merged state)
+- Durable test changes for the proportional test-code review: `6f667d2552` (API/E2E, the renumber); the implementation's MSP cases and specs were reviewed in CRR-002
+- Next recipient: Code Reviewer — proportional test-code review of `6f667d2552`
+- Follow-ups: FU-001, FU-002 (API/E2E), FU-003 (delivery: case IDs collide between parallel tickets)
 - Notes: release only on the user's word.
