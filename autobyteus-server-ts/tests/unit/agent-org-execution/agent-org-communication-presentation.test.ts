@@ -13,6 +13,10 @@ import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/a
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
 
 type ReservedAgentInput = Extract<AgentRunInputReservationResult, { reserved: true }>;
 
@@ -285,4 +289,52 @@ it("correlates a committed receiver presentation against the retained tree ident
   expect(subject.events[0]).toMatchObject({ kind: "agent_presentation", execution: { agentRunId: "mounted-run" },
     message: { type: "MEMBER_INPUT_MESSAGE", payload: { content: "Accepted work" } } });
   expect(subject.reserveRootAgentInput).not.toHaveBeenCalled();
+});
+
+it("a message from a run the Org delegated to is presented and the Org stays up, by run ID and by address (autobyteus-461 CR-461-018)", async () => {
+  const enterPersistenceFailStop = vi.fn();
+  const subject = createSubject({
+    persistence: (orgRunId) => new AgentOrgRunPersistenceCoordinator({
+      orgRunId, orgMemoryDir: "/memory/org-communication", executionTreeStore: {} as never,
+      communicationStore: { appendMessage: vi.fn(async () => ({ outcome: "committed" as const, file: "communication_messages" })) } as never,
+      enterPersistenceFailStop,
+    }),
+  });
+  // The Org's director delegated Task T4 to a copy of a team; its lead messages the director back (contract §5.3 O6/O7).
+  const org = createAgentOrgRootExecutionIdentity("org-communication");
+  const devTeam = { rootSubjectKind: "agent_team" as const, rootRunId: "dev-team-copy" };
+  const tasks = new InMemoryTaskExecutionResources();
+  const tree = new DelegationTree(() => tasks, () => readerOfAgentRunIds(async (run) =>
+    run.rootRunId === "dev-team-copy" ? ["dev-lead-run"] : run.rootRunId === "org-communication" ? ["direct-run", "observer-run"] : null));
+  tree.build(); tasks.setEntriesListener(tree); tasks.addTask("T4");
+  await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/dev_team",
+    delegatedFrom: { delegatingRun: org, delegatorAgentRunId: "direct-run" }, execution: { teamRunId: "dev-team-copy" }, teamCoordinatorAgentRunId: "dev-lead-run" });
+  await tasks.markStarted({ teamRunId: "dev-team-copy" });
+  const senderLog: string[] = [];
+  let next = 0;
+  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks,
+    senderRoot: () => ({
+      prepareSendToRun: (input: { senderIdentity: { agentRunId: string }; receiverAgentRunId: string; content: string }) => ({ ok: true as const,
+        message: { messageId: `cross-${++next}`, senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
+          content: input.content, messageType: "agent_message", referenceFiles: [], createdAt: "2026-11-12T00:00:00.000Z" } }),
+      commitSentToRun: async (message: { messageId: string }) => { senderLog.push(message.messageId); },
+    }) as never,
+    receiverRoot: async (run) => run.rootRunId === "org-communication" ? subject.run : null,
+  });
+  const sender = createCollaborationMemberExecutionIdentity({ root: devTeam, memberAddress: "/dev_lead", agentRunId: "dev-lead-run" });
+  const send = (shownAs?: string) => delivery.route({ sender, senderDisplayName: "dev_lead", targetAgentRunId: "direct-run",
+    ...(shownAs ? { shownAs } : {}), content: "The release is ready for sign-off.", messageType: "agent_message", referenceFiles: [] });
+
+  await expect(send()).resolves.toMatchObject({ accepted: true, agentRunId: "direct-run", message: "Message delivered." });
+  await expect(send("/director")).resolves.toMatchObject({ accepted: true, agentRunId: "direct-run", message: "Delivered message to /director." });
+
+  // The sender's run records both; the director's input is presented; the Org did not fail-stop.
+  expect(senderLog).toEqual(["cross-1", "cross-2"]);
+  expect(subject.events.filter((event) => event.kind === "agent_presentation")).toEqual([
+    expect.objectContaining({ execution: expect.objectContaining({ agentRunId: "direct-run" }) }),
+    expect.objectContaining({ execution: expect.objectContaining({ agentRunId: "direct-run" }) }),
+  ]);
+  await Promise.resolve();
+  expect(enterPersistenceFailStop).not.toHaveBeenCalled();
+  expect(subject.run.isActive()).toBe(true);
 });

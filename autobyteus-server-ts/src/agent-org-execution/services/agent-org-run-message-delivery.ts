@@ -172,12 +172,11 @@ export class AgentOrgRunMessageDelivery {
     message: AgentOrgCommunicationMessagesFile["messages"][number],
     receiverInput: AgentInputUserMessage,
   ): void {
-    // Admission already succeeded. Retained identities, not current liveness,
-    // correlate this post-durable presentation consequence.
-    const index = this.options.getIndex();
-    // A sender on a peer node is a linked remote endpoint, not an agent of this Org.
-    if (!this.options.remoteLinks.has(message.senderAgentRunId)) index.requireAgent(message.senderAgentRunId);
-    const receiver = index.requireAgent(message.receiverAgentRunId);
+    // Admission already succeeded. Retained identities, not current liveness, correlate this post-durable presentation
+    // consequence: the receiver is one of this Org's agents. The sender was checked where the message was admitted (an
+    // agent of this Org, a peer's linked endpoint, or an agent of another run on this node, by the cross-run route), and
+    // its name comes with the input; it is not required in this Org's index (CR-461-018).
+    const receiver = this.options.getIndex().requireAgent(message.receiverAgentRunId);
     const identity = this.identityFor(receiver.agentRunId, receiver.address);
     const event = buildMemberInputPresentationEvent({
       execution: identity, message: receiverInput, receivedAt: message.createdAt,
