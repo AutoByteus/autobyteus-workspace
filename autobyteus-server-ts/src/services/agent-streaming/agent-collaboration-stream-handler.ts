@@ -68,7 +68,7 @@ export class AgentCollaborationStreamHandler {
       followers: Pick<LocalChildFollowers, "followLive">;
     }>,
     /** A child row's command goes to the child's own run (AR-011). */
-    private readonly children: Pick<DelegatedRunCommands, "execute">,
+    private readonly children: Pick<DelegatedRunCommands, "execute" | "postUserMessage">,
   ) {}
 
   /** A child row's command: a peer child's goes to its node through the root; a local child's to its own root (AR-011). */
@@ -175,11 +175,27 @@ export class AgentCollaborationStreamHandler {
       const root = this.roots.getActive(session.hostRunId) ?? await this.readyRoot(session.hostRunId);
       const target = message.payload.target_agent_run_id;
       if (message.type === "SEND_MESSAGE") {
+        const mentions = toCollaboratorMentions(message.payload.mentions);
+        const contextFiles = [
+          ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
+          ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
+        ];
+        const userMessage = (content: string) => AgentInputUserMessage.fromDict({
+          content,
+          context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
+          metadata: { input_origin: "user_message", message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key },
+        });
+        // A child row's message, mentions included, goes to the child's own root (CR-461-032).
+        const child = await this.children.postUserMessage(root.rootIdentity, target, { message: userMessage(message.payload.content), mentions });
+        if (child) {
+          session.egress.send(commandAck(message, child.accepted ? "accepted" : "rejected",
+            child.accepted ? null : child.code ?? "AGENT_ROOT_COMMAND_REJECTED", child.message ?? null, child.collaboratorName));
+          return;
+        }
+        // The run's own agent: its own root resolves its mentions.
         let content = message.payload.content;
-        if (message.payload.mentions?.length) {
-          const admission = await root.resolveCollaboratorMentions({
-            focusedAgentRunId: target, mentions: toCollaboratorMentions(message.payload.mentions),
-          });
+        if (mentions.length) {
+          const admission = await root.resolveCollaboratorMentions({ focusedAgentRunId: target, mentions });
           if (!admission.admitted) {
             session.egress.send(commandAck(
               message, "rejected", admission.code, admission.message,
@@ -189,18 +205,7 @@ export class AgentCollaborationStreamHandler {
           }
           content = composeCollaboratorMentionNote(content, admission.collaborators);
         }
-        const contextFiles = [
-          ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
-          ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
-        ];
-        const result = await this.childCommand(root, target, {
-          kind: "post_message",
-          message: AgentInputUserMessage.fromDict({
-            content,
-            context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
-            metadata: { input_origin: "user_message", message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key },
-          }),
-        });
+        const result = await root.executeAgentCommand(target, { kind: "post_message", message: userMessage(content) });
         session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
           result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
         return;

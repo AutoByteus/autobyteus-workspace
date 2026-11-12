@@ -58,7 +58,7 @@ export const noViewChildren = () => ({ rows: async () => [], remote: async () =>
 export const noFollowers = () => ({ followLive: () => () => undefined, followStored: () => () => undefined, statuses: async () => [] });
 
 /** Child-row commands for a test with no child rows: every agent is the run's own. */
-export const noChildCommands = () => ({ execute: async () => null, isChildAgent: async () => false });
+export const noChildCommands = () => ({ execute: async () => null, postUserMessage: async () => null });
 
 /** View sources for a stream handler under test whose run is live (no stored tree, no children). */
 export const testViewSources = () => ({ streams: new ChildRowsStreams(), children: noViewChildren(), followers: noFollowers(),

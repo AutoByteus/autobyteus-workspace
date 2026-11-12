@@ -285,15 +285,20 @@ export class TeamStreamingService {
     console.error('Team WebSocket error:', error);
   };
 
-  private handleInterruptAck(message: Extract<TeamStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>): void {
-    const pending = this.pendingInterruptCommands.get(message.payload.command_id);
+  /** An interrupt's result, or a child row's accepted message (CR-461-034), which settles its send by its identity. */
+  private handleCommandAck({ payload }: Extract<TeamStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>): void {
+    if (payload.command_type === 'SEND_MESSAGE') {
+      this.teamSends.acknowledge({ agentRunId: payload.agent_run_id, messageId: payload.message_id, dedupeKey: payload.dedupe_key });
+      return;
+    }
+    const pending = this.pendingInterruptCommands.get(payload.command_id);
     if (!pending || pending.target.target_kind !== 'team_member'
-      || pending.target.agent_run_id !== message.payload.agent_run_id) return;
-    this.pendingInterruptCommands.delete(message.payload.command_id);
+      || pending.target.agent_run_id !== payload.agent_run_id) return;
+    this.pendingInterruptCommands.delete(payload.command_id);
     const target = pending.target;
-    this.onInterruptCommandResult(message.payload.state === 'accepted'
-      ? { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: 'accepted', target }
-      : { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: message.payload.state, code: message.payload.code, message: message.payload.message, target });
+    this.onInterruptCommandResult(payload.state === 'accepted'
+      ? { command_type: 'INTERRUPT_GENERATION', command_id: payload.command_id, state: 'accepted', target }
+      : { command_type: 'INTERRUPT_GENERATION', command_id: payload.command_id, state: payload.state, code: payload.code, message: payload.message, target });
   }
 
   /** Retry (autobyteus-278): the Team asks the nodes of its remote runs again; the answers arrive on this stream. */
@@ -343,7 +348,7 @@ export class TeamStreamingService {
     }
     if (message.type === 'AGENT_COMMAND_ACK') {
       if (this.phase !== 'ready') throw new Error(`Team command acknowledgement is invalid during '${this.phase}'.`);
-      this.handleInterruptAck(message);
+      this.handleCommandAck(message);
       return;
     }
     if (message.type === 'ERROR' && this.teamSends.reject(message)) return;

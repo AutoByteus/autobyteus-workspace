@@ -171,6 +171,40 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(() => service.sendMessage('next input', teacherRunId, [], [], { messageId: 'message-next', dedupeKey: 'dedupe-next' })).not.toThrow();
   });
 
+  it('autobyteus-461 CR-461-034: two messages to a stopped Team\'s child row each settle on the child\'s acknowledgement, by identity; the Team stays stopped', async () => {
+    const { callbacks, service, team } = createHarness();
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
+    admitReady(callbacks, team);
+    emit(callbacks, 'TEAM_RUN_LIFECYCLE', { is_active: false });
+    const settledIds: string[] = [];
+    const sendOne = async (messageId: string) => {
+      const sending = service.sendMessage(`input ${messageId}`, taskStudentRunId, [], [], { messageId, dedupeKey: messageId })
+        .then(() => { settledIds.push(messageId); });
+      await Promise.resolve();
+      expect(settledIds).not.toContain(messageId);
+      // The child's own run accepted it; its input is its run's event, not this Team's: the Team acknowledges it.
+      emit(callbacks, 'AGENT_COMMAND_ACK', { command_type: 'SEND_MESSAGE', state: 'accepted', agent_run_id: taskStudentRunId, message_id: messageId, dedupe_key: messageId });
+      await sending;
+    };
+    await sendOne('message-1');
+    // The first send left nothing pending for the child: the second is admitted, and settles too.
+    await sendOne('message-2');
+    expect(settledIds).toEqual(['message-1', 'message-2']);
+    expect(team.view.isRootTeamActive()).toBe(false);
+  });
+
+  it('a child\'s acknowledgement settles only its own send', async () => {
+    const { callbacks, service, team } = createHarness();
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(team);
+    admitReady(callbacks, team);
+    let settled = false;
+    void service.sendMessage('input', taskStudentRunId, [], [], { messageId: 'message-1', dedupeKey: 'message-1' }).then(() => { settled = true; });
+    emit(callbacks, 'AGENT_COMMAND_ACK', { command_type: 'SEND_MESSAGE', state: 'accepted', agent_run_id: taskStudentRunId, message_id: 'other', dedupe_key: 'other' });
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    expect(() => service.sendMessage('again', taskStudentRunId, [], [], { messageId: 'message-2', dedupeKey: 'message-2' })).toThrow(/already has a pending Team message admission/);
+  });
+
   it('reconciles a mounted task activation without stealing exact focus', () => {
     const { callbacks, team } = createHarness();
     teamContextsStoreMock.getTeamContextById.mockReturnValue(team);

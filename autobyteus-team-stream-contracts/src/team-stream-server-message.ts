@@ -8,7 +8,7 @@ import { z } from "zod";
 import {
   teamAgentErrorPayloadSchema,
   teamAgentPayloadSchemas,
-  teamInterruptCommandAckPayloadSchema,
+  teamCommandAckPayloadSchema,
   teamSegmentContentBatchPayloadSchema,
   type TeamAgentMessageType,
 } from "./team-agent-message-dtos.js";
@@ -76,7 +76,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("CONNECTED"), payload: teamConnectedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_RUN_LIFECYCLE"), payload: teamRunLifecyclePayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
-  z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
+  z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamCommandAckPayloadSchema }).strict(),
   z.object({ type: z.literal("CHILD_RUNS_CHANGED"), payload: teamChildRunsChangedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
@@ -97,7 +97,7 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "CONNECTED"; payload: z.infer<typeof teamConnectedPayloadSchema> }>
   | Readonly<{ type: "TEAM_RUN_LIFECYCLE"; payload: z.infer<typeof teamRunLifecyclePayloadSchema> }>
   | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>
-  | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamInterruptCommandAckPayloadSchema> }>
+  | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamCommandAckPayloadSchema> }>
   | Readonly<{ type: "CHILD_RUNS_CHANGED"; payload: z.infer<typeof teamChildRunsChangedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>

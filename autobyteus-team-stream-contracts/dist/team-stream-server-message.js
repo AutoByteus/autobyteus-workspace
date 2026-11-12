@@ -1,6 +1,6 @@
 import { agentInputStateSchema, remoteTaskExecutionDtoSchema, remoteTaskExecutionSummaryDtoSchema, } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
-import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, } from "./team-agent-message-dtos.js";
+import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema, } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import { teamChildRunsChangedPayloadSchema } from "./team-task-execution-message-dtos.js";
@@ -54,7 +54,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("CONNECTED"), payload: teamConnectedPayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_RUN_LIFECYCLE"), payload: teamRunLifecyclePayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
-    z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
+    z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamCommandAckPayloadSchema }).strict(),
     z.object({ type: z.literal("CHILD_RUNS_CHANGED"), payload: teamChildRunsChangedPayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),

@@ -1,4 +1,4 @@
-import type { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
+import type { ChildPostResult, DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -46,6 +46,19 @@ const errorMessage = (
   } });
 
 const TEAM_SEND_MESSAGE_REJECTED = "TEAM_SEND_MESSAGE_REJECTED";
+
+/** A user's message as a run's input: its content (with its mention note, when composed), files and identity. */
+const userMessage = (payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"], content: string): AgentInputUserMessage => {
+  const contextFiles = [
+    ...payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
+    ...payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
+  ];
+  return AgentInputUserMessage.fromDict({
+    content,
+    context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
+    metadata: { input_origin: "user_message", message_id: payload.message_id, dedupe_key: payload.dedupe_key },
+  });
+};
 const TEAM_SEND_MESSAGE_FAILED = "TEAM_SEND_MESSAGE_FAILED";
 
 /**
@@ -62,7 +75,7 @@ export class AgentTeamStreamHandler {
     private readonly teamRunService: Pick<TeamRunService, "getActiveTeamRun" | "resolveManagedTeamRun" | "recordRunActivity">,
     private readonly sources: Omit<TeamViewSources, "activeTeamRun">,
     /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
-    private readonly children: Pick<DelegatedRunCommands, "execute" | "isChildAgent">,
+    private readonly children: Pick<DelegatedRunCommands, "execute" | "postUserMessage">,
   ) {}
 
   async connect(connection: WebSocketConnection, teamRunIdInput: string): Promise<string | null> {
@@ -111,7 +124,7 @@ export class AgentTeamStreamHandler {
         const routed: MemberCommands = { executeAgentCommand: async (agentRunId, command) =>
           await this.children.execute(createTeamRootExecutionIdentity(teamRunId), agentRunId, command) ?? this.memberCommand(session.view, agentRunId, command) };
         if (message.type === "SEND_MESSAGE") {
-          await this.handleSendMessage(teamRunId, message.payload, session.egress, routed);
+          await this.handleSendMessage(session.view, message.payload, session.egress);
         } else if (message.type === "INTERRUPT_GENERATION") {
           await handleTeamInterruptGenerationCommand({ teamRunId, payload: message.payload, sink: session.egress, activeRun: routed });
         } else {
@@ -148,65 +161,40 @@ export class AgentTeamStreamHandler {
     return run.executeAgentCommand(agentRunId, command);
   }
 
-  /** The team's live root for a member message's mentions; a stopped team is restored by that message, never for a child. */
-  private async rootForMentions(teamRunId: string, agentRunId: string): Promise<RootTeamRun | null> {
-    const live = this.teamRunService.getActiveTeamRun(teamRunId);
-    if (live) return live;
-    if (await this.children.isChildAgent(createTeamRootExecutionIdentity(teamRunId), agentRunId)) return null;
-    return this.teamRunService.resolveManagedTeamRun(teamRunId);
-  }
-
+  /**
+   * A user's message. To a child row's agent (CR-461-032), it goes with its mentions to the child's own run, which
+   * resolves them and posts, live or stopped, whether or not this team is; its acceptance is acknowledged here by the
+   * message's identity (CR-461-034), since the child's input is its own run's event. To one of the team's own members,
+   * the team's root resolves the mentions, restoring a stopped team (the message is its first input), then posts.
+   */
   private async handleSendMessage(
-    teamRunId: string,
+    view: TeamViewSession,
     payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"],
     sink: TeamStreamSink,
-    routed: MemberCommands,
   ): Promise<void> {
+    const teamRunId = view.teamRunId;
     const agentRunId = parseCommandAgentRunId(payload);
     if (!agentRunId) return this.sendInvalidTarget(sink, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
-    let content = payload.content;
-    if (payload.mentions?.length) {
-      try {
-        const root = await this.rootForMentions(teamRunId, agentRunId);
-        if (!root) {
-          sink.send(errorMessage(TEAM_SEND_MESSAGE_REJECTED, "Start the team to mention collaborators in a message to a run it delegated to.", agentRunId));
-          return;
-        }
-        const admission = await root.resolveCollaboratorMentions({
-          focusedAgentRunId: agentRunId,
-          mentions: toCollaboratorMentions(payload.mentions),
-        });
-        if (!admission.admitted) {
-          // Nothing was posted; the client keeps the draft and shows the notice.
-          sink.send("collaboratorName" in admission
-            ? errorMessage(admission.code, admission.message, agentRunId, undefined, admission.collaboratorName)
-            : errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));
-          return;
-        }
-        content = composeCollaboratorMentionNote(payload.content, admission.collaborators);
-      } catch (error) {
-        sink.send(errorMessage(TEAM_SEND_MESSAGE_FAILED, error instanceof Error ? error.message : String(error), agentRunId));
+    const mentions = toCollaboratorMentions(payload.mentions);
+    let result: ChildPostResult;
+    try {
+      const child = await this.children.postUserMessage(createTeamRootExecutionIdentity(teamRunId), agentRunId,
+        { message: userMessage(payload, payload.content), mentions });
+      if (child?.accepted) {
+        sink.send(parseTeamStreamServerMessage({ type: "AGENT_COMMAND_ACK", payload: { command_type: "SEND_MESSAGE", state: "accepted",
+          agent_run_id: agentRunId, message_id: payload.message_id, dedupe_key: payload.dedupe_key } }));
         return;
       }
-    }
-    const contextFiles = [
-      ...payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
-      ...payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
-    ];
-    const message = AgentInputUserMessage.fromDict({
-      content,
-      context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
-      metadata: { input_origin: "user_message", message_id: payload.message_id, dedupe_key: payload.dedupe_key },
-    });
-    let result;
-    try {
-      result = await routed.executeAgentCommand(agentRunId, { kind: "post_message", message });
+      result = child ?? await this.postToMember(view, agentRunId, payload, mentions);
     } catch (error) {
       sink.send(errorMessage(TEAM_SEND_MESSAGE_FAILED, error instanceof Error ? error.message : String(error), agentRunId));
       return;
     }
     if (!result.accepted) {
-      if (result.code?.includes("TARGET") || result.code === "RUN_NOT_FOUND") {
+      // Nothing was posted; the client keeps the draft and shows the notice.
+      if (result.collaboratorName) {
+        sink.send(errorMessage(result.code ?? TEAM_SEND_MESSAGE_REJECTED, result.message ?? "", agentRunId, undefined, result.collaboratorName));
+      } else if (result.code?.includes("TARGET") || result.code === "RUN_NOT_FOUND") {
         this.sendInvalidTarget(sink, result.message ?? TEAM_COMMAND_INVALID_TARGET_MESSAGE, agentRunId);
       } else {
         sink.send(errorMessage(
@@ -220,6 +208,27 @@ export class AgentTeamStreamHandler {
     }
     const root = this.teamRunService.getActiveTeamRun(teamRunId);
     if (root) await this.teamRunService.recordRunActivity(root, { summary: payload.content });
+  }
+
+  /** A message to one of the team's own members: its mentions resolved by the team's root, then posted. */
+  private async postToMember(
+    view: TeamViewSession,
+    agentRunId: string,
+    payload: Extract<TeamStreamClientMessage, { type: "SEND_MESSAGE" }>["payload"],
+    mentions: ReturnType<typeof toCollaboratorMentions>,
+  ): Promise<ChildPostResult> {
+    let content = payload.content;
+    if (mentions.length) {
+      const root = this.teamRunService.getActiveTeamRun(view.teamRunId) ?? await this.teamRunService.resolveManagedTeamRun(view.teamRunId);
+      if (!root) return { accepted: false, code: "RUN_NOT_FOUND", message: `Team run '${view.teamRunId}' was not found.` };
+      const admission = await root.resolveCollaboratorMentions({ focusedAgentRunId: agentRunId, mentions });
+      if (!admission.admitted) {
+        return { accepted: false, code: admission.code, message: admission.message,
+          ...("collaboratorName" in admission && admission.collaboratorName ? { collaboratorName: admission.collaboratorName } : {}) };
+      }
+      content = composeCollaboratorMentionNote(payload.content, admission.collaborators);
+    }
+    return this.memberCommand(view, agentRunId, { kind: "post_message", message: userMessage(payload, content) });
   }
 
   private sendInvalidTarget(sink: TeamStreamSink, message: string, agentRunId: string | null = null): void {

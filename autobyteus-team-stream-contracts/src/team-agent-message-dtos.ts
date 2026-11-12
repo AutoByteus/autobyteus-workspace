@@ -76,9 +76,15 @@ export const teamAgentErrorPayloadSchema = z.union(
   ],
 );
 
-export const teamInterruptCommandAckPayloadSchema = z.union([
+export const teamCommandAckPayloadSchema = z.union([
   z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.literal("accepted"), agent_run_id: nonEmptyStringSchema }).strict(),
   z.object({ command_type: z.literal("INTERRUPT_GENERATION"), command_id: nonEmptyStringSchema, state: z.enum(["rejected", "failed"]), code: nonEmptyStringSchema, message: z.string(), agent_run_id: nonEmptyStringSchema }).strict(),
+  /**
+   * A message to a child row's agent was accepted by the child's own run (autobyteus-461 CR-461-034): the send settles
+   * by its identity, whether or not the team is live (the child's input is its own run's event, not this team's).
+   */
+  z.object({ command_type: z.literal("SEND_MESSAGE"), state: z.literal("accepted"), agent_run_id: nonEmptyStringSchema,
+    message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema }).strict(),
 ]);
 
 export type TeamAgentMessageType = keyof typeof teamAgentPayloadSchemas;

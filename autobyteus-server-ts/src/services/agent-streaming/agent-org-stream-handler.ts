@@ -1,4 +1,4 @@
-import type { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
+import type { ChildPostResult, DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { randomUUID } from "node:crypto";
 import {
@@ -41,6 +41,26 @@ const commandAck = (
   },
 });
 
+type SendPayload = Extract<AgentCommand, { type: "SEND_MESSAGE" }>["payload"];
+
+/** A user's message as a run's input: its content (with its mention note, when composed), files and identity. */
+const userMessage = (payload: SendPayload, content: string): AgentInputUserMessage => {
+  const contextFiles = [
+    ...payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
+    ...payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
+  ];
+  return AgentInputUserMessage.fromDict({
+    content,
+    context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
+    metadata: { input_origin: "user_message", message_id: payload.message_id, dedupe_key: payload.dedupe_key },
+  });
+};
+
+/** An interrupt or a tool approval as an agent's command. */
+const agentCommandOf = (message: Exclude<AgentCommand, { type: "SEND_MESSAGE" }>) => message.type === "INTERRUPT_GENERATION"
+  ? { kind: "interrupt" as const }
+  : { kind: "approve_tool" as const, invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason };
+
 /**
  * Native AgentOrg stream `/ws/agent-org/:orgRunId` (autobyteus-461 DS-8, SR-046): one view session per connection
  * (`OrgViewSession`), active or stopped, which never restores the run to serve the view. A command to a child row goes
@@ -53,7 +73,7 @@ export class AgentOrgStreamHandler {
     private readonly service: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">,
     private readonly sources: OrgViewSources,
     /** A child row's command goes to the child's own run (AR-011); one instance, from the composition root. */
-    private readonly children: Pick<DelegatedRunCommands, "execute" | "isChildAgent">,
+    private readonly children: Pick<DelegatedRunCommands, "execute" | "postUserMessage">,
   ) {}
 
   async connect(connection: WebSocketConnection, orgRunIdInput: string): Promise<string | null> {
@@ -113,9 +133,20 @@ export class AgentOrgStreamHandler {
       }
       const target = message.payload.target_agent_run_id;
       const identity = createAgentOrgRootExecutionIdentity(orgRunId);
-      const isChild = await this.children.isChildAgent(identity, target);
+      // AR-011: a child row's command goes to the child's own run (not this Org's activity); a message's mentions are
+      // resolved by the child's own root with the post (CR-461-032).
+      const child: ChildPostResult | null = message.type === "SEND_MESSAGE"
+        ? await this.children.postUserMessage(identity, target, {
+          message: userMessage(message.payload, message.payload.content), mentions: toCollaboratorMentions(message.payload.mentions) })
+        : await this.children.execute(identity, target, agentCommandOf(message));
+      if (child) {
+        session.egress.send(commandAck(message, child.accepted ? "accepted" : "rejected",
+          child.accepted ? null : child.code ?? "AGENT_ORG_COMMAND_REJECTED", child.message ?? null,
+          child.collaboratorName));
+        return;
+      }
       let run = this.service.getActive(orgRunId);
-      if (!run && !isChild) {
+      if (!run) {
         if (message.type !== "SEND_MESSAGE") {
           session.egress.send(commandAck(message, "rejected", "AGENT_ORG_STOPPED", `AgentOrg run '${orgRunId}' is stopped. A message to one of its agents starts it.`));
           return;
@@ -123,16 +154,15 @@ export class AgentOrgStreamHandler {
         // A message to one of the Org's own agents starts the stopped Org, on that first input (SR-046).
         run = await this.service.restore(orgRunId);
       }
-      if (!run && message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
-        session.egress.send(commandAck(message, "rejected", "AGENT_ORG_STOPPED", "Start the Org to mention collaborators in a message to a run it delegated to."));
+      if (message.type !== "SEND_MESSAGE") {
+        const result = await run.executeAgentCommand(target, agentCommandOf(message));
+        session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
+          result.accepted ? null : result.code ?? "AGENT_ORG_COMMAND_REJECTED", result.message ?? null));
         return;
       }
-      let content = message.type === "SEND_MESSAGE" ? message.payload.content : "";
-      if (message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
-        const admission = await run!.resolveCollaboratorMentions({
-          focusedAgentRunId: message.payload.target_agent_run_id,
-          mentions: toCollaboratorMentions(message.payload.mentions),
-        });
+      let content = message.payload.content;
+      if (message.payload.mentions?.length) {
+        const admission = await run.resolveCollaboratorMentions({ focusedAgentRunId: target, mentions: toCollaboratorMentions(message.payload.mentions) });
         if (!admission.admitted) {
           // Nothing was posted; the client keeps the draft and shows the notice.
           session.egress.send(commandAck(
@@ -143,45 +173,11 @@ export class AgentOrgStreamHandler {
         }
         content = composeCollaboratorMentionNote(content, admission.collaborators);
       }
-      const command = message.type === "SEND_MESSAGE"
-        ? (() => {
-            const contextFiles = [
-              ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
-              ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
-            ];
-            return {
-              kind: "post_message" as const,
-              message: AgentInputUserMessage.fromDict({
-                content,
-                context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
-                metadata: {
-                  input_origin: "user_message",
-                  message_id: message.payload.message_id,
-                  dedupe_key: message.payload.dedupe_key,
-                },
-              }),
-            };
-          })()
-        : message.type === "INTERRUPT_GENERATION"
-          ? { kind: "interrupt" as const }
-          : {
-              kind: "approve_tool" as const,
-              invocationId: message.payload.invocation_id,
-              approved: message.type === "APPROVE_TOOL",
-              reason: message.payload.reason,
-            };
-      // AR-011: a child row's command goes to the child's own run (not this org's activity).
-      const child = isChild ? await this.children.execute(identity, target, command) : null;
-      const own = run!;
-      const outcome = child ? Object.freeze({ result: child, executionKind: null })
-        : message.type === "SEND_MESSAGE"
-        ? await own.executeAgentCommandWithExecutionKind(target, command)
-        : Object.freeze({ result: await own.executeAgentCommand(target, command), executionKind: null });
+      const outcome = await run.executeAgentCommandWithExecutionKind(target, { kind: "post_message", message: userMessage(message.payload, content) });
       const result = outcome.result;
-      if (message.type === "SEND_MESSAGE" && result.accepted && outcome.executionKind !== null) {
-        const historyCommit = this.service.recordRunActivity(run!, { summary: message.payload.content });
+      if (result.accepted && outcome.executionKind !== null) {
         try {
-          await historyCommit;
+          await this.service.recordRunActivity(run, { summary: message.payload.content });
         } catch (cause) {
           console.error(`Accepted AgentOrg input history summary commit failed for '${orgRunId}':`, cause);
         }

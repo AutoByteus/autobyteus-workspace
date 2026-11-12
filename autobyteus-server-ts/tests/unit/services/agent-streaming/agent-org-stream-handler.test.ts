@@ -51,7 +51,8 @@ const connection = () => {
   return { sent, socket: { send: (value: string) => sent.push(value), close: vi.fn() } };
 };
 
-const harness = (snapshot = { tree, messages, statuses, inputStates: [] }, options: Readonly<{ stopped?: boolean }> = {}) => {
+const harness = (snapshot = { tree, messages, statuses, inputStates: [] },
+  options: Readonly<{ stopped?: boolean; children?: ReturnType<typeof noChildCommands> }> = {}) => {
   const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const executeAgentCommand = vi.fn(async () => ({ accepted: true }));
   const executeAgentCommandWithExecutionKind = vi.fn(async (agentRunId: string) => ({
@@ -83,7 +84,7 @@ const harness = (snapshot = { tree, messages, statuses, inputStates: [] }, optio
   return { publisher, executeAgentCommand, executeAgentCommandWithExecutionKind, recordRunActivity, service, run, feed, registrations,
     stop: () => { managed = false; registrations.unregister(identity); },
     handler: new AgentOrgStreamHandler(service as never,
-      { streams: feed.streams, children: noViewChildren(), followers: noFollowers(), registrations, readStoredTree }, noChildCommands()) };
+      { streams: feed.streams, children: noViewChildren(), followers: noFollowers(), registrations, readStoredTree }, options.children ?? noChildCommands()) };
 };
 
 describe("AgentOrgStreamHandler", () => {
@@ -299,6 +300,30 @@ describe("AgentOrgStreamHandler", () => {
       test.feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [delegatedChild("analyst")], removed: [] });
       await test.feed.settled();
       expect(parse(client).at(-1)).toMatchObject({ type: "CHILD_RUNS_CHANGED" });
+    });
+
+    it("autobyteus-461 CR-461-032: a message with mentions to a child row goes, mentions and all, to the child's own run; the Org stays stopped; a refused mention names the collaborator", async () => {
+      const postUserMessage = vi.fn(async (_parent: unknown, _agentRunId: string, input: { message: { content: string }; mentions: readonly { definitionId: string }[] }) =>
+        input.mentions.some((mention) => mention.definitionId === "nobody")
+          ? { accepted: false, code: "COLLABORATOR_ADD_FAILED", message: "No such collaborator.", collaboratorName: "Nobody" } : { accepted: true });
+      const test = harness(undefined, { stopped: true, children: { execute: async () => null, postUserMessage } as never }); const client = connection();
+      const sessionId = await test.handler.connect(client.socket, orgRunId);
+      const send = (commandId: string, definitionId: string) => test.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
+        root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: "child-agent", command_id: commandId,
+        content: "Ask @Reviewer", context_file_paths: [], image_urls: [], message_id: commandId, dedupe_key: commandId,
+        mentions: [{ kind: "agent", definition_id: definitionId }] } }));
+      await send("c-1", "reviewer");
+      const [parent, agentRunId, input] = postUserMessage.mock.calls[0]!;
+      expect(parent).toEqual(createAgentOrgRootExecutionIdentity(orgRunId));
+      expect(agentRunId).toBe("child-agent");
+      expect(input.message.content).toBe("Ask @Reviewer");
+      expect(input.mentions).toEqual([{ kind: "agent", definitionId: "reviewer" }]);
+      expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { command_id: "c-1", state: "accepted" } });
+      await send("c-2", "nobody");
+      expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK",
+        payload: { command_id: "c-2", state: "rejected", code: "COLLABORATOR_ADD_FAILED", collaborator_name: "Nobody" } });
+      expect(test.service.restore).not.toHaveBeenCalled();
+      expect(test.executeAgentCommandWithExecutionKind).not.toHaveBeenCalled();
     });
 
     it("an interrupt for an agent of the stopped Org is refused and restores nothing; a message to it restores the Org, then one live snapshot", async () => {

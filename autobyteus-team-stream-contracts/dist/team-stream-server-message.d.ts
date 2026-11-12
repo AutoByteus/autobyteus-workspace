@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
+import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamCommandAckPayloadSchema, teamSegmentContentBatchPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import { teamChildRunsChangedPayloadSchema } from "./team-task-execution-message-dtos.js";
@@ -1303,6 +1303,12 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         code: z.ZodString;
         message: z.ZodString;
         agent_run_id: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        command_type: z.ZodLiteral<"SEND_MESSAGE">;
+        state: z.ZodLiteral<"accepted">;
+        agent_run_id: z.ZodString;
+        message_id: z.ZodString;
+        dedupe_key: z.ZodString;
     }, z.core.$strict>]>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"CHILD_RUNS_CHANGED">;
@@ -1678,7 +1684,7 @@ export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
     payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema>;
 }> | Readonly<{
     type: "AGENT_COMMAND_ACK";
-    payload: z.infer<typeof teamInterruptCommandAckPayloadSchema>;
+    payload: z.infer<typeof teamCommandAckPayloadSchema>;
 }> | Readonly<{
     type: "CHILD_RUNS_CHANGED";
     payload: z.infer<typeof teamChildRunsChangedPayloadSchema>;

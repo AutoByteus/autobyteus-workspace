@@ -36,6 +36,8 @@ const createHarness = (input: {
   commandError?: Error;
   /** The team run is stopped (not managed) when the view connects. */
   stopped?: boolean;
+  /** The child-row commands (default: no child rows). */
+  children?: ReturnType<typeof noChildCommands>;
 } = {}) => {
   let eventListener: ((event: unknown) => void) | null = null;
   const closeSnapshot = vi.fn();
@@ -72,7 +74,7 @@ const createHarness = (input: {
     new AgentSessionManager(),
     teamRunService as never,
     { streams: feed.streams, children: noViewChildren(), followers: noFollowers(), registrations, readStoredTree },
-    noChildCommands(),
+    input.children ?? noChildCommands(),
   );
   return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree,
     stop: () => { managed = false; registrations.unregister(team); },
@@ -311,6 +313,43 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "failed", code: "TEAM_RUN_STOPPED" } });
       expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+    });
+
+    it("autobyteus-461 CR-461-032/034: a message with mentions to a child row goes, mentions and all, to the child's own run; the team stays stopped; each accepted send is acknowledged by its identity", async () => {
+      const postUserMessage = vi.fn(async (_parent: unknown, agentRunId: string, _input: { message: { content: string; metadata: Record<string, unknown> }; mentions: readonly unknown[] }) =>
+        agentRunId === "child-agent" ? { accepted: true } : null);
+      const harness = createHarness({ stopped: true, children: { execute: async () => null, postUserMessage } as never });
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      const send = (messageId: string) => harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
+        content: "Ask @Reviewer", context_file_paths: [], image_urls: [], agent_run_id: "child-agent", message_id: messageId, dedupe_key: messageId,
+        mentions: [{ kind: "agent", definition_id: "reviewer" }] } }));
+      await send("m-1");
+      await send("m-2");
+      expect(postUserMessage).toHaveBeenCalledTimes(2);
+      const [parent, , first] = postUserMessage.mock.calls[0]!;
+      expect(parent).toEqual(createTeamRootExecutionIdentity("team-run-root"));
+      // The raw content and the mentions: the child's own root resolves them and composes the note.
+      expect(first.message.content).toBe("Ask @Reviewer");
+      expect(first.mentions).toEqual([{ kind: "agent", definitionId: "reviewer" }]);
+      expect(sent(harness.connection).filter((message) => message.type === "AGENT_COMMAND_ACK").map((message) => message.payload)).toEqual([
+        { command_type: "SEND_MESSAGE", state: "accepted", agent_run_id: "child-agent", message_id: "m-1", dedupe_key: "m-1" },
+        { command_type: "SEND_MESSAGE", state: "accepted", agent_run_id: "child-agent", message_id: "m-2", dedupe_key: "m-2" },
+      ]);
+      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+    });
+
+    it("autobyteus-461 CR-461-032: a child's refused mention is the send's notice, naming the collaborator; nothing is posted", async () => {
+      const postUserMessage = vi.fn(async () => ({ accepted: false, code: "COLLABORATOR_ADD_FAILED", message: "No such collaborator.", collaboratorName: "Nobody" }));
+      const harness = createHarness({ stopped: true, children: { execute: async () => null, postUserMessage } as never });
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
+        content: "Ask @Nobody", context_file_paths: [], image_urls: [], agent_run_id: "child-agent", message_id: "m-1", dedupe_key: "m-1",
+        mentions: [{ kind: "agent", definition_id: "nobody" }] } }));
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { code: "COLLABORATOR_ADD_FAILED", agent_run_id: "child-agent", collaborator_name: "Nobody" } });
+      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
     });
 
     it("a member's message restores the team on that input: the view is live (one in-band snapshot, then followed) before the message is posted, so the run's events after it reach the view (SR-048)", async () => {

@@ -28,7 +28,8 @@ const fakeRoot = (hostLive = true) => ({
 });
 
 /** The child-command route: `child-run` is a local child; any other target is not this route's. */
-const childCommands = () => ({ execute: vi.fn(async (_parent: unknown, target: string) => target === "child-run" ? { accepted: true } : null) });
+const childCommands = () => ({ execute: vi.fn(async (_parent: unknown, target: string) => target === "child-run" ? { accepted: true } : null),
+  postUserMessage: vi.fn(async (_parent: unknown, target: string, _input: unknown) => target === "child-run" ? { accepted: true } : null) });
 
 const connect = async (roots: ConstructorParameters<typeof AgentCollaborationStreamHandler>[0], children = childCommands(), feed = followTestChildRows()) => {
   const wire: CollaborationStreamServerMessage[] = [];
@@ -71,18 +72,36 @@ describe("AgentCollaborationStreamHandler", () => {
     }
   });
 
-  it("resolves mentions for the focused child and sends a local child's command to its own run (AR-011)", async () => {
+  it("autobyteus-461 CR-461-032: a local child's message goes, mentions and all, to the child's own run, which resolves them (AR-011)", async () => {
     const root = fakeRoot();
     const { handler, sessionId, wire, children } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
     await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
-    expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "child-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    expect(children.execute).toHaveBeenCalledWith(root.rootIdentity, "child-run", expect.objectContaining({ kind: "post_message",
-      message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer: delegate the task to it/) }) }));
+    expect(children.postUserMessage).toHaveBeenCalledWith(root.rootIdentity, "child-run", {
+      message: expect.objectContaining({ content: "hello" }), mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    expect(root.resolveCollaboratorMentions).not.toHaveBeenCalled();
     expect(root.executeAgentCommand).not.toHaveBeenCalled();
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { root_subject_kind: "agent", state: "accepted" } });
 
     await handler.handleMessage(sessionId!, send({ root_subject_kind: "agent_org", command_id: "c3" }));
     expect(wire.at(-1)).toMatchObject({ payload: { state: "failed", code: "AGENT_ROOT_COMMAND_FAILED" } });
+  });
+
+  it("a child's refused mention is the send's notice, naming the collaborator", async () => {
+    const root = fakeRoot();
+    const children = childCommands();
+    children.postUserMessage.mockResolvedValueOnce({ accepted: false, code: "COLLABORATOR_ADD_FAILED", message: "No such collaborator.", collaboratorName: "Nobody" } as never);
+    const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never }, children);
+    await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "nobody" }] }));
+    expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "COLLABORATOR_ADD_FAILED", collaborator_name: "Nobody" } });
+  });
+
+  it("the run's own agent: its own root resolves the mentions and posts the composed message", async () => {
+    const root = fakeRoot();
+    const { handler, sessionId } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
+    await handler.handleMessage(sessionId!, send({ target_agent_run_id: HOST, mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
+    expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    expect(root.executeAgentCommand).toHaveBeenCalledWith(HOST, expect.objectContaining({ kind: "post_message",
+      message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned agents\]\n- Code Reviewer \(agent\) at \/code_reviewer: delegate the task to it/) }) }));
   });
 
   it("sends a peer child's command through the root, and never starts the agent for a child's command", async () => {
