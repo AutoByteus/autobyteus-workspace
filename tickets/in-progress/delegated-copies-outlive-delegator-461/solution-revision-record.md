@@ -1255,3 +1255,23 @@
   1. A peer child's message and interrupt keep base's `executeRemoteChildCommand` branch in the three roots. Removing `DelegatedRunCommands` removes only the local route.
   2. Line references: `stopRemoteChild` is at `:59` at base, and the hook is `onHostReady`.
   3. One binding source: the root's `onHostReady`, with the root found through registration, as `StandalonePairedAgentAccess` does. The round-38 note, the in-band snapshot not being a new base, was already applied in 27d6f014b9 (DS-8 "Switching modes").
+
+### SR-066 — A peer child is reached by its own identity, never through its delegator (the user's direction; REQ-013)
+
+- **Triggering:** the user, relayed by the architecture reviewer after ARCH-REV-039: "the peer … task agent or task agent team are like the local task agent or agent team. It shouldn't be belonging to the delegate, shouldn't also go through the delegate". SR-065 had kept base's route through the delegator's root, and base's `ROOT_NOT_ACTIVE` with it.
+- **Classification:** a requirement change, because the intended behavior changes. With the delegator stopped, a peer child's Stop, message, interrupt, conversation and live status now work. REQ-013 and AC-016 were added and approved by the Solution Designer within the user's explicit direction; the user was informed. Scope: in this ticket, because a stopped delegator with working children is this ticket's normal case.
+- **Evidence** (base `827f1e68dc`, confirmed by the Solution Designer):
+  - the channel is per process (`remote-run-channel.ts:125`);
+  - a command is `ownerCommand(nodeId, targetRoot, agentRunId, command)` (`:106`);
+  - node B admits it by the back-link (`remote-run-links.ts:144`);
+  - the root served only to look up `(nodeId, target)`, which the `DelegationIndex` already holds (`peerChildrenOf`).
+- **Decision:**
+  - The node-level `PeerRuns` resolves a peer run by its own ID through the index and sends commands, projection reads and observations over the process channel, without a root.
+  - Stop is the standard terminate by run ID for every row. The run services forward a peer run to `PeerRuns`, so the Stop button has one path.
+  - The web keeps base's shapes for a peer row's commands and conversation; the server routes them to `PeerRuns`.
+  - `PeerChildObservation` on the view side keeps a stopped delegator's peer rows live, inside the view's sequence and snapshot (SR-063).
+  - Removed: `stopDelegatedExecution`, `PeerChildStop`, `DelegatedLaunchSelectionService`, and the roots' user-command remote branches and root-opened child observation.
+  - The agents' own collaboration with a peer run stays in the roots. There is no protocol change.
+- **Kept from SR-065:** each local child's model options come from its own queries.
+- **Next action:** architecture review.
+
