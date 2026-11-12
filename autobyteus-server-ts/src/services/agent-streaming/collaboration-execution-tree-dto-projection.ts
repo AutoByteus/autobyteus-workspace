@@ -82,7 +82,30 @@ export const projectDelegatedTeamRun = (identity: Extract<ChildRunIdentityDto, {
   };
 };
 
-export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot, delegated: readonly CollaborationTaskExecutionDto[] = []): AgentOrgExecutionTreeDto => ({
+/**
+ * The mounted team of an Org run whose member delegated a run, as at base (autobyteus-461 rule 3): its row sits in that
+ * team's `taskExecutions`; `null` for the Org's direct agents (the row sits in the root).
+ */
+export const orgTeamOfDelegator = (tree: AgentOrgRunExecutionTreeSnapshot, delegatorAgentRunId: string | null | undefined): string | null => {
+  if (!delegatorAgentRunId) return null;
+  for (const member of tree.rootOrg.members) {
+    if ("teamRunId" in member && member.members.some((agent) => agent.agentRunId === delegatorAgentRunId)) return member.teamRunId;
+  }
+  return null;
+};
+
+export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnapshot, delegated: readonly CollaborationTaskExecutionDto[] = []): AgentOrgExecutionTreeDto => {
+  const byTeam = new Map<string, CollaborationTaskExecutionDto[]>();
+  const root: CollaborationTaskExecutionDto[] = [];
+  for (const row of delegated) {
+    const team = orgTeamOfDelegator(tree, row.delegatorAgentRunId);
+    if (team) byTeam.set(team, [...byTeam.get(team) ?? [], row]); else root.push(row);
+  }
+  return projectOrgTree(tree, root, byTeam);
+};
+
+const projectOrgTree = (tree: AgentOrgRunExecutionTreeSnapshot, root: readonly CollaborationTaskExecutionDto[],
+  byTeam: ReadonlyMap<string, readonly CollaborationTaskExecutionDto[]>): AgentOrgExecutionTreeDto => ({
   subjectKind: "agent_org", createdAt: tree.createdAt, archivedAt: tree.archivedAt,
   applicationBinding: tree.applicationBinding === null ? null : {
     applicationId: tree.applicationBinding.applicationId, bindingId: tree.applicationBinding.bindingId,
@@ -91,8 +114,11 @@ export const projectAgentOrgExecutionTree = (tree: AgentOrgRunExecutionTreeSnaps
   rootOrg: {
     address: tree.rootOrg.address, orgDefinitionId: tree.rootOrg.orgDefinitionId, orgDefinitionName: tree.rootOrg.orgDefinitionName,
     orgRunId: tree.rootOrg.orgRunId, defaultLaunchConfiguration: projectLaunch(tree.rootOrg.defaultLaunchConfiguration),
-    members: tree.rootOrg.members.map(projectConfigured),
-    // DS-8: its child rows are the runs its agents delegated to (one hop); nothing is hosted.
-    taskExecutions: [...delegated],
+    // A mounted team holds the rows its members delegated, the root the rest (base's placement, rule 3); nothing is hosted.
+    members: tree.rootOrg.members.map((member) => {
+      const projected = projectConfigured(member);
+      return "teamRunId" in member ? { ...projected, taskExecutions: [...byTeam.get(member.teamRunId) ?? []] } : projected;
+    }),
+    taskExecutions: [...root],
   },
 });

@@ -5,7 +5,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
+import { agentChildRow, delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-run-1";
 const agent = testOrgAgentNode("/director", "agent-run-1");
@@ -306,6 +306,29 @@ describe("AgentOrgStreamHandler", () => {
       await test.feed.settled();
       expect(parse(client).at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
         event: { kind: "task_execution_started", host_kind: "root", host_run_id: orgRunId, execution: { agentRunId: "analyst" } } } });
+    });
+
+    it("rule 3: a run a mounted team's member delegated sits in that team, live and in the snapshot; a direct agent's in the root (base's placement)", async () => {
+      const test = harness(orgPackage(), { stopped: true });
+      (test.feed.rows as { projection: unknown }).projection = { rowOf: async (child: { run: { agentRunId: string }; recipientAddress: string }) => ({ kind: "local",
+        row: { ...agentChildRow(child.run.agentRunId, child.recipientAddress),
+          delegatorAgentRunId: child.run.agentRunId === "by-team" ? "agent-team-worker-configured" : "agent-worker-configured" } }) };
+      const org = createAgentOrgRootExecutionIdentity(orgRunId);
+      const live = connection();
+      const sessionId = await test.handler.connect(live.socket, orgRunId);
+      test.feed.report({ run: org, added: [delegatedChild("by-team", org), delegatedChild("by-worker", org)], removed: [] });
+      await test.feed.settled();
+      const started = parse(live).filter((message) => message.type === "ROOT_EXECUTION_EVENT").map((message) => message.payload as { event: { host_kind: string; host_run_id: string; execution: { agentRunId: string } } });
+      expect(started.map(({ event }) => [event.execution.agentRunId, event.host_kind, event.host_run_id])).toEqual([
+        ["by-team", "team", "team-run-configured"], ["by-worker", "root", orgRunId]]);
+      const later = connection();
+      await test.handler.connect(later.socket, orgRunId);
+      const snapshot = parse(later).find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as { root_org: { execution_tree: { rootOrg: {
+        taskExecutions: Array<{ agentRunId: string }>; members: Array<{ teamRunId?: string; taskExecutions?: Array<{ agentRunId: string }> }> } } } };
+      const rootOrg = snapshot.root_org.execution_tree.rootOrg;
+      expect(rootOrg.taskExecutions.map((row) => row.agentRunId)).toEqual(["by-worker"]);
+      expect(rootOrg.members.find((member) => member.teamRunId === "team-run-configured")?.taskExecutions?.map((row) => row.agentRunId)).toEqual(["by-team"]);
+      test.handler.disconnect(sessionId!);
     });
 
     it("SR-066 (ARCH-REV-039 note 1): a peer child's message and interrupt reach its node through its handle; the stopped Org stays stopped", async () => {

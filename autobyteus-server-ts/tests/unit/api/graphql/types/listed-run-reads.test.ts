@@ -43,15 +43,19 @@ describe("the run list's reads", () => {
     ]);
   });
 
-  it("an Org's history read has its delegated rows in its tree and its closed set; a team's is as it was", async () => {
-    const org = { root_subject_kind: "agent_org", root_run_id: "org-run", org: { rootOrg: { orgRunId: "org-run", taskExecutions: [] } } };
+  it("an Org's history read has its delegated rows placed in its tree and its closed set; a team's is as it was", async () => {
+    const org = { root_subject_kind: "agent_org", root_run_id: "org-run", org: { rootOrg: { orgRunId: "org-run", taskExecutions: [], members: [
+      { agentRunId: "ceo" }, { teamRunId: "dev-team", members: [{ agentRunId: "dev-lead" }], taskExecutions: [] }] } } };
     const team = { root_subject_kind: "agent_team", root_run_id: "team-run", team: {} };
     io.history = { list: async () => [team, org], getAgentOrg: async () => org };
-    io.children = { read: async () => ({ statuses: [], rows: { taskExecutions: [{ agentRunId: "analyst" }], remoteTaskExecutions: [], closedTaskExecutions: [{ agentRunId: "done" }] } }) };
+    io.children = { read: async () => ({ statuses: [], rows: { taskExecutions: [{ agentRunId: "analyst", delegatorAgentRunId: "ceo" },
+      { agentRunId: "qa", delegatorAgentRunId: "dev-lead" }], remoteTaskExecutions: [], closedTaskExecutions: [{ agentRunId: "done" }] } }) };
     const resolver = new CollaborationRootHistoryResolver();
     const [listedTeam, listedOrg] = await resolver.listCollaborationRootHistory();
     expect(listedTeam).toBe(team);
-    expect(listedOrg).toMatchObject({ org: { rootOrg: { taskExecutions: [{ agentRunId: "analyst" }] } }, closed_task_executions: [{ agentRunId: "done" }] });
+    // As at base: a mounted team's member's delegated run sits in that team (rule 3).
+    expect(listedOrg).toMatchObject({ org: { rootOrg: { taskExecutions: [{ agentRunId: "analyst" }],
+      members: [{ agentRunId: "ceo" }, { teamRunId: "dev-team", taskExecutions: [{ agentRunId: "qa" }] }] } }, closed_task_executions: [{ agentRunId: "done" }] });
     await expect(resolver.getAgentOrgRootHistory("org-run")).resolves.toMatchObject({ closed_task_executions: [{ agentRunId: "done" }] });
   });
 });
