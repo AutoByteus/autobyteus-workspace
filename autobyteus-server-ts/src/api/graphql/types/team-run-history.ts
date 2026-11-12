@@ -21,6 +21,10 @@ class TeamRunResumeConfigPayload {
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
 
+  /** `{ agentRunId } | { teamRunId }` of each row in `executionTree` whose Tasks are all closed while it still runs (SR-061). */
+  @Field(() => GraphQLJSON)
+  closedTaskExecutions!: unknown;
+
   /** autobyteus-278: the runs this Team delegated to other nodes, with their node's name, as its stream snapshot lists them. */
   @Field(() => GraphQLJSON)
   remoteTaskExecutions!: unknown;
@@ -105,11 +109,14 @@ export class TeamRunHistoryResolver {
     const config = await this.runModelConfigService.getTeamRunResumeConfig(teamRunId);
     const children = getStudioRunViewChildren();
     const run = { rootSubjectKind: "agent_team" as const, rootRunId: config.executionTree.rootTeam.teamRunId };
+    const { rows } = await children.read(run);
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
-      executionTree: projectExecutionTree(config.executionTree, await children.rows(run)),
-      remoteTaskExecutions: await children.remote(run),
+      // Its rows in base's shapes (SR-061): nested by placement, the closed set, the peer rows.
+      executionTree: projectExecutionTree(config.executionTree, rows.taskExecutions),
+      closedTaskExecutions: rows.closedTaskExecutions,
+      remoteTaskExecutions: rows.remoteTaskExecutions,
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,
       baseChangeSequence: config.baseChangeSequence,

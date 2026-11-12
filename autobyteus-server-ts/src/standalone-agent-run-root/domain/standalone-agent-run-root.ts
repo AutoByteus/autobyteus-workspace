@@ -244,7 +244,21 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.options.publisher.subscribe(listener);
   }
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<StandaloneRootPackageSnapshot, StandaloneRootEvent>> {
-    return this.options.publisher.openSnapshotConnection(() => Object.freeze({ host: this.options.host, createdAt: this.options.createdAt, statuses: Object.freeze([]) }));
+    return this.openViewSnapshotConnection(() => undefined, (own) => own);
+  }
+
+  /**
+   * The run's view snapshot (SR-063): in the view stream's snapshot connection, `atBase` runs in the same synchronous
+   * step as the base (the view's rows and statuses, in memory); then `read` completes it with the root's own parts.
+   */
+  openViewSnapshotConnection<TAtBase, TSnapshot>(
+    atBase: () => TAtBase,
+    read: (own: StandaloneRootPackageSnapshot, atBase: TAtBase) => Promise<TSnapshot> | TSnapshot,
+  ): Promise<RootSnapshotConnection<TSnapshot, StandaloneRootEvent>> {
+    return this.options.publisher.openSnapshotConnection(() => {
+      const rows = atBase();
+      return read(Object.freeze({ host: this.options.host, createdAt: this.options.createdAt, statuses: Object.freeze([]) }), rows);
+    });
   }
 
   /** The run's agent's saved launch changed (a stopped-run edit): runs delegated from now on inherit it. */

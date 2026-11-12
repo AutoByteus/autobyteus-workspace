@@ -271,13 +271,27 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
 
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<AgentOrgRunPackageSnapshot, AgentOrgRunEvent>> {
-    return this.options.publisher.openSnapshotConnection(() => Object.freeze({
-      tree: this.tree,
-      statuses: this.getAgentStatusSnapshots(),
-      inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
-        ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]
-        .map(input => [input.agent_run_id, input])).values()],
-    }));
+    return this.openViewSnapshotConnection(() => undefined, (own) => own);
+  }
+
+  /**
+   * The run's view snapshot (SR-063): in the view stream's snapshot connection, `atBase` runs in the same synchronous
+   * step as the base (the view's rows and statuses, in memory); then `read` completes it with the root's own parts.
+   */
+  openViewSnapshotConnection<TAtBase, TSnapshot>(
+    atBase: () => TAtBase,
+    read: (own: AgentOrgRunPackageSnapshot, atBase: TAtBase) => Promise<TSnapshot> | TSnapshot,
+  ): Promise<RootSnapshotConnection<TSnapshot, AgentOrgRunEvent>> {
+    return this.options.publisher.openSnapshotConnection(() => {
+      const rows = atBase();
+      return read(Object.freeze({
+        tree: this.tree,
+        statuses: this.getAgentStatusSnapshots(),
+        inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
+          ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]
+          .map(input => [input.agent_run_id, input])).values()],
+      }), rows);
+    });
   }
 
   enterPersistenceFailStop(): void { this.enterFailStop(); }

@@ -1,27 +1,23 @@
-import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamServerMessageSchema,
-  RootExecutionEventDtoSchema,
   type CollaborationStreamServerMessage,
 } from "@autobyteus/collaboration-stream-contracts";
-import type { ChildRowsStreams } from "../../agent-collaboration/delegation/child-rows-streams.js";
-import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
-import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { RootSnapshotConnection, RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
+import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
+import { createAgentOrgRootExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { AgentOrgRun } from "../../agent-org-execution/domain/agent-org-run.js";
+import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
+import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
-import type { RunViewChildren } from "./run-view-children.js";
-import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot, projectAgentOrgExecutionView } from "./agent-org-execution-view-projector.js";
+import { isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from "./agent-org-execution-view-projector.js";
 
-/** What an Org run's view session needs, passed in by the composition (autobyteus-461 SR-046). */
+/** What an Org run's view session needs, passed in by the composition (autobyteus-461 SR-046, SR-061 … SR-063). */
 export type OrgViewSources = Readonly<{
-  /** The open view streams the child-row feed publishes to. */
-  streams: Pick<ChildRowsStreams, "open">;
-  /** The run's children as its view reads them (rows, peer rows, statuses). */
-  children: Pick<RunViewChildren, "rows" | "remote" | "statuses">;
-  /** Its local children's output: into a live root's stream, or numbered by this view while the run is stopped. */
-  followers: Pick<LocalChildFollowers, "followLive" | "followStored">;
+  /** Each run's one view stream (SR-062). */
+  streams: Pick<RunViewStreams, "streamOf">;
+  /** The rows under the run: read with a snapshot's base, their records after it, their statuses followed. */
+  rows: RunViewRowSources;
   /** The run's registration (managed) and its end, by its identity. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The stopped run's own stored tree; null when there is no such run. */
@@ -30,17 +26,20 @@ export type OrgViewSources = Readonly<{
 
 export class OrgRunNotFoundError extends Error {}
 
+type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>;
+
 /**
- * One connection's view of an Org run (autobyteus-461 DS-8, SR-045, SR-046), as `TeamViewSession` for a team run: it
- * never restores the run; **stored mode** while the run is not managed (its stored tree, child rows, children's output
- * numbered by this session), **live mode** while it is (the live run's snapshot and events); each switch sends a fresh
- * in-band snapshot and the run's lifecycle, in the session's own order.
+ * One connection's view of an Org run (autobyteus-461 DS-8; SR-045, SR-046, SR-061 … SR-063), as `TeamViewSession` for a
+ * team run: in base's shapes, from the run's one `RunViewStream`; it never restores the run; a snapshot reads the base,
+ * the rows and their statuses in one synchronous step, then the run's own parts (a live run's, or a stopped run's stored
+ * tree); every frame after the base follows in order; a mode switch is an in-band snapshot at the current sequence.
  */
 export class OrgViewSession {
   private mode: Readonly<{ kind: "live"; run: AgentOrgRun } | { kind: "stored" }> | null = null;
   private leaveMode: (() => void) | null = null;
-  private readonly childRows: ChildRowsStreamSession;
+  private readonly stopFollowingRows: () => void;
   private readonly stopFollowing: () => void;
+  private readonly identity: RootExecutionIdentity;
   private order: Promise<void> = Promise.resolve();
   private closed = false;
   /** Messages that may restore the stopped run, in flight: a switch waits for them (its snapshot carries their input). */
@@ -52,9 +51,10 @@ export class OrgViewSession {
     private readonly send: (message: CollaborationStreamServerMessage) => void,
     private readonly sources: OrgViewSources & Readonly<{ activeOrgRun(orgRunId: string): AgentOrgRun | null }>,
   ) {
-    const identity = createAgentOrgRootExecutionIdentity(orgRunId);
-    this.childRows = new ChildRowsStreamSession(sources.streams, identity, (event) => send(projectCollaborationChildRunsChanged("agent_org", orgRunId, event)));
-    this.stopFollowing = sources.registrations.onRegistrationChanged(identity, () => this.switchMode());
+    this.identity = createAgentOrgRootExecutionIdentity(orgRunId);
+    // The rows' statuses are followed into the run's stream while the view is open: each one after a base is a frame.
+    this.stopFollowingRows = sources.rows.followers.follow(this.identity);
+    this.stopFollowing = sources.registrations.onRegistrationChanged(this.identity, () => this.switchMode());
   }
 
   /** As `TeamViewSession.whileRestoring`: the switch a restoring message causes waits for that message. */
@@ -87,7 +87,7 @@ export class OrgViewSession {
     this.stopFollowing();
     this.leaveMode?.();
     this.leaveMode = null;
-    this.childRows.dispose();
+    this.stopFollowingRows();
   }
 
   private lifecycle(isActive: boolean): CollaborationStreamServerMessage {
@@ -100,60 +100,65 @@ export class OrgViewSession {
     if (run ? this.mode?.kind === "live" && this.mode.run === run : this.mode?.kind === "stored") return;
     this.leaveMode?.();
     this.leaveMode = null;
-    this.childRows.snapshotBuilding();
     if (run) await this.enterLive(run);
     else await this.enterStored();
   }
 
+  private atBase() { return readRowsAtBase(this.sources.rows, this.identity); }
+
   private async enterLive(run: AgentOrgRun): Promise<void> {
-    const identity = createAgentOrgRootExecutionIdentity(run.orgRunId);
-    const remote = await this.sources.children.remote(identity);
-    const delegated = await this.sources.children.rows(identity);
-    const statuses = await this.sources.children.statuses(identity);
-    const barrier = await run.openPackageSnapshotConnection();
+    const connection = await run.openViewSnapshotConnection(() => this.atBase(),
+      async (own, atBase): Promise<ViewSnapshot> => ({ own, statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) }));
     try {
-      this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentOrgExecutionView(run, barrier, remote, delegated, statuses) }));
-      this.childRows.snapshotSent();
-      // The run's own end reaches the view as its unregistration (a stored-mode snapshot follows), not as a close.
-      const unsubscribe = barrier.subscribe((event) => {
-        try {
-          const projected = projectAgentOrgExecutionEvent(run, event);
-          if (projected) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
-        } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }
-      });
-      this.send(this.lifecycle(true));
+      // The run's own end reaches the view as its unregistration (an in-band stored snapshot follows), not as a close.
+      const stopEvents = this.show(connection, run.isActive());
       run.remoteChildren.viewerAttached();
-      const stopChildren = this.sources.followers.followLive(run);
       this.mode = { kind: "live", run };
-      this.leaveMode = () => { unsubscribe(); run.remoteChildren.viewerDetached(); stopChildren(); };
+      this.leaveMode = () => { stopEvents(); run.remoteChildren.viewerDetached(); };
     } catch (error) {
-      barrier.close();
+      connection.close();
       throw error;
     }
   }
 
   private async enterStored(): Promise<void> {
-    const tree = await this.sources.readStoredTree(this.orgRunId);
-    if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
-    const identity = createAgentOrgRootExecutionIdentity(this.orgRunId);
-    // A stopped Org reports no statuses; its children's come as their output below.
-    this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: projectAgentOrgExecutionSnapshot({
-      orgRunId: this.orgRunId, isActive: false, snapshot: { tree, statuses: [], inputStates: [] },
-      baseChangeSequence: 0, liveSequenceId: `stored-${randomUUID()}`, lastMessageChangeSequence: 0,
-      remoteTaskExecutions: await this.sources.children.remote(identity), delegated: await this.sources.children.rows(identity),
-      childStatuses: [],
-    }) }));
-    this.childRows.snapshotSent();
-    this.send(this.lifecycle(false));
-    this.mode = { kind: "stored" };
-    this.leaveMode = this.sources.followers.followStored(identity, 0, (changeSequence, event) => {
-      try {
-        this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: RootExecutionEventDtoSchema.parse({
-          root_subject_kind: "agent_org", root_run_id: this.orgRunId, change_sequence: changeSequence,
-          event: { kind: "agent_presentation", member_address: event.memberAddress, agent_run_id: event.agentRunId, message: event.message },
-        }) }));
-      } catch (cause) { console.error(`Error projecting a child's output: ${String(cause)}`); }
+    const stream = this.sources.streams.streamOf<AgentOrgRunEvent>(this.identity);
+    const connection = await stream.openSnapshotConnection(async (): Promise<ViewSnapshot> => {
+      const atBase = this.atBase();
+      const tree = await this.sources.readStoredTree(this.orgRunId);
+      if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
+      // A stopped Org reports no statuses of its own; its rows' come from their own runs.
+      return { own: { tree, statuses: [], inputStates: [] }, statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) };
     });
+    try {
+      this.leaveMode = this.show(connection, false);
+      this.mode = { kind: "stored" };
+    } catch (error) {
+      connection.close();
+      throw error;
+    }
+  }
+
+  /** Sends the snapshot and its lifecycle, then every frame after its base, in order; returns the unsubscribe. */
+  private show(connection: RootSnapshotConnection<ViewSnapshot, AgentOrgRunEvent>, isActive: boolean): () => void {
+    this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: projectAgentOrgExecutionSnapshot({
+      orgRunId: this.orgRunId, isActive, snapshot: connection.snapshot.own,
+      baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
+      lastMessageChangeSequence: connection.lastMessageChangeSequence, rows: connection.snapshot.rows, childStatuses: connection.snapshot.statuses,
+    }) }));
+    let open = true;
+    let sending: Promise<void> = Promise.resolve();
+    const unsubscribe = connection.subscribe((sequenced) => {
+      sending = sending.then(async () => {
+        if (!open) return;
+        try {
+          const rowEvent = isChildRowRootEvent(sequenced.event) ? await readRowEvent(this.sources.rows.projection, sequenced.event) : null;
+          const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
+          if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
+        } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }
+      });
+    });
+    this.send(this.lifecycle(isActive));
+    return () => { open = false; unsubscribe(); };
   }
 }

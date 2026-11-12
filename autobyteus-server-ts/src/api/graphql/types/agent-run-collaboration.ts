@@ -48,7 +48,8 @@ export class AgentRunCollaborationResolver {
     if (!inspection) return null;
     const run = { rootSubjectKind: "agent" as const, rootRunId: inspection.hostRunId };
     const children = getStudioRunViewChildren();
-    return projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: await children.remote(run), taskExecutions: await children.rows(run) });
+    const { rows, statuses } = await children.read(run);
+    return projectAgentCollaborationView({ ...inspection, rows, childStatuses: statuses });
   }
 
   @Query(() => AgentRunCollaborationMemberProjectionPayload)

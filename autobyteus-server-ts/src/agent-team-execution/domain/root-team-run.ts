@@ -337,14 +337,28 @@ export class RootTeamRun {
   }
 
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<RootTeamRunPackageSnapshot, TeamRunEvent>> {
+    return this.openViewSnapshotConnection(() => undefined, (own) => own);
+  }
+
+  /**
+   * The run's view snapshot (SR-063): in the view stream's snapshot connection, `atBase` runs in the same synchronous
+   * step as the base (the view's rows and statuses, in memory); then the root's own parts are read consistently, as at
+   * base, and `read` completes the snapshot.
+   */
+  openViewSnapshotConnection<TAtBase, TSnapshot>(
+    atBase: () => TAtBase,
+    read: (own: RootTeamRunPackageSnapshot, atBase: TAtBase) => Promise<TSnapshot> | TSnapshot,
+  ): Promise<RootSnapshotConnection<TSnapshot, TeamRunEvent>> {
     this.assertAdmitting();
-    return this.options.publisher.openSnapshotConnection(() =>
-      this.options.persistence.readConsistent(() => ({
+    return this.options.publisher.openSnapshotConnection(async () => {
+      const rows = atBase();
+      const own = await this.options.persistence.readConsistent(() => ({
         tree: this.tree,
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
-      })),
-    );
+      }));
+      return read(own, rows);
+    });
   }
 
   enterPersistenceFailStop(): void { this.enterFailStop(); }

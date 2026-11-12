@@ -43,12 +43,10 @@ export async function registerWebsocketRoutes(
     app,
     undefined,
     new AgentTeamStreamHandler(new AgentSessionManager(AgentTeamSession), dependencies.teamRunService,
-      { streams: views.streams, children: views.children, followers: views.followers, registrations: views.registrations,
-        readStoredTree: views.readStoredTeamTree }, views.commands),
+      { streams: views.streams, rows: views.rows, registrations: views.registrations, readStoredTree: views.readStoredTeamTree }, views.commands),
     new AgentOrgStreamHandler(dependencies.agentOrgRunService,
-      { streams: views.streams, children: views.children, followers: views.followers, registrations: views.registrations,
-        readStoredTree: views.readStoredOrgTree }, views.commands),
-    new AgentCollaborationStreamHandler(dependencies.standaloneRoots, views, views.commands),
+      { streams: views.streams, rows: views.rows, registrations: views.registrations, readStoredTree: views.readStoredOrgTree }, views.commands),
+    new AgentCollaborationStreamHandler(dependencies.standaloneRoots, views.rows),
   );
   await registerApplicationBackendNotificationWebsocket(app, {
     notificationHub: dependencies.application.notifications,

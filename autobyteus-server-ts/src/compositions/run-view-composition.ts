@@ -1,7 +1,6 @@
-import type { ChildRowsStreams } from "../agent-collaboration/delegation/child-rows-streams.js";
+import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
+import type { RunViewRowSources } from "../services/agent-streaming/run-view-rows.js";
 import type { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
-import type { LocalChildFollowers } from "../agent-collaboration/execution/delegation/local-child-followers.js";
-import type { RunViewChildren } from "../services/agent-streaming/run-view-children.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { AgentMemoryLayout } from "../agent-memory/store/agent-memory-layout.js";
 import { validateAgentOrgExecutionTree } from "../agent-org-execution/services/agent-org-state-package-validator.js";
@@ -12,12 +11,10 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../agent-org-execution/do
 
 /** What the run view streams need (autobyteus-461 DS-8, SR-046, SR-047 step 7), created once by the composition root. */
 export type RunViewSources = Readonly<{
-  /** The open view streams (the child-row feed publishes to them). */
-  streams: ChildRowsStreams;
-  /** A run's children as its view reads them. */
-  children: RunViewChildren;
-  /** Its local children's output. */
-  followers: LocalChildFollowers;
+  /** Each run's one view stream (SR-062). */
+  streams: RunViewStreams;
+  /** The rows under a run: read with a snapshot's base, their records after it, their statuses followed (SR-061, SR-063). */
+  rows: RunViewRowSources;
   /** A child row's command, to the child's own run (AR-011). */
   commands: DelegatedRunCommands;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
@@ -28,9 +25,8 @@ export type RunViewSources = Readonly<{
 /** A stopped team or Org run's view reads its own stored tree, as its stored history does (never restoring it). */
 export const createRunViewSources = (input: Readonly<{
   memoryDir: string;
-  streams: ChildRowsStreams;
-  children: RunViewChildren;
-  followers: LocalChildFollowers;
+  streams: RunViewStreams;
+  rows: RunViewRowSources;
   commands: DelegatedRunCommands;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
 }>): RunViewSources => {
@@ -39,8 +35,7 @@ export const createRunViewSources = (input: Readonly<{
   const orgTrees = new AgentOrgRunExecutionTreeStore();
   return Object.freeze({
     streams: input.streams,
-    children: input.children,
-    followers: input.followers,
+    rows: input.rows,
     commands: input.commands,
     registrations: input.registrations,
     readStoredTeamTree: (teamRunId) => teamTrees.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),

@@ -1,22 +1,16 @@
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
-import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
-import type { ChildRowsStreams } from "./child-rows-streams.js";
+import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import { runIdentityOf } from "../execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
 import type { ChildRowsChange, DelegationIndex } from "./delegation-index.js";
 import type { SubtreeRow } from "./collaboration-tree.js";
+import type { RunViewStreams } from "./run-view-stream.js";
 
-/** One child row as a view projects it: a run on this node (from its own file), or a peer's run. */
+/** One row as a view projects it: a run on this node (from its own file), or a peer's run. */
 export type ChildRowRecord =
   | Readonly<{ kind: "local"; row: CollaborationTaskExecutionDto }>
   | Readonly<{ kind: "peer"; row: RemoteTaskExecutionDto }>;
-
-/** What an open view of a run is told when its child rows change (DS-8, SR-043). */
-export type ChildRowsEvent = Readonly<{
-  run: RootExecutionIdentity;
-  added: readonly ChildRowRecord[];
-  removed: readonly TaskExecutionReference[];
-}>;
 
 /** The views' own projection of one row (at any depth, under its `parent`); `null` when its record cannot be read. Bound by the composition. */
 export type ChildRowProjection = Readonly<{
@@ -24,47 +18,93 @@ export type ChildRowProjection = Readonly<{
 }>;
 
 /**
- * The one publisher of child-row changes to open views (DS-8, SR-042 … SR-044). It listens to the `DelegationIndex`'s
- * `childRowsChanged` reports and, for a run with open view streams, builds the added rows with the views' own
- * projection and hands one event to each stream, whether or not the run is active. It never starts or restores a run.
- * Events are published in the order the changes were reported; a change with no open view is dropped (a later view
- * reads the tree when it builds its snapshot). The composition root creates the one feed with the open view streams
- * (`ChildRowsStreams`, SR-047 step 7) and has it follow the tree.
+ * Where a row is placed in its view's tree, as at base (`827f1e68dc`): in the root (the delegator is the run's own agent
+ * or member) or in a task team (the delegator is one of that team's members, or a task agent placed in it).
+ */
+export type TaskExecutionPlacement = Readonly<{ hostKind: "root" | "team"; hostRunId: string }>;
+
+/** A row of a view, with its placement; its record is read when a view sends it (`ChildRowProjection`). */
+export type PlacedRow = Readonly<{ row: SubtreeRow; host: TaskExecutionPlacement }>;
+
+/**
+ * Base's row events in a run's view stream (SR-061, SR-062), numbered in the run's one sequence at the change itself;
+ * each view session reads the records when it sends them, in order. A started peer row is base's
+ * `remote_task_execution_started`.
+ */
+export type ChildRowRootEvent =
+  | Readonly<{ kind: "task_execution_started"; placed: PlacedRow }>
+  | Readonly<{ kind: "task_executions_closed"; taskExecutions: readonly TaskExecutionReference[] }>
+  | Readonly<{ kind: "task_executions_reopened"; placed: readonly PlacedRow[] }>;
+
+const rowKey = (row: SubtreeRow): string => rootExecutionIdentityKey(runIdentityOf(row.run));
+
+/**
+ * A row's placement in `run`'s view, as at base: the root when `run` delegated it; the row of its delegating run when
+ * that is a team run; else the placement of its delegating run's row.
+ */
+export const placementOf = (run: RootExecutionIdentity, row: SubtreeRow, rows: readonly SubtreeRow[]): TaskExecutionPlacement => {
+  const byRun = new Map(rows.map((candidate) => [rowKey(candidate), candidate]));
+  let current = row;
+  for (let depth = 0; depth <= rows.length; depth += 1) {
+    if (rootExecutionIdentityKey(current.parent) === rootExecutionIdentityKey(run)) break;
+    if (current.parent.rootSubjectKind === "agent_team") return Object.freeze({ hostKind: "team", hostRunId: current.parent.rootRunId });
+    const parentRow = byRun.get(rootExecutionIdentityKey(current.parent));
+    if (!parentRow) break;
+    current = parentRow;
+  }
+  return Object.freeze({ hostKind: "root", hostRunId: run.rootRunId });
+};
+
+/**
+ * The one emitter of base's row events (SR-061, SR-062): it follows the `DelegationIndex`'s row changes and publishes,
+ * in each affected run's `RunViewStream` and at the change itself, base's `task_execution_started` for a new row,
+ * `task_executions_closed` for rows whose Tasks closed, and `task_executions_reopened` for closed rows back. It keeps
+ * each run's closed set (base's meaning: a delegated run whose Tasks all closed while it still runs; it leaves the view
+ * when it stops). It never starts or restores a run.
  */
 export class ChildRowsFeed {
-  private publishing: Promise<void> = Promise.resolve();
+  constructor(private readonly dependencies: Readonly<{
+    streams: Pick<RunViewStreams, "streamOf">;
+    tree: Pick<DelegationIndex, "collaborationTreeOf" | "tasksOf">;
+    /** Whether a run still runs (its root is live): base's closed set holds only runs that still run. */
+    isRunning(run: RootExecutionIdentity): boolean;
+  }>) {}
 
-  /** `projection`: the views' own projection of a row; `streams`: the open view streams (the composition root passes both). */
-  constructor(private readonly projection: ChildRowProjection, private readonly streams: Pick<ChildRowsStreams, "isOpen" | "of">) {}
-
-  /** Follows a tree's child-row reports until the returned function is called. */
+  /** Follows a tree's row reports until the returned function is called. */
   follow(tree: Pick<DelegationIndex, "subscribeChildRows">): () => void {
     return tree.subscribeChildRows((change) => this.changed(change));
   }
 
-  /** Resolves once every change reported so far has been published. */
-  settled(): Promise<void> { return this.publishing; }
-
-  private changed(change: ChildRowsChange): void {
-    if (!this.streams.isOpen(change.run)) return;
-    this.publishing = this.publishing.then(() => this.publish(change)).catch((error: unknown) => {
-      console.warn(`The child rows of ${change.run.rootSubjectKind} run '${change.run.rootRunId}' could not be published:`, error);
+  /**
+   * `run`'s rows with their placements, read synchronously (a snapshot reads them with its base, SR-063): its open
+   * subtree, and its closed set (`CollaborationTree.closedRows`).
+   */
+  rowsOf(run: RootExecutionIdentity): Readonly<{ open: readonly PlacedRow[]; closed: readonly PlacedRow[] }> {
+    const tree = this.dependencies.tree.collaborationTreeOf(run);
+    const rows = tree.rows();
+    const closedRows = tree.closedRows((candidate) => this.dependencies.isRunning(candidate));
+    const all = [...rows, ...closedRows];
+    return Object.freeze({
+      open: Object.freeze(rows.map((row) => Object.freeze({ row, host: placementOf(run, row, rows) }))),
+      closed: Object.freeze(closedRows.map((row) => Object.freeze({ row, host: placementOf(run, row, all) }))),
     });
   }
 
-  private async publish(change: ChildRowsChange): Promise<void> {
-    const added: ChildRowRecord[] = [];
-    for (const child of change.added) {
-      const record = await this.projection.rowOf(child).catch((error: unknown) => {
-        console.warn(`A child row of ${change.run.rootSubjectKind} run '${change.run.rootRunId}' could not be read:`, error);
-        return null;
-      });
-      if (record) added.push(record);
+  /**
+   * At the change itself, in `change.run`'s stream: a new row is started, or reopened when it was closed and still runs
+   * (it has a closed entry: its Task closed, then reopened or followed up); a row that left the open subtree is closed.
+   */
+  private changed(change: ChildRowsChange): void {
+    const rows = this.dependencies.tree.collaborationTreeOf(change.run).rows();
+    const stream = this.dependencies.streams.streamOf<ChildRowRootEvent>(change.run);
+    const reopened: PlacedRow[] = [];
+    for (const row of change.added) {
+      const placed: PlacedRow = Object.freeze({ row, host: placementOf(change.run, row, rows) });
+      const wasClosed = this.dependencies.tree.tasksOf(row.run).some((entry) => !entry.open) && this.dependencies.isRunning(runIdentityOf(row.run));
+      if (wasClosed) reopened.push(placed);
+      else stream.publish({ kind: "task_execution_started", placed });
     }
-    if (!added.length && !change.removed.length) return;
-    const event: ChildRowsEvent = Object.freeze({ run: change.run, added, removed: change.removed });
-    for (const sink of this.streams.of(change.run)) {
-      try { sink(event); } catch (error) { console.warn("A child rows stream failed:", error); }
-    }
+    if (reopened.length) stream.publish({ kind: "task_executions_reopened", placed: Object.freeze(reopened) });
+    if (change.removed.length) stream.publish({ kind: "task_executions_closed", taskExecutions: Object.freeze([...change.removed]) });
   }
 }

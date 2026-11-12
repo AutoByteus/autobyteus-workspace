@@ -93,7 +93,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
 
     await runConversation(new RootCommunicationEngine(adapter), root);
 
-    const projected = events.map((event) => projectSequencedTeamRunEvent({} as never, event) as { type: string; payload: Record<string, any> });
+    const projected = events.map((event) => projectSequencedTeamRunEvent(event) as { type: string; payload: Record<string, any> });
     expectConsecutive(projected.map((message) => message.payload.change_sequence));
     expect(projected.map((message) => message.type)).toEqual([
       "TEAM_COMMUNICATION_MESSAGE", "MEMBER_INPUT_MESSAGE", // first local

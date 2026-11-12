@@ -1,9 +1,4 @@
-import type { DelegatedRunCommands } from "../../agent-collaboration/execution/delegation/delegated-run-commands.js";
-import type { ChildRowsStreams } from "../../agent-collaboration/delegation/child-rows-streams.js";
-import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
-import type { RunViewChildren } from "./run-view-children.js";
-import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources } from "./run-view-rows.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -22,7 +17,6 @@ import type { StandaloneAgentRunRoot } from "../../standalone-agent-run-root/dom
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
-import { ChildRowsStreamSession, projectCollaborationChildRunsChanged } from "./child-rows-stream-session.js";
 
 /** A command for one agent of the root (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -51,30 +45,20 @@ const commandAck = (
 });
 
 /**
- * Agent-run stream `/ws/agent-collaboration/:hostRunId` (design DS-8): the snapshot and events of the run's view and the
- * commands of its child rows. Connecting resolves the run's root and never starts its agent. A local child's command
- * goes to the child's own run (`DelegatedRunCommands`), a peer child's through the root to its node. Commands for the
- * run's own agent stay on `/ws/agent/:runId`.
+ * Agent-run stream `/ws/agent-collaboration/:hostRunId` (design DS-8; SR-061 … SR-063): the run's view in base's shapes,
+ * from its one `RunViewStream`: the snapshot (its rows read with the base), then every frame after it in order (the run's
+ * own events, base's row events with their records, its rows' statuses). Connecting resolves the run's root and never
+ * starts its agent. A delegated run is reached by its own stream (rule 2); a peer run's commands go through the root to
+ * its node, as at base. Commands for the run's own agent stay on `/ws/agent/:runId`.
  */
 export class AgentCollaborationStreamHandler {
   private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; hostRunId: string; close(): void }>();
 
   constructor(
     private readonly roots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">,
-    /** What the views need of a run's children (DS-8; SR-047 step 7, passed in by the composition root). */
-    private readonly views: Readonly<{
-      streams: Pick<ChildRowsStreams, "open">;
-      children: Pick<RunViewChildren, "rows" | "remote">;
-      followers: Pick<LocalChildFollowers, "followLive">;
-    }>,
-    /** A child row's command goes to the child's own run (AR-011). */
-    private readonly children: Pick<DelegatedRunCommands, "execute" | "postUserMessage">,
+    /** What the run's view reads about its rows (SR-061 … SR-063, passed in by the composition root). */
+    private readonly views: RunViewRowSources,
   ) {}
-
-  /** A child row's command: a peer child's goes to its node through the root; a local child's to its own root (AR-011). */
-  private async childCommand(root: StandaloneAgentRunRoot, target: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
-    return await this.children.execute(root.rootIdentity, target, command) ?? root.executeAgentCommand(target, command);
-  }
 
   /** The run's root; opening a view never starts its agent (DS-8, REQ-004): it starts on its first input. */
   private async readyRoot(hostRunId: string): Promise<StandaloneAgentRunRoot> {
@@ -98,37 +82,52 @@ export class AgentCollaborationStreamHandler {
       return null;
     }
     const sessionId = randomUUID();
-    // SR-044: opened before the tree is read for the snapshot; changes published meanwhile follow the snapshot.
-    const childRows = new ChildRowsStreamSession(this.views.streams, root.rootIdentity, (event) => egress.send(projectCollaborationChildRunsChanged("agent", hostRunId, event)));
-    const remoteTaskExecutions = await this.views.children.remote(root.rootIdentity);
-    const taskExecutions = await this.views.children.rows(root.rootIdentity);
-    const barrier = await root.openPackageSnapshotConnection();
+    const identity = root.rootIdentity;
+    // The rows' statuses are followed into the run's stream before its snapshot: each after the base is a frame.
+    const stopFollowing = this.views.followers.follow(identity);
+    let barrier;
+    try {
+      barrier = await root.openViewSnapshotConnection(() => readRowsAtBase(this.views, identity),
+        async (own, atBase) => ({ own, statuses: atBase.statuses, rows: await readViewRows(this.views.projection, identity, atBase) }));
+    } catch (cause) {
+      stopFollowing();
+      egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
+      egress.dispose();
+      connection.close(1011);
+      return null;
+    }
     try {
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "CONNECTED", payload: { root_subject_kind: "agent", root_run_id: hostRunId, session_id: sessionId },
       }));
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot,
+        payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot.own,
           baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId,
-          lastMessageChangeSequence: barrier.lastMessageChangeSequence, remoteTaskExecutions, taskExecutions }),
+          lastMessageChangeSequence: barrier.lastMessageChangeSequence, rows: barrier.snapshot.rows, childStatuses: barrier.snapshot.statuses }),
       }));
-      childRows.snapshotSent();
+      // Every frame after the base, in order; a row event's records are read when it is sent.
+      let sending: Promise<void> = Promise.resolve();
+      let open = true;
       const unsubscribe = barrier.subscribe((event) => {
-        try {
-          const projected = projectAgentCollaborationEvent(hostRunId, null, event);
-          if (projected) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
-        } catch (cause) {
-          egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
-          queueMicrotask(() => { this.disconnect(sessionId); connection.close(1011); });
-          return;
-        }
-        if (event.event.kind === "lifecycle") {
-          egress.send(CollaborationStreamServerMessageSchema.parse({
-            type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: event.event.isActive },
-          }));
-          if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
-        }
+        sending = sending.then(async () => {
+          if (!open) return;
+          try {
+            const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, event.event) : null;
+            const projected = projectAgentCollaborationEvent(hostRunId, event, rowEvent);
+            if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
+          } catch (cause) {
+            egress.send(error("AGENT_ROOT_STREAM_PROJECTION_FAILED", cause instanceof Error ? cause.message : String(cause)));
+            queueMicrotask(() => { this.disconnect(sessionId); connection.close(1011); });
+            return;
+          }
+          if (event.event.kind === "lifecycle") {
+            egress.send(CollaborationStreamServerMessageSchema.parse({
+              type: "ROOT_LIFECYCLE", payload: { root_subject_kind: "agent", root_run_id: hostRunId, is_active: event.event.isActive },
+            }));
+            if (!event.event.isActive) queueMicrotask(() => { this.disconnect(sessionId); connection.close(1000); });
+          }
+        });
       });
       // The run's own agent's state (SR-045): a stopped run's view keeps its stream; its agent starts on its first input.
       egress.send(CollaborationStreamServerMessageSchema.parse({
@@ -136,12 +135,11 @@ export class AgentCollaborationStreamHandler {
       }));
       // autobyteus-278: a viewer of the root observes its remote children while connected.
       root.remoteChildren.viewerAttached();
-      const stopChildren = this.views.followers.followLive(root);
-      this.sessions.set(sessionId, { egress, hostRunId, close: () => { unsubscribe(); childRows.dispose(); root.remoteChildren.viewerDetached(); stopChildren(); egress.dispose(); } });
+      this.sessions.set(sessionId, { egress, hostRunId, close: () => { open = false; unsubscribe(); root.remoteChildren.viewerDetached(); stopFollowing(); egress.dispose(); } });
       return sessionId;
     } catch (cause) {
       barrier.close();
-      childRows.dispose();
+      stopFollowing();
       egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));
       egress.dispose();
       connection.close(1011);
@@ -171,46 +169,36 @@ export class AgentCollaborationStreamHandler {
       if (message.payload.root_subject_kind !== "agent" || message.payload.root_run_id !== session.hostRunId) {
         throw new Error("Agent-root command root correlation mismatch.");
       }
-      // Child commands never need the host: an active root (host crashed or not) takes them directly.
+      // A peer run's command goes through the root to its node (autobyteus-278); a delegated run on this node is reached
+      // by its own stream (SR-061 rule 2), and the run's own agent by `/ws/agent/:runId`.
       const root = this.roots.getActive(session.hostRunId) ?? await this.readyRoot(session.hostRunId);
       const target = message.payload.target_agent_run_id;
       if (message.type === "SEND_MESSAGE") {
         const mentions = toCollaboratorMentions(message.payload.mentions);
-        const contextFiles = [
-          ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
-          ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
-        ];
-        const userMessage = (content: string) => AgentInputUserMessage.fromDict({
-          content,
-          context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
-          metadata: { input_origin: "user_message", message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key },
-        });
-        // A child row's message, mentions included, goes to the child's own root (CR-461-032).
-        const child = await this.children.postUserMessage(root.rootIdentity, target, { message: userMessage(message.payload.content), mentions });
-        if (child) {
-          session.egress.send(commandAck(message, child.accepted ? "accepted" : "rejected",
-            child.accepted ? null : child.code ?? "AGENT_ROOT_COMMAND_REJECTED", child.message ?? null, child.collaboratorName));
-          return;
-        }
-        // The run's own agent: its own root resolves its mentions.
         let content = message.payload.content;
         if (mentions.length) {
           const admission = await root.resolveCollaboratorMentions({ focusedAgentRunId: target, mentions });
           if (!admission.admitted) {
-            session.egress.send(commandAck(
-              message, "rejected", admission.code, admission.message,
-              "collaboratorName" in admission ? admission.collaboratorName : undefined,
-            ));
+            session.egress.send(commandAck(message, "rejected", admission.code, admission.message,
+              "collaboratorName" in admission ? admission.collaboratorName : undefined));
             return;
           }
           content = composeCollaboratorMentionNote(content, admission.collaborators);
         }
-        const result = await root.executeAgentCommand(target, { kind: "post_message", message: userMessage(content) });
+        const contextFiles = [
+          ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
+          ...message.payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
+        ];
+        const result = await root.executeAgentCommand(target, { kind: "post_message", message: AgentInputUserMessage.fromDict({
+          content,
+          context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
+          metadata: { input_origin: "user_message", message_id: message.payload.message_id, dedupe_key: message.payload.dedupe_key },
+        }) });
         session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",
           result.accepted ? null : result.code ?? "AGENT_ROOT_COMMAND_REJECTED", result.message ?? null));
         return;
       }
-      const result = await this.childCommand(root, target, message.type === "INTERRUPT_GENERATION"
+      const result = await root.executeAgentCommand(target, message.type === "INTERRUPT_GENERATION"
         ? { kind: "interrupt" }
         : { kind: "approve_tool", invocationId: message.payload.invocation_id, approved: message.type === "APPROVE_TOOL", reason: message.payload.reason });
       session.egress.send(commandAck(message, result.accepted ? "accepted" : "rejected",

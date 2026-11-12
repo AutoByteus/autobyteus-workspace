@@ -11,9 +11,8 @@ import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-proje
 import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
-import type { ChildRowsEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
+import type { ProjectedRowEvent, ViewRows } from "./run-view-rows.js";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
-import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
   const reference = projectTeamReferenceFile(ownerId, filePath, timestamp);
@@ -32,11 +31,9 @@ export const projectTeamExecutionViewSnapshot = (
     snapshot: Pick<RootTeamRunPackageSnapshot, "tree" | "statuses" | "inputStates">; baseChangeSequence: number; liveSequenceId: string;
     lastMessageChangeSequence: number;
   }>,
-  /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
-  remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
-  /** autobyteus-461 DS-8: the runs on this node it delegated to (`delegatedChildrenDtos`). */
-  delegated: readonly CollaborationTaskExecutionDto[] = [],
-  /** Their agents' statuses, each from its own run (`localChildStatuses`): the view reports one for every agent it lists. */
+  /** The rows under the run in base's shapes (SR-061): nested by placement, the peer rows, the closed set. */
+  rows: ViewRows,
+  /** The rows' agents' statuses, each from its own run (SR-061 rule 1): the view reports one for every agent it lists. */
   childStatuses: readonly LocalChildAgentStatus[] = [],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
@@ -45,10 +42,11 @@ export const projectTeamExecutionViewSnapshot = (
     base_change_sequence: baseChangeSequence,
     live_sequence_id: liveSequenceId,
     last_message_change_sequence: lastMessageChangeSequence,
-    execution_tree: projectExecutionTree(snapshot.tree, delegated),
+    execution_tree: projectExecutionTree(snapshot.tree, rows.taskExecutions),
+    closed_task_executions: rows.closedTaskExecutions.map(projectTaskExecutionReference),
     agent_statuses: [...snapshot.statuses.map(projectTeamAgentStatusSnapshotDto), ...childStatusDtos(snapshot.statuses, childStatuses)],
     agent_input_states: snapshot.inputStates,
-    remote_task_executions: remoteTaskExecutions,
+    remote_task_executions: rows.remoteTaskExecutions,
   },
 });
 
@@ -61,7 +59,6 @@ const childStatusDtos = (own: Pick<RootTeamRunPackageSnapshot, "statuses">["stat
 };
 
 export const projectSequencedTeamRunEvent = (
-  root: RootTeamRun,
   sequenced: SequencedRootEvent<TeamRunEvent>,
 ): TeamStreamServerMessage => {
   const { event, changeSequence } = sequenced;
@@ -92,12 +89,22 @@ export const projectSequencedTeamRunEvent = (
   }
 };
 
-/** A Team run's child-row change (SR-043): local rows under the Team run, as its snapshot projects them; peer rows. */
-export const projectTeamChildRunsChanged = (teamRunId: string, event: ChildRowsEvent): TeamStreamServerMessage => parseTeamStreamServerMessage({
-  type: "CHILD_RUNS_CHANGED", payload: { run_id: teamRunId,
-    added: event.added.map((record) => record.kind === "local" ? { parent_team_run_id: teamRunId, execution: teamTaskExecutionOf(record.row) } : record.row),
-    removed: event.removed.map(projectTaskExecutionReference) },
-});
+/** Base's row events on the team stream (SR-061), with their records read. */
+export const projectTeamRowEvent = (event: ProjectedRowEvent, changeSequence: number): TeamStreamServerMessage => {
+  switch (event.kind) {
+    case "task_execution_started":
+      return parseTeamStreamServerMessage({ type: "TASK_EXECUTION_STARTED", payload: { change_sequence: changeSequence,
+        parent_team_run_id: event.host.hostRunId, execution: teamTaskExecutionOf(event.execution) } });
+    case "remote_task_execution_started":
+      return parseTeamStreamServerMessage({ type: "REMOTE_TASK_EXECUTION_STARTED", payload: { change_sequence: changeSequence, execution: event.execution } });
+    case "task_executions_closed":
+      return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_CLOSED", payload: { change_sequence: changeSequence,
+        task_executions: event.taskExecutions.map(projectTaskExecutionReference) } });
+    case "task_executions_reopened":
+      return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_REOPENED", payload: { change_sequence: changeSequence,
+        executions: event.executions.map(({ host, execution }) => ({ parent_team_run_id: host.hostRunId, execution: teamTaskExecutionOf(execution) })) } });
+  }
+};
 
 const projectTaskExecutionReference = (reference: TaskExecutionReference): TeamTaskExecutionReferenceDto =>
   "agentRunId" in reference ? { agent_run_id: reference.agentRunId } : { team_run_id: reference.teamRunId };
@@ -130,7 +137,7 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot, delegat
     coordinator_address: tree.rootTeam.coordinatorAddress,
     default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
     members: tree.rootTeam.members.map(projectConfiguredMember),
-    // DS-8: its child rows are the runs it delegated to; nothing is hosted.
+    // Its rows (its open subtree and closed set, SR-061), nested by placement as at base; nothing is hosted.
     task_executions: delegated.map(teamTaskExecutionOf),
   },
 });
@@ -162,7 +169,7 @@ const teamTaskExecutionOf = (child: CollaborationTaskExecutionDto): TaskExecutio
   const source = child.source;
   return { kind: "task_team", address: child.address, team_run_id: child.teamRunId,
     members: child.members.map((member) => ({ kind: "task_team_agent", address: member.address, agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId })),
-    task_executions: [], delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
+    task_executions: child.taskExecutions.map(teamTaskExecutionOf), delegator_agent_run_id: child.delegatorAgentRunId ?? null, started_at: child.startedAt,
     source: { kind: "agent_team", team_definition_id: source.teamDefinitionId, coordinator_address: source.coordinatorAddress,
       members: source.members.map((member) => {
         const memberSource = sourceOf(member.launchSource);

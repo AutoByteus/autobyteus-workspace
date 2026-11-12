@@ -5,9 +5,10 @@ import type { PairedAgentAccess, PairedAgentObservation } from "../remote/paired
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 
 /**
- * A view's live facts about the runs on this node its run delegated to (design DS-8: "a local child's status and live
- * output reach the view the way a remote child's do"): a child agent's output, which the view projectors turn into the
- * streams' `agent_presentation` (the N-402 path of a remote child). The rows themselves come from `ChildRowsFeed`.
+ * A view's live statuses of the runs on this node under its run (SR-061 rule 1: each delegated row's status, projected
+ * from that run's own root, as base showed a hosted copy's): status frames only, which the view projectors turn into
+ * the streams' `agent_presentation`. A delegated run's output is its own stream's (rule 2). The rows come from
+ * `ChildRowsFeed`.
  */
 export type LocalChildRootEvent =
   Readonly<{ kind: "local_child_presentation"; agentRunId: string; memberAddress: string; message: AgentPresentationMessage }>;
@@ -50,7 +51,7 @@ const statusFrame = (status: string): AgentPresentationMessage => ({ type: "AGEN
   status, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } } as AgentPresentationMessage);
 
-type Followed = { child: DelegatedChild; observation: PairedAgentObservation | null; closed: boolean };
+type Followed = { child: DelegatedChild; observation: PairedAgentObservation | null; closed: boolean; agentRunIds: readonly string[] };
 
 /**
  * One run's view of its local children while someone views it (as `RemoteRunObservation` for its peer children): the
@@ -62,6 +63,11 @@ export class LocalChildObservation {
   private viewers = 0;
   private disposed = false;
   private readonly followed = new Map<string, Followed>();
+  /** The last status of each followed agent (SR-063: a snapshot reads them in memory, with its base). */
+  private readonly statuses = new Map<string, LocalChildAgentStatus>();
+
+  /** The followed rows' agents' last statuses, in memory. */
+  cachedStatuses(): readonly LocalChildAgentStatus[] { return [...this.statuses.values()]; }
   private unsubscribeTree: (() => void) | null = null;
 
   constructor(private readonly options: Readonly<{
@@ -94,11 +100,15 @@ export class LocalChildObservation {
     if (this.disposed || this.viewers === 0) return;
     const current = tree.collaborationTreeOf(this.options.run).rows().filter((child) => child.nodeId === undefined);
     const keys = new Set(current.map((child) => keyOf(child.run)));
-    for (const [key, entry] of [...this.followed.entries()].filter(([candidate]) => !keys.has(candidate))) { this.close(entry); this.followed.delete(key); }
+    for (const [key, entry] of [...this.followed.entries()].filter(([candidate]) => !keys.has(candidate))) {
+      this.close(entry);
+      this.followed.delete(key);
+      for (const agentRunId of entry.agentRunIds) this.statuses.delete(agentRunId);
+    }
     for (const child of current) {
       const key = keyOf(child.run);
       if (this.followed.has(key)) continue;
-      const entry: Followed = { child, observation: null, closed: false };
+      const entry: Followed = { child, observation: null, closed: false, agentRunIds: [] };
       this.followed.set(key, entry);
       await this.follow(ports, tree, entry);
     }
@@ -109,12 +119,16 @@ export class LocalChildObservation {
     // Each agent's address as the view's row has it (SR-041: the tree's per-run agents, read once).
     const addresses = new Map((await tree.agentsOf(childRun)).flatMap((agent) => agent.address ? [[agent.agentRunId, agent.address] as [string, string]] : []));
     if (entry.closed) return;
+    entry.agentRunIds = [...addresses.keys()];
     const kind = childRun.rootSubjectKind === "agent" ? "agent" : "agent_team";
     const runId = childRun.rootRunId;
     const access = ports.agents(kind);
+    // Statuses only (SR-061): a delegated run's output is its own stream's, reached by its own path (rule 2).
     const present = (agentRunId: string, message: AgentPresentationMessage): void => {
       const memberAddress = addresses.get(agentRunId);
-      if (memberAddress && !entry.closed && !this.disposed) this.options.publish({ kind: "local_child_presentation", agentRunId, memberAddress, message });
+      if (message.type !== "AGENT_STATUS" || !memberAddress || entry.closed || this.disposed) return;
+      this.statuses.set(agentRunId, { agentRunId, memberAddress, status: String((message.payload as { status?: unknown }).status) });
+      this.options.publish({ kind: "local_child_presentation", agentRunId, memberAddress, message });
     };
     for (const live of access.pairedAgentStatuses(runId)) present(live.agentRunId, statusFrame(live.status));
     try {
@@ -137,5 +151,6 @@ export class LocalChildObservation {
     this.unsubscribeTree = null;
     for (const entry of this.followed.values()) this.close(entry);
     this.followed.clear();
+    this.statuses.clear();
   }
 }

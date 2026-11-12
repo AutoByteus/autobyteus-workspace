@@ -52,7 +52,7 @@ export type AgentRunCollaboration = Readonly<{
 /** One row under a run (its open subtree, CR-461-033): the delegated run, and the run that delegated it. */
 export type SubtreeRow = DelegatedChild & Readonly<{ parent: RootExecutionIdentity }>;
 
-type MapTree = Pick<DelegationIndex, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf">;
+type MapTree = Pick<DelegationIndex, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf" | "childrenOf">;
 
 const NO_LONGER = (address: string) => `${address} is no longer an address: your team is addressed from its own root.`;
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
@@ -195,6 +195,28 @@ export class CollaborationTree {
     };
     visit(this.run);
     return rows;
+  }
+
+  /**
+   * The closed set under the run (SR-061, base's meaning): a delegated run under it (under the run or one of its open
+   * local rows) whose Tasks there are all closed while it still runs (`isRunning`); it leaves the set when it stops.
+   */
+  closedRows(isRunning: (run: RootExecutionIdentity) => boolean): readonly SubtreeRow[] {
+    const parents = [this.run, ...this.rows().filter((row) => row.nodeId === undefined).map((row) => runIdentityOf(row.run))];
+    const closed: SubtreeRow[] = [];
+    for (const parent of parents) {
+      for (const child of this.tree.childrenOf(parent)) {
+        const entries = this.tree.tasksOf(child);
+        if (entries.some((entry) => entry.open) || !isRunning(runIdentityOf(child))) continue;
+        const from = entries.filter((entry) => rootExecutionIdentityKey(entry.delegatedFrom.delegatingRun) === rootExecutionIdentityKey(parent));
+        const newest = from.reduce<(typeof from)[number] | undefined>((best, entry) => !best || entry.linkedAt > best.linkedAt ? entry : best, undefined);
+        if (!newest) continue;
+        closed.push(Object.freeze({ run: newest.run, taskId: newest.taskId, delegatorAgentRunId: newest.delegatedFrom.delegatorAgentRunId,
+          entryAgentRunId: newest.entryAgentRunId, started: newest.start === "started", linkedAt: newest.linkedAt,
+          recipientAddress: newest.recipientAddress, parent, ...(newest.members ? { members: newest.members } : {}) }));
+      }
+    }
+    return closed;
   }
 
   /** Contract §10.2: whether this run and `other` may message each other. */

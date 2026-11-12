@@ -75,7 +75,7 @@ describe("Team execution view strict projection", () => {
       memberAddress: "/qa/automation/tester",
       agentRunId: "nested-task-agent-run-001",
     });
-    expect(projectSequencedTeamRunEvent(root as never, {
+    expect(projectSequencedTeamRunEvent({
       changeSequence: 22,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
@@ -87,7 +87,7 @@ describe("Team execution view strict projection", () => {
         },
       },
     })).toMatchObject({ type: "AGENT_STATUS", payload: { change_sequence: 22 } });
-    expect(projectSequencedTeamRunEvent(root as never, {
+    expect(projectSequencedTeamRunEvent({
       changeSequence: 23,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
@@ -105,7 +105,7 @@ describe("Team execution view strict projection", () => {
   });
 
   it("projects exact current AgentRun identity for provider segment events", () => {
-    const projected = projectSequencedTeamRunEvent(root as never, {
+    const projected = projectSequencedTeamRunEvent({
       changeSequence: 18,
       event: {
         eventSourceType: TeamRunEventSourceType.AGENT,
@@ -135,7 +135,7 @@ describe("Team execution view strict projection", () => {
   });
 
   it("projects exact same-root communication and recipient input correlation", () => {
-    expect(projectSequencedTeamRunEvent(root as never, {
+    expect(projectSequencedTeamRunEvent({
       changeSequence: 20,
       event: { eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: message },
     })).toMatchObject({
@@ -143,7 +143,7 @@ describe("Team execution view strict projection", () => {
       payload: { change_sequence: 20, message: { message_id: "message-010" } },
     });
 
-    expect(projectSequencedTeamRunEvent(root as never, {
+    expect(projectSequencedTeamRunEvent({
       changeSequence: 21,
       event: {
         eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
