@@ -1,0 +1,114 @@
+{
+  "delegated": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "code-reviewer-run-1",
+    "task_id": "ad_hoc_task_1"
+  },
+  "teamDelegated": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "code-reviewer-run-1",
+    "task_id": "ad_hoc_task_1"
+  },
+  "agentRoot": {
+    "delegateToAssignersOwnAgent": {
+      "delegated": false,
+      "message": "'/research_assistant' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use."
+    },
+    "listAvailableAgents": [
+      {
+        "name": "Research Assistant",
+        "kind": "agent",
+        "address": "/research_assistant",
+        "description": "Researches"
+      },
+      {
+        "name": "Code Reviewer",
+        "kind": "agent",
+        "address": "/code_reviewer",
+        "description": "Reviews"
+      },
+      {
+        "name": "Lead",
+        "kind": "agent",
+        "address": "/lead",
+        "description": "Leads"
+      },
+      {
+        "name": "Designer",
+        "kind": "agent",
+        "address": "/designer",
+        "description": "Designs"
+      },
+      {
+        "name": "Product Team",
+        "kind": "agent_team",
+        "address": "/product_team",
+        "description": "Product"
+      }
+    ],
+    "mentionAssignersOwnAgent": {
+      "admitted": true,
+      "collaborators": [
+        {
+          "name": "Research Assistant",
+          "kind": "agent",
+          "address": "/research_assistant",
+          "presence": "run_agent"
+        }
+      ],
+      "launchNotes": []
+    }
+  },
+  "teamRoot": {
+    "delegateToAssignersConfiguredPlacement": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "lead-run-2"
+    },
+    "delegateToAssignersCoordinator": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "agent-coordinator-run-3"
+    },
+    "listAvailableAgents": [
+      {
+        "name": "Code Reviewer",
+        "kind": "agent",
+        "address": "/code_reviewer",
+        "description": "Reviews"
+      },
+      {
+        "name": "Lead",
+        "kind": "agent",
+        "address": "/worker",
+        "description": "Leads"
+      },
+      {
+        "name": "Designer",
+        "kind": "agent",
+        "address": "/designer",
+        "description": "Designs"
+      },
+      {
+        "name": "Product Team",
+        "kind": "agent_team",
+        "address": "/product_team",
+        "description": "Product"
+      }
+    ],
+    "mentionAssignersConfiguredPlacement": {
+      "admitted": true,
+      "collaborators": [
+        {
+          "name": "Lead",
+          "kind": "agent",
+          "address": "/worker",
+          "presence": "in_run"
+        }
+      ],
+      "launchNotes": []
+    }
+  }
+}

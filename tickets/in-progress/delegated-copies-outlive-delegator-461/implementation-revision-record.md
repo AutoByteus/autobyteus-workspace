@@ -238,3 +238,37 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Next recipient or routing: Code Reviewer, targeted re-review of CR-461-028, -029 and the merge: Pass (CRR-015, `code-review-report.md` round 10; the merged watcher test's load-only failure recorded as FU-021); the reviewer routes to API/E2E.
 - Remaining limitations or risks: API/E2E's earlier evidence names this ticket's phone cases MSP-37 … MSP-39; they are MSP-50 … MSP-52 now.
 
+
+### IR-011 — The task header's address, a child's mentions and sends, a delegated run's collaboration context, a run's in-run set (CR-461-030 … -032, -034; SR-058's CR-461-030; SR-059) — in progress
+
+- Triggering role, report path, and round: Code Reviewer CRR-016 (failure-origin review of API/E2E round 3: three Local Fixes, two Design Impacts), through the Solution Designer. Round 11. My Design Impact on the `@` note during this round, answered by SR-059 (ARCH-REV-034).
+- Triggering finding IDs: CR-461-031, -032, -034 (`Local Fix`); CR-461-030, -033 (Design Impact, designed in SR-058, ARCH-REV-033). Large / High unchanged.
+- Prior authoritative result: IR-010 at `994ae84850` + `8a47481617`.
+- Current authoritative result: `d5e059eb27` (CR-461-031), `2653b6db2e` (CR-461-032, -034), `305f2a8987` (CR-461-030), `ef31136ad1` (SR-059).
+- Related solution / architecture-review revision IDs: SR-058 (ARCH-REV-033), SR-059 (ARCH-REV-034). Related code-review revision IDs: CRR-016.
+- Approved behavior or requirement IDs affected: none changed (REQ-009 non-goal "no change to what an agent reads" restored for delegated runs).
+- Implementation delta:
+  - **CR-461-031.** `TaskDelegation` takes the task header's sender address from one owner, `reachingAddress`; `DelegationSource.delegatorAddress` and the team delivery's `delegatorAddressOf` are removed.
+  - **CR-461-032.** `DelegatedRunCommands.postUserMessage`: a child row's message, with its `@` mentions, goes to the child's own root. A team child's team root resolves them for that member and posts the composed note; an agent child's standalone gate admits them. The agent, team and org views route a child's message there; the delegating root resolves only its own agents' mentions. `childRunOf` no longer takes a run on a peer node for a local child (a latent misroute). `isChildAgent` is removed (no callers).
+  - **CR-461-034.** The team stream has an accepted `SEND_MESSAGE` acknowledgement (`teamCommandAckPayloadSchema`, renamed from the interrupt-only schema), sent for a child's accepted message. The web's `TeamSendAdmissions.acknowledge` settles the send by identity.
+  - **CR-461-030 (SR-058).** `RunCollaborationContext` (created in `composeTaskSide`): a delegated agent run's agent is a task agent; a copy of an org's configured agent keeps that address's handoff rules (`get_handoff_rules`, `teamScoped`) and the org's instruction, read at use; `MemberExecutionContext.inOrganization` (required) gives a team run whose Task an org assigned the organization line. `DelegationTree.assignersOfTasksOf` is step 2's order.
+  - **SR-059.** `ReachableAgents`: step 2's one enumeration. `CrossRunAddressResolution` resolves step 2 by it. `CollaboratorRootPort.inRunPlacementsByDefinition` and `addressesInUse` are async and include step 2's placements (`InRunPlacement.step`, preferred by §2.3's order). A configured placement step 2 reaches is a `delegate_task` placement, from its snapshot in the assigner's own file (`RunOwnAgentsReader.configuredPlacementOf`).
+- Tests:
+  - `delegated-run-commands.test.ts` (peer child not local; mentions per child kind);
+  - the three view handlers' tests (a child's mentions on its own root; two acknowledged sends to a stopped team's child; a refused mention names the collaborator);
+  - `TeamStreamingService.spec.ts` (two sends to a stopped team's child settle; an acknowledgement settles only its own send);
+  - `run-collaboration-context.test.ts`, `collaboration-prompt-sections.test.ts` (organization line);
+  - `reachable-agents.test.ts`;
+  - CPW e2e: rows 1–10 read base's text; CPW-M2 and CPW-M5 read base's notes; CPW-M6 asserts base's `delegate_task` answers;
+  - the base characterization at `827f1e68dc` (IMP-43).
+- Local validation and result:
+  - IMP-42 (CPW before SR-059: M2 and M5 fail; the Design Impact's evidence);
+  - IMP-44 (CPW full run: 12 of 13, the failure was CPW-M6's `list_available_agents` check, which is opt-in for those agents and was moved to `reachable-agents.test.ts`);
+  - IMP-44b (CPW-M6 alone: pass);
+  - IMP-45 (focused server unit areas: 139 files, 957 tests).
+  - The server type gate and the web type gate pass at their baselines (1013, 93).
+- Next recipient or routing: none yet. CR-461-033 (rows at every depth) is built on SR-060's `RunCollaborationMap` (ARCH-REV-035), which replaces `ReachableAgents`, `RunCollaborationContext` and `CrossRunAddressResolution`. One handoff to the Code Reviewer follows IR-012 (told to the Solution Designer).
+- Remaining limitations or risks:
+  - A standalone copy's `get_handoff_rules` is offered only when it inherits rules (an org copy). At base a task agent in a team or org root had it with no rules.
+  - A restored org member got no instruction at base (`mode === "fresh"`); a delegated org copy reads it at every activation.
+  - The full server unit and integration suites, and the web specs, are not yet rerun for this round.
