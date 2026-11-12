@@ -1,15 +1,15 @@
 // Background tasks on the phone's Activity and after a desktop reload (autobyteus-473). Cases of
 // `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` on its phone page right after the zoom
-// cases (`--cases=MSP-44,MSP-45,MSP-46` runs only these).
+// cases (`--cases=MSP-47,MSP-48,MSP-49` runs only these).
 //
 // On alpha, an Antigravity run on the probe's scripted AGY CLI: `BACKGROUND_STEP:{"seconds":N,"exitCode":C}` leaves a
 // daemon `run_command` step open at turn end (a background task, as AGY does), then writes the exit message AGY writes when
 // such a command exits, so the node's monitor ends the task by itself (exit code 0 → completed, otherwise failed).
 //
-//   MSP-44 AC-001  A background task started before the phone opens the run's Activity is listed there as running (the
+//   MSP-47 AC-001  A background task started before the phone opens the run's Activity is listed there as running (the
 //                  node's view brings it), with its command; when it exits with code 1 it shows Failed and the exit message.
-//   MSP-45 AC-002  A task started while Activity is open appears there live, newest first.
-//   MSP-46 AC-003  A desktop window (`nuxt dev` against alpha) with a running task: after a reload, the expanded Background
+//   MSP-48 AC-002  A task started while Activity is open appears there live, newest first.
+//   MSP-49 AC-003  A desktop window (`nuxt dev` against alpha) with a running task: after a reload, the expanded Background
 //                  Tasks section of the Activity tab lists it as running.
 import { attachToBrowserContext } from './fixtures/probe-node-access.mjs';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
@@ -42,7 +42,7 @@ export const runBackgroundTaskCases = async (probe) => {
   let run = null;
   let firstTask = null;
 
-  await runCase('MSP-44', async () => {
+  await runCase('MSP-47', async () => {
     run = await createRun();
     const tasks = await startTask(run, 25, 1, 'BG-473-ONE');
     firstTask = tasks.find(task => task.status === 'running');
@@ -55,11 +55,11 @@ export const runBackgroundTaskCases = async (probe) => {
     await page.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
     await waitFor('the task listed on the phone', async () => (await phoneRows()).length > 0, 20_000).catch(() => undefined);
     const listed = await phoneRows();
-    await shot(page, 'MSP-44-activity-running');
+    await shot(page, 'MSP-47-activity-running');
     // It ends by itself (exit code 1) while Activity stays open.
     await waitFor('the task shown failed', async () => (await phoneRows()).some(row => row.status === 'failed'), 60_000).catch(() => undefined);
     const ended = await phoneRows();
-    await shot(page, 'MSP-44-activity-failed');
+    await shot(page, 'MSP-47-activity-failed');
     const section = (await page.locator(sel('mobile-background-tasks')).innerText().catch(() => '')).replace(/\s+/g, ' ');
     const details = { run, firstTask, listed, ended, section: section.slice(0, 400) };
     assert(listed.length === 1 && listed[0].status === 'running' && listed[0].text.includes(firstTask.command), 'AC-001 a task started before Activity opened is listed running, with its command', details);
@@ -68,13 +68,13 @@ export const runBackgroundTaskCases = async (probe) => {
     return details;
   });
 
-  await runCase('MSP-45', async () => {
-    assert(run, 'MSP-45 needs MSP-44 (its run, with Activity open)');
+  await runCase('MSP-48', async () => {
+    assert(run, 'MSP-48 needs MSP-47 (its run, with Activity open)');
     const before = await phoneRows();
     await stack.agentSay(run, `BG-473-TWO BACKGROUND_STEP:${JSON.stringify({ seconds: 8, exitCode: 0 })}`);
     await waitFor('the second task appears live', async () => (await phoneRows()).length === before.length + 1, 60_000).catch(() => undefined);
     const live = await phoneRows();
-    await shot(page, 'MSP-45-activity-live');
+    await shot(page, 'MSP-48-activity-live');
     await waitFor('the second task completed', async () => (await phoneRows()).some(row => row.status === 'completed'), 60_000).catch(() => undefined);
     const completed = await phoneRows();
     const details = { before, live, completed };
@@ -84,7 +84,7 @@ export const runBackgroundTaskCases = async (probe) => {
     return details;
   });
 
-  await runCase('MSP-46', async () => {
+  await runCase('MSP-49', async () => {
     const deskRun = await createRun();
     const tasks = await startTask(deskRun, 60, 0, 'BG-473-DESK');
     const task = tasks.find(entry => entry.status === 'running');
@@ -113,7 +113,7 @@ export const runBackgroundTaskCases = async (probe) => {
       await openPanel();
       await waitFor('the desktop panel lists the task after the reload', async () => (await rows()).length > 0, 30_000).catch(() => undefined);
       const afterReload = await rows();
-      await desk.screenshot({ path: `${probe.outputDir}/MSP-46-desktop-after-reload.png` }).catch(() => undefined);
+      await desk.screenshot({ path: `${probe.outputDir}/MSP-49-desktop-after-reload.png` }).catch(() => undefined);
       const details = { deskRun, task, beforeReload, afterReload };
       assert(afterReload.length === 1 && afterReload[0].status === 'running' && afterReload[0].text.includes(task.command),
         'AC-003 after a reload the desktop Background Tasks section lists the running task', details);

@@ -113,7 +113,7 @@
 //                  a folder (same file, after MSP-31).
 //   MSP-43 autobyteus-472  Touch zoom (pinch, scroll, double tap) of a PDF and an image in the phone viewer, the page itself
 //                  never zooming, and Download: `mobile-file-zoom-cases.mjs` (on the phone page, right after MSP-16).
-//   MSP-44…46 autobyteus-473  Background tasks: on the phone's Activity (a task started before it opened, its end, a task
+//   MSP-47…49 autobyteus-473  Background tasks: on the phone's Activity (a task started before it opened, its end, a task
 //                  started while open) and on the desktop after a reload: `mobile-background-tasks-cases.mjs` (after MSP-43).
 //   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
 //                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
@@ -146,7 +146,7 @@
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
-// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 25 minutes (MSP-21…23 about 5, MSP-24…27 about 4, MSP-28…31 about 4, MSP-39…42 about 3, MSP-44…46 about 3).
+// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 25 minutes (MSP-21…23 about 5, MSP-24…27 about 4, MSP-28…31 about 4, MSP-39…42 about 3, MSP-44…46 about 3, MSP-47…49 about 3).
 // `--hold` sets the stack up, pairs nothing, prints the phone URLs and a pairing link for the Android emulator
 // (`http://10.0.2.2:<alpha port>`) and, with `--bind=0.0.0.0`, for this machine's LAN address, and keeps the stack until
 // Ctrl+C (device checks); it runs no case.
