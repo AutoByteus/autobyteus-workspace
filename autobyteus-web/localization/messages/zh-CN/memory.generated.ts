@@ -32,8 +32,6 @@ const messages = {
   'memory.components.memory.CollaborationMemoryDetail.back_to_memory': '返回记忆',
   'memory.components.memory.CollaborationMemoryDetail.loading_runs': '正在加载运行...',
   'memory.components.memory.CollaborationMemoryDetail.no_runs_match_this_filter': '没有运行匹配此筛选条件。',
-  'memory.components.memory.CollaborationMemoryDetail.task': '任务',
-  'memory.components.memory.CollaborationMemoryDetail.task_started': '任务 · {{timestamp}}',
   'memory.components.memory.CollaborationMemoryDetail.task_team': '任务团队',
   'memory.components.memory.CollaborationMemoryDetail.task_team_started': '任务团队 · {{timestamp}}',
   'memory.pages.memory.invalid_memory_view': '无效的记忆视图',

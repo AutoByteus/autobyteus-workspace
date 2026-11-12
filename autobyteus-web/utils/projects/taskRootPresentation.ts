@@ -44,11 +44,11 @@ export const presentTaskRoot = (root: TaskRootView, hostListed: boolean): TaskRo
   error: root.start === 'failed' ? root.startError?.message ?? null : null,
 })
 
-/** Whether the run hosting a root is listed in the left panel's run history. */
-export const isTaskRootHostListed = (history: Readonly<{
+/** Whether the run that delegated a root is listed in the left panel's run history. */
+export const isTaskRootDelegatingRunListed = (history: Readonly<{
   workspaceGroups: readonly RunHistoryWorkspaceGroup[]
   agentOrgHistory: readonly AgentOrgRunHistoryItem[]
-}>, host: TaskRootView['hostRoot']): boolean => {
+}>, host: TaskRootView['delegatingRun']): boolean => {
   if (host.kind === 'agent_org') return history.agentOrgHistory.some((run) => run.rootRunId === host.runId)
   return history.workspaceGroups.some((group) => host.kind === 'agent'
     ? group.agentDefinitions.some((definition) => definition.runs.some((run) => run.runId === host.runId))

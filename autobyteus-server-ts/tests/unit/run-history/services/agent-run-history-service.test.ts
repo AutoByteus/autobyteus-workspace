@@ -84,6 +84,12 @@ describe("AgentRunHistoryService", () => {
     expect(shown.flatMap((group) => group.agents.map((agent) => agent.agentDefinitionId)).sort()).toEqual(["reviewer", "router"]);
   });
 
+  it("SR-068: a run's hasCollaboration is its row's stored flag, set at its first delegation", async () => {
+    const rows = [buildRow({ runId: "delegator", hasCollaboration: true } as never), buildRow({ runId: "plain", createdAt: "2026-03-25T10:00:00.000Z" })];
+    const runs = (await buildService({ rows }).service.listRunHistory()).flatMap((group) => group.agents.flatMap((agent) => agent.runs));
+    expect(Object.fromEntries(runs.map((run) => [run.runId, run.hasCollaboration]))).toEqual({ delegator: true, plain: false });
+  });
+
   it("lists grouped standalone history from V2 catalog rows and overlays live status", async () => {
     const rows = [
       buildRow({
@@ -151,6 +157,7 @@ describe("AgentRunHistoryService", () => {
                 lastActivityAt: "2026-03-26T08:00:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
+                hasCollaboration: false,
               },
             ],
           },
@@ -176,6 +183,7 @@ describe("AgentRunHistoryService", () => {
                 lastActivityAt: "2026-03-24T08:00:00.000Z",
                 archivedAt: null,
                 terminatedAt: "2026-03-24T09:00:00.000Z",
+                hasCollaboration: false,
               },
             ],
           },

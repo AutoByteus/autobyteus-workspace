@@ -18,6 +18,8 @@ export interface RunHistoryItem {
   lastActivityAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
+  /** The row's stored flag (contract §3.5, model S1): set at the run's first delegation (SR-068). */
+  hasCollaboration: boolean;
 }
 
 export interface RunHistoryAgentGroup {

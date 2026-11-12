@@ -6,7 +6,6 @@ const FILE_CHANGE_LIST_FIELDS: Record<string, string> = {
   GetRunFileChanges: 'getRunFileChanges',
   GetTeamMemberFileChanges: 'getTeamMemberFileChanges',
   GetAgentOrgMemberFileChanges: 'getAgentOrgMemberFileChanges',
-  GetAgentRunCollaborationMemberFileChanges: 'agentRunCollaborationMemberFileChanges',
 }
 
 // Transport-only control. The caller still executes the installed Apollo query manager,

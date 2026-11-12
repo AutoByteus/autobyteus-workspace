@@ -194,6 +194,7 @@ export class AgentRunHistoryService {
       lastActivityAt: await this.lastActivity.forAgentRun({ runId: row.runId, createdAt: row.createdAt, hasCollaboration: row.hasCollaboration === true }),
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
+      hasCollaboration: row.hasCollaboration === true,
     };
   }
 

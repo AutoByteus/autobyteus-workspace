@@ -59,13 +59,11 @@
                 <button
                   v-for="{ member, label } in block.members"
                   :key="`${row.runId}:${member.agentRunId}`"
-                  class="max-w-full rounded-lg border px-3 py-2 text-left text-xs"
-                  :class="isTaskMember(member) ? 'border-dashed border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
+                  class="max-w-full rounded-lg border border-gray-200 px-3 py-2 text-left text-xs hover:border-blue-300 hover:bg-blue-50"
                   :data-execution-kind="member.executionKind"
                   @click="$emit('inspectMember', row.runId, member)"
                 >
                   <span class="block break-all font-semibold text-gray-800">{{ label }}</span>
-                  <span v-if="member.executionKind === 'TASK_AGENT'" class="block text-indigo-600">{{ taskAgentLabel(member.startedAt) }}</span>
                   <span class="block break-all font-mono text-gray-500">{{ member.agentRunId }}</span>
                 </button>
               </div>
@@ -89,7 +87,7 @@ import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { CollaborationMemberMemoryTargetSummary, CollaborationRunMemoryRow } from '~/types/memory';
 import MemoryBadges from './MemoryBadges.vue';
-import { buildCollaborationMemberBlocks, isTaskMember } from './collaborationMemberTree';
+import { buildCollaborationMemberBlocks } from './collaborationMemberTree';
 
 /** Presentational run list with members for one team or org definition; the page owns data and actions. */
 const props = defineProps<{
@@ -125,10 +123,6 @@ watch(searchInput, (value) => {
 
 /** Each run's members as blocks: its own agents, then configured and task teams (REQ-012). */
 const memberBlocks = (row: CollaborationRunMemoryRow) => buildCollaborationMemberBlocks(row.memberTargets);
-
-const taskAgentLabel = (startedAt?: string | null) => startedAt
-  ? t('memory.components.memory.CollaborationMemoryDetail.task_started', { timestamp: formatTimestamp(startedAt) })
-  : t('memory.components.memory.CollaborationMemoryDetail.task');
 
 const taskTeamLabel = (startedAt?: string | null) => startedAt
   ? t('memory.components.memory.CollaborationMemoryDetail.task_team_started', { timestamp: formatTimestamp(startedAt) })

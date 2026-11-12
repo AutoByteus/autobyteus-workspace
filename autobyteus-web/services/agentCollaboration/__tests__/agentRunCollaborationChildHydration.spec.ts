@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import {
-  GetAgentRunCollaborationMemberFileChanges,
-  GetAgentRunCollaborationMemberProjection,
-} from '~/graphql/queries/collaboratorQueries'
+import { GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore'
 import { beginLocalUserSubmission } from '~/services/runSubmission/localUserSubmission'
@@ -16,7 +13,8 @@ import { agentRootView } from './agentRootFixture'
 /**
  * delegated-copies-slow-open D-2 / DS-005 (AC-004, AC-006), autobyteus-358 DS-003: the shared member loader loads one
  * hub child's stored details into one published context, hub-scoped; a load whose context is no longer published
- * writes nothing; a live change during the fetch retries within the same context.
+ * writes nothing; a live change during the fetch retries within the same context. The child is a run on a peer node
+ * (autobyteus-278): a delegated run on this node is opened as its own run (autobyteus-461 rule 2).
  */
 const mocks = vi.hoisted(() => ({ query: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query }) }))
@@ -32,15 +30,10 @@ const artifact = (runId: string, name: string, overrides: Record<string, unknown
 })
 const userEntry = (messageId: string, content: string) => ({ kind: 'message', role: 'user', content, messageId, ts: 1_700_000_000 })
 const assistantEntry = (content: string) => ({ kind: 'message', role: 'assistant', content, ts: 1_700_000_001 })
-type Served = { conversation?: unknown[]; fail?: 'projection' | 'artifacts'; hold?: Promise<unknown> }
+type Served = { conversation?: unknown[]; fail?: 'projection'; hold?: Promise<unknown> }
 const serve = (next: () => Served = () => ({})) => mocks.query.mockImplementation(async ({ query, variables }) => {
   const plan = next()
   if (plan.hold) await plan.hold
-  if (query === GetAgentRunCollaborationMemberFileChanges) {
-    return plan.fail === 'artifacts'
-      ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.agentRunId}` }] }
-      : { data: { agentRunCollaborationMemberFileChanges: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
-  }
   if (query === GetAgentRunCollaborationMemberProjection) {
     if (plan.fail === 'projection') return { data: null, errors: [{ message: 'projection unavailable' }] }
     return { data: { agentRunCollaborationMemberProjection: {
@@ -61,14 +54,17 @@ const flush = async () => { for (let i = 0; i < 10; i++) await Promise.resolve()
 const requests = (query: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === query)
 const paths = (runId: string) => useRunFileChangesStore().getArtifactsForRun(runId).map((entry) => entry.path)
 const setup = async (input: { published?: () => boolean; live?: () => boolean } = {}) => {
-  const collaboration = await buildAgentRunCollaborationContext({ hostRunId: 'host-run', view: agentRootView() })
+  const view = agentRootView()
+  view.remote_task_executions = [{ kind: 'agent', address: '/peer_writer', agent_run_id: 'peer-run', node_id: 'srv_docker', node_name: 'docker',
+    delegator_agent_run_id: 'host-run', started_at: '2026-10-01T00:00:00.000Z' }] as never
+  const collaboration = await buildAgentRunCollaborationContext({ hostRunId: 'host-run', view })
   const loader = new MemberLoader()
   const published = input.published ?? (() => true)
-  const load = () => loader.ensure('agent:host-run', 'pp-run', () => published() ? hubChildLoadTarget({
-    hostRunId: 'host-run', collaboration, agentRunId: 'pp-run', liveToolAuthority: input.live ?? (() => false),
+  const load = () => loader.ensure('agent:host-run', 'peer-run', () => published() ? hubChildLoadTarget({
+    hostRunId: 'host-run', collaboration, agentRunId: 'peer-run', liveToolAuthority: input.live ?? (() => false),
   }) : null)
   const isLoaded = (agentRunId: string) => loader.isHydrated('agent:host-run', agentRunId)
-  return { collaboration, loader, isLoaded, child: collaboration.getAgentContext('pp-run')!, load }
+  return { collaboration, loader, isLoaded, child: collaboration.getAgentContext('peer-run')!, load }
 }
 const texts = (messages: readonly { type: string; text?: string }[]) => messages.map((message) => message.type === 'user' ? message.text : message.type)
 
@@ -78,7 +74,7 @@ describe('MemberLoader with a hub child target', () => {
     vi.clearAllMocks()
   })
 
-  it('loads exactly the selected child through the hub-scoped queries and commits conversation, activities and artifacts', async () => {
+  it('loads exactly the selected peer child through the hub-scoped query and commits conversation and activities; its files stay on its node', async () => {
     serve()
     const { child, load, isLoaded } = await setup()
     const revision = child.state.eventMonitorPresentationRevision
@@ -86,32 +82,17 @@ describe('MemberLoader with a hub child target', () => {
     await expect(load()).resolves.toBe('hydrated')
 
     expect(requests(GetAgentRunCollaborationMemberProjection).map(([options]) => options.variables)).toEqual([
-      { hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
+      { hostRunId: 'host-run', memberAddress: '/peer_writer', agentRunId: 'peer-run' },
     ])
-    expect(requests(GetAgentRunCollaborationMemberFileChanges).map(([options]) => options.variables)).toEqual([
-      { hostRunId: 'host-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
-    ])
-    expect(mocks.query).toHaveBeenCalledTimes(2)
-    expect(isLoaded('pp-run')).toBe(true)
+    expect(mocks.query).toHaveBeenCalledTimes(1)
+    expect(isLoaded('peer-run')).toBe(true)
     expect(isLoaded('cua-run')).toBe(false)
     expect(child.state.conversation.messages).toHaveLength(1)
     expect(child.state.hasEarlierActiveTraceEvents).toBe(true)
     expect(child.state.eventMonitorPresentationRevision).toBe(revision + 1)
-    expect(useAgentActivityStore().getActivities('pp-run')).toEqual([expect.objectContaining({ activityId: 'projected-pp-run' })])
-    expect(paths('pp-run')).toEqual(['/outputs/1.png', '/outputs/2.png'])
+    expect(useAgentActivityStore().getActivities('peer-run')).toEqual([expect.objectContaining({ activityId: 'projected-peer-run' })])
+    expect(paths('peer-run')).toEqual([])
     expect(paths('cua-run')).toEqual([])
-  })
-
-  it('keeps a live FILE_CHANGE newer than the loaded list without duplicating it', async () => {
-    serve()
-    const { load, isLoaded } = await setup()
-    useRunFileChangesStore().upsertFromLivePayload(artifact('pp-run', '1.png', { status: 'streaming', updatedAt: '2026-10-06T10:00:05.000Z' }) as never)
-
-    await load()
-
-    const entries = useRunFileChangesStore().getArtifactsForRun('pp-run')
-    expect(entries.map((entry) => entry.path).sort()).toEqual(['/outputs/1.png', '/outputs/2.png'])
-    expect(entries.find((entry) => entry.path === '/outputs/1.png')).toMatchObject({ status: 'streaming' })
   })
 
   it('ends superseded and writes nothing once its context is no longer published (republication during the load)', async () => {
@@ -126,11 +107,11 @@ describe('MemberLoader with a hub child target', () => {
     gate.resolve()
 
     await expect(pending).resolves.toBe('superseded')
-    expect(mocks.query).toHaveBeenCalledTimes(2)
+    expect(mocks.query).toHaveBeenCalledTimes(1)
     expect(child.state.conversation).toBe(conversation)
-    expect(isLoaded('pp-run')).toBe(false)
-    expect(useAgentActivityStore().getActivities('pp-run')).toEqual([])
-    expect(paths('pp-run')).toEqual([])
+    expect(isLoaded('peer-run')).toBe(false)
+    expect(useAgentActivityStore().getActivities('peer-run')).toEqual([])
+    expect(paths('peer-run')).toEqual([])
   })
 
   it('a failed fetch whose context was replaced is superseded too, not an error', async () => {
@@ -145,7 +126,7 @@ describe('MemberLoader with a hub child target', () => {
   it('a live presentation event during the fetch retries against the same context, then commits', async () => {
     const gate = deferred()
     let call = 0
-    serve(() => (call++ < 2 ? { hold: gate.promise } : {}))
+    serve(() => (call++ < 1 ? { hold: gate.promise } : {}))
     const { child, load, isLoaded } = await setup()
     const pending = load(); await flush()
 
@@ -154,14 +135,13 @@ describe('MemberLoader with a hub child target', () => {
 
     await expect(pending).resolves.toBe('hydrated')
     expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(2)
-    expect(requests(GetAgentRunCollaborationMemberFileChanges)).toHaveLength(2)
-    expect(isLoaded('pp-run')).toBe(true)
+    expect(isLoaded('peer-run')).toBe(true)
   })
 
   it('a message the user sends during the fetch is never overwritten by the stale projection', async () => {
     const gate = deferred()
     let call = 0
-    serve(() => (call++ < 2
+    serve(() => (call++ < 1
       ? { hold: gate.promise, conversation: [assistantEntry('stale')] }
       : { conversation: [assistantEntry('stale'), userEntry('m-1', 'hello')] }))
     const { child, load, isLoaded } = await setup()
@@ -178,32 +158,32 @@ describe('MemberLoader with a hub child target', () => {
   it('an activity change during the fetch retries; three changes in a row fail and leave the child not loaded', async () => {
     const gates = [deferred(), deferred(), deferred()]
     let call = 0
-    serve(() => ({ hold: gates[Math.floor(call++ / 2)]!.promise }))
+    serve(() => ({ hold: gates[Math.min(call++, gates.length - 1)]!.promise }))
     const { load, isLoaded } = await setup()
     const pending = load()
     for (const gate of gates) {
       await flush()
-      useAgentActivityStore().upsertSystemInstructionActivity('pp-run', {
+      useAgentActivityStore().upsertSystemInstructionActivity('peer-run', {
         kind: 'system_instruction', activityId: `live-${call}`, content: 'live', timestamp: new Date(),
       })
       gate.resolve()
     }
 
-    await expect(pending).rejects.toThrow("The stored state of 'pp-run' changed while it was loading.")
+    await expect(pending).rejects.toThrow("The stored state of 'peer-run' changed while it was loading.")
     expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(3)
-    expect(isLoaded('pp-run')).toBe(false)
-    expect(paths('pp-run')).toEqual([])
+    expect(isLoaded('peer-run')).toBe(false)
+    expect(paths('peer-run')).toEqual([])
   })
 
-  it.each(['projection', 'artifacts'] as const)('a %s failure throws and writes nothing', async (fail) => {
+  it.each(['projection'] as const)('a %s failure throws and writes nothing', async (fail) => {
     serve(() => ({ fail }))
     const { child, load, isLoaded } = await setup()
     const conversation = child.state.conversation
 
-    await expect(load()).rejects.toThrow(fail === 'projection' ? 'projection unavailable' : 'artifacts unavailable for pp-run')
-    expect(isLoaded('pp-run')).toBe(false)
+    await expect(load()).rejects.toThrow('projection unavailable')
+    expect(isLoaded('peer-run')).toBe(false)
     expect(child.state.conversation).toBe(conversation)
-    expect(paths('pp-run')).toEqual([])
+    expect(paths('peer-run')).toEqual([])
   })
 
   it.each([true, false])('live tool decisions win over the stored projection only while the hub stream is ready (ready=%s)', async (live) => {
@@ -249,10 +229,10 @@ describe('MemberLoader with a hub child target', () => {
 
     // The root's context is rebuilt (stream recovery, a fresh snapshot, a reopen): a new generation.
     loader.beginRoot('agent:host-run')
-    expect(isLoaded('pp-run')).toBe(false)
+    expect(isLoaded('peer-run')).toBe(false)
     await expect(load()).resolves.toBe('hydrated')
     expect(requests(GetAgentRunCollaborationMemberProjection)).toHaveLength(2)
-    expect(isLoaded('pp-run')).toBe(true)
+    expect(isLoaded('peer-run')).toBe(true)
   })
 
   it('a load in flight when the root is rebuilt writes nothing; the staged member of a new generation counts as loaded', async () => {
@@ -265,7 +245,7 @@ describe('MemberLoader with a hub child target', () => {
     gate.resolve()
     await expect(pending).resolves.toBe('superseded')
     expect(child.state.conversation.messages).toEqual([])
-    expect(isLoaded('pp-run')).toBe(false)
+    expect(isLoaded('peer-run')).toBe(false)
     expect(isLoaded('cua-run')).toBe(true)
   })
 })

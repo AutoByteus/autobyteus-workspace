@@ -1,6 +1,8 @@
 import { Arg, Field, ObjectType, Query, Resolver, createUnionType } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
-import { getStudioCollaborationRootHistoryService } from "../studio-application-api-services.js";
+import { getStudioCollaborationRootHistoryService, getStudioRunViewChildren } from "../studio-application-api-services.js";
+import { createAgentOrgRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { CollaborationRootHistoryItem } from "../../../run-history/services/collaboration-root-history-service.js";
 
 @ObjectType()
 class AgentTeamRootHistoryObject {
@@ -26,7 +28,20 @@ export class AgentOrgRootHistoryObject {
   @Field(() => Boolean) is_active!: boolean;
   @Field(() => String) summary!: string;
   @Field(() => GraphQLJSON) org!: unknown;
+  /** The runs it delegated to whose Tasks are all closed while they still run (base's closed set, SR-061 rule 1). */
+  @Field(() => GraphQLJSON) closed_task_executions!: unknown;
 }
+
+/**
+ * An Org history item with its rows (SR-061 rule 1): its delegated runs placed in its tree, and its closed set, from the
+ * run's collaboration tree, as its view gives them.
+ */
+const withRows = async (item: CollaborationRootHistoryItem) => {
+  if (item.root_subject_kind !== "agent_org") return item;
+  const { rows } = await getStudioRunViewChildren().read(createAgentOrgRootExecutionIdentity(item.root_run_id));
+  return { ...item, org: { ...item.org, rootOrg: { ...item.org.rootOrg, taskExecutions: rows.taskExecutions } },
+    closed_task_executions: rows.closedTaskExecutions };
+};
 
 const CollaborationRootHistoryUnion = createUnionType({
   name: "CollaborationRootHistoryItem",
@@ -38,7 +53,10 @@ const CollaborationRootHistoryUnion = createUnionType({
 export class CollaborationRootHistoryResolver {
   private readonly service = getStudioCollaborationRootHistoryService();
   @Query(() => [CollaborationRootHistoryUnion])
-  listCollaborationRootHistory() { return this.service.list(); }
+  async listCollaborationRootHistory() { return Promise.all((await this.service.list()).map(withRows)); }
   @Query(() => AgentOrgRootHistoryObject, { nullable: true })
-  getAgentOrgRootHistory(@Arg("orgRunId", () => String) orgRunId: string) { return this.service.getAgentOrg(orgRunId); }
+  async getAgentOrgRootHistory(@Arg("orgRunId", () => String) orgRunId: string) {
+    const item = await this.service.getAgentOrg(orgRunId);
+    return item ? withRows(item) : null;
+  }
 }

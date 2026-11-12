@@ -7,7 +7,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState'
 import { agentRootView, launch } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
-import { GetAgentRunCollaborationMemberFileChanges, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
+import { GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { useAgentRunStore } from '../agentRunStore'
 import { useAgentContextsStore } from '../agentContextsStore'
@@ -44,12 +44,10 @@ const nativeView = () => {
 const envelope = (view: ReturnType<typeof nativeView> | null) => ({ data: { agentRunCollaboration: view && {
   root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view,
 } } })
-const emptyProjection = ({ query, variables }: any) => query === GetAgentRunCollaborationMemberFileChanges
-  ? { data: { agentRunCollaborationMemberFileChanges: [] } }
-  : { data: { agentRunCollaborationMemberProjection: {
+const emptyProjection = ({ variables }: any) => ({ data: { agentRunCollaborationMemberProjection: {
     agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
     conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-  } } }
+  } } })
 const memberRequests = (query: unknown, agentRunId: string) =>
   io.query.mock.calls.filter(([input]) => input.query === query && input.variables.agentRunId === agentRunId).length
 const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve() }

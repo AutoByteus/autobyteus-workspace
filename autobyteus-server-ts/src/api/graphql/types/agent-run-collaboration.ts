@@ -1,7 +1,9 @@
 import { getStudioRunViewChildren } from "../studio-application-api-services.js";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
-import { isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createAgentRootExecutionIdentity, isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
+import { GraphQLError } from "graphql";
 import { getCollaboratorAdmission } from "../../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { getStandaloneRootMemberViewProjectionService } from "../../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
@@ -36,8 +38,54 @@ export class AgentRunCollaborationMemberProjectionPayload {
   @Field(() => Boolean) hasEarlierActiveTraceEvents!: boolean;
 }
 
+/** At most this many runs per status read (the history poll lists the standalone runs it shows). */
+export const AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
+
+@ObjectType()
+export class AgentRunChildStatusObject {
+  @Field(() => String) agentRunId!: string;
+  @Field(() => String) memberAddress!: string;
+  @Field(() => String) status!: string;
+  @Field(() => GraphQLJSON, { nullable: true }) recoverableBlock?: unknown | null;
+}
+
+@ObjectType()
+export class AgentRunCollaborationStatusesObject {
+  @Field(() => String) runId!: string;
+  @Field(() => Boolean) isActive!: boolean;
+  @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
+  /** The run's closed-set digest (autobyteus-446, -435): its delegated runs whose Tasks are all closed while they still run. */
+  @Field(() => String, { nullable: true, description: "The run's closed-set digest (closedTaskExecutionsDigest): the runs it delegated to whose Tasks are all closed while they still run." })
+  closedTaskExecutionsDigest!: string | null;
+}
+
 @Resolver()
 export class AgentRunCollaborationResolver {
+  /**
+   * The history poll of listed standalone runs (autobyteus-426 REQ-009, -446; base's shape, autobyteus-461 SR-061 rule 1):
+   * each run's own agent's activity, its delegated runs' agents' live statuses and its closed-set digest, from the
+   * collaboration tree, never the view. Never restores; a delegated run's status is its own, whether or not its
+   * delegator runs (SR-045).
+   */
+  @Query(() => [AgentRunCollaborationStatusesObject])
+  async agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): Promise<AgentRunCollaborationStatusesObject[]> {
+    if (runIds.length > AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS) {
+      throw new GraphQLError(`At most ${AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS} runs per status read.`, { extensions: { code: "BAD_USER_INPUT" } });
+    }
+    const children = getStudioRunViewChildren();
+    const roots = getStandaloneAgentRunRootManager();
+    return Promise.all(runIds.map(async (runIdInput) => {
+      const runId = runIdInput.trim();
+      const { statuses, closedTaskExecutions } = await children.poll(createAgentRootExecutionIdentity(runId));
+      return {
+        runId,
+        isActive: roots.getActive(runId)?.isHostLive() ?? false,
+        closedTaskExecutionsDigest: closedTaskExecutionsDigest(closedTaskExecutions),
+        statuses: statuses.map((status) => ({ agentRunId: status.agentRunId, memberAddress: status.memberAddress, status: status.status, recoverableBlock: null })),
+      };
+    }));
+  }
+
   /**
    * The Agent-root view of a standalone run: the live root snapshot when one is active, else the
    * stored package with every child offline. Null when the run has no package. Never restores.

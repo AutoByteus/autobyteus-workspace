@@ -32,8 +32,6 @@ const messages = {
   'memory.components.memory.CollaborationMemoryDetail.back_to_memory': 'Back to Memory',
   'memory.components.memory.CollaborationMemoryDetail.loading_runs': 'Loading runs...',
   'memory.components.memory.CollaborationMemoryDetail.no_runs_match_this_filter': 'No runs match this filter.',
-  'memory.components.memory.CollaborationMemoryDetail.task': 'Task',
-  'memory.components.memory.CollaborationMemoryDetail.task_started': 'Task · {{timestamp}}',
   'memory.components.memory.CollaborationMemoryDetail.task_team': 'Task team',
   'memory.components.memory.CollaborationMemoryDetail.task_team_started': 'Task team · {{timestamp}}',
   'memory.pages.memory.invalid_memory_view': 'Invalid memory view',

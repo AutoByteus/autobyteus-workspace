@@ -26,7 +26,7 @@ const read = (projectId: string, runIds: string[] = [], teamRunIds: string[] = [
     projectId,
     agentDefinitions: runIds.length ? [{ agentDefinitionId: 'pm', agentName: 'PM', runs: runIds.map((runId) => ({
       runId, summary: runId, createdAt: '2026-10-31T00:00:00.000Z', archivedAt: null, terminatedAt: null, status: 'offline',
-      isActive: false, shouldConnectStream: false, statusSource: 'TEST', hasCollaboration: false })) }] : [],
+      isActive: false, shouldConnectStream: false, statusSource: 'TEST' })) }] : [],
     teamDefinitions: teamRunIds.length ? [{ teamDefinitionId: 'set', teamDefinitionName: 'set', runs: teamRunIds.map((teamRunId) => ({
       teamRunId, teamDefinitionId: 'set', teamDefinitionName: 'set', coordinatorAddress: '/lead', workspaceRootPath: '/ws', summary: '',
       createdAt: '2026-10-31T00:00:00.000Z', archivedAt: null, terminatedAt: null, isActive: true, rootTeam: {}, members: [] })) }] : [],
@@ -76,7 +76,7 @@ describe('projectRunsStore', () => {
 
     // Task changes do not change which runs are started under a Project.
     store.applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'Q' }, task: {} } as ProjectChangeMessage)
-    store.applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { root: { hostRoot: { kind: 'agent', runId: 'P-run' } } } } as ProjectChangeMessage)
+    store.applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { root: { delegatingRun: { kind: 'agent', runId: 'P-run' } } } } as ProjectChangeMessage)
     store.applyChange({ type: 'task_removed', scope: { kind: 'project', projectId: 'P' }, taskId: 't' } as ProjectChangeMessage)
     await flush()
     expect(projectReads()).toEqual([])

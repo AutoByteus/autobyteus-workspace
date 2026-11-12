@@ -24,7 +24,7 @@ const upserted = (taskId: string, root: Partial<NonNullable<ProjectTask['root']>
   type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' },
   task: { taskId, projectId: 'p1', taskKey: `p1-${taskId}`, title: `Task ${taskId}`, description: 'd', status: 'TODO', dependsOnTaskIds: [],
     partOfTaskId: null, comments: [], contextFiles: [], createdAt: '', updatedAt: '',
-    root: root && { kind: 'agent', recipientAddress: null, ingressAgentRunId: 'x', teamRunId: null, hostRoot: { kind: 'agent', runId: 'h' },
+    root: root && { kind: 'agent', recipientAddress: null, ingressAgentRunId: 'x', teamRunId: null, delegatingRun: { kind: 'agent', runId: 'h' },
       start: 'started', startError: null, closed: false, status: 'idle', ...root } as NonNullable<ProjectTask['root']> },
 })
 const lastVariables = () => apolloClientMock.query.mock.calls.at(-1)?.[0]?.variables

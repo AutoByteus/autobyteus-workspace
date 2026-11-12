@@ -3,6 +3,7 @@ import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { readViewRows, type ViewRows } from "./run-view-rows.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 /**
  * A run's rows as its history and inspection reads give them (SR-061 rule 1): in base's shapes (nested by placement,
@@ -15,6 +16,15 @@ export class RunViewChildren {
     projection: ChildRowProjection;
     followers: Pick<LocalChildFollowers, "statuses">;
   }>) {}
+
+  /**
+   * The run list's poll of a listed run (base's `agentRunCollaborationStatuses`, SR-061 rule 1): its local rows' agents'
+   * live statuses and its closed set, from the tree; no row record is read.
+   */
+  async poll(run: RootExecutionIdentity): Promise<Readonly<{ statuses: readonly LocalChildAgentStatus[]; closedTaskExecutions: readonly TaskExecutionReference[] }>> {
+    const closed = this.input.feed.rowsOf(run).closed.filter((placed) => placed.row.nodeId === undefined).map((placed) => placed.row.run);
+    return Object.freeze({ statuses: await this.input.followers.statuses(run), closedTaskExecutions: Object.freeze(closed) });
+  }
 
   async read(run: RootExecutionIdentity): Promise<Readonly<{ rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>> {
     const rows = await readViewRows(this.input.projection, run, { rows: this.input.feed.rowsOf(run), statuses: [] });

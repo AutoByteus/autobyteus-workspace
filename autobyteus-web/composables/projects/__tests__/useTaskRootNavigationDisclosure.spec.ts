@@ -29,7 +29,7 @@ it('explicit Task-root navigation reveals only its exact Team and coordinator, a
   store.contexts = { 'host-run': shallowReactive(buildMultiTeamContext()) }
   const root: TaskRootView = {
     kind: 'team', recipientAddress: '/software_engineering_team', teamRunId: teamId(5), ingressAgentRunId: memberId(5, 0),
-    hostRoot: { kind: 'agent', runId: 'host-run' }, start: 'started', startError: null, closed: false, status: 'running',
+    delegatingRun: { kind: 'agent', runId: 'host-run' }, start: 'started', startError: null, closed: false, status: 'running',
   }
   const navigationAction = useTaskRootNavigation()
   await navigationAction.open(root); await navigationAction.open(root)

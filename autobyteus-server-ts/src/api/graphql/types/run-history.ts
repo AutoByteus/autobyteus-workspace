@@ -38,6 +38,10 @@ class RunHistoryItemObject {
   @Field(() => String, { nullable: true })
   terminatedAt?: string | null;
 
+  /** Base's flag (SR-068): the run delegated at least once; its row's stored flag (contract §3.5). */
+  @Field(() => Boolean)
+  hasCollaboration!: boolean;
+
   @Field(() => String)
   status!: string;
 

@@ -57,12 +57,9 @@ export interface AgentTeamWithMemorySummary {
   memberMemoryCount: number;
   latestMemoryAt?: string | null;
   memory: MemoryAvailabilitySummary;
-  /** A team an agent started (a task team) rather than one launched from a team definition. */
-  isTaskTeam?: boolean | null;
-  startedByAgentName?: string | null;
 }
 
-export type CollaborationMemberExecutionKind = 'CONFIGURED' | 'TASK_AGENT' | 'TASK_TEAM_MEMBER';
+export type CollaborationMemberExecutionKind = 'CONFIGURED';
 
 /** A configured or task team on a member's path; `teamRunId` identifies it (a task team may share an address). */
 export interface CollaborationMemoryGroup {

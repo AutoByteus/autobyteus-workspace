@@ -1,10 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import {
-  GetAgentRunCollaboration,
-  GetAgentRunCollaborationMemberFileChanges,
-  GetAgentRunCollaborationMemberProjection,
-} from '~/graphql/queries/collaboratorQueries'
+import { GetAgentRunCollaboration, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
 import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 import { memberId, multiTeamView } from '~/services/agentCollaboration/__tests__/agentRootMultiTeamFixture'
 
@@ -41,7 +37,6 @@ const serve = () => io.query.mockImplementation(async (input) => {
   if (input.query === GetAgentRunCollaboration) {
     return { data: { agentRunCollaboration: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view } } }
   }
-  if (input.query === GetAgentRunCollaborationMemberFileChanges) return { data: { agentRunCollaborationMemberFileChanges: [] } }
   if (input.query === GetAgentRunCollaborationMemberProjection) {
     return { data: { agentRunCollaborationMemberProjection: {
       agentRunId: input.variables.agentRunId, memberAddress: input.variables.memberAddress,
@@ -53,7 +48,7 @@ const serve = () => io.query.mockImplementation(async (input) => {
 })
 const count = (query: unknown, agentRunId?: string) => io.query.mock.calls
   .filter(([input]) => input.query === query && (!agentRunId || input.variables.agentRunId === agentRunId)).length
-const memberRequests = () => count(GetAgentRunCollaborationMemberProjection) + count(GetAgentRunCollaborationMemberFileChanges)
+const memberRequests = () => count(GetAgentRunCollaborationMemberProjection)
 describe('Agent-root children load on demand', () => {
   beforeEach(() => {
     setActivePinia(createPinia()); vi.clearAllMocks(); Socket.instances.length = 0; io.holds.length = 0; ownRuns.reset()
