@@ -226,10 +226,12 @@ export class AgentOrgRunService {
   }
 
   /** The Org's stored or live view, with its children as `children` reads them (DS-8; passed by the read, SR-047). */
-  async getInspection(orgRunId: string, children: Pick<RunViewChildren, "rows" | "remote">) {
+  async getInspection(orgRunId: string, children: Pick<RunViewChildren, "rows" | "remote" | "statuses">) {
     const inspection = await this.dependencies.manager.getInspection(orgRunId);
     const run = { rootSubjectKind: "agent_org" as const, rootRunId: inspection.snapshot.tree.rootOrg.orgRunId };
-    return projectAgentOrgExecutionSnapshot({ ...inspection, remoteTaskExecutions: await children.remote(run), delegated: await children.rows(run) });
+    // As the view session reads them (org-view-session.ts): an active Org lists a status for every child agent (CR-461-011).
+    return projectAgentOrgExecutionSnapshot({ ...inspection, remoteTaskExecutions: await children.remote(run),
+      delegated: await children.rows(run), childStatuses: await children.statuses(run) });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

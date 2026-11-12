@@ -142,6 +142,7 @@ export class OrgViewSession {
       orgRunId: this.orgRunId, isActive: false, snapshot: { tree, statuses: [], inputStates: [] },
       baseChangeSequence: 0, liveSequenceId: `stored-${randomUUID()}`, lastMessageChangeSequence: 0,
       remoteTaskExecutions: await this.sources.children.remote(identity), delegated: await this.sources.children.rows(identity),
+      childStatuses: [],
     }) }));
     this.childRows.snapshotSent();
     this.send(this.lifecycle(false));
