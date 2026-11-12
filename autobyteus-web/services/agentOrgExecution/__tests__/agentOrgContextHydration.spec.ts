@@ -230,6 +230,7 @@ describe('staged AgentOrg context hydration and publication', () => {
         run,
         context,
         isTeamExpanded: () => true,
+        listed: null,
       }).map((item) => item.row)
         .find((candidate) => candidate.kind === 'task_agent'
           && candidate.agentRunId === 'agent-worker-task')

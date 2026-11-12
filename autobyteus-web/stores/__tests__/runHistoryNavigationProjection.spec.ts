@@ -69,6 +69,7 @@ const buildProjection = (
   taskAStatus = AgentStatus.Running,
   previous?: ReturnType<typeof buildRunHistoryNavigationProjection>,
 ) => buildRunHistoryNavigationProjection({
+  listedChildren: () => null,
   workspaceGroups: [],
   agentAvatarByDefinitionId: {},
   allWorkspaces: [
@@ -109,6 +110,7 @@ const buildHistoricalProjection = () => {
       platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: timestamp, source: { kind: 'agent', agent_definition_id: 'agent', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } }],
   });
   return buildRunHistoryNavigationProjection({
+    listedChildren: () => null,
     workspaceGroups: [],
     agentAvatarByDefinitionId: {},
     allWorkspaces: [{
@@ -298,7 +300,7 @@ describe('typed navigation presentation equality', () => {
   const row = parseAgentOrgHistoryItem(buildAgentOrgHistoryRow({rootRunId:'org-row', workspaceRootPath:'/workspace-a'}));
   const input = { workspaceGroups: [], agentAvatarByDefinitionId: {},
     allWorkspaces: [{ workspaceId: 'ws-a', workspaceRootPath: '/workspace-a', name: 'workspace-a', kind: 'filesystem', isTemp: false }],
-    workspacesById: {}, agentContexts: new Map(), teamContexts: [], agentOrgHistory: [row] };
+    workspacesById: {}, agentContexts: new Map(), teamContexts: [], agentOrgHistory: [row], listedChildren: () => null };
   const first = buildRunHistoryNavigationProjection(input);
   const serialization = vi.spyOn(JSON, 'stringify').mockImplementation(() => { throw new Error('Navigation serialized a domain tree'); });
   try {

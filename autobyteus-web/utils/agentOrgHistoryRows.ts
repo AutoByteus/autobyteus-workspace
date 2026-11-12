@@ -11,7 +11,9 @@ import {
   isAgentOrgTaskAgentNode,
   type AgentOrgTaskExecutionNode,
 } from '~/types/collaboration/agentOrgExecution'
-import { foldTeamAggregateStatus, type TeamStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
+import { foldTeamAggregateStatus, resolveTeamStatus, type TeamStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
+import type { ListedRunAnswer, ListedRunChild } from '~/services/listedRuns/listedRunChildrenQuery'
+import { treeLinesOf } from '~/utils/treeLines'
 
 export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
@@ -188,6 +190,32 @@ const flattenTask = (
     }]
   : flattenTaskTeam(task, depth, source)
 
+/**
+ * A listed Org run's child that is not open, from the history poll's answer (autobyteus-461 SR-055): the rows its view
+ * shows for it, with the child's own statuses (a delegated run runs on its own).
+ */
+const listedChildRows = (child: ListedRunChild, source: StatusSource): AgentOrgHistoryRow[] => {
+  const statusOf = (agentRunId: string) => child.statuses.find((status) => status.agentRunId === agentRunId)?.status
+  const delegatedBy = child.row.delegatorAgentRunId === undefined ? null
+    : Object.freeze({ agentRunId: child.row.delegatorAgentRunId, address: child.delegatorAddress })
+  const row = child.row
+  if (row.kind === 'agent') {
+    return [{ key: `task-agent:${row.agentRunId}`, kind: 'task_agent', taskKind: 'direct', address: row.address, agentRunId: row.agentRunId,
+      status: foldTeamAggregateStatus([statusOf(row.agentRunId)], 'live'), depth: 0, delegatedBy }]
+  }
+  const coordinator = row.members.find((member) => member.agentRunId === row.coordinatorAgentRunId)
+  if (!coordinator) throw new Error(`Missing exact task coordinator '${row.teamRunId}'.`)
+  const hasChildren = row.members.length > 0
+  const expanded = source.isTaskTeamExpanded(row.teamRunId)
+  const rows: AgentOrgHistoryRow[] = [{ key: `task-team:${row.teamRunId}`, kind: 'task_team', address: row.address, teamRunId: row.teamRunId,
+    status: resolveTeamStatus(row.members.map((member) => statusOf(member.agentRunId)), true),
+    coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address, depth: 0, delegatedBy, hasChildren, expanded }]
+  if (hasChildren && !expanded) return rows
+  return [...rows, ...row.members.map((member): AgentOrgHistoryRow => ({ key: `task-team-agent:${member.agentRunId}`, kind: 'task_agent',
+    taskKind: 'team_member', address: member.address, agentRunId: member.agentRunId,
+    status: foldTeamAggregateStatus([statusOf(member.agentRunId)], 'live'), depth: 1, delegatedBy: null }))]
+}
+
 /** A remote row; a Team row opens the coordinator its link names. */
 const remoteRow = (executions: readonly RemoteTaskExecutionDto[]) => ({ row, teamStatus }: RemoteTaskRow): AgentOrgHistoryRemoteRow => {
   const team = executions.find((execution) => execution.kind === 'agent_team' && execution.team_run_id === row.teamRunIdForNode)
@@ -211,6 +239,8 @@ export const projectAgentOrgHistoryRows = (input: Readonly<{
   isTeamExpanded(address: string): boolean
   /** Delegated Teams start expanded; omit to show every delegated Team open. */
   isTaskTeamExpanded?(teamRunId: string): boolean
+  /** The run's last answer from the history poll: its delegated rows while it is not open (SR-055). */
+  listed: ListedRunAnswer | null
 }>): AgentOrgHistoryDisplayRow[] => {
   const tree = input.context?.executionTree ?? input.run.executionTree
   const source = statusSource(input.run, input.context, input.isTaskTeamExpanded ?? (() => true))
@@ -256,22 +286,15 @@ export const projectAgentOrgHistoryRows = (input: Readonly<{
     },
     isTeamExpanded: source.isTaskTeamExpanded, nameAt: memberDisplayName,
   })
+  // A run that is not open shows its children from the poll's answer; an open one from its view (SR-055).
+  const listed = input.context ? null : input.listed
   mergeByStartTime(
-    rootTaskExecutions(tree.rootOrg).map((task) => ({ startedAt: task.startedAt, value: () => rows.push(...flattenTask(task, 0, source)) })),
+    listed
+      ? listed.children.map((child) => ({ startedAt: child.row.startedAt, value: () => rows.push(...listedChildRows(child, source)) }))
+      : rootTaskExecutions(tree.rootOrg).map((task) => ({ startedAt: task.startedAt, value: () => rows.push(...flattenTask(task, 0, source)) })),
     remote.map((entry) => ({ startedAt: entry.startedAt, value: () => rows.push(...entry.rows.map(remoteRow(input.context?.remoteExecutions ?? []))) })),
   ).forEach((emit) => emit())
 
-  const hasSibling = (index: number, depth: number): boolean => {
-    for (let next = index + 1; next < rows.length; next += 1) {
-      if (rows[next]!.depth < depth) return false
-      if (rows[next]!.depth === depth) return true
-    }
-    return false
-  }
-  return rows.map((row, index) => ({
-    row,
-    continuingAncestorDepths: Array.from({ length: row.depth }, (_, depth) => depth)
-      .filter((depth) => hasSibling(index, depth)),
-    hasFollowingSibling: hasSibling(index, row.depth),
-  }))
+  const lines = treeLinesOf(rows.map((row) => row.depth))
+  return rows.map((row, index) => ({ row, ...lines[index]! }))
 }

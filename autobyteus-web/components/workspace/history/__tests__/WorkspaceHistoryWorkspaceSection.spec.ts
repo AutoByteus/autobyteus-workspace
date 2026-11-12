@@ -143,7 +143,7 @@ const mountSubject = (options: {
     members: stableChildren,
     executionRows: [],
   };
-  team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext);
+  team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext, null);
 
   const actions = {
     onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(),
@@ -340,7 +340,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
         isActive, deleteLifecycle: 'READY', focusedAgentRunId: '', rootTeam: rootRow(children, teamRunId),
         members: children, executionRows: [],
       };
-      return { ...node, executionRows: buildRunHistoryTeamExecutionRows(node) };
+      return { ...node, executionRows: buildRunHistoryTeamExecutionRows(node, null, null) };
     };
     const idleRun = teamRun('team-run-idle', true, [AgentStatus.Idle, AgentStatus.Offline]);
     const busyRun = teamRun('team-run-busy', true, [AgentStatus.Offline, AgentStatus.Running], '2026-06-30T00:00:00.000Z');
@@ -554,7 +554,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(true);
     await wrapper.setProps({ workspaceTeams: [{
       ...team, focusedAgentRunId: worker.agentRunId!, rootTeam: rootRow([worker]), members: [worker],
-      executionRows: buildRunHistoryTeamExecutionRows({ ...team, focusedAgentRunId: worker.agentRunId!, rootTeam: rootRow([worker]), members: [worker] }),
+      executionRows: buildRunHistoryTeamExecutionRows({ ...team, focusedAgentRunId: worker.agentRunId!, rootTeam: rootRow([worker]), members: [worker] }, null, null),
     }] });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('[data-test="workspace-team-transient-execution-row"]').exists()).toBe(false);

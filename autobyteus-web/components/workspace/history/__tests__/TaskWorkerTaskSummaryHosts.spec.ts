@@ -10,7 +10,7 @@ const collaboration = vi.hoisted(() => ({ rows: [] as unknown[] }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
     taskRows: () => collaboration.rows,
-    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => true,
+    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), isTaskTeamExpanded: () => true,
     selectedChild: () => null, toggleTaskTeam: vi.fn(), selectTaskRow: vi.fn(() => true),
   }),
 }))
@@ -49,7 +49,7 @@ describe('Task summaries under Agent-run and Team-run hosts (delegated-copy-task
 
   const mountAgentHost = () => {
     collaboration.rows = [workerRow, teamCopyRow, memberRow, collaboratorRow].map((row) => ({ row, continuingAncestorDepths: [], hasFollowingSibling: false }))
-    return mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false, hasCollaboration: true },
+    return mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false },
       global: { stubs: { transition: false, 'transition-group': false } } })
   }
   const mountTeamHost = () => {

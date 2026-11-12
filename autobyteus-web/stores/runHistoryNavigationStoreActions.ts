@@ -1,6 +1,7 @@
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore';
 import { useRunHistoryRetiredRunsStore, withoutRetiredRuns } from '~/stores/runHistoryRetiredRuns';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentOrgRunHistoryItem, RunHistoryWorkspaceGroup } from './runHistoryTypes';
@@ -39,6 +40,7 @@ export const refreshRunNavigationTopologyForStore = (
     allWorkspaces: workspaceStore.allWorkspaces,
     workspacesById: workspaceStore.workspaces,
     agentOrgHistory: store.agentOrgHistory,
+    listedChildren: useListedRunChildrenStore().answerOf,
   }, store.navigationProjection);
   store.navigationTopologyRevision += 1;
 };

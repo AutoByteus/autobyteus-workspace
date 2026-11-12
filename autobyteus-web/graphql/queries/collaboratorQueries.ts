@@ -28,21 +28,12 @@ export const GetAgentRunCollaboration = gql`
 `
 
 /**
- * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states only, never the
- * collaboration view; a run without an active root answers inactive with no states.
+ * The history poll of listed runs of every kind (autobyteus-461 SR-055): each run's activity and the runs on this node it
+ * delegated to that its view shows, each by its identity with its agents' statuses. Never the view; never restores.
  */
-export const GetAgentRunCollaborationStatuses = gql`
-  query GetAgentRunCollaborationStatuses($runIds: [String!]!) {
-    agentRunCollaborationStatuses(runIds: $runIds) {
-      runId
-      isActive
-      statuses {
-        agentRunId
-        memberAddress
-        status
-        recoverableBlock
-      }
-    }
+export const GetRunCollaborationStatuses = gql`
+  query GetRunCollaborationStatuses($runs: [ListedRunInput!]!) {
+    runCollaborationStatuses(runs: $runs)
   }
 `
 

@@ -15,6 +15,7 @@ import {
   normalizeRootPath,
 } from './runHistoryReadModel';
 import { buildRunHistoryTeamExecutionRows } from './runHistoryTeamExecutionRows';
+import type { ListedRunAnswer } from '~/services/listedRuns/listedRunChildrenQuery';
 
 export interface RunHistoryAgentNavigationAncestry {
   workspaceId: string;
@@ -53,6 +54,8 @@ export interface RunHistoryNavigationProjectionBuildInput {
   agentContexts: Map<string, AgentContext>;
   teamContexts: AgentTeamContext[];
   agentOrgHistory: AgentOrgRunHistoryItem[];
+  /** A listed run's last answer from the history poll: the delegated rows of a Team run that is not open (SR-055). */
+  listedChildren(kind: 'agent_team', runId: string): ListedRunAnswer | null;
 }
 
 export const runHistoryExecutionRowIndexKey = (teamRunId: string, rowKey: string): string =>
@@ -199,7 +202,7 @@ export const buildRunHistoryNavigationProjection = (
       ...team,
       focusedAgentRunId: context?.view.getFocusedAgentRunId() ?? team.focusedAgentRunId,
     };
-    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) };
+    return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context, input.listedChildren('agent_team', team.teamRunId)) };
   });
   const workspaceNodes = previous
     ? retainEqualNodes(previous.workspaceNodes, builtWorkspaceNodes, (node) => node.workspaceId, equalWorkspace)

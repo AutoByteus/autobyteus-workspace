@@ -140,7 +140,6 @@
         :run-id="run.runId"
         :label="formatRunLabel(run.summary)"
         :run-selected="state.selectedRunId === run.runId"
-        :has-collaboration="run.hasCollaboration === true"
         @select-run="actions.onSelectRun(run)"
         @open-run="selectAgentRun(run)"
       />

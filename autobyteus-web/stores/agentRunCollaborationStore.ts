@@ -8,12 +8,9 @@ import type { CollaborationMessagesContextView } from '~/types/workspace/collabo
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
-import {
-  readAgentRunCollaboration,
-  readAgentRunCollaborationStatuses,
-  buildAgentRunCollaborationContext,
-  type AgentRunCollaborationStatusesAnswer,
-} from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { readAgentRunCollaboration, buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { listedAgentRunTaskRows } from '~/services/agentCollaboration/agentRunListedTaskRows'
+import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore'
 import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
 import {
@@ -37,9 +34,10 @@ import { createRandomId } from '~/utils/randomId'
  * The client side of standalone runs' collaboration roots: the task children brought in with
  * `@`, their rows under the run row, direct chat with a child and the run's Team tab.
  *
- * Reading never restores a host: a listed run's stored view comes from `agentRunCollaboration`.
- * The open run's view has its stream whether the run's own agent runs or not (autobyteus-461
- * SR-045): its children are runs of their own, and the stream never restores the run.
+ * Reading never restores a host. The open run's view has its stream whether the run's own agent runs
+ * or not (autobyteus-461 SR-045): its children are runs of their own, and the stream never restores
+ * the run. A listed run that is not open shows its task rows from the history poll's answer (SR-055);
+ * its view is read only when it is opened.
  *
  * A published context carries the tree and statuses only. A child's stored conversation,
  * activities and artifacts are loaded by the member loader when it is selected, and again for the
@@ -58,6 +56,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const binding = useWindowNodeContextStore()
   const remoteRuns = useRemoteRunsStore()
   const participantMessages = useCollaborationParticipantMessagesStore()
+  const listedChildren = useListedRunChildrenStore()
   const assertNotTerminating = (id: string) => {
     if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
   }
@@ -179,65 +178,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /** Loads the stored (or live) view without restoring anything; a failure is kept as the hub's error. */
   const inspect = async (hostRunId: string): Promise<void> => { await read(hostRunId) }
 
-  /** The status read on the history poll that is still running; a tick that finds one skips its own. */
-  let statusRefresh: Promise<void> | null = null
-  /** Per host, the answer its view was last re-read for (active state and local children): one re-read per distinct answer. */
-  const rereadAnswers = new Map<string, string>()
-  const answerKey = (answer: AgentRunCollaborationStatusesAnswer): string =>
-    JSON.stringify([answer.isActive, answer.statuses.map((status) => [status.agentRunId, status.memberAddress])])
-
-  /** The answer names exactly the context's local children (ID and address), each once. */
-  const sameLocalChildren = (context: AgentRunCollaborationContext, answer: AgentRunCollaborationStatusesAnswer): boolean => {
-    const named = new Set(answer.statuses.map((status) => status.agentRunId))
-    return named.size === answer.statuses.length && named.size === context.index.agents.size
-      && answer.statuses.every((status) => context.index.agents.get(status.agentRunId)?.address === status.memberAddress)
-  }
-
-  /**
-   * The history poll's refresh of task rows under listed runs that are not open (autobyteus-426 REQ-009, D-09): one
-   * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
-   * listed (`listedAgentRunIds`, active or stopped) or whose context is still live. Each answer, in order: dropped
-   * unless its hub is as it was at selection; a view re-read when the active state or the local children (ID and
-   * address) differ from the view's, at most once per distinct answer (autobyteus-461 SR-040: one rule for every hub,
-   * whose children are runs of their own); else, or for an answer already re-read for, the states are applied.
-   */
-  const refreshListedStatuses = (listedAgentRunIds: readonly string[]): Promise<void> => {
-    if (statusRefresh) return statusRefresh
-    const listed = new Set(listedAgentRunIds)
-    const revision = binding.bindingRevision
-    const selected = Object.entries(contexts.value).filter(([hostRunId, context]) => !services.has(hostRunId)
-      && !inspections.has(hostRunId) && !terminations.has(hostRunId) && (listed.has(hostRunId) || context.isActive))
-    if (!selected.length) return Promise.resolve()
-    const refresh = (async () => {
-      let answers: AgentRunCollaborationStatusesAnswer[]
-      try {
-        answers = await readAgentRunCollaborationStatuses(selected.map(([hostRunId]) => hostRunId))
-      } catch (cause) {
-        console.warn('[agentRunCollaboration] Could not read the listed runs\' child states.', cause)
-        return
-      }
-      const answerOf = new Map(answers.map((answer) => [answer.runId, answer]))
-      for (const [hostRunId, context] of selected) {
-        const answer = answerOf.get(hostRunId)
-        const current = contexts.value[hostRunId] === context && binding.bindingRevision === revision
-          && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
-        if (!answer || !current) continue
-        // One rule for every hub, active or stopped (autobyteus-461 SR-040): its children are runs of their own.
-        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)) {
-          const key = answerKey(answer)
-          if (rereadAnswers.get(hostRunId) !== key) {
-            rereadAnswers.set(hostRunId, key)
-            void inspect(hostRunId)
-            continue
-          }
-        }
-        context.applyStatuses(answer.statuses)
-      }
-    })().finally(() => { if (statusRefresh === refresh) statusRefresh = null })
-    statusRefresh = refresh
-    return refresh
-  }
-
   /**
    * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
    * else a new inspection, so one hub selection reads the view once.
@@ -298,23 +238,26 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 
-  /**
-   * A listed standalone run's stored view, read once without restoring the run, when it has collaboration and is not
-   * loaded yet; a live run is kept current by its stream.
-   */
-  const ensureStoredView = (hostRunId: string, hasCollaboration: boolean): void => {
-    if (hasCollaboration && !contextFor(hostRunId)) void inspect(hostRunId)
-  }
+  /** The run's view is open: it has its stream and its published context (else its rows come from the poll's answer). */
+  const isOpen = (hostRunId: string): boolean => services.has(hostRunId) && Boolean(contextFor(hostRunId))
 
   /**
-   * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. Answers whether a child
-   * was selected (false while the run's view is not loaded).
+   * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. A row of a run that is not
+   * open (the poll's answer) is selected for when its view is published, which keeps it only if the view lists it.
+   * Answers whether a child was selected.
    */
   const selectTaskRow = (hostRunId: string, row: RunHistoryTransientExecutionRow): boolean => {
-    const context = contextFor(hostRunId)
-    if (!context) return false
-    const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
-    selectChild(hostRunId, agentRunId)
+    if (isOpen(hostRunId)) {
+      const context = contextFor(hostRunId)!
+      selectChild(hostRunId, row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null))
+      return true
+    }
+    const team = row.teamRunIdForNode
+      ? listedChildren.answerOf('agent', hostRunId)?.children.find((child) => child.row.kind === 'agent_team' && child.row.teamRunId === row.teamRunIdForNode)
+      : null
+    const agentRunId = row.agentRunId ?? (team?.row.kind === 'agent_team' ? team.row.coordinatorAgentRunId : null)
+    if (!agentRunId) return false
+    selection[hostRunId] = agentRunId
     return true
   }
 
@@ -327,8 +270,12 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       : [...current, teamRunId])
   }
 
-  const taskRows = (hostRunId: string): AgentRunTaskTreeRow[] =>
-    contextFor(hostRunId)?.listTaskRows((teamRunId) => isTaskTeamExpanded(hostRunId, teamRunId)) ?? []
+  /** The task rows under a run row: the open run's from its view, else the history poll's answer's (SR-055). */
+  const taskRows = (hostRunId: string): AgentRunTaskTreeRow[] => {
+    const expanded = (teamRunId: string) => isTaskTeamExpanded(hostRunId, teamRunId)
+    const answer = isOpen(hostRunId) ? null : listedChildren.answerOf('agent', hostRunId)
+    return answer ? listedAgentRunTaskRows(hostRunId, answer, expanded) : contextFor(hostRunId)?.listTaskRows(expanded) ?? []
+  }
 
   /** The host's Team tab: messages with its children, once it has any. */
   const hostMessagesView = (hostRunId: string): CollaborationMessagesContextView | null => {
@@ -414,7 +361,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     delete selection[hostRunId]
     delete expandedTeams[hostRunId]
     delete errors[hostRunId]
-    rereadAnswers.delete(hostRunId)
   }
 
   /** Releases every host's view and stream: the window's node changed, or the phone's session ended (autobyteus-435). */
@@ -425,7 +371,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   watch(() => binding.bindingRevision, releaseAll, { flush: 'sync' })
 
   return {
-    contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, releaseAll, beginHostTermination,
-    selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
+    contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, releaseAll, beginHostTermination,
+    selectChild, selectedChild, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
   }
 })

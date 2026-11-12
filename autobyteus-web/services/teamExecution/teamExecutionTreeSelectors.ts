@@ -23,14 +23,22 @@ const firstSegment = (address: string): string | undefined => address.split('/')
  * root Team, so it reads as a spaced name (`product team`) in rows and contexts. A configured member,
  * and every copy started from it, keeps its address basename; the root never reads as a display name.
  */
-export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
+export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean =>
+  readsAsDisplayNameAmong(tree.root_team.members.map((member) => member.address), address);
+
+/** The same rule from the root Team's configured member addresses alone (a listed Team's history rows). */
+const readsAsDisplayNameAmong = (memberAddresses: readonly string[], address: string): boolean => {
   const segment = firstSegment(address);
-  return segment !== undefined && !tree.root_team.members.some((member) => firstSegment(member.address) === segment);
+  return segment !== undefined && !memberAddresses.some((memberAddress) => firstSegment(memberAddress) === segment);
 };
 
 /** The name a Team run shows for the agent or Team at `address` (F-03 / D-7): rows, contexts and Settings. */
 export const teamMemberName = (tree: TeamRunExecutionTreeDto, address: string): string =>
-  readsAsDisplayName(tree, address) ? memberDisplayName(address) : memberAddressBasename(address);
+  teamMemberNameAmong(tree.root_team.members.map((member) => member.address), address);
+
+/** The same name from the root Team's configured member addresses alone. */
+export const teamMemberNameAmong = (memberAddresses: readonly string[], address: string): string =>
+  readsAsDisplayNameAmong(memberAddresses, address) ? memberDisplayName(address) : memberAddressBasename(address);
 
 /** Teams are flat: the root Team's configured members are its Agents. */
 export const collectConfiguredAgents = (

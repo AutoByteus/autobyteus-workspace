@@ -29,7 +29,7 @@ describe('Org history rows with remote runs', () => {
       remoteExecutions: [remoteTeam],
       getAgentContext: (agentRunId: string) => ({ state: { currentStatus: statuses[agentRunId] ?? AgentStatus.Idle } }),
     } as unknown as AgentOrgExecutionContext
-    const rows = projectAgentOrgHistoryRows({ run, context, isTeamExpanded: () => false })
+    const rows = projectAgentOrgHistoryRows({ run, context, isTeamExpanded: () => false, listed: null })
     const remote = rows.filter((display) => display.row.kind === 'remote').map((display) => display.row)
     expect(remote.map((row) => row.kind === 'remote' && [row.key, row.depth, row.transient.remote?.nodeName, row.transient.currentStatus])).toEqual([
       ['team:marketing-run', 0, 'docker', null],

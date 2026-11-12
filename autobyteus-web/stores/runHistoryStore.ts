@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { listedRunsOf, type ListedRunRefDto } from '~/stores/runHistoryListedRuns';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
@@ -95,9 +96,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
     getModelConfigEditability: (state) => (runId: string) =>
       state.resumeConfigByRunId[runId]?.modelConfigEditability ?? null,
 
-    /** The listed standalone Agent runs, active or stopped (the history poll's status read, autobyteus-426 D-09, -435). */
-    listedAgentRunIds: (state): string[] => state.workspaceGroups.flatMap((group) =>
-      group.agentDefinitions.flatMap((agent) => agent.runs.map((run) => run.runId))),
+    /** The listed runs of every kind, active or stopped (the history poll's children read, autobyteus-461 SR-055). */
+    listedRuns: (state): ListedRunRefDto[] => listedRunsOf(state),
 
     isRunActive: (state) => (runId: string): boolean => {
       return Boolean(state.resumeConfigByRunId[runId]?.isActive);

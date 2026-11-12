@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
 import { useRouteSelectedAgentOrg } from '~/composables/runHistory/useRouteSelectedAgentOrg';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
@@ -6,6 +6,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useRunListStore } from '~/stores/runListStore';
@@ -37,9 +38,9 @@ const ancestorsOf = <T>(rows: readonly T[], depthOf: (row: T) => number, isTarge
 
 /**
  * The phone's run list rows (autobyteus-277 DS-002): the run list store's shown runs, each with the rows of its kind's
- * owner (the collaboration store, the Team rows, the Org rows) and one shared disclosure instance. It asks the
- * collaboration store for the stored views of listed Agent runs, and answers which row is open: the row of the open
- * target's agent.
+ * owner (the collaboration store, the Team rows, the Org rows) and one shared disclosure instance, and answers which row
+ * is open: the row of the open target's agent. A listed run that is not open shows its delegated rows from the history
+ * poll's answer (autobyteus-461 SR-055); no view is read for it.
  */
 export function useMobileRunTree() {
   const runHistoryStore = useRunHistoryStore();
@@ -47,6 +48,7 @@ export function useMobileRunTree() {
   const selectionStore = useAgentSelectionStore();
   const collaboration = useAgentRunCollaborationStore();
   const orgContexts = useAgentOrgContextsStore();
+  const listedRunChildren = useListedRunChildrenStore();
   const remoteRuns = useRemoteRunsStore();
   const activeContext = useActiveContextStore();
 
@@ -56,10 +58,6 @@ export function useMobileRunTree() {
     hasSelectedChild: (runId) => Boolean(collaboration.selectedChild(runId)),
     defaultExpansion: PHONE_DEFAULT_EXPANSION,
   });
-
-  // A listed Agent run's delegated work comes from its stored view, read once (a live run's stream keeps it current).
-  watch(() => runListStore.shownEntries.flatMap((entry) => entry.kind === 'agent' && entry.run.hasCollaboration ? [entry.runId] : []),
-    (runIds) => runIds.forEach((runId) => collaboration.ensureStoredView(runId, true)), { immediate: true });
 
   // The listed Task workers' current Tasks (the desktop's second line; summaries only, no locating on the phone).
   const { taskOf } = useTaskWorkerTasks(() => runListStore.shownEntries.flatMap((entry) => entry.kind === 'agent'
@@ -72,6 +70,7 @@ export function useMobileRunTree() {
     orgRows: (orgRun) => projectAgentOrgHistoryRows({
       run: orgRun,
       context: orgContexts.contextFor(orgRun.rootRunId),
+      listed: listedRunChildren.answerOf('agent_org', orgRun.rootRunId),
       isTeamExpanded: (address) => disclosure.isAgentOrgTeamExpanded(orgRun.rootRunId, address),
       isTaskTeamExpanded: (teamRunId) => disclosure.isAgentOrgTaskTeamExpanded(orgRun.rootRunId, teamRunId),
     }),

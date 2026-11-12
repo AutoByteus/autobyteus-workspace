@@ -26,6 +26,7 @@ import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRem
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { applyRemoteSummaryStatuses, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
 import { participantMessagesKeyOf } from '~/services/runHydration/agentReads'
+import { treeLinesOf } from '~/utils/treeLines'
 import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
@@ -42,7 +43,7 @@ export type AgentRunTaskTreeRow = Readonly<{
   hasFollowingSibling: boolean
 }>
 
-/** One child's state, as the collaboration view and the history poll's status read both give it (autobyteus-426 D-09). */
+/** One child's state, as the collaboration view gives it. */
 export type CollaborationChildStatus = Readonly<{
   agentRunId: string
   memberAddress: string
@@ -107,7 +108,7 @@ export class AgentRunCollaborationContext {
   }
 
   /**
-   * Sets each local child's current status and recoverable block (the view's states, or the history poll's status read).
+   * Sets each local child's current status and recoverable block (the view's states).
    * Every status must name one local child exactly once, by its ID and address; nothing else changes.
    */
   applyStatuses(statuses: readonly CollaborationChildStatus[]): void {
@@ -317,19 +318,8 @@ export class AgentRunCollaborationContext {
       this.rootExecutionNodes().map((task) => ({ startedAt: task.startedAt, value: () => { visit(task, 0, true) } })),
       remote.map((entry) => ({ startedAt: entry.startedAt, value: () => { flat.push(...entry.rows) } })),
     ).forEach((emit) => emit())
-    const hasSibling = (index: number, depth: number): boolean => {
-      for (let next = index + 1; next < flat.length; next += 1) {
-        if (flat[next]!.row.depth < depth) return false
-        if (flat[next]!.row.depth === depth) return true
-      }
-      return false
-    }
-    return flat.map(({ row, teamStatus }, index) => Object.freeze({
-      row,
-      teamStatus,
-      continuingAncestorDepths: Array.from({ length: row.depth }, (_, depth) => depth).filter((depth) => hasSibling(index, depth)),
-      hasFollowingSibling: hasSibling(index, row.depth),
-    }))
+    const lines = treeLinesOf(flat.map(({ row }) => row.depth))
+    return flat.map(({ row, teamStatus }, index) => Object.freeze({ row, teamStatus, ...lines[index]! }))
   }
 
   /** Messages between the host and its children, seen from one participant (the Team tab). */

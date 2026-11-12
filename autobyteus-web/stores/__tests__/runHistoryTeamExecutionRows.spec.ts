@@ -83,7 +83,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
       stableRow(worker.address, [], { agentRunId: worker.agentRunId }),
     ];
 
-    const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren) as any, context);
+    const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren) as any, context, null);
 
     expect(rows.filter((row) => row.kind === 'stable_member').map((row) => row.rowKey)).toEqual([
       'agent:solution-designer-run', 'agent:worker-run',
@@ -112,7 +112,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     const before = structuredClone(source);
     const team = historyTeam([worker, reviewer].map((agent) =>
       stableRow(agent.address, [], { agentRunId: agent.agentRunId })));
-    const rows = buildRunHistoryTeamExecutionRows(team as any, context);
+    const rows = buildRunHistoryTeamExecutionRows(team as any, context, null);
     expect(rows.map((row) => [row.rowKey, row.depth, row.hasChildren])).toEqual([
       ['agent:worker-run', 0, false], ['agent:first-run', 0, false],
       ['agent:second-run', 0, false], ['agent:reviewer-run', 0, false],
@@ -134,13 +134,13 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     });
     const rows = buildRunHistoryTeamExecutionRows(historyTeam([
       stableRow(worker.address, [], { agentRunId: worker.agentRunId }),
-    ], isActive) as any, context);
+    ], isActive) as any, context, null);
     expect(rows.map((row) => [row.agentRunId, row.depth, row.hasChildren])).toEqual(
       [['worker-run', 0, false], ['settled-run', 0, false]]);
   });
 
-  it('falls back to configured rows only when no live context exists', () => {
-    const rows = buildRunHistoryTeamExecutionRows(historyTeam([stableRow('/worker'), stableRow('/reviewer')]) as any);
+  it('falls back to configured rows only when no live context and no poll answer exist', () => {
+    const rows = buildRunHistoryTeamExecutionRows(historyTeam([stableRow('/worker'), stableRow('/reviewer')]) as any, null, null);
     expect(rows.map((row) => `${row.kind}:${row.memberAddress}:${row.depth}`)).toEqual([
       'stable_member:/worker:0', 'stable_member:/reviewer:0',
     ]);
@@ -182,7 +182,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     });
     const stableChildren = [stableRow(solution.address, [], { agentRunId: solution.agentRunId })];
 
-    const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren, false) as any, context);
+    const rows = buildRunHistoryTeamExecutionRows(historyTeam(stableChildren, false) as any, context, null);
 
     expect(rows.map((row) => [row.agentRunId ?? row.teamRunIdForNode, 'transientKind' in row ? row.transientKind : row.kind, row.depth, row.hasChildren])).toEqual([
       ['solution-designer-run', 'stable_member', 0, false],
@@ -194,6 +194,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
     ]);
 
     const projection = buildRunHistoryNavigationProjection({
+      listedChildren: () => null,
       workspaceGroups: [], agentAvatarByDefinitionId: {}, allWorkspaces: [],
       workspacesById: {}, agentContexts: new Map(), teamContexts: [context], agentOrgHistory: [],
     });

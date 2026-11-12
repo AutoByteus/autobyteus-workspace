@@ -9,23 +9,40 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => multiTeamView()),
   buildAgentRunCollaborationContext: vi.fn(async ({ view }) => shallowReactive(buildMultiTeamContext(view))),
 }))
-vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
-  hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
-}))
-vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null }) }))
+vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({ hubChildLoadTarget: vi.fn(() => null) }))
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null, applyRunNavigationEffect: vi.fn() }) }))
+vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
+vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 // Summary lookup/Projects feed is a separate boundary, not the disclosure owner under test.
 vi.mock('~/composables/projects/useTaskWorkerTasks', () => ({ useTaskWorkerTasks: () => ({ taskOf: () => null, locate: vi.fn() }) }))
 
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import AgentRunTaskRows from '../AgentRunTaskRows.vue'
 
-/** Actual row -> actual store -> actual context: unlike the selection-only mocked-store test. */
+class Socket {
+  static OPEN = 1; readyState = 1
+  onmessage?: (event: { data: string }) => void
+  send = vi.fn(); close = vi.fn()
+  constructor(_url: string) { sockets.push(this) }
+  frame(value: unknown) { this.onmessage?.({ data: JSON.stringify(value) }) }
+}
+const sockets: Socket[] = []
+
+/**
+ * Actual row -> actual store -> actual context: unlike the selection-only mocked-store test. The run is open (its view's
+ * stream, autobyteus-461 SR-055): a Team row selects its coordinator through the view.
+ */
 describe('AgentRunTaskRows independent Team disclosure', () => {
-  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks() })
-  const render = () => mount(AgentRunTaskRows, {
-    props: { runId: 'host-run', label: 'Project Task Manager', runSelected: true, hasCollaboration: true },
-    global: { stubs: { transition: false, 'transition-group': false } },
-  })
+  beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); sockets.length = 0; vi.stubGlobal('WebSocket', Socket) })
+  const render = () => {
+    useAgentRunCollaborationStore().attach('host-run')
+    sockets[0]!.frame({ type: 'CONNECTED', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', session_id: 'session' } })
+    sockets[0]!.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: multiTeamView() } })
+    return mount(AgentRunTaskRows, {
+      props: { runId: 'host-run', label: 'Project Task Manager', runSelected: true },
+      global: { stubs: { transition: false, 'transition-group': false } },
+    })
+  }
   const team = (wrapper: ReturnType<typeof render>, copy: number) => wrapper.findAll('[role="treeitem"][data-node-kind="agent_team"]')[copy]!
   const memberSelector = (copy: number, member: number) => `[role="treeitem"][data-agent-run-id="${memberId(copy, member)}"]`
 

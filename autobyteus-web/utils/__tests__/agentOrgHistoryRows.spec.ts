@@ -47,7 +47,7 @@ const nestedTree = (): OrgTree => {
 }
 
 const project = (tree: OrgTree, isTaskTeamExpanded?: (teamRunId: string) => boolean) => projectAgentOrgHistoryRows({
-  run: runFor(tree), context: null, isTeamExpanded: () => true, isTaskTeamExpanded,
+  run: runFor(tree), context: null, isTeamExpanded: () => true, isTaskTeamExpanded, listed: null,
 })
 const keys = (rows: AgentOrgHistoryDisplayRow[]) => rows.map((display) => display.row.key)
 const find = (rows: AgentOrgHistoryDisplayRow[], key: string) => rows.find((display) => display.row.key === key)!
@@ -106,7 +106,7 @@ describe('projectAgentOrgHistoryRows delegated Team disclosure', () => {
     expect(keys(rows)).toContain('agent:agent-lead-configured')
 
     const mountedCollapsed = projectAgentOrgHistoryRows({
-      run: runFor(tree), context: null, isTeamExpanded: () => false, isTaskTeamExpanded: () => true,
+      run: runFor(tree), context: null, isTeamExpanded: () => false, isTaskTeamExpanded: () => true, listed: null,
     })
     expect(keys(mountedCollapsed)).not.toContain('agent:agent-lead-configured')
     expect(keys(mountedCollapsed)).toEqual(expect.arrayContaining([
@@ -133,6 +133,7 @@ const projectLive = (
   context: liveContext(tree, statuses),
   isTeamExpanded: () => true,
   isTaskTeamExpanded: options.isTaskTeamExpanded,
+  listed: null,
 })
 const statusOf = (rows: AgentOrgHistoryDisplayRow[], key: string) => (find(rows, key).row as { status: string }).status
 

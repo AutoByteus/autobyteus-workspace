@@ -136,32 +136,22 @@ describe('task row rules', () => {
     hydration.build.mockImplementation(async ({ view }) => shallowReactive(buildMultiTeamContext(view)))
   })
 
-  it('ensureStoredView reads a run with collaboration once, and never one without', async () => {
-    const store = useAgentRunCollaborationStore()
-    store.ensureStoredView('plain-run', false)
-    store.ensureStoredView('host-run', true)
-    store.ensureStoredView('host-run', true)
-    await flush()
-    expect(hydration.read).toHaveBeenCalledTimes(1)
-    expect(hydration.read).toHaveBeenCalledWith('host-run')
-    store.ensureStoredView('host-run', true)
-    await flush()
-    expect(hydration.read).toHaveBeenCalledTimes(1)
-    expect(Socket.instances).toHaveLength(0)
-  })
-
-  it('selectTaskRow: a task Team row selects its coordinator; nothing is selected before the view is loaded', async () => {
+  // autobyteus-461 SR-055: the open run's rows select through its view; a row of a run that is not open comes from the
+  // history poll's answer (agentRunListedTaskRows.spec).
+  it('selectTaskRow on the open run: a task Team row selects its coordinator; with neither view nor answer, nothing', async () => {
     const store = useAgentRunCollaborationStore()
     const teamRow = { agentRunId: null, teamRunIdForNode: teamId(1) } as never
     expect(store.selectTaskRow('host-run', teamRow)).toBe(false)
-    await store.inspect('host-run')
+    store.attach('host-run')
+    await snapshot(Socket.instances[0]!, multiTeamView(2))
     expect(store.selectTaskRow('host-run', teamRow)).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(1, 0))
   })
 
-  it('selectTaskRow: a task agent row selects that agent', async () => {
+  it('selectTaskRow on the open run: a task agent row selects that agent', async () => {
     const store = useAgentRunCollaborationStore()
-    await store.inspect('host-run')
+    store.attach('host-run')
+    await snapshot(Socket.instances[0]!, multiTeamView(2))
     expect(store.selectTaskRow('host-run', { agentRunId: memberId(0, 2), teamRunIdForNode: null } as never)).toBe(true)
     expect(store.selectedChild('host-run')).toBe(memberId(0, 2))
   })

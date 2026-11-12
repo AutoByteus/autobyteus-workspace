@@ -1,5 +1,7 @@
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import type { ListedRunAnswer } from '~/services/listedRuns/listedRunChildrenQuery';
+import { withListedChildRows } from './runHistoryTeamListedChildRows';
 import type {
   RunHistoryStableExecutionRow,
   RunHistoryTeamExecutionRow,
@@ -29,12 +31,17 @@ const flattenStableRows = (
   row,
 }, ...flattenStableRows(row.children, depth + 1)]);
 
+/**
+ * A Team run's history rows: the open run's from its view, else its members with the runs it delegated to from the
+ * history poll's answer (`listed`, autobyteus-461 SR-055), or its members alone before the first answer.
+ */
 export const buildRunHistoryTeamExecutionRows = (
   team: TeamTreeNode,
-  context?: AgentTeamContext | null,
+  context: AgentTeamContext | null,
+  listed: ListedRunAnswer | null,
 ): RunHistoryTeamExecutionRow[] => {
   const stableSource = team.rootTeam.children.length > 0 ? team.rootTeam.children : team.members;
-  if (!context) return flattenStableRows(stableSource);
+  if (!context) return listed ? withListedChildRows(team.teamRunId, flattenStableRows(stableSource), listed) : flattenStableRows(stableSource);
   const rootTeamRunId = context.view.getRootTeamRunId();
   if (team.teamRunId !== rootTeamRunId) {
     throw new Error(`Team history root '${team.teamRunId}' does not match execution root '${rootTeamRunId}'.`);

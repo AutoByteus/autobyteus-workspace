@@ -9,7 +9,7 @@ const collaboration = vi.hoisted(() => ({ selectTaskRow: vi.fn(() => true), rows
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
     taskRows: () => collaboration.rows,
-    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => false,
+    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), isTaskTeamExpanded: () => false,
     selectedChild: () => null, toggleTaskTeam: vi.fn(), selectTaskRow: collaboration.selectTaskRow,
   }),
 }))
@@ -28,7 +28,7 @@ describe('AgentRunTaskRows selection', () => {
   beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); collaboration.rows = [{ row: row('writer-run'), teamStatus: null, continuingAncestorDepths: [], hasFollowingSibling: false }] })
 
   it.each([true, false])('selects the task row through the store and (re)opens its run when runSelected=%s', async (runSelected) => {
-    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected, hasCollaboration: true },
+    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected },
       global: { stubs: { transition: false, 'transition-group': false } } })
     await wrapper.get('[data-test="workspace-team-transient-execution-row"]').trigger('click')
     expect(collaboration.selectTaskRow).toHaveBeenCalledWith('host-run', expect.objectContaining({ agentRunId: 'writer-run' }))
@@ -37,7 +37,7 @@ describe('AgentRunTaskRows selection', () => {
 
   it('opens nothing while the run\'s view is not loaded (the store selected no child)', async () => {
     collaboration.selectTaskRow.mockReturnValueOnce(false)
-    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false, hasCollaboration: true },
+    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false },
       global: { stubs: { transition: false, 'transition-group': false } } })
     await wrapper.get('[data-test="workspace-team-transient-execution-row"]').trigger('click')
     expect(wrapper.emitted('select-run')).toBeUndefined()
@@ -51,7 +51,7 @@ describe('AgentRunTaskRows selection', () => {
       { row: teamRow, teamStatus: AgentStatus.Running, continuingAncestorDepths: [], hasFollowingSibling: true },
       { row: row('writer-run'), teamStatus: null, continuingAncestorDepths: [], hasFollowingSibling: false },
     ]
-    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false, hasCollaboration: true },
+    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false },
       global: { stubs: { transition: false, 'transition-group': false } } })
     const [team, agent] = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]')
     expect(team!.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running)

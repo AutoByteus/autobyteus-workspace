@@ -3,7 +3,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+import { useListedRunChildrenStore } from '~/stores/listedRunChildrenStore';
 
 export const RUN_HISTORY_REFRESH_INTERVAL_MS = 5000;
 
@@ -21,7 +21,7 @@ export const useRunHistorySectionLoad = (options: {
   const agentDefinitionStore = useAgentDefinitionStore();
   const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
   const agentOrgDefinitionStore = useAgentOrgDefinitionStore();
-  const collaborationStore = useAgentRunCollaborationStore();
+  const listedChildren = useListedRunChildrenStore();
 
   /**
    * Sets the window and reads the history, the folder catalog and the definitions; settles when they are read (the
@@ -30,7 +30,7 @@ export const useRunHistorySectionLoad = (options: {
   const load = async (): Promise<void> => {
     runHistoryStore.setHistoryWindow(options.window());
     await Promise.all([
-      runHistoryStore.fetchTree().catch(() => undefined),
+      runHistoryStore.fetchTree().catch(() => undefined).then(readListedChildren),
       runHistoryStore.loadWorkspaceCatalogForNavigation().catch(() => undefined),
       agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
       agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
@@ -43,12 +43,17 @@ export const useRunHistorySectionLoad = (options: {
   const initialLoad = new Promise<void>((resolve) => { resolveInitialLoad = resolve; });
 
   /**
-   * One poll tick: the quiet history read, then the children's states of listed runs that are not open
-   * (autobyteus-426 REQ-009); the first load and a window change read the views themselves.
+   * The children of the listed runs of every kind (autobyteus-461 SR-055; autobyteus-426 REQ-009): a changed answer
+   * rebuilds the run list, whose delegated rows of a run that is not open come from it.
    */
+  async function readListedChildren(): Promise<void> {
+    if (await listedChildren.refresh(runHistoryStore.listedRuns)) runHistoryStore.refreshRunNavigationTopology('listed-run-children');
+  }
+
+  /** One poll tick: the quiet history read, then the listed runs' children. */
   const pollTick = async (): Promise<void> => {
     await runHistoryStore.refreshTreeQuietly();
-    await collaborationStore.refreshListedStatuses(runHistoryStore.listedAgentRunIds);
+    await readListedChildren();
   };
 
   let timer: ReturnType<typeof setInterval> | null = null;
@@ -64,7 +69,7 @@ export const useRunHistorySectionLoad = (options: {
   // The read window follows the host's view: one read when it changes.
   watch(options.window, (window) => {
     runHistoryStore.setHistoryWindow(window);
-    void runHistoryStore.fetchTree().catch(() => undefined);
+    void runHistoryStore.fetchTree().catch(() => undefined).then(readListedChildren);
   });
 
   let loaded = false;
