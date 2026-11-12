@@ -100,7 +100,7 @@ export class TaskDelegation {
     /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
     recordCollaborating(agentRunId: string, address: AgentTeamAddress): Promise<void>;
     /**
-     * The sender's address as the new run may use it (contract §2.5, `CrossRunAddressResolution.reachingAddress`): the
+     * The sender's address as the new run may use it (contract §2.5, the receiver's collaboration map, `reachingAddressOf`): the
      * one owner of the work packet's sender address for every delegator kind (CR-461-031); `null`: run ID only.
      */
     reachingAddress(sender: CollaborationMemberExecutionIdentity, receiverRun: RootExecutionIdentity): Promise<string | null>;

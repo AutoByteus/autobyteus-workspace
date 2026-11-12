@@ -1,4 +1,3 @@
-import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
@@ -33,7 +32,6 @@ export type TeamRootMaterializationInput = Readonly<{
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskRecords: RunTaskRecords;
   delegationTree: DelegationTree;
-  reachableAgents: Pick<ReachableAgents, "stepTwoOf" | "delegationPlacementAt">;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
@@ -124,7 +122,6 @@ export const materializeTeamRoot = async (
       publisher,
       taskRecords: input.taskRecords,
       delegationTree: input.delegationTree,
-      reachableAgents: input.reachableAgents,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });

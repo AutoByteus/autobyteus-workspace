@@ -66,7 +66,7 @@ export class MemberExecutionContext {
   readonly collaborationRole: MemberCollaborationRole;
   /**
    * Whether the agent can reach an organization's other agents and teams: an agent of an Org run, or of a run working
-   * on a Task an org assigned (`RunCollaborationContext`, SR-058). A team member then reads the organization line.
+   * on a Task an org assigned (its collaboration map, SR-058, SR-060). A team member then reads the organization line.
    */
   readonly inOrganization: boolean;
   readonly authoredEnclosingScopeInstruction: string | null;

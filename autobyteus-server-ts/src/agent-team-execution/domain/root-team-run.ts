@@ -1,4 +1,3 @@
-import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
@@ -102,9 +101,7 @@ export class RootTeamRun {
     publisher: TeamRunEventPublisher<TeamRunEvent>;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
-    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf">;
-    /** What the run reaches by address step 2: in its in-run set and its delegation placements (SR-059). */
-    reachableAgents: Pick<ReachableAgents, "stepTwoOf" | "delegationPlacementAt">;
+    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf" | "mapOf">;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -139,8 +136,9 @@ export class RootTeamRun {
     this.collaborators = new TeamRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
-      reached: async () => [...(await options.reachableAgents.stepTwoOf(createTeamRootExecutionIdentity(this.teamRunId)))?.values() ?? []],
-      reachedPlacementAt: (address) => options.reachableAgents.delegationPlacementAt(createTeamRootExecutionIdentity(this.teamRunId), address),
+      // SR-059, SR-060: what the run reaches by address step 2, from its collaboration map.
+      reached: async () => [...(await options.delegationTree.mapOf(createTeamRootExecutionIdentity(this.teamRunId)).stepTwo())?.values() ?? []],
+      reachedPlacementAt: (address) => options.delegationTree.mapOf(createTeamRootExecutionIdentity(this.teamRunId)).delegationPlacementAt(address),
     });
     this.delivery = new TeamRunMessageDelivery({
       rootTeamRunId: this.teamRunId,

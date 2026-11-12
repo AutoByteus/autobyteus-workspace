@@ -1,4 +1,3 @@
-import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegatedRunReference, DelegatedStopResult } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -89,9 +88,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     publisher: RootEventPublisher<StandaloneRootEvent>;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
-    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf">;
-    /** What the run reaches by address step 2: in its in-run set and its delegation placements (SR-059). */
-    reachableAgents: Pick<ReachableAgents, "stepTwoOf" | "delegationPlacementAt">;
+    /** The relationships between runs: its peer children, its own Task, and its collaboration map (step 2's reach, SR-060). */
+    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf" | "mapOf">;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     /** The run's own origin (a delegated run, from its Task entry's delegator; a run a peer started, its back-link). */
@@ -120,8 +118,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     }) : null;
     this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.hostRunId }, options.taskRecords) : null;
     this.collaborators = new StandaloneRootCollaborators({ admission: options.collaboratorAdmission, inheritedLaunch: () => this.inheritedLaunch, host,
-      reached: async () => [...(await options.reachableAgents.stepTwoOf(root))?.values() ?? []],
-      reachedPlacementAt: (address) => options.reachableAgents.delegationPlacementAt(root, address) });
+      reached: async () => [...(await options.delegationTree.mapOf(root).stepTwo())?.values() ?? []],
+      reachedPlacementAt: (address) => options.delegationTree.mapOf(root).delegationPlacementAt(address) });
     this.delivery = new StandaloneRootMessageDelivery({
       hostRunId: this.hostRunId, root, getIndex: () => this.index,
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),

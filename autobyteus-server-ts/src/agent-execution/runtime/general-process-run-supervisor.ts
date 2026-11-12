@@ -195,7 +195,7 @@ export class GeneralProcessRunSupervisor {
 
       const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
         input.agentTeamDefinitionService,
-        input.runCollaboration,
+        input.delegationTree,
       );
       const memoryLocationService = new AgentMemoryLocationService({
         memoryDir,
@@ -214,7 +214,6 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
         taskRecords: input.taskRecords,
         delegationTree: input.delegationTree,
-        reachableAgents: input.reachableAgents,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -259,7 +258,7 @@ export class GeneralProcessRunSupervisor {
       standaloneRootManager = new StandaloneAgentRunRootManager({
         memoryDir,
         definitions: input.agentDefinitionService,
-        runCollaboration: input.runCollaboration,
+        orgInstruction: async (orgDefinitionId) => (await input.agentOrgDefinitionService.getDefinitionById(orgDefinitionId))?.instructions?.trim() || null,
         host: {
           getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
           activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),
@@ -269,7 +268,6 @@ export class GeneralProcessRunSupervisor {
         rootDependencies: {
           taskRecords: input.taskRecords,
           delegationTree: input.delegationTree,
-          reachableAgents: input.reachableAgents,
           agentRunManager: generalAgentRunManager,
           collaboratorAdmission,
         },

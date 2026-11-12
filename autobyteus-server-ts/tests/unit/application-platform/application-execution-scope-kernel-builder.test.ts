@@ -1,4 +1,3 @@
-import { NOT_DELEGATED, reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const cutState = vi.hoisted(() => ({ cut: null as string | null }));
@@ -150,8 +149,7 @@ const createHarness = (input: {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
-    delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()),
-    runCollaboration: NOT_DELEGATED as never,
+    delegationTree: noDelegations(),
     taskRecords: openTaskRecords(),
   };
   return {

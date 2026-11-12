@@ -2,10 +2,6 @@ import path from "node:path";
 import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { ChildRowsStreams } from "../agent-collaboration/delegation/child-rows-streams.js";
 import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
-import { RunCollaborationContext } from "../agent-collaboration/delegation/run-collaboration-context.js";
-import type { AgentOrgDefinitionService } from "../agent-org-definition/services/agent-org-definition-service.js";
-import { CrossRunAddressResolution } from "../agent-collaboration/communication/cross-run-address-resolution.js";
-import { ReachableAgents } from "../agent-collaboration/communication/reachable-agents.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
@@ -70,10 +66,6 @@ const taskChangeMarks: ProjectChangeMarks = {
 export type TaskSide = Readonly<{
   resources: TaskExecutionResourceService;
   tree: DelegationTree;
-  /** A run's collaboration context derived from the tree (SR-058), asked by every kind's member context builder. */
-  runCollaboration: RunCollaborationContext;
-  /** What a run reaches by address step 2 (SR-059): its in-run set and step 2's resolution. */
-  reachableAgents: ReachableAgents;
   taskRecords: RunTaskRecords;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
@@ -82,28 +74,22 @@ export type TaskSide = Readonly<{
 /**
  * Steps 1–2 of the composition root (autobyteus-461 design "Dependency Rules And The Composition Root"; SR-047, SR-053):
  * the Task agent run resources of both Task roots, loaded once (after app-data migrations; a damaged file is non-fatal);
- * the `DelegationTree` built from them and set as their entries listener; the `RunCollaborationContext` derived from it
- * (SR-058); and the run side's `RunTaskRecords`. The run services (step 3) are created next, with these.
+ * the `DelegationTree` built from them and set as their entries listener (each run's collaboration map is derived from
+ * it, SR-060); and the run side's `RunTaskRecords`. The run services (step 3) are created next, with these.
  */
-export const composeTaskSide = async (input: Readonly<{
-  appDataDir: string;
-  memoryDir: string;
-  orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
-}>): Promise<TaskSide> => {
+export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memoryDir: string }>): Promise<TaskSide> => {
   const adHocTasksLayout = new AdHocTasksLayout(path.join(input.appDataDir, "ad-hoc-tasks"));
   const projectsLayout = new ProjectsLayout(path.join(input.appDataDir, "projects"));
   const resources = new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasksLayout));
   await resources.load();
   // The relationships between runs, from the Task records (TC-11); kept current inside each Task's ordered change
   // (AR-017). A run's agents are read from its own parts on the first need, never at startup (469 D-11).
-  const ownFiles = new RunOwnAgentsReader(input.memoryDir);
-  const tree = new DelegationTree(() => resources, ownFiles);
+  // The tree reads each run's own files (its parts, once; an org's and a configured placement, at use), and derives
+  // each run's collaboration map from them (SR-060).
+  const tree = new DelegationTree(() => resources, new RunOwnAgentsReader(input.memoryDir));
   tree.build();
   resources.setEntriesListener(tree);
-  const runCollaboration = new RunCollaborationContext({ tree, orgs: ownFiles,
-    orgInstruction: async (orgDefinitionId) => (await input.orgDefinitions.getDefinitionById(orgDefinitionId))?.instructions?.trim() || null });
-  const reachableAgents = new ReachableAgents({ tree: () => tree, placements: ownFiles });
-  return Object.freeze({ resources, tree, runCollaboration, reachableAgents, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
+  return Object.freeze({ resources, tree, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */
@@ -164,9 +150,9 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(() => getProjectChangePublisher().unbind());
 
     // 6. Delegation and messages between runs, through each run's own root (DS-1, DS-2; contract §2.3, §2.4).
-    const addresses = new CrossRunAddressResolution({ tree: () => tree, reachable: taskSide.reachableAgents });
+    // Every cross-run answer comes from the run's collaboration map (SR-060).
     const crossRun = new CrossRunMessageDelivery({
-      senderAddress: (message) => addresses.reachingAddress(message.sender, message.receiverRun),
+      senderAddress: (message) => tree.mapOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
       senderRoot: (run) => {
@@ -188,7 +174,7 @@ export const composeCollaboration = async (input: Readonly<{
         return resolved.root.acceptWorkPacket(packet);
       },
       recordCollaborating: (agentRunId, address) => runs.agentRunService.recordCollaborating(agentRunId, address),
-      reachingAddress: (sender, receiverRun) => addresses.reachingAddress(sender, receiverRun),
+      reachingAddress: (sender, receiverRun) => tree.mapOf(receiverRun).reachingAddressOf(sender),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);
@@ -221,7 +207,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
     releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
-      globalRouter: new GlobalAgentRunMessageRouter({ crossRun }), crossRunAddresses: addresses })));
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun }), tree })));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ tree })));
     releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree })));
     releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree })));

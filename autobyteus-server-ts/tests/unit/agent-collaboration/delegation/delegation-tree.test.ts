@@ -7,7 +7,8 @@ import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { TaskExecutionResourceService } from "../../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../../src/projects/stores/task-execution-resource-store.js";
-import { DelegationTree, type RunPartsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { RunFilesReader as RunPartsReader } from "../../../../src/agent-collaboration/delegation/run-collaboration-map.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { taskRunResources } from "../../../helpers/task-run-resources.js";
 
@@ -165,7 +166,7 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
   });
 
   it("D8: a peer's run is a node with its members from its entry, never read from a file, and never in the local subtree", async () => {
-    const reader = { partsOf: vi.fn(async () => null) };
+    const reader = { partsOf: vi.fn(async () => null), orgPlacementsOf: async () => null, configuredPlacementOf: async () => null };
     await boot({ T1: [{ role: "assigned", delegatedFrom: from("agent", M.rootRunId, M.rootRunId), recipientAddress: "/research_team",
       agentRun: team("research_team_77aa", "lead_0c11"), nodeId: "node-b-1f0e",
       members: [{ address: "/research_team/lead", agentRunId: "lead_0c11" }, { address: "/research_team/analyst", agentRunId: "analyst_5d20" }],

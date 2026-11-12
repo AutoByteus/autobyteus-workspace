@@ -1,7 +1,7 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import { catalogDefinitionKey, type CatalogDefinitionRef } from "./catalog-address-map.js";
-import type { ReachedPlacement } from "../communication/reachable-agents.js";
+import type { ReachedPlacement } from "../delegation/run-collaboration-map.js";
 
 /**
  * Where a definition is in the run, in address precedence order (AR-002): the run's own agent
@@ -57,7 +57,7 @@ export interface CollaboratorRootPort {
   addressesInUse(): Promise<ReadonlySet<string>>;
 }
 
-/** What a run reaches by address step 2, for its port (`ReachableAgents`); none for a run that works on no Task. */
+/** What a run reaches by address step 2, for its port (its collaboration map's `stepTwo`); none for a run that works on no Task. */
 export type ReachedPlacements = () => Promise<readonly ReachedPlacement[]>;
 export const NOTHING_REACHED: ReachedPlacements = async () => [];
 

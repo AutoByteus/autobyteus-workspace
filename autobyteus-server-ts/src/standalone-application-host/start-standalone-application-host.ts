@@ -240,8 +240,7 @@ export const startStandaloneApplicationHost = async (
       assertExecutionCapabilitiesReady: () => undefined,
     });
     // autobyteus-461 SR-047, SR-052: the same composition steps as the studio. Steps 1–2 here; 4–8 after the run services.
-    const taskSide = await composeTaskSide({ appDataDir: processResources.appConfig.getAppDataDir(), memoryDir: processResources.appConfig.getMemoryDir(),
-      orgDefinitions: hostDefinitionServices.agentOrgDefinitionService });
+    const taskSide = await composeTaskSide({ appDataDir: processResources.appConfig.getAppDataDir(), memoryDir: processResources.appConfig.getMemoryDir() });
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
@@ -265,7 +264,7 @@ export const startStandaloneApplicationHost = async (
         modelSelectionValidator,
         taskRecords: taskSide.taskRecords,
         delegationTree: taskSide.tree,
-        runCollaboration: taskSide.runCollaboration, reachableAgents: taskSide.reachableAgents,
+       
         // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
         platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
       });
@@ -279,7 +278,7 @@ export const startStandaloneApplicationHost = async (
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
       delegationTree: taskSide.tree,
-      runCollaboration: taskSide.runCollaboration, reachableAgents: taskSide.reachableAgents,
+     
       taskRecords: taskSide.taskRecords,
       contextFilePathEnvironment,
       bundleService,

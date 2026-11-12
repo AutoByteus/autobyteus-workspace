@@ -6,7 +6,8 @@ import {
   bindProcessStandaloneAgentRunRootManager,
   releaseProcessStandaloneAgentRunRootManager,
 } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { DelegationTree, type RunPartsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { RunFilesReader as RunPartsReader } from "../../../../src/agent-collaboration/delegation/run-collaboration-map.js";
 import { LocalChildFollowers } from "../../../../src/agent-collaboration/execution/delegation/local-child-followers.js";
 import { createAgentOrgRootExecutionIdentity, createAgentRootExecutionIdentity, createTeamRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RunViewChildren } from "../../../../src/services/agent-streaming/run-view-children.js";
@@ -31,7 +32,7 @@ const agentsByRun: Record<string, { agentRunId: string; address: string | null; 
 };
 const fixture = async () => {
   const reads: string[] = [];
-  const reader: RunPartsReader = { partsOf: async (run) => {
+  const reader: RunPartsReader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: async (run) => {
     reads.push(run.rootRunId);
     const agents = agentsByRun[run.rootRunId];
     return agents ? { agents, coordinatorAddress: null, mountedTeams: [] } : null;

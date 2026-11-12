@@ -1,13 +1,12 @@
-import { reachableAgentsOf } from "../../../helpers/run-collaboration.js";
 import { describe, expect, it } from "vitest";
-import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
 import { DelegationTree, type RunParts, type RunStanding } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
-import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { createCollaborationMemberExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /**
  * autobyteus-461 contract §2.3 (`model.py` `resolve`), the address cases B-1 … B-5, C-1 … C-4, A-5, A-6, and §2.5
- * (`reaching_address`). The sender's root resolves steps 1 and 3; this is what follows its miss: step 2 (the standing
+ * (`reaching_address`), from the run's collaboration map (SR-060). The sender's root resolves steps 1 and 3; this is
+ * what follows its miss: step 2 (the standing
  * agents of the runs that assigned the sender run's Tasks) and, after it, the old-address correction (SR-036, ARCH-REV-011).
  * M assigned T1 to the engineering team E (delegated as /software_engineering_team); E's designer handed sub-work of T1
  * to the product team P; the org assigned T4 to the study group S; a member of the user's team U assigned T3 to H;
@@ -42,7 +41,7 @@ const sender = (root: RootExecutionIdentity, memberAddress: string, agentRunId: 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
   const reads: string[] = [];
-  const tree = new DelegationTree(() => tasks, { partsOf: async (r) => {
+  const tree = new DelegationTree(() => tasks, { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, partsOf: async (r) => {
     reads.push(r.rootRunId);
     return STANDING[r.rootRunId] ? partsOf(STANDING[r.rootRunId]!) : null;
   } });
@@ -56,7 +55,11 @@ const harness = async () => {
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/study_group", delegatedFrom: from(ORG, "ceo"), execution: { teamRunId: "study" }, teamCoordinatorAgentRunId: "tutor" });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T3", recipientAddress: "/helper", delegatedFrom: from(U, "u_designer"), execution: { agentRunId: "helper" } });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T5", recipientAddress: "/dev_team", delegatedFrom: from(ORG, "ceo"), execution: { teamRunId: "xteam" }, teamCoordinatorAgentRunId: "x_lead" });
-  const resolution = new CrossRunAddressResolution({ tree: () => tree, reachable: reachableAgentsOf(tree) });
+  // Step 2 and the correction: the sender's map; the sender address shown: the receiver's map.
+  const resolution = {
+    resolve: (sender: CollaborationMemberExecutionIdentity, address: string) => tree.mapOf(sender.root).resolve(address),
+    reachingAddress: (sender: CollaborationMemberExecutionIdentity, receiver: RootExecutionIdentity) => tree.mapOf(receiver).reachingAddressOf(sender),
+  };
   return { tasks, resolution, reads };
 };
 

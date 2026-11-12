@@ -72,7 +72,6 @@ const createSupervisorInput = () => {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
     delegationTree: noDelegations(),
-    runCollaboration: NOT_DELEGATED as never,
   };
 };
 

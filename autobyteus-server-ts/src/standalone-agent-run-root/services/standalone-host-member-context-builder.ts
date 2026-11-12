@@ -12,18 +12,20 @@ import {
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
-import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
+import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 
 
 /**
  * Builds the host member context of an eligible standalone run; its root passes it to the host's
- * activation. Its role, and an org copy's handoff rules and instruction, come from `RunCollaborationContext`. Tool calls resolve the run's active root at call time, so a root that is replaced
+ * activation. Its role, and an org copy's handoff rules and instruction, come from the run's collaboration map. Tool calls resolve the run's active root at call time, so a root that is replaced
  * (after a fail-stop) or stopped answers for itself.
  */
 export class StandaloneHostMemberContextBuilder {
   constructor(private readonly options: Readonly<{
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
-    runCollaboration: Pick<RunCollaborationContext, "ofAgentRun">;
+    /** The run's collaboration map: a task agent when delegated, and what an org copy inherits (SR-058, SR-060). */
+    tree: Pick<DelegationTree, "mapOf">;
+    orgInstruction(orgDefinitionId: string): Promise<string | null>;
     getActiveRoot(hostRunId: string): StandaloneAgentRunRoot | null;
     readStoredHostAddress(hostRunId: string): Promise<AgentTeamAddress | null>;
   }>) {}
@@ -45,13 +47,14 @@ export class StandaloneHostMemberContextBuilder {
       agentRunId: metadata.runId,
     });
     // SR-058: a delegated run's agent is a task agent; a copy of an org's configured agent keeps its rules and instruction.
-    const collaboration = await this.options.runCollaboration.ofAgentRun(metadata.runId);
+    const collaboration = await this.options.tree.mapOf(root).agentCollaboration();
+    const instruction = collaboration.placement ? await this.options.orgInstruction(collaboration.placement.orgDefinitionId) : null;
     return new MemberExecutionContext({
       identity,
       teamScoped: collaboration.placement !== null,
       collaborationRole: collaboration.role,
       inOrganization: false,
-      authoredEnclosingScopeInstruction: collaboration.placement?.instruction ?? null,
+      authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
         outgoingHandoffs: collaboration.placement?.handoffs ?? [],
         deliverLogicalMessage: async (message) => {

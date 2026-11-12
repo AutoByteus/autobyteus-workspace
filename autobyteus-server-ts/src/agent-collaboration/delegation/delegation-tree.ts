@@ -1,9 +1,10 @@
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import {
-  runIdentityOf,
+  runIdentityOf, runReferenceOf,
   type PeerRunMember, type RunDelegatedFrom, type TaskEntriesListener, type TaskExecutionResourcePort, type TaskRunEntry,
 } from "../execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
+import { RunCollaborationMap, type RunFilesReader } from "./run-collaboration-map.js";
 
 /**
  * An agent of a run: its run, its address in the run's own space (`null`: an agent run not yet collaborating), and its
@@ -58,10 +59,6 @@ export type ChildRowsChange = Readonly<{
 
 type Source = Pick<TaskExecutionResourcePort, "taskIdsWithEntries" | "entriesOf">;
 const keyOf = rootExecutionIdentityKey;
-const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
-/** The model's order of runs: (kind, run ID), by code point. */
-const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
-  compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
 const newest = (entries: readonly TaskRunEntry[]): TaskRunEntry | undefined =>
   entries.reduce<TaskRunEntry | undefined>((best, entry) => !best || entry.linkedAt > best.linkedAt
     || (entry.linkedAt === best.linkedAt && entry.taskId > best.taskId) ? entry : best, undefined);
@@ -101,7 +98,44 @@ export class DelegationTree implements TaskEntriesListener {
   private readonly listeners = new Set<() => void>();
   private readonly childRowsListeners = new Set<(change: ChildRowsChange) => void>();
 
-  constructor(private readonly source: () => Source, private readonly reader: RunPartsReader) {}
+  constructor(private readonly source: () => Source, private readonly reader: RunFilesReader) {}
+
+  /** A run's collaboration map (SR-060): every cross-run answer for it, derived now, never stored. */
+  mapOf(run: RootExecutionIdentity): RunCollaborationMap {
+    return new RunCollaborationMap(this, this.reader, run);
+  }
+
+  /** `byRunId` (contract §4): a run's node, `null` for a run no Task names (nor names as delegating run). */
+  nodeOf(run: RootExecutionIdentity): Readonly<{ run: RootExecutionIdentity; parent: RunDelegatedFrom | null; top: RootExecutionIdentity; tasks: readonly TaskRunEntry[] }> | null {
+    const known = this.nodes.get(keyOf(run));
+    if (!known) return null;
+    const reference = runReferenceOf(known);
+    return Object.freeze({ run: known, parent: reference ? this.parentOf(reference) : null, top: this.topOf(known), tasks: reference ? this.tasksOf(reference) : [] });
+  }
+
+  /**
+   * The run at the top of a run's tree (contract §4): derived by walking up its parents, never stored (ARCH-REV-035).
+   * A run whose parent is not a node (its own entries were deleted with their Task) is the top of a tree of its own.
+   */
+  topOf(run: RootExecutionIdentity): RootExecutionIdentity {
+    const seen = new Set<string>();
+    let current = run;
+    for (;;) {
+      seen.add(keyOf(current));
+      const reference = runReferenceOf(current);
+      const parent = reference ? this.parentOf(reference)?.delegatingRun : undefined;
+      if (!parent || seen.has(keyOf(parent))) return current;
+      current = parent;
+    }
+  }
+
+  /** `byAgentRunId` (contract §4): the run an agent run is in, its address in that run's own space, and its tree's top. */
+  async agentOf(agentRunId: string): Promise<Readonly<{ run: RootExecutionIdentity; address: string | null; top: RootExecutionIdentity }> | null> {
+    const run = await this.runOfAgent(agentRunId);
+    if (!run) return null;
+    const address = (await this.agentsOf(run)).find((agent) => agent.agentRunId === agentRunId.trim())?.address ?? null;
+    return Object.freeze({ run, address, top: this.topOf(run) });
+  }
 
   /** The whole tree from the loaded Task records. */
   build(): void {
@@ -190,22 +224,6 @@ export class DelegationTree implements TaskEntriesListener {
     const runs = new Map<string, RootExecutionIdentity>();
     for (const entry of this.byTask.get(taskId) ?? []) {
       if (entry.role === "assigned") runs.set(keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun);
-    }
-    return [...runs.values()];
-  }
-
-  /**
-   * The runs that assigned this run's Tasks, as address step 2 reads them (contract §2.3, `model.py` `resolve`): its open
-   * Tasks in Task-ID order, else all its Tasks; each Task's assigners in run order; each run once. Empty for a run no
-   * Task names.
-   */
-  assignersOfTasksOf(run: TaskExecutionReference): readonly RootExecutionIdentity[] {
-    const entries = this.tasksOf(run);
-    const open = [...new Set(entries.filter((entry) => entry.open).map((entry) => entry.taskId))].sort();
-    const taskIds = open.length ? open : [...new Set(entries.map((entry) => entry.taskId))].sort();
-    const runs = new Map<string, RootExecutionIdentity>();
-    for (const taskId of taskIds) {
-      for (const assigner of [...this.assignersOf(taskId)].sort(byRun)) if (!runs.has(keyOf(assigner))) runs.set(keyOf(assigner), assigner);
     }
     return [...runs.values()];
   }

@@ -1,4 +1,3 @@
-import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -91,8 +90,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     memoryDir: string;
     host: StandaloneRootHostServices;
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
-    /** What a run's own agent is (a task agent when delegated) and what an org copy inherits (SR-058). */
-    runCollaboration: Pick<RunCollaborationContext, "ofAgentRun">;
+    /** An org definition's authored instruction, read fresh: an org copy reads its org's (SR-058). */
+    orgInstruction(orgDefinitionId: string): Promise<string | null>;
     rootDependencies: Omit<StandaloneRootBuilderDependencies, "packageStore">;
     packageStore?: StandaloneRootPackageStore;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -103,7 +102,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     this.roots = new StandaloneRootBuilder({ ...options.rootDependencies, packageStore: this.store });
     this.hostContexts = new StandaloneHostMemberContextBuilder({
       definitions: options.definitions,
-      runCollaboration: options.runCollaboration,
+      tree: options.rootDependencies.delegationTree,
+      orgInstruction: options.orgInstruction,
       getActiveRoot: (hostRunId) => this.getActive(hostRunId),
       readStoredHostAddress: async (hostRunId) => (await this.options.host.readMetadata(hostRunId))?.address ?? null, // contract §3.3
     });

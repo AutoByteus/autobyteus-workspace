@@ -1,4 +1,3 @@
-import { reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import "reflect-metadata";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
@@ -197,7 +196,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     try {
       AgentTeamRunManager.getInstance();
     } catch {
-      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,

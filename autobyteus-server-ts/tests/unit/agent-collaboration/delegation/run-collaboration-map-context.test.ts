@@ -1,12 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
-import { RunCollaborationContext } from "../../../../src/agent-collaboration/delegation/run-collaboration-context.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
+import { readerOfAgents } from "../../../helpers/run-agents-reader.js";
 
 /**
- * autobyteus-461 SR-058 (CR-461-030): a delegated run's collaboration context, derived from the tree, as hosting gave it
+ * autobyteus-461 SR-058 (CR-461-030), SR-060: a delegated run's collaboration context, from its collaboration map, as hosting gave it
  * at base: a delegated agent run's agent is a task agent; a copy of an org's configured agent keeps that address's
  * handoff rules and the org's instruction; a run whose Task an org assigned has the organization line.
  */
@@ -19,12 +18,14 @@ const handoffs = [
 
 const harness = () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
-  tree.build(); tasks.setEntriesListener(tree);
   const orgPlacementsOf = vi.fn(async (orgRunId: string) => orgRunId === "org"
     ? { orgDefinitionId: "org-def", agentAddresses: ["/manager", "/sibling"], handoffs } : null);
-  const orgInstruction = vi.fn(async (id: string) => id === "org-def" ? "Organization instruction." : null);
-  const context = new RunCollaborationContext({ tree, orgs: { orgPlacementsOf }, orgInstruction });
+  const tree = new DelegationTree(() => tasks, readerOfAgents(async () => null, { orgPlacementsOf }));
+  tree.build(); tasks.setEntriesListener(tree);
+  const context = {
+    ofAgentRun: (agentRunId: string) => tree.mapOf({ rootSubjectKind: "agent", rootRunId: agentRunId }).agentCollaboration(),
+    inOrganization: (run: RootExecutionIdentity) => tree.mapOf(run).inOrganization(),
+  };
   const added = new Set<string>();
   const delegate = (taskId: string, by: RootExecutionIdentity, recipientAddress: string, execution: { agentRunId: string } | { teamRunId: string }, role: "assigned" | "subWork" = "assigned") => {
     if (!added.has(taskId)) { added.add(taskId); tasks.addTask(taskId); }
@@ -49,11 +50,11 @@ describe("RunCollaborationContext", () => {
     await expect(h.context.ofAgentRun("org-outsider")).resolves.toEqual({ role: "task_agent", placement: null });
   });
 
-  it("a copy of an org's configured agent keeps that address's handoff rules and the org's instruction, read at use", async () => {
+  it("a copy of an org's configured agent keeps that address's handoff rules and reads the org's instruction, read at use", async () => {
     const h = harness();
     await h.delegate("T1", ORG, "/sibling", { agentRunId: "sibling-copy" });
     await expect(h.context.ofAgentRun("sibling-copy")).resolves.toEqual({ role: "task_agent",
-      placement: { handoffs: [handoffs[0]], instruction: "Organization instruction." } });
+      placement: { handoffs: [handoffs[0]], orgDefinitionId: "org-def" } });
     expect(h.orgPlacementsOf).toHaveBeenCalledWith("org");
     // The same address delegated by an agent run is not a placement of an org.
     await h.delegate("T2", AGENT, "/sibling", { agentRunId: "agent-sibling" });

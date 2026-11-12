@@ -5,7 +5,6 @@ import type { AgentRunManager } from "../../src/agent-execution/services/agent-r
 import type { StandaloneAgentRunLifecycleService } from "../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentRunMetadataService } from "../../src/run-history/services/agent-run-metadata-service.js";
 import { StandaloneAgentRunRootManager } from "../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { NOT_DELEGATED, reachableAgentsOf } from "../helpers/run-collaboration.js";
 
 /**
  * The standalone run roots of a test process, composed as the general process run supervisor
@@ -23,14 +22,14 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
     memoryDir: input.memoryDir,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
     definitions: { getAgentDefinitionById: async () => null },
-    runCollaboration: NOT_DELEGATED,
+    orgInstruction: async () => null,
     host: {
       getActiveRun: (hostRunId) => input.agentRunManager.getActiveRun(hostRunId),
       activateHost: (hostRunId, activation) => input.lifecycleService.activateHost(hostRunId, activation),
       terminateHost: (hostRunId) => input.lifecycleService.terminateHost(hostRunId),
       readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
     },
-    rootDependencies: { delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
+    rootDependencies: { delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
         isAgentHidden: () => false,

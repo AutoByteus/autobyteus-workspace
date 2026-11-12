@@ -1,4 +1,3 @@
-import type { ReachableAgents } from "../../agent-collaboration/communication/reachable-agents.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { recordRunProjectStart } from "../../agent-execution/domain/run-project-context.js";
 import { isDeepStrictEqual } from "node:util";
@@ -49,8 +48,6 @@ export type AgentTeamRunManagerOptions = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationTree: DelegationTree;
-  /** What a run reaches by address step 2 (SR-059). */
-  reachableAgents: Pick<ReachableAgents, "stepTwoOf" | "delegationPlacementAt">;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationStore;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -68,7 +65,6 @@ export class AgentTeamRunManager {
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskRecords: RunTaskRecords;
   private readonly delegationTree: DelegationTree;
-  private readonly reachableAgents: Pick<ReachableAgents, "stepTwoOf" | "delegationPlacementAt">;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
@@ -113,7 +109,6 @@ export class AgentTeamRunManager {
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskRecords = options.taskRecords;
     this.delegationTree = options.delegationTree;
-    this.reachableAgents = options.reachableAgents;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
     this.modelSelectionValidator = options.modelSelectionValidator;
@@ -383,7 +378,6 @@ export class AgentTeamRunManager {
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
       taskRecords: this.taskRecords,
       delegationTree: this.delegationTree,
-      reachableAgents: this.reachableAgents,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
     } as const;

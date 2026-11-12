@@ -1,4 +1,3 @@
-import { reachableAgentsOf } from "../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -158,7 +157,7 @@ beforeEach(async () => {
       grokBackendFactory: {} as never, deepSeekHarnessBackendFactory: {} as never, activationRegistry: { getActiveRun: () => null } as never,
       memoryRecorder: {} as never, providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, agentToolMcpRunSessionDeactivator: {} as never, runPasses: null,
     }),
-    teams: AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), reachableAgents: reachableAgentsOf(noDelegations()), taskRecords: openTaskRecords(),
+    teams: AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: path.join(mocks.dirs.root, "memory"), flatTeamExecutionFactory: {} as never, memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never }),
     orgs: AgentOrgRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),

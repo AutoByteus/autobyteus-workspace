@@ -1,0 +1,229 @@
+import type { CatalogDefinitionRef } from "../collaborators/catalog-address-map.js";
+import { sourcedPlacement, type DelegationPlacement } from "../collaborators/catalog-delegation.js";
+import { configuredPlacementSource } from "../collaborators/collaborator-source-projector.js";
+import type { AgentTeamAddress } from "../domain/agent-team-address.js";
+import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
+import type { CollaborationHandoff } from "../domain/collaboration-handoff.js";
+import { rootExecutionIdentityKey, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import { runIdentityOf, runReferenceOf } from "../execution/task/task-execution-resource-port.js";
+import type { ConfiguredAgentExecutionNode, ConfiguredTeamExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegatedChild, DelegationTree, RunPartsReader } from "./delegation-tree.js";
+
+/** An org run's configured placements, from its own file: its definition, its direct agents' addresses, its handoffs. */
+export type OrgPlacements = Readonly<{ orgDefinitionId: string; agentAddresses: readonly string[]; handoffs: readonly CollaborationHandoff[] }>;
+
+/** A team's or org's configured placement at an address, from its own file, with the run's handoffs. */
+export type ConfiguredPlacement = Readonly<{
+  node: ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
+  handoffs: readonly CollaborationHandoff[];
+}>;
+
+/**
+ * Reads what a run's own file says (`null`: no file): its parts (the tree keeps them), an org's placements and a
+ * configured placement at an address (read at use by the map). Created by the composition; run-history owns the files.
+ */
+export interface RunFilesReader extends RunPartsReader {
+  orgPlacementsOf(orgRunId: string): Promise<OrgPlacements | null>;
+  configuredPlacementOf(run: RootExecutionIdentity, address: string): Promise<ConfiguredPlacement | null>;
+}
+
+/**
+ * One agent or team a run reaches by address step 2 (contract §2.3): at its address in an assigner's run, the agent
+ * run that receives a message there, its definition (`null` when unknown), and its rank, as at base for a hosted copy:
+ * an agent run's own agent (an agent the user started) is `run_agent`; a team's or org's configured placement is
+ * `configured`.
+ */
+export type ReachedPlacement = Readonly<{
+  address: AgentTeamAddress;
+  agentRunId: string;
+  ref: CatalogDefinitionRef | null;
+  rank: "run_agent" | "configured";
+  assigner: RootExecutionIdentity;
+}>;
+
+/** What an agent run's own agent is for the prompt it reads, and what a copy of an org's configured agent inherits. */
+export type AgentRunCollaboration = Readonly<{
+  /** `task_agent`: another run delegated this run (its `delegatedFrom`); `standalone_agent`: the user started it. */
+  role: "standalone_agent" | "task_agent";
+  /** A copy of an org's configured agent: that address's handoff rules and the org definition whose instruction it reads. */
+  placement: Readonly<{ handoffs: readonly CollaborationHandoff[]; orgDefinitionId: string }> | null;
+}>;
+
+/** One row under a run (its open subtree, CR-461-033): the delegated run, and the run that delegated it. */
+export type SubtreeRow = DelegatedChild & Readonly<{ parent: RootExecutionIdentity }>;
+
+type MapTree = Pick<DelegationTree, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf">;
+
+const NO_LONGER = (address: string) => `${address} is no longer an address: your team is addressed from its own root.`;
+const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
+/** The model's order of runs: (kind, run ID), by code point. */
+const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
+  compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
+
+/**
+ * A run's collaboration map (autobyteus-461 SR-060, contract §4): every cross-run answer for one run, derived from the
+ * `DelegationTree` when asked (`delegationTree.mapOf(run)`), never stored. It works whether or not the run is loaded:
+ * it reads only the tree's nodes, their per-run agents (read once) and, at use, the runs' own files. The questions
+ * about a run's own parts (its members, its own addresses, steps 1 and 3) stay with its own index.
+ */
+export class RunCollaborationMap {
+  constructor(private readonly tree: MapTree, private readonly files: Pick<RunFilesReader, "orgPlacementsOf" | "configuredPlacementOf">, readonly run: RootExecutionIdentity) {}
+
+  /**
+   * The runs that assigned this run's Tasks, in step 2's order (contract §2.3, `model.py` `resolve`): its open Tasks in
+   * Task-ID order, else all its Tasks; each Task's assigners in run order; each run once. Empty for a run no Task names.
+   */
+  assigners(): readonly RootExecutionIdentity[] {
+    const entries = this.entries();
+    const open = [...new Set(entries.filter((entry) => entry.open).map((entry) => entry.taskId))].sort();
+    const taskIds = open.length ? open : [...new Set(entries.map((entry) => entry.taskId))].sort();
+    const runs = new Map<string, RootExecutionIdentity>();
+    for (const taskId of taskIds) {
+      for (const assigner of [...this.tree.assignersOf(taskId)].sort(byRun)) runs.set(rootExecutionIdentityKey(assigner), runs.get(rootExecutionIdentityKey(assigner)) ?? assigner);
+    }
+    return [...runs.values()];
+  }
+
+  /**
+   * Reach by step 2, by address, in its order (the first assigner with an address wins it); `null` when the run works
+   * on no Task (step 2 does not apply). The one enumeration: the message route, the `@` note, `list_available_agents`,
+   * `delegate_task`'s in-run placements and the addresses in use all read it.
+   */
+  async stepTwo(): Promise<ReadonlyMap<string, ReachedPlacement> | null> {
+    if (!this.entries().length) return null;
+    const reached = new Map<string, ReachedPlacement>();
+    for (const assigner of this.assigners()) {
+      const standing = await this.tree.standingOf(assigner);
+      if (!standing) continue;
+      const agents = new Map((await this.tree.agentsOf(assigner)).map((agent) => [agent.agentRunId, agent]));
+      for (const [address, agentRunId] of standing.agents) {
+        if (reached.has(address)) continue;
+        const agent = agents.get(agentRunId);
+        reached.set(address, Object.freeze({ address: address as AgentTeamAddress, agentRunId, assigner,
+          rank: assigner.rootSubjectKind === "agent" ? "run_agent" as const : "configured" as const,
+          // An agent at its own address; else an org's mounted team, whose address its coordinator answers.
+          ref: agent?.address === address
+            ? (agent.agentDefinitionId ? Object.freeze({ kind: "agent" as const, definitionId: agent.agentDefinitionId }) : null)
+            : await this.teamRefOf(assigner, address) }));
+      }
+    }
+    return reached;
+  }
+
+  /**
+   * Steps 1 and 3 from the run's own file (the file a loaded root's own index is built from, so the two agree): the
+   * agent run a message to `address` reaches in this run; a team address answers by its coordinator. `null`: none.
+   */
+  async ownReceiverOf(address: string): Promise<string | null> {
+    return (await this.tree.standingOf(this.run))?.agents.get(address) ?? null;
+  }
+
+  /**
+   * `send_message_to(address)` beyond the run's own steps (its root resolved steps 1 and 3): step 2's receiver; then,
+   * for a team run, the correction of an address under the name the team was delegated to (refused with the address
+   * to use, SR-036). `null` when step 2 does not apply or reaches no agent there.
+   */
+  async resolve(address: string): Promise<string | null> {
+    const reached = await this.stepTwo();
+    if (!reached) return null;
+    const found = reached.get(address)?.agentRunId;
+    if (found) return found;
+    if (this.run.rootSubjectKind === "agent_team") await this.correct(address);
+    return null;
+  }
+
+  /**
+   * The sender's own address as this run (the receiver) may use it (contract §2.5, `model.py` `reaching_address`): only
+   * when this run's resolution of it reaches the sender. Its own run's addresses come first, so an address its own run
+   * has never reaches another run.
+   */
+  async reachingAddressOf(sender: CollaborationMemberExecutionIdentity): Promise<string | null> {
+    const own = sender.memberAddress as string;
+    if (await this.ownReceiverOf(own)) return null;
+    return (await this.stepTwo())?.get(own)?.agentRunId === sender.agentRunId ? own : null;
+  }
+
+  /**
+   * `delegate_task`'s placement at a configured placement step 2 reaches: a copy that starts from that placement's
+   * snapshot, as base answered a hosted copy; `null` for any other address (an agent run's own agent is none).
+   */
+  async delegationPlacementAt(address: AgentTeamAddress): Promise<DelegationPlacement | null> {
+    const reached = (await this.stepTwo())?.get(address);
+    const found = reached?.rank === "configured" ? await this.files.configuredPlacementOf(reached.assigner, address) : null;
+    return found ? sourcedPlacement(address, configuredPlacementSource(found.node, found.handoffs)) : null;
+  }
+
+  /**
+   * The collaboration context of an agent run's own agent (SR-058): a task agent when another run delegated it; a copy
+   * of an org's configured agent keeps that address's handoff rules and reads the org's instruction.
+   */
+  async agentCollaboration(): Promise<AgentRunCollaboration> {
+    const reference = runReferenceOf(this.run);
+    const entry = reference ? this.tree.currentTaskOf(reference) : null;
+    if (!entry) return Object.freeze({ role: "standalone_agent", placement: null });
+    const delegatingRun = entry.delegatedFrom.delegatingRun;
+    const org = delegatingRun.rootSubjectKind === "agent_org" ? await this.files.orgPlacementsOf(delegatingRun.rootRunId) : null;
+    const address = entry.recipientAddress;
+    return Object.freeze({ role: "task_agent", placement: org && org.agentAddresses.includes(address)
+      ? Object.freeze({ handoffs: Object.freeze(org.handoffs.filter((handoff) => handoff.from === address)), orgDefinitionId: org.orgDefinitionId })
+      : null });
+  }
+
+  /** The organization line: the run works on a Task an org assigned, exactly when step 2 reaches the org. */
+  inOrganization(): boolean {
+    return this.assigners().some((assigner) => assigner.rootSubjectKind === "agent_org");
+  }
+
+  /**
+   * The rows under the run (CR-461-033): its open subtree, each row with the run that delegated it, in delegation
+   * order with each run's own rows after it. A peer's run is a row of its own; its delegations live on its node.
+   */
+  rows(): readonly SubtreeRow[] {
+    const rows: SubtreeRow[] = [];
+    const seen = new Set<string>([rootExecutionIdentityKey(this.run)]);
+    const visit = (parent: RootExecutionIdentity): void => {
+      for (const child of this.tree.openChildrenOf(parent)) {
+        const key = rootExecutionIdentityKey(runIdentityOf(child.run));
+        if (seen.has(key)) continue;
+        seen.add(key);
+        rows.push(Object.freeze({ ...child, parent }));
+        if (child.nodeId === undefined) visit(runIdentityOf(child.run));
+      }
+    };
+    visit(this.run);
+    return rows;
+  }
+
+  /** Contract §10.2: whether this run and `other` may message each other. */
+  canMessage(other: RootExecutionIdentity): boolean { return this.tree.canMessage(this.run, other); }
+
+  /** Every local run below this run, open or closed (token totals, the restart notice). */
+  subtree() { return this.tree.subtreeOf(this.run); }
+
+  private entries() {
+    const reference = runReferenceOf(this.run);
+    return reference ? this.tree.tasksOf(reference) : [];
+  }
+
+  /** A mounted team's definition, from its org's own file. */
+  private async teamRefOf(assigner: RootExecutionIdentity, address: string): Promise<CatalogDefinitionRef | null> {
+    if (assigner.rootSubjectKind !== "agent_org") return null;
+    const placement = await this.files.configuredPlacementOf(assigner, address);
+    return placement && !("agentRunId" in placement.node) ? Object.freeze({ kind: "agent_team", definitionId: placement.node.teamDefinitionId }) : null;
+  }
+
+  private async correct(address: string): Promise<void> {
+    const prefixes = [...new Set(this.entries().map((entry) => entry.recipientAddress))].sort();
+    const own = await this.tree.standingOf(this.run);
+    for (const prefix of prefixes) {
+      if (address === prefix && own?.coordinatorAddress) {
+        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND",
+          `${NO_LONGER(address)} Your team as a whole has no address; its coordinator is ${own.coordinatorAddress}.`);
+      }
+      const rest = address.slice(prefix.length);
+      if (address.startsWith(`${prefix}/`) && own?.agents.has(rest)) {
+        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `${NO_LONGER(address)} Use ${rest}.`);
+      }
+    }
+  }
+}

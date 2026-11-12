@@ -42,7 +42,7 @@ const createDispatcher = (globalResult = {
   } as unknown as GlobalAgentRunMessageRouter;
   return {
     globalRouter,
-    dispatcher: new SendMessageToDispatcher({ crossRunAddresses: { resolve: async () => null }, globalRouter }),
+    dispatcher: new SendMessageToDispatcher({ tree: { mapOf: () => ({ resolve: async () => null }) } as never, globalRouter }),
   };
 };
 
@@ -114,18 +114,21 @@ describe("AutoByteus server-owned send_message_to", () => {
     const toolWith = (resolve: (identity: unknown, address: string) => Promise<string | null>) => {
       const memberExecutionContext = createMemberExecutionContext(vi.fn(async () => notFound()));
       const globalRouter = { deliver: vi.fn(async () => ({ accepted: true, code: "DELIVERED", message: "Delivered message to /project_task_manager.", agentRunId: "manager" })) };
-      const crossRunAddresses = { resolve: vi.fn(resolve) };
-      const dispatcher = new SendMessageToDispatcher({ globalRouter: globalRouter as unknown as GlobalAgentRunMessageRouter, crossRunAddresses });
+      // The sender's collaboration map resolves beyond its own run (SR-060).
+      const map = { resolve: vi.fn((address: string) => resolve(undefined, address)) };
+      const mapOf = vi.fn(() => map);
+      const dispatcher = new SendMessageToDispatcher({ globalRouter: globalRouter as unknown as GlobalAgentRunMessageRouter, tree: { mapOf } as never });
       const tool = createBoundAutoByteusSendMessageToTool(buildAgentRunMessageSenderContext({ senderRunId: "run-professor", senderName: "professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS, memberExecutionContext }), dispatcher);
-      return { tool, globalRouter, crossRunAddresses, memberExecutionContext };
+      return { tool, globalRouter, map, mapOf, memberExecutionContext };
     };
 
     it("B-1: step 2 finds the assigner's agent; the message goes between the two runs, shown as the address written", async () => {
       const h = toolWith(async () => "manager");
       const result = parseEnvelope(await h.tool.execute({}, { recipient_address: "/project_task_manager", content: "Done." }));
       expect(result).toEqual({ accepted: true, code: "DELIVERED", message: "Delivered message to /project_task_manager.", target_agent_run_id: "manager" });
-      expect(h.crossRunAddresses.resolve).toHaveBeenCalledWith(h.memberExecutionContext.identity, "/project_task_manager");
+      expect(h.mapOf).toHaveBeenCalledWith(h.memberExecutionContext.identity.root);
+      expect(h.map.resolve).toHaveBeenCalledWith("/project_task_manager");
       expect(h.globalRouter.deliver).toHaveBeenCalledWith(expect.objectContaining({ targetAgentRunId: "manager", content: "Done.", shownAs: "/project_task_manager" }));
     });
 

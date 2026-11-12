@@ -1,9 +1,8 @@
-import { reachableAgentsOf } from "../../../helpers/run-collaboration.js";
 import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
-import { CrossRunAddressResolution } from "../../../../src/agent-collaboration/communication/cross-run-address-resolution.js";
 import { describe, expect, it, vi } from "vitest";
 import { acceptWorkPacketIfAllowed, TaskDelegation, type LocalDelegationPlacement, type WorkPacket } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
-import { DelegationTree, type RunPartsReader } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { RunFilesReader } from "../../../../src/agent-collaboration/delegation/run-collaboration-map.js";
 import { DelegatedRunStartError } from "../../../../src/agent-collaboration/execution/delegation/delegated-run-starter.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
@@ -18,7 +17,7 @@ const agentPlacement: LocalDelegationPlacement = { kind: "agent", address: "/ima
 const teamPlacement: LocalDelegationPlacement = { kind: "agent_team", address: "/product_team" as never, coordinatorAddress: "/product_team/designer" as never,
   source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" as never, members: [], handoffs: [], defaultLaunchConfiguration: launch } };
 
-const harness = (reader: RunPartsReader = NO_RUN_PARTS) => {
+const harness = (reader: RunFilesReader = NO_RUN_PARTS) => {
   const tasks = new InMemoryTaskExecutionResources();
   const tree = new DelegationTree(() => tasks, reader);
   tree.build();
@@ -28,10 +27,9 @@ const harness = (reader: RunPartsReader = NO_RUN_PARTS) => {
   const deliverWorkPacket = vi.fn(async (_run: unknown, _packet: WorkPacket) => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string });
   const discard = vi.fn(async () => undefined);
   const recordCollaborating = vi.fn(async () => undefined);
-  const addresses = new CrossRunAddressResolution({ tree: () => tree, reachable: reachableAgentsOf(tree) });
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
     deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
-    reachingAddress: (sender, receiverRun) => addresses.reachingAddress(sender, receiverRun) });
+    reachingAddress: (sender, receiverRun) => tree.mapOf(receiverRun).reachingAddressOf(sender) });
   const folders: (string | null)[] = [];
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
@@ -41,7 +39,7 @@ const harness = (reader: RunPartsReader = NO_RUN_PARTS) => {
 
 /**
  * CR-461-031 (contract §2.5, §5.4.3 E-4): the work packet's sender address is the one the new run can reach the sender
- * by, from one owner (`CrossRunAddressResolution.reachingAddress`) for every delegator kind: the assigner's address when
+ * by, from one owner (the receiver's collaboration map, `reachingAddressOf`) for every delegator kind: the assigner's address when
  * the sender's run assigned the Task; the run ID only for sub-work of a Task another run assigned.
  */
 describe("the work packet's sender address (CR-461-031)", () => {
