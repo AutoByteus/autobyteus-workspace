@@ -1102,3 +1102,4 @@
 - Done: the design's DS-8 poll section and its test. `walkthrough.py --check` passes.
 - The five Local Fixes of CRR-013 (CR-461-022 … -026) are the Implementation Engineer's.
 
+- ARCH-REV-032 (2026-11-12): Pass, no finding. The reviewer verified the premise at `827f1e68dc`: peer rows got titles and reachability only through a root's stream, so a listed, not-open run's peer rows had no live status at base either. `walkthrough.py --check` passes.
