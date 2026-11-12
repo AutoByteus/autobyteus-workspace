@@ -27,7 +27,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
-import { teamDelegatedChildSubject } from '~/services/runHydration/delegatedChildReads';
+import { teamAgentReadSubject } from '~/services/runHydration/agentReads';
 
 /**
  * @store useActiveContextStore
@@ -109,12 +109,9 @@ export const useActiveContextStore = defineStore('activeContext', () => {
         kind: 'standalone_team_member' as const, context, team: teamView,
         workspaceRootPath: team.view.getAgentWorkspaceRootPath(context.state.runId),
         collaborationMessages: teamCollaborationMessagesView(team),
-        // A delegated child's pages and files are read by its own identity (autobyteus-461 CR-461-010).
-        browse: teamDelegatedChildSubject(team.view.getExecutionTree().root_team.task_executions, context.state.runId)
-          ?? Object.freeze({
-            kind: 'teamMember' as const, teamRunId: team.view.getRootTeamRunId(),
-            memberAddress: team.view.getFocusedMemberAddress(), agentRunId: context.state.runId,
-          }),
+        // The subject that reads the focused agent in this Team view (a delegated child by its own identity; CR-461-010).
+        browse: teamAgentReadSubject({ teamRunId: team.view.getRootTeamRunId(), tree: team.view.getExecutionTree(),
+          memberAddress: team.view.getFocusedMemberAddress() }, context.state.runId),
       };
       return team.view.getFocusedAgentAccess() === 'read_only'
         ? Object.freeze({ ...target, access: 'read_only' })

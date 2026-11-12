@@ -8,12 +8,7 @@ import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { ensureAuthoritativeTeamMemberProjection } from '../teamMemberProjectionHydrationService';
 
 // TASK_RUN is a run the Team delegated to: it is read by its own identity, as its own run (autobyteus-461 CR-461-010).
-const { fetchProjection, fetchFileChanges, teamMemberProjection } = vi.hoisted(() => ({
-  fetchProjection: vi.fn(), fetchFileChanges: vi.fn(), teamMemberProjection: vi.fn(),
-}));
-vi.mock('../teamRunContextHydrationService', () => ({
-  fetchExactTeamMemberProjection: teamMemberProjection,
-}));
+const { fetchProjection, fetchFileChanges } = vi.hoisted(() => ({ fetchProjection: vi.fn(), fetchFileChanges: vi.fn() }));
 vi.mock('../runStoredStateLoader', () => ({
   fetchRunProjection: fetchProjection,
 }));
@@ -75,7 +70,6 @@ describe('teamMemberProjectionHydrationService', () => {
     const second = ensureAuthoritativeTeamMemberProjection({ team, agentRunId: TASK_RUN });
     await vi.waitFor(() => expect(fetchProjection).toHaveBeenCalledTimes(1));
     expect(fetchProjection).toHaveBeenCalledWith(TASK_RUN);
-    expect(teamMemberProjection).not.toHaveBeenCalled();
     resolveProjection(projection());
 
     await expect(Promise.all([first, second])).resolves.toEqual([

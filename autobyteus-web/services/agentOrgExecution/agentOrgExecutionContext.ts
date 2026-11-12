@@ -31,7 +31,7 @@ import {
 } from './agentOrgCommunicationPerspective'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
-import { orgDelegatedChildSubject } from '~/services/runHydration/delegatedChildReads'
+import { orgAgentReadSubject } from '~/services/runHydration/agentReads'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -138,9 +138,8 @@ export class AgentOrgExecutionContext {
       ...access, root: Object.freeze({ orgRunId: this.orgRunId }), address: agent.address, context,
       workspaceRootPath: agent.source.launchConfiguration.workspaceRootPath,
       collaborationMessages: this.messagesView(agent.address, agent.agentRunId),
-      // A delegated child's pages and files are read by its own identity (CR-461-010).
-      browse: orgDelegatedChildSubject(this.index, agent.agentRunId) ?? Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId,
-        memberAddress: agent.address, agentRunId: agent.agentRunId }),
+      // The subject that reads this agent in the Org view (a delegated child by its own identity; CR-461-010).
+      browse: orgAgentReadSubject(this.orgRunId, this.index, agent.agentRunId),
     }
     if (agent.kind === 'task') return Object.freeze({ ...common, kind: 'agent_org_task_agent' })
     if (agent.host.kind === 'team') return Object.freeze({
@@ -155,7 +154,7 @@ export class AgentOrgExecutionContext {
     return Object.freeze({ access: 'read_only' as const, root: Object.freeze({ orgRunId: this.orgRunId }), address: remote.address,
       context: this.contexts.get(remote.agentRunId)!, workspaceRootPath: null,
       collaborationMessages: this.messagesView(remote.address, remote.agentRunId),
-      browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId, memberAddress: remote.address, agentRunId: remote.agentRunId }),
+      browse: orgAgentReadSubject(this.orgRunId, this.index, remote.agentRunId),
       kind: 'agent_org_task_agent' as const })
   }
 
