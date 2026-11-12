@@ -1,0 +1,27 @@
+# IMP-07b web-guards
+# Command: bash -c pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web guard:localization-boundary && pnpm -C autobyteus-web audit:localization-literals
+# Environment mode: shell
+# Commit: f33b3c772a (branch codex/phone-background-tasks-473)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12T05:35:14Z
+
+
+> autobyteus@1.5.13-beta.5 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.13-beta.5 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.13-beta.5 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:84243) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+# Exit status: 0

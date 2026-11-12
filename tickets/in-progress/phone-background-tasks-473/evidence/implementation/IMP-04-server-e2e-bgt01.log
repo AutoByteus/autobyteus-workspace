@@ -1,0 +1,534 @@
+# IMP-04 server-e2e-bgt01
+# Command: bash -c RUN_NATIVE_BACKGROUND_TASK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts -t BGT-01 --no-watch
+# Environment mode: clean
+# Commit: 2d01ca639d (branch codex/phone-background-tasks-473)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-12T05:23:54Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:65857) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/.env
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+[2026-11-12T05:24:05.638Z] [INFO] [secret-management.vault] Secret vault: application database
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-background-tasks-473/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Node access: local control socket not opened. The node's local control socket path is 109 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Discovering LM Studio models from host: http://127.0.0.1:63775
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Agent Definition created successfully with ID: native-bgt-4822929a
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent Definition created successfully with ID: native-bgt-legacy-ae9b84ca
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-8icguT
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-8icguT.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Created and registered workspace ID: agent_ws_11862608caf997169811dd668da8499c3747c35c633d19a1f4f559229ad945d8
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-8icguT
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-8icguT.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Reusing registered workspace ID: agent_ws_11862608caf997169811dd668da8499c3747c35c633d19a1f4f559229ad945d8
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-appdata-UyRPRZ/media
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentRuntimeState initialized for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' with config: 'native-bgt-legacy-ae9b84ca'.
+AgentWorker initialized for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'.
+Registered AgentContext for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Context registered.
+Agent facade initialized for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' created and stored successfully.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' requesting runtime to start.
+AgentRuntime for 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Starting worker.
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Starting...
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' asyncRun(): Starting.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Runtime init completed (event store initialized).
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Runtime init completed (status deriver initialized).
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Runtime init completed (AgentEventInbox initialized).
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' to become idle (timeout: 30s)...
+AgentEventStream (ID: 7a2c64b3-c183-4cfe-b4f6-950dc7d0d408) initialized for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Subscribed to notifier.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Bootstrapper starting direct lifecycle execution.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Executing SystemPromptProcessingStep.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': No configured skills. Skipping skill catalog.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Final processed system prompt configured and captured. Trace ID: rt_1794461046395_2d34d1f7-8068-49e3-8f12-b646a95c4e44. Final length: 4358.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' has become idle.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentEventStream (ID: 7a2c64b3-c183-4cfe-b4f6-950dc7d0d408) for 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentEventStream (ID: 78977405-d74c-47c2-bc10-8226e20b7191) initialized for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent websocket attached for run native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b
+Created agent session 6a11241f-74ac-4ba0-ad92-d52145749e56 for run native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b
+Agent WebSocket connected: session=6a11241f-74ac-4ba0-ad92-d52145749e56, run=native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': UserInputContextBuildingProcessor completed. Final content length: 46
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': UserInputContextBuildingProcessor completed. Final content length: 46
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': UserInputContextBuildingProcessor completed. Final content length: 46
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': UserInputContextBuildingProcessor completed. Final content length: 340
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': UserInputContextBuildingProcessor completed. Final content length: 46
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Agent run 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Removing agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'. Attempting graceful shutdown.
+Agent 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Stop requested.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentExternalEventNotifier (NotifierID: 5d1f7e76-5822-4d1e-a7e7-2fb17a18ada5, AgentID: native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' asyncRun() loop has finished.
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Shutdown resource cleanup completed successfully.
+AgentWorker 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+Unregistered AgentContext for agent_id 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b'.
+AgentRuntime for 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentRuntime for 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b' stop() method completed.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentEventStream (ID: 78977405-d74c-47c2-bc10-8226e20b7191) for 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model) > BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)
+AgentEventStream (ID: 78977405-d74c-47c2-bc10-8226e20b7191) for 'native_bgt_legacy_ae9b84ca_c5dbb814bf6943ea825cab40eaffe88b': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Closed agent session 6a11241f-74ac-4ba0-ad92-d52145749e56
+Agent WebSocket disconnected: 6a11241f-74ac-4ba0-ad92-d52145749e56
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Agent Definition with ID native-bgt-4822929a deleted successfully.
+
+stdout | tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts > Native background tasks through the real server (scripted model)
+Agent Definition with ID native-bgt-legacy-ae9b84ca deleted successfully.
+
+ ✓ tests/e2e/runtime/autobyteus-background-task-transport.e2e.test.ts (9 tests | 8 skipped) 16779ms
+     ✓ BGT-01: background start, tail, idle wake by one notice, panel and journal; retired tool names skipped (AC-001/003/007/008/011)  11898ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 8 skipped (9)
+   Start at  06:23:55
+   Duration  26.43s (transform 6.92s, setup 57ms, import 9.10s, tests 16.78s, environment 0ms)
+
+# Exit status: 0
