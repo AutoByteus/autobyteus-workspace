@@ -19,13 +19,15 @@ const identityCore = {
 
 /**
  * A run a run delegated to on this node, by what does not change while it runs (autobyteus-461 SR-055, SR-056): its
- * address, its run and agents, its delegator and when it started. The view's child row is this identity plus the
+ * address, its run and agents (a team run's coordinator among them), its delegator and when it started. The view's child row is this identity plus the
  * child's launch details, read fresh; the listed-runs poll carries the identity alone.
  */
 export const childRunIdentityDtoSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("agent"), ...identityCore, agentRunId: nonEmptyStringSchema,
     agentDefinitionId: nonEmptyStringSchema.nullable() }).strict(),
   z.object({ kind: z.literal("agent_team"), ...identityCore, teamRunId: nonEmptyStringSchema,
+    /** The member the delegation went to, its coordinator: a team row opens it. */
+    coordinatorAgentRunId: nonEmptyStringSchema,
     members: z.array(childRunMemberIdentitySchema) }).strict(),
 ]);
 
@@ -40,6 +42,16 @@ export const childRunAgentStatusDtoSchema = z.object({
 export const listedRunRefDtoSchema = z.object({ kind: collaborationRootKindSchema, runId: nonEmptyStringSchema }).strict();
 
 /**
+ * One child of a listed run: its identity, the address of the agent of the listed run that delegated to it (the row's
+ * "started by"; null when it has no delegator or that agent's address is unknown), and its agents' statuses.
+ */
+export const listedRunChildDtoSchema = z.object({
+  row: childRunIdentityDtoSchema,
+  delegatorAddress: agentAddressSchema.nullable(),
+  statuses: z.array(childRunAgentStatusDtoSchema),
+}).strict();
+
+/**
  * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055): for each listed run, whether it is active and the runs it
  * delegated to on this node that its view shows (one hop, each with its agents' statuses). Never restores a run.
  */
@@ -47,7 +59,7 @@ export const runCollaborationStatusesDtoSchema = z.array(z.object({
   kind: collaborationRootKindSchema,
   runId: nonEmptyStringSchema,
   isActive: z.boolean(),
-  children: z.array(z.object({ row: childRunIdentityDtoSchema, statuses: z.array(childRunAgentStatusDtoSchema) }).strict()),
+  children: z.array(listedRunChildDtoSchema),
 }).strict());
 
 /** At most this many runs per read. */
@@ -56,4 +68,5 @@ export const RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
 export type ChildRunIdentityDto = z.infer<typeof childRunIdentityDtoSchema>;
 export type ChildRunAgentStatusDto = z.infer<typeof childRunAgentStatusDtoSchema>;
 export type ListedRunRefDto = z.infer<typeof listedRunRefDtoSchema>;
+export type ListedRunChildDto = z.infer<typeof listedRunChildDtoSchema>;
 export type RunCollaborationStatusesDto = z.infer<typeof runCollaborationStatusesDtoSchema>;

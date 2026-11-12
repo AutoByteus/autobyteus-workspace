@@ -1,7 +1,7 @@
 import { z } from "zod";
 /**
  * A run a run delegated to on this node, by what does not change while it runs (autobyteus-461 SR-055, SR-056): its
- * address, its run and agents, its delegator and when it started. The view's child row is this identity plus the
+ * address, its run and agents (a team run's coordinator among them), its delegator and when it started. The view's child row is this identity plus the
  * child's launch details, read fresh; the listed-runs poll carries the identity alone.
  */
 export declare const childRunIdentityDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
@@ -13,6 +13,7 @@ export declare const childRunIdentityDtoSchema: z.ZodDiscriminatedUnion<[z.ZodOb
     kind: z.ZodLiteral<"agent">;
 }, z.core.$strict>, z.ZodObject<{
     teamRunId: z.ZodString;
+    coordinatorAgentRunId: z.ZodString;
     members: z.ZodArray<z.ZodObject<{
         address: z.ZodString;
         agentRunId: z.ZodString;
@@ -39,6 +40,38 @@ export declare const listedRunRefDtoSchema: z.ZodObject<{
     runId: z.ZodString;
 }, z.core.$strict>;
 /**
+ * One child of a listed run: its identity, the address of the agent of the listed run that delegated to it (the row's
+ * "started by"; null when it has no delegator or that agent's address is unknown), and its agents' statuses.
+ */
+export declare const listedRunChildDtoSchema: z.ZodObject<{
+    row: z.ZodDiscriminatedUnion<[z.ZodObject<{
+        agentRunId: z.ZodString;
+        agentDefinitionId: z.ZodNullable<z.ZodString>;
+        address: z.ZodString;
+        delegatorAgentRunId: z.ZodOptional<z.ZodString>;
+        startedAt: z.ZodString;
+        kind: z.ZodLiteral<"agent">;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+        coordinatorAgentRunId: z.ZodString;
+        members: z.ZodArray<z.ZodObject<{
+            address: z.ZodString;
+            agentRunId: z.ZodString;
+            agentDefinitionId: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>>;
+        address: z.ZodString;
+        delegatorAgentRunId: z.ZodOptional<z.ZodString>;
+        startedAt: z.ZodString;
+        kind: z.ZodLiteral<"agent_team">;
+    }, z.core.$strict>], "kind">;
+    delegatorAddress: z.ZodNullable<z.ZodString>;
+    statuses: z.ZodArray<z.ZodObject<{
+        agentRunId: z.ZodString;
+        memberAddress: z.ZodString;
+        status: z.ZodString;
+    }, z.core.$strict>>;
+}, z.core.$strict>;
+/**
  * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055): for each listed run, whether it is active and the runs it
  * delegated to on this node that its view shows (one hop, each with its agents' statuses). Never restores a run.
  */
@@ -60,6 +93,7 @@ export declare const runCollaborationStatusesDtoSchema: z.ZodArray<z.ZodObject<{
             kind: z.ZodLiteral<"agent">;
         }, z.core.$strict>, z.ZodObject<{
             teamRunId: z.ZodString;
+            coordinatorAgentRunId: z.ZodString;
             members: z.ZodArray<z.ZodObject<{
                 address: z.ZodString;
                 agentRunId: z.ZodString;
@@ -70,6 +104,7 @@ export declare const runCollaborationStatusesDtoSchema: z.ZodArray<z.ZodObject<{
             startedAt: z.ZodString;
             kind: z.ZodLiteral<"agent_team">;
         }, z.core.$strict>], "kind">;
+        delegatorAddress: z.ZodNullable<z.ZodString>;
         statuses: z.ZodArray<z.ZodObject<{
             agentRunId: z.ZodString;
             memberAddress: z.ZodString;
@@ -82,5 +117,6 @@ export declare const RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
 export type ChildRunIdentityDto = z.infer<typeof childRunIdentityDtoSchema>;
 export type ChildRunAgentStatusDto = z.infer<typeof childRunAgentStatusDtoSchema>;
 export type ListedRunRefDto = z.infer<typeof listedRunRefDtoSchema>;
+export type ListedRunChildDto = z.infer<typeof listedRunChildDtoSchema>;
 export type RunCollaborationStatusesDto = z.infer<typeof runCollaborationStatusesDtoSchema>;
 //# sourceMappingURL=run-collaboration-statuses-dtos.d.ts.map

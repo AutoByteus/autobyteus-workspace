@@ -24,6 +24,10 @@ const agentsByRun: Record<string, { agentRunId: string; address: string | null; 
   "writer-1": [{ agentRunId: "writer-1", address: "/writer", agentDefinitionId: "writer" }],
   "docs-team": [{ agentRunId: "lead-1", address: "/lead", agentDefinitionId: "lead" }, { agentRunId: "checker-1", address: "/checker", agentDefinitionId: "checker" }],
   "helper-1": [{ agentRunId: "helper-1", address: null, agentDefinitionId: "helper" }],
+  // The delegating runs: each child names its delegator's address from them.
+  "team-1": [{ agentRunId: "manager-1", address: "/manager", agentDefinitionId: "manager" }],
+  "org-1": [{ agentRunId: "ceo-1", address: "/ceo", agentDefinitionId: "ceo" }],
+  "host-1": [{ agentRunId: "host-1", address: "/host", agentDefinitionId: "host" }],
 };
 const fixture = async () => {
   const reads: string[] = [];
@@ -66,23 +70,25 @@ describe("runCollaborationStatuses (SR-055)", () => {
     expect(answer).toEqual([
       { kind: "agent_team", runId: "team-1", isActive: true, children: [{
         row: { kind: "agent", address: "/writer", agentRunId: "writer-1", agentDefinitionId: "writer", delegatorAgentRunId: "manager-1", startedAt: expect.any(String) },
-        statuses: [{ agentRunId: "writer-1", memberAddress: "/writer", status: "running" }] }] },
+        delegatorAddress: "/manager", statuses: [{ agentRunId: "writer-1", memberAddress: "/writer", status: "running" }] }] },
       { kind: "agent_org", runId: "org-1", isActive: false, children: [{
-        row: { kind: "agent_team", address: "/docs_team", teamRunId: "docs-team", delegatorAgentRunId: "ceo-1", startedAt: expect.any(String),
+        row: { kind: "agent_team", address: "/docs_team", teamRunId: "docs-team", coordinatorAgentRunId: "lead-1", delegatorAgentRunId: "ceo-1", startedAt: expect.any(String),
           members: [{ address: "/lead", agentRunId: "lead-1", agentDefinitionId: "lead" }, { address: "/checker", agentRunId: "checker-1", agentDefinitionId: "checker" }] },
-        statuses: [{ agentRunId: "lead-1", memberAddress: "/lead", status: "offline" }, { agentRunId: "checker-1", memberAddress: "/checker", status: "offline" }] }] },
+        delegatorAddress: "/ceo", statuses: [{ agentRunId: "lead-1", memberAddress: "/lead", status: "offline" }, { agentRunId: "checker-1", memberAddress: "/checker", status: "offline" }] }] },
       // An agent run with no stored address shows the address it was delegated to.
       { kind: "agent", runId: "host-1", isActive: false, children: [{
         row: { kind: "agent", address: "/helper", agentRunId: "helper-1", agentDefinitionId: "helper", delegatorAgentRunId: "host-1", startedAt: expect.any(String) },
-        statuses: [{ agentRunId: "helper-1", memberAddress: "/helper", status: "offline" }] }] },
+        delegatorAddress: "/host", statuses: [{ agentRunId: "helper-1", memberAddress: "/helper", status: "offline" }] }] },
     ]);
   });
 
-  it("reads a delegated run's identity once from its own file, not per poll; a closed child leaves the answer", async () => {
+  it("reads a delegated run's identity and its delegator's address once, not per poll; a closed child leaves the answer", async () => {
     const f = await fixture();
     await f.poll([{ kind: "agent_team", runId: "team-1" }]);
     await f.poll([{ kind: "agent_team", runId: "team-1" }]);
     expect(f.reads.filter((id) => id === "writer-1")).toHaveLength(1);
+    // The delegating run's agents (its delegators' addresses) are read once too.
+    expect(f.reads.filter((id) => id === "team-1")).toHaveLength(1);
     // Its Task closes: the next poll no longer lists it.
     f.tasks.close("T1");
     await expect(f.poll([{ kind: "agent_team", runId: "team-1" }])).resolves.toEqual([{ kind: "agent_team", runId: "team-1", isActive: true, children: [] }]);

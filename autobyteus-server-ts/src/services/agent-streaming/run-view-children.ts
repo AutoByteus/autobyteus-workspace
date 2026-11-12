@@ -1,5 +1,5 @@
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
-import type { ChildRunAgentStatusDto, ChildRunIdentityDto, CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
+import type { CollaborationTaskExecutionDto, ListedRunChildDto } from "@autobyteus/collaboration-stream-contracts";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
@@ -46,15 +46,19 @@ export class RunViewChildren {
    * details, so no file is read per poll) with its agents' live statuses. A child whose own file was never readable is
    * left out with a warning naming it, as from the view.
    */
-  async listed(run: RootExecutionIdentity): Promise<Array<Readonly<{ row: ChildRunIdentityDto; statuses: ChildRunAgentStatusDto[] }>>> {
+  async listed(run: RootExecutionIdentity): Promise<ListedRunChildDto[]> {
     const statuses = await this.statuses(run);
-    const children: Array<Readonly<{ row: ChildRunIdentityDto; statuses: ChildRunAgentStatusDto[] }>> = [];
-    for (const child of this.input.tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined)) {
+    const children: ListedRunChildDto[] = [];
+    const local = this.input.tree.openChildrenOf(run).filter((candidate) => candidate.nodeId === undefined);
+    // The delegators are agents of this run: their addresses from its per-run data, read once per run.
+    const own = local.length ? new Map((await this.input.tree.agentsOf(run)).map((agent) => [agent.agentRunId, agent.address])) : new Map();
+    for (const child of local) {
       try {
         const row = await childRunIdentity(child, this.input.tree);
         if (!row) continue;
         const agents = new Set(row.kind === "agent" ? [row.agentRunId] : row.members.map((member) => member.agentRunId));
-        children.push({ row, statuses: statuses.filter((status) => agents.has(status.agentRunId))
+        children.push({ row, delegatorAddress: (own.get(child.delegatorAgentRunId) ?? null) as ListedRunChildDto["delegatorAddress"],
+          statuses: statuses.filter((status) => agents.has(status.agentRunId))
           .map((status) => ({ agentRunId: status.agentRunId, memberAddress: status.memberAddress, status: status.status })) });
       } catch (error) {
         console.warn(`A run delegated from ${run.rootSubjectKind} run '${run.rootRunId}' was left out of its listed children: ${error instanceof Error ? error.message : String(error)}`);

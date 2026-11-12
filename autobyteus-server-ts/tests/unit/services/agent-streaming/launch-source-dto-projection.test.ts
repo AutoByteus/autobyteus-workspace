@@ -15,7 +15,7 @@ import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team
 const claude = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/w" };
 const fallback = { layer: "agent_default" as const, runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "runtime_unavailable" as const, detail: "no grok" };
 /** The child's identity, as the tree's per-run data gives it (SR-056); the launch details come from its own file. */
-const teamIdentity = { kind: "agent_team" as const, address: "/se", teamRunId: "se-run", delegatorAgentRunId: "pm", startedAt: "2026-10-12T00:00:00.000Z",
+const teamIdentity = { kind: "agent_team" as const, address: "/se", teamRunId: "se-run", coordinatorAgentRunId: "lead-run", delegatorAgentRunId: "pm", startedAt: "2026-10-12T00:00:00.000Z",
   members: [{ address: "/lead", agentRunId: "lead-run", agentDefinitionId: null }, { address: "/ie", agentRunId: "ie-run", agentDefinitionId: null }] };
 const agentIdentity = { kind: "agent" as const, address: "/writer", agentRunId: "writer-run", agentDefinitionId: "writer", delegatorAgentRunId: "pm",
   startedAt: "2026-10-12T00:00:00.000Z" };
