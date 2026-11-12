@@ -1375,15 +1375,6 @@ Rules:
           }
         }
       `;
-      const restoreTeamRunMutation = `
-        mutation RestoreAgentTeamRun($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) {
-            success
-            message
-            teamRunId
-          }
-        }
-      `;
       const listWorkspaceRunHistoryQuery = `
         query ListWorkspaceRunHistory {
           listWorkspaceRunHistory(limitPerAgent: 200) {
@@ -1489,11 +1480,7 @@ Rules:
       }>(terminateTeamRunMutation, { teamRunId });
       expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
 
-      const restoreResult = await execGraphql<{
-        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-      }>(restoreTeamRunMutation, { teamRunId });
-      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+      // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
       const streamCountBeforeContinue = streamMessages.length;
       sendTeamMessageOverSocket(teamSocket, {
@@ -1686,15 +1673,6 @@ Rules:
           }
         }
       `;
-      const restoreTeamRunMutation = `
-        mutation RestoreAgentTeamRun($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) {
-            success
-            message
-            teamRunId
-          }
-        }
-      `;
 
       const { streamUrl } = await startClaudeRuntimeTestServer();
       const teamSocket = new WebSocket(
@@ -1817,11 +1795,7 @@ Rules:
           await expectTerminatedProjection(member, [member.firstToken]);
         }
 
-        const restoreResult = await execGraphql<{
-          restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-        }>(restoreTeamRunMutation, { teamRunId });
-        expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
-        expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+        // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
 
         for (const member of members) {
           const startIndex = streamMessages.length;

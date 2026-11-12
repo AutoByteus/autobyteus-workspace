@@ -194,9 +194,7 @@ describe.runIf(live)("DeepSeek Harness in Teams, Orgs and a runtime switch (real
     expect((await graphql<{ terminateAgentTeamRun: { success: boolean; message: string } }>(
       "mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success message } }", { teamRunId }))
       .terminateAgentTeamRun.success).toBe(true);
-    const restored = await graphql<{ restoreAgentTeamRun: { success: boolean; message: string } }>(
-      "mutation($teamRunId: String!) { restoreAgentTeamRun(teamRunId: $teamRunId) { success message } }", { teamRunId });
-    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     ({ socket, frames } = await socketTo(`/ws/agent-team/${teamRunId}`));
     const afterRestore = frames.length;
     send("pong", "We continue after a restart. Reply with only the exact content of the message ping sent you.");

@@ -49,7 +49,7 @@ def export(model_dir):
 if __name__ == "__main__":
     model_dir, path = sys.argv[1], sys.argv[2]
     text = json.dumps({"generatedBy": "tests/fixtures/collaboration-contract/export_contract_states.py",
-                       "source": "autobyteus-461 target-collaboration-contract.md revision 8, evidence/collaboration-model",
+                       "source": "autobyteus-461 target-collaboration-contract.md as of SR-054, evidence/collaboration-model",
                        "stories": export(model_dir)}, ensure_ascii=False, indent=1) + "\n"
     if len(sys.argv) > 3 and sys.argv[3] == "--check":
         same = os.path.exists(path) and open(path, encoding="utf-8").read() == text

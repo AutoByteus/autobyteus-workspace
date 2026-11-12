@@ -9,6 +9,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type Json = Record<string, any>;
 type Server = Awaited<ReturnType<typeof startBuiltTestServer>>;
@@ -123,10 +124,9 @@ describe("scoped Org history real HTTP lifecycle", () => {
     expect(badConfig.message).toContain("Model configuration must be null or an object.");
     expect(await readRoots(first)).toEqual(rootsBeforeRefusal);
     expect(await fs.readFile(treeFile)).toEqual(bytes);
-    const restored = await gql(`mutation($id: String!) {
-      restoreAgentOrgRun(agentOrgRunId: $id) { success message agentOrgRunId }
-    }`, { id: aId });
-    expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: aId });
+    // The user continues the stopped org by a message to one of its agents on its view (autobyteus-461 CR-461-008).
+    await restoreByMemberMessage({ url: first.serverUrl, gql: (query, variables) => gql(query, variables ?? {}), kind: "org", runId: aId,
+      memberRunId: members[0].agentRunId });
     expect(await readRoot(first, aId)).toMatchObject({ is_active: true });
     await stop(aId); await stop(b.agentOrgRunId); await stop(undeclared.agentOrgRunId);
     const beforeRestart = await readRoots(first);

@@ -509,8 +509,7 @@ describe("append-only message logs: the built server converts a faithful release
     hub1.close();
 
     // Team run family, resumed: the lead's message to its teammate is one new line in the team's log.
-    const restoredTeam = (await first.gql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`, { id: teamRunId })).restoreAgentTeamRun;
-    expect(restoredTeam, JSON.stringify(restoredTeam)).toMatchObject({ success: true });
+    // The stopped run's view serves it from its stored file; the member's message on it restores the run (autobyteus-461 CR-461-008).
     const team1 = await driver(first, "team", teamRunId);
     const teamReference = await reference("new-team");
     expect(await team1.call(teamMembers["/lead"]!, "/lead", callTool("send_message_to", { recipient_address: "/mate", content: "New team message.", reference_files: [teamReference] })))
@@ -525,8 +524,7 @@ describe("append-only message logs: the built server converts a faithful release
     team1.close();
 
     // Org family, resumed, on the rotated converted log: one new line at the end of the active file; the sealed files keep their bytes.
-    const restoredOrg = (await first.gql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: orgRunId })).restoreAgentOrgRun;
-    expect(restoredOrg, JSON.stringify(restoredOrg)).toMatchObject({ success: true });
+    // The stopped run's view serves it from its stored file; the member's message on it restores the run (autobyteus-461 CR-461-008).
     const org1 = await driver(first, "org", orgRunId);
     const activeFile = path.join(dirs.org, "agent_org_communication_messages_active.jsonl");
     const activeBefore = await fs.readFile(activeFile, "utf8");

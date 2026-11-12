@@ -1046,9 +1046,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       stream.socket.close();
       await wait(3_000);
       // Reopen as the app does: restore the stopped Org, then attach its stream.
-      const restored = await gql<{ restoreAgentOrgRun: { success: boolean; message: string } }>(
-        "mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId });
-      expect(restored.restoreAgentOrgRun.success, restored.restoreAgentOrgRun.message).toBe(true);
+      // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
       stream = await openSocket(`/ws/agent-org/${orgRunId}`, "ROOT_EXECUTION_VIEW_SNAPSHOT");
       expect(await rulesOf(stream, sendTo, coordRunId, "reopened org coordinator"), "Org placement handoff after reopen").toContain("/squad");
       const reopenedMounted = await rulesOf(stream, sendTo, mountedLead, "reopened mounted lead");

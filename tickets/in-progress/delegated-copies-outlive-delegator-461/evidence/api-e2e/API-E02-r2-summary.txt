@@ -1,0 +1,12 @@
+# Case: API-E02 (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch
+# Full log: /tmp/api461/r2-stories-run2.log (not committed)
+
+     × §5.1 S0 … S25: a standalone agent delegates on its node and to a peer node 806615ms
+     ✓ §5.2 U0 … U8: a team the user starts delegates  287955ms
+     × §5.3 O0 … O8: an org the user starts delegates 400847ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 1 passed (3)

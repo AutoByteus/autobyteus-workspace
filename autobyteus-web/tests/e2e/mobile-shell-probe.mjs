@@ -121,6 +121,9 @@
 //                  the phones' lists (MSP-34, delta) and a desktop window's (MSP-35, alpha) within one refresh, with at
 //                  most one view re-read per digest value; set back to TODO, the lists agree with the node:
 //                  `mobile-closed-task-rows-cases.mjs`.
+//   MSP-37, MSP-38, MSP-39 autobyteus-461 AC-007 (SCN-005) and O-1  A stopped delegator (agent, team, org root) on the phone: its
+//                  row shows stopped; the user messages its delegated worker from the run list, the reply is live, the root
+//                  stays stopped and shown stopped; its own member's message starts it: `mobile-stopped-delegator-cases.mjs`.
 //   MSP-32 autobyteus-435 REQ-010  After MSP-13 revoked the phone (the page stays open on the pairing screen through the
 //                  later cases), it sends no refused request: no HTTP answer 401/403 and no socket closed 4401/4403.
 //
@@ -149,6 +152,7 @@ import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeN
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
+import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -2410,6 +2414,7 @@ const runCases = async () => {
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runFileOpenCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+  await runStoppedDelegatorCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
 
   await runCase('MSP-32', async () => {
     // autobyteus-435 REQ-010 (c): MSP-13 revoked the open phone (label `phone`), whose Check took it to pairing; the page

@@ -9,6 +9,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
@@ -328,14 +329,9 @@ describe("TeamRun configuration GraphQL and V2 lifecycle", () => {
     const restartedResume = await resumeConfig(second.serverUrl, teamRunId);
     expect(restartedResume).toMatchObject({ teamRunId, isActive: false });
     assertExactConfigurationTree((restartedResume.executionTree as any).root_team, "graphql", expectedConfigurationTree);
-    const restored = await executeGraphql<{
-      restoreAgentTeamRun: { success: boolean; teamRunId: string | null };
-    }>(second.serverUrl, `
-      mutation RestoreTeamRun($teamRunId: String!) {
-        restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId }
-      }
-    `, { teamRunId });
-    expect(restored.restoreAgentTeamRun).toEqual({ success: true, teamRunId });
+    // The user continues the stopped team by a message to one of its members on its view (autobyteus-461 CR-461-008).
+    await restoreByMemberMessage({ url: second.serverUrl, gql: (query, variables) => executeGraphql(second.serverUrl, query, variables ?? {}),
+      kind: "team", runId: teamRunId, memberRunId: ((restartedResume.executionTree as any).root_team.members as any[])[0].agent_run_id });
     const restoredResume = await resumeConfig(second.serverUrl, teamRunId);
     expect(restoredResume).toMatchObject({ teamRunId, isActive: true });
     assertExactConfigurationTree((restoredResume.executionTree as any).root_team, "graphql", expectedConfigurationTree);

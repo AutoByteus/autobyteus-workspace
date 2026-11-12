@@ -12,6 +12,7 @@ import { until } from "./agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
 import { restoreByMemberMessage } from "./restore-by-member-message.js";
+import { projectionByOwnRun } from "./own-run-reads.js";
 
 /**
  * Drives real Agent, Agent Team and Agent Org roots on a test-owned Studio server with the scripted AGY CLI
@@ -217,6 +218,10 @@ export const startCollaborationHarness = async (label: string) => {
       return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
     };
     const conversationOf = async (agentRunId: string, address: string) => {
+      // An agent of a run this root delegated to is read through its own run (autobyteus-461 CR-461-014).
+      if (agentRunId !== rootId && agentRunId !== managerRunId && !Object.values(members).includes(agentRunId)) {
+        return (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation ?? [];
+      }
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
         { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;

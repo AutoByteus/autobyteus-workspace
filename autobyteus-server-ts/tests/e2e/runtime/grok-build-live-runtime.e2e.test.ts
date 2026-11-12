@@ -369,9 +369,7 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
     const stopped = await graphql<{ terminateAgentTeamRun: { success: boolean; message: string } }>(
       "mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success message } }", { teamRunId });
     expect(stopped.terminateAgentTeamRun.success, stopped.terminateAgentTeamRun.message).toBe(true);
-    const restored = await graphql<{ restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
-      "mutation($teamRunId: String!) { restoreAgentTeamRun(teamRunId: $teamRunId) { success message teamRunId } }", { teamRunId });
-    expect(restored.restoreAgentTeamRun, restored.restoreAgentTeamRun.message).toMatchObject({ success: true, teamRunId });
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     const after = flattenE2eConfiguredAgentExecutions((await graphql<{ getTeamRunResumeConfig: {
       executionTree: Record<string, unknown> } }>(resumeQuery, { teamRunId })).getTeamRunResumeConfig.executionTree);
     expect(after).toEqual(before);
@@ -461,10 +459,7 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
       "mutation($agentOrgRunId: String!) { terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message } }",
       { agentOrgRunId: orgRunId });
     expect(stopped.terminateAgentOrgRun.success, stopped.terminateAgentOrgRun.message).toBe(true);
-    const restored = await graphql<{ restoreAgentOrgRun: { success: boolean; message: string; agentOrgRunId: string | null } }>(
-      "mutation($agentOrgRunId: String!) { restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message agentOrgRunId } }",
-      { agentOrgRunId: orgRunId });
-    expect(restored.restoreAgentOrgRun, restored.restoreAgentOrgRun.message).toMatchObject({ success: true, agentOrgRunId: orgRunId });
+    // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
     const projection = await graphql<{ getAgentOrgMemberRunProjection: { conversation: unknown[] } }>(
       `query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
         getAgentOrgMemberRunProjection(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) { conversation }

@@ -287,8 +287,7 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     const keyOf = (address: string, runId: string) => `runtime_switch:${runId}:${orgAgent(pendingTree, address).pendingRuntimeSwitch.switchId}`;
     expect(orgAgent(pendingTree, "/direct")).toMatchObject({ launchConfiguration: expect.objectContaining({ runtimeKind: NATIVE }), platformAgentRunId: null });
     expect(orgAgent(pendingTree, "/crew/worker")).toMatchObject({ launchConfiguration: expect.objectContaining({ runtimeKind: GROK }), platformAgentRunId: null });
-    const restored = (await gql("mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).restoreAgentOrgRun as Json;
-    expect(restored.success, restored.message).toBe(true);
+    // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
 
     // --- the native member: the start fails after the native candidate wrote its instruction
     const directBefore = activeText(dir(direct));

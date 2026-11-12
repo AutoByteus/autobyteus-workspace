@@ -19,6 +19,8 @@
 //          team's own member (the Manager) restores the team: the view continues live after one snapshot, with no
 //          out-of-sync notice, and the composer does not stay pending (SR-048).
 //   SDV-03 Org view: the same for an org run; the stopped org starts on its first input (the user's message to its agent).
+// In each case the stopped root's own row in the run list is sampled while its view is open and for 15 s after the child
+// command (past the history poll): it must show stopped (code review O-1, CRR-008).
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes them in
 // finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -280,6 +282,21 @@ const managerRow = (kind, root, runRow) => kind === 'team' ? `[data-test="worksp
 const composer = (page) => page.locator('[data-test="workspace-center-pane"] textarea').first();
 const send = async (page, text) => { await composer(page).fill(text); await composer(page).press('Enter'); };
 const okCount = (text) => (text.match(/\bOK\b/g) ?? []).length;
+/** The rendered status of a root's own row in the run list (O-1): the class of its status dot. */
+const rootRowSelector = (root) => root.kind === 'agent' ? `[data-test="workspace-agent-run-row"][data-run-id="${root.rootId}"]`
+  : root.kind === 'team' ? `[data-test="workspace-team-row-${root.rootId}"]` : `[data-test="agent-org-run-open-${root.rootId}"]`;
+const rootRowDot = async (page, root) => page.locator(rootRowSelector(root)).first()
+  // The round status dot (a team's aggregate dot wraps one; the chevron icon before it is not a status).
+  .evaluate((row) => (row.querySelector('span.rounded-full') ?? row.querySelector('svg:has(circle)'))?.getAttribute('class') ?? null).catch(() => null);
+const shownRunning = (dotClass) => /bg-(blue|green|amber|emerald)-500|text-(blue|green|amber)-700/.test(dotClass ?? '');
+/** Samples the root row's rendered status for `ms` (longer than the history poll): every sample must show it stopped. */
+const rootStaysShownStopped = async (page, root, ms, label, out) => {
+  const samples = [];
+  const end = Date.now() + ms;
+  while (Date.now() < end) { samples.push(await rootRowDot(page, root)); await sleep(1500); }
+  out.renderedRootStatus = { ...(out.renderedRootStatus ?? {}), [label]: samples };
+  assert(samples.length > 0 && samples.every((c) => c !== null && !shownRunning(c)), `${root.kind}: the stopped root shows as running in the run list (${label})`, out);
+};
 
 /** The common part: with the root stopped and its view open, the worker answers live and the root stays stopped. */
 const childWhileStopped = async (s, page, out) => {
@@ -294,6 +311,7 @@ const childWhileStopped = async (s, page, out) => {
     .catch(async (error) => {
       const workerConv = JSON.stringify(await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: s.worker }).catch((e) => ({ error: String(e) })));
       error.details = { sentMessages: s.sentMessages?.slice(-3) ?? null, markerInWorkerRun: workerConv.includes(`STOPPED-${root.kind}`),
+        pageErrors: s.errors?.slice(-10) ?? null, sockets: s.viewSockets?.map((w) => ({ url: w.url.replace(/^.*\/ws\//, '/ws/'), closed: w.closedAt !== null, frames: w.frames })) ?? null,
         rootActive: await isActive(root), center: (await centerText(page)).slice(-600) };
       await shot(page, `sdv-${root.kind}-worker-reply-timeout`);
       throw error;
@@ -344,8 +362,12 @@ const caseAgentRun = async () => {
     await page.locator(childRow('agent', s.worker)).waitFor({ state: 'visible', timeout: 30000 });
     out.workerRowKept = true;
     await shot(page, 'sdv-01-after-stop');
+    // O-1: the stopped Manager, its view open, is shown stopped in the run list.
+    await rootStaysShownStopped(page, s.root, 6000, 'view open after Stop', out);
     await childWhileStopped(s, page, out);
     await shot(page, 'sdv-01-worker-answered');
+    // O-1: after a command to its child loaded its root, it is still shown stopped (sampled past the history poll).
+    await rootStaysShownStopped(page, s.root, 15000, 'after a child command', out);
     // The user's message to the Manager starts it, on the view's stream.
     const streamsBefore = viewSockets.filter((w) => viewUrl(w.url)).length;
     await runRow.click();
@@ -365,13 +387,15 @@ const caseStoppedRoot = async (kind) => {
   const s = await setupRoot(kind, kind === 'team' ? 'SdvTeam' : 'SdvOrg');
   await stopRoot(s.root);
   await until(`${kind}: stopped`, async () => !(await isActive(s.root)), 30000);
-  const { page, errors, context, sentMessages } = await newPage();
-  s.sentMessages = sentMessages;
+  const { page, errors, context, sentMessages, viewSockets } = await newPage();
+  s.sentMessages = sentMessages; s.errors = errors; s.viewSockets = viewSockets;
   try {
     const runRow = await openRoot(page, s.root, s.names);
     const out = {};
+    await rootStaysShownStopped(page, s.root, 6000, 'view open while stopped', out);
     await childWhileStopped(s, page, out);
     await shot(page, `sdv-${kind}-worker-answered`);
+    await rootStaysShownStopped(page, s.root, 15000, 'after a child command', out);
     // The user's message to the run's own member (the Manager) restores the run; the view continues live (SR-048).
     await page.locator(managerRow(kind, s.root, runRow)).first().click();
     await sleep(500);

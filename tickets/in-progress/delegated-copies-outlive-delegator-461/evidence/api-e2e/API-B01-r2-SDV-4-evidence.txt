@@ -1,0 +1,122 @@
+# Case: API-B01/B02 (run 3b SDV-02,SDV-03) (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir> [--cases …]   (clean env; built server dist/app.js, Nuxt dev, headless Chrome 157)
+
+{
+ "startedAt": "2026-11-12T05:24:06.609Z",
+ "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+ "cases": {
+  "SDV-02": {
+   "result": "Fail",
+   "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+   "message": "Timed out: worker reply live",
+   "details": {
+    "sentMessages": [],
+    "markerInWorkerRun": false,
+    "pageErrors": [],
+    "sockets": [
+     {
+      "url": "ws://127.0.0.1:63785/_nuxt/",
+      "closed": false,
+      "frames": 1
+     },
+     {
+      "url": "/ws/agent-package-definitions",
+      "closed": false,
+      "frames": 1
+     },
+     {
+      "url": "/ws/update-notifications",
+      "closed": false,
+      "frames": 1
+     },
+     {
+      "url": "/ws/terminal/8f5f0214-f6eb-4422-a0c3-6552225f671a",
+      "closed": false,
+      "frames": 2
+     },
+     {
+      "url": "/ws/agent-team/team_sdvteam_1ab0_4a429b1c303440d2b55c1440b0af0344",
+      "closed": false,
+      "frames": 5
+     },
+     {
+      "url": "/ws/projects",
+      "closed": false,
+      "frames": 1
+     }
+    ],
+    "rootActive": false,
+    "center": "gent with sender address \"/manager\" and sender run id \"manager_sdvteam_1ab0_0459a6379bff4c3f9459e23fd34fdd2b\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: sdvteam-986378-1 in Project project_2f1f6e9b-476a-40ac-a75d-77c3f380b19c\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nWrite the notes.\nWS\nworker sdvteam 1ab0\n\nOK\n\nContext Files (0)\n(drag, paste, or upload)"
+   }
+  },
+  "SDV-03": {
+   "result": "Pass",
+   "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+   "details": {
+    "renderedRootStatus": {
+     "view open while stopped": [
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+     ],
+     "after a child command": [
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300",
+      "mr-1.5 h-2 w-2 flex-none rounded-full bg-gray-300"
+     ]
+    },
+    "workerAnsweredLive": true,
+    "sentMessages": [
+     {
+      "at": 1794461138000,
+      "socket": "/ws/agent-org/org_sdvorg_1640_0fed7f5cd6cf45688702fc6efb91fb49",
+      "target": "worker_sdvorg_1640_d06f52f6027f48f7a432f123a7b7058b"
+     }
+    ],
+    "rootStayedStopped": true,
+    "helperRunId": null,
+    "composerPendingIndicators": 0,
+    "restoredLive": true
+   }
+  }
+ },
+ "cleanup": {
+  "browser": "closed",
+  "frontend": {
+   "pid": 69905,
+   "status": "terminated",
+   "exit": "SIGTERM"
+  },
+  "backend": {
+   "pid": 68487,
+   "status": "terminated",
+   "exit": 0
+  },
+  "dataRootRemoved": true
+ },
+ "failures": [
+  {
+   "id": "SDV-02",
+   "message": "Timed out: worker reply live"
+  }
+ ],
+ "stack": {
+  "backendUrl": "http://127.0.0.1:63784",
+  "frontendUrl": "http://127.0.0.1:63785",
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-X40gme"
+ },
+ "browserVersion": "157.0.8103.51",
+ "result": "Fail",
+ "finishedAt": "2026-11-12T05:27:28.355Z"
+}

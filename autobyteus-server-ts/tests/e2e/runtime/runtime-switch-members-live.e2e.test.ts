@@ -250,9 +250,7 @@ describe.runIf(ENABLED)("LIVE agent runtime switch of members and a copy between
         saveSelection: async (runtimeKind, model) => {
           const saved = (await gql(`mutation($input: UpdateStoppedAgentOrgRunConfigInput!) { updateStoppedAgentOrgRunConfig(input: $input) { success outcome message fieldErrors { path message } } }`, { input: {
             orgRunId, teamWorkspacePatches: [], selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: address, runtimeKind, llmModelIdentifier: model, llmConfig: null }] } })).updateStoppedAgentOrgRunConfig as Json;
-          // a stopped Org is restored as the Settings page does; its members start on their first message
-          const restored = (await gql("mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).restoreAgentOrgRun as Json;
-          expect(restored.success, restored.message).toBe(true);
+          // The stopped Org's view serves it from its stored file; the first message to one of its agents on that view restores it (autobyteus-461 CR-461-008).
           return saved;
         },
         message: (content, step) => talk(orgStream(orgRunId), runId, content, step),

@@ -32,6 +32,8 @@ const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1" && spawnSync(cli, ["--version"], { stdio: "ignore" }).status === 0;
 const suite = enabled ? describe : describe.skip;
 const evidenceDir = process.env.CONTRACT_STORIES_EVIDENCE_DIR ?? "";
+/** The nodes' log level (WARN; INFO or DEBUG to diagnose a step). */
+const logLevel = process.env.CONTRACT_STORIES_LOG_LEVEL ?? "WARN";
 
 type Story = { section: string; title: string; nodes: string[]; nodeIds: Record<string, string>; states: State[] };
 type State = { id: string; title: string; cases: string[]; call: string; results: Rec[]; refused: { code: string; message: string } | null;
@@ -58,12 +60,12 @@ class Node {
   constructor(readonly name: string, readonly dataDir: string, readonly port: number) { this.url = `http://127.0.0.1:${port}`; }
   async start() {
     for (const dir of [this.dataDir, path.join(this.dataDir, "home"), path.join(this.dataDir, "workspace")]) await fsp.mkdir(dir, { recursive: true });
-    await seedStudyGroup(this.dataDir);
+    await seedFileAuthoredAgents(this.dataDir);
     // A long idle grace: a quiet delegated run is not shut down between steps (idle shutdown has its own tests).
-    await fsp.writeFile(path.join(this.dataDir, ".env"), [`AUTOBYTEUS_SERVER_HOST=${this.url}`, "APP_ENV=test", "LOG_LEVEL=WARN",
+    await fsp.writeFile(path.join(this.dataDir, ".env"), [`AUTOBYTEUS_SERVER_HOST=${this.url}`, "APP_ENV=test", `LOG_LEVEL=${logLevel}`,
       "HTTP_ACCESS_LOG_MODE=off", "AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=3600000", ""].join("\n"));
     const env: NodeJS.ProcessEnv = { PATH: process.env.PATH, HOME: path.join(this.dataDir, "home"), TMPDIR: process.env.TMPDIR ?? os.tmpdir(),
-      ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", APP_ENV: "test", LOG_LEVEL: "WARN", HTTP_ACCESS_LOG_MODE: "off",
+      ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", APP_ENV: "test", LOG_LEVEL: logLevel, HTTP_ACCESS_LOG_MODE: "off",
       AUTOBYTEUS_SERVER_HOST: this.url, ...builtServerLaunchEnvironment() };
     const serverDir = path.resolve(__dirname, "../../..");
     this.child = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "--host", "127.0.0.1", "--port", String(this.port), "--data-dir", this.dataDir],
@@ -83,6 +85,9 @@ class Node {
     return body.data;
   }
   async stop() {
+    // The node's log, without the repeated "Memory file missing" lines, beside the story's evidence.
+    if (evidenceDir) await fsp.mkdir(evidenceDir, { recursive: true }).then(() => fsp.writeFile(path.join(evidenceDir, `server-${this.name}.log`),
+      this.output.split("\n").filter((line) => !line.startsWith("Memory file missing")).join("\n"))).catch(() => undefined);
     for (const socket of this.sockets.splice(0)) socket.terminate();
     const child = this.child;
     if (!child || child.exitCode !== null || child.signalCode !== null) return;
@@ -93,12 +98,11 @@ class Node {
 }
 
 /**
- * The contract's Study Group (§5.0) has a handoff outside the team (`/student` → `/Teacher`, the org's agent): a team
- * copied from an org, as 2 stored team runs are. The definition editor refuses a handoff target outside the team, so the
- * team and its two agents are file-authored definitions (the authoring path every node loads at start), written before the
- * node starts.
+ * Agent definitions that keep the model's IDs exactly, file-authored before the node starts (the authoring path every node
+ * loads): a GraphQL-created definition's ID is derived from its name and lower-cased, so the org's `Teacher` would become
+ * `teacher`, and its binding would rewrite the address `/Teacher` the stories send to.
  */
-const seedStudyGroup = async (dataDir: string) => {
+const seedFileAuthoredAgents = async (dataDir: string) => {
   const agentFile = async (id: string, name: string) => {
     const dir = path.join(dataDir, "agents", id);
     await fsp.mkdir(dir, { recursive: true });
@@ -107,15 +111,7 @@ const seedStudyGroup = async (dataDir: string) => {
   };
   await agentFile("student", "Student");
   await agentFile("tutor", "Tutor");
-  // The org's Teacher keeps the model's definition ID: a GraphQL-created definition's ID is lower-cased ("teacher"), and its
-  // binding would rewrite the address "/Teacher" the study group's handoff names.
   await agentFile("Teacher", "Teacher");
-  const team = path.join(dataDir, "agent-teams", "study-group");
-  await fsp.mkdir(team, { recursive: true });
-  await fsp.writeFile(path.join(team, "team.md"), ["---", "name: Study Group", "description: Study Group", "---", "", "Work as a team."].join("\n"));
-  await fsp.writeFile(path.join(team, "team-config.json"), JSON.stringify({ coordinatorMemberName: "student",
-    members: [{ memberName: "student", ref: "student", refScope: "shared" }, { memberName: "tutor", ref: "tutor", refScope: "shared" }],
-    handoffs: [{ from: "/student", to: "/Teacher", rules: ["When the homework is done …"] }], avatarUrl: null }, null, 2));
 };
 
 // ---- the comparison --------------------------------------------------------------------------------------------------------
@@ -238,14 +234,19 @@ const KNOWN_DIFFERENCES: Array<{ pattern: RegExp; reason: string; states?: strin
     reason: "A delegated team run's own file records where each launch came from: design-spec DS-10 (E6 row) and the DelegatedRunStarter ('its resolved launch, address and launchSource') name rootTeam.defaultLaunchSource and the members' launchSource; the contract's §3.2 team example omits them.",
   },
   {
-    pattern: /^result\[0\]\.message: expected "Delivered message to (\S+)\.", got "Delivered message to \1\. \1 continues with its conversation\."$/,
-    reason: "A message that continues a task agent of a reopened Task adds 'X continues with its conversation.' (base 827f1e68dc root-task-execution-lifecycle.ts:301, kept in cross-run-message-delivery.ts:104; the update_task description names it); the model writes the plain delivery text.",
+    pattern: /^result\[0\]\.message: expected "Message delivered\.", got "Delivered message to (\S+)\. \1 continues with its conversation\."$/,
+    reason: "Today's text when a message continues the run of a reopened Task is 'Delivered message to X. X continues with its conversation.' (base 827f1e68dc root-task-execution-lifecycle.ts:301; kept in cross-run-message-delivery.ts:104; the update_task description names it). The product keeps it (REQ-009); the model writes the plain run-ID text. A contract-model note, not a product difference.",
     states: ["S11"],
   },
   {
     pattern: /team_run_history_index\.json\[software_engineering_team_0218\]\.terminatedAt: expected a string like/,
     reason: "The model lets an agent of a stopped run make a call (S23, S24: solution_designer_65a9 while E is stopped). A real agent acts only on input: the test drives the call by the user's message to it on E's view, which restores E (REQ-003, SR-048), so E's row is active (terminatedAt null).",
-    states: ["S23", "S24"],
+    // S25: E is still active from the S24 driving (its idle grace is an hour in this test).
+    states: ["S23", "S24", "S25"],
+  },
+  {
+    pattern: /^B:memory\/team_run_history_index\.json\[research_team_77aa\]\.workspaceRootPath: expected "[^"]*\/story-5\.1-A\/workspace", got "[^"]*\/story-5\.1-B\/temp_workspace"$/,
+    reason: "A run a peer starts runs in a folder of its own node (node B's temporary workspace); the delegator's folder is a path on node A. Unchanged by autobyteus-461 (the peer start path). The model gives B's row A's folder. A contract-model note.",
   },
   {
     pattern: /^refusal: expected code [A-Z_]+, got \{"delegated":false,"message":/,
@@ -275,19 +276,25 @@ suite("The collaboration contract's stories, run against the built server (autob
     await setup(ctx);
     const report: Rec[] = [];
     const failed: string[] = [];
+    const failureLogs: Record<string, Record<string, string>> = {};
     for (const state of story.states) {
       const driver = steps[state.id];
       if (!driver) throw new Error(`no driver for ${state.id}`);
       ctx.state = state; ctx.results = []; ctx.refusals = [];
       let all: string[];
       try { await driver(ctx); all = await ctx.settle(state); }
-      catch (error) { if (!continueOnDifference) throw error; all = [`the step failed: ${String((error as Error)?.stack ?? error).slice(0, 800)}`]; }
+      catch (error) {
+        if (!continueOnDifference) throw error;
+        all = [`the step failed: ${String((error as Error)?.stack ?? error).slice(0, 800)}`];
+        // What the nodes logged around the failure (warnings and errors; LOG_LEVEL=WARN).
+        failureLogs[state.id] = Object.fromEntries(Object.entries(ctx.nodes).map(([name, node]) => [name, node.output.slice(-8000)]));
+      }
       const known = all.filter((d) => KNOWN_DIFFERENCES.some((k) => k.pattern.test(d) && (!k.states || k.states.includes(state.id))));
       const diffs = all.filter((d) => !known.includes(d));
       report.push({ state: state.id, cases: state.cases, diffs, known });
       if (evidenceDir) {
         await fsp.mkdir(evidenceDir, { recursive: true });
-        await fsp.writeFile(path.join(evidenceDir, `contract-stories-${story.section}.json`), `${JSON.stringify({ report, knownDifferences: KNOWN_DIFFERENCES.map((k) => ({ pattern: String(k.pattern), reason: k.reason })), bindings: Object.fromEntries(ctx.bindings.toReal) }, null, 1)}\n`);
+        await fsp.writeFile(path.join(evidenceDir, `contract-stories-${story.section}.json`), `${JSON.stringify({ report, knownDifferences: KNOWN_DIFFERENCES.map((k) => ({ pattern: String(k.pattern), reason: k.reason })), bindings: Object.fromEntries(ctx.bindings.toReal), failureLogs }, null, 1)}\n`);
       }
       if (!continueOnDifference) expect(diffs, `${state.id} (${state.cases.join(", ")}) ${state.title}`).toEqual([]);
       else if (diffs.length) failed.push(`${state.id} (${state.cases.join(", ")}): ${diffs.join(" | ").slice(0, 1500)}`);
@@ -364,7 +371,10 @@ suite("The collaboration contract's stories, run against the built server (autob
         await sleep(200);
       }
       socket.close();
-      if (results.length <= before) throw new Error(`${this.state.id}: no result of ${tool} by ${agentModelId}`);
+      if (results.length <= before) {
+        const tail = JSON.stringify(await this.conversation(agentModelId).catch((e) => String(e)) ?? null).slice(-1500);
+        throw new Error(`${this.state.id}: no result of ${tool} by ${agentModelId}; its conversation ends: ${tail}`);
+      }
       const result = toolResult(results[before]!);
       // The model's results: a delivered `send_message_to`, an accepted `delegate_task`, an `update_task`; a refused call is a refusal.
       const refused = result.isError || result.accepted === false || result.delegated === false || Boolean(result.error);
@@ -468,7 +478,6 @@ suite("The collaboration contract's stories, run against the built server (autob
         await sleep(500);
       }
       // The call's result or refusal, and the header each receiver sees.
-      const mapResult = (r: Rec) => JSON.parse(this.bindings.map(JSON.stringify(r)));
       // `update_task` returns `{ task: { taskId, …, status } }` (its tool contract, unchanged by autobyteus-461); the model writes
       // `{ taskId, status }`, and lists it only when it is the step's last result (a status change before a delivery is not a result).
       const modelHasTaskResult = state.results.some((r) => "taskId" in r && !("accepted" in r) && !("delegated" in r));
@@ -479,7 +488,8 @@ suite("The collaboration contract's stories, run against the built server (autob
       state.results.forEach((expected, index) => {
         const got = real[index]; if (!got) return;
         const { isError: _e, ...rest } = got;
-        compare(this.bindings, mapResult(expected), rest, `result[${index}]`, diffs);
+        // The comparison binds and maps the model's IDs itself; a pre-mapped value could be read as another story's model ID.
+        compare(this.bindings, expected, rest, `result[${index}]`, diffs);
       });
       if (state.refused) {
         const got = this.refusals.at(-1);
@@ -552,7 +562,7 @@ suite("The collaboration contract's stories, run against the built server (autob
   /** The model's catalog on node A (stories.py `catalog()`): every agent, team and the org. */
   const catalog = async (ctx: Ctx) => {
     const defs: Record<string, string> = {};
-    for (const fileAuthored of ["student", "tutor", "Teacher", "study-group"]) { defs[fileAuthored] = fileAuthored; ctx.bindings.bind(fileAuthored, fileAuthored); }
+    for (const fileAuthored of ["student", "tutor", "Teacher"]) { defs[fileAuthored] = fileAuthored; ctx.bindings.bind(fileAuthored, fileAuthored); }
     // Every catalog agent has a default launch (stories.py: a delegated agent launches from `agent_default`).
     for (const [modelId, name] of CATALOG_AGENTS.filter(([id]) => !(id in defs))) defs[modelId] = await agentDef(ctx, "A", modelId, name,
       ["project-task-manager", "ceo-agent", "solution-designer"].includes(modelId) ? PROJECT_TOOLS : [], DEFAULT_LAUNCH);
@@ -598,7 +608,7 @@ suite("The collaboration contract's stories, run against the built server (autob
   const key = (ctx: Ctx, modelKey: string) => ctx.real(modelKey);
 
   // ---- §5.1: the Project Task Manager (M) with a peer node ---------------------------------------------------------------
-  it("§5.1 S0 … S24: a standalone agent delegates on its node and to a peer node", async () => {
+  it("§5.1 S0 … S25: a standalone agent delegates on its node and to a peer node", async () => {
     const story = FIXTURE.stories.find((s) => s.section === "5.1")!;
     const M = "project_task_manager_7c8d", SD = "solution_designer_65a9", E = "software_engineering_team_0218", P_PD = "product_designer_1a2b";
     await runStory(story, {
@@ -645,13 +655,14 @@ suite("The collaboration contract's stories, run against the built server (autob
           { input: { projectId: ctx.real("project_8f21"), taskId: ctx.real("project_task_440e") } })).deleteProjectTask).toBe(true);
       },
       S17: async (ctx) => {
-        const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", task_id: key(ctx, "demo-7") });
-        const team = r.target_team_run_id as string;
-        await ctx.bindRun("research_team_77aa", team, "B");
+        // To a peer by description only (REQ-009, SR-054): the work gets a Task with no Project on node A.
+        const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", description: "Market study …" });
+        const problem = ctx.bindings.bind("adhoc_task_7c7c", r.task_id as string); if (problem) throw new Error(problem);
+        await ctx.bindRun("research_team_77aa", r.target_team_run_id as string, "B");
       },
       S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" }); },
       S19: async (ctx) => {
-        await ctx.call(M, "update_task", { task_id: key(ctx, "demo-7"), status: "DONE" });
+        await ctx.call(M, "update_task", { task_id: ctx.real("adhoc_task_7c7c"), status: "DONE" });
         await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "More findings …" });
       },
       S20: async (ctx) => {
@@ -663,6 +674,7 @@ suite("The collaboration contract's stories, run against the built server (autob
       S22: async (ctx) => { await ctx.call(M, "send_message_to", { recipient_address: "/software_engineering_team", content: "…" }); },
       S23: async (ctx) => { await ctx.call(SD, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") }); },
       S24: async (ctx) => { await ctx.call(SD, "send_message_to", { recipient_address: "/software_engineering_team/code_reviewer", content: "…" }); },
+      S25: async (ctx) => { await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", task_id: key(ctx, "demo-7") }); },
     }, async (ctx) => {
       await catalog(ctx);
       // Node B: the research team with a default launch (a peer target needs one), shared with node A; the nodes paired.
@@ -717,7 +729,7 @@ suite("The collaboration contract's stories, run against the built server (autob
   // ---- §5.3: the org (O) ----------------------------------------------------------------------------------------------------
   it("§5.3 O0 … O8: an org the user starts delegates", async () => {
     const story = FIXTURE.stories.find((s) => s.section === "5.3")!;
-    const O = "company_org_9d00", CEO = "ceo_agent_1f2e", DL = "dev_lead_4c3d", SG = "study_group_7a7a", ST = "student_31aa";
+    const O = "company_org_9d00", CEO = "ceo_agent_1f2e", DL = "dev_lead_4c3d", COPY = "dev_team_9a9a", COPY_DL = "dev_lead_9a01";
     await runStory(story, {
       O0: async (ctx) => {
         await projectWithTasks(ctx, "project_8f21", [["project_task_4d4d", "demo-4", "Run the study program", "IN_PROGRESS"], ["project_task_5e5e", "demo-5", "Prepare the release notes", "IN_PROGRESS"]]);
@@ -734,12 +746,14 @@ suite("The collaboration contract's stories, run against the built server (autob
       O2: async (ctx) => { await ctx.call(CEO, "send_message_to", { recipient_address: "/dev_team", content: "Ship the fix …" }); },
       O3: async (ctx) => { await ctx.call(DL, "send_message_to", { recipient_address: "/dev_team/qa", content: "Please test …" }); },
       O4: async (ctx) => { await ctx.call(DL, "send_message_to", { recipient_address: "/dev_team/designer", content: "…" }); },
-      O5: async (ctx) => { const r = await ctx.call(CEO, "delegate_task", { recipient_address: "/study_group", task_id: key(ctx, "demo-4") }); await ctx.bindRun(SG, r.target_team_run_id as string); },
+      // A copy of the org's own mounted team: a team run of its own carrying the org's handoff `/dev_lead` → `/ceo_agent` (SR-054).
+      O5: async (ctx) => { const r = await ctx.call(CEO, "delegate_task", { recipient_address: "/dev_team", task_id: key(ctx, "demo-4") }); await ctx.bindRun(COPY, r.target_team_run_id as string); },
       O6: async (ctx) => {
-        expect(JSON.stringify(await ctx.call(ST, "get_handoff_rules", {}))).toContain("/Teacher");
-        await ctx.call(ST, "send_message_to", { recipient_address: "/Teacher", content: "Homework done …" });
+        const rules = await ctx.call(COPY_DL, "get_handoff_rules", {}, false);
+        expect(rules, "the copy's handoff names the org's CEO agent, an external target").toMatchObject({ handoffs: [{ when: "When the release is ready …", recipient_address: "/ceo_agent" }] });
+        await ctx.call(COPY_DL, "send_message_to", { recipient_address: "/ceo_agent", content: "The release is ready …" });
       },
-      O7: async (ctx) => { await ctx.call(ST, "send_message_to", { recipient_address: "/dev_team/dev_lead", content: "Need a tool …" }); },
+      O7: async (ctx) => { await ctx.call(COPY_DL, "send_message_to", { recipient_address: "/Teacher", content: "Need a review …" }); },
       O8: async (ctx) => { const r = await ctx.call(DL, "delegate_task", { recipient_address: "/release_agent", task_id: key(ctx, "demo-5") }); await ctx.bindRun("release_agent_66c3", r.target_agent_run_id as string); },
     }, async (ctx) => { await catalog(ctx); });
   }, 900_000);

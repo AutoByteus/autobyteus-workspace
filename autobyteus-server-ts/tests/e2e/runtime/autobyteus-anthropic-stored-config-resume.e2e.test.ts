@@ -324,9 +324,7 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
 
     // Root default + every member: at least 3 stored llmConfig objects in the team tree.
     expect(await addStaleKeyToStoredConfig(teamRunId), "stored llmConfig objects updated").toBeGreaterThanOrEqual(3);
-    const restored = await gql<{ restoreAgentTeamRun: { success: boolean; message: string } }>(
-      "mutation($id: String!) { restoreAgentTeamRun(teamRunId: $id) { success message } }", { id: teamRunId });
-    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
+    // A stopped run's view serves it from its stored file; the first message to one of its members on that view restores it (autobyteus-461 CR-461-008).
     ws = await openSocket(teamRunId, frames, "agent-team");
     for (const member of TEAM_MEMBERS) {
       expectCleanBody(await sendToMember(ws, member.name, "after restore"), member.model, member.expectedThinking, member.expectedEffort);
@@ -392,9 +390,7 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
     await closeSocket(ws);
 
     expect(await addStaleKeyToStoredConfig(orgRunId), "stored llmConfig objects updated").toBeGreaterThanOrEqual(3);
-    const restored = await gql<{ restoreAgentOrgRun: { success: boolean; message: string } }>(
-      "mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId });
-    expect(restored.restoreAgentOrgRun.success, restored.restoreAgentOrgRun.message).toBe(true);
+    // A stopped run's view serves it from its stored file; the first message to one of its members on that view restores it (autobyteus-461 CR-461-008).
     ws = await openSocket(orgRunId, frames, "agent-org", orgReady);
     for (const target of targets) {
       const body = await sendToMember(ws, target, "after restore");

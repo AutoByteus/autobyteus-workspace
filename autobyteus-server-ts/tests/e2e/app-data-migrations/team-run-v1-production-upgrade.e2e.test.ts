@@ -18,6 +18,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
@@ -751,21 +752,32 @@ const terminateAgentRun = async (serverUrl: string, runId: string): Promise<void
   expect(terminated.terminateAgentRun.success).toBe(true);
 };
 
-const restoreTeamRun = async (serverUrl: string, teamRunId: string) => executeGraphql<{
-  restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
-}>(serverUrl, `
-  mutation RestoreMigrationLifecycleTeam($teamRunId: String!) {
-    restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
+/**
+ * Restores a stopped run as the app does: a message to one of its own members on its view (autobyteus-461 CR-461-008: the
+ * Team and Org restore mutations are gone). The answer keeps the removed mutation's shape for the assertions: a refusal's
+ * text is the view's or the message's error. A run whose config cannot be read gets a placeholder member: the view refuses it.
+ */
+const restoreByMessage = async (serverUrl: string, kind: "team" | "org", runId: string) => {
+  const memberRunId = await (kind === "team"
+    ? executeGraphql<any>(serverUrl, "query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}", { id: runId })
+      .then((data) => data.getTeamRunResumeConfig.executionTree.root_team.members[0].agent_run_id as string)
+    : executeGraphql<any>(serverUrl, "query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}", { id: runId })
+      .then((data) => data.getAgentOrgRunConfig.executionTree.rootOrg.members[0].agentRunId as string)).catch(() => "unreadable-run-member");
+  try {
+    await restoreByMemberMessage({ url: serverUrl, gql: (query, variables) => executeGraphql<any>(serverUrl, query, variables ?? {}), kind, runId, memberRunId, timeoutMs: 30_000 });
+    return { success: true, runId, message: "" };
+  } catch (error) {
+    return { success: false, runId: null, message: String(error) };
   }
-`, { teamRunId });
-
-const restoreOrgRun = async (serverUrl: string, orgRunId: string) => executeGraphql<{
-  restoreAgentOrgRun: { success: boolean; agentOrgRunId: string | null; message: string };
-}>(serverUrl, `
-  mutation RestoreMigratedAgentOrgRun($orgRunId: String!) {
-    restoreAgentOrgRun(agentOrgRunId: $orgRunId) { success agentOrgRunId message }
-  }
-`, { orgRunId });
+};
+const restoreTeamRun = async (serverUrl: string, teamRunId: string) => {
+  const r = await restoreByMessage(serverUrl, "team", teamRunId);
+  return { restoreAgentTeamRun: { success: r.success, teamRunId: r.runId, message: r.message } };
+};
+const restoreOrgRun = async (serverUrl: string, orgRunId: string) => {
+  const r = await restoreByMessage(serverUrl, "org", orgRunId);
+  return { restoreAgentOrgRun: { success: r.success, agentOrgRunId: r.runId, message: r.message } };
+};
 
 const terminateOrgRun = async (serverUrl: string, orgRunId: string) => executeGraphql<{
   terminateAgentOrgRun: { success: boolean; agentOrgRunId: string | null };

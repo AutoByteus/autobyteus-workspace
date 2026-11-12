@@ -13,6 +13,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type DatabaseLocation = ReturnType<typeof resolveTestDatabaseLocation>;
@@ -698,14 +699,9 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     expect(projectedRoot.team_run_id).toBe(teamRunId);
     expect(projectedRoot.default_launch_configuration.llm_config).toEqual(UPDATED_CONFIG);
 
-    const restored = await executeGraphql<{
-      restoreAgentTeamRun: { success: boolean; teamRunId: string | null };
-    }>(second.serverUrl, `
-      mutation RestoreStoppedConfigTeam($teamRunId: String!) {
-        restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId }
-      }
-    `, { teamRunId });
-    expect(restored.restoreAgentTeamRun).toEqual({ success: true, teamRunId });
+    // The user continues the stopped team by a message to one of its members on its view (autobyteus-461 CR-461-008).
+    await restoreByMemberMessage({ url: second.serverUrl, gql: (query, variables) => executeGraphql(second.serverUrl, query, variables ?? {}),
+      kind: "team", runId: teamRunId, memberRunId: (projectedRoot.members as any[])[0].agent_run_id });
     await expect(teamResume(second.serverUrl, teamRunId)).resolves.toMatchObject({
       teamRunId,
       isActive: true,

@@ -12,6 +12,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { restoreByMemberMessage } from "../helpers/restore-by-member-message.js";
 
 // Real AGY: AutoByteus-initiated stops also stop AGY's background process groups, and Agent Org / Agent Team
 // roots recover from a member whose AGY runtime died (crash via kill -9, or user Stop). A standalone run and a
@@ -126,8 +127,11 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
   // ---- Org GraphQL ----
   const terminateOrg = async (orgRunId: string) => (await graphql<{ terminateAgentOrgRun: { success: boolean; message: string } }>(
     "mutation($id: String!) { terminateAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId })).terminateAgentOrgRun;
-  const restoreOrg = async (orgRunId: string) => (await graphql<{ restoreAgentOrgRun: { success: boolean; message: string; agentOrgRunId: string | null } }>(
-    "mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message agentOrgRunId } }", { id: orgRunId })).restoreAgentOrgRun;
+  /** Restores a stopped Org as the app does: a message to one of its agents on its view (autobyteus-461 CR-461-008). */
+  const restoreOrg = async (orgRunId: string, memberRunId: string) => {
+    await restoreByMemberMessage({ url: String(url).replace(/\/$/, ""), gql: (query, variables) => graphql(query, variables), kind: "org", runId: orgRunId, memberRunId });
+    return { success: true, message: "", agentOrgRunId: orgRunId };
+  };
   const orgConfig = async (orgRunId: string) => (await graphql<{ getAgentOrgRunConfig: { isActive: boolean; executionTree: Json } }>(
     "query($id: String!) { getAgentOrgRunConfig(orgRunId: $id) { isActive executionTree } }", { id: orgRunId })).getAgentOrgRunConfig;
   /** REQ-B4: the inspection's active flag, or the error it reports for a non-running Org. */
@@ -320,7 +324,7 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
       evidence.stateAfterSecondTerminate = await orgState(org.orgRunId);
       expect(evidence.stateAfterSecondTerminate).toEqual(evidence.stateAfterTerminate);
 
-      const restored = await record(evidence, "restore", () => restoreOrg(org.orgRunId));
+      const restored = await record(evidence, "restore", () => restoreOrg(org.orgRunId, org.directorRunId));
       expect(restored.success, restored.message).toBe(true);
       expect(restored.agentOrgRunId).toBe(org.orgRunId);
       evidence.stateAfterRestore = await orgState(org.orgRunId);
@@ -434,7 +438,7 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
       expect(again).toEqual({ success: false, message: "Agent organization run not found." });
       evidence.stateAfterSecondTerminate = await orgState(org.orgRunId);
       expect(evidence.stateAfterSecondTerminate).toEqual(evidence.stateAfterTerminate);
-      const restored = await record(evidence, "restore", () => restoreOrg(org.orgRunId));
+      const restored = await record(evidence, "restore", () => restoreOrg(org.orgRunId, org.directorRunId));
       expect(restored.success, restored.message).toBe(true);
       session = await openOrgSession(org.orgRunId);
       const workerRecall = await record(evidence, "workerRecall", () => session.ask(org.workerRunId,
@@ -531,8 +535,11 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
       evidence.teamActiveAfterSecondTerminate = (await teamConfig()).isActive;
       expect(evidence.teamActiveAfterSecondTerminate).toBe(false);
 
-      const restoreTeam = async () => (await graphql<{ restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
-        "mutation($id: String!) { restoreAgentTeamRun(teamRunId: $id) { success message teamRunId } }", { id: teamRunId })).restoreAgentTeamRun;
+      // Restores the stopped team as the app does: a message to one of its members on its view (autobyteus-461 CR-461-008).
+      const restoreTeam = async () => {
+        await restoreByMemberMessage({ url: String(url).replace(/\/$/, ""), gql: (query, variables) => graphql(query, variables), kind: "team", runId: teamRunId, memberRunId: alpha });
+        return { success: true, message: "", teamRunId };
+      };
       const restored = await record(evidence, "restore", restoreTeam);
       expect(restored.success, restored.message).toBe(true);
       team = await openTeam();

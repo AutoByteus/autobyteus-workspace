@@ -1,0 +1,73 @@
+# Case: API-B01/B02 (run 2 SDV-02) (API-REV-002, round 2)
+# Commit: f75cf6b96b (code 9f4709571b); server dist and phone bundle built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir> [--cases …]   (clean env; built server dist/app.js, Nuxt dev, headless Chrome 157)
+
+{
+ "startedAt": "2026-11-12T05:18:04.952Z",
+ "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+ "cases": {
+  "SDV-02": {
+   "result": "Pass",
+   "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+   "details": {
+    "renderedRootStatus": {
+     "view open while stopped": [
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0"
+     ],
+     "after a child command": [
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0",
+      "iconify iconify--heroicons mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform rotate-0"
+     ]
+    },
+    "workerAnsweredLive": true,
+    "sentMessages": [
+     {
+      "at": 1794460709997,
+      "socket": "/ws/agent-team/team_sdvteam_1f6e_c8aff7142fbf424f86edee8ddb8fdaca",
+      "target": "worker_sdvteam_1f6e_bb0237522e524ab5b964a3687f164c8b"
+     }
+    ],
+    "rootStayedStopped": true,
+    "helperRunId": null,
+    "composerPendingIndicators": 0,
+    "restoredLive": true
+   }
+  }
+ },
+ "cleanup": {
+  "browser": "closed",
+  "frontend": {
+   "pid": 42634,
+   "status": "terminated",
+   "exit": "SIGTERM"
+  },
+  "backend": {
+   "pid": 39826,
+   "status": "terminated",
+   "exit": 0
+  },
+  "dataRootRemoved": true
+ },
+ "failures": [],
+ "stack": {
+  "backendUrl": "http://127.0.0.1:62664",
+  "frontendUrl": "http://127.0.0.1:62665",
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-S38PkM"
+ },
+ "browserVersion": "157.0.8103.51",
+ "result": "Pass",
+ "finishedAt": "2026-11-12T05:20:17.799Z"
+}

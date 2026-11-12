@@ -642,15 +642,7 @@ Rules:
         }
         expect(terminated.terminateAgentTeamRun.success).toBe(true);
 
-        const restored = await execGraphql<{
-          restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
-        }>(`mutation RestoreTeam($teamRunId: String!) {
-          restoreAgentTeamRun(teamRunId: $teamRunId) { success message teamRunId }
-        }`, { teamRunId });
-        expect(restored.restoreAgentTeamRun).toMatchObject({
-          success: true,
-          teamRunId,
-        });
+        // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
         const afterRestore = await execGraphql<{
           getTeamRunResumeConfig: { executionTree: Record<string, unknown> };
         }>(teamResumeQuery, { teamRunId });
@@ -951,13 +943,7 @@ On a teammate message, do not use tools; reply with exactly ACK.`;
         }`, { agentOrgRunId: orgRunId },
       );
       expect(stopped.terminateAgentOrgRun.success, stopped.terminateAgentOrgRun.message).toBe(true);
-      const restored = await execGraphql<{ restoreAgentOrgRun: {
-        success: boolean; message: string; agentOrgRunId: string | null;
-      } }>(`mutation($agentOrgRunId: String!) {
-        restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success message agentOrgRunId }
-      }`, { agentOrgRunId: orgRunId });
-      expect(restored.restoreAgentOrgRun.success, restored.restoreAgentOrgRun.message).toBe(true);
-      expect(restored.restoreAgentOrgRun.agentOrgRunId).toBe(orgRunId);
+      // The stopped run's view serves it from its stored file; the next message to one of its members on it restores the run (autobyteus-461 CR-461-008).
       const reloaded = await execGraphql<{ getAgentOrgRunConfig: { executionTree: Record<string, unknown> } }>(
         `query($orgRunId: String!) { getAgentOrgRunConfig(orgRunId: $orgRunId) { executionTree } }`,
         { orgRunId },
