@@ -186,7 +186,7 @@ export class AgentRun {
   async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
     const inspection = this.backend.backgroundTaskInspection;
     if (inspection.kind === 'unsupported') return { kind: 'unsupported', agentRunId: this.runId, reason: 'unsupported' };
-    if (inspection.kind === 'event-stream') return { kind: 'event-stream', agentRunId: this.runId };
+    if (inspection.kind === 'event-stream') return { kind: 'event-stream', agentRunId: this.runId, tasks: inspection.current() };
     const observation = await inspection.read();
     return observation.kind === 'snapshot'
       ? { ...observation, agentRunId: this.runId, runInstanceId: this.runInstanceId }

@@ -72,6 +72,9 @@ export class AgyBackgroundTaskMonitor {
   /** Whether any tracked step is still running. */
   hasRunningTasks(): boolean { return this.running.size > 0; }
 
+  /** The tasks running now (an ended task is no longer kept). */
+  list(): readonly AgentBackgroundTask[] { return [...this.running.values()]; }
+
   /** AGY stopped: every running task becomes stopped and the monitor stays inert. */
   stopAll(): void {
     if (this.stopped) return;

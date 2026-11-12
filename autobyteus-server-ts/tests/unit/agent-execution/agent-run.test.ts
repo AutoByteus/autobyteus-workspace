@@ -1305,3 +1305,26 @@ describe("AgentRun input-state publication (agent-input-state-content-cadence)",
     expect(log).toHaveLength(3);
   });
 });
+
+// autobyteus-473 DS-002: an event-stream run answers the background-task view with the tasks its runtime knows now.
+describe("AgentRun background-task view", () => {
+  const task = Object.freeze({ taskId: "bg-1", kind: "shell" as const, description: "pnpm build", command: "pnpm build",
+    status: "running" as const, summary: null, startedAt: "2026-11-12T10:00:00.000Z" });
+
+  it("answers an event-stream run with its current tasks, read when asked", async () => {
+    const { backend, run } = createHarness();
+    const current = vi.fn(() => [task]);
+    Object.assign(backend, { backgroundTaskInspection: { kind: "event-stream", current } });
+    expect(current).not.toHaveBeenCalled();
+    expect(await run.inspectBackgroundTasks()).toEqual({ kind: "event-stream", agentRunId: "agent-run-1", tasks: [task] });
+    current.mockReturnValue([]);
+    expect(await run.inspectBackgroundTasks()).toEqual({ kind: "event-stream", agentRunId: "agent-run-1", tasks: [] });
+    expect(current).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps the unsupported answer for a runtime that reports no background tasks", async () => {
+    const { backend, run } = createHarness();
+    Object.assign(backend, { backgroundTaskInspection: { kind: "unsupported" } });
+    expect(await run.inspectBackgroundTasks()).toEqual({ kind: "unsupported", agentRunId: "agent-run-1", reason: "unsupported" });
+  });
+});
