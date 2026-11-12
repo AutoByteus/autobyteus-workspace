@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-003 | Code Reviewer CRR-005 (`code-review-report.md`, round 2 Full Re-Audit), Solution Designer SR-045 … SR-053; round 3 | CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007; FU-011 narrowed into this ticket (SR-047) | `Local Fix` (001 residual, 005 residual, 007); `Design Impact` answered by SR-045 … SR-053 (006, Principle 16) | SR-045 … SR-053 (SR-050/051 replaced by SR-052), ARCH-REV-020 … ARCH-REV-028, CRR-005 | Implemented; targeted re-review by Code Review |
 | IR-004 | Code Reviewer CRR-006 (`code-review-report.md` "Round 3", Full Re-Audit of IR-003); round 4 | CR-461-008 | `Local Fix` | CRR-006 | Implemented; targeted re-review by Code Review |
 | IR-005 | Code Reviewer CRR-008 (failure-origin review of API/E2E round 1), Solution Designer SR-054; round 5 | CR-461-009, CR-461-010, CR-461-011 | `Local Fix` (CR-461-012/013 were Requirement Gaps, answered by SR-054 with no code change) | SR-054, CRR-008 | Implemented; targeted re-review by Code Review, then API/E2E |
+| IR-006 | Code Reviewer CRR-009 (`code-review-report.md` "Round 5", Full Re-Audit of IR-005); round 6 | CR-461-014, CR-461-015 | `Local Fix` | CRR-009 | Implemented; targeted re-review by Code Review, then API/E2E |
 
 ## Revision Entries
 
@@ -144,3 +145,20 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: IMP-27 (server type gate, unit suite), IMP-28 (web type gate, localization guards, full spec suite), IMP-29 (server integration suite), all Pass on `d188941869`.
 - Next recipient or routing: Code Reviewer, targeted re-review of CR-461-009 … -011; then API/E2E reruns the stories against the regenerated walkthrough.
 - Remaining limitations or risks: FU-015 (the server's team member queries still answer a child for the projection and trace page, used by E2E suites; not by the product); the views are not checked in a real browser by me (API/E2E's SDV cases cover them).
+
+### IR-006 — The team member reads answer only the team's members; one owner of the subject that reads an agent (CR-461-014, CR-461-015)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` "Round 5" (CRR-009, Full Re-Audit of IR-005 at `d188941869`). Round 6.
+- Triggering finding IDs: CR-461-014, CR-461-015.
+- Classification: `Local Fix` for both; Large / High unchanged, so it returns to Code Review, then API/E2E.
+- Prior authoritative result: IR-005 at `d188941869` (+ `2721259169`).
+- Current authoritative result: commits `504ff32691` (CR-461-014), `d3c57a8569` (CR-461-015), and the handoff commit.
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-009.
+- Approved behavior or requirement IDs affected: none changed; DS-8 (a child row read by its own identity) now has one owner per view kind.
+- Implementation delta:
+  - **CR-461-014.** `team-member-run-view-projection-service.ts`: `delegatedChildRun` and its two uses in `getProjection` and `getActiveTracePage` are removed; the team member reads answer only the team's own members, as the Org's do. The service takes only `Pick<DelegationTree, "peerChildrenOf">` (its peer children). FU-015 withdrawn. No unit or integration test used the branch; a test now shows every member read (projection, trace page, files) refusing a run the team delegated to.
+  - **CR-461-015.** `services/runHydration/agentReads.ts` replaces `delegatedChildReads.ts`: `teamAgentReadSubject({ teamRunId, tree, memberAddress }, agentRunId)` and `orgAgentReadSubject(orgRunId, index, agentRunId)` are the one owner per view kind of the subject that reads agent X (a run the view's run delegated to by its own identity, else the view's member); `readsOf(subject)` turns any subject into its stored-state and file reads. The team-member projection read (`fetchExactTeamMemberProjection`, from `teamRunContextHydrationService`) and the Org-member projection read (from `agentOrgContextHydration`) move into it. The seven sites consume them: the Team member loader, the Team focused agent at open, the store's and the Team event monitor's browse subjects, the Org focused agent at open, the Org member loader, the Org browse subject (local and remote). A child team's member address is used as the server sends it (the team's own space); the address stripping is gone.
+- Tests: `team-member-run-view-projection-service.test.ts` (a run the team delegated to is refused by every member read); web `agentReads.spec.ts` (the Team owner: own member, agent child, team child's member; the Org owner: own agent, configured team member, agent child, team child's member; `readsOf` for `run`, `teamMember`, `agentOrgMember`); `teamMemberProjectionHydrationService.spec.ts` drops a mock of the moved read.
+- Local validation and result: IMP-30 (web), IMP-31 (server) on `d3c57a8569`.
+- Next recipient or routing: Code Reviewer, targeted re-review of CR-461-014 and -015; then API/E2E.
+- Remaining limitations or risks: server E2E suites that read a delegated child through `getTeamMemberRunProjection` now get the member refusal; they go to API/E2E (CRR-009).
