@@ -116,4 +116,18 @@ describe("TeamMemberRunViewProjectionService file changes", () => {
     expect(fileChanges.getLocatedCollaborationMemberProjection).not.toHaveBeenCalled();
     expect(fileChanges.resolveLocatedCollaborationMemberEntry).not.toHaveBeenCalled();
   });
+
+  it("a run the team delegated to is not one of its members: every member read refuses it (autobyteus-461 CR-461-014)", async () => {
+    // The run is in the delegation tree as the team's child, but a child is read by its own identity, not through the team.
+    const tree = { ...noDelegations(), runOfAgent: vi.fn(async () => ({ rootSubjectKind: "agent", rootRunId: "worker-child-run" })),
+      parentOf: vi.fn(() => ({ delegatingRun: { rootSubjectKind: "agent_team", rootRunId: "team-1" } })) };
+    const { agentViews, fileChanges, locations } = harness(null);
+    const service = new TeamMemberRunViewProjectionService({ tree: tree as never, locations: locations as never,
+      agentRunViewProjectionService: agentViews as never, runFileChangeProjectionService: fileChanges as never });
+    const refused = { name: CollaborationMemberNotFoundError.name, message: "AgentRun 'worker-child-run' was not found in root TeamRun 'team-1'." };
+    await expect(service.getProjection("team-1", "worker-child-run")).rejects.toMatchObject(refused);
+    await expect(service.getActiveTracePage("team-1", "worker-child-run")).rejects.toMatchObject(refused);
+    await expect(service.getFileChanges("team-1", "worker-child-run")).rejects.toMatchObject(refused);
+    expect(tree.runOfAgent).not.toHaveBeenCalled();
+  });
 });

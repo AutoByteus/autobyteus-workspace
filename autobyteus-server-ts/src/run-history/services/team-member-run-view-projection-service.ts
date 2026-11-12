@@ -1,6 +1,4 @@
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
-import { runReferenceOf } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -40,14 +38,17 @@ export interface TeamMemberRunProjection {
 }
 
 export class TeamMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "runOfAgent" | "parentOf">;
+  private readonly tree: Pick<DelegationTree, "peerChildrenOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: TeamRunExecutionTreeLocationService;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
 
   constructor(options: {
-    /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "runOfAgent" | "parentOf">;
+    /**
+     * The relationships between runs, from the Task entries (SR-047): the runs this team delegated to peers. A run it
+     * delegated to on this node is not one of its members; it is read by its own identity (CR-461-014).
+     */
+    tree: Pick<DelegationTree, "peerChildrenOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: TeamRunExecutionTreeLocationService;
@@ -66,14 +67,6 @@ export class TeamMemberRunViewProjectionService {
     if (remote) {
       const { memberAddress: _address, ...projection } = await remoteMemberProjection(remote, null);
       return projection as TeamMemberRunProjection;
-    }
-    // DS-8: a child row's conversation is read from its own run (an agent run, or a team run's member).
-    const child = await this.delegatedChildRun(rootTeamRunId, agentRunId);
-    if (child?.rootSubjectKind === "agent_team") return this.getProjection(child.rootRunId, agentRunId);
-    if (child?.rootSubjectKind === "agent") {
-      const own = await this.agentViews.getProjection(agentRunId);
-      return { agentRunId: own.runId, conversation: resolveInterAgentSenderAddresses(own.conversation, () => null), activities: own.activities,
-        summary: own.summary, lastActivityAt: own.lastActivityAt, hasEarlierActiveTraceEvents: own.hasEarlierActiveTraceEvents };
     }
     const location = await this.requireLocation(rootTeamRunId, agentRunId);
     const projection = await this.agentViews.getProjectionFromMetadata({
@@ -96,9 +89,6 @@ export class TeamMemberRunViewProjectionService {
     agentRunId: string,
     beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePage> {
-    const child = await this.delegatedChildRun(rootTeamRunId, agentRunId);
-    if (child?.rootSubjectKind === "agent_team") return this.getActiveTracePage(child.rootRunId, agentRunId, beforeCursor);
-    if (child?.rootSubjectKind === "agent") return this.agentViews.getActiveTracePage(agentRunId, beforeCursor);
     const location = await this.requireLocation(rootTeamRunId, agentRunId);
     const page = await this.agentViews.getActiveTracePageFromMetadata({
       runId: location.agentRunId,
@@ -108,15 +98,6 @@ export class TeamMemberRunViewProjectionService {
     });
     const index = new TeamExecutionIndex(location.tree);
     return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
-  }
-
-  /** The run a child row's agent belongs to, when this team run delegated it (one hop); else null. */
-  private async delegatedChildRun(rootTeamRunId: string, agentRunId: string): Promise<RootExecutionIdentity | null> {
-    const tree = this.tree;
-    const run = await tree.runOfAgent(agentRunId.trim());
-    const reference = run ? runReferenceOf(run) : null;
-    const from = reference ? tree!.parentOf(reference) : null;
-    return run && from && from.delegatingRun.rootSubjectKind === "agent_team" && from.delegatingRun.rootRunId === rootTeamRunId.trim() ? run : null;
   }
 
   /** The member's artifacts: live while the team runs, else its stored file changes. */
