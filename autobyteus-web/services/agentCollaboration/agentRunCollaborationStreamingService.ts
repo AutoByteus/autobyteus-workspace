@@ -62,7 +62,6 @@ export class AgentRunCollaborationStreamingService {
     hostRunId: string
     isCurrent(): boolean
     publish(context: AgentRunCollaborationContext): void
-    onInactive(): void
     reportError(message: string): void
     /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
     onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
@@ -228,8 +227,8 @@ export class AgentRunCollaborationStreamingService {
       this.context = candidate
       this.phase = 'ready'
       this.reconnect.connected()
-      if (candidate.isActive) this.settleReadiness()
-      else { this.options.onInactive(); this.disconnect() }
+      // SR-045: the stream lives with the open view, active or stopped; it is ready once its snapshot is applied.
+      this.settleReadiness()
       return
     }
     if (!this.context || this.phase !== 'ready') throw new Error('Agent collaboration event arrived before the snapshot.')
@@ -254,11 +253,8 @@ export class AgentRunCollaborationStreamingService {
       }
       return
     }
+    // The run's own agent started or stopped: the view says so and its stream continues (SR-045).
     this.context.setActive(message.payload.is_active)
-    if (!message.payload.is_active) {
-      this.options.onInactive()
-      this.disconnect()
-    }
   }
 
   private acknowledge(message: CommandAck): void {

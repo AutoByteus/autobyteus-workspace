@@ -183,7 +183,8 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
     apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'observed')));
     await reconnect;
-    const socket = OrgTestSocket.instances[0];
+    // The latest stream: the stopped Org's earlier open view had its own (autobyteus-461 SR-045), retired by this reopen.
+    const socket = OrgTestSocket.instances.at(-1)!;
     const view = rootView(true);
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'publication' } });
     socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } });

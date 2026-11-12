@@ -19,7 +19,6 @@ import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
 import type { AgentPresentationMessage, CompactionRecoveryBlockDto } from '@autobyteus/agent-presentation-contracts'
-import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
@@ -108,7 +107,8 @@ export class AgentRunCollaborationContext {
     for (const inputState of input.view.agent_input_states) {
       handleAgentInputState(inputState.state, this.contexts.get(inputState.agent_run_id)!)
     }
-    this.phase = input.view.is_active ? 'live' : 'historical'
+    // A streamed view (it has a live sequence) takes events whether or not the run's own agent runs (SR-045).
+    this.phase = input.view.live_sequence_id !== null ? 'live' : 'historical'
   }
 
   /**
@@ -219,12 +219,9 @@ export class AgentRunCollaborationContext {
     }
   }
 
+  /** The run's own agent started or stopped (SR-045): its children are runs of their own and keep their states. */
   setActive(active: boolean): void {
-    this.view = { ...this.view, is_active: active }
-    if (!active) {
-      this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
-      this.phase = 'historical'
-    }
+    if (this.view.is_active !== active) this.view = { ...this.view, is_active: active }
   }
 
   requireReopen(message: string): void {
@@ -327,7 +324,8 @@ export class AgentRunCollaborationContext {
         ...members.flatMap((member) => visitAgent(member.agentRunId, depth + 1, childrenShown)),
         ...tasks.flatMap((child) => visit(child, depth + 1, childrenShown)),
       ]
-      entry.teamStatus = resolveTeamStatus(statuses, this.isActive)
+      // A child Team's status is its own agents': it runs on its own, whether or not this run's agent does.
+      entry.teamStatus = resolveTeamStatus(statuses, true)
       return statuses
     }
     // autobyteus-278: the root's remote runs are rows like its local copies, in the order they were delegated.

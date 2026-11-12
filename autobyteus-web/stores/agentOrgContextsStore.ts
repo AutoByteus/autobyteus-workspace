@@ -92,13 +92,13 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     services.delete(id)
     service?.disconnect()
   }
+  /** The Org's own agents stopped; its open view keeps its stream (autobyteus-461 SR-045). */
   const markHistorical = (id: string) => {
     generations.delete(id)
     contexts.value[id]?.setActive(false)
     retainSubmissionExclusion(id, contexts.value[id])
     useRunHistoryStore().applyAgentOrgActivity(id, false)
     void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
-    retireStream(id)
   }
 
   const attach = (orgRunIdInput: string): AgentOrgStreamingService => {
@@ -187,11 +187,10 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       if (!current()) return
       const candidate = shallowReactive(staged.context)
       publish(id, candidate, staged.commit)
-      if (candidate.isActive) {
-        // The coherent server observation permits attachment, not a stale row/mode.
-        candidate.requireReopen('AgentOrg stream is synchronizing.')
-        attach(id)
-      } else retireStream(id)
+      // The open Org's view keeps its stream, active or stopped (autobyteus-461 SR-045); an active one takes input once
+      // its stream is synchronized.
+      if (candidate.isActive) candidate.requireReopen('AgentOrg stream is synchronizing.')
+      attach(id)
     } catch (cause) {
       if (current()) { report(id, cause); throw cause }
     } finally {
@@ -204,7 +203,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     deferredReleases.delete(id)
     if (operations.value[id]) return Promise.resolve()
     const context = contexts.value[id]
-    if (context?.phase === 'historical' || (context?.phase === 'live' && services.get(id)?.isReady())) return Promise.resolve()
+    // A retained stopped Org is reused; its open view gets its stream (autobyteus-461 SR-045), whose snapshot refreshes it.
+    if (context?.phase === 'historical') { if (!services.has(id)) attach(id); return Promise.resolve() }
+    if (context?.phase === 'live' && services.get(id)?.isReady()) return Promise.resolve()
     const inFlight = inspections.get(id)
     if (inFlight && !intent) return inFlight
     retireStream(id)
@@ -232,8 +233,11 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       return org.phase === 'live' && org.isActive && services.get(id)?.isReady() ? 'live' : 'read_only'
     }
     if (!org || !agent || operations.value[id] || submissions.has(keyFor(id, agentRunId))) return 'read_only'
-    if (org.phase === 'historical' && !org.isActive && !agent.delegation) return 'continuable'
-    if (org.phase === 'live' && org.isActive && agent.live && services.get(id)?.isReady()) return 'live'
+    const ready = services.get(id)?.isReady() === true
+    // A child is a run of its own: it takes input over the open view's stream, the Org active or stopped (SR-045).
+    if (agent.delegation) return ready && agent.live ? 'live' : 'read_only'
+    if (org.phase === 'historical' && !org.isActive) return 'continuable'
+    if (org.phase === 'live' && org.isActive && agent.live && ready) return 'live'
     return 'read_only'
   }
 
@@ -255,16 +259,9 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     let draftEdited = false
     const stopWatching = watch(() => [context.requirement, context.contextFilePaths], () => { draftEdited = true }, { deep: true, flush: 'sync' })
     try {
-      if (access === 'continuable') {
-        const restored = await useAgentOrgRunStore().restore(id)
-        if (restored !== id) throw new Error('AgentOrg restore root mismatch.')
-        // Restore acceptance is not a ready stream; retain unknown truth on failure.
-        org.requireReopen('AgentOrg restored; stream is synchronizing.')
-        useRunHistoryStore().applyAgentOrgActivity(id, true)
-        void useRunHistoryStore().refreshAgentOrgHistoryItem(id)
-        const service = attach(id)
-        await service.whenReady()
-      }
+      // A stopped Org starts on this first input, sent over its view's stream (autobyteus-461 SR-046); the view continues
+      // live after the stream's in-band snapshot, which keeps this pending send.
+      if (access === 'continuable') await attach(id).whenReady()
       const ready = contexts.value[id]
       if (ready?.getAgentContext(agentRunId) !== context || ready.index.addressOf(agentRunId) !== address) {
         throw new Error('AgentOrg prepared submission identity changed.')

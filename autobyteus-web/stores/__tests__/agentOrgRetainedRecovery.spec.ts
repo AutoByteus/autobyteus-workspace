@@ -12,7 +12,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: (
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyAgentOrgActivity: mocks.activity, refreshAgentOrgHistoryItem: vi.fn() }) }))
-vi.mock('~/stores/agentOrgRunStore', () => ({ useAgentOrgRunStore: () => ({ terminate: mocks.terminate, restore: mocks.mutate }) }))
+vi.mock('~/stores/agentOrgRunStore', () => ({ useAgentOrgRunStore: () => ({ terminate: mocks.terminate }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => null }) }))
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
@@ -43,6 +43,14 @@ const envelope = (active: boolean) => {
   return { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view }
 }
 const inspection = (active: boolean) => ({ data: { getAgentOrgRunInspection: envelope(active) } })
+/** A stopped Org's stream (autobyteus-461 SR-045, SR-046): its stored-mode snapshot, a new sequence base, then its lifecycle. */
+const connectStored = async (socket = Socket.instances.at(-1)!) => {
+  const value = envelope(false)
+  socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'stored' } })
+  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { ...value, root_org: { ...value.root_org, live_sequence_id: 'stored-1', last_message_change_sequence: 0 } } })
+  socket.emit({ type: 'ROOT_LIFECYCLE', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: false } })
+  await tick()
+}
 const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: {
   ...variables, conversation: [{ kind: 'message', role: 'assistant', content: 'Retained conversation', ts: 1700000001 }], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
@@ -89,6 +97,9 @@ describe('retained Org disconnected recovery through real service/store/hydratio
     mocks.query.mockClear()
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
     socket.close(); await firstRetry()
+    // A stopped Org's view reconnects to its stored-mode stream (SR-045): no checkpoint, a new base.
+    expect(Socket.instances).toHaveLength(2)
+    await connectStored()
     expect(store.contextFor('org-run')!.phase).toBe('historical')
     expect(target.value.context).toBe(retained)
     expect(retained.state.currentStatus).toBe('offline')
@@ -97,7 +108,7 @@ describe('retained Org disconnected recovery through real service/store/hydratio
     expect(retained.requirement).toBe('unsent draft')
     expect(retained.contextFilePaths).toEqual([{ locator: '/draft/note.txt' }])
     expect(store.errorFor('org-run')).toBeNull()
-    expect(Socket.instances).toHaveLength(1)
+    expect(Socket.instances.filter(open => open.readyState === Socket.OPEN)).toHaveLength(1)
     expect(mocks.query.mock.calls.some(([request]) => request.query === GetAgentOrgExecutionCheckpoint)).toBe(false)
     expect(mocks.mutate).not.toHaveBeenCalled()
     expect(mocks.activity).toHaveBeenLastCalledWith('org-run', false)
@@ -105,12 +116,14 @@ describe('retained Org disconnected recovery through real service/store/hydratio
   })
 })
 
-it.each(['network', 'missing', 'malformed', 'foreign', 'graphql', 'projection'])('RET-03: %s stays unknown and never publishes inactive', async (failure) => {
+// A stopped Org's recovery stages nothing from its inspection (SR-045): its stream's snapshot is the view, so a member
+// projection failure is the stream's (a failed snapshot), not the inspection's.
+it.each(['network', 'missing', 'malformed', 'foreign', 'graphql'])('RET-03: %s stays unknown and never publishes inactive', async (failure) => {
   const socket = await open()
   const retained = store.contextFor('org-run')!
   mocks.query.mockImplementation(async ({ variables }) => {
     if (failure === 'network') throw new Error('unreachable')
-    if (failure === 'projection' && variables.agentRunId) throw new Error('projection unavailable')
+    if (variables.agentRunId) return projection(variables)
     if (failure === 'missing') return { data: {} }
     if (failure === 'malformed') return { data: { getAgentOrgRunInspection: {} } }
     const result = inspection(false)
@@ -143,6 +156,7 @@ it('RET-04: history during a loss streak starts no second recovery; the schedule
   store.reconcileRetainedHistory(['org-run']); await tick()
   expect(mocks.query).toHaveBeenCalledTimes(requests + 1)
   gate.resolve(inspection(false)); await tick()
+  await connectStored()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.errorFor('org-run')).toBeNull()
   expect(store.contextFor('unretained')).toBeNull()
@@ -182,7 +196,9 @@ it.each(['release', 'manual'])('RET-05: late inspection cannot overwrite %s owne
   const current = store.contextFor('org-run')
   gate.resolve(inspection(true)); await tick()
   expect(store.contextFor('org-run')).toBe(current)
-  expect(Socket.instances).toHaveLength(1)
+  // The late answer opens nothing; a manual open of the stopped Org keeps its view's one stream (SR-045).
+  expect(Socket.instances).toHaveLength(action === 'manual' ? 2 : 1)
+  expect(Socket.instances.filter(open => open.readyState === Socket.OPEN)).toHaveLength(action === 'manual' ? 1 : 0)
   if (action === 'manual') expect(store.activeTargetFor('org-run')!.context.state.runId).toBe('agent-director')
 })
 
@@ -211,12 +227,13 @@ it('RET-02: active-to-inactive checkpoint rejection retries via new inspection, 
   first.close(); await tick()
   expect(store.contextFor('org-run')!.phase).toBe('reopen_required')
   await vi.advanceTimersByTimeAsync(1000 + 2000) // the active read's checkpoint fails; the next attempt reads inactive
+  expect(Socket.instances).toHaveLength(2)
+  await connectStored()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
-  expect(Socket.instances).toHaveLength(1)
 })
 
 
-it('RET-05: pending attachment submission remains excluded through historical cleanup and settles once', async () => {
+it('RET-05: pending attachment submission remains excluded through the Org\'s stop and is sent once over its view\'s stream (SR-045, SR-046)', async () => {
   const socket = await open()
   const target = store.activeTargetFor('org-run')!
   if (target.access !== 'live') throw new Error('expected live target')
@@ -231,20 +248,26 @@ it('RET-05: pending attachment submission remains excluded through historical cl
   retained.contextFilePaths = [{ locator: '/newer.txt' } as any]
   mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
   socket.close(); await firstRetry()
+  await connectStored()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.activeTargetFor('org-run')!.context).toBe(retained)
   expect(retained.submissionPending).toBe(true)
   expect(store.activeTargetFor('org-run')!.access).toBe('read_only')
   await expect(target.interaction.send('duplicate', [])).rejects.toThrow()
   const finalFiles = [{ ...files[0], locator: '/rest/agent-org-runs/org-run/agent-runs/agent-worker/context-files/note.txt' }]
-  gate.resolve(finalFiles)
-  expect(await outcome).toBeInstanceOf(Error)
-  expect(retained.submissionPending).toBe(false)
+  gate.resolve(finalFiles); await tick()
+  // The stopped Org's view still has its stream: the message goes over it (the server starts the Org on it, SR-046).
+  const stream = Socket.instances.at(-1)!
+  expect(stream.sent).toHaveLength(1)
+  const command = JSON.parse(stream.sent[0]!).payload
+  expect(command).toMatchObject({ target_agent_run_id: retained.state.runId, content: 'pending message', context_file_paths: [finalFiles[0]!.locator] })
+  stream.emit({ type: 'AGENT_COMMAND_ACK', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', command_id: command.command_id,
+    command_type: 'SEND_MESSAGE', target_agent_run_id: retained.state.runId, state: 'accepted', code: null, message: null } })
+  expect(await outcome).toBeUndefined()
   expect(store.activeTargetFor('org-run')!.access).toBe('continuable')
   const users = retained.conversation.messages.filter(m => m.type === 'user')
   expect(users).toHaveLength(1)
   expect(users[0]!.contextFilePaths).toEqual(finalFiles)
-  expect(retained.conversation.messages.filter(m => m.type === 'ai')).toHaveLength(2)
   expect(retained.requirement).toBe('newer draft')
   expect(retained.contextFilePaths).toEqual([{ locator: '/newer.txt' }])
   expect(socket.sent).toHaveLength(0)
@@ -261,12 +284,15 @@ it('RET-05: an activity conflict cannot partially publish; a later recovery pres
   socket.close(); await firstRetry()
   store.select('org-run', '/director')
   gate.resolve(inspection(false)); await tick()
+  // The stopped Org's stored-mode snapshot meets the conflict (SR-045: its stream is the view).
+  await connectStored()
   expect(store.contextFor('org-run')).toBe(retained)
   expect(retained.phase).toBe('reopen_required')
   expect(store.activeTargetFor('org-run')!.context.state.runId).toBe('agent-director')
   commit.mockRestore()
   mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
   await vi.advanceTimersByTimeAsync(2000) // the conflict was a failed attempt: the next wait is 2 s
+  await connectStored()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.activeTargetFor('org-run')!.context).toBe(retained.getAgentContext('agent-director'))
 })
@@ -288,16 +314,17 @@ it.each(['full', 'focused'])('RET-04: after a %s history load the retained servi
   else await refreshAgentOrgHistoryForStore(history)
   // In a loss streak the history read starts no recovery of its own: the scheduler's next attempt (31 s) recovers.
   await vi.advanceTimersByTimeAsync(11000)
+  expect(Socket.instances).toHaveLength(2)
+  await connectStored()
   expect(history.historyFamilyErrors.agentOrg).toBeNull()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.activeTargetFor('org-run')!.context).toBe(retained)
   expect(retained.state.currentStatus).toBe('offline')
-  expect(Socket.instances).toHaveLength(1)
   expect(mocks.mutate).not.toHaveBeenCalled()
 })
 
 
-it('RET-01/05: inactive publication rejects readiness and released service cannot resurrect', async () => {
+it('RET-01/05: a stopped Org keeps its service; its stored-mode snapshot makes it ready, and no second stream opens (SR-045)', async () => {
   const connect = vi.spyOn(AgentOrgStreamingService.prototype, 'connect')
   const socket = await open()
   const service = connect.mock.contexts[0] as AgentOrgStreamingService
@@ -305,11 +332,11 @@ it('RET-01/05: inactive publication rejects readiness and released service canno
   socket.close()
   const waiting = service.whenReady().then(() => 'ready', () => 'released')
   await firstRetry()
-  expect(await waiting).toBe('released')
-  expect(service.isReady()).toBe(false)
-  await expect(service.whenReady()).rejects.toThrow('released')
+  await connectStored()
+  expect(await waiting).toBe('ready')
+  expect(service.isReady()).toBe(true)
   service.requestRecovery(); service.connect(); await vi.advanceTimersByTimeAsync(20000)
-  expect(Socket.instances).toHaveLength(1)
+  expect(Socket.instances).toHaveLength(2)
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   const read = mocks.query.mock.calls.find(([r]) => r.query === GetAgentOrgRunInspection)![0]
   expect(read).toMatchObject({ variables: { orgRunId: 'org-run' }, fetchPolicy: 'network-only', context: { queryDeduplication: false } })

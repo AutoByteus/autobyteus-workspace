@@ -24,7 +24,7 @@ const inspection = (active = false) => {
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })
 afterEach(() => useAgentOrgContextsStore().releaseContext('org-run'))
 describe('same-owner read-only Org inspection', () => {
-  it('publishes strict retained contexts and exact selection without creating a transport', async () => {
+  it('publishes strict retained contexts and exact selection; the stopped Org\'s open view gets its stream (autobyteus-461 SR-045)', async () => {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection())
     const store = useAgentOrgContextsStore()
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' })
@@ -32,7 +32,9 @@ describe('same-owner read-only Org inspection', () => {
     expect(store.errorFor('org-run')).toBeNull()
     expect(store.contextFor('org-run')?.selectedTarget()).toMatchObject({ access: 'read_only', kind: 'agent_org_task_team_member',
       context: { state: { runId: 'agent-task-lead' } } })
-    expect(mocks.instances).toHaveLength(0)
+    expect(mocks.instances).toHaveLength(1)
+    expect(mocks.instances[0].connect).toHaveBeenCalledTimes(1)
+    expect(store.contextFor('org-run')?.isActive).toBe(false)
   })
   it('retires pending hydration on disposal, without stale publication', async () => {
     let release!: () => void

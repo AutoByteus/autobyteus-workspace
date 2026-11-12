@@ -103,7 +103,7 @@ describe('Agent-root children load on demand', () => {
   it.each([5, 50])('drawing the rows of a hub with %s task Teams issues one view request and no member request (AC-001, AC-002)', async (teams) => {
     view = multiTeamView(teams)
     const store = useAgentRunCollaborationStore()
-    store.syncHost('host-run', false); await store.inspect('host-run')
+    await store.inspect('host-run')
 
     expect(store.taskRows('host-run')).toHaveLength(teams)
     expect(store.contextFor('host-run')!.listAgentContextEntries()).toHaveLength(teams * 6)
@@ -159,7 +159,7 @@ describe('Agent-root children load on demand', () => {
     store.selectChild('host-run', child); await flush()
     expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(1)
     const releaseSecond = holdChild(child)
-    store.syncHost('host-run', false); await flush()
+    void store.inspect('host-run'); await flush()
     const second = store.contextFor('host-run')!
     expect(second).not.toBe(first)
     expect(second.getAgentContext(child)).toBe(first.getAgentContext(child))

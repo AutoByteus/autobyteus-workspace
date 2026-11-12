@@ -47,7 +47,7 @@ describe('standalone delegated Team disclosure', () => {
 
   it('a fresh stored manager lists seven collapsed Teams, with all 42 child contexts intact', async () => {
     const store = useAgentRunCollaborationStore()
-    store.syncHost('host-run', false); await store.inspect('host-run')
+    await store.inspect('host-run')
     expect(rowKeys(store)).toEqual(Array.from({ length: 7 }, (_, index) => `team:${teamId(index)}`))
     expect(store.contextFor('host-run')!.listAgentContextEntries()).toHaveLength(42)
     expect(Socket.instances).toHaveLength(0)
@@ -68,7 +68,7 @@ describe('standalone delegated Team disclosure', () => {
     store.toggleTaskTeam('host-run', teamId(3))
     store.selectChild('host-run', null)
     hydration.read.mockResolvedValue(multiTeamView(8))
-    store.syncHost('host-run', false); await store.inspect('host-run')
+    await store.inspect('host-run')
     expect(store.isTaskTeamExpanded('host-run', teamId(3))).toBe(true)
     expect(store.isTaskTeamExpanded('host-run', teamId(2))).toBe(false)
     expect(store.isTaskTeamExpanded('host-run', teamId(7))).toBe(false)

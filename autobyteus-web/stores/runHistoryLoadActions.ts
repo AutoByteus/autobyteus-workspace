@@ -351,9 +351,8 @@ export const reconcileDiscoveredActiveRuns = async (
       continue;
     }
 
-    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) {
-      agentTeamRunStore.disconnectTeamStream(rootTeamRunId);
-    }
+    // An open Team's view keeps its stream, which tells its state, active or stopped (autobyteus-461 SR-045).
+    if (agentTeamRunStore.isTeamStreamReady(rootTeamRunId)) continue;
     teamContext.view.setRootTeamActive(false);
     teamContext.view.listAgentContextEntries().forEach(({ agentContext }) => {
       if (agentContext.state.currentStatus !== AgentStatus.Error) {
