@@ -93,10 +93,15 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     start(key, NO_MESSAGES, NO_PAST_PARTICIPANTS)
   }
 
-  /** A live message of one root: added to each loaded list of its two participants, or kept for their loads in flight. */
-  const append = (rootKind: CollaborationRootKind, rootRunId: string, message: ParticipantMessage): void => {
+  /**
+   * A live message of one root: added to each loaded list of its two participants, or kept for their loads in flight.
+   * Every list is keyed by its agent's own run, whose log holds every message the agent sends or receives (a message
+   * between two runs is in both logs), so a list of a delegated child's own run takes the message its delegator's
+   * stream carries too (autobyteus-461 CR-461-020).
+   */
+  const append = (message: ParticipantMessage): void => {
     for (const [listKey, list] of lists) {
-      if (list.key.rootKind !== rootKind || list.key.rootRunId !== rootRunId || !isParticipant(message, list.key.agentRunId)) continue
+      if (!isParticipant(message, list.key.agentRunId)) continue
       if (list.state === 'loading') buffers.get(listKey)?.push(message)
       else if (list.state === 'loaded' && !list.messages.some((entry) => entry.messageId === message.messageId)) {
         lists.set(listKey, Object.freeze({ ...list, messages: Object.freeze([...list.messages, message]) }))

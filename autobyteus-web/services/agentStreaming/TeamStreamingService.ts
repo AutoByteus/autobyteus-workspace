@@ -370,7 +370,7 @@ export class TeamStreamingService {
         // A fresh snapshot rebuilt the view: a new member-loader generation (autobyteus-358).
         beginTeamMemberGeneration(context);
       } else if (effect.kind === 'append_collaboration_message') {
-        useCollaborationParticipantMessagesStore().append('agent_team', context.view.getRootTeamRunId(), effect.message);
+        useCollaborationParticipantMessagesStore().append(effect.message);
       } else if (effect.kind === 'reload_collaboration_messages') {
         useCollaborationParticipantMessagesStore().reloadRoot('agent_team', context.view.getRootTeamRunId(), effect.rebuild,
           (agentRunId) => context.view.getMemberAddress(agentRunId) !== null);

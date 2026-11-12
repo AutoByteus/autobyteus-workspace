@@ -51,18 +51,20 @@ describe('CollaborationParticipantMessages', () => {
     expect(fetchParticipantMessages).toHaveBeenCalledWith(key)
     expect(owner.statusOf(key).state).toBe('loading')
     // During the load: one live message the stored list already holds, one it does not, and one for others only.
-    owner.append('agent', 'hub', message('m2', 'copy', 'host'))
-    owner.append('agent', 'hub', message('m3', 'host', 'copy'))
-    owner.append('agent', 'hub', message('m9', 'copy', 'other-copy'))
+    owner.append(message('m2', 'copy', 'host'))
+    owner.append(message('m3', 'host', 'copy'))
+    owner.append(message('m9', 'copy', 'other-copy'))
     request.resolve([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')])
     await settle()
 
     expect(owner.statusOf(key)).toEqual({ state: 'loaded', error: null })
     expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2', 'm3'])
-    owner.append('agent', 'hub', message('m4', 'copy', 'host'))
-    owner.append('agent', 'hub', message('m4', 'copy', 'host'))
-    owner.append('agent_org', 'hub', message('m5', 'copy', 'host'))
-    expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2', 'm3', 'm4'])
+    owner.append(message('m4', 'copy', 'host'))
+    owner.append(message('m4', 'copy', 'host'))
+    // A participant's list is keyed by its own run, whose log holds every message it sends or receives: a message
+    // another root's stream carries is added too (autobyteus-461 CR-461-020).
+    owner.append(message('m5', 'copy', 'host'))
+    expect(ids(owner.messagesOf(key))).toEqual(['m1', 'm2', 'm3', 'm4', 'm5'])
     owner.load(key)
     expect(fetchParticipantMessages).toHaveBeenCalledOnce()
   })
@@ -81,7 +83,7 @@ describe('CollaborationParticipantMessages', () => {
     // The loaded messages stay shown while the list loads again.
     expect(owner.statusOf(key).state).toBe('loading')
     expect(ids(owner.messagesOf(key))).toEqual(['m1'])
-    owner.append('agent', 'hub', message('m3', 'copy', 'host'))
+    owner.append(message('m3', 'copy', 'host'))
     reload.resolve([message('m1', 'host', 'copy'), message('m2', 'copy', 'host')])
     await settle()
 
@@ -97,7 +99,7 @@ describe('CollaborationParticipantMessages', () => {
     owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
     owner.reloadRoot('agent', 'hub', live('X', 6, 5), () => true)
-    owner.append('agent', 'hub', message('m3', 'copy', 'host'))
+    owner.append(message('m3', 'copy', 'host'))
 
     stale.resolve([message('m1', 'host', 'copy')])
     await settle()
@@ -131,7 +133,7 @@ describe('CollaborationParticipantMessages', () => {
     owner.reloadRoot('agent', 'hub', live('X', 4), () => true)
     owner.load(key)
     await settle()
-    owner.append('agent', 'hub', message('m2', 'copy', 'host'))
+    owner.append(message('m2', 'copy', 'host'))
     owner.advance('agent', 'hub', 'X', 5)
     // The single `checkpoint_required` event at 6 was seen; the reconnect's snapshot is based on it.
     owner.advance('agent', 'hub', 'X', 6)

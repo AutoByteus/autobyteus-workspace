@@ -59,6 +59,8 @@ describe('AgentRunCollaborationContext', () => {
 
   it('gives the host and each child a Team-tab perspective with named counterparts, loaded when shown', async () => {
     storeParticipantMessages('agent', 'host-run', agentRootMessages)
+    // A child's messages are read from its own run's log, which holds the same messages with the host (CR-461-020).
+    storeParticipantMessages('agent', 'cua-run', agentRootMessages)
     const context = build()
     const host = context.messagesView('host-run')
     expect(host).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedMemberAddress: '/research_assistant' })

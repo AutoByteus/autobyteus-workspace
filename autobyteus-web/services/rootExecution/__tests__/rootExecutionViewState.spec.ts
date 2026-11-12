@@ -348,6 +348,14 @@ describe('AgentOrgExecutionContext', () => {
       content: 'Task Team response', messageType: 'agent_message', referenceFiles: [],
       createdAt: '2026-09-01T00:00:03.750Z',
     }])
+    // The task run's own log holds its messages with the Org's agents too: its Team tab reads them there (CR-461-020).
+    storeParticipantMessages('agent', 'agent-task-fresh', [{
+      messageId: 'message-to-task', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-fresh',
+      content: 'Task update', messageType: 'agent_message', referenceFiles: [], createdAt: '2026-09-01T00:00:02.000Z',
+    }, {
+      messageId: 'message-from-task', senderAgentRunId: 'agent-task-fresh', receiverAgentRunId: 'agent-direct',
+      content: 'Task response', messageType: 'agent_message', referenceFiles: [], createdAt: '2026-09-01T00:00:03.000Z',
+    }])
     const taskEntry = {
       agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),
       context: agentContext('agent-task-fresh', 'Task Member'),

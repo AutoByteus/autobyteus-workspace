@@ -31,7 +31,7 @@ import {
 } from './agentOrgCommunicationPerspective'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
-import { orgAgentReadSubject } from '~/services/runHydration/agentReads'
+import { orgAgentReadSubject, participantMessagesKeyOf } from '~/services/runHydration/agentReads'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -237,7 +237,7 @@ export class AgentOrgExecutionContext {
         this.correlationFailure(`AgentOrg communication message '${event.message.messageId}' identity mismatch.`)
       }
       // The Team tab's lists own the messages (autobyteus-358); the view holds none.
-      useCollaborationParticipantMessagesStore().append('agent_org', this.orgRunId, event.message)
+      useCollaborationParticipantMessagesStore().append(event.message)
     }
     this.nextChangeSequence = following
     return 'applied'
@@ -329,13 +329,12 @@ export class AgentOrgExecutionContext {
         projectAgentOrgMessageIdentity(this.index, id),
       ]))),
       // A remote child's messages are in its own run's log on its node (autobyteus-278).
+      // From the log of the run it is read through: a delegated child's own (CR-461-020).
       ...participantMessagesView({
-        key: { rootKind: 'agent_org', rootRunId: this.orgRunId, agentRunId: focusedAgentRunId },
+        key: participantMessagesKeyOf(orgAgentReadSubject(this.orgRunId, this.index, focusedAgentRunId)),
         isRemote: this.index.remoteAgents.has(focusedAgentRunId),
         identityOf: (agentRunId) => this.index.agents.has(agentRunId) ? projectAgentOrgMessageIdentity(this.index, agentRunId) : null,
       }),
-      referenceContentPath: (messageId: string, referenceId: string) =>
-        `agent-org-runs/${encodeURIComponent(this.orgRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
   }
 }

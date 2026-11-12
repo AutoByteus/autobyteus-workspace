@@ -7,6 +7,7 @@ import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
 import { getApolloClient } from '~/utils/apolloClient';
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { fetchRunProjection } from './runStoredStateLoader';
+import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages';
 
 /**
  * Which subject reads one agent of a Team or Org view, and that subject's reads (autobyteus-461 CR-461-010, CR-461-015).
@@ -113,3 +114,13 @@ export const readsOf = (subject: AgentViewReadSubject): Readonly<{
       : fetchExactOrgMemberProjection(subject.orgRunId, subject.memberAddress, subject.agentRunId),
   fetchFileChanges: () => fetchRunFileChanges(subject),
 });
+
+/**
+ * The participant-messages key of the subject that reads an agent: the log of the run it is read through, by its own
+ * identity (a delegated child's own run, or the view's root for its own agents; CR-461-020).
+ */
+export const participantMessagesKeyOf = (subject: AgentViewReadSubject): ParticipantMessagesKey => subject.kind === 'run'
+  ? Object.freeze({ rootKind: 'agent', rootRunId: subject.runId, agentRunId: subject.runId })
+  : subject.kind === 'teamMember'
+    ? Object.freeze({ rootKind: 'agent_team', rootRunId: subject.teamRunId, agentRunId: subject.agentRunId })
+    : Object.freeze({ rootKind: 'agent_org', rootRunId: subject.orgRunId, agentRunId: subject.agentRunId });

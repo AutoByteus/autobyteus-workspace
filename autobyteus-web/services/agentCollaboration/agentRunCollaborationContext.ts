@@ -25,6 +25,8 @@ import { participantMessagesView } from '~/services/collaborationMessages/partic
 import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
 import { resolveTeamStatus, type TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { applyRemoteSummaryStatuses, mergeByStartTime, remoteRowsOf } from '~/services/remoteRuns/remoteChildren'
+import { participantMessagesKeyOf } from '~/services/runHydration/agentReads'
+import type { ParticipantMessagesKey } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
@@ -162,7 +164,7 @@ export class AgentRunCollaborationContext {
     } else {
       // The Team tab's lists own the messages (autobyteus-358); the view holds none.
       this.assertMessagesCorrelated([event.message])
-      useCollaborationParticipantMessagesStore().append('agent', this.hostRunId, event.message)
+      useCollaborationParticipantMessagesStore().append(event.message)
     }
     this.nextChangeSequence = following
     return 'applied'
@@ -340,13 +342,23 @@ export class AgentRunCollaborationContext {
         [this.hostRunId, ...this.index.agents.keys()].map((id) => [id, this.identityOf(id)]),
       )),
       ...participantMessagesView({
-        key: { rootKind: 'agent', rootRunId: this.hostRunId, agentRunId: focusedAgentRunId },
+        key: this.participantMessagesKey(focusedAgentRunId),
         isRemote: this.index.remoteAgents.has(focusedAgentRunId),
         identityOf: (agentRunId) => this.index.addressOf(agentRunId) ? this.identityOf(agentRunId) : null,
       }),
-      referenceContentPath: (messageId: string, referenceId: string) =>
-        `agent-collaborations/${encodeURIComponent(this.hostRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
+  }
+
+  /**
+   * Whose log holds a participant's messages: the run's own for its agent, a delegated child's own run for the child
+   * (an agent child as its run, a team child's member as that team run's member; autobyteus-461 CR-461-020).
+   */
+  private participantMessagesKey(agentRunId: string): ParticipantMessagesKey {
+    const child = this.index.agents.get(agentRunId)
+    if (!child) return participantMessagesKeyOf({ kind: 'run', runId: this.hostRunId })
+    return participantMessagesKeyOf(child.kind === 'task_team_member' && child.teamRunId
+      ? { kind: 'teamMember', teamRunId: child.teamRunId, memberAddress: child.address, agentRunId }
+      : { kind: 'run', runId: agentRunId })
   }
 
   private identityOf(agentRunId: string): CollaborationMessageMemberIdentity {
