@@ -1251,4 +1251,7 @@
 - **No requirement change:** a peer child's Stop behaves as at base.
 - **Done:** a paragraph under rule 2 with tests, and the corrected removal-plan row.
 - **Next action:** architecture review, together with SR-064.
-
+- **ARCH-REV-039 passed SR-064 and SR-065.** Its notes were applied:
+  1. A peer child's message and interrupt keep base's `executeRemoteChildCommand` branch in the three roots. Removing `DelegatedRunCommands` removes only the local route.
+  2. Line references: `stopRemoteChild` is at `:59` at base, and the hook is `onHostReady`.
+  3. One binding source: the root's `onHostReady`, with the root found through registration, as `StandalonePairedAgentAccess` does. The round-38 note, the in-band snapshot not being a new base, was already applied in 27d6f014b9 (DS-8 "Switching modes").

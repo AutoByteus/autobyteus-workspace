@@ -217,7 +217,11 @@ The same holds for a child's Settings: a launch edited in the delegator's Settin
 
 **An agent run's own stream follows its run, whoever restores it** (SR-064, IR-013). At base only a standalone run's own user restored it, so `AgentStreamHandler` bound a session to the run in two cases only: at connect, when the run is already active (`agent-stream-handler.ts:154-155`); and on that session's own `SEND_MESSAGE` (`onActiveRunReady`, `:381`). Now a delegator's Task message restores a stopped delegated agent run (DS-2). A user who watches that run on its own stream would see its status move (rule 1) but no live conversation. So the agent stream gets the rule the team and org view sessions already follow (SR-046):
 - **The rule:** an open agent stream session follows its run by run ID. When the run becomes active, the session binds to it, whoever restored or started it: a delegator's Task message, a peer, a restart resume, or another session. When the run stops, the session unbinds, sends `AGENT_STATUS`, and stays open.
-- **The source:** the run lifecycle the team and org sessions use, `ActiveCollaborationRootDirectory.onRegistrationChanged` for the run's standalone root. The binding must happen once the run's `AgentRun` is ready and before anything is posted to it, as the own-send path does in the root's gate. If registration fires before the host is ready, the standalone root's `readyHost` (`standalone-root-message-delivery.ts:70-75`) reports the ready run to the same per-run listeners instead. The implementation picks the one that is in the gate before the post.
+- **The source, one** (ARCH-REV-039 note 3): the standalone root's `onHostReady`, the pattern `StandalonePairedAgentAccess` uses for a peer that started the run (autobyteus-278):
+  - **Finding the root:** the session finds it through `ActiveCollaborationRootDirectory.onRegistrationChanged`, the lifecycle the team and org sessions follow. A standalone root is committed there when it is created (`standalone-agent-run-root-manager.ts:366-369`), before anything is delivered through it.
+  - **On registration:** the session binds to `root.activeHostRun()` if it is live, and subscribes to `root.onHostReady`.
+  - **The binding:** `onHostReady` fires in `readyHost` (`standalone-root-message-delivery.ts:184`), inside the root's gate, after the run is made ready and before any message is posted. So the binding comes before the run's first event, for every kind of input. An `AgentRun` restored after an idle shutdown is a new run, and the session rebinds to it.
+  - **On unregistration:** the session drops the root's subscription and unbinds.
 - **Idempotent:** binding a session that is already bound to the same `AgentRun` does nothing. The own-send `onActiveRunReady` stays, and becomes the same call.
 - **No web change:** the web opens the run's own stream as at base.
 - **Tests:**
@@ -237,11 +241,13 @@ The same holds for a child's Settings: a launch edited in the delegator's Settin
 
 **A child on a peer node keeps base's route** (SR-065, IR-013 follow-up). Rule 2 covers a run on this node, which has its own standard path here. A run on a peer node has no path here except its delegator's peer link, as autobyteus-278 built it (DEC-804):
 - Its stored conversation and its summary events come through the delegator's view, as at base.
-- **Its Stop** stays on `stopDelegatedExecution`, narrowed to peer rows. The resolver finds the delegator's live root and calls `root.stopDelegatedExecution`, which keeps only the remote branch (`stopRemoteChild`, `remote-child-commands.ts:54`).
+- **Its message and interrupt** (ARCH-REV-039 note 1) keep base's branch in the three roots: the delegator's view command for a peer child → `executeRemoteChildCommand` (`remote-child-commands.ts:41`; base `root-team-run.ts:373`, `agent-org-run.ts:411`, `standalone-agent-run-root.ts:372`). There is no tool approval, as at base. Removing `DelegatedRunCommands` removes only the local-child route: the view's command route keeps the peer branch, and refuses a local child, which the web reaches on its own path (rule 2).
+- **Its Stop** stays on `stopDelegatedExecution`, narrowed to peer rows. The resolver finds the delegator's live root and calls `root.stopDelegatedExecution`, which keeps only the remote branch (`stopRemoteChild`, `remote-child-commands.ts:59` at base).
   - A reference to a run on this node is refused as `NOT_FOUND`. The web never sends one: a local row's Stop is its own run's terminate (`terminateAgentRun` / `terminateAgentTeamRun`).
   - When the delegator is not running, the Stop is refused with `ROOT_NOT_ACTIVE`, as at base. The peer run ends on its own node, by its own idle shutdown or by its user there.
 - **`DelegatedLaunchSelectionService` shrinks to this route** and is renamed `PeerChildStop`, since it no longer selects launches. Its save and its options go, as do `DelegatedChildLaunches` and `updateDelegatedLaunchSelections`.
 - **Tests:**
+  - a message and an interrupt to a peer child from its delegator's view reach its node;
   - a peer agent child's and a peer team child's Stop, from a running delegator's view, end the run on its node;
   - with the delegator stopped, the Stop is refused with `ROOT_NOT_ACTIVE`;
   - a local reference is refused as `NOT_FOUND`.
