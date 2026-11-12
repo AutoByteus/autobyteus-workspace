@@ -2,7 +2,7 @@
 
 Every operation applies the contract's rules (target-collaboration-contract.md §2 … §4) to an in-memory disk: a dict
 from a node-qualified path ("A:memory/agents/<id>/run_metadata.json") to its JSON. Run lists and message logs are
-lists. The DelegationTree is derived from the disk, never stored. Nothing here reads the user's data.
+lists. The DelegationIndex is derived from the disk, never stored. Nothing here reads the user's data.
 """
 import copy, json
 
@@ -142,7 +142,7 @@ class World:
                 for t, e in self.entries(node) if t == task_id and e["role"] == "assigned"}
     def run_by_key(self, node, kind, run_id): return (node, kind, run_id)
 
-    # ---------- the DelegationTree (derived)
+    # ---------- the DelegationIndex (derived)
     def tree(self, node):
         nodes = {}
         def ensure(k):

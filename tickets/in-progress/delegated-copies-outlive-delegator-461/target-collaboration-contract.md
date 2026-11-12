@@ -22,7 +22,7 @@ The design (`design-spec.md`) says how the code does it. This file says what is 
 - Revisions 3 and 4 were never approved.
 - autobyteus-469 then made the Task record the index of delegated runs.
 - Revision 5 rebuilt the contract on 469 (SR-018).
-- Revision 6 added the run's own `delegatedFrom` and the in-memory `DelegationTree` (SR-022).
+- Revision 6 added the run's own `delegatedFrom` and the in-memory `DelegationIndex` (SR-022).
 - SR-024 and SR-025: every team run is rooted at `/`.
 - Revision 7 (SR-026) puts every case into one structure, with its stored data and its check. It adds two facts that collecting the cases brought out: where an agent run's message log is (TC-13, §3.4), and the extra message copies left in former hosts' logs (§3.4).
 
@@ -40,7 +40,7 @@ Authorities: [Collaboration Model](../../../autobyteus-server-ts/docs/design/col
 - **P2 The delegation is stored where each side needs it, under one name, `delegatedFrom`.**
   - **On the delegated run's own file:** its origin. It is written once, when the run is created, and never changes.
   - **On each Task entry:** the assignment. It opens, closes and reopens, and it goes with the Task.
-  - **The delegating run stores nothing** about the runs it delegated to. Its side lives in memory, in the `DelegationTree` (§4).
+  - **The delegating run stores nothing** about the runs it delegated to. Its side lives in memory, in the `DelegationIndex` (§4).
   - The two stored values are equal by rule: a run's later Tasks are given only by its assigner. *(The user: "it's reasonable to put that information on my side … it's just like more symmetric information".)*
 - **P3 One hop.** `delegatedFrom` names the run of the agent that delegated, never the top of a chain.
 - **P4 One owner per fact** (§3.6).
@@ -73,7 +73,7 @@ Words:
 
 - The address a run was delegated to (`/software_engineering_team`) is a name in its **delegator's** space. It is kept as the Task entry's `recipientAddress`. It is not an address of the delegated run's agents.
 - `/` itself is never an address.
-- The `DelegationTree` is not an address space. It relates runs and never gives one run's agents an address in another run.
+- The `DelegationIndex` is not an address space. It relates runs and never gives one run's agents an address in another run.
 
 ### 2.2 Who may message whom (by run ID)
 
@@ -314,7 +314,7 @@ Each one is also in its own run's log (or logs), with the same `messageId`. The 
 ### 3.5 What is not stored
 
 - **The delegating run stores nothing about delegated runs.** The standalone `collaboration_tree.json` is removed (TC-8): its `host.address` moves to `run_metadata.json`, and its peer links move to their Task entries. Team and org files lose `taskExecutions` and `remoteTaskExecutions`.
-- **The `DelegationTree` is in memory only** (§4).
+- **The `DelegationIndex` is in memory only** (§4).
 - **The history row's `hasCollaboration`** is set by the first delegation.
 
 ### 3.6 Every attribute, once
@@ -327,7 +327,7 @@ Each one is also in its own run's log (or logs), with the same `messageId`. The 
 | `nodeId`, `members` | Task entry | Peer's runs only | This node cannot read that run |
 | `address` | Agent run's `run_metadata.json` | Moved here | Not derivable for 6 of 43 |
 | `taskAgent`, `hostRoot`, `assignedBy`, `coordinatingRun`, `collaboration_tree.json`, `taskExecutions`, `remoteTaskExecutions`, `followsTeam`, team `userLaunchSelection` | — | Removed | §6 |
-| `DelegationTree` | Memory | Added, not stored | Derived (§4) |
+| `DelegationIndex` | Memory | Added, not stored | Derived (§4) |
 
 ### 3.7 Each record and its one owner in code
 
@@ -335,22 +335,28 @@ The code mirrors this model: one owner writes each record, and the others only r
 
 | Record | Written by (one owner) | Read by |
 | --- | --- | --- |
-| Task entry, with its `delegatedFrom` and `recipientAddress` (§3.1) | The Task side (`TaskExecutionResourceService`), in the Task's ordered change | `DelegationTree`, `CrossRunMessageDelivery`, the views, the run list |
+| Task entry, with its `delegatedFrom` and `recipientAddress` (§3.1) | The Task side (`TaskExecutionResourceService`), in the Task's ordered change | `DelegationIndex`, `CrossRunMessageDelivery`, the views, the run list |
 | A delegated run's own file, with its `delegatedFrom` (§3.2) | `DelegatedRunStarter`, once, at creation; afterwards the ordinary run services for the run's own fields | The run's own root, the run list label, the Memory page; the peer back-link only when `isPeerStarted` |
 | A run's own file, when the user started the run (RUN-1 … RUN-3) | The ordinary run services | That run's root |
 | `address` in `run_metadata.json` (§3.3) | The agent run's own root, when it first collaborates; `DelegatedRunStarter` for a delegated run | Address resolution, headers |
 | A run's message log (§3.4) | That run's own root, and only its own log; `CrossRunMessageDelivery` asks each of the two roots to append | That run's view |
 | A run list row | The run history services; `DelegatedRunStarter` for a delegated run | The run list |
-| `DelegationTree` (§4) | Collaboration, from the Task side's change notices | `CrossRunMessageDelivery`, views, token totals, the restart notice |
+| `DelegationIndex` (§4) | Collaboration, from the Task side's change notices | `CrossRunMessageDelivery`, views, token totals, the restart notice |
 
-## 4. In memory: the `DelegationTree`, one tree per run the user started
+## 4. In memory: the `DelegationIndex`, one tree per run the user started
 
 Collaboration owns it (TC-11). It is what the old container's index was, the map the user sees as the collaboration tree and the one you look things up in, **without hosting**: it holds no run's life (P6). It is built from the Task records, not from where a run happens to run. (SR-060, the user's direction of 2026-11-12: "the individual ones which served from the earlier container could also be extracted from this … it serves a similar purpose".)
+
+**The two names** (SR-061, the user, 2026-11-12):
+- **`DelegationIndex`** is the global index of who delegated to whom, with the direct lookups. Not "task delegation": `TaskDelegation` is the owner of the `delegate_task` operation.
+- **`CollaborationTree`** (`delegationIndex.collaborationTreeOf(run)`) is one run's tree: its agents, its delegated runs nested under the agents that delegated them, and what its agents can reach. It is what that run's view shows. The tree of a run the user started is that run's collaboration tree; no third name is needed.
+
+The old stored `collaboration/collaboration_tree.json` is removed (TC-8). The collaboration tree is now built in memory from the Task records, never stored, and the glossary says so.
 
 **Its structure:** a forest, with direct lookups.
 
 ```
-DelegationTree (global, in memory)
+DelegationIndex (global, in memory)
 ├── byAgentRunId: agent run ID → { run, its address in its run's own space, the tree it is in }
 ├── byRunId:      run reference → its node
 └── trees: one per run the user started (16 today), keyed by that run
@@ -372,7 +378,7 @@ DelegationTree (global, in memory)
 - **Kept current** by every delegation, closure, reopen and Task deletion. Each update happens synchronously inside the Task's ordered change, before the change resolves. The Task side stays the authority for "is this Task open".
 - **Each tree lives as long as its Task records do,** not as long as its top run. A tree is not kept inside its top run's root: that root stops with its own run, while the runs under it keep working and keep talking, also after the top run stops or is deleted.
 
-**Each run's collaboration map** (`mapOf(run)`, derived when asked, never stored). It answers, for one run, every cross-run question the old container's index answered. The questions about a run's own parts stay with that run's own index, as today: its members and sub-teams, its own addresses, steps 1 and 3 of §2.3. The design's "The delegation tree and each run's collaboration map" has the method-by-method inventory.
+**Each run's collaboration tree** (`collaborationTreeOf(run)`, derived when asked, never stored). It answers, for one run, every cross-run question the old container's index answered. The questions about a run's own parts stay with that run's own index, as today: its members and sub-teams, its own addresses, steps 1 and 3 of §2.3. The design's "The delegation tree and each run's collaboration tree" has the method-by-method inventory.
 
 | Question | Answer |
 | --- | --- |
@@ -658,7 +664,7 @@ Notes:
 | TC-8 | The standalone `collaboration_tree.json` | Removed; its address → `run_metadata.json`; peer links → Task entries | The user | Decided, 2026-11-11 |
 | TC-9 | The 15 old delegated runs with no Task record | Ordinary runs in the run list | The user | Decided, 2026-11-11 |
 | TC-10 | Does the delegated run also carry `delegatedFrom`? | Yes, as its origin, written once; one name | The user | Decided, 2026-11-11 (revision 6) |
-| TC-11 | An in-memory structure of the relationships | The `DelegationTree` (§4), owned by collaboration, holding no run's life | The user | Decided, 2026-11-11 |
+| TC-11 | An in-memory structure of the relationships | The `DelegationIndex` (§4), owned by collaboration, holding no run's life | The user | Decided, 2026-11-11 |
 | TC-12 | The shape of a delegated team's file | The ordinary team file, rooted at `/`; the delegation address in `recipientAddress`; an outside handoff kept and resolved when sent | Solution Designer (SR-025, answering ARCH-REV-008 AR-018); **the user** (SR-035, ARCH-REV-009 AR-019) | **Decided by the user, 2026-11-11**: "When I address my team member, I should feel like I'm on the root"; "if option one feels more reasonable, we definitely use option one" |
 | TC-13 | Where an agent run's message log is | The run's own folder, `agents/<id>/communication_messages_*`, for every agent run, as for team and org runs; 8 logs move up from `collaboration/` | Solution Designer (SR-026) | Decided; the user informed |
 | DEC-011 | Which runs may message each other | Centered on the Task, with today's reach (§2.2) | The user | Decided, 2026-11-11 |

@@ -1165,3 +1165,29 @@
   - a node's tree is derived by walking up, never stored, and a run whose own entries are deleted becomes a top with its subtree;
   - a test that the map and a loaded root agree on step 1, for a team and an org;
   - and, the optional note decided on the merits, `CrossRunAddressResolution` goes. It would only forward to the map (an empty layer, Principle 13); the dispatcher resolves through `mapOf(sender)`.
+
+### SR-061 — The frontend contract: views in base's shapes, every run reached the same way; the names `DelegationIndex` and `CollaborationTree` (the user's direction)
+
+- Triggering: the user (2026-11-12).
+  - **On the changes:** "what user sees on the front end is not so much different … the same stuff is provided by the back end … So why did we make so much changes on the front end?"
+  - **On the relay:** "I don't really see why it has to go through the delegator … the task agent or task agent team is also agent run … there's a standard approach … status … also a standard approach".
+  - **On the view:** "the container is already the view … when a task is being delegated … it is constructing … a collaboration tree".
+  - **On the names:** "collaboration tree … does look like a tree"; on the global structure: "I agree".
+- Read: about 126 web source files change on the branch, most of them because the backend changed what it sends: new events, a new poll shape, removed fields, a relay of child commands through the delegator's view, and web row code. Only two web changes are real behavior: the view of a stopped run stays live, and a delegated run is addressed by its own identity. At base, going through the delegator followed from hosting, not from a choice. The web's standard paths for any run exist: `AgentStreamingService` and `TeamStreamingService` by run ID, and the run list's statuses.
+- The Solution Designer's error: the data model was held fixed and validated, but the view contract was not. Each finding was fixed by changing what the backend sends and what the web does, so the web kept changing, with its own bugs, while nothing the user sees changed.
+- Decision:
+  - **Rule 1:** views and lists get base's shapes, built from each run's collaboration tree.
+  - **Rule 2:** a delegated run is reached through its own standard path, and the delegator's view only shows rows.
+  - **Rule 3:** a characterization at `827f1e68dc` per story is the acceptance check.
+  - **Every earlier web-facing item** stays, goes or returns, item by item; the design's "The frontend contract" section has the table. The web keeps only three changes: the stopped run's live view, the delegated row bound to its own run, and idempotent `TASK_EXECUTION_STARTED`.
+  - **The names:** `DelegationTree` becomes `DelegationIndex`, and `RunCollaborationMap` becomes `CollaborationTree` (`collaborationTreeOf(run)`), with the glossary note that the old stored file is removed.
+  - **The trace pages' sender address** is `collaborationTreeOf(run).reachingAddressOf(sender)`.
+- Done:
+  - contract §4 (the names);
+  - the model and the walkthrough, renamed and regenerated;
+  - the design's new section, before DS-8, and the renames throughout.
+
+  `walkthrough.py --check` passes. The Implementation Engineer was asked to hold the affected parts.
+- Approval: the user's direction. Rule 2's one visible point, a delegated team's members' live statuses unselected, stays as at base (rule 1 projects them), so nothing the user sees changes.
+- Next action: architecture review; then the Implementation Engineer, with the held CR-461-033 work rebased onto this
+
