@@ -80,7 +80,8 @@ const peerRows = (
     const agent = { address: child.address, agentRunId: child.runId }
     return [asRow(agentRow(agent, 0, false), null, agent)]
   }
-  const coordinator = child.members.find((member) => member.agentRunId === child.coordinatorAgentRunId) ?? { address: child.address, agentRunId: '' }
+  const coordinator = child.members.find((member) => member.agentRunId === child.coordinatorAgentRunId)
+  if (!coordinator) throw new Error(`Missing exact task coordinator '${child.runId}'.`)
   const team: RunHistoryTransientExecutionRow = {
     kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${child.runId}`, teamRunId: input.rootRunId,
     memberAddress: child.address, agentRunId: null, teamRunIdForNode: child.runId, memberKind: 'agent_team',

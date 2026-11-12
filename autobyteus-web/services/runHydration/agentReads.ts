@@ -69,7 +69,7 @@ export const agentRunAgentReadSubject = (
 ): AgentViewReadSubject => {
   if (agentRunId === hostRunId) return Object.freeze({ kind: 'run', runId: hostRunId });
   const local = index.agents.get(agentRunId);
-  if (local?.kind === 'task_team_member' && local.teamRunId) {
+  if (local?.kind === 'task_team_member') {
     // A child team's member address is in the team run's own space, as the server sends it.
     return Object.freeze({ kind: 'teamMember', teamRunId: local.teamRunId, memberAddress: local.address, agentRunId });
   }

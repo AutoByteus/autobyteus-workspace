@@ -74,5 +74,4 @@ export const RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
 export type ChildRunIdentityDto = z.infer<typeof childRunIdentityDtoSchema>;
 export type ListedRunRefDto = z.infer<typeof listedRunRefDtoSchema>;
 export type ListedRunChildDto = z.infer<typeof listedRunChildDtoSchema>;
-export type ChildRunNodeDto = z.infer<typeof childRunNodeDtoSchema>;
 export type RunCollaborationStatusesDto = z.infer<typeof runCollaborationStatusesDtoSchema>;

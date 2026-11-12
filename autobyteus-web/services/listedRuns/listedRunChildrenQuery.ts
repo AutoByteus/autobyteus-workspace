@@ -7,9 +7,8 @@ import {
 import { GetRunCollaborationStatuses } from '~/graphql/queries/collaboratorQueries'
 import { getApolloClient } from '~/utils/apolloClient'
 
-/** One listed run's answer: its activity and its local children, each by its identity with its agents' statuses. */
+/** One listed run's answer: its activity and its open children, here (with their agents' statuses) and on peer nodes. */
 export type ListedRunAnswer = RunCollaborationStatusesDto[number]
-export type ListedRunChild = ListedRunAnswer['children'][number]
 
 /**
  * The listed runs' children (autobyteus-461 SR-055), at most 100 runs per read as the server allows: one read for up to

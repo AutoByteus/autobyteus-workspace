@@ -11,55 +11,66 @@ import { mergeByStartTime } from '~/services/remoteRuns/remoteChildren'
  * rows are built once per view kind, from the same facts, whether the run is open or only listed.
  */
 export type DelegatedChildRun = Readonly<{
-  kind: 'agent' | 'agent_team'
   /** The agent run, or the team run. */
   runId: string
   address: string
-  /** A team run's members (none for an agent run). */
-  members: readonly Readonly<{ address: string; agentRunId: string }>[]
-  /** The member a team row opens; `null` for an agent run. */
-  coordinatorAgentRunId: string | null
   delegatorAgentRunId: string | null
   startedAt: string
   node: Readonly<{ nodeId: string; nodeName: string }> | null
-}>
+}> & (
+  | Readonly<{ kind: 'agent'; members: readonly []; coordinatorAgentRunId: null }>
+  /** A team run: its members, and its coordinator among them (the member a team row opens). */
+  | Readonly<{ kind: 'agent_team'; members: readonly ChildMember[]; coordinatorAgentRunId: string }>
+)
+type ChildMember = Readonly<{ address: string; agentRunId: string }>
 
-/** A team run's coordinator among its members: the one at its coordinator address, else its first member. */
-const coordinatorOf = (members: DelegatedChildRun['members'], coordinatorAddress: string | null | undefined): string | null =>
-  (members.find((member) => member.address === coordinatorAddress) ?? members[0])?.agentRunId ?? null
+/**
+ * A team run's coordinator: its member at its coordinator address. A team run without one is refused (CR-461-028),
+ * never opened at another member.
+ */
+const coordinatorOf = (teamRunId: string, members: readonly ChildMember[], coordinatorAddress: string): string => {
+  const coordinator = members.find((member) => member.address === coordinatorAddress)
+  if (!coordinator) throw new Error(`Team run '${teamRunId}' has no member at its coordinator address '${coordinatorAddress}'.`)
+  return coordinator.agentRunId
+}
+/** The listed answer names the coordinator by its run; it is one of the members. */
+const requireMember = (teamRunId: string, members: readonly ChildMember[], agentRunId: string): string => {
+  if (!members.some((member) => member.agentRunId === agentRunId)) throw new Error(`Team run '${teamRunId}' has no coordinator '${agentRunId}' among its members.`)
+  return agentRunId
+}
 
 /** A child row of an agent run's or an Org run's view (one hop: a child team's own children are its own view's). */
 export const childOfCollaborationTask = (task: CollaborationTaskExecutionDto): DelegatedChildRun => {
   const common = { address: task.address, delegatorAgentRunId: task.delegatorAgentRunId ?? null, startedAt: task.startedAt, node: null }
-  if ('agentRunId' in task) return Object.freeze({ kind: 'agent', runId: task.agentRunId, members: [], coordinatorAgentRunId: null, ...common })
+  if ('agentRunId' in task) return Object.freeze({ kind: 'agent', runId: task.agentRunId, members: [] as const, coordinatorAgentRunId: null, ...common })
   const members = task.members.map((member) => Object.freeze({ address: member.address, agentRunId: member.agentRunId }))
-  return Object.freeze({ kind: 'agent_team', runId: task.teamRunId, members, coordinatorAgentRunId: coordinatorOf(members, task.source.coordinatorAddress), ...common })
+  return Object.freeze({ kind: 'agent_team', runId: task.teamRunId, members, coordinatorAgentRunId: coordinatorOf(task.teamRunId, members, task.source.coordinatorAddress), ...common })
 }
 
 /** A child row of a team run's view. */
 export const childOfTeamTask = (task: TeamTaskExecutionDto): DelegatedChildRun => {
   const common = { address: task.address, delegatorAgentRunId: task.delegator_agent_run_id ?? null, startedAt: task.started_at, node: null }
-  if (task.kind === 'task_agent') return Object.freeze({ kind: 'agent', runId: task.agent_run_id, members: [], coordinatorAgentRunId: null, ...common })
+  if (task.kind === 'task_agent') return Object.freeze({ kind: 'agent', runId: task.agent_run_id, members: [] as const, coordinatorAgentRunId: null, ...common })
   const members = task.members.map((member) => Object.freeze({ address: member.address, agentRunId: member.agent_run_id }))
-  return Object.freeze({ kind: 'agent_team', runId: task.team_run_id, members, coordinatorAgentRunId: coordinatorOf(members, task.source.coordinator_address), ...common })
+  return Object.freeze({ kind: 'agent_team', runId: task.team_run_id, members, coordinatorAgentRunId: coordinatorOf(task.team_run_id, members, task.source.coordinator_address), ...common })
 }
 
 /** A run a view's run delegated to a peer node (autobyteus-278). */
 export const childOfRemoteExecution = (execution: RemoteTaskExecutionDto): DelegatedChildRun => {
   const common = { address: execution.address, delegatorAgentRunId: execution.delegator_agent_run_id ?? null, startedAt: execution.started_at,
     node: Object.freeze({ nodeId: execution.node_id, nodeName: execution.node_name }) }
-  if (execution.kind === 'agent') return Object.freeze({ kind: 'agent', runId: execution.agent_run_id, members: [], coordinatorAgentRunId: null, ...common })
+  if (execution.kind === 'agent') return Object.freeze({ kind: 'agent', runId: execution.agent_run_id, members: [] as const, coordinatorAgentRunId: null, ...common })
   const members = execution.members.map((member) => Object.freeze({ address: member.address, agentRunId: member.agent_run_id }))
-  return Object.freeze({ kind: 'agent_team', runId: execution.team_run_id, members, coordinatorAgentRunId: coordinatorOf(members, execution.coordinator_address), ...common })
+  return Object.freeze({ kind: 'agent_team', runId: execution.team_run_id, members, coordinatorAgentRunId: coordinatorOf(execution.team_run_id, members, execution.coordinator_address), ...common })
 }
 
 /** A child of a listed run that is not open, from the history poll's answer (SR-055, SR-057). */
 export const childOfListedRun = (child: ListedRunAnswer['children'][number]): DelegatedChildRun => {
   const row = child.row
   const common = { address: row.address, delegatorAgentRunId: row.delegatorAgentRunId ?? null, startedAt: row.startedAt, node: child.node }
-  if (row.kind === 'agent') return Object.freeze({ kind: 'agent', runId: row.agentRunId, members: [], coordinatorAgentRunId: null, ...common })
-  return Object.freeze({ kind: 'agent_team', runId: row.teamRunId, coordinatorAgentRunId: row.coordinatorAgentRunId,
-    members: row.members.map((member) => Object.freeze({ address: member.address, agentRunId: member.agentRunId })), ...common })
+  if (row.kind === 'agent') return Object.freeze({ kind: 'agent', runId: row.agentRunId, members: [] as const, coordinatorAgentRunId: null, ...common })
+  const members = row.members.map((member) => Object.freeze({ address: member.address, agentRunId: member.agentRunId }))
+  return Object.freeze({ kind: 'agent_team', runId: row.teamRunId, members, coordinatorAgentRunId: requireMember(row.teamRunId, members, row.coordinatorAgentRunId), ...common })
 }
 
 /**

@@ -9,10 +9,6 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization'
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 
-/** A remote execution the view already lists (a started event for it changes nothing). */
-export const isRemoteExecutionKnown = (executions: readonly RemoteTaskExecutionDto[], execution: RemoteTaskExecutionDto): boolean =>
-  executions.some((known) => remoteTaskExecutionRunIdOf(known) === remoteTaskExecutionRunIdOf(execution))
-
 /**
  * A node's answer about a remote run (autobyteus-278): its agents' statuses (an agent the node does not list is
  * offline; a node that did not answer leaves every agent offline) and its title and reachability for the window.

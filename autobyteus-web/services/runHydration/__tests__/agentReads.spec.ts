@@ -77,6 +77,20 @@ describe('agentRunAgentReadSubject (an agent run\'s view, CR-461-022)', () => {
   it('refuses an agent the view does not hold', () => {
     expect(() => agentRunAgentReadSubject('host-run', index, 'nobody')).toThrow("AgentRun 'nobody' is not an agent of Agent run 'host-run'.")
   })
+
+  // CR-461-028: a member of a delegated team always has its team run, so it is always read through it; a child
+  // delegated directly never has one, so it is read as its own run.
+  it('reads every team child\'s member through its team run, and every direct child as its own run', () => {
+    const members = [...index.agents.values()].filter((agent) => agent.kind === 'task_team_member')
+    expect(members.map((agent) => agent.agentRunId)).toEqual(['pp-run', 'pb-run', 'rp-run', 'rb-run'])
+    for (const agent of index.agents.values()) {
+      const subject = agentRunAgentReadSubject('host-run', index, agent.agentRunId)
+      expect(subject).toEqual(agent.kind === 'task_team_member'
+        ? { kind: 'teamMember', teamRunId: agent.teamRunId, memberAddress: agent.address, agentRunId: agent.agentRunId }
+        : { kind: 'run', runId: agent.agentRunId })
+      expect(agent.kind === 'task_team_member' ? typeof agent.teamRunId : agent.teamRunId).toBe(agent.kind === 'task_team_member' ? 'string' : null)
+    }
+  })
 })
 
 describe('readsOf', () => {
