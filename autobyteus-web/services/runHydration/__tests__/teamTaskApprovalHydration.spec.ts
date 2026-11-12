@@ -157,7 +157,8 @@ it('TASK-04: final Activity commit conflict cannot partially replace conversatio
   expect((await test.select()).disposition).toBe('rejected')
   expect(test.context.conversation).toBe(original)
   expect(test.tools()[0]?.status).toBe('awaiting-approval')
-  expect(test.team.view.getFocusedAgentRunId()).toBe('lead')
+  // The delegated run is focused from the click (CR-461-019); its failed stored state changed nothing.
+  expect(test.team.view.getFocusedAgentRunId()).toBe(TASK)
   expect(useAgentActivityStore().getToolActivities(TASK)[0]?.status).toBe('awaiting-approval')
 })
 
@@ -197,11 +198,12 @@ it('TASK-03: terminal event during the first fetch retries and cannot become pen
   expect(useAgentActivityStore().getToolActivities(TASK)[0]).toMatchObject({ status: 'success', result: 'submitted once' })
   expect(io.ws.send).not.toHaveBeenCalled()
 })
-it('TASK-04: a superseded selection keeps the focus and the pending approval', async () => {
+it('TASK-04: a selection superseded while the delegated run loads keeps the pending approval; the run was focused from the click', async () => {
   const test = harness(); test.approval()
   io.query.mockImplementationOnce(async () => { useAgentSelectionStore().beginSelectionIntent(); return projection() })
   expect((await test.select()).disposition).toBe('superseded')
-  expect(test.team.view.getFocusedAgentRunId()).toBe('lead')
+  // A run the team delegated to is focused first and read after (CR-461-019); a later selection moves the focus itself.
+  expect(test.team.view.getFocusedAgentRunId()).toBe(TASK)
   // The member's own load may still commit its stored state (autobyteus-358: a member load is not tied to one
   // selection); the live approval decision wins over the stored projection.
   expect(useAgentActivityStore().getToolActivities(TASK)[0]?.status).toBe('awaiting-approval')

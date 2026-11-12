@@ -80,3 +80,35 @@ it("selects a delegated child's row in a stopped Team's view by the child's own 
   // Nothing restored the Team: it stays stopped until its own stream says otherwise.
   expect(team.view.isRootTeamActive()).toBe(false)
 })
+
+it("text typed while a child row's stored state is still loading goes to the child, and the message reaches it (CR-461-019)", async () => {
+  const { team } = openStoppedTeamWithChild()
+  let releaseProjection!: () => void
+  const projectionHeld = new Promise<void>((resolve) => { releaseProjection = resolve })
+  io.query.mockImplementation(async ({ query, variables }) => {
+    const name = query.definitions[0].name.value
+    if (name === 'GetRunProjection') {
+      await projectionHeld
+      return { data: { getRunProjection: { runId: variables.runId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+    }
+    if (name === 'GetRunFileChanges') return { data: { getRunFileChanges: [] } }
+    if (name === 'GetTeamMemberRunProjection') return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+    return { data: { getTeamMemberFileChanges: [] } }
+  })
+
+  // The user clicks the child's row and types while its stored state is still loading, as the composer does: into the
+  // context of the agent the composer shows.
+  const selecting = useRunHistoryStore().selectTreeRun({ teamRunId: ROOT, memberAddress: '/worker', agentRunId: CHILD })
+  await vi.waitFor(() => expect(io.query.mock.calls.some(([options]) => options.query.definitions[0].name.value === 'GetRunProjection')).toBe(true))
+  const shown = useActiveContextStore().activeWorkspaceTarget!
+  shown.context.requirement = 'check the build'
+  expect(shown.context.state.runId).toBe(CHILD)
+
+  releaseProjection()
+  await expect(selecting).resolves.toMatchObject({ disposition: 'committed' })
+  void useActiveContextStore().send()
+  await vi.waitFor(() => expect(io.ws.send).toHaveBeenCalled())
+  expect(JSON.parse(io.ws.send.mock.calls[0][0])).toMatchObject({ type: 'SEND_MESSAGE', payload: { agent_run_id: CHILD, content: 'check the build' } })
+  expect(team.view.getAgentContext('manager-run')!.requirement).toBe('')
+  expect(team.view.isRootTeamActive()).toBe(false)
+})
