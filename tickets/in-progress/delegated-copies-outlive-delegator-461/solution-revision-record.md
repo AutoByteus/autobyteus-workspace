@@ -1266,9 +1266,9 @@
   - node B admits it by the back-link (`remote-run-links.ts:144`);
   - the root served only to look up `(nodeId, target)`, which the `DelegationIndex` already holds (`peerChildrenOf`).
 - **Decision:**
-  - The node-level `PeerRuns` resolves a peer run by its own ID through the index and sends commands, projection reads and observations over the process channel, without a root.
-  - Stop is the standard terminate by run ID for every row. The run services forward a peer run to `PeerRuns`, so the Stop button has one path.
-  - The web keeps base's shapes for a peer row's commands and conversation; the server routes them to `PeerRuns`.
+  - **A peer run is an object, `PeerAgentRun` or `PeerTeamRun`** (the user's decision, 2026-11-12, after the Solution Designer proposed it). Each is a stateless handle built from the tree's `PeerRunLink` and the process channel, with the methods `terminate`, `postMessage`, `interrupt`, `readConversation` and `observe`. `peerRunOf(runId)` finds one through the `DelegationIndex`, without a root. They mirror the local run's names and share no base class with it. This replaces a first draft's run-ID service, `PeerRuns`.
+  - Stop is the standard terminate by run ID for every row. The run services call the handle's `terminate()`, so the Stop button has one path.
+  - The web keeps base's shapes for a peer row's commands and conversation; the server calls the handle.
   - `PeerChildObservation` on the view side keeps a stopped delegator's peer rows live, inside the view's sequence and snapshot (SR-063).
   - Removed: `stopDelegatedExecution`, `PeerChildStop`, `DelegatedLaunchSelectionService`, and the roots' user-command remote branches and root-opened child observation.
   - The agents' own collaboration with a peer run stays in the roots. There is no protocol change.
