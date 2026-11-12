@@ -28,6 +28,7 @@ import { DefinitionAdmissionService } from "../../collaboration-definition-admis
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
 import { projectNewRunLlmConfig } from "../../llm-management/services/new-run-llm-config-projection.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -62,8 +63,13 @@ export interface CreateTeamRunInput {
   teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
   applicationBinding?: { applicationId: string; bindingId: string } | null;
-  /** A Team run a peer node starts (autobyteus-247): the back-link to its delegator there, kept on the tree. */
+  /** A delegated Team run (local or a peer's, autobyteus-247): the back-link to its delegator, kept on the tree. */
   delegatedFrom?: DelegatedFrom;
+  /**
+   * A delegated Team run's handoff rules as its members have them in the delegating run, in the team's own space (a
+   * `to` outside the team as written; CR-461-009). Only with `delegatedFrom`; without them the definition's are used.
+   */
+  handoffs?: readonly CollaborationHandoff[];
   /** The Project the Team run is started under (REQ-004); refused with `PROJECT_NOT_FOUND` when it does not exist. */
   projectId?: string | null;
 }
@@ -119,6 +125,7 @@ export class TeamRunService {
 
   async createTeamRun(input: CreateTeamRunInput): Promise<RootTeamRun> {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
+    if (input.handoffs && !input.delegatedFrom) throw new Error("Handoff rules are given only for a delegated Team run.");
     const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
     if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
     const projectId = input.projectId?.trim() || undefined;
@@ -160,6 +167,8 @@ export class TeamRunService {
       teamConfigs,
       memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
+      // A delegated team keeps a handoff `to` outside the team; a team the user starts keeps today's check (CR-461-009).
+      ...(input.delegatedFrom ? { handoffs: { kind: "delegated_team" as const, ...(input.handoffs ? { handoffs: input.handoffs } : {}) } } : {}),
     });
     const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}), ...(projectId ? { projectId } : {}) });

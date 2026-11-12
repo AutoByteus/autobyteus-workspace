@@ -4,6 +4,7 @@ import {
   isAgentTeamAddressAncestor,
   type AgentTeamAddress,
 } from "../../domain/agent-team-address.js";
+import type { CollaborationHandoff } from "../../domain/collaboration-handoff.js";
 import { peerStartedTeamMembers } from "../../../agent-team-execution/domain/team-run-remote-links.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../agent-team-execution/domain/team-run-execution-tree.js";
 import { TeamLayoutMismatchError } from "../../../agent-team-execution/services/flat-team-topology-planner.js";
@@ -42,6 +43,17 @@ const unmounted = (address: AgentTeamAddress, mount: AgentTeamAddress): AgentTea
   if (!isAgentTeamAddressAncestor(mount, address)) throw new Error(`Team member '${address}' is not under '${mount}'.`);
   return createAgentTeamAddress(getAgentTeamAddressSegments(address).slice(getAgentTeamAddressSegments(mount).length));
 };
+
+/**
+ * The source's handoff rules (its members' rules in the delegating run) in the team run's own space: `from` and a `to`
+ * in the team lose the delegation address; a `to` outside the team is kept as written (contract §2.1; CR-461-009).
+ */
+const handoffsInTeamSpace = (handoffs: readonly CollaborationHandoff[], mount: AgentTeamAddress): CollaborationHandoff[] =>
+  handoffs.map((handoff) => ({
+    from: unmounted(handoff.from as AgentTeamAddress, mount),
+    to: isAgentTeamAddressAncestor(mount, handoff.to as AgentTeamAddress) ? unmounted(handoff.to as AgentTeamAddress, mount) : handoff.to,
+    rules: [...handoff.rules],
+  }));
 
 /**
  * Creates an ordinary run for a delegation, local or from a peer (design DS-1, `DelegatedRunStarter`): the one owner of
@@ -95,6 +107,7 @@ export class DelegatedRunStarter {
         ...(input.source.defaultLaunchSource ? { launchSource: input.source.defaultLaunchSource } : {}) }],
       memberConfigs,
       delegatedFrom: input.delegatedFrom,
+      handoffs: handoffsInTeamSpace(input.source.handoffs, input.address),
     };
     // The created team run (its own root): only its ID and tree are read here.
     let root: Readonly<{ teamRunId: string; getExecutionTreeSnapshot(): TeamRunExecutionTreeSnapshot }>;

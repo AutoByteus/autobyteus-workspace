@@ -21,15 +21,27 @@ type Endpoint =
       kind: "agent_team";
       address: string;
       coordinator: ResolvedCollaborationAgent;
-    }>;
+    }>
+  /** A delegated team's `to` outside the team, kept as written (an address in its delegator's space). */
+  | Readonly<{ kind: "external"; address: string }>;
+
+/**
+ * How a team's handoffs are compiled. A team the user starts, and a saved definition, resolve every `to` in the team
+ * (today's check). A delegated team (its run has `delegatedFrom`) keeps a `to` outside the team as an external target,
+ * as written (contract §2.1; autobyteus-461 SR-054, CR-461-009); its rules may be the ones its members have in the
+ * delegating run (`handoffs`, team-local addresses) instead of its definition's.
+ */
+export type TeamHandoffCompilation = Readonly<{ kind: "own_team" } | { kind: "delegated_team"; handoffs?: readonly CollaborationHandoff[] }>;
 
 export class CollaborationHandoffCompiler {
-  compileTeam(team: ResolvedFlatTeamDefinition): CollaborationHandoff[] {
+  compileTeam(team: ResolvedFlatTeamDefinition, compilation: TeamHandoffCompilation = { kind: "own_team" }): CollaborationHandoff[] {
     const seenPairs = new Set<string>();
+    const delegated = compilation.kind === "delegated_team";
     return this.compileList({
-      handoffs: team.definition.handoffs,
+      handoffs: compilation.kind === "delegated_team" && compilation.handoffs ? compilation.handoffs : team.definition.handoffs,
       ownerLabel: `Team '${team.definition.name}'`,
       resolve: (address) => this.resolveTeamEndpoint(team, address),
+      resolveTarget: delegated ? (address) => this.resolveTeamTarget(team, address) : undefined,
       seenPairs,
     });
   }
@@ -59,6 +71,8 @@ export class CollaborationHandoffCompiler {
     handoffs: readonly CollaborationHandoff[];
     ownerLabel: string;
     resolve(address: string): Endpoint;
+    /** The `to` endpoint, when it resolves differently from `from` (a delegated team's external target). */
+    resolveTarget?(address: string): Endpoint;
     seenPairs: Set<string>;
   }): CollaborationHandoff[] {
     return input.handoffs.map((handoff, index) => {
@@ -70,13 +84,13 @@ export class CollaborationHandoffCompiler {
           `${input.ownerLabel} handoffs[${index}].from must resolve to an Agent.`,
         );
       }
-      const toEndpoint = input.resolve(handoff.to);
+      const toEndpoint = (input.resolveTarget ?? input.resolve)(handoff.to);
       const from = createAgentTeamAddress(fromEndpoint.agent.absolutePath);
       const to = toEndpoint.kind === "agent"
         ? createAgentTeamAddress(toEndpoint.agent.absolutePath)
         : toEndpoint.address;
-      const targetAgent = toEndpoint.kind === "agent" ? toEndpoint.agent : toEndpoint.coordinator;
-      if (from === createAgentTeamAddress(targetAgent.absolutePath)) {
+      const targetAgent = toEndpoint.kind === "agent" ? toEndpoint.agent : toEndpoint.kind === "agent_team" ? toEndpoint.coordinator : null;
+      if (targetAgent && from === createAgentTeamAddress(targetAgent.absolutePath)) {
         throw new CollaborationContractError(
           "COLLABORATION_SELF_TARGET_REJECTED",
           `Handoff '${from}' -> '${to}' resolves back to the source Agent.`,
@@ -110,6 +124,14 @@ export class CollaborationHandoffCompiler {
       );
     }
     return { kind: "agent", agent: member };
+  }
+
+  /** A delegated team's `to`: a member of the team, else an external target as written. */
+  private resolveTeamTarget(team: ResolvedFlatTeamDefinition, address: string): Endpoint {
+    const valid = assertAgentTeamAddress(address);
+    const segments = getAgentTeamAddressSegments(valid);
+    const member = segments.length === 1 ? team.members.find((candidate) => candidate.memberName === segments[0]) : undefined;
+    return member ? { kind: "agent", agent: member } : { kind: "external", address: valid };
   }
 
   private resolveMountedTeamEndpoint(

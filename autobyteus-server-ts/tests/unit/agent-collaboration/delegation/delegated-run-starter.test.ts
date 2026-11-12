@@ -45,4 +45,23 @@ describe("DelegatedRunStarter (local delegation)", () => {
       memberConfigs: [{ memberAddress: "/lead", agentDefinitionId: "lead", launchSource: routed }, { memberAddress: "/writer", agentDefinitionId: "writer" }] });
     expect(request.memberConfigs[1]).not.toHaveProperty("launchSource");
   });
+
+  it("passes the source's handoff rules in the team's own space; a `to` outside the team is kept as written (CR-461-009)", async () => {
+    const launch = source.launchConfiguration;
+    const team = { kind: "agent_team" as const, teamDefinitionId: "dev-team", coordinatorAddress: "/dev_team/lead" as never,
+      defaultLaunchConfiguration: launch,
+      members: [{ address: "/dev_team/lead" as never, agentDefinitionId: "lead", launchConfiguration: launch },
+        { address: "/dev_team/dev" as never, agentDefinitionId: "dev", launchConfiguration: launch }],
+      handoffs: [{ from: "/dev_team/lead", to: "/dev_team/dev", rules: ["When the design is ready."] },
+        { from: "/dev_team/lead", to: "/ceo_agent", rules: ["When the release is ready for sign-off."] }] };
+    const tree = testExecutionTree({ rootTeamRunId: "dev_team_1", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead_1" }), testAgentNode("/dev", { agentRunId: "dev_1" })] });
+    const createTeamRun = vi.fn(async () => ({ teamRunId: "dev_team_1", getExecutionTreeSnapshot: () => tree }));
+    const starter = new DelegatedRunStarter({ agentRuns: {} as never, teamRuns: { createTeamRun, terminateTeamRun: vi.fn() } as never });
+    await starter.startTeam({ source: team as never, address: "/dev_team" as never, delegatedFrom });
+    expect((createTeamRun.mock.calls[0] as unknown[])[0]).toMatchObject({ delegatedFrom, handoffs: [
+      { from: "/lead", to: "/dev", rules: ["When the design is ready."] },
+      { from: "/lead", to: "/ceo_agent", rules: ["When the release is ready for sign-off."] },
+    ] });
+  });
 });

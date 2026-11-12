@@ -130,7 +130,8 @@ export class CollaboratorEntryBuilder {
           agentDefault: captured(memberDefinition?.defaultLaunchConfig),
         });
       })),
-      handoffs: Object.freeze(this.handoffCompiler.compileTeam(resolved)),
+      // A catalog Team is placed for a delegation: a `to` outside the team is kept (CR-461-009).
+      handoffs: Object.freeze(this.handoffCompiler.compileTeam(resolved, { kind: "delegated_team" })),
       teamDefault: captured(definition.definition.defaultLaunchConfig),
     });
   }

@@ -6,7 +6,7 @@ import {
   type ResolvedTeamDefinitionAgent,
   type ResolvedFlatTeamDefinition,
 } from "../../agent-team-definition/services/flat-team-definition-resolver.js";
-import { CollaborationHandoffCompiler } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
+import { CollaborationHandoffCompiler, type TeamHandoffCompilation } from "../../agent-collaboration/definition/collaboration-handoff-compiler.js";
 import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import {
   assertAgentTeamAddress,
@@ -88,6 +88,8 @@ export class FlatTeamTopologyPlanner {
     teamConfigs: readonly TeamScopeLaunchInput[];
     memberConfigs: readonly TeamAgentLaunchInput[];
     applicationBinding?: TeamRunApplicationBinding | null;
+    /** A delegated team (its run has `delegatedFrom`): an outside `to` is kept, and the delegation's rules may be given. */
+    handoffs?: TeamHandoffCompilation;
   }): Promise<FlatTeamTopologyPlan> {
     const { definition, graph } = await this.resolveGraph(input.teamDefinitionId, input.rootDefinition);
     const rootConfig = this.validateRootConfig(input.teamConfigs);
@@ -96,7 +98,7 @@ export class FlatTeamTopologyPlanner {
     const config = new TeamRunConfig({
       teamBackendKind: TeamBackendKind.MIXED,
       rootTeam,
-      handoffs: new CollaborationHandoffCompiler().compileTeam(graph),
+      handoffs: new CollaborationHandoffCompiler().compileTeam(graph, input.handoffs),
       applicationBinding: input.applicationBinding ?? null,
     });
     return Object.freeze({
