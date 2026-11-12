@@ -190,7 +190,7 @@ export const composeCollaboration = async (input: Readonly<{
     const streams = new ChildRowsStreams();
     const projection: ChildRowProjection = { rowOf: async (parent, child) => {
       if (child.nodeId === undefined) {
-        const row = await delegatedChildDto(child, memoryDir);
+        const row = await delegatedChildDto(child, memoryDir, tree);
         return row ? { kind: "local", row } : null;
       }
       const runId = "agentRunId" in child.run ? child.run.agentRunId : child.run.teamRunId;

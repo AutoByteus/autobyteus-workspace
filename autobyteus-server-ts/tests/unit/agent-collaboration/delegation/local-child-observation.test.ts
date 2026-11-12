@@ -33,7 +33,7 @@ const harness = () => {
   };
   const ports: LocalChildPorts = {
     tree: ({ openChildrenOf: () => children, subscribe: (listener) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
-      agentsOf: async (run) => agents[run.rootRunId] ?? [] }),
+      agentsOf: async (run) => (agents[run.rootRunId] ?? []).map((agent) => ({ ...agent, agentDefinitionId: null })) }),
     agents: () => access as never,
   };
   const events: LocalChildRootEvent[] = [];

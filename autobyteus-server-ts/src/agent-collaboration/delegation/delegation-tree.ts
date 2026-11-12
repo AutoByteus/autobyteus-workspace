@@ -6,7 +6,8 @@ import {
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
 
 /** One agent of a run: its run ID and its own address in its run's space (`null`: an agent run not yet collaborating). */
-export type RunAgent = Readonly<{ agentRunId: string; address: string | null }>;
+/** An agent of a run: its run, its address in the run, and its definition (`null` for a peer's run, whose node keeps it). */
+export type RunAgent = Readonly<{ agentRunId: string; address: string | null; agentDefinitionId: string | null }>;
 
 /**
  * The agents of a run, read from the run's own file (contract §4, `model.py` `agents_with_addresses`): an agent run's
@@ -267,14 +268,14 @@ export class DelegationTree implements TaskEntriesListener {
     const key = keyOf(run);
     const latest = newest([...this.byRun.get(key)?.values() ?? []]);
     if (latest?.nodeId !== undefined) {
-      return latest.members?.map((member) => ({ agentRunId: member.agentRunId, address: member.address }))
-        ?? ("agentRunId" in latest.run ? [{ agentRunId: latest.run.agentRunId, address: latest.recipientAddress }] : []);
+      return latest.members?.map((member) => ({ agentRunId: member.agentRunId, address: member.address, agentDefinitionId: null }))
+        ?? ("agentRunId" in latest.run ? [{ agentRunId: latest.run.agentRunId, address: latest.recipientAddress, agentDefinitionId: null }] : []);
     }
     let agents = this.agentsByRun.get(key);
     if (!agents) {
       const read = await this.reader()?.agentsOf(run).catch(() => null) ?? null;
       if (!read) return [];
-      agents = Object.freeze(read.map((agent) => Object.freeze({ agentRunId: agent.agentRunId,
+      agents = Object.freeze(read.map((agent) => Object.freeze({ agentRunId: agent.agentRunId, agentDefinitionId: agent.agentDefinitionId,
         address: agent.address ?? (run.rootSubjectKind === "agent" ? latest?.recipientAddress ?? null : null) })));
       if (this.nodes.has(key)) this.agentsByRun.set(key, agents);
     }

@@ -17,7 +17,7 @@ export type E2eStudioApplicationApiServiceOverrides = Partial<
  * from a run), over a tree with no delegation: the production composition builds them over its `DelegationTree`; an
  * in-process suite that starts no delegated run reads none. A suite that does passes its own.
  */
-const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [] });
+const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [], agentsOf: async () => [] });
 const NO_DELEGATIONS_VIEW_CHILDREN = new RunViewChildren({ memoryDir: "", tree: NO_DELEGATIONS, followers: { statuses: async () => [] }, channel: () => null });
 const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader("", NO_DELEGATIONS);
 

@@ -5,7 +5,6 @@ import { projectExecutionTree } from "../../../../src/services/agent-streaming/t
 import { projectDelegatedAgentRun, projectDelegatedTeamRun } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import { toDelegateTaskResult } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import { DelegateTaskResultSchema } from "../../../../src/agent-team-execution/task-delegation/task-delegation-result-contract.js";
-import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 
@@ -15,8 +14,11 @@ import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team
  */
 const claude = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/w" };
 const fallback = { layer: "agent_default" as const, runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "runtime_unavailable" as const, detail: "no grok" };
-const child = (run: DelegatedChild["run"], recipientAddress: string): DelegatedChild => ({ run, taskId: "T1", delegatorAgentRunId: "pm",
-  entryAgentRunId: "agentRunId" in run ? run.agentRunId : "lead-run", started: true, linkedAt: "2026-10-12T00:00:00.000Z", recipientAddress });
+/** The child's identity, as the tree's per-run data gives it (SR-056); the launch details come from its own file. */
+const teamIdentity = { kind: "agent_team" as const, address: "/se", teamRunId: "se-run", delegatorAgentRunId: "pm", startedAt: "2026-10-12T00:00:00.000Z",
+  members: [{ address: "/lead", agentRunId: "lead-run", agentDefinitionId: null }, { address: "/ie", agentRunId: "ie-run", agentDefinitionId: null }] };
+const agentIdentity = { kind: "agent" as const, address: "/writer", agentRunId: "writer-run", agentDefinitionId: "writer", delegatorAgentRunId: "pm",
+  startedAt: "2026-10-12T00:00:00.000Z" };
 /** A delegated team's own file: its lead takes the team's launch; its engineer has its own, with its own source. */
 const teamFile = (recorded: boolean) => {
   const base = testExecutionTree({ rootTeamRunId: "se-run", coordinatorAddress: "/lead", children: [
@@ -35,7 +37,7 @@ const teamFile = (recorded: boolean) => {
 
 describe("launch values and sources in run views' child rows", () => {
   const teamView = (recorded: boolean) => projectExecutionTree(testExecutionTree({ rootTeamRunId: "root", coordinatorAddress: "/pm",
-    children: [testAgentNode("/pm", { agentRunId: "pm" })] }), [projectDelegatedTeamRun(child({ teamRunId: "se-run" }, "/se"), teamFile(recorded) as never)]);
+    children: [testAgentNode("/pm", { agentRunId: "pm" })] }), [projectDelegatedTeamRun(teamIdentity, teamFile(recorded) as never)]);
 
   it("the Team view (snake_case) carries each member's launch and whether it took the team's; sources only when recorded", () => {
     const dto = taskTeamExecutionDtoSchema.parse(teamView(true).root_team.task_executions[0]);
@@ -48,11 +50,11 @@ describe("launch values and sources in run views' child rows", () => {
   });
 
   it("the Org and Agent views (camelCase) carry the same, and an agent child's source from its own run_metadata", () => {
-    const projected = taskExecutionDtoSchema.parse(projectDelegatedTeamRun(child({ teamRunId: "se-run" }, "/se"), teamFile(true) as never));
+    const projected = taskExecutionDtoSchema.parse(projectDelegatedTeamRun(teamIdentity, teamFile(true) as never));
     if (!("teamRunId" in projected) || projected.source.kind !== "agent_team") throw new Error("team child expected");
     expect(projected.source.members.map((member) => [member.launchConfiguration.llmModelIdentifier, member.followsTeam])).toEqual([["opus", true], ["sol-6.1", false]]);
     expect(projected.source.members[0]!.launchSource?.fallbacks[0]).toEqual(fallback);
-    const agent = taskExecutionDtoSchema.parse(projectDelegatedAgentRun(child({ agentRunId: "writer-run" }, "/writer"), {
+    const agent = taskExecutionDtoSchema.parse(projectDelegatedAgentRun(agentIdentity, {
       runId: "writer-run", agentDefinitionId: "writer", address: "/writer", platformAgentRunId: null, ...claude,
       launchSource: { origin: "configured", fallbacks: [] } } as never));
     expect(agent).toMatchObject({ agentRunId: "writer-run", source: { kind: "agent", launchSource: { origin: "configured" } } });

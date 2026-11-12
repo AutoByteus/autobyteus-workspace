@@ -1,0 +1,48 @@
+import { z } from "zod";
+import { agentAddressSchema, nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
+import { collaborationRootKindSchema } from "./collaboration-participant-messages-dtos.js";
+/** An agent of a delegated team run: its address in the team run's own space, its run and its definition. */
+const childRunMemberIdentitySchema = z.object({
+    address: agentAddressSchema,
+    agentRunId: nonEmptyStringSchema,
+    agentDefinitionId: nonEmptyStringSchema.nullable(),
+}).strict();
+const identityCore = {
+    /** Its name under the delegating run: the address it was delegated to (an agent run's own address once stored). */
+    address: agentAddressSchema,
+    /** The agent of the delegating run that delegated to it; absent for a run recorded before its delegator was stored. */
+    delegatorAgentRunId: nonEmptyStringSchema.optional(),
+    startedAt: nonEmptyStringSchema,
+};
+/**
+ * A run a run delegated to on this node, by what does not change while it runs (autobyteus-461 SR-055, SR-056): its
+ * address, its run and agents, its delegator and when it started. The view's child row is this identity plus the
+ * child's launch details, read fresh; the listed-runs poll carries the identity alone.
+ */
+export const childRunIdentityDtoSchema = z.discriminatedUnion("kind", [
+    z.object({ kind: z.literal("agent"), ...identityCore, agentRunId: nonEmptyStringSchema,
+        agentDefinitionId: nonEmptyStringSchema.nullable() }).strict(),
+    z.object({ kind: z.literal("agent_team"), ...identityCore, teamRunId: nonEmptyStringSchema,
+        members: z.array(childRunMemberIdentitySchema) }).strict(),
+]);
+/** One agent of a child with its status, from the child's own run when it runs, else `offline`. */
+export const childRunAgentStatusDtoSchema = z.object({
+    agentRunId: nonEmptyStringSchema,
+    memberAddress: agentAddressSchema,
+    status: nonEmptyStringSchema,
+}).strict();
+/** A listed run, by its kind and run ID. */
+export const listedRunRefDtoSchema = z.object({ kind: collaborationRootKindSchema, runId: nonEmptyStringSchema }).strict();
+/**
+ * `runCollaborationStatuses(runs)` (autobyteus-461 SR-055): for each listed run, whether it is active and the runs it
+ * delegated to on this node that its view shows (one hop, each with its agents' statuses). Never restores a run.
+ */
+export const runCollaborationStatusesDtoSchema = z.array(z.object({
+    kind: collaborationRootKindSchema,
+    runId: nonEmptyStringSchema,
+    isActive: z.boolean(),
+    children: z.array(z.object({ row: childRunIdentityDtoSchema, statuses: z.array(childRunAgentStatusDtoSchema) }).strict()),
+}).strict());
+/** At most this many runs per read. */
+export const RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
+//# sourceMappingURL=run-collaboration-statuses-dtos.js.map

@@ -1,11 +1,10 @@
-import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
+import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type ChildRunIdentityDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { StandaloneRootHost } from "../../standalone-agent-run-root/domain/standalone-root-host.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { TeamRunExecutionTreeFile } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import type { DelegatedChild } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
@@ -51,23 +50,28 @@ export const projectAgentCollaborationTree = (input: Readonly<{
   taskExecutions: [...input.taskExecutions],
 });
 
-/** A child row for a run this run delegated to (DS-8): an agent run, from its own `run_metadata.json`. */
-export const projectDelegatedAgentRun = (child: DelegatedChild, metadata: AgentRunMetadata): CollaborationTaskExecutionDto => ({
-  address: (metadata.address ?? child.recipientAddress) as never, startedAt: child.linkedAt, delegatorAgentRunId: child.delegatorAgentRunId,
-  agentRunId: metadata.runId, platformAgentRunId: metadata.platformAgentRunId ?? null,
+/**
+ * A child row for an agent run this run delegated to (DS-8): its identity (SR-056: from the tree's per-run data) and its
+ * launch details, read fresh from its own `run_metadata.json` (a Settings save changes them, SR-039).
+ */
+export const projectDelegatedAgentRun = (identity: Extract<ChildRunIdentityDto, { kind: "agent" }>, metadata: AgentRunMetadata): CollaborationTaskExecutionDto => ({
+  address: identity.address, startedAt: identity.startedAt, ...(identity.delegatorAgentRunId ? { delegatorAgentRunId: identity.delegatorAgentRunId } : {}),
+  agentRunId: identity.agentRunId, platformAgentRunId: metadata.platformAgentRunId ?? null,
   source: { kind: "agent", agentDefinitionId: metadata.agentDefinitionId,
     launchConfiguration: projectLaunch({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
       llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath }),
     ...projectOptionalSource(metadata, "launchSource") },
 });
 
-/** A child row for a team run this run delegated to (DS-8), from its own file; its members at their own addresses. */
-export const projectDelegatedTeamRun = (child: DelegatedChild, tree: TeamRunExecutionTreeFile): CollaborationTaskExecutionDto => {
+/** A child row for a team run this run delegated to (DS-8): its identity and its launch details, read fresh from its own file. */
+export const projectDelegatedTeamRun = (identity: Extract<ChildRunIdentityDto, { kind: "agent_team" }>, tree: TeamRunExecutionTreeFile): CollaborationTaskExecutionDto => {
   const team = tree.rootTeam;
+  const platformRunOf = new Map(team.members.map((member) => [member.agentRunId, member.platformAgentRunId]));
   const sameLaunch = (member: ConfiguredAgentExecutionNode) => JSON.stringify(projectLaunch(member.launchConfiguration)) === JSON.stringify(projectLaunch(team.defaultLaunchConfiguration));
   return {
-    address: child.recipientAddress as never, startedAt: child.linkedAt, delegatorAgentRunId: child.delegatorAgentRunId, teamRunId: team.teamRunId,
-    members: team.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId })),
+    address: identity.address, startedAt: identity.startedAt, ...(identity.delegatorAgentRunId ? { delegatorAgentRunId: identity.delegatorAgentRunId } : {}),
+    teamRunId: identity.teamRunId,
+    members: identity.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId, platformAgentRunId: platformRunOf.get(member.agentRunId) ?? null })),
     taskExecutions: [],
     source: { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: team.coordinatorAddress,
       members: team.members.map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
