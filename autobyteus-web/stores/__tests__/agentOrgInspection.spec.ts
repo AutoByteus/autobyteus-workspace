@@ -4,7 +4,7 @@ import { flushPromises } from '@vue/test-utils'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 const mocks = vi.hoisted(() => ({ query: vi.fn(), instances: [] as any[] }))
 // Member artifacts are not under test here: answered empty without reaching the scenario's query mock.
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => options.query?.definitions?.[0]?.name?.value === 'GetAgentOrgMemberFileChanges' ? Promise.resolve({ data: { getAgentOrgMemberFileChanges: [] } }) : mocks.query(options) }) }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => /FileChanges$/.test(options.query?.definitions?.[0]?.name?.value ?? '') ? Promise.resolve({ data: { getAgentOrgMemberFileChanges: [], getTeamMemberFileChanges: [], getRunFileChanges: [] } }) : mocks.query(options) }) }))
 vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({ AgentOrgStreamingService: class {
   connect = vi.fn(); disconnect = vi.fn(); isReady = () => true
   constructor(readonly options: any) { mocks.instances.push(this) }
@@ -13,9 +13,12 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyAgentOrgActivity: vi.fn(), refreshAgentOrgHistoryItem: vi.fn(), ensureWorkspaceByRootPath: vi.fn(), resolveWorkspaceMetadataByRootPath: vi.fn(),
 }) }))
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
-const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,
-  conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-} } })
+/** An Org agent's stored state through the Org; a delegated child's by its own identity (autobyteus-461 CR-461-010). */
+const projection = (variables: any) => {
+  const state = { conversation: [], activities: [], hasEarlierActiveTraceEvents: false }
+  return { data: { getAgentOrgMemberRunProjection: { ...variables, ...state }, getTeamMemberRunProjection: { agentRunId: variables.agentRunId, ...state },
+    getRunProjection: { runId: variables.runId, ...state } } }
+}
 const inspection = (active = false) => {
   const base = taskBearingView()
   const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }

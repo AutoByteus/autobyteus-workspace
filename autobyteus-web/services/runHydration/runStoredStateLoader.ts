@@ -44,13 +44,15 @@ export interface RunStoredState {
   hasEarlierActiveTraceEvents: boolean;
 }
 
-/** A run's own stored projection (`getRunProjection`); throws on GraphQL errors or a missing payload. */
-export const fetchRunProjection = async (runId: string): Promise<RunProjectionPayload> => {
-  const projectionResponse = await getApolloClient().query<GetRunProjectionQueryData>({
-    query: GetRunProjection,
-    variables: { runId },
-    fetchPolicy: 'network-only',
-  });
+/** The `getRunProjection` query of one run (the promise itself, so callers start it in the same turn). */
+const queryRunProjection = (runId: string) => getApolloClient().query<GetRunProjectionQueryData>({
+  query: GetRunProjection,
+  variables: { runId },
+  fetchPolicy: 'network-only',
+});
+
+/** The run's projection from its query result; throws on GraphQL errors or a missing payload. */
+const runProjectionOf = (projectionResponse: Awaited<ReturnType<typeof queryRunProjection>>): RunProjectionPayload => {
   const projectionErrors = projectionResponse.errors || [];
   if (projectionErrors.length > 0) {
     throw new Error(projectionErrors.map((e: { message: string }) => e.message).join(', '));
@@ -62,13 +64,16 @@ export const fetchRunProjection = async (runId: string): Promise<RunProjectionPa
   return projection;
 };
 
+/** A run's own stored projection (`getRunProjection`). */
+export const fetchRunProjection = async (runId: string): Promise<RunProjectionPayload> => runProjectionOf(await queryRunProjection(runId));
+
 export const readRunStoredState = async (runId: string): Promise<RunStoredStateRead> => {
   const expectedActivityRevision = useAgentActivityStore().getActivityContentRevision(runId);
-  const [projection, fileChanges] = await Promise.all([
-    fetchRunProjection(runId),
+  const [projectionResponse, fileChanges] = await Promise.all([
+    queryRunProjection(runId),
     fetchRunFileChanges({ kind: 'run', runId }),
   ]);
-  return { runId, projection, fileChanges, expectedActivityRevision };
+  return { runId, projection: runProjectionOf(projectionResponse), fileChanges, expectedActivityRevision };
 };
 
 export const buildRunStoredState = (read: RunStoredStateRead, defaults: RunConversationDefaults): RunStoredState => {
