@@ -471,3 +471,12 @@ snapshot through the run's stream with the tree's rows read first (sync), base's
 publishing base's row events into each affected run's stream (a record-carrying event, so the projector reads nothing);
 then the team and org views (both modes); then remove `ChildRowsStreams`, `ChildRowsStreamSession`, `DelegatedRunCommands`,
 the child `@` handling, followers' output relay.
+
+**Row events, as base (read at `3228eff74b`'s projectors and contract comments)**: base's `task_execution_started`
+names its placement (`host_kind` `root` | `team`, `host_run_id`) and carries the record; `task_executions_closed` marks
+rows closed: the view keeps them, the Workspaces listing leaves them out; `task_executions_reopened` lists them again.
+So, from `CollaborationTree`: the snapshot's rows = the open subtree, nested by placement, plus the closed set (a
+delegated run whose Tasks are all closed while it still runs, SR-061; it leaves the view when it stops); the feed's
+change for X: an added row → `task_execution_started` (or `task_executions_reopened` when it was in X's closed set); a
+removed row → `task_executions_closed`. Stream events carry the projected record, so a projector reads nothing.
+Statuses: `local_child_presentation` restricted to status frames (`LocalChildObservation`, statuses only).
