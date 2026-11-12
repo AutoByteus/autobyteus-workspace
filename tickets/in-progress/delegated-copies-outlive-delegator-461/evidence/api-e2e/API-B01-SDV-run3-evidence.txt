@@ -1,0 +1,94 @@
+# Case: API-B01 SDV-01…SDV-03 / API-B02 (run 3)
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir> [--cases SDV-03]   (clean env as above; built server dist/app.js, Nuxt dev, headless Chrome 157)
+
+{
+ "startedAt": "2026-11-12T01:44:45.950Z",
+ "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+ "cases": {
+  "SDV-01": {
+   "result": "Pass",
+   "description": "Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it",
+   "details": {
+    "streams": [
+     {
+      "closed": true,
+      "frames": 6
+     },
+     {
+      "closed": false,
+      "frames": 5
+     }
+    ],
+    "workerRowKept": true,
+    "workerAnsweredLive": true,
+    "sentMessages": [
+     {
+      "at": 1794447903642,
+      "socket": "/ws/agent-collaboration/manager_sdvagent_9e45_845f98a4fed6406da08b9b871f3625bd",
+      "target": "worker_sdvagent_9e45_89bb5578f0794d1f8f76cdf4c8cd9f85"
+     }
+    ],
+    "rootStayedStopped": true,
+    "helperRunId": null,
+    "managerStarted": true,
+    "streamsAfterStart": 0
+   }
+  },
+  "SDV-02": {
+   "result": "Fail",
+   "description": "Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)",
+   "message": "team: the stopped root was started by a message to its worker",
+   "details": {
+    "workerAnsweredLive": true,
+    "sentMessages": [
+     {
+      "at": 1794447998742,
+      "socket": "/ws/agent-team/team_sdvteam_150c_4c694a36ef6346ebbfbe27e24c810a43",
+      "target": "manager_sdvteam_150c_cbf73e2db2c14496a8dd62bc5056b5fa"
+     }
+    ],
+    "markerInWorkerRun": false
+   }
+  },
+  "SDV-03": {
+   "result": "Fail",
+   "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+   "message": "Timed out: org: worker delegated"
+  }
+ },
+ "cleanup": {
+  "browser": "closed",
+  "frontend": {
+   "pid": 94553,
+   "status": "terminated",
+   "exit": "SIGTERM"
+  },
+  "backend": {
+   "pid": 93009,
+   "status": "terminated",
+   "exit": 0
+  },
+  "dataRootRemoved": true
+ },
+ "failures": [
+  {
+   "id": "SDV-02",
+   "message": "team: the stopped root was started by a message to its worker"
+  },
+  {
+   "id": "SDV-03",
+   "message": "Timed out: org: worker delegated"
+  }
+ ],
+ "stack": {
+  "backendUrl": "http://127.0.0.1:52720",
+  "frontendUrl": "http://127.0.0.1:52721",
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-0NHqTZ"
+ },
+ "browserVersion": "157.0.8103.51",
+ "result": "Fail",
+ "finishedAt": "2026-11-12T01:48:10.054Z"
+}

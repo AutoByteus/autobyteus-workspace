@@ -303,10 +303,11 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       const sent = await managerCalls(callTool("send_message_to", { target_agent_run_id: target.agentRunId, content }));
       expect(sent, `${kind}: Manager → ${target.address} ${JSON.stringify(sent)}`).toMatchObject({ accepted: true });
     });
-    /** Reopens a stopped Team run (as from history) and connects its view again. */
+    /**
+     * Reopens a stopped Team run (as from history) and connects its view again: the view opens from the stored file; the
+     * next message to one of its members on it restores the run (autobyteus-461 SR-046 … SR-048: no restore mutation).
+     */
     const reopen = async () => {
-      const restored = (await graphql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`, { id: rootId })).restoreAgentTeamRun;
-      expect(restored.success, restored.message).toBe(true);
       active.push({ kind, rootId });
       const reconnected = await connect("agent-team", rootId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
       view.socket = reconnected.socket;

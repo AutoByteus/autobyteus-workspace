@@ -176,8 +176,8 @@ try {
   let closedFirst = false; firstClient.onClose(error => { closedFirst = error === null; });
   await stopTeam(); assert(closedFirst); assert.equal(getCodexThreadManager().getThread(binding.agent_run_id), null);
   await assert.rejects(firstClient.request("config/read", {}), /not started/); checkpoint("ordinary Stop physically closed first Codex generation");
-  const restored = (await gql("mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message teamRunId}}", { id: teamId })).restoreAgentTeamRun;
-  assert.equal(restored.success, true, restored.message); assert.equal(restored.teamRunId, teamId);
+  // The product restores a stopped team as the app does (autobyteus-461 CR-461-008): the user's message to one of its members on
+  // its view stream. inventory() below opens the view (stored mode) and sends that message, which restores the run.
   const resumedBinding = managerBinding(await publicTree()); assert.equal(resumedBinding.agent_run_id, binding.agent_run_id);
   const second = await inventory(binding.agent_run_id, "restored"); secondClient = second.client;
   assert.notEqual(secondClient, firstClient); assert.equal(second.threadId, first.threadId);

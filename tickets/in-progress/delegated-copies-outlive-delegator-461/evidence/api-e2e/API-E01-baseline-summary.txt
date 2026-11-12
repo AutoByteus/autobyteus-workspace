@@ -1,0 +1,65 @@
+# Case: API-E01 (baseline, first run)
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=... pnpm exec vitest run tests/e2e --no-watch
+# Full log: /tmp/api461/API-E01-baseline.log (not committed). Base 827f1e68dc (469 merged) ran these suites green except EXC-E2E-007 (469 report), so every failure here is under the 461 change.
+
+ Test Files  54 failed | 129 passed | 71 skipped (254)
+      Tests  152 failed | 691 passed | 341 skipped (1184)
+
+Failing files:
+FAIL  tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts
+FAIL  tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts
+FAIL  tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts
+FAIL  tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+FAIL  tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts
+FAIL  tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts
+FAIL  tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts
+FAIL  tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts
+FAIL  tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts
+FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+FAIL  tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts
+FAIL  tests/e2e/model-routing/model-routing-delegation.e2e.test.ts
+FAIL  tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts
+FAIL  tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
+FAIL  tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts
+FAIL  tests/e2e/projects/closed-run-attachments.e2e.test.ts
+FAIL  tests/e2e/projects/collaboration-model-contract.e2e.test.ts
+FAIL  tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts
+FAIL  tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts
+FAIL  tests/e2e/projects/delegated-copy-model-change.e2e.test.ts
+FAIL  tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts
+FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+FAIL  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts
+FAIL  tests/e2e/projects/delegation-forest-restore.e2e.test.ts
+FAIL  tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts
+FAIL  tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts
+FAIL  tests/e2e/projects/project-change-feed.e2e.test.ts
+FAIL  tests/e2e/projects/project-task-boundaries.e2e.test.ts
+FAIL  tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts
+FAIL  tests/e2e/projects/project-task-parts-live.e2e.test.ts
+FAIL  tests/e2e/projects/projects-graphql.e2e.test.ts
+FAIL  tests/e2e/projects/task-agent-several-tasks.e2e.test.ts
+FAIL  tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+FAIL  tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts
+FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts
+FAIL  tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts
+FAIL  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts
+FAIL  tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts
+FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts
+FAIL  tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts
+FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+FAIL  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+FAIL  tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts
+FAIL  tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts
+FAIL  tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts
+FAIL  tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts
+FAIL  tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts
+FAIL  tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts
+FAIL  tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts
+FAIL  tests/e2e/runtime/stopped-run-edit-root-built-server.e2e.test.ts
+FAIL  tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts
+FAIL  tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+FAIL  tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts

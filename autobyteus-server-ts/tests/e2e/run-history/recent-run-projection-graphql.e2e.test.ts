@@ -26,6 +26,7 @@ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
 
 const GRAPHQL_QUERY = `
   query RunProjection($runId: String!) {
@@ -255,6 +256,7 @@ describe("recent run projection GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let releaseRunHistory: (() => void) | null = null;
   let ownedAgentRunManager: AgentRunManager | null = null;
   let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
@@ -292,6 +294,8 @@ describe("recent run projection GraphQL e2e", () => {
       modelSelectionValidator: { validate: unavailableExecution },
     });
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
+    // The history readers, as the composition root sets them (autobyteus-461 SR-047 step 8).
+    releaseRunHistory = setE2eRunHistoryServices({ memoryDir });
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -306,6 +310,7 @@ describe("recent run projection GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    releaseRunHistory?.();
     closeStudioServices?.();
     if (ownedAgentTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);
     if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);

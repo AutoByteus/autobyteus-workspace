@@ -1,6 +1,8 @@
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
+import { RunViewChildren } from "../../../src/services/agent-streaming/run-view-children.js";
+import { DelegatedRunAgentsReader } from "../../../src/run-history/services/delegated-run-agents-reader.js";
 
 type StudioApplicationApiServices = Parameters<
   typeof configureStudioApplicationApiServices
@@ -9,6 +11,15 @@ type StudioApplicationApiServices = Parameters<
 export type E2eStudioApplicationApiServiceOverrides = Partial<
   StudioApplicationApiServices
 >;
+
+/**
+ * The two delegation reads the Studio resolvers use since autobyteus-461 (a run view's children, the agents of runs delegated
+ * from a run), over a tree with no delegation: the production composition builds them over its `DelegationTree`; an
+ * in-process suite that starts no delegated run reads none. A suite that does passes its own.
+ */
+const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [] });
+const NO_DELEGATIONS_VIEW_CHILDREN = new RunViewChildren({ memoryDir: "", tree: NO_DELEGATIONS, followers: { statuses: async () => [] }, channel: () => null });
+const NO_DELEGATIONS_RUN_AGENTS = new DelegatedRunAgentsReader("", NO_DELEGATIONS);
 
 const unavailableService = <T extends object>(serviceName: string): T =>
   new Proxy(Object.create(null) as T, {
@@ -36,7 +47,9 @@ export const configureE2eStudioApplicationApiServices = (
   const agentTeamDefinitionService = overrides.agentTeamDefinitionService
     ?? AgentTeamDefinitionService.getInstance({ agentDefinitionService });
 
-  return configureStudioApplicationApiServices({ runViewChildren: {} as never, delegatedRunAgents: {} as never,
+  return configureStudioApplicationApiServices({
+    runViewChildren: overrides.runViewChildren ?? NO_DELEGATIONS_VIEW_CHILDREN,
+    delegatedRunAgents: overrides.delegatedRunAgents ?? NO_DELEGATIONS_RUN_AGENTS,
     agentDefinitionService,
     agentTeamDefinitionService,
     agentOrgDefinitionService: overrides.agentOrgDefinitionService

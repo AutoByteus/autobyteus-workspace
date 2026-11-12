@@ -40,6 +40,7 @@ vi.mock("../../../src/agent-execution/backends/codex/history/codex-thread-histor
 
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+import { setE2eRunHistoryServices } from "../helpers/e2e-run-history-services.js";
 
 const STANDALONE_RUN_ID = "run-codex-toolcalls-graphql";
 const STANDALONE_THREAD_ID = "thread-standalone-toolcalls";
@@ -162,6 +163,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   let workspaceRootPath: string;
   let memoryDir: string;
   let closeStudioServices: (() => void) | null = null;
+  let releaseRunHistory: (() => void) | null = null;
   let ownedAgentRunManager: AgentRunManager | null = null;
   let ownedAgentTeamRunManager: AgentTeamRunManager | null = null;
 
@@ -202,6 +204,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
       });
     }
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
+    // The history readers, as the composition root sets them (autobyteus-461 SR-047 step 8).
+    releaseRunHistory = setE2eRunHistoryServices({ memoryDir });
     schema = await buildGraphqlSchema();
 
     const require = createRequire(import.meta.url);
@@ -235,6 +239,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    releaseRunHistory?.();
     closeStudioServices?.();
     if (ownedAgentTeamRunManager) {
       AgentTeamRunManager.releaseProcessInstance(ownedAgentTeamRunManager);

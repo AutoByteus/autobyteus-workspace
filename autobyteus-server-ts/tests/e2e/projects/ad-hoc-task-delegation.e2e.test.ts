@@ -479,11 +479,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(taskNodes(await liveTree()).map((node) => node.agentRunId)).toContain(assistantRunId);
 
     // 9. Restore by sending: the open assistant copy still answers by run ID (wake); the closed copy stays closed.
-    // An Org view attaches only to an active Org; the product restores a stopped Org explicitly before its stream.
-    if (kind === "org") {
-      const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
-      expect(restored.success, restored.message).toBe(true);
-    }
+    // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
+    // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
     if (kind === "agent") inputChannel = await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED"));
     view = await openView();
     active.push({ kind, rootId });

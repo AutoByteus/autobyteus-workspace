@@ -305,10 +305,8 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     /** Every status change seen on this root's views (across reconnects). */
     const seen: Frame[][] = [channels.view.frames];
     const reconnect = async () => {
-      if (kind === "org") {
-        const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
-        expect(restored.success, restored.message).toBe(true);
-      }
+      // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
+      // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
       if (kind === "agent") channels.input = await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED"));
       channels.view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
       seen.push(channels.view.frames);

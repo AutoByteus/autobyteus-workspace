@@ -1,0 +1,45 @@
+# Case: API-B01 SDV-03 (run 4)
+# Commit: bc223a8ae0 (code a54e78ccb7); server dist built from it
+# Environment: ENV-1 macOS 26.5.2, Node v22.23.1, clean env (env -i PATH HOME=<temp> TMPDIR USER), scripted AGY CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=linked_skills)
+# Date: 2026-11-12
+# Command: pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir <dir> [--cases SDV-03]   (clean env as above; built server dist/app.js, Nuxt dev, headless Chrome 157)
+
+{
+ "startedAt": "2026-11-12T01:48:58.800Z",
+ "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+ "cases": {
+  "SDV-03": {
+   "result": "Fail",
+   "description": "Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input",
+   "message": "Timed out: org: worker delegated ([{\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg AgentRun 'worker_sdvorg_4a11_46a142e60b1b42dab6041816f60c29ad' has no status record.\\\",\\n    \\\"path\\\": []\\n  }\\n]\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getAgentOrgRunInspection\"]}])"
+  }
+ },
+ "cleanup": {
+  "browser": "closed",
+  "frontend": {
+   "pid": 83826,
+   "status": "terminated",
+   "exit": "SIGTERM"
+  },
+  "backend": {
+   "pid": 83454,
+   "status": "terminated",
+   "exit": 0
+  },
+  "dataRootRemoved": true
+ },
+ "failures": [
+  {
+   "id": "SDV-03",
+   "message": "Timed out: org: worker delegated ([{\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"AgentOrg AgentRun 'worker_sdvorg_4a11_46a142e60b1b42dab6041816f60c29ad' has no status record.\\\",\\n    \\\"path\\\": []\\n  }\\n]\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getAgentOrgRunInspection\"]}])"
+  }
+ ],
+ "stack": {
+  "backendUrl": "http://127.0.0.1:56137",
+  "frontendUrl": "http://127.0.0.1:56138",
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-VCdf9r"
+ },
+ "browserVersion": "157.0.8103.51",
+ "result": "Fail",
+ "finishedAt": "2026-11-12T01:50:43.503Z"
+}

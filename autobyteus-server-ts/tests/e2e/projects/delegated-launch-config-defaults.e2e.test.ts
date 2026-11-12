@@ -275,10 +275,8 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
       view: await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot)),
     };
     const reconnect = async () => {
-      if (kind === "org") {
-        const restored = (await graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`, { id: rootId })).restoreAgentOrgRun;
-        expect(restored.success, restored.message).toBe(true);
-      }
+      // A stopped Org's view opens from its stored file; the next message to one of its agents on that view restores it
+      // (autobyteus-461 SR-046 … SR-048: there is no Org restore mutation).
       if (kind === "agent") channels.input = await connect("agent", rootId, (frames) => frames.some((frame) => frame.type === "CONNECTED"));
       channels.view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
       active.push({ kind, rootId });

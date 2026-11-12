@@ -11,6 +11,7 @@ import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "./websocket
 import { until } from "./agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
+import { restoreByMemberMessage } from "./restore-by-member-message.js";
 
 /**
  * Drives real Agent, Agent Team and Agent Org roots on a test-owned Studio server with the scripted AGY CLI
@@ -241,13 +242,17 @@ export const startCollaborationHarness = async (label: string) => {
     };
     return { kind, rootId, managerRunId, members, sendTo, calls, conversationOf, liveTree, taskAgents, waitForTaskAgent, close: () => { view.socket.close(); inputChannel?.socket.close(); } };
   };
-  /** Reopens a stopped root as the app does: the restore mutation of its kind, then its streams. */
+  /**
+   * Reopens a stopped root as the app does, then attaches its streams: a standalone agent run by its restore mutation; a Team
+   * or Org run by the user's message to its Manager on its view stream (autobyteus-461 CR-461-008: no restore mutation).
+   */
   const reopenRoot = async (root: { kind: RootKind; rootId: string; managerRunId: string; members: Record<string, string> }) => {
-    const mutation = root.kind === "agent" ? `mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`
-      : root.kind === "team" ? `mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`
-        : `mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}`;
-    const restored = Object.values(await graphql(mutation, { id: root.rootId }))[0] as Rec;
-    expect(restored.success, restored.message).toBe(true);
+    if (root.kind === "agent") {
+      const restored = (await graphql(`mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}`, { id: root.rootId })).restoreAgentRun as Rec;
+      expect(restored.success, restored.message).toBe(true);
+    } else {
+      await restoreByMemberMessage({ url: `http://${url.host}`, gql: (q, v) => graphql(q, v), kind: root.kind, runId: root.rootId, memberRunId: root.managerRunId });
+    }
     active.push({ kind: root.kind, rootId: root.rootId });
     return attachRoot(root.kind, root.rootId, root.managerRunId, root.members);
   };
