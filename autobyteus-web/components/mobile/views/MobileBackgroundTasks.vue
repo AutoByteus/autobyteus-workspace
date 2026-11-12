@@ -27,10 +27,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import type { BackgroundTaskPanelRow, BackgroundTaskPanelStatus } from '~/types/backgroundTaskView';
 
 /** Rows as the desktop panel shows them (`useBackgroundTaskPanelView`), newest first. */
 const props = defineProps<{ tasks: readonly BackgroundTaskPanelRow[] }>();
+const { resolvedLocale } = useLocalization();
 
 const STATUS_LABEL: Record<BackgroundTaskPanelStatus, string> = {
   running: 'Running', completed: 'Completed', failed: 'Failed', stopped: 'Stopped', unknown: 'Unknown',
@@ -69,7 +71,7 @@ const startedLabel = (iso: string): string => {
   if (Number.isNaN(at.getTime())) return iso;
   const sameDay = at.toDateString() === new Date().toDateString();
   return sameDay
-    ? at.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-    : at.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
+    ? at.toLocaleTimeString(resolvedLocale.value, { hour: '2-digit', minute: '2-digit' })
+    : at.toLocaleString(resolvedLocale.value, { dateStyle: 'short', timeStyle: 'short' });
 };
 </script>
