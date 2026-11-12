@@ -44,16 +44,13 @@ export interface RunStoredState {
   hasEarlierActiveTraceEvents: boolean;
 }
 
-export const readRunStoredState = async (runId: string): Promise<RunStoredStateRead> => {
-  const expectedActivityRevision = useAgentActivityStore().getActivityContentRevision(runId);
-  const [projectionResponse, fileChanges] = await Promise.all([
-    getApolloClient().query<GetRunProjectionQueryData>({
-      query: GetRunProjection,
-      variables: { runId },
-      fetchPolicy: 'network-only',
-    }),
-    fetchRunFileChanges({ kind: 'run', runId }),
-  ]);
+/** A run's own stored projection (`getRunProjection`); throws on GraphQL errors or a missing payload. */
+export const fetchRunProjection = async (runId: string): Promise<RunProjectionPayload> => {
+  const projectionResponse = await getApolloClient().query<GetRunProjectionQueryData>({
+    query: GetRunProjection,
+    variables: { runId },
+    fetchPolicy: 'network-only',
+  });
   const projectionErrors = projectionResponse.errors || [];
   if (projectionErrors.length > 0) {
     throw new Error(projectionErrors.map((e: { message: string }) => e.message).join(', '));
@@ -62,6 +59,15 @@ export const readRunStoredState = async (runId: string): Promise<RunStoredStateR
   if (!projection) {
     throw new Error('Run projection payload is missing.');
   }
+  return projection;
+};
+
+export const readRunStoredState = async (runId: string): Promise<RunStoredStateRead> => {
+  const expectedActivityRevision = useAgentActivityStore().getActivityContentRevision(runId);
+  const [projection, fileChanges] = await Promise.all([
+    fetchRunProjection(runId),
+    fetchRunFileChanges({ kind: 'run', runId }),
+  ]);
   return { runId, projection, fileChanges, expectedActivityRevision };
 };
 

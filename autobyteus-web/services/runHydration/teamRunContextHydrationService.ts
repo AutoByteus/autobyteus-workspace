@@ -1,5 +1,6 @@
 import {
   teamRunExecutionTreeDtoSchema,
+  type TaskExecutionDto as TeamTaskExecutionDto,
   type TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
 import { remoteTaskExecutionDtoSchema, type RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
@@ -43,6 +44,7 @@ import {
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
+import { delegatedChildReads, teamDelegatedChildSubject } from './delegatedChildReads';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -113,15 +115,20 @@ type TeamMemberRunState = MemberRunState<TeamMemberRunProjectionPayload>;
 
 type TeamMember = Readonly<{ agentRunId: string; memberAddress: string }>;
 
+/** The focused agent's stored state: a member's from this team run; a delegated child's by its own identity (CR-461-010). */
 const fetchExactTeamMemberRunState = (
   teamRunId: string,
   member: TeamMember,
-): Promise<TeamMemberRunState> => fetchMemberRunState({
-  fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, member.agentRunId),
-  fetchFileChanges: () => fetchRunFileChanges({
-    kind: 'teamMember', teamRunId, memberAddress: member.memberAddress, agentRunId: member.agentRunId,
-  }),
-});
+  tasks: readonly TeamTaskExecutionDto[],
+): Promise<TeamMemberRunState> => {
+  const child = teamDelegatedChildSubject(tasks, member.agentRunId);
+  return fetchMemberRunState(child ? delegatedChildReads(child, fetchExactTeamMemberProjection) : {
+    fetchProjection: () => fetchExactTeamMemberProjection(teamRunId, member.agentRunId),
+    fetchFileChanges: () => fetchRunFileChanges({
+      kind: 'teamMember', teamRunId, memberAddress: member.memberAddress, agentRunId: member.agentRunId,
+    }),
+  });
+};
 
 const fetchCheckpoint = async (teamRunId: string): Promise<TeamRunExecutionCheckpointPayload> => {
   const response = await getApolloClient().query<GetTeamRunExecutionCheckpointQueryData>({
@@ -288,7 +295,8 @@ const hydrateCurrentTeamRunContext = async (
   // The focused member is staged exactly; a remote focused member is read from its node after the commit.
   const focusedLocation = locations.find((agent) => agent.agentRunId === initialFocusedAgentRunId) ?? null;
   const expectedFocusedActivityRevision = useAgentActivityStore().getActivityContentRevision(initialFocusedAgentRunId);
-  const focusedState = focusedLocation ? await fetchExactTeamMemberRunState(input.teamRunId, focusedLocation) : null;
+  const focusedState = focusedLocation
+    ? await fetchExactTeamMemberRunState(input.teamRunId, focusedLocation, tree.root_team.task_executions) : null;
   const stateByAgentRunId = new Map<string, TeamMemberRunState>(focusedState ? [[initialFocusedAgentRunId, focusedState]] : []);
   const projectionByAgentRunId = new Map<string, TeamMemberRunProjectionPayload | null>(
     [...stateByAgentRunId].map(([agentRunId, state]) => [agentRunId, state.projection]),

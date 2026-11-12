@@ -31,6 +31,7 @@ import {
 } from './agentOrgCommunicationPerspective'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
+import { orgDelegatedChildSubject } from '~/services/runHydration/delegatedChildReads'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -137,7 +138,8 @@ export class AgentOrgExecutionContext {
       ...access, root: Object.freeze({ orgRunId: this.orgRunId }), address: agent.address, context,
       workspaceRootPath: agent.source.launchConfiguration.workspaceRootPath,
       collaborationMessages: this.messagesView(agent.address, agent.agentRunId),
-      browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId,
+      // A delegated child's pages and files are read by its own identity (CR-461-010).
+      browse: orgDelegatedChildSubject(this.index, agent.agentRunId) ?? Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId,
         memberAddress: agent.address, agentRunId: agent.agentRunId }),
     }
     if (agent.kind === 'task') return Object.freeze({ ...common, kind: 'agent_org_task_agent' })

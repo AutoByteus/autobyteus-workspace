@@ -22,14 +22,22 @@ const ROOT = 'approval-team', TASK = 'approval-task', INV = 'submit-invocation'
 let wrapper: ReturnType<typeof mount> | undefined
 beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks() })
 afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentTeamRunStore().disconnectTeamStream(ROOT); vi.restoreAllMocks() })
-const projection = () => ({ data: { getTeamMemberRunProjection: {
-  agentRunId: TASK,
+const stored = (runId: string) => ({
   conversation: [{ kind: 'message', role: 'assistant', content: 'Historical work', ts: 10 },
     { kind: 'tool_call_pending', invocationId: INV, toolName: 'run_bash', toolArgs: { message: 'old argument' }, ts: 11 }],
   activities: [{ kind: 'system_instruction', activityId: 'system', content: 'Retained system', ts: 10 },
     { kind: 'tool', invocationId: INV, toolName: 'run_bash', status: 'parsed', arguments: { message: 'old argument' }, ts: 11 }],
   hasEarlierActiveTraceEvents: true,
-} } })
+  runId,
+})
+/**
+ * The stored state of the selected agent: a member's from the Team (`getTeamMemberRunProjection`), the delegated TASK
+ * run's from its own run (`getRunProjection`; autobyteus-461 CR-461-010).
+ */
+const projection = (subject = TASK) => {
+  const { runId, ...state } = stored(subject)
+  return { data: { getTeamMemberRunProjection: { ...state, agentRunId: runId }, getRunProjection: { ...state, runId } } }
+}
 const harness = (subject = TASK, autoExecuteTools = false) => {
   const callbacks = new Map<string, (value?: any) => void>()
   io.ws = { state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(),
@@ -58,8 +66,7 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   const context = team.view.getAgentContext(subject)!
   const approval = () => emit('TOOL_APPROVAL_REQUESTED', { change_sequence: ++sequence, agent_run_id: subject, invocation_id: INV,
     tool_name: 'run_bash', turn_id: 'task-turn', arguments: { message: 'actual task result' } })
-  const data = projection(); data.data.getTeamMemberRunProjection.agentRunId = subject
-  io.query.mockResolvedValue(data)
+  io.query.mockResolvedValue(projection(subject))
   const select = () => inspectMountedTeamMember({ teamRunId: ROOT, agentRunId: subject, commit: () => useAgentSelectionStore().selectRun(ROOT, 'team') })
   const tools = () => context.conversation.messages.flatMap(m => m.type === 'ai' ? m.segments.filter(isProjectableToolSegment) : [])
   const render = () => {
@@ -90,7 +97,9 @@ it.each(['before', 'after', 'during'])('TASK-01/02: actual task approval %s firs
   await buttons[0]!.trigger('click')
   expect(io.ws.send).toHaveBeenCalledTimes(1)
   expect(JSON.parse(io.ws.send.mock.calls[0][0])).toMatchObject({ type: 'APPROVE_TOOL', payload: { agent_run_id: TASK, invocation_id: INV } })
-  if (order === 'during') expect(io.query.mock.calls.filter(([r]) => r.query.definitions[0].name.value === 'GetTeamMemberRunProjection' && r.variables.agentRunId === TASK)).toHaveLength(2)
+  // The delegated run is read by its own identity (CR-461-010), never as a member of the Team.
+  if (order === 'during') expect(io.query.mock.calls.filter(([r]) => r.query.definitions[0].name.value === 'GetRunProjection' && r.variables.runId === TASK)).toHaveLength(2)
+  expect(io.query.mock.calls.some(([r]) => r.query.definitions[0].name.value === 'GetTeamMemberRunProjection' && r.variables.agentRunId === TASK)).toBe(false)
 })
 
 it.each([
@@ -112,7 +121,7 @@ it.each([
 })
 it('TASK-02/03: missing projected tool retains observed pending while blank history-only call cannot invent it', async () => {
   const test = harness(); test.approval()
-  const data = projection(); data.data.getTeamMemberRunProjection.conversation.pop(); data.data.getTeamMemberRunProjection.activities.pop()
+  const data = projection(); data.data.getRunProjection.conversation.pop(); data.data.getRunProjection.activities.pop()
   io.query.mockResolvedValue(data)
   expect((await test.select()).disposition).toBe('committed')
   expect(test.tools()).toHaveLength(1)

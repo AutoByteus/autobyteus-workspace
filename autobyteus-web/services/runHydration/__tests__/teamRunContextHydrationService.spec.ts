@@ -5,7 +5,7 @@ import {
   hydrateTeamRunContextForStreamRecovery,
 } from '../teamRunContextHydrationService';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
-import { GetRunFileChanges, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries';
+import { GetRunFileChanges, GetRunProjection, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { commitTeamRunHydration, markCommittedTeamRunHydrationAuthority } from '../teamRunHydrationCommit';
@@ -106,11 +106,15 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
         agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
         started_at: clonedTree.created_at, source: memberACopySource },
     ] } };
-    queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
-      ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+    // The delegated run focused at open is read by its own identity (autobyteus-461 CR-461-010), never as a member.
+    queryMock.mockImplementation(async ({ query, variables }) => query === GetRunProjection
+      ? { data: { getRunProjection: { runId: variables.runId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
+      : query === GetRunFileChanges ? { data: { getRunFileChanges: [] } }
+      : variables.agentRunId ? { errors: [{ message: 'read as a Team member' }] }
       : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, liveSequenceId: isActive ? 'live-1' : null, baseChangeSequence: 0, lastMessageChangeSequence: isActive ? 0 : null, executionTree: retainedTree } } });
     const result = await hydrateLiveTeamRunContext({ teamRunId: 'team-live-recovery', agentRunId: 'retained-task',
       resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null), ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null) });
+    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({ query: GetRunProjection, variables: { runId: 'retained-task' } }));
     const view = result.hydratedContext.view;
     expect(result.focusedAgentRunId).toBe('retained-task');
     expect(view.isRootTeamActive()).toBe(isActive);

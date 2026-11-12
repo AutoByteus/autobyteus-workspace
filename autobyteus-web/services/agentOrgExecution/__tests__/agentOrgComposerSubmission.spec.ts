@@ -369,10 +369,15 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
   })
 })
 
-const projectionResult = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: {
-  agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
-  conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
-} } })
+/** A stored state: an Org agent's through the Org; a delegated child's by its own identity (autobyteus-461 CR-461-010). */
+const projectionResult = (variables: any) => {
+  const state = { conversation: [], activities: [], hasEarlierActiveTraceEvents: false }
+  return { data: {
+    getAgentOrgMemberRunProjection: { ...state, agentRunId: variables.agentRunId, memberAddress: variables.memberAddress },
+    getTeamMemberRunProjection: { ...state, agentRunId: variables.agentRunId },
+    getRunProjection: { ...state, runId: variables.runId },
+  } }
+}
 const inspectionResult = (active = false) => {
   const base = taskBearingView()
   const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
@@ -565,11 +570,12 @@ describe('Org strict candidate and terminal boundaries', () => {
     mocks.query.mockImplementation(async ({ variables }: any) => {
       if (!variables.agentRunId) return inspectionResult()
       const result = projectionResult(variables)
-      if (variables.agentRunId === 'agent-task-worker') result.data.getAgentOrgMemberRunProjection.agentRunId = 'wrong-exact-id'
+      // The team child's member is read from its own team run (CR-461-010); that read answers another run.
+      if (variables.agentRunId === 'agent-task-worker') result.data.getTeamMemberRunProjection.agentRunId = 'wrong-exact-id'
       return result
     })
     const store = useAgentOrgContextsStore()
-    await expect(store.openForInspection('org-run')).rejects.toThrow('Projection identity mismatch')
+    await expect(store.openForInspection('org-run')).rejects.toThrow("Team member projection 'wrong-exact-id' does not match 'agent-task-worker'.")
     expect(store.contextFor('org-run')).toBe(org)
     expect(context.state).toBe(state); expect(context.config).toBe(config)
     expect(context.requirement).toBe('do not lose'); expect(context.contextFilePaths).toEqual([attachment('unsent')])
