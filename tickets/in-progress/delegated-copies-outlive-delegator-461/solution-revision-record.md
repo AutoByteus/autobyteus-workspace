@@ -1204,3 +1204,16 @@
 - Done: the design's "The frontend contract" (sequencing, the SR-044 row, the web changes, tests). `walkthrough.py --check` passes.
 - Next action: architecture review (AR-024)
 
+### SR-063 — `RunViewStream` is base's `RootEventPublisher` moved out of the root (answers ARCH-REV-037 AR-025)
+
+- Triggering: ARCH-REV-037 resolved AR-024 in substance (one sequence per run, outliving the root) and found AR-025. Base's owner of that sequence, `RootEventPublisher`, does three more things the web depends on, and SR-062 did not carry them:
+  - **the snapshot barrier:** exact at base only because a root's own changes run in its gate, while the tree's row and status events run in no root's gate. So a row change during an async stored capture could appear twice in base's Team client, which inserts without deduplicating;
+  - **`liveSequenceId`,** which keys the web's participant message positions;
+  - **`lastMessageChangeSequence`.**
+- The Solution Designer's gap: SR-062 named the sequence's owner without taking over the base owner's other duties.
+- Decision:
+  - `RunViewStream` **is** base's `RootEventPublisher` moved out of the root. It carries a `liveSequenceId` per instance, which lives as long as the process, so a stop and a restore share one live sequence and a restart starts another. It carries `lastMessageChangeSequence`, in the view's numbers, counting only the run's own message events. It carries its snapshot connection.
+  - **The snapshot is made exact by the reviewer's option (i):** the view's base, the tree's rows and the observed statuses (all in memory) are read in one synchronous step. The run's own parts are captured as base did: in a live root's gate, with its queue; from the files for a stopped run, which produces no events. Every outside frame after the base is then a change after the snapshot, so no idempotence and no web change are needed.
+- Done: the design's "The frontend contract" (the owner and its duties, the exact snapshot, the SR-044 row, tests). `walkthrough.py --check` passes.
+- Next action: architecture review (AR-025)
+
