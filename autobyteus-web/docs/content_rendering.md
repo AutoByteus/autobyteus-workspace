@@ -280,6 +280,24 @@ transport and completion ownership boundaries.
 - **Syntax Highlighting**: Uses PrismJS for code blocks.
 - **Math Support**: Uses KaTeX for explicit LaTeX equations (`$...$`, `$$...$$`, `\(...\)`, `\[...\]`, and `math` fences). The renderer does not infer inline math from ordinary prose or file paths.
 - **Mermaid Diagrams**: Native support for Mermaid diagrams.
+- **Heading links**: a Contents list's `[Section](#section)` scrolls to that heading (below).
+
+### Heading Links
+
+A `#section` link scrolls within its own rendered document, as on GitHub (autobyteus-480). This holds in conversations, the Files panel, the Skills page preview and the phone viewer.
+
+- **Heading ids (`useMarkdownSegments`, `utils/markdownHeadingAnchors.ts`):**
+  - After parsing, each heading gets `id="user-content-<slug>"`.
+  - The slug follows GitHub's rule (`githubHeadingSlug`): lowercase, characters other than letters, marks, numbers, connector punctuation, spaces and hyphens removed, then each space a hyphen.
+  - A repeated heading is numbered `-1`, `-2`, … by a per-document slugger.
+  - The `user-content-` prefix keeps the ids clear of the app's own element ids and of DOM-property names, and DOMPurify keeps them.
+  - The slug is a small own function, not a library, so no dependency or lockfile change was needed.
+- **Clicks (`MarkdownRenderer.handleLinkClick`, also on Enter):**
+  - A `#anchor` is decoded and looked up only inside this renderer's root element, so two messages with the same headings never scroll to each other. The heading is brought to the top of its scroll container.
+  - The URL does not change: the app's hash router would read `#section` as a route.
+  - A missing anchor does nothing.
+  - A link with no scheme (`other.md`, `other.md#x`, `/x.md`, `./x.md`) does nothing instead of opening a 404. Opening such files is FU-001.
+  - These rules run before the external-link rule. External `http(s)` links still open once in a new tab, `mailto:` is left to the browser, and file actions keep their own handling.
 
 ### Workspace-Relative Images
 

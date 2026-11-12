@@ -7,6 +7,7 @@ import katexLib from 'katex';
 import { normalizeMath } from '~/utils/markdownMath';
 import { markdownItPrism } from '~/utils/markdownItPrism'; // Keep using this for non-PlantUML code blocks
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
+import { createHeadingSlugger, HEADING_ANCHOR_ID_PREFIX } from '~/utils/markdownHeadingAnchors';
 import {
   createAbsoluteFilePathAction,
   findAbsoluteFilePathCodeCandidates,
@@ -46,6 +47,25 @@ const escapeHtml = (value: string): string => value
 const actionLink = (actionId: string, label: string): string => (
   `<a href="#" role="button" class="event-monitor-file-action-link" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">${escapeHtml(label)}</a>`
 );
+
+// A heading's text as written, for its anchor: the tokenizer's typographer rewrites text ("--", quotes),
+// which GitHub's slugs do not see, so the heading's inline source is read again without it.
+const headingTextParser = new MarkdownIt({ html: true });
+const headingText = (inlineSource: string): string => headingTextParser
+  .parseInline(inlineSource, {})
+  .flatMap((token) => token.children ?? [])
+  .filter((token) => token.type === 'text' || token.type === 'code_inline')
+  .map((token) => token.content)
+  .join('');
+
+/** Gives every heading of one document its GitHub anchor id (REQ-001), numbering repeats across the document. */
+const assignHeadingAnchors = (tokens: any[]): void => {
+  const slug = createHeadingSlugger();
+  tokens.forEach((token, index) => {
+    if (token.type !== 'heading_open') return;
+    token.attrSet('id', `${HEADING_ANCHOR_ID_PREFIX}${slug(headingText(tokens[index + 1]?.content ?? ''))}`);
+  });
+};
 
 const allowFileUriLinkTokens = (markdown: MarkdownIt, enabled: boolean): void => {
   if (!enabled) return;
@@ -157,6 +177,7 @@ export const useMarkdownSegments = (
     };
 
     const tokens = md.parse(sourceString, {}); // Use the md without Prism for tokenizing
+    assignHeadingAnchors(tokens);
     const fileActionLabel = (actionId: string): string => {
       const action = fileActions[actionId];
       return action
