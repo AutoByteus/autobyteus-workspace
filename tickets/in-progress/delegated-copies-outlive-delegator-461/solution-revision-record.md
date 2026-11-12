@@ -1091,3 +1091,4 @@
 - Done: the design's DS-8 poll section. `walkthrough.py --check` passes.
 - The four CRR-012 Local Fixes are committed by the Implementation Engineer (`e208080b3c`, `b6ea7d241c`, `438d64a85c`, `e423b15cff`).
 
+- ARCH-REV-031 (2026-11-12): Pass, no finding. The reviewer corrects its ARCH-REV-030 premise (the launch is not fixed for the run's life), and verifies at `827f1e68dc` that the run list's delegated rows show no launch details, so identity-only rows lose nothing. `walkthrough.py --check` passes.
