@@ -1,5 +1,5 @@
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AppConfig } from "../../config/app-config.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
@@ -67,7 +67,7 @@ export type ApplicationPlatformBuildInput = Readonly<{
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
   modelSelectionValidator: RunModelSelectionValidator;
   /** The relationships between runs, from the Task entries (SR-047). */
-  delegationTree: DelegationTree;
+  delegationIndex: DelegationIndex;
   /** The run side's Task records (SR-053). */
   taskRecords: RunTaskRecords;
   /** The host's provider relays for application runs (`null`: the host runs no credential proxy). */
@@ -124,7 +124,7 @@ export const buildApplicationPlatformRuntime = (
     bindingReader: bindingStore,
     artifactDeliverySink: artifactDeliveryQueue,
     modelSelectionValidator: input.modelSelectionValidator,
-    delegationTree: input.delegationTree,
+    delegationIndex: input.delegationIndex,
     taskRecords: input.taskRecords,
     applicationAgentTools: applicationAgentToolAssembly.capability,
     });

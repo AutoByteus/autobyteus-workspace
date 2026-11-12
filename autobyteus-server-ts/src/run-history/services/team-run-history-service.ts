@@ -1,5 +1,5 @@
 import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -45,7 +45,7 @@ export class TeamRunHistoryService {
 
   constructor(memoryDir: string, options: {
     /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationTree, "subtreeOf">;
+    tree: Pick<DelegationIndex, "subtreeOf">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
     workGuard: Pick<DelegatedWorkGuard, "refusal">;
     executionTreeStore?: TeamRunExecutionTreeStore;

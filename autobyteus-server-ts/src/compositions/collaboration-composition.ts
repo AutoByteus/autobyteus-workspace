@@ -1,7 +1,7 @@
 import path from "node:path";
 import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { ChildRowsStreams } from "../agent-collaboration/delegation/child-rows-streams.js";
-import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
 import { DelegatedRunStarter } from "../agent-collaboration/execution/delegation/delegated-run-starter.js";
@@ -65,7 +65,7 @@ const taskChangeMarks: ProjectChangeMarks = {
 /** Steps 1–2: the loaded Task records, the tree built from them, and the run side's view of them. */
 export type TaskSide = Readonly<{
   resources: TaskExecutionResourceService;
-  tree: DelegationTree;
+  tree: DelegationIndex;
   taskRecords: RunTaskRecords;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
@@ -74,7 +74,7 @@ export type TaskSide = Readonly<{
 /**
  * Steps 1–2 of the composition root (autobyteus-461 design "Dependency Rules And The Composition Root"; SR-047, SR-053):
  * the Task agent run resources of both Task roots, loaded once (after app-data migrations; a damaged file is non-fatal);
- * the `DelegationTree` built from them and set as their entries listener (each run's collaboration map is derived from
+ * the `DelegationIndex` built from them and set as their entries listener (each run's collaboration tree is derived from
  * it, SR-060); and the run side's `RunTaskRecords`. The run services (step 3) are created next, with these.
  */
 export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memoryDir: string }>): Promise<TaskSide> => {
@@ -85,8 +85,8 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   // The relationships between runs, from the Task records (TC-11); kept current inside each Task's ordered change
   // (AR-017). A run's agents are read from its own parts on the first need, never at startup (469 D-11).
   // The tree reads each run's own files (its parts, once; an org's and a configured placement, at use), and derives
-  // each run's collaboration map from them (SR-060).
-  const tree = new DelegationTree(() => resources, new RunOwnAgentsReader(input.memoryDir));
+  // each run's collaboration tree from them (SR-060).
+  const tree = new DelegationIndex(() => resources, new RunOwnAgentsReader(input.memoryDir));
   tree.build();
   resources.setEntriesListener(tree);
   return Object.freeze({ resources, tree, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
@@ -150,9 +150,9 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(() => getProjectChangePublisher().unbind());
 
     // 6. Delegation and messages between runs, through each run's own root (DS-1, DS-2; contract §2.3, §2.4).
-    // Every cross-run answer comes from the run's collaboration map (SR-060).
+    // Every cross-run answer comes from the run's collaboration tree (SR-060).
     const crossRun = new CrossRunMessageDelivery({
-      senderAddress: (message) => tree.mapOf(message.receiverRun).reachingAddressOf(message.sender),
+      senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
       senderRoot: (run) => {
@@ -174,7 +174,7 @@ export const composeCollaboration = async (input: Readonly<{
         return resolved.root.acceptWorkPacket(packet);
       },
       recordCollaborating: (agentRunId, address) => runs.agentRunService.recordCollaborating(agentRunId, address),
-      reachingAddress: (sender, receiverRun) => tree.mapOf(receiverRun).reachingAddressOf(sender),
+      reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);

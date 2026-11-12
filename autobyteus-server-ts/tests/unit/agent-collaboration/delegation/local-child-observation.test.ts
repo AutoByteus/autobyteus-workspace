@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { LocalChildObservation, type LocalChildPorts, type LocalChildRootEvent } from "../../../../src/agent-collaboration/execution/delegation/local-child-observation.js";
-import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { projectAgentCollaborationEvent } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**

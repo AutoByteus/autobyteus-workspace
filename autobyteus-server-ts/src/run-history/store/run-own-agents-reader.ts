@@ -1,6 +1,6 @@
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/delegation-tree.js";
-import type { ConfiguredPlacement, OrgPlacements, RunFilesReader } from "../../agent-collaboration/delegation/run-collaboration-map.js";
+import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/delegation-index.js";
+import type { ConfiguredPlacement, OrgPlacements, RunFilesReader } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgRunExecutionTreeStore } from "./agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "./team-run-execution-tree-store.js";
@@ -20,9 +20,9 @@ const mountedTeamsOf = (members: readonly MemberNode[]): RunParts["mountedTeams"
  * A run's parts from its own file only (469 D-11): an agent run's own agent with its stored address (stored once it
  * collaborates, contract §3.3); a team run's members and coordinator address; an org run's direct agents, its mounted
  * teams' members and each mounted team's coordinator (contract §2.6, V-14, AR-014). `null` when the run's own file is
- * absent; an unreadable file rejects. The `DelegationTree` reads each run once and is the one owner of what it says.
+ * absent; an unreadable file rejects. The `DelegationIndex` reads each run once and is the one owner of what it says.
  * An org run's placements (its definition, its direct agents' addresses, its handoffs) are read at each use by
- * the run's collaboration map (SR-058, SR-060); a team's or org's configured placement at an address too (SR-059).
+ * the run's collaboration tree (SR-058, SR-060); a team's or org's configured placement at an address too (SR-059).
  */
 export class RunOwnAgentsReader implements RunFilesReader {
   private readonly layout: AgentMemoryLayout;

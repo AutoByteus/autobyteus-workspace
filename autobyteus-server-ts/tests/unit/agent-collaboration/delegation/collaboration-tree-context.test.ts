@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgents } from "../../../helpers/run-agents-reader.js";
 
 /**
- * autobyteus-461 SR-058 (CR-461-030), SR-060: a delegated run's collaboration context, from its collaboration map, as hosting gave it
+ * autobyteus-461 SR-058 (CR-461-030), SR-060: a delegated run's collaboration context, from its collaboration tree, as hosting gave it
  * at base: a delegated agent run's agent is a task agent; a copy of an org's configured agent keeps that address's
  * handoff rules and the org's instruction; a run whose Task an org assigned has the organization line.
  */
@@ -20,11 +20,11 @@ const harness = () => {
   const tasks = new InMemoryTaskExecutionResources();
   const orgPlacementsOf = vi.fn(async (orgRunId: string) => orgRunId === "org"
     ? { orgDefinitionId: "org-def", agentAddresses: ["/manager", "/sibling"], handoffs } : null);
-  const tree = new DelegationTree(() => tasks, readerOfAgents(async () => null, { orgPlacementsOf }));
+  const tree = new DelegationIndex(() => tasks, readerOfAgents(async () => null, { orgPlacementsOf }));
   tree.build(); tasks.setEntriesListener(tree);
   const context = {
-    ofAgentRun: (agentRunId: string) => tree.mapOf({ rootSubjectKind: "agent", rootRunId: agentRunId }).agentCollaboration(),
-    inOrganization: (run: RootExecutionIdentity) => tree.mapOf(run).inOrganization(),
+    ofAgentRun: (agentRunId: string) => tree.collaborationTreeOf({ rootSubjectKind: "agent", rootRunId: agentRunId }).agentCollaboration(),
+    inOrganization: (run: RootExecutionIdentity) => tree.collaborationTreeOf(run).inOrganization(),
   };
   const added = new Set<string>();
   const delegate = (taskId: string, by: RootExecutionIdentity, recipientAddress: string, execution: { agentRunId: string } | { teamRunId: string }, role: "assigned" | "subWork" = "assigned") => {

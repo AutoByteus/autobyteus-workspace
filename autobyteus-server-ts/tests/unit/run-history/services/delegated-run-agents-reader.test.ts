@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { DelegatedRunAgentsReader } from "../../../../src/run-history/services/delegated-run-agents-reader.js";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
@@ -35,7 +35,7 @@ const world = async () => {
     validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "eng", coordinatorAddress: "/designer",
       children: [testAgentNode("/designer", { agentRunId: "designer" }), testAgentNode("/coder", { agentRunId: "coder" })] }), "eng"));
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, new RunOwnAgentsReader(memory));
+  const tree = new DelegationIndex(() => tasks, new RunOwnAgentsReader(memory));
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/eng", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { teamRunId: "eng" }, teamCoordinatorAgentRunId: "designer" });

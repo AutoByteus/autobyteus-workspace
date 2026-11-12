@@ -14,7 +14,7 @@ export type E2eStudioApplicationApiServiceOverrides = Partial<
 
 /**
  * The two delegation reads the Studio resolvers use since autobyteus-461 (a run view's children, the agents of runs delegated
- * from a run), over a tree with no delegation: the production composition builds them over its `DelegationTree`; an
+ * from a run), over a tree with no delegation: the production composition builds them over its `DelegationIndex`; an
  * in-process suite that starts no delegated run reads none. A suite that does passes its own.
  */
 const NO_DELEGATIONS = Object.freeze({ childrenOf: () => [], subtreeOf: () => [], openChildrenOf: () => [], peerChildrenOf: () => [], agentsOf: async () => [] });

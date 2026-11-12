@@ -1,5 +1,5 @@
 import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -39,7 +39,7 @@ export interface TeamMemberRunProjection {
 }
 
 export class TeamMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "agentOf" | "mapOf">;
+  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "agentOf" | "collaborationTreeOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: TeamRunExecutionTreeLocationService;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
@@ -49,7 +49,7 @@ export class TeamMemberRunViewProjectionService {
      * The relationships between runs, from the Task entries (SR-047): the runs this team delegated to peers. A run it
      * delegated to on this node is not one of its members; it is read by its own identity (CR-461-014).
      */
-    tree: Pick<DelegationTree, "peerChildrenOf" | "agentOf" | "mapOf">;
+    tree: Pick<DelegationIndex, "peerChildrenOf" | "agentOf" | "collaborationTreeOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: TeamRunExecutionTreeLocationService;

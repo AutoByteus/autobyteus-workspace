@@ -26,7 +26,7 @@ import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../serv
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
 import { localPlacement } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
@@ -101,7 +101,7 @@ export class RootTeamRun {
     publisher: TeamRunEventPublisher<TeamRunEvent>;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
-    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf" | "mapOf">;
+    delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -115,8 +115,8 @@ export class RootTeamRun {
       rootTeamRunId: this.teamRunId,
       canEnter: () => this.isAdmitting(),
     });
-    this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree, options.delegationTree));
-    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(createTeamRootExecutionIdentity(this.teamRunId), options.delegationTree).filter((link) => link.open),
+    this.remoteLinks = new RemoteRunLinks(teamRunRemoteLinks(() => this.tree, options.delegationIndex));
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(createTeamRootExecutionIdentity(this.teamRunId), options.delegationIndex).filter((link) => link.open),
       publish: (event) => options.publisher.publish({ eventSourceType: TeamRunEventSourceType.REMOTE, event }) });
     this.teamRunResolver = new TeamRunResolver({
       rootTeamRun: options.rootRun,
@@ -136,9 +136,9 @@ export class RootTeamRun {
     this.collaborators = new TeamRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
-      // SR-059, SR-060: what the run reaches by address step 2, from its collaboration map.
-      reached: async () => [...(await options.delegationTree.mapOf(createTeamRootExecutionIdentity(this.teamRunId)).stepTwo())?.values() ?? []],
-      reachedPlacementAt: (address) => options.delegationTree.mapOf(createTeamRootExecutionIdentity(this.teamRunId)).delegationPlacementAt(address),
+      // SR-059, SR-060: what the run reaches by address step 2, from its collaboration tree.
+      reached: async () => [...(await options.delegationIndex.collaborationTreeOf(createTeamRootExecutionIdentity(this.teamRunId)).stepTwo())?.values() ?? []],
+      reachedPlacementAt: (address) => options.delegationIndex.collaborationTreeOf(createTeamRootExecutionIdentity(this.teamRunId)).delegationPlacementAt(address),
     });
     this.delivery = new TeamRunMessageDelivery({
       rootTeamRunId: this.teamRunId,
@@ -283,7 +283,7 @@ export class RootTeamRun {
     return peer ? peer.members.find((member) => member.address === peer.coordinatorAddress)?.agentRunId ?? null : null;
   }
   /** The Task this team run works on (`get_project_task`'s read scope), by its own identity; else null. */
-  ownedTaskOf(_context: TaskDelegationContext) { return runOwnTaskOf({ teamRunId: this.teamRunId }, this.options.delegationTree); }
+  ownedTaskOf(_context: TaskDelegationContext) { return runOwnTaskOf({ teamRunId: this.teamRunId }, this.options.delegationIndex); }
 
   /** `send_message_to(address)`: delivers to a standing instance; never creates a run. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {

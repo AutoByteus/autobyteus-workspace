@@ -104,7 +104,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
     taskRecords: resources,
-    delegationTree: noDelegations(),
+    delegationIndex: noDelegations(),
   });
   run.activate();
   return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources, enterPersistenceFailStop };

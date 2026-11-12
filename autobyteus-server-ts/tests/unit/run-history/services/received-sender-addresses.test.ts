@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DelegationTree, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { receivedSenderAddresses } from "../../../../src/run-history/services/received-sender-addresses.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
@@ -23,7 +23,7 @@ const agents: Record<string, readonly RunAgent[]> = {
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, readerOfAgents(async (run) => agents[run.rootRunId] ?? null));
+  const tree = new DelegationIndex(() => tasks, readerOfAgents(async (run) => agents[run.rootRunId] ?? null));
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1"); tasks.addTask("T2"); tasks.addTask("T3");
   // The manager assigned the squad; the squad's lead and the org's director each delegated a child.
@@ -34,8 +34,8 @@ const harness = async () => {
 };
 
 /** The address the receiver's header shows for a sender (§2.5): the same owner the message delivery asks. */
-const headerAddress = async (tree: DelegationTree, receiver: RootExecutionIdentity, run: RootExecutionIdentity, agentRunId: string, address: string) =>
-  tree.mapOf(receiver).reachingAddressOf(createCollaborationMemberExecutionIdentity({ root: run, memberAddress: address, agentRunId }));
+const headerAddress = async (tree: DelegationIndex, receiver: RootExecutionIdentity, run: RootExecutionIdentity, agentRunId: string, address: string) =>
+  tree.collaborationTreeOf(receiver).reachingAddressOf(createCollaborationMemberExecutionIdentity({ root: run, memberAddress: address, agentRunId }));
 
 describe("a member page's sender addresses, as the receiver got them", () => {
   it("a team member's page: an in-run sender at its address, the assigner's agent at its address, a child's agent by run ID", async () => {

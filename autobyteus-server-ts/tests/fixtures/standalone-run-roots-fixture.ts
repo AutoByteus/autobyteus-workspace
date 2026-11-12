@@ -29,7 +29,7 @@ export const createStandaloneRunRootsFixture = (input: Readonly<{
       terminateHost: (hostRunId) => input.lifecycleService.terminateHost(hostRunId),
       readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
     },
-    rootDependencies: { delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    rootDependencies: { delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       collaboratorAdmission: createCollaboratorAdmission({
         listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
         isAgentHidden: () => false,

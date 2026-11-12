@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { UpdateStoppedAgentOrgRunConfig } from "../domain/agent-org-run-config.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -35,7 +35,7 @@ export type AgentOrgRunManagerOptions = Readonly<{
   /** The Task side's neutral port; the manager reads closure for stored reads. */
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
-  delegationTree: DelegationTree;
+  delegationIndex: DelegationIndex;
   executionTreeStore?: AgentOrgRunExecutionTreeStore;
   communicationStore?: AgentOrgCommunicationMessagesStore;
   tokenUsageRunStore?: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
@@ -59,7 +59,7 @@ export class AgentOrgRunManager {
   private readonly layout: AgentMemoryLayout;
   private readonly scopeBuilder: AgentOrgExecutionScopeBuilder;
   private readonly taskRecords: RunTaskRecords;
-  private readonly delegationTree: DelegationTree;
+  private readonly delegationIndex: DelegationIndex;
   private readonly executionTreeStore: AgentOrgRunExecutionTreeStore;
   private readonly communicationStore: AgentOrgCommunicationMessagesStore;
   private readonly packageCatalog: AgentOrgRunPackageCatalog;
@@ -89,7 +89,7 @@ export class AgentOrgRunManager {
     this.layout = new AgentMemoryLayout(options.memoryDir);
     this.scopeBuilder = options.scopeBuilder;
     this.taskRecords = options.taskRecords;
-    this.delegationTree = options.delegationTree;
+    this.delegationIndex = options.delegationIndex;
     this.tokenUsageRunStore = options.tokenUsageRunStore ?? new TokenUsageRunStore();
     this.executionTreeStore = options.executionTreeStore ?? new AgentOrgRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new AgentOrgCommunicationMessagesStore();
@@ -138,7 +138,7 @@ export class AgentOrgRunManager {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     if (this.active.has(orgRunId)) return "proceed";
     const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
-    return storedRemoteLinkCheck(tree ? { run: { rootSubjectKind: "agent_org", rootRunId: orgRunId }, tree: this.delegationTree } : null, query);
+    return storedRemoteLinkCheck(tree ? { run: { rootSubjectKind: "agent_org", rootRunId: orgRunId }, tree: this.delegationIndex } : null, query);
   }
   /**
    * The run's messages: the live run's, else the stored log composed with its task agents' logs (D-4) and

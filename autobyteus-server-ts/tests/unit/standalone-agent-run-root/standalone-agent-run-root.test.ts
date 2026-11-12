@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { HOST, buildManager, cleanupDirectories } from "./helpers/standalone-root-harness.js";
 
@@ -90,7 +90,7 @@ describe("StandaloneAgentRunRoot (its own agent only)", () => {
 
   it("the Task the run works on (get_project_task's scope) is its own current entry, by its own identity", async () => {
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+    const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     const h = await buildManager(tasks, tree);
     tasks.addTask("T1");

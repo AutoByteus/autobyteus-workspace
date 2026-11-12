@@ -8,7 +8,7 @@ import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/loca
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { TaskDelegation } from "../../../src/agent-collaboration/execution/task/task-delegation.js";
-import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { createCollaborationRootResolver } from "../../../src/compositions/collaboration-root-resolver.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
@@ -44,13 +44,13 @@ const flush = async () => { for (let i = 0; i < 20; i += 1) await new Promise((r
 describe("a closure stop and a follow-up Task delivered while the team run stops", () => {
   it("waits for the end, restores the team run and delivers B's work; the ending root is never given the work", async () => {
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+    const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     tasks.addTask("A", "First", "task-a"); tasks.addTask("B", "Second", "task-b");
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: "A", recipientAddress: "/eng", teamCoordinatorAgentRunId: "lead",
       delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager-run" }, execution: run });
     await tasks.markStarted(run);
-    const manager = new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const manager = new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/closure-stop-during-delivery-team",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
       memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

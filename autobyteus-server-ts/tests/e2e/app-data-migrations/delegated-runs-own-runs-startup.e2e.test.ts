@@ -18,7 +18,7 @@ import { killBuiltStudios, startBuiltStudio, type BuiltStudio } from "../helpers
 // - DRO-1: the start completes and the migration is recorded SUCCEEDED with nothing failed; the files have the contract's
 //   shapes (spot checks; the migration's own tests check every shape); the server reads every converted run as a run of its
 //   own: the run list lists the delegated agent runs and team runs; each opens (its own projection or resume config) with
-//   no restore; the in-memory DelegationTree built from the converted Task entries gives the manager one hop (E, not P or
+//   no restore; the in-memory DelegationIndex built from the converted Task entries gives the manager one hop (E, not P or
 //   I); the team E file rooted at `/` with its handoff to `/Teacher` kept loads; nothing is started.
 // - DRO-2: a second start changes no file (QR-003) and records nothing new.
 // Not here: messaging a converted run needs a usable model for its stored runtime (`autobyteus` with a model the fixture
@@ -145,7 +145,7 @@ suite("delegated runs own runs: the built server upgrades released app data at s
       expect(org).toMatchObject({ orgRunId: ORG, isActive: false });
       evidence.opened = opened;
 
-      // The DelegationTree from the converted entries: the manager's view lists its own child (E) only, one hop.
+      // The DelegationIndex from the converted entries: the manager's view lists its own child (E) only, one hop.
       const collaboration = (await server.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: M })).agentRunCollaboration as Json;
       const children = JSON.stringify(collaboration);
       evidence.managerView = collaboration;

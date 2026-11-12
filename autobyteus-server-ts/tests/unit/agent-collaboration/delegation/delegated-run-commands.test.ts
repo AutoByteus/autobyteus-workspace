@@ -1,7 +1,7 @@
 import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it, vi } from "vitest";
 import { DelegatedRunCommands } from "../../../../src/agent-collaboration/execution/delegation/delegated-run-commands.js";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -14,7 +14,7 @@ const message = { content: "Status?" } as never;
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, readerOfAgentRunIds(async (run) => run.rootRunId === "eng" ? ["designer", "coder"] : null));
+  const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (run) => run.rootRunId === "eng" ? ["designer", "coder"] : null));
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/image_maker", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "image" } });

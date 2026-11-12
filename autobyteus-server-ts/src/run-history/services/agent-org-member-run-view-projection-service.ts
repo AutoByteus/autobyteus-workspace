@@ -1,5 +1,5 @@
 import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -42,7 +42,7 @@ export interface AgentOrgMemberRunProjection {
 }
 
 export class AgentOrgMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "agentOf" | "mapOf">;
+  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
@@ -50,7 +50,7 @@ export class AgentOrgMemberRunViewProjectionService {
 
   constructor(options: {
     /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "agentOf" | "mapOf">;
+    tree: Pick<DelegationIndex, "peerChildrenOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: AgentOrgExecutionTreeLocationService;

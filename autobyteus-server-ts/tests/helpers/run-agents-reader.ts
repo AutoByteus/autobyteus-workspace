@@ -1,5 +1,5 @@
-import type { RunAgent } from "../../src/agent-collaboration/delegation/delegation-tree.js";
-import type { RunFilesReader } from "../../src/agent-collaboration/delegation/run-collaboration-map.js";
+import type { RunAgent } from "../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunFilesReader } from "../../src/agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** A test reader of each run's agents (no coordinator, no mounted team); `null`: the run's own file is absent. */

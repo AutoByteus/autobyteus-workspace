@@ -54,7 +54,7 @@ export type ExistingTaskExecutionAssignInput = Readonly<{
 }>;
 
 /**
- * One run's last entry in one Task, as the Task side holds it in memory: what `DelegationTree` is built from (contract
+ * One run's last entry in one Task, as the Task side holds it in memory: what `DelegationIndex` is built from (contract
  * §2.6). A run has at most one open entry per Task, and only its last entry can be open.
  */
 export type TaskRunEntry = Readonly<{

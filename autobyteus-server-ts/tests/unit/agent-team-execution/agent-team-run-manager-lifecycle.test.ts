@@ -20,7 +20,7 @@ const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
 } as never, NOT_DELEGATED);
 
-const createManager = () => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",
   flatTeamExecutionFactory,
   memberExecutionContextBuilder,

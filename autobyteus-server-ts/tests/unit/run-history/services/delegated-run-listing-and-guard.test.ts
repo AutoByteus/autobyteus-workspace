@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createTopLevelRunRule } from "../../../../src/run-history/services/top-level-run-rule.js";
 import { DelegatedWorkGuard } from "../../../../src/run-history/services/delegated-work-guard.js";
-import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 
 /** autobyteus-461 DS-11 (where a run shows in the run list) and REQ-007 / AR-007 (archive and delete while a child works). */
 const roots: string[] = [];

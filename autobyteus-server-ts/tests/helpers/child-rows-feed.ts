@@ -1,7 +1,7 @@
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
 import { ChildRowsStreams } from "../../src/agent-collaboration/delegation/child-rows-streams.js";
-import type { ChildRowsChange, DelegatedChild } from "../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { ChildRowsChange, DelegatedChild } from "../../src/agent-collaboration/delegation/delegation-index.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 /** A local child's row as the views project it (`delegatedChildDto`). */

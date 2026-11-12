@@ -1,5 +1,5 @@
 import { NO_RUN_PARTS } from "./run-agents-reader.js";
-import { DelegationTree } from "../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../src/agent-collaboration/delegation/delegation-index.js";
 import { TaskDelegation } from "../../src/agent-collaboration/execution/task/task-delegation.js";
 import type { DelegationRefusal, DelegationSource } from "../../src/agent-collaboration/execution/task/member-task-capability.js";
 import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
@@ -18,7 +18,7 @@ type DelegatingRoot = Readonly<{ delegationSource(context: TaskDelegationContext
  * delegation runs a delegation to the end: starting a local run refuses.
  */
 export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: () => RemoteRunChannel | null) => {
-  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+  const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
   tree.build();
   tasks.setEntriesListener(tree);
   const delegation = new TaskDelegation({

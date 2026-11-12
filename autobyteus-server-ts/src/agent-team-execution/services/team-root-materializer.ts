@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -31,7 +31,7 @@ export type TeamRootMaterializationInput = Readonly<{
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskRecords: RunTaskRecords;
-  delegationTree: DelegationTree;
+  delegationIndex: DelegationIndex;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
@@ -121,7 +121,7 @@ export const materializeTeamRoot = async (
       persistence,
       publisher,
       taskRecords: input.taskRecords,
-      delegationTree: input.delegationTree,
+      delegationIndex: input.delegationIndex,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });

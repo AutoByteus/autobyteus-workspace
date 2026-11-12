@@ -62,7 +62,7 @@ const setup = (orgRunId: string, firstTerminateResults: Result[] = []) => {
     return run as unknown as AgentOrgRun;
   });
   const directory = new ActiveCollaborationRootDirectory();
-  const manager = new AgentOrgRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     memoryDir,
     scopeBuilder: { build } as unknown as AgentOrgExecutionScopeBuilder,
     activeRootDirectory: directory,

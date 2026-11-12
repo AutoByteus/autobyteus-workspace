@@ -107,7 +107,7 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
-      agents: new DelegatedChildLocations({ memoryDir, teams: storedTeamLocations, tree: input.delegationTree }),
+      agents: new DelegatedChildLocations({ memoryDir, teams: storedTeamLocations, tree: input.delegationIndex }),
     });
     let agentRunManager: AgentRunManager | null = null;
     let standaloneRootManager: StandaloneAgentRunRootManager | null = null;
@@ -195,7 +195,7 @@ export class GeneralProcessRunSupervisor {
 
       const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
         input.agentTeamDefinitionService,
-        input.delegationTree,
+        input.delegationIndex,
       );
       const memoryLocationService = new AgentMemoryLocationService({
         memoryDir,
@@ -213,7 +213,7 @@ export class GeneralProcessRunSupervisor {
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
         taskRecords: input.taskRecords,
-        delegationTree: input.delegationTree,
+        delegationIndex: input.delegationIndex,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -222,12 +222,12 @@ export class GeneralProcessRunSupervisor {
         workspaces: workspaceManager,
         memoryDir,
         taskRecords: input.taskRecords,
-        delegationTree: input.delegationTree,
+        delegationIndex: input.delegationIndex,
         modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
           taskRecords: input.taskRecords,
-          delegationTree: input.delegationTree,
+          delegationIndex: input.delegationIndex,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
@@ -267,7 +267,7 @@ export class GeneralProcessRunSupervisor {
         },
         rootDependencies: {
           taskRecords: input.taskRecords,
-          delegationTree: input.delegationTree,
+          delegationIndex: input.delegationIndex,
           agentRunManager: generalAgentRunManager,
           collaboratorAdmission,
         },
@@ -304,7 +304,7 @@ export class GeneralProcessRunSupervisor {
         tokenUsageReadiness,
         definitionAdmissionService: input.definitionAdmissionService,
       });
-      const delegatedWorkGuard = new DelegatedWorkGuard({ tree: input.delegationTree,
+      const delegatedWorkGuard = new DelegatedWorkGuard({ tree: input.delegationIndex,
         statusOf: (child) => runOwnStatus({ agentRuns: agentRunService!, teamRuns: teamRunService! }, child) });
       this.delegatedWorkGuard = delegatedWorkGuard;
       const agentOrgRunService = new AgentOrgRunService({
@@ -326,7 +326,7 @@ export class GeneralProcessRunSupervisor {
 
       this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
         teams: agentTeamRunManager, orgs: agentOrgRunManager, agents: standaloneRootManager, agentRuns: agentRunService, teamRuns: teamRunService,
-        children: createDelegatedChildLaunches({ memoryDir, tree: input.delegationTree, agentRuns: agentRunService, teamManager: agentTeamRunManager,
+        children: createDelegatedChildLaunches({ memoryDir, tree: input.delegationIndex, agentRuns: agentRunService, teamManager: agentTeamRunManager,
           activeAgentRun: (agentRunId) => agentRunManager!.getActiveRun(agentRunId), modelOptions: input.modelSelectionValidator }),
       });
       this.agentRunManager = agentRunManager;
@@ -348,14 +348,14 @@ export class GeneralProcessRunSupervisor {
         historyCatalog: historyCatalogService,
       });
       this.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
-        tree: input.delegationTree,
+        tree: input.delegationIndex,
         workGuard: delegatedWorkGuard,
         catalogService: teamRunHistoryCatalogService,
         teamRunManager: agentTeamRunManager,
       });
       this.collaborationRootHistoryService = new CollaborationRootHistoryService({
         memoryDir,
-        tree: input.delegationTree,
+        tree: input.delegationIndex,
         teams: this.teamRunHistoryService,
         orgs: agentOrgRunHistoryCatalogService,
         orgRuns: agentOrgRunManager,

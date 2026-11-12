@@ -12,7 +12,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 
-/** autobyteus-461 contract §2.6 (V-14, AR-014): a run's agents from its own parts, for `DelegationTree.runOfAgent`. */
+/** autobyteus-461 contract §2.6 (V-14, AR-014): a run's agents from its own parts, for `DelegationIndex.runOfAgent`. */
 const roots: string[] = [];
 afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => { resetRootRunPackageReadinessIndex(root); return fs.rm(root, { recursive: true, force: true }); }));

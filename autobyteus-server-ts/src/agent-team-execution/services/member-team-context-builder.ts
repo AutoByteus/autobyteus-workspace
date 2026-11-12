@@ -1,5 +1,5 @@
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import {
   MemberCollaborationContext,
   MemberExecutionContext,
@@ -29,7 +29,7 @@ export class MemberExecutionContextBuilder {
   constructor(
     private readonly teamDefinitionService: Pick<AgentTeamDefinitionService, "getDefinitionById">,
     /** Whether the team run works on a Task an org assigned (the organization line, SR-058). */
-    private readonly tree: Pick<DelegationTree, "mapOf">,
+    private readonly tree: Pick<DelegationIndex, "collaborationTreeOf">,
   ) {}
 
   async build(input: {
@@ -86,7 +86,7 @@ export class MemberExecutionContextBuilder {
       identity,
       teamScoped: true,
       collaborationRole: scope.role,
-      inOrganization: this.tree.mapOf(root).inOrganization(),
+      inOrganization: this.tree.collaborationTreeOf(root).inOrganization(),
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
       tasks: input.taskCapability,

@@ -3,7 +3,7 @@ import type { AgentOrgExecutionTreeLocationService, LocatedAgentOrgAgentExecutio
 import { DelegatedChildLocations, type LocatedStandaloneRootAgentExecution } from "../delegation/delegated-child-locations.js";
 import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { RootSubjectKind } from "../domain/root-execution-identity.js";
-import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import type { CollaboratorExecutionSource } from "../../collaborators/collaborator-source-projector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../../run-history/services/team-run-execution-tree-location-service.js";
 import { AgentOrgExecutionTreeLocationService as StoredAgentOrgExecutionTreeLocationService } from "../../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
@@ -93,7 +93,7 @@ export class CollaborationExecutionLocationService {
 
 export const createStoredCollaborationExecutionLocationService = (
   memoryDir: string,
-  tree: Pick<DelegationTree, "childrenOf">,
+  tree: Pick<DelegationIndex, "childrenOf">,
 ): CollaborationExecutionLocationService => new CollaborationExecutionLocationService({
   teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
   orgs: new StoredAgentOrgExecutionTreeLocationService({ memoryDir }),

@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import path from "node:path";
 import { MemoryRunSummaryBuilder, mergeMemoryAvailability } from "../../agent-memory/services/memory-run-summary-builder.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
@@ -12,7 +12,7 @@ type Located = Readonly<{ memoryDir: string }>;
 export type RunLastActivityReaderDependencies = Readonly<{
   memoryDir: string;
   /** The runs delegated from a run, from the Task entries (SR-047). */
-  tree: Pick<DelegationTree, "subtreeOf">;
+  tree: Pick<DelegationIndex, "subtreeOf">;
   /** A Team run's own agents (its members). */
   teamLocations?: Pick<TeamRunExecutionTreeLocationService, "listAgents">;
   /** An Org root's agents. */
@@ -22,7 +22,7 @@ export type RunLastActivityReaderDependencies = Readonly<{
 
 /**
  * When a run was last active, its delegated work included (workspace-tree-vs-chooser DS-005, from autobyteus-378): the newest memory file of the run's
- * own agents' folders and of every run delegated from it, one hop at a time (autobyteus-461: `DelegationTree.subtreeOf`, each run's own folders), by the Memory page's rule (`MemoryRunSummaryBuilder`,
+ * own agents' folders and of every run delegated from it, one hop at a time (autobyteus-461: `DelegationIndex.subtreeOf`, each run's own folders), by the Memory page's rule (`MemoryRunSummaryBuilder`,
  * `mergeMemoryAvailability`). A run with no memory file anywhere answers its `createdAt`. Nothing is stored.
  *
  * Containment (DESIGN.md rule 7): a root whose tree cannot be read is logged with the reason and keeps the time of its

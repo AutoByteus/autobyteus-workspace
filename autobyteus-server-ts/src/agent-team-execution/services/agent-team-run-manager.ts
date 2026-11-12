@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { recordRunProjectStart } from "../../agent-execution/domain/run-project-context.js";
 import { isDeepStrictEqual } from "node:util";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
@@ -47,7 +47,7 @@ export type AgentTeamRunManagerOptions = Readonly<{
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
-  delegationTree: DelegationTree;
+  delegationIndex: DelegationIndex;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationStore;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -64,7 +64,7 @@ export class AgentTeamRunManager {
   private readonly communicationStore: TeamCommunicationStore;
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskRecords: RunTaskRecords;
-  private readonly delegationTree: DelegationTree;
+  private readonly delegationIndex: DelegationIndex;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
@@ -108,7 +108,7 @@ export class AgentTeamRunManager {
     this.factory = options.flatTeamExecutionFactory;
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskRecords = options.taskRecords;
-    this.delegationTree = options.delegationTree;
+    this.delegationIndex = options.delegationIndex;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationStore();
     this.modelSelectionValidator = options.modelSelectionValidator;
@@ -220,7 +220,7 @@ export class AgentTeamRunManager {
     if (query.kind !== "owner" && this.hasManagedTeamRun(rootTeamRunId)) return "proceed";
     const tree = this.getManagedTeamRun(rootTeamRunId)?.getExecutionTreeSnapshot()
       ?? await this.executionTreeStore.read(this.teamMemoryDir(rootTeamRunId), rootTeamRunId);
-    return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree, this.delegationTree) : null, query);
+    return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree, this.delegationIndex) : null, query);
   }
 
   listActiveTeamRunIds(): string[] {
@@ -377,7 +377,7 @@ export class AgentTeamRunManager {
       factory: this.factory,
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
       taskRecords: this.taskRecords,
-      delegationTree: this.delegationTree,
+      delegationIndex: this.delegationIndex,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
     } as const;

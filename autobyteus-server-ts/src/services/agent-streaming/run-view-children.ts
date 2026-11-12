@@ -1,6 +1,6 @@
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 import type { CollaborationTaskExecutionDto, ListedRunChildDto } from "@autobyteus/collaboration-stream-contracts";
-import type { DelegatedChild, DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -13,7 +13,7 @@ import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projecti
 
 /**
  * A run view's children (design DS-8), as every view kind and the history poll read them: the runs on this node it
- * delegated to that hold an open Task (`DelegationTree.openChildrenOf`, one hop, each read from its own file), its open
+ * delegated to that hold an open Task (`DelegationIndex.openChildrenOf`, one hop, each read from its own file), its open
  * peer runs (their Task entries, with this owner's node names; the view never waits for a peer), and its local
  * children's agents with their live statuses. Opening a view starts nothing. Created by the composition root (SR-047
  * step 7) and passed to the view sessions and the GraphQL reads.
@@ -21,7 +21,7 @@ import { projectRemoteTaskExecution } from "./remote-task-execution-dto-projecti
 export class RunViewChildren {
   constructor(private readonly input: Readonly<{
     memoryDir: string;
-    tree: Pick<DelegationTree, "openChildrenOf" | "peerChildrenOf" | "agentsOf">;
+    tree: Pick<DelegationIndex, "openChildrenOf" | "peerChildrenOf" | "agentsOf">;
     followers: Pick<LocalChildFollowers, "statuses">;
     /** This node's channel to its peers; `null` where the node has none. */
     channel: () => RemoteRunChannel | null;

@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { FastifyInstance } from "fastify";
 import { registerHealthRoutes } from "./health.js";
 import { registerFileRoutes } from "./files.js";
@@ -34,7 +34,7 @@ export async function registerRestRoutes(
     application: ApplicationPlatformRestContracts;
     nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
     /** The relationships between runs (SR-047): a context file of a run's child is found through its delegating run. */
-    delegationTree: Pick<DelegationTree, "childrenOf">;
+    delegationIndex: Pick<DelegationIndex, "childrenOf">;
   },
 ): Promise<void> {
   await registerHealthRoutes(app);
@@ -50,7 +50,7 @@ export async function registerRestRoutes(
   await registerUploadRoutes(app);
   await registerWorkspaceRoutes(app);
   await registerNodeFileRoutes(app);
-  await registerContextFileRoutes(app, dependencies.delegationTree);
+  await registerContextFileRoutes(app, dependencies.delegationIndex);
   await registerProjectTaskContextRoutes(app);
   await registerRunFileChangeRoutes(app);
   await registerTeamCommunicationRoutes(app);

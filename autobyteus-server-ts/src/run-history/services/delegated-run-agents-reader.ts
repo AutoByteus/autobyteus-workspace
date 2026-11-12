@@ -2,13 +2,13 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import { runIdentityOf } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 
 /** An agent of a run delegated from a run: its run ID and its own address in its run. */
 export type DelegatedRunAgent = Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 
-/** The runs delegated from a run on this node, open or closed, and each run's agents: the `DelegationTree` (contract §4). */
-type DelegatedRuns = Pick<DelegationTree, "childrenOf" | "subtreeOf" | "agentsOf">;
+/** The runs delegated from a run on this node, open or closed, and each run's agents: the `DelegationIndex` (contract §4). */
+type DelegatedRuns = Pick<DelegationIndex, "childrenOf" | "subtreeOf" | "agentsOf">;
 
 /**
  * The agents of the runs delegated from a run, open and closed (REQ-009's token roll-up of every run kind; the Team tab's

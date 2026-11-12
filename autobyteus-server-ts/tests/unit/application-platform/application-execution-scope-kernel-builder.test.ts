@@ -149,7 +149,7 @@ const createHarness = (input: {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
-    delegationTree: noDelegations(),
+    delegationIndex: noDelegations(),
     taskRecords: openTaskRecords(),
   };
   return {

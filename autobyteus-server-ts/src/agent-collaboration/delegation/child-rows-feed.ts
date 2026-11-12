@@ -3,7 +3,7 @@ import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-st
 import type { RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import type { ChildRowsStreams } from "./child-rows-streams.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
-import type { ChildRowsChange, DelegatedChild, DelegationTree } from "./delegation-tree.js";
+import type { ChildRowsChange, DelegatedChild, DelegationIndex } from "./delegation-index.js";
 
 /** One child row as a view projects it: a run on this node (from its own file), or a peer's run. */
 export type ChildRowRecord =
@@ -23,7 +23,7 @@ export type ChildRowProjection = Readonly<{
 }>;
 
 /**
- * The one publisher of child-row changes to open views (DS-8, SR-042 … SR-044). It listens to the `DelegationTree`'s
+ * The one publisher of child-row changes to open views (DS-8, SR-042 … SR-044). It listens to the `DelegationIndex`'s
  * `childRowsChanged` reports and, for a run with open view streams, builds the added rows with the views' own
  * projection and hands one event to each stream, whether or not the run is active. It never starts or restores a run.
  * Events are published in the order the changes were reported; a change with no open view is dropped (a later view
@@ -37,7 +37,7 @@ export class ChildRowsFeed {
   constructor(private readonly projection: ChildRowProjection, private readonly streams: Pick<ChildRowsStreams, "isOpen" | "of">) {}
 
   /** Follows a tree's child-row reports until the returned function is called. */
-  follow(tree: Pick<DelegationTree, "subscribeChildRows">): () => void {
+  follow(tree: Pick<DelegationIndex, "subscribeChildRows">): () => void {
     return tree.subscribeChildRows((change) => this.changed(change));
   }
 

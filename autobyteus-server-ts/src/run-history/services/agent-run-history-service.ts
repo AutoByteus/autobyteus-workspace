@@ -1,5 +1,5 @@
 import type { DelegatedWorkGuard } from "./delegated-work-guard.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunStatusProjectionService,
@@ -54,7 +54,7 @@ export class AgentRunHistoryService {
     memoryDir: string,
     dependencies: {
       /** The relationships between runs, from the Task entries (SR-047). */
-      tree: Pick<DelegationTree, "subtreeOf">;
+      tree: Pick<DelegationIndex, "subtreeOf">;
       /** Archive and delete wait for the runs it delegated to (REQ-007). */
       workGuard: Pick<DelegatedWorkGuard, "refusal">;
       catalogService?: AgentRunHistoryCatalogService;

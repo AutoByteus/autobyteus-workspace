@@ -45,7 +45,7 @@ async function setup() {
     hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(), terminate: vi.fn(async () => ({ accepted: true })) };
   const build = vi.fn().mockResolvedValue(run);
   const ensureWorkspaceByRootPath = vi.fn(async (root: string) => ({ getBasePath: () => root }));
-  const manager = new AgentOrgRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), workspaces: { ensureWorkspaceByRootPath } as any, memoryDir, executionTreeStore: store, modelSelectionValidator: validator,
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), workspaces: { ensureWorkspaceByRootPath } as any, memoryDir, executionTreeStore: store, modelSelectionValidator: validator,
     scopeBuilder: { build } as any, activeRootDirectory: new ActiveCollaborationRootDirectory(),
     tokenUsageRunStore: { assertAgentOrgRecordsReady: vi.fn() } });
   return { dir, tree, store, manager, validator, build, ensureWorkspaceByRootPath, failStop: () => { runActive = false; } };

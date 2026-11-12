@@ -84,7 +84,7 @@ const createScope = async () => {
     applicationAgentTools,
     providerRelayAccess: null,
     runPasses: null,
-    delegationTree: noDelegations(),
+    delegationIndex: noDelegations(),
     taskRecords: openTaskRecords(),
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;

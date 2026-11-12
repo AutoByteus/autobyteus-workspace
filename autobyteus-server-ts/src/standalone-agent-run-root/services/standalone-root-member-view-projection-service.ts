@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import type { RunProjection } from "../../run-history/services/agent-run-view-projection-service.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
@@ -28,11 +28,11 @@ export interface StandaloneRootMemberRunProjection {
  * on its node.
  */
 export class StandaloneRootMemberViewProjectionService {
-  private readonly tree: Pick<DelegationTree, "peerChildrenOf">;
+  private readonly tree: Pick<DelegationIndex, "peerChildrenOf">;
 
   constructor(options: Readonly<{
     /** The relationships between runs, from the Task entries (SR-047): the runs this run delegated to peers. */
-    tree: Pick<DelegationTree, "peerChildrenOf">;
+    tree: Pick<DelegationIndex, "peerChildrenOf">;
   }>) {
     this.tree = options.tree;
   }

@@ -14,7 +14,7 @@ import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaborati
 import { configureRunProjects } from "../../../src/agent-execution/domain/run-project-context.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
-const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-project-start",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

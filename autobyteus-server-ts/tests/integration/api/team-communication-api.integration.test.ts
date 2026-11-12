@@ -143,7 +143,7 @@ describe("Team communication API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: appConfigProvider.config.getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,

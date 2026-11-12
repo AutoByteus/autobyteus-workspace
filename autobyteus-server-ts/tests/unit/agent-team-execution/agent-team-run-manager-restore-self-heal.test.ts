@@ -37,7 +37,7 @@ vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", 
   }),
 }));
 
-const createManager = () => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+const createManager = () => new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-self-heal",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
   memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),

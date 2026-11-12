@@ -1,15 +1,15 @@
 import type { ChildRunIdentityDto } from "@autobyteus/collaboration-stream-contracts";
-import type { DelegatedChild, DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 /**
  * A child row's identity (autobyteus-461 SR-055, SR-056): what does not change while the child runs (its address, its
  * run and agents with their definitions, a team run's coordinator, its delegator and when it started), from its Task entry and the
- * `DelegationTree`'s per-run data, read once per run, never from a file per call. The view's row adds the child's launch
+ * `DelegationIndex`'s per-run data, read once per run, never from a file per call. The view's row adds the child's launch
  * details, read fresh (`delegatedChildDto`); the listed-runs poll carries the identity alone. `null` when the child's own
  * file could not be read.
  */
-export const childRunIdentity = async (child: DelegatedChild, tree: Pick<DelegationTree, "agentsOf">): Promise<ChildRunIdentityDto | null> => {
+export const childRunIdentity = async (child: DelegatedChild, tree: Pick<DelegationIndex, "agentsOf">): Promise<ChildRunIdentityDto | null> => {
   const run: RootExecutionIdentity = "agentRunId" in child.run
     ? { rootSubjectKind: "agent", rootRunId: child.run.agentRunId }
     : { rootSubjectKind: "agent_team", rootRunId: child.run.teamRunId };

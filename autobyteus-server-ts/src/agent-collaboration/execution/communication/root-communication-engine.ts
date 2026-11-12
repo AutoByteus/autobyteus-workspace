@@ -218,7 +218,7 @@ export class RootCommunicationEngine {
 
   /**
    * To another run on this node, step 1 (DS-2): the checks and the message ID, with no state change. The admission is
-   * `CrossRunMessageDelivery`'s (the `DelegationTree`), made before; this root checks only its own sender.
+   * `CrossRunMessageDelivery`'s (the `DelegationIndex`), made before; this root checks only its own sender.
    */
   prepareSendToRun(input: RunSendInput): PreparedRunSend {
     const refuse = (refusal: Refusal): PreparedRunSend => Object.freeze({ ok: false as const, refusal });

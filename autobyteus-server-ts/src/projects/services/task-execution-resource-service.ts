@@ -37,7 +37,7 @@ export class TaskExecutionResourceService {
   private readonly entriesByExecution = new Map<string, Map<string, TaskExecutionResource>>();
   /** Per copy: its current entry and that Task. */
   private readonly currentByExecution = new Map<string, Current>();
-  /** The `DelegationTree`, told of each Task whose entries changed (set by the composition root once the tree is built). */
+  /** The `DelegationIndex`, told of each Task whose entries changed (set by the composition root once the tree is built). */
   private entriesListener: TaskEntriesListener | null = null;
   private readonly damaged = new Map<string, string>();
   private readonly chains = new Map<string, Promise<unknown>>();
@@ -51,7 +51,7 @@ export class TaskExecutionResourceService {
   /** Bound once by the composition (the change publisher's mark). */
   setCommitListener(listener: (location: TaskLocation) => void): void { this.onCommitted = listener; }
   /**
-   * Set once by the composition root after the tree is built from the loaded records: the `DelegationTree`. It is told
+   * Set once by the composition root after the tree is built from the loaded records: the `DelegationIndex`. It is told
    * synchronously after each committed change of a Task's entries, inside that Task's ordered change, before the change
    * resolves (AR-017). A Task change with no listener set fails before it writes (SR-047, ARCH-REV-022).
    */
@@ -207,12 +207,12 @@ export class TaskExecutionResourceService {
     }
     return [...runs.values()];
   }
-  /** Every readable Task that has entries (`DelegationTree`'s build). */
+  /** Every readable Task that has entries (`DelegationIndex`'s build). */
   taskIdsWithEntries(): string[] {
     this.assertLoaded();
     return [...this.files.entries()].filter(([, { file }]) => file.executionResources.length).map(([taskId]) => taskId);
   }
-  /** The Task's entries, each run's last one, in link order (`DelegationTree`, contract §2.6). From the view; never reads a file. */
+  /** The Task's entries, each run's last one, in link order (`DelegationIndex`, contract §2.6). From the view; never reads a file. */
   entriesOf(taskId: string): TaskRunEntry[] {
     const file = this.files.get(taskId)?.file;
     if (!file) return [];

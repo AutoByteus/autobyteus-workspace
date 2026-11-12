@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
 import type { RunProjectionConversationEntry } from "../projection/run-projection-types.js";
@@ -7,15 +7,15 @@ import type { RunProjectionConversationEntry } from "../projection/run-projectio
  * The sender addresses a member's page shows, as the receiver got them in each message's header (contract §2.5;
  * autobyteus-461 SR-060): an agent of the receiving run at its own address (steps 1 and 3, the run's own index); an
  * agent of another run at its own-space address only where the receiving run's reach resolves it to that agent
- * (`mapOf(run).reachingAddressOf`), else none (the page shows its run ID). The page and the header never disagree.
+ * (`collaborationTreeOf(run).reachingAddressOf`), else none (the page shows its run ID). The page and the header never disagree.
  */
 export const receivedSenderAddresses = async (input: Readonly<{
   receiverRun: RootExecutionIdentity;
   ownAddressOf(agentRunId: string): string | null;
-  tree: Pick<DelegationTree, "agentOf" | "mapOf">;
+  tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
   senderAgentRunIds: Iterable<string>;
 }>): Promise<(agentRunId: string) => string | null> => {
-  const map = input.tree.mapOf(input.receiverRun);
+  const map = input.tree.collaborationTreeOf(input.receiverRun);
   const resolved = new Map<string, string | null>();
   for (const agentRunId of new Set(input.senderAgentRunIds)) {
     const own = input.ownAddressOf(agentRunId);

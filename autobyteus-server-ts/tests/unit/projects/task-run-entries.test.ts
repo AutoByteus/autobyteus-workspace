@@ -9,7 +9,7 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 import { taskRunResources } from "../../helpers/task-run-resources.js";
 
 /**
- * autobyteus-461 (contract §2.6, design "Ordering Without A Shared Queue", AR-017): the Task side gives `DelegationTree`
+ * autobyteus-461 (contract §2.6, design "Ordering Without A Shared Queue", AR-017): the Task side gives `DelegationIndex`
  * each Task's entries from memory, and tells it synchronously inside the Task's ordered change.
  */
 const from = (kind: string, runId: string, delegatorAgentRunId: string) => ({ delegatingRun: { kind, runId }, delegatorAgentRunId });
@@ -17,7 +17,7 @@ const entry = (agentRun: Record<string, string>, extra: Record<string, unknown> 
   role: "assigned", delegatedFrom: from("agent", "manager", "manager"), recipientAddress: "/eng_team", agentRun,
   linkedAt: "2026-11-01T10:00:00.000Z", start: "started", closedAt: null, ...extra });
 
-describe("Task side: entries for the DelegationTree (autobyteus-461)", () => {
+describe("Task side: entries for the DelegationIndex (autobyteus-461)", () => {
   let appData: string, layout: ProjectsLayout, service: TaskExecutionResourceService;
   const write = async (taskId: string, agentRunResources: unknown) => {
     const file = layout.taskExecutionResourcesFile("project_P", taskId);

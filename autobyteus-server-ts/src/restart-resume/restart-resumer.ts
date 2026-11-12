@@ -3,7 +3,7 @@ import type { AgentRunManager } from "../agent-execution/services/agent-run-mana
 import type { AgentRunInputOptions } from "../agent-execution/input/agent-run-input-contract.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { rootExecutionIdentityKey } from "../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../agent-collaboration/delegation/delegation-index.js";
 import { runReferenceOf } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { CollaborationRootResolver } from "../compositions/collaboration-root-resolver.js";
 import type { StandaloneAgentRunRoot } from "../standalone-agent-run-root/domain/standalone-agent-run-root.js";
@@ -49,7 +49,7 @@ export class RestartResumer {
     rootHistory: (root: RootExecutionIdentity) => Promise<RootHistoryState>;
     rootResolver: CollaborationRootResolver;
     /** Who delegated to whom (the Task entries); `null` when the Task records are not loaded (nothing is related). */
-    tree: Pick<DelegationTree, "parentOf">;
+    tree: Pick<DelegationIndex, "parentOf">;
     now?: () => Date;
     concurrency?: number;
   }>) {}

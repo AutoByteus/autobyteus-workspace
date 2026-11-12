@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { AgentRunHistoryService, setProcessAgentRunHistoryService } from "../../../src/run-history/services/agent-run-history-service.js";
 import { TeamRunHistoryService, setProcessTeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import { WorkspaceRunHistoryService, setProcessWorkspaceRunHistoryService } from "../../../src/run-history/services/workspace-run-history-service.js";
@@ -21,7 +21,7 @@ import { noDelegations, noWorkGuard } from "../../helpers/no-delegations.js";
  */
 export const setE2eRunHistoryServices = (input: Readonly<{
   memoryDir: string;
-  tree?: DelegationTree;
+  tree?: DelegationIndex;
   /** The Org member reader needs the process AgentOrgRunManager; a suite without one reads no Org member. */
   orgMembers?: boolean;
 }>): (() => void) => {

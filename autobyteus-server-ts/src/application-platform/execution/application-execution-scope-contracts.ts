@@ -1,5 +1,5 @@
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
@@ -44,7 +44,7 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
   modelSelectionValidator: RunModelSelectionValidator;
   /** The relationships between runs (the Task entries); an application's team roots read their own (SR-047). */
-  delegationTree: DelegationTree;
+  delegationIndex: DelegationIndex;
   /** The run side's Task records (SR-053). */
   taskRecords: RunTaskRecords;
   applicationAgentTools: ApplicationAgentToolCapability;

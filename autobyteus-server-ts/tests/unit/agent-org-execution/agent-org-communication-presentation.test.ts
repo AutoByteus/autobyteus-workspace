@@ -14,7 +14,7 @@ import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execut
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
-import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
 
@@ -72,7 +72,7 @@ const createSubject = (options: Readonly<{
     return value;
   }
   const reserveRootAgentInput = vi.fn(async (agentRunId: string): Promise<AgentRunInputReservationResult> => reservation(agentRunId));
-  const run = new AgentOrgRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+  const run = new AgentOrgRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     root,
     tree,
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
@@ -304,7 +304,7 @@ it("a message from a run the Org delegated to is presented and the Org stays up,
   const org = createAgentOrgRootExecutionIdentity("org-communication");
   const devTeam = { rootSubjectKind: "agent_team" as const, rootRunId: "dev-team-copy" };
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, readerOfAgentRunIds(async (run) =>
+  const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (run) =>
     run.rootRunId === "dev-team-copy" ? ["dev-lead-run"] : run.rootRunId === "org-communication" ? ["direct-run", "observer-run"] : null));
   tree.build(); tasks.setEntriesListener(tree); tasks.addTask("T4");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T4", recipientAddress: "/dev_team",

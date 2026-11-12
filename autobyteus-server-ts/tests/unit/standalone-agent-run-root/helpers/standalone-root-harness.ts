@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { noDelegations } from "../../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -90,7 +90,7 @@ export const hostRun = () => {
 
 /** A standalone run's root (autobyteus-461: its own agent only) with real persistence of its own log. */
 export const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources(),
-  delegationTree: DelegationTree = noDelegations()) => {
+  delegationIndex: DelegationIndex = noDelegations()) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
   const host = hostRun();
   // The run's activation backend (the standalone lifecycle): records the root-built member context.
@@ -121,7 +121,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
       }),
       readMetadata: async () => currentMetadata,
     },
-    rootDependencies: { taskRecords: taskExecutionResources, delegationTree, collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
+    rootDependencies: { taskRecords: taskExecutionResources, delegationIndex, collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable) },
   });
   const hostIdentity = createCollaborationMemberExecutionIdentity({
     root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,

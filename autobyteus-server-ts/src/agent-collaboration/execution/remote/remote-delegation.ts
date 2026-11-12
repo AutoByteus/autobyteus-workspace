@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import type { DelegationSource } from "../task/member-task-capability.js";
 import type { TaskDelegation } from "../task/task-delegation.js";
 import { assertAgentTeamAddress } from "../../domain/agent-team-address.js";
@@ -31,7 +31,7 @@ export class RemoteDelegation {
 
   constructor(private readonly options: Readonly<{
     delegation: Pick<TaskDelegation, "toPeerRun">;
-    tree: Pick<DelegationTree, "peerChildrenOf">;
+    tree: Pick<DelegationIndex, "peerChildrenOf">;
     channel?(): RemoteRunChannel | null;
   }>) {}
 

@@ -1,4 +1,4 @@
-import { currentTaskOf } from "../../helpers/delegation-tree-of.js";
+import { currentTaskOf } from "../../helpers/delegation-index-of.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";

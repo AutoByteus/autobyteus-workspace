@@ -168,7 +168,7 @@ const buildNode = async (input: Readonly<{
     },
     rootDependencies: {
       taskRecords: resources,
-      delegationTree: taskSide.tree,
+      delegationIndex: taskSide.tree,
       remoteRunChannel: () => client,
     },
   });

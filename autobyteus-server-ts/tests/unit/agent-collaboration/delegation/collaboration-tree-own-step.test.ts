@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionIndex } from "../../../../src/agent-org-execution/services/agent-org-execution-index.js";
@@ -16,7 +16,7 @@ import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /**
- * autobyteus-461 SR-060 (ARCH-REV-035): a run's collaboration map reads steps 1 and 3 from the run's own file, the file
+ * autobyteus-461 SR-060 (ARCH-REV-035): a run's collaboration tree reads steps 1 and 3 from the run's own file, the file
  * a loaded root's own index is built from; for a team run and an org run, the map and the loaded root's index
  * (`getMessagePlacement`, and `memberOfInstance` inside a mounted team) give the same receiver for every address.
  */
@@ -25,7 +25,7 @@ afterEach(async () => { await Promise.all(directories.splice(0).map((dir) => fs.
 
 const treeOver = async (memoryDir: string) => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, new RunOwnAgentsReader(memoryDir));
+  const tree = new DelegationIndex(() => tasks, new RunOwnAgentsReader(memoryDir));
   tree.build();
   return tree;
 };
@@ -38,7 +38,7 @@ describe("a run's map and its loaded root agree on its own addresses", () => {
     const file = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE" });
     await new TeamRunExecutionTreeStore().write(new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: "se", ancestorTeamRunIds: [] }), file);
     const index = new TeamExecutionIndex(file);
-    const map = (await treeOver(memoryDir)).mapOf({ rootSubjectKind: "agent_team", rootRunId: "se" });
+    const map = (await treeOver(memoryDir)).collaborationTreeOf({ rootSubjectKind: "agent_team", rootRunId: "se" });
     for (const address of ["/lead", "/reviewer", "/nobody"]) {
       await expect(map.ownReceiverOf(address), address).resolves.toBe(index.getMessagePlacement(address)?.receiver.agentRunId ?? null);
     }
@@ -54,7 +54,7 @@ describe("a run's map and its loaded root agree on its own addresses", () => {
     ] });
     await new AgentOrgRunExecutionTreeStore().write(new AgentMemoryLayout(memoryDir).getOrgDirPath("org"), file);
     const index = new AgentOrgExecutionIndex(file);
-    const map = (await treeOver(memoryDir)).mapOf({ rootSubjectKind: "agent_org", rootRunId: "org" });
+    const map = (await treeOver(memoryDir)).collaborationTreeOf({ rootSubjectKind: "agent_org", rootRunId: "org" });
     const fromIndex = (address: string) => (index.getMessagePlacement(address)
       ?? index.memberOfInstance("squad-team", assertAgentTeamAddress(address)))?.receiver.agentRunId ?? null;
     for (const address of ["/director", "/squad", "/squad/lead", "/squad/writer", "/nobody"]) {

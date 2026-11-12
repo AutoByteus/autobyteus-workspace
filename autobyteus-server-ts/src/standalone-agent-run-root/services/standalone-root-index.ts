@@ -12,7 +12,7 @@ import type { StandaloneRootHost } from "../domain/standalone-root-host.js";
 /**
  * A standalone run's addresses (contract §2.3): its one agent at its own address. It has no team, so an address
  * resolves to the run's agent or to nothing in this run (a run that works on a Task continues with step 2, from its
- * collaboration map).
+ * collaboration tree).
  */
 export class StandaloneRootIndex implements MessageRecipientIndexPort, MentionViewerIndexPort, DelegationSourceIndexPort {
   constructor(private readonly host: StandaloneRootHost) {}

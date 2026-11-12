@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
@@ -9,7 +9,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
  */
 export class DelegatedWorkGuard {
   constructor(private readonly input: Readonly<{
-    tree: Pick<DelegationTree, "openChildrenOf">;
+    tree: Pick<DelegationIndex, "openChildrenOf">;
     /** A run's own live status by its identity; `null` when it is not running. */
     statusOf(child: TaskExecutionReference): string | null;
   }>) {}

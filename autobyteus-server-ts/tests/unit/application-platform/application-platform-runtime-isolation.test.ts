@@ -85,7 +85,7 @@ describe("application platform runtime isolation", () => {
       const get = vi.fn(() => '{malformed current setting');
       const setDurably = vi.fn();
       const runtime = buildApplicationPlatformRuntime({
-        delegationTree: noDelegations(),
+        delegationIndex: noDelegations(),
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
@@ -225,7 +225,7 @@ describe("application platform runtime isolation", () => {
 
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
-        delegationTree: noDelegations(),
+        delegationIndex: noDelegations(),
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,

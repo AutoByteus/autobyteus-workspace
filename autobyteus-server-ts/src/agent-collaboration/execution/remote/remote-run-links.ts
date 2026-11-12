@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import { peerRunLinksOf, type PeerAgentRunLink, type PeerRunLink, type PeerTeamRunLink } from "./peer-run-link.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { PeerDelegatedFrom } from "../../../run-history/store/agent-run-metadata-types.js";
@@ -61,7 +61,7 @@ export type StoredRemoteLinkCheck = "proceed" | "not_linked" | "not_found";
  * when it has no back-link (its peer runs are its Task entries).
  */
 export const storedRemoteLinkCheck = (
-  stored: Omit<RemoteRunLinksOptions, "channel"> | Readonly<{ run: RootExecutionIdentity; tree: Pick<DelegationTree, "peerChildrenOf"> }> | null,
+  stored: Omit<RemoteRunLinksOptions, "channel"> | Readonly<{ run: RootExecutionIdentity; tree: Pick<DelegationIndex, "peerChildrenOf"> }> | null,
   query: RemoteInboundQuery,
 ): StoredRemoteLinkCheck => !stored ? "not_found"
   : new RemoteRunLinks("run" in stored ? { peerRuns: () => peerRunLinksOf(stored.run, stored.tree) } : stored).admitsInbound(query) ? "proceed" : "not_linked";

@@ -90,7 +90,7 @@ export const buildOrg = async (kind: "agent" | "team") => {
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
     taskRecords: new InMemoryTaskExecutionResources(),
-    delegationTree: noDelegations(),
+    delegationIndex: noDelegations(),
   });
   run.activate();
   const owner = run;

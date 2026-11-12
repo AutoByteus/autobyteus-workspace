@@ -1,7 +1,7 @@
 import { ChildRowsStreams } from "../../../../src/agent-collaboration/delegation/child-rows-streams.js";
 import { describe, expect, it, vi } from "vitest";
 import { ChildRowsFeed, type ChildRowsEvent } from "../../../../src/agent-collaboration/delegation/child-rows-feed.js";
-import type { ChildRowsChange, DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { ChildRowsChange, DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { ChildRowsStreamSession } from "../../../../src/services/agent-streaming/child-rows-stream-session.js";
 
 /** autobyteus-461 DS-8, SR-042 … SR-044 (ARCH-REV-019 residual): the feed to open views and each stream's order. */

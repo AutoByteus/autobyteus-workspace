@@ -287,7 +287,7 @@ describe("recent run projection GraphQL e2e", () => {
       providerInputNormalizer: { normalizeForProvider: unavailableExecution },
       agentToolMcpRunSessionDeactivator: unusedExecutionBoundary(),
     });
-    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir,
       flatTeamExecutionFactory: unusedExecutionBoundary(),
       memberExecutionContextBuilder: unusedExecutionBoundary(),

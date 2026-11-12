@@ -88,9 +88,9 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
   });
   const dependencies = { agentRunManager: agentManager, memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
     activityInspector: new AgentConversationActivityInspector() };
-  const manager = new AgentOrgRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), memoryDir, tokenUsageRunStore: store,
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir, tokenUsageRunStore: store,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
-    scopeBuilder: new AgentOrgExecutionScopeBuilder({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), ...dependencies,
+    scopeBuilder: new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), ...dependencies,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(dependencies),
       orgDefinitions: { getDefinitionById: unavailable }, teamDefinitions: { getDefinitionById: unavailable },
     }),

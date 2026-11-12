@@ -7,7 +7,7 @@ import type { CollaborationHandoff } from "../domain/collaboration-handoff.js";
 import { rootExecutionIdentityKey, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
 import { runIdentityOf, runReferenceOf } from "../execution/task/task-execution-resource-port.js";
 import type { ConfiguredAgentExecutionNode, ConfiguredTeamExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { DelegatedChild, DelegationTree, RunPartsReader } from "./delegation-tree.js";
+import type { DelegatedChild, DelegationIndex, RunPartsReader } from "./delegation-index.js";
 
 /** An org run's configured placements, from its own file: its definition, its direct agents' addresses, its handoffs. */
 export type OrgPlacements = Readonly<{ orgDefinitionId: string; agentAddresses: readonly string[]; handoffs: readonly CollaborationHandoff[] }>;
@@ -52,7 +52,7 @@ export type AgentRunCollaboration = Readonly<{
 /** One row under a run (its open subtree, CR-461-033): the delegated run, and the run that delegated it. */
 export type SubtreeRow = DelegatedChild & Readonly<{ parent: RootExecutionIdentity }>;
 
-type MapTree = Pick<DelegationTree, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf">;
+type MapTree = Pick<DelegationIndex, "tasksOf" | "assignersOf" | "standingOf" | "agentsOf" | "currentTaskOf" | "canMessage" | "subtreeOf" | "openChildrenOf">;
 
 const NO_LONGER = (address: string) => `${address} is no longer an address: your team is addressed from its own root.`;
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
@@ -61,12 +61,15 @@ const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
   compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
 
 /**
- * A run's collaboration map (autobyteus-461 SR-060, contract §4): every cross-run answer for one run, derived from the
- * `DelegationTree` when asked (`delegationTree.mapOf(run)`), never stored. It works whether or not the run is loaded:
+ * A run's collaboration tree (autobyteus-461 SR-060, SR-061, contract §4). Glossary: the design called it the run's
+ * "collaboration map" (`RunCollaborationMap`) until SR-061; it is the tree the user sees under the run, and the
+ * `DelegationIndex` (earlier `DelegationTree`) is the forest it is derived from.
+ * every cross-run answer for one run, derived from the
+ * `DelegationIndex` when asked (`delegationIndex.collaborationTreeOf(run)`), never stored. It works whether or not the run is loaded:
  * it reads only the tree's nodes, their per-run agents (read once) and, at use, the runs' own files. The questions
  * about a run's own parts (its members, its own addresses, steps 1 and 3) stay with its own index.
  */
-export class RunCollaborationMap {
+export class CollaborationTree {
   constructor(private readonly tree: MapTree, private readonly files: Pick<RunFilesReader, "orgPlacementsOf" | "configuredPlacementOf">, readonly run: RootExecutionIdentity) {}
 
   /**

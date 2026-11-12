@@ -2,7 +2,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import type { StandaloneRunCommandPort } from "../../../agent-execution/services/standalone-run-ports.js";
 import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
-import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { runReferenceOf } from "../task/task-execution-resource-port.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
@@ -35,7 +35,7 @@ const notLive = (agentRunId: string): AgentOperationResult =>
  */
 export class DelegatedRunCommands {
   constructor(private readonly dependencies: Readonly<{
-    tree: Pick<DelegationTree, "runOfAgent" | "parentOf" | "tasksOf">;
+    tree: Pick<DelegationIndex, "runOfAgent" | "parentOf" | "tasksOf">;
     standaloneRuns: Pick<StandaloneRunCommandPort, "postUserMessage">;
     activeAgentRun(agentRunId: string): AgentRun | null;
     /** A team run's root, restored when stopped (`restore`), else only when live. */

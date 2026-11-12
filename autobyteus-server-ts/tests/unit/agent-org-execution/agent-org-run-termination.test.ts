@@ -54,7 +54,7 @@ describe("AgentOrgRun termination stabilization", () => {
       drain: vi.fn(async () => { order.push("persistence-drain"); }),
     };
     const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
-    const run = new AgentOrgRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const run = new AgentOrgRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({
         orgRunId,
@@ -101,7 +101,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       terminate: vi.fn(input.handleTerminate),
     };
     const persistence = { drain: vi.fn(async () => undefined), enterRootFailStop: vi.fn() };
-    const run = new AgentOrgRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const run = new AgentOrgRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({ orgRunId, members: [testOrgAgentNode("/lead", "lead-run")] }),
       messages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: Object.freeze([]) }),

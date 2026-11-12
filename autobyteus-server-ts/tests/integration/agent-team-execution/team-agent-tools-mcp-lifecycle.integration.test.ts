@@ -184,7 +184,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
             : { kind: "none" as const }),
         },
       });
-      const teamRunManager = new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+      const teamRunManager = new AgentTeamRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: teamExecutionFactory,
         memberExecutionContextBuilder: {

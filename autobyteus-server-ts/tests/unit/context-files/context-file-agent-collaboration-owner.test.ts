@@ -1,7 +1,7 @@
 import { NO_RUN_PARTS } from "../../helpers/run-agents-reader.js";
 import { noDelegations } from "../../helpers/no-delegations.js";
 import fs from "node:fs/promises";
-import { DelegationTree } from "../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import os from "node:os";
 import path from "node:path";
@@ -48,7 +48,7 @@ const fixture = async () => {
     runtimeKind: "autobyteus", address: "/code_reviewer",
   });
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+  const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/code_reviewer",

@@ -73,7 +73,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always passes the Task side; every delegated copy belongs to a Task.
     taskRecords: taskExecutionResources,
-    delegationTree: taskSide.tree,
+    delegationIndex: taskSide.tree,
     onTerminated: vi.fn(),
   };
   const config = testTeamRunConfig({

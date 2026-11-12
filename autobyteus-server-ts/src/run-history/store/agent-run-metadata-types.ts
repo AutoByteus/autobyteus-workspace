@@ -63,7 +63,7 @@ export type DelegatingRunRef = Readonly<{
  * A delegated run's origin, in its own file (contract §2.2, §2.4, TC-10 revised): the run it was delegated from (one
  * hop) and the agent that delegated it. Written once when the run is created; never changes; equal by rule to its Task
  * entries' `delegatedFrom`. `nodeId` is present only on a run a peer node started: its delegating run is on that node.
- * Routing, placement and lifecycle never read it (they read the Task entries through `DelegationTree`); readers ask
+ * Routing, placement and lifecycle never read it (they read the Task entries through `DelegationIndex`); readers ask
  * `isDelegated` or `isPeerStarted`.
  */
 export type DelegatedFrom = Readonly<{

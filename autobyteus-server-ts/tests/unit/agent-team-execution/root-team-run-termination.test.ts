@@ -52,7 +52,7 @@ const buildRoot = (input: {
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),
   };
-  const root = new RootTeamRun({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
     rootRun: rootRun as never,
     config,
     tree,

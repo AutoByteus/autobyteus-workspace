@@ -162,7 +162,7 @@ describe("Run file changes API integration", () => {
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: {} as never,
     });
-    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: getMemoryDir(), flatTeamExecutionFactory: {} as never,
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,

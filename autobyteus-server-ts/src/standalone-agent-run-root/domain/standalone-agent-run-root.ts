@@ -11,7 +11,7 @@ import { sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, t
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { DelegationSource } from "../../agent-collaboration/execution/task/member-task-capability.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { LocalChildRootEvent } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { WorkPacket } from "../../agent-collaboration/execution/task/task-delegation.js";
@@ -88,8 +88,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     publisher: RootEventPublisher<StandaloneRootEvent>;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
-    /** The relationships between runs: its peer children, its own Task, and its collaboration map (step 2's reach, SR-060). */
-    delegationTree: Pick<DelegationTree, "peerChildrenOf" | "currentTaskOf" | "mapOf">;
+    /** The relationships between runs: its peer children, its own Task, and its collaboration tree (step 2's reach, SR-060). */
+    delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     /** The run's own origin (a delegated run, from its Task entry's delegator; a run a peer started, its back-link). */
@@ -106,10 +106,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.inheritedLaunch = options.rootLaunchConfiguration;
     this.index = new StandaloneRootIndex(host);
     this.operationGate = new RootOperationGate({ rootLabel: `Agent root '${this.hostRunId}'`, canEnter: () => this.isAdmitting() });
-    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(root, options.delegationTree),
+    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(root, options.delegationIndex),
       backLink: ((peer) => peer ? { pairedAgentRunIds: () => [this.hostRunId], delegatedFrom: peer } : null)(peerDelegatedFromOf({ delegatedFrom: options.delegatedFrom })), // AR-016
       channel: options.remoteRunChannel });
-    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(root, options.delegationTree).filter((link) => link.open),
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(root, options.delegationIndex).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event), channel: options.remoteRunChannel });
     // DS-7: a delegated run shuts down when quiet; its next message restores it.
     this.delegatedIdle = options.delegatedFrom && options.agentRunManager ? new DelegatedRunIdleShutdown({
@@ -118,8 +118,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     }) : null;
     this.workerStatus = options.delegatedFrom ? new TaskWorkerStatusNotice({ agentRunId: this.hostRunId }, options.taskRecords) : null;
     this.collaborators = new StandaloneRootCollaborators({ admission: options.collaboratorAdmission, inheritedLaunch: () => this.inheritedLaunch, host,
-      reached: async () => [...(await options.delegationTree.mapOf(root).stepTwo())?.values() ?? []],
-      reachedPlacementAt: (address) => options.delegationTree.mapOf(root).delegationPlacementAt(address) });
+      reached: async () => [...(await options.delegationIndex.collaborationTreeOf(root).stepTwo())?.values() ?? []],
+      reachedPlacementAt: (address) => options.delegationIndex.collaborationTreeOf(root).delegationPlacementAt(address) });
     this.delivery = new StandaloneRootMessageDelivery({
       hostRunId: this.hostRunId, root, getIndex: () => this.index,
       recipients: new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators }),
@@ -196,7 +196,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   publishLocalChildEvent(event: LocalChildRootEvent): void { this.options.publisher.publish(event); }
   /** The Task this run works on (`get_project_task`'s read scope): its own entries, by its own identity; else null. */
   ownedTaskOf(_context: TaskDelegationContext): TaskExecutionOwner | null {
-    return runOwnTaskOf({ agentRunId: this.hostRunId }, this.options.delegationTree);
+    return runOwnTaskOf({ agentRunId: this.hostRunId }, this.options.delegationIndex);
   }
 
   /** `send_message_to(address)` in this run (contract §2.3). */

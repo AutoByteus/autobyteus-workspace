@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { DelegationTree, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex, type RunAgent } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
@@ -11,7 +11,7 @@ import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution
 import { readerOfAgents } from "../../../helpers/run-agents-reader.js";
 
 /**
- * autobyteus-461 SR-059, SR-060: what a run reaches by address step 2 (its collaboration map) is in its in-run set. A delegated copy's `@` note and
+ * autobyteus-461 SR-059, SR-060: what a run reaches by address step 2 (its collaboration tree) is in its in-run set. A delegated copy's `@` note and
  * `list_available_agents` answer for its assigner's agents as base answered a hosted copy (base 827f1e68dc, IMP-43):
  * the assigner's own agent at its address, `run_agent`; an assigner's configured placement at its address, `in_run`.
  */
@@ -38,14 +38,14 @@ const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
   const configuredPlacementOf = vi.fn(async (run: RootExecutionIdentity, address: string) =>
     run.rootRunId === "se-team" && address === "/worker" ? { node: workerNode, handoffs: [] } : null);
-  const tree = new DelegationTree(() => tasks, readerOfAgents(async (run) => agents[`${run.rootSubjectKind}:${run.rootRunId}`] ?? null, { configuredPlacementOf }));
+  const tree = new DelegationIndex(() => tasks, readerOfAgents(async (run) => agents[`${run.rootSubjectKind}:${run.rootRunId}`] ?? null, { configuredPlacementOf }));
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1"); tasks.addTask("T2");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/code_reviewer", delegatedFrom: { delegatingRun: AGENT, delegatorAgentRunId: "assistant-run" }, execution: { agentRunId: "copy" } });
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/code_reviewer", delegatedFrom: { delegatingRun: TEAM, delegatorAgentRunId: "run-coordinator" }, execution: { agentRunId: "team-copy" } });
   const reachable = {
-    stepTwoOf: (run: RootExecutionIdentity) => tree.mapOf(run).stepTwo(),
-    delegationPlacementAt: (run: RootExecutionIdentity, address: never) => tree.mapOf(run).delegationPlacementAt(address),
+    stepTwoOf: (run: RootExecutionIdentity) => tree.collaborationTreeOf(run).stepTwo(),
+    delegationPlacementAt: (run: RootExecutionIdentity, address: never) => tree.collaborationTreeOf(run).delegationPlacementAt(address),
   };
   const admission = createCollaboratorAdmission(catalog, runnable, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
   const portOf = (agentRunId: string) => standaloneRootCollaboratorPortFor({ agentRunId, address: "/code_reviewer" as never, agentDefinitionId: "code-reviewer" }, launch, agentRunId,
@@ -53,7 +53,7 @@ const harness = async () => {
   return { reachable, admission, portOf };
 };
 
-describe("a run's collaboration map: what it reaches by step 2", () => {
+describe("a run's collaboration tree: what it reaches by step 2", () => {
   it("step 2: the standing agents of the run's assigners at their addresses, by rank; none for a run that works on no Task", async () => {
     const h = await harness();
     expect([...(await h.reachable.stepTwoOf({ rootSubjectKind: "agent", rootRunId: "copy" }))!.values()]).toEqual([

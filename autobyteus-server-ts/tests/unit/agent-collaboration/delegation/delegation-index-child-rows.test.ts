@@ -1,6 +1,6 @@
 import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it } from "vitest";
-import { DelegationTree, type ChildRowsChange } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex, type ChildRowsChange } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /**
@@ -14,7 +14,7 @@ const harness = () => {
   const tasks = new InMemoryTaskExecutionResources();
   tasks.addTask("T1");
   tasks.addTask("T2");
-  const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+  const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
   tree.build();
   tasks.setEntriesListener(tree);
   const changes: ChildRowsChange[] = [];
@@ -26,7 +26,7 @@ const harness = () => {
   return { tasks, tree, changes, seen, assign };
 };
 
-describe("DelegationTree child rows", () => {
+describe("DelegationIndex child rows", () => {
   it("reports a new delegation as an added row, after the tree is updated", async () => {
     const h = harness();
     await h.assign("T1", "writer");

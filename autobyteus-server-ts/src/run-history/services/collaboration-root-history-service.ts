@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { AgentOrgRunIndexRowRecord } from "../store/agent-org-run-history-index-record-types.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
@@ -22,7 +22,7 @@ export class CollaborationRootHistoryService {
   constructor(private readonly dependencies: Readonly<{
     memoryDir: string;
     /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationTree, "subtreeOf">;
+    tree: Pick<DelegationIndex, "subtreeOf">;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
     orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows" | "getCatalogRow">;
     orgRuns: Pick<AgentOrgRunManager, "getActive">;

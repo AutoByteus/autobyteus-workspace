@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgents } from "../../../helpers/run-agents-reader.js";
@@ -15,7 +15,7 @@ const G: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "helper"
 
 const harness = async () => {
   const tasks = new InMemoryTaskExecutionResources();
-  const tree = new DelegationTree(() => tasks, readerOfAgents(async (run) => [{ agentRunId: run.rootRunId, address: `/${run.rootRunId}`, agentDefinitionId: run.rootRunId }]));
+  const tree = new DelegationIndex(() => tasks, readerOfAgents(async (run) => [{ agentRunId: run.rootRunId, address: `/${run.rootRunId}`, agentDefinitionId: run.rootRunId }]));
   tree.build(); tasks.setEntriesListener(tree);
   tasks.addTask("T1"); tasks.addTask("T2");
   await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/worker", delegatedFrom: { delegatingRun: M, delegatorAgentRunId: "manager" }, execution: { agentRunId: "worker" } });
@@ -23,7 +23,7 @@ const harness = async () => {
   return { tasks, tree };
 };
 
-describe("the DelegationTree as a forest", () => {
+describe("the DelegationIndex as a forest", () => {
   it("a node's tree is the run the user started at the top of its chain; byRunId and byAgentRunId answer directly", async () => {
     const { tree } = await harness();
     expect(tree.topOf(G)).toEqual(M);
@@ -35,9 +35,9 @@ describe("the DelegationTree as a forest", () => {
 
   it("the rows under a run are its open subtree, nested by the run that delegated each", async () => {
     const { tree } = await harness();
-    expect(tree.mapOf(M).rows().map((row) => [row.parent.rootRunId, "agentRunId" in row.run ? row.run.agentRunId : null]))
+    expect(tree.collaborationTreeOf(M).rows().map((row) => [row.parent.rootRunId, "agentRunId" in row.run ? row.run.agentRunId : null]))
       .toEqual([["manager", "worker"], ["worker", "helper"]]);
-    expect(tree.mapOf(C).rows().map((row) => row.parent.rootRunId)).toEqual(["worker"]);
+    expect(tree.collaborationTreeOf(C).rows().map((row) => row.parent.rootRunId)).toEqual(["worker"]);
   });
 
   it("when a run's own entries go with their Task, it is the top of a tree of its own, with its subtree", async () => {
@@ -47,7 +47,7 @@ describe("the DelegationTree as a forest", () => {
     expect(tree.topOf(G)).toEqual(C);
     expect(tree.topOf(C)).toEqual(C);
     await expect(tree.agentOf("helper")).resolves.toMatchObject({ top: C });
-    expect(tree.mapOf(M).rows()).toEqual([]);
-    expect(tree.mapOf(C).rows().map((row) => "agentRunId" in row.run ? row.run.agentRunId : null)).toEqual(["helper"]);
+    expect(tree.collaborationTreeOf(M).rows()).toEqual([]);
+    expect(tree.collaborationTreeOf(C).rows().map((row) => "agentRunId" in row.run ? row.run.agentRunId : null)).toEqual(["helper"]);
   });
 });

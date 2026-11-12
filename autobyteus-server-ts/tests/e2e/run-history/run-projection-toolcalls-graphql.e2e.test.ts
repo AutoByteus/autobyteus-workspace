@@ -196,7 +196,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     try {
       AgentTeamRunManager.getInstance();
     } catch {
-      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+      ownedAgentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
         memoryDir,
         flatTeamExecutionFactory: {} as never,
         memberExecutionContextBuilder: {} as never,

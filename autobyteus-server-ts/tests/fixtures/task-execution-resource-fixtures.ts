@@ -38,7 +38,7 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   readonly projectFolders = new Map<string, string | Error>();
   private adHocCount = 0;
   private linkCount = 0;
-  /** The `DelegationTree` a harness builds over this double, told after each change (like the Task side). */
+  /** The `DelegationIndex` a harness builds over this double, told after each change (like the Task side). */
   private listener: TaskEntriesListener | null = null;
   setEntriesListener(listener: TaskEntriesListener): void { this.listener = listener; }
   /** Tells the listener of a change made directly in `entries` (a test's own write). */

@@ -116,7 +116,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     },
     rootDependencies: {
       taskRecords: resources,
-      delegationTree: taskSide.tree,
+      delegationIndex: taskSide.tree,
       remoteRunChannel: () => client,
     },
   });
@@ -207,7 +207,7 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
       teamScoped: true, collaborationRole: "team_member", inOrganization: false,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }), tasks: taskCapability }) } as never,
     taskRecords: new InMemoryTaskExecutionResources(),
-    delegationTree: noDelegations(),
+    delegationIndex: noDelegations(),
     modelSelectionValidator: { validate: async ({ selection }: any) => ({ kind: "valid", selection }), validateMany: async () => [] } as never,
     activeRootDirectory: new ActiveCollaborationRootDirectory(),
   });

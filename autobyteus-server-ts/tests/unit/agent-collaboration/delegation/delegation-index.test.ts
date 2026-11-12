@@ -7,8 +7,8 @@ import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { TaskExecutionResourceService } from "../../../../src/projects/services/task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../../../../src/projects/stores/task-execution-resource-store.js";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
-import type { RunFilesReader as RunPartsReader } from "../../../../src/agent-collaboration/delegation/run-collaboration-map.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import type { RunFilesReader as RunPartsReader } from "../../../../src/agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { taskRunResources } from "../../../helpers/task-run-resources.js";
 
@@ -45,8 +45,8 @@ const MAIN = {
   ],
 };
 
-describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
-  let appData: string, layout: ProjectsLayout, service: TaskExecutionResourceService, tree: DelegationTree;
+describe("DelegationIndex (autobyteus-461, contract §2.6)", () => {
+  let appData: string, layout: ProjectsLayout, service: TaskExecutionResourceService, tree: DelegationIndex;
   const write = async (taskId: string, agentRunResources: unknown) => {
     const file = layout.taskExecutionResourcesFile("project_P", taskId);
     await fs.mkdir(path.dirname(file), { recursive: true });
@@ -56,13 +56,13 @@ describe("DelegationTree (autobyteus-461, contract §2.6)", () => {
     for (const [taskId, entries] of Object.entries(tasks)) await write(taskId, entries);
     service = taskRunResources(new TaskExecutionResourceStore(layout, new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))));
     await service.load();
-    tree = new DelegationTree(() => service, reader ?? NO_RUN_PARTS);
+    tree = new DelegationIndex(() => service, reader ?? NO_RUN_PARTS);
     tree.build();
     service.setEntriesListener(tree);
   };
 
   beforeEach(async () => {
-    appData = await fs.mkdtemp(path.join(os.tmpdir(), "delegation-tree-"));
+    appData = await fs.mkdtemp(path.join(os.tmpdir(), "delegation-index-"));
     layout = new ProjectsLayout(path.join(appData, "projects"));
   });
   afterEach(async () => { vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });

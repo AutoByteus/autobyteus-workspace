@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { createTopLevelRunRule } from "./top-level-run-rule.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -62,7 +62,7 @@ export class WorkspaceRunHistoryService {
   constructor(
     options: {
       /** The relationships between runs, from the Task entries (SR-047). */
-      tree: Pick<DelegationTree, "parentOf">;
+      tree: Pick<DelegationIndex, "parentOf">;
       agentRunHistoryService?: AgentRunHistoryService;
       teamRunHistoryService?: TeamRunHistoryService;
       topLevel?: (run: TaskExecutionReference) => boolean;

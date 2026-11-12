@@ -4,7 +4,7 @@ import {
   type PeerRunMember, type RunDelegatedFrom, type TaskEntriesListener, type TaskExecutionResourcePort, type TaskRunEntry,
 } from "../execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
-import { RunCollaborationMap, type RunFilesReader } from "./run-collaboration-map.js";
+import { CollaborationTree, type RunFilesReader } from "./collaboration-tree.js";
 
 /**
  * An agent of a run: its run, its address in the run's own space (`null`: an agent run not yet collaborating), and its
@@ -64,7 +64,9 @@ const newest = (entries: readonly TaskRunEntry[]): TaskRunEntry | undefined =>
     || (entry.linkedAt === best.linkedAt && entry.taskId > best.taskId) ? entry : best, undefined);
 
 /**
- * The relationships between runs, in memory (contract §2.6, TC-11). Owner: collaboration. It holds no run's life (P6).
+ * The relationships between runs, in memory (contract §2.6, §4, TC-11): the `DelegationIndex` (the design's
+ * `DelegationTree` until SR-061), a forest of one tree per run the user started, from which each run's
+ * `CollaborationTree` is derived (`collaborationTreeOf(run)`). Owner: collaboration. It holds no run's life (P6).
  *
  * - Nodes: every run a Task entry names, and every run an entry names as its delegating run. Edges: child → parent, one
  *   hop, from the entry's `delegatedFrom`. Per node: its Tasks (each run's last entry per Task). Per Task: its assigner.
@@ -79,7 +81,7 @@ const newest = (entries: readonly TaskRunEntry[]): TaskRunEntry | undefined =>
  * The Task side stays the authority for "is this run's Task open" at a gate head (`isOpen`); the tree answers who is
  * related to whom, and who may message whom (`canMessage`, contract §10.2).
  */
-export class DelegationTree implements TaskEntriesListener {
+export class DelegationIndex implements TaskEntriesListener {
   /** Each Task's entries (each run's last one). */
   private readonly byTask = new Map<string, readonly TaskRunEntry[]>();
   /** Per run key: its entry in each Task. */
@@ -100,9 +102,9 @@ export class DelegationTree implements TaskEntriesListener {
 
   constructor(private readonly source: () => Source, private readonly reader: RunFilesReader) {}
 
-  /** A run's collaboration map (SR-060): every cross-run answer for it, derived now, never stored. */
-  mapOf(run: RootExecutionIdentity): RunCollaborationMap {
-    return new RunCollaborationMap(this, this.reader, run);
+  /** A run's collaboration tree (SR-060): every cross-run answer for it, derived now, never stored. */
+  collaborationTreeOf(run: RootExecutionIdentity): CollaborationTree {
+    return new CollaborationTree(this, this.reader, run);
   }
 
   /** `byRunId` (contract §4): a run's node, `null` for a run no Task names (nor names as delegating run). */

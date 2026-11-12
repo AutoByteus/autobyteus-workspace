@@ -1,5 +1,5 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
-import type { DelegatedChild, DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegatedChild, DelegationIndex } from "../../delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { PairedAgentAccess, PairedAgentObservation } from "../remote/paired-agent-access.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
@@ -14,7 +14,7 @@ export type LocalChildRootEvent =
 
 /** What a view needs of its local children; created by the composition root (SR-047 step 7). */
 export type LocalChildPorts = Readonly<{
-  tree: Pick<DelegationTree, "openChildrenOf" | "subscribe" | "agentsOf">;
+  tree: Pick<DelegationIndex, "openChildrenOf" | "subscribe" | "agentsOf">;
   /** A run's own agents' output and live statuses (an agent run's agent; a team run's members). */
   agents(kind: "agent" | "agent_team"): Pick<PairedAgentAccess, "observePairedAgents" | "pairedAgentStatuses">;
 }>;
@@ -24,7 +24,7 @@ export type LocalChildAgentStatus = Readonly<{ agentRunId: string; memberAddress
 
 /**
  * Every agent of a run's open local children with its live status, `offline` when not running (SR-040: the history
- * poll's answer, the same projection as the view's rows). Addresses come from the `DelegationTree`'s per-run agents
+ * poll's answer, the same projection as the view's rows). Addresses come from the `DelegationIndex`'s per-run agents
  * (read once from each run's own file), statuses from each child's own root; nothing is started or restored.
  */
 export const localChildStatuses = async (run: RootExecutionIdentity, ports: LocalChildPorts): Promise<LocalChildAgentStatus[]> => {
@@ -54,7 +54,7 @@ type Followed = { child: DelegatedChild; observation: PairedAgentObservation | n
 /**
  * One run's view of its local children while someone views it (as `RemoteRunObservation` for its peer children): the
  * first viewer follows each open child (its agents' current statuses, then their live output); a delegation or a
- * Task change re-reads the run's children from the `DelegationTree`, following new ones and leaving gone ones; the last
+ * Task change re-reads the run's children from the `DelegationIndex`, following new ones and leaving gone ones; the last
  * viewer stops following. Nothing is started, woken or stored.
  */
 export class LocalChildObservation {

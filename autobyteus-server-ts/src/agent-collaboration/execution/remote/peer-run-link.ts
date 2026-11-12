@@ -1,4 +1,4 @@
-import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import type { AgentTeamAddress } from "../../domain/agent-team-address.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { PeerRunMember } from "../task/task-execution-resource-port.js";
@@ -28,8 +28,8 @@ export type PeerTeamRunLink = PeerRunLinkCore & Readonly<{
  */
 export type PeerRunLink = PeerAgentRunLink | PeerTeamRunLink;
 
-/** The peer runs `run` delegated to, open or closed, from the `DelegationTree`. */
-export const peerRunLinksOf = (run: RootExecutionIdentity, tree: Pick<DelegationTree, "peerChildrenOf">): readonly PeerRunLink[] =>
+/** The peer runs `run` delegated to, open or closed, from the `DelegationIndex`. */
+export const peerRunLinksOf = (run: RootExecutionIdentity, tree: Pick<DelegationIndex, "peerChildrenOf">): readonly PeerRunLink[] =>
   tree.peerChildrenOf(run).map((child): PeerRunLink => {
     const core = { address: child.recipientAddress as AgentTeamAddress, nodeId: child.nodeId, delegatorAgentRunId: child.delegatorAgentRunId,
       startedAt: child.linkedAt, open: child.open };

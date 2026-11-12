@@ -1,12 +1,12 @@
-import type { DelegationTree } from "../../src/agent-collaboration/delegation/delegation-tree.js";
-import { RunCollaborationMap } from "../../src/agent-collaboration/delegation/run-collaboration-map.js";
+import type { DelegationIndex } from "../../src/agent-collaboration/delegation/delegation-index.js";
+import { CollaborationTree } from "../../src/agent-collaboration/delegation/collaboration-tree.js";
 import { NO_RUN_PARTS } from "./run-agents-reader.js";
 
 /**
- * A `DelegationTree` for a test in which no run delegated to another (autobyteus-461 SR-047: the tree is passed to
+ * A `DelegationIndex` for a test in which no run delegated to another (autobyteus-461 SR-047: the tree is passed to
  * its readers; tests build them with a fake, never a process binding). A test about delegation builds a real tree.
  */
-export const noDelegations = (): DelegationTree => {
+export const noDelegations = (): DelegationIndex => {
   const tree = ({
   build: () => undefined,
   subscribe: () => () => undefined,
@@ -30,8 +30,8 @@ export const noDelegations = (): DelegationTree => {
   nodeOf: () => null,
   topOf: (run: never) => run,
   agentOf: async () => null,
-  mapOf: (run: never) => new RunCollaborationMap(tree, NO_RUN_PARTS, run),
-  }) as unknown as DelegationTree;
+  collaborationTreeOf: (run: never) => new CollaborationTree(tree, NO_RUN_PARTS, run),
+  }) as unknown as DelegationIndex;
   return tree;
 };
 

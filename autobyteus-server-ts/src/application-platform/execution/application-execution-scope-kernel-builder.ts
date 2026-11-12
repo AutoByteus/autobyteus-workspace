@@ -159,14 +159,14 @@ export const buildApplicationExecutionScopeKernel = (
     });
     const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
-      input.delegationTree,
+      input.delegationIndex,
     );
     const memoryLocator = new AgentRunMemoryLocator({ memoryDir: input.memoryDir });
     const activityInspector = new AgentConversationActivityInspector();
     const teamRunManager = new AgentTeamRunManager({
       memoryDir: input.memoryDir,
       modelSelectionValidator: input.modelSelectionValidator,
-      delegationTree: input.delegationTree,
+      delegationIndex: input.delegationIndex,
       taskRecords: input.taskRecords,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({
         agentRunManager,

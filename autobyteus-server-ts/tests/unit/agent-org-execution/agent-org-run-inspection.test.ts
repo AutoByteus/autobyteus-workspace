@@ -23,7 +23,7 @@ const fixture = async () => {
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
   await new AgentOrgCommunicationMessagesStore().write(dir, messages as never);
   const build = vi.fn();
-  const manager = new AgentOrgRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), memoryDir, scopeBuilder: { build } as never });
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir, scopeBuilder: { build } as never });
   return { memoryDir, dir, tree, messages, manager, build };
 };
 
@@ -88,7 +88,7 @@ it('serializes inspection behind pending termination and never starts another sc
     isActive: () => active, openPackageSnapshotConnection, hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
     terminate: async () => { enter(); await held; active = false; return { accepted: true }; },
   }));
-  const manager = new AgentOrgRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), memoryDir: f.memoryDir, scopeBuilder: { build } as never,
+  const manager = new AgentOrgRunManager({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), memoryDir: f.memoryDir, scopeBuilder: { build } as never,
     activeRootDirectory: new ActiveCollaborationRootDirectory() });
   await manager.create(testAgentOrgExecutionTree({ orgRunId: 'org', members: [testOrgAgentNode('/assistant', 'configured')] }));
   const stopping = manager.terminate('org'); await entered;

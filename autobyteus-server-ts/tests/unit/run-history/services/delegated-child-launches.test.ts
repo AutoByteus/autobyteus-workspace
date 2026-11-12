@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { DelegatedChildLaunches, type OwnSaveResult } from "../../../../src/run-history/services/delegated-child-launches.js";
 import { DelegatedLaunchSelectionService } from "../../../../src/run-history/services/delegated-launch-selection-service.js";
-import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 

@@ -2,7 +2,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
 import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
-import type { DelegationTree } from "../../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import { DelegatedRunStartError, type DelegatedRunStarter } from "../delegation/delegated-run-starter.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { findRoutingDecisionRecorder } from "../../../model-routing/domain/routing-decision-recorder-binding.js";
@@ -86,7 +86,7 @@ const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
 export class TaskDelegation {
   constructor(private readonly dependencies: Readonly<{
     tasks(): TaskExecutionResourcePort;
-    tree(): Pick<DelegationTree, "currentTaskOf" | "tasksOf" | "runOfAgent">;
+    tree(): Pick<DelegationIndex, "currentTaskOf" | "tasksOf" | "runOfAgent">;
     /** A message to another run (DS-2, `CrossRunMessageDelivery`): stored in both runs' logs, the receiver woken. */
     deliverToRun(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderDisplayName: string; targetAgentRunId: string; content: string;
       messageType: string; referenceFiles: readonly string[] }>): Promise<AgentOperationResult | null>;
@@ -100,7 +100,7 @@ export class TaskDelegation {
     /** An agent run that delegates collaborates: its own address is fixed and its history row says so (contract §3.3). */
     recordCollaborating(agentRunId: string, address: AgentTeamAddress): Promise<void>;
     /**
-     * The sender's address as the new run may use it (contract §2.5, the receiver's collaboration map, `reachingAddressOf`): the
+     * The sender's address as the new run may use it (contract §2.5, the receiver's collaboration tree, `reachingAddressOf`): the
      * one owner of the work packet's sender address for every delegator kind (CR-461-031); `null`: run ID only.
      */
     reachingAddress(sender: CollaborationMemberExecutionIdentity, receiverRun: RootExecutionIdentity): Promise<string | null>;

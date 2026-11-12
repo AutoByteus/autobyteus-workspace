@@ -102,7 +102,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     this.roots = new StandaloneRootBuilder({ ...options.rootDependencies, packageStore: this.store });
     this.hostContexts = new StandaloneHostMemberContextBuilder({
       definitions: options.definitions,
-      tree: options.rootDependencies.delegationTree,
+      tree: options.rootDependencies.delegationIndex,
       orgInstruction: options.orgInstruction,
       getActiveRoot: (hostRunId) => this.getActive(hostRunId),
       readStoredHostAddress: async (hostRunId) => (await this.options.host.readMetadata(hostRunId))?.address ?? null, // contract §3.3
@@ -157,7 +157,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const delegatedFrom = peerDelegatedFromOf(metadata); // AR-016: only a run a peer started has a peer delegator
     return storedRemoteLinkCheck(delegatedFrom
       ? { peerRuns: () => [], backLink: { pairedAgentRunIds: () => [hostRunId], delegatedFrom } }
-      : { run: createAgentRootExecutionIdentity(hostRunId), tree: this.options.rootDependencies.delegationTree }, query);
+      : { run: createAgentRootExecutionIdentity(hostRunId), tree: this.options.rootDependencies.delegationIndex }, query);
   }
 
   /** `StandaloneRunCommandPort`: the root executes the command in its gate. */

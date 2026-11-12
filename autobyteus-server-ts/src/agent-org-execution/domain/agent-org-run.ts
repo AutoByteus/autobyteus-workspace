@@ -83,8 +83,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       const agent = this.index.getAgent(agentRunId);
       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
     });
-    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root, options.delegationTree) });
-    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root, options.delegationTree).filter((link) => link.open),
+    this.remoteLinks = new RemoteRunLinks({ peerRuns: () => peerRunLinksOf(options.root, options.delegationIndex) });
+    this.remoteChildren = new RemoteRunObservation({ links: () => peerRunLinksOf(options.root, options.delegationIndex).filter((link) => link.open),
       publish: (event) => options.publisher.publish(event) });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,

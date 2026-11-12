@@ -12,7 +12,7 @@ import {
 } from "./send-message-to-tool-argument-parser.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "./send-message-to-tool-contract.js";
 import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 
 export type SendMessageToDispatcherInput = {
   toolName?: string | null;
@@ -38,8 +38,8 @@ export class SendMessageToDispatcher {
   constructor(private readonly deps: {
     globalRouter: GlobalAgentRunMessageRouter;
     /** Contract §2.3 step 2 (an address of the run that assigned the sender's Task); created by the composition root. */
-    /** The sender's collaboration map resolves an address beyond its own run (step 2 and the correction, SR-060). */
-    tree: Pick<DelegationTree, "mapOf">;
+    /** The sender's collaboration tree resolves an address beyond its own run (step 2 and the correction, SR-060). */
+    tree: Pick<DelegationIndex, "collaborationTreeOf">;
   }) {}
 
   async dispatch(input: SendMessageToDispatcherInput): Promise<AgentOperationResult> {
@@ -112,7 +112,7 @@ export class SendMessageToDispatcher {
     const identity = input.sender.memberExecutionContext!.identity;
     let agentRunId: string | null | undefined;
     try {
-      agentRunId = await this.deps.tree.mapOf(identity.root).resolve(input.address);
+      agentRunId = await this.deps.tree.collaborationTreeOf(identity.root).resolve(input.address);
     } catch (error) {
       if (!isCollaborationContractError(error)) throw error;
       return { accepted: false, code: error.code, message: error.message };

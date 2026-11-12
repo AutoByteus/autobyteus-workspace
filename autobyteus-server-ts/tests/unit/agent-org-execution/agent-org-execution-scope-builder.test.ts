@@ -80,7 +80,7 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       enterPersistenceFailStop: vi.fn(),
     });
     const enclosingDefinitionLookup = vi.fn(() => { throw new Error("Restore must not read fresh enclosing instructions"); });
-    const builder = new AgentOrgExecutionScopeBuilder({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
+    const builder = new AgentOrgExecutionScopeBuilder({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
       flatTeamExecutionFactory: {} as never,
       orgDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,
       teamDefinitions: { getDefinitionById: enclosingDefinitionLookup } as never,

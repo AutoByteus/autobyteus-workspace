@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RunLastActivityReader } from "../../../../src/run-history/services/run-last-activity-reader.js";
-import { DelegationTree } from "../../../../src/agent-collaboration/delegation/delegation-tree.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 
@@ -57,7 +57,7 @@ describe("RunLastActivityReader (workspace-tree-vs-chooser DS-005, from autobyte
     traces(agentFolder("host"), "2026-02-01T00:00:00.000Z");
     traces(agentFolder("image"), "2026-11-05T08:00:00.000Z");
     const tasks = new InMemoryTaskExecutionResources();
-    const tree = new DelegationTree(() => tasks, NO_RUN_PARTS);
+    const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
     tree.build(); tasks.setEntriesListener(tree);
     const r = reader({ tree }).reader;
     await expect(r.forAgentRun({ runId: "host", createdAt: CREATED })).resolves.toBe("2026-02-01T00:00:00.000Z");

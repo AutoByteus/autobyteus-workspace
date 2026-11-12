@@ -1,4 +1,4 @@
-import type { DelegatedChild, DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { DelegatedChild, DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -38,7 +38,7 @@ export type ChildLaunchRefusal = Readonly<{
 }>;
 
 export type ChildLaunchPorts = Readonly<{
-  tree: Pick<DelegationTree, "openChildrenOf">;
+  tree: Pick<DelegationIndex, "openChildrenOf">;
   agentMetadata(agentRunId: string): Promise<AgentRunMetadata | null>;
   teamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   isRunning(run: DelegatedRunReference): boolean;
@@ -189,7 +189,7 @@ const refused = (outcome: DelegatedLaunchUpdateOutcome, message: string, fieldEr
 /** The process wiring: each child's own file, its own run services, and the loaded delegation tree. */
 export const createDelegatedChildLaunches = (input: Readonly<{
   memoryDir: string;
-  tree: Pick<DelegationTree, "openChildrenOf">;
+  tree: Pick<DelegationIndex, "openChildrenOf">;
   agentRuns: Pick<AgentRunService, "checkStoppedSelection" | "updateStoppedSelection">;
   activeAgentRun(agentRunId: string): unknown | null;
   teamManager: Pick<AgentTeamRunManager, "getManagedTeamRun" | "checkStoppedSelections" | "updateStoppedSelections">;

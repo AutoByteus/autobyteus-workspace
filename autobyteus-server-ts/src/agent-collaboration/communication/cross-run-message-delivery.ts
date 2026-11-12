@@ -1,5 +1,5 @@
 import { MESSAGE_DELIVERED_TEXT, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { DelegationTree } from "../delegation/delegation-tree.js";
+import type { DelegationIndex } from "../delegation/delegation-index.js";
 import type { CollaborationCommunicationMessage } from "../execution/communication/collaboration-communication-message.js";
 import type { PreparedRunSend } from "../execution/communication/root-communication-engine.js";
 import {
@@ -46,7 +46,7 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
 
 /**
  * `send_message_to(run ID)` to an agent of another run on this node (design DS-2, `CrossRunMessageDelivery`). It owns
- * the order of one message between two runs; the rule is the `DelegationTree`'s (`canMessage`, contract §2.2):
+ * the order of one message between two runs; the rule is the `DelegationIndex`'s (`canMessage`, contract §2.2):
  * 1. the receiver's run (`runOfAgent`), from memory (nothing is resumed to find it, also after a restart);
  * 2. admission: the rule, else the assigner's continuation of the receiver's last entry (it must be an `assigned` entry
  *    the sender assigned, whose Task is not DONE or CANCELLED: the Task side reopens it), else the refusal: closed when the
@@ -58,7 +58,7 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
-    tree(): Pick<DelegationTree, "runOfAgent" | "canMessage" | "tasksOf" | "assignersOf">;
+    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf" | "assignersOf">;
     tasks(): Pick<TaskExecutionResourcePort, "isOpen" | "reopenAssignment">;
     /** The sender's root (it is running: its agent is sending). */
     senderRoot(run: RootExecutionIdentity): CrossRunSenderRoot | null;
@@ -106,7 +106,7 @@ export class CrossRunMessageDelivery {
   }
 
   /** Step 2 (`model.py` `_admit`); `true` when this call reopened the receiver's assignment. Refusals throw. */
-  private async admit(tree: Pick<DelegationTree, "canMessage" | "tasksOf" | "assignersOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
+  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf" | "assignersOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
     senderAgentRunId: string): Promise<boolean> {
     if (tree.canMessage(senderRun, receiverRun)) return false;
     const receiverReference = runReferenceOf(receiverRun);
