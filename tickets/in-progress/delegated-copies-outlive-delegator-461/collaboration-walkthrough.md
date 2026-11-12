@@ -27,7 +27,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S14 | M closes T6; E keeps working on T1 | T-1, DL-12 |
 | S15 | E hands on sub-work again: it joins T1, its newest open Task | DL-13 |
 | S16 | T1 is deleted | T-3, R-9 |
-| S17 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
+| S17 | M delegates work to a team on a peer node (a Task with no Project, T7) | DL-9, DL-10, DL-8 |
 | S18 | The peer team reports to M | R-10 |
 | S19 | M closes T7: the peer run is fenced; its next report is refused | T-1, R-8, R-10 |
 | S20 | Refused: runs of different Tasks | R-7 |
@@ -35,6 +35,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 | S24 | An old prefixed address is corrected | A-5, A-6 |
+| S25 | Refused: a saved Task to a peer node | DL-9, DL-11 |
 
 ---
 
@@ -444,7 +445,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "Go ahead …")`, by M. (`recipient_address: "/software_engineering_team"` would not be found: a delegated run is reached by run ID.)
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to solution_designer_65a9.", "target_agent_run_id": "solution_designer_65a9"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Message delivered.", "target_agent_run_id": "solution_designer_65a9"}`
 
 **How:** Rule (b): M assigned T1. The same line goes into both logs.
 
@@ -823,9 +824,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to /project_task_manager.", "target_agent_run_id": "project_task_manager_7c8d"}`
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to solution_designer_65a9.", "target_agent_run_id": "solution_designer_65a9"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Message delivered.", "target_agent_run_id": "solution_designer_65a9"}`
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to product_designer_1a2b.", "target_agent_run_id": "product_designer_1a2b"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Message delivered.", "target_agent_run_id": "product_designer_1a2b"}`
 
 **How:** The first by step 2: T1's assigner is M, not P's delegator. The second by rule (a): both on T1. The third by rule (b): M assigned T1, and P works on it at depth 2. Each line goes into the sender's and the receiver's run logs; P's log is created now. M and E see P by run ID only; P sees M's address.
 
@@ -955,7 +956,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more question …")`, by `product_designer_1a2b`
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to solution_designer_65a9.", "target_agent_run_id": "solution_designer_65a9"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Message delivered.", "target_agent_run_id": "solution_designer_65a9"}`
 
 **How:** Rule (a). E is restored and woken once: its row's `terminatedAt` is back to `null`.
 
@@ -1206,7 +1207,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `update_task(task_id: "demo-1", status: "IN_PROGRESS")`, then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more change …")`, by M
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to solution_designer_65a9.", "target_agent_run_id": "solution_designer_65a9"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Message delivered.", "target_agent_run_id": "solution_designer_65a9"}`
 
 **How:** The message is the assigner's continuation: E's last entry in T1 is the `assigned` entry M made, T1 is open again, so that entry gets `closedAt: null` and E is restored. P's and I's `subWork` entries stay closed: only an `assigned` entry is continued, by its assigner. If E needs the product team again, it delegates anew.
 
@@ -2178,20 +2179,20 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S17 — M delegates T7 to a team on a peer node [DL-9, DL-10]
+#### S17 — M delegates work to a team on a peer node (a Task with no Project, T7) [DL-9, DL-10, DL-8]
 
-**Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`, by M on node A. (`/research_team` is in node B's list for node A: `list_available_agents(node: "node-b")`.)
+**Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", description: "Market study …")`, by M on node A. (`/research_team` is in node B's list for node A: `list_available_agents(node: "node-b")`. A saved Task cannot go to a peer: S25.)
 
-**Result to the caller:** `{"delegated": true, "target_kind": "team", "node": "node-b", "target_team_run_id": "research_team_77aa", "target_team_coordinator_agent_run_id": "lead_0c11"}`
+**Result to the caller:** `{"delegated": true, "target_kind": "team", "node": "node-b", "target_team_run_id": "research_team_77aa", "target_team_coordinator_agent_run_id": "lead_0c11", "task_id": "adhoc_task_7c7c"}`
 
-**How:** Node B accepts only while remote collaboration is on and only from a paired peer (CM-12). On node A, only T7's entry is written; it holds the node and the members by their own addresses (P8), because node A cannot read the run. On node B the run is an ordinary team run with the peer's `delegatedFrom` (`nodeId` present: `isPeerStarted`); node B has no Task record and no tree node for it.
+**How:** Node B accepts only while remote collaboration is on and only from a paired peer (CM-12). Delegation to a peer is by description only (today's rule, REQ-009), so the work gets a Task with no Project, T7, on node A. On node A, only T7's records are written; it holds the node and the members by their own addresses (P8), because node A cannot read the run. On node B the run is an ordinary team run with the peer's `delegatedFrom` (`nodeId` present: `isPeerStarted`); node B has no Task record and no tree node for it.
 
 **On disk after this step:**
 
-**Created:** node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`:
+**Created:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`:
 ```json
 {
-  "taskId": "project_task_7c7c",
+  "taskId": "adhoc_task_7c7c",
   "agentRunResources": [
     {
       "role": "assigned",
@@ -2208,6 +2209,19 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
       "closedAt": null
     }
   ]
+}
+```
+
+**Created:** node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`:
+```json
+{
+  "taskId": "adhoc_task_7c7c",
+  "projectId": null,
+  "title": "…",
+  "description": "Market study …",
+  "status": "IN_PROGRESS",
+  "createdAt": "2026-11-10T18:00:00.000Z",
+  "updatedAt": "2026-11-10T18:00:00.000Z"
 }
 ```
 
@@ -2322,7 +2336,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "node": "node-b-1f0e",
     "tasks": [
       {
-        "taskId": "project_task_7c7c",
+        "taskId": "adhoc_task_7c7c",
         "role": "assigned",
         "open": true,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
@@ -2343,11 +2357,11 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`, by `lead_0c11` on node B. (By address, `"/project_task_manager"` is not found on node B: across nodes only run IDs work.)
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to project_task_manager_7c8d.", "target_agent_run_id": "project_task_manager_7c8d"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to project_task_manager_7c8d on node \"node-a\".", "target_agent_run_id": "project_task_manager_7c8d"}`
 
 **How:** Node B admits it because the run's own `delegatedFrom` names M as its delegator; node A admits it by T7's entry (rule (b)). Each node writes its own run's log, with one `messageId` (CM-9). M sees the run ID and the node (CM-11).
 
-**The receiver sees:** `You received a message from the agent with sender run id "lead_0c11" on node "node-b-1f0e".`
+**The receiver sees:** `You received a message from the agent with sender run id "lead_0c11" on node "node-b".`
 
 **On disk after this step:**
 
@@ -2377,7 +2391,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+**Unchanged:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`, node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`, node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory:** unchanged.
 
@@ -2389,9 +2403,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 #### S19 — M closes T7: the peer run is fenced; its next report is refused [T-1, R-8, R-10]
 
-**Call:** `update_task(task_id: "demo-7", status: "DONE")`, by M. Then `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "More findings …")`, by `lead_0c11` on node B
+**Call:** `update_task(task_id: "adhoc_task_7c7c", status: "DONE")`, by M. Then `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "More findings …")`, by `lead_0c11` on node B
 
-**Result to the caller:** `{"taskId": "demo-7", "status": "DONE"}`
+**Result to the caller:** `{"taskId": "adhoc_task_7c7c", "status": "DONE"}`
 
 **Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CLOSED", "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)." }`
 
@@ -2399,10 +2413,10 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **On disk after this step:**
 
-**Changed:** node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`:
+**Changed:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`:
 ```json
 {
-  "taskId": "project_task_7c7c",
+  "taskId": "adhoc_task_7c7c",
   "agentRunResources": [
     {
       "role": "assigned",
@@ -2422,25 +2436,20 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Changed:** node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`:
+**Changed:** node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`:
 ```json
 {
-  "taskId": "project_task_7c7c",
-  "projectId": "project_8f21",
-  "taskKey": "demo-7",
-  "title": "Market study",
-  "description": "…",
+  "taskId": "adhoc_task_7c7c",
+  "projectId": null,
+  "title": "…",
+  "description": "Market study …",
   "status": "DONE",
-  "dependsOnTaskIds": [],
-  "partOfTaskId": null,
-  "createdAt": "2026-11-01T08:08:00.000Z",
-  "updatedAt": "2026-11-10T19:00:00.000Z",
-  "contextFiles": [],
-  "comments": []
+  "createdAt": "2026-11-10T18:00:00.000Z",
+  "updatedAt": "2026-11-10T19:00:00.000Z"
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/run_history_index.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -2491,7 +2500,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "node": "node-b-1f0e",
     "tasks": [
       {
-        "taskId": "project_task_7c7c",
+        "taskId": "adhoc_task_7c7c",
         "role": "assigned",
         "open": false,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
@@ -2579,7 +2588,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+**Unchanged:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`, node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`, node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory on node A (the `DelegationTree`):**
 ```json
@@ -2630,7 +2639,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "node": "node-b-1f0e",
     "tasks": [
       {
-        "taskId": "project_task_7c7c",
+        "taskId": "adhoc_task_7c7c",
         "role": "assigned",
         "open": false,
         "assigner": {"kind": "agent", "runId": "project_task_manager_7c8d"}
@@ -2701,7 +2710,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E has Task entries)
 
-**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_OWNED_SENDER", "message": "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." }`
+**Result:** refused, `{ "delegated": false, "message": "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." }`
 
 **How:** A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.
 
@@ -2730,6 +2739,24 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Against today:** Today the prefixed address is the member's address.
 
 **Checked on the user's data:** 11 delegated teams with an open Task; 3,311 stored sends used the prefixed form.
+
+---
+
+#### S25 — Refused: a saved Task to a peer node [DL-9, DL-11]
+
+**Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`, by M
+
+**Result:** refused, `{ "delegated": false, "message": "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead." }`
+
+**How:** A saved Task cannot be given to an agent on another node, as today (`remote-refusal-codes.ts:31`, REQ-009). Nothing is sent and nothing is written. The agent delegates with a description instead (S17).
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** The same.
+
+**Checked on the user's data:** —
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
@@ -2901,7 +2928,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `send_message_to(target_agent_run_id: "implementation_engineer_864a", content: "Approved, please implement …")`, by `architecture_reviewer_cd34`
 
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to implementation_engineer_864a.", "target_agent_run_id": "implementation_engineer_864a"}`
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Message delivered.", "target_agent_run_id": "implementation_engineer_864a"}`
 
 **How:** Inside one run the Task is not asked. One line in the team's log.
 
@@ -3239,7 +3266,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `delegate_task(recipient_address: "/architecture_reviewer")`, by `solution_designer_7a33`
 
-**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_SELF_TARGET_REJECTED", "message": "/architecture_reviewer is in your own team; you can't delegate to it. Talk with it using send_message_to." }`
+**Result:** refused, `{ "delegated": false, "message": "/architecture_reviewer is in your own team; you can't delegate to it. Talk with it using send_message_to." }`
 
 **How:** Its own team: use `send_message_to`. Nothing is written.
 
@@ -3257,7 +3284,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Call:** `delegate_task(recipient_address: "/software_engineering_team", description: "Review our process …")`, by `solution_designer_7a33`
 
-**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_TARGET_NOT_FOUND", "message": "'/software_engineering_team' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use." }`
+**Result:** refused, `{ "delegated": false, "message": "'/software_engineering_team' is not the address of an available agent or agent team. If you have list_available_agents, it shows the addresses you can use." }`
 
 **How:** A run never lists nor delegates to its own definition (autobyteus-455 AC-006): it would make a copy of itself, and each copy could copy itself again. The same holds in a delegated team (rooted at `/` since TC-12) and for an agent run whose stored address differs from its definition's. Nothing is written.
 
@@ -3429,9 +3456,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | O2 | The CEO agent messages the mounted team | IN-5, A-2 |
 | O3 | The dev lead messages its teammate | IN-6, A-3 |
 | O4 | Refused: an address that is not in the dev team | IN-6, C-4 |
-| O5 | The CEO agent delegates Task T4 to a study group team | DL-3 |
-| O6 | The study group follows its handoff to the org's Teacher | B-5 |
-| O7 | The study group reaches the org's mounted team | B-4 |
+| O5 | The CEO agent delegates Task T4 to a copy of the org's mounted team | DL-3 |
+| O6 | The copy follows its handoff to the org's CEO agent | B-5 |
+| O7 | The copy reaches another org agent | B-4 |
 | O8 | The dev lead delegates Task T5 | DL-4 |
 
 ---
@@ -3682,49 +3709,49 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### O5 — The CEO agent delegates Task T4 to a study group team [DL-3]
+#### O5 — The CEO agent delegates Task T4 to a copy of the org's mounted team [DL-3]
 
-**Call:** `delegate_task(recipient_address: "/study_group", task_id: "demo-4")`, by `ceo_agent_1f2e`
+**Call:** `delegate_task(recipient_address: "/dev_team", task_id: "demo-4")`, by `ceo_agent_1f2e` (not a member of `/dev_team`)
 
-**Result to the caller:** `{"delegated": true, "target_kind": "team", "target_team_run_id": "study_group_7a7a", "target_team_coordinator_agent_run_id": "student_31aa"}`
+**Result to the caller:** `{"delegated": true, "target_kind": "team", "target_team_run_id": "dev_team_9a9a", "target_team_coordinator_agent_run_id": "dev_lead_9a01"}`
 
-**How:** The delegating run is the org run. The study group's own file is rooted at `/`; its handoff `{ "from": "/student", "to": "/Teacher" }` is kept as written: an external target (§3.2). The org's file keeps only its own units.
+**How:** `/dev_team` is an in-run placement of the org, so the new run is a copy of that placement (today's rule: an org agent may delegate to a mounted team it does not belong to). It is a team run of its own, rooted at `/`, with the members `/dev_lead` and `/qa`. It carries the org's handoffs from that team's members, made team-local, and a `to` outside the team is kept as written: `{ "from": "/dev_lead", "to": "/ceo_agent" }`, an external target (§3.2). That is how a delegated team gets a handoff outside itself; a saved team definition with such a handoff does not pass the definition check. The org's own `/dev_team` is unchanged.
 
 **On disk after this step:**
 
-**Created:** `memory/agent_teams/study_group_7a7a/student_31aa/` (memory folder): the agent's own memory; its first input is kept there
+**Created:** `memory/agent_teams/dev_team_9a9a/dev_lead_9a01/` (memory folder): the agent's own memory; its first input is kept there
 
-**Created:** `memory/agent_teams/study_group_7a7a/team_run_execution_tree.json`:
+**Created:** `memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json`:
 ```json
 {
   "schemaVersion": 1,
   "createdAt": "2026-11-01T12:00:00.000Z",
   "archivedAt": null,
   "applicationBinding": null,
-  "handoffs": [{"from": "/student", "to": "/Teacher", "rules": ["When the homework is done …"]}],
+  "handoffs": [{"from": "/dev_lead", "to": "/ceo_agent", "rules": ["When the release is ready …"]}],
   "rootTeam": {
     "address": "/",
-    "teamDefinitionId": "study-group",
-    "teamDefinitionName": "Study Group",
-    "teamRunId": "study_group_7a7a",
-    "coordinatorAddress": "/student",
+    "teamDefinitionId": "dev-team",
+    "teamDefinitionName": "Dev Team",
+    "teamRunId": "dev_team_9a9a",
+    "coordinatorAddress": "/dev_lead",
     "defaultLaunchConfiguration": {"…": "…"},
     "members": [
       {
-        "address": "/student",
-        "agentDefinitionId": "student",
+        "address": "/dev_lead",
+        "agentDefinitionId": "dev-lead",
         "role": "…",
         "description": "…",
-        "agentRunId": "student_31aa",
+        "agentRunId": "dev_lead_9a01",
         "platformAgentRunId": "…",
         "launchConfiguration": {"…": "…"}
       },
       {
-        "address": "/tutor",
-        "agentDefinitionId": "tutor",
+        "address": "/qa",
+        "agentDefinitionId": "qa",
         "role": "…",
         "description": "…",
-        "agentRunId": "tutor_31bb",
+        "agentRunId": "qa_9a02",
         "platformAgentRunId": "…",
         "launchConfiguration": {"…": "…"}
       }
@@ -3737,9 +3764,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Created:** `memory/team_run_history_index.json`, new row:
 ```json
 {
-  "teamRunId": "study_group_7a7a",
-  "teamDefinitionId": "study-group",
-  "teamDefinitionName": "Study Group",
+  "teamRunId": "dev_team_9a9a",
+  "teamDefinitionId": "dev-team",
+  "teamDefinitionName": "Dev Team",
   "workspaceRootPath": "/Users/me/projects/x",
   "summary": "…",
   "createdAt": "2026-11-01T12:00:00.000Z",
@@ -3756,8 +3783,8 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     {
       "role": "assigned",
       "delegatedFrom": {"delegatingRun": {"kind": "agent_org", "runId": "company_org_9d00"}, "delegatorAgentRunId": "ceo_agent_1f2e"},
-      "recipientAddress": "/study_group",
-      "agentRun": {"kind": "team", "teamRunId": "study_group_7a7a", "coordinatorAgentRunId": "student_31aa"},
+      "recipientAddress": "/dev_team",
+      "agentRun": {"kind": "team", "teamRunId": "dev_team_9a9a", "coordinatorAgentRunId": "dev_lead_9a01"},
       "linkedAt": "2026-11-01T12:00:00.000Z",
       "start": "started",
       "closedAt": null
@@ -3784,7 +3811,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     ]
   },
   {
-    "run": {"kind": "agent_team", "runId": "study_group_7a7a"},
+    "run": {"kind": "agent_team", "runId": "dev_team_9a9a"},
     "parent": {"kind": "agent_org", "runId": "company_org_9d00"},
     "delegatorAgentRunId": "ceo_agent_1f2e",
     "tasks": [
@@ -3795,26 +3822,76 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_org", "runId": "company_org_9d00"}
       }
     ],
-    "agents": [{"agentRunId": "student_31aa", "address": "/student"}, {"agentRunId": "tutor_31bb", "address": "/tutor"}]
+    "agents": [{"agentRunId": "dev_lead_9a01", "address": "/dev_lead"}, {"agentRunId": "qa_9a02", "address": "/qa"}]
   }
 ]
 ```
 
-**Against today:** Today the study group is mounted in the org's address space.
+**Against today:** Today the copy is mounted in the org's address space, at `/dev_team`, beside the org's own team.
 
-**Checked on the user's data:** 0 such entries in the data.
+**Checked on the user's data:** 0 such entries in the data; the 2 legacy teams with an outside handoff (to `/Teacher`) were such copies.
 
 ---
 
-#### O6 — The study group follows its handoff to the org's Teacher [B-5]
+#### O6 — The copy follows its handoff to the org's CEO agent [B-5]
 
-**Call:** `get_handoff_rules()`, then `send_message_to(recipient_address: "/Teacher", content: "Homework done …")`, by `student_31aa`
+**Call:** `get_handoff_rules()`, then `send_message_to(recipient_address: "/ceo_agent", content: "The release is ready …")`, by `dev_lead_9a01`
+
+**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to /ceo_agent.", "target_agent_run_id": "ceo_agent_1f2e"}`
+
+**How:** `get_handoff_rules()` returns `{ "handoffs": [ { "when": "When the release is ready …", "recipient_address": "/ceo_agent" } ] }`. Planning keeps that `to` as an external target, not resolved in the team. When it is sent, `/ceo_agent` is not in the copy (step 1); step 2 finds it, because T4's assigner is the org. One line in the copy's log and in the org's log.
+
+**The receiver sees:** `You received a message from the agent with sender run id "dev_lead_9a01".`
+
+**On disk after this step:**
+
+**Changed:** `memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl`, new line:
+```json
+{
+  "messageId": "collabmsg_O4",
+  "senderAgentRunId": "dev_lead_9a01",
+  "receiverAgentRunId": "ceo_agent_1f2e",
+  "content": "The release is ready …",
+  "messageType": "agent_message",
+  "referenceFiles": [],
+  "createdAt": "2026-11-01T13:00:00.000Z"
+}
+```
+
+**Created:** `memory/agent_orgs/company_org_9d00/ceo_agent_1f2e/` (memory folder): the agent's own memory; its first input is kept there
+
+**Created:** `memory/agent_teams/dev_team_9a9a/team_communication_messages_active.jsonl`, its first line:
+```json
+{
+  "messageId": "collabmsg_O4",
+  "senderAgentRunId": "dev_lead_9a01",
+  "receiverAgentRunId": "ceo_agent_1f2e",
+  "content": "The release is ready …",
+  "messageType": "agent_message",
+  "referenceFiles": [],
+  "createdAt": "2026-11-01T13:00:00.000Z"
+}
+```
+
+**Unchanged:** `memory/agent_org_run_history_index.json`, `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`, `memory/agent_orgs/company_org_9d00/cto_2a3b/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/` (memory folder), `memory/agent_teams/dev_team_9a9a/dev_lead_9a01/` (memory folder), `memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_4d4d/task.json`, `projects/project_8f21/tasks/project_task_5e5e/task.json`.
+
+**In memory:** unchanged.
+
+**Against today:** The same.
+
+**Checked on the user's data:** 0 sends; the 2 legacy teams with an outside handoff have no Task record, so for them it is not found.
+
+---
+
+#### O7 — The copy reaches another org agent [B-4]
+
+**Call:** `send_message_to(recipient_address: "/Teacher", content: "Need a review …")`, by `dev_lead_9a01`
 
 **Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to /Teacher.", "target_agent_run_id": "Teacher_5c6d"}`
 
-**How:** `get_handoff_rules()` returns `{ "handoffs": [ { "when": "When the homework is done …", "recipient_address": "/Teacher" } ] }`. Not in the study group (step 1); step 2: T4's assigner is the org, whose standing agents include `/Teacher`. One line in the study group's log and in the org's log.
+**How:** Step 2, the org's standing agents. `"/dev_team/dev_lead"` would reach the org's own dev lead the same way.
 
-**The receiver sees:** `You received a message from the agent with sender run id "student_31aa".`
+**The receiver sees:** `You received a message from the agent with sender run id "dev_lead_9a01".`
 
 **On disk after this step:**
 
@@ -3823,78 +3900,30 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Changed:** `memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl`, new line:
 ```json
 {
-  "messageId": "collabmsg_O4",
-  "senderAgentRunId": "student_31aa",
-  "receiverAgentRunId": "Teacher_5c6d",
-  "content": "Homework done …",
-  "messageType": "agent_message",
-  "referenceFiles": [],
-  "createdAt": "2026-11-01T13:00:00.000Z"
-}
-```
-
-**Created:** `memory/agent_teams/study_group_7a7a/team_communication_messages_active.jsonl`, its first line:
-```json
-{
-  "messageId": "collabmsg_O4",
-  "senderAgentRunId": "student_31aa",
-  "receiverAgentRunId": "Teacher_5c6d",
-  "content": "Homework done …",
-  "messageType": "agent_message",
-  "referenceFiles": [],
-  "createdAt": "2026-11-01T13:00:00.000Z"
-}
-```
-
-**Unchanged:** `memory/agent_org_run_history_index.json`, `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`, `memory/agent_orgs/company_org_9d00/cto_2a3b/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/` (memory folder), `memory/agent_teams/study_group_7a7a/student_31aa/` (memory folder), `memory/agent_teams/study_group_7a7a/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_4d4d/task.json`, `projects/project_8f21/tasks/project_task_5e5e/task.json`.
-
-**In memory:** unchanged.
-
-**Against today:** The same.
-
-**Checked on the user's data:** 0 sends; the 2 legacy teams with such a rule have no Task record, so for them it is not found.
-
----
-
-#### O7 — The study group reaches the org's mounted team [B-4]
-
-**Call:** `send_message_to(recipient_address: "/dev_team/dev_lead", content: "Need a tool …")`, by `student_31aa`
-
-**Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to /dev_team/dev_lead.", "target_agent_run_id": "dev_lead_4c3d"}`
-
-**How:** Step 2, the org's standing agents.
-
-**The receiver sees:** `You received a message from the agent with sender run id "student_31aa".`
-
-**On disk after this step:**
-
-**Changed:** `memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl`, new line:
-```json
-{
   "messageId": "collabmsg_O5",
-  "senderAgentRunId": "student_31aa",
-  "receiverAgentRunId": "dev_lead_4c3d",
-  "content": "Need a tool …",
+  "senderAgentRunId": "dev_lead_9a01",
+  "receiverAgentRunId": "Teacher_5c6d",
+  "content": "Need a review …",
   "messageType": "agent_message",
   "referenceFiles": [],
   "createdAt": "2026-11-01T13:10:00.000Z"
 }
 ```
 
-**Changed:** `memory/agent_teams/study_group_7a7a/team_communication_messages_active.jsonl`, new line:
+**Changed:** `memory/agent_teams/dev_team_9a9a/team_communication_messages_active.jsonl`, new line:
 ```json
 {
   "messageId": "collabmsg_O5",
-  "senderAgentRunId": "student_31aa",
-  "receiverAgentRunId": "dev_lead_4c3d",
-  "content": "Need a tool …",
+  "senderAgentRunId": "dev_lead_9a01",
+  "receiverAgentRunId": "Teacher_5c6d",
+  "content": "Need a review …",
   "messageType": "agent_message",
   "referenceFiles": [],
   "createdAt": "2026-11-01T13:10:00.000Z"
 }
 ```
 
-**Unchanged:** `memory/agent_org_run_history_index.json`, `memory/agent_orgs/company_org_9d00/Teacher_5c6d/` (memory folder), `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`, `memory/agent_orgs/company_org_9d00/cto_2a3b/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/` (memory folder), `memory/agent_teams/study_group_7a7a/student_31aa/` (memory folder), `memory/agent_teams/study_group_7a7a/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_4d4d/task.json`, `projects/project_8f21/tasks/project_task_5e5e/task.json`.
+**Unchanged:** `memory/agent_org_run_history_index.json`, `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`, `memory/agent_orgs/company_org_9d00/ceo_agent_1f2e/` (memory folder), `memory/agent_orgs/company_org_9d00/cto_2a3b/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/` (memory folder), `memory/agent_teams/dev_team_9a9a/dev_lead_9a01/` (memory folder), `memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_4d4d/task.json`, `projects/project_8f21/tasks/project_task_5e5e/task.json`.
 
 **In memory:** unchanged.
 
@@ -3967,7 +3996,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_org_run_history_index.json`, `memory/agent_orgs/company_org_9d00/Teacher_5c6d/` (memory folder), `memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl`, `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`, `memory/agent_orgs/company_org_9d00/cto_2a3b/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/` (memory folder), `memory/agent_teams/study_group_7a7a/student_31aa/` (memory folder), `memory/agent_teams/study_group_7a7a/team_communication_messages_active.jsonl`, `memory/agent_teams/study_group_7a7a/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_4d4d/task.json`, `projects/project_8f21/tasks/project_task_5e5e/task.json`.
+**Unchanged:** `memory/agent_org_run_history_index.json`, `memory/agent_orgs/company_org_9d00/Teacher_5c6d/` (memory folder), `memory/agent_orgs/company_org_9d00/agent_org_communication_messages_active.jsonl`, `memory/agent_orgs/company_org_9d00/agent_org_run_execution_tree.json`, `memory/agent_orgs/company_org_9d00/ceo_agent_1f2e/` (memory folder), `memory/agent_orgs/company_org_9d00/cto_2a3b/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/dev_lead_4c3d/` (memory folder), `memory/agent_orgs/company_org_9d00/dev_team_6b70/qa_8e9f/` (memory folder), `memory/agent_teams/dev_team_9a9a/dev_lead_9a01/` (memory folder), `memory/agent_teams/dev_team_9a9a/team_communication_messages_active.jsonl`, `memory/agent_teams/dev_team_9a9a/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_4d4d/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_4d4d/task.json`, `projects/project_8f21/tasks/project_task_5e5e/task.json`.
 
 **In memory (the `DelegationTree`):**
 ```json
@@ -3985,7 +4014,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     ]
   },
   {
-    "run": {"kind": "agent_team", "runId": "study_group_7a7a"},
+    "run": {"kind": "agent_team", "runId": "dev_team_9a9a"},
     "parent": {"kind": "agent_org", "runId": "company_org_9d00"},
     "delegatorAgentRunId": "ceo_agent_1f2e",
     "tasks": [
@@ -3996,7 +4025,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
         "assigner": {"kind": "agent_org", "runId": "company_org_9d00"}
       }
     ],
-    "agents": [{"agentRunId": "student_31aa", "address": "/student"}, {"agentRunId": "tutor_31bb", "address": "/tutor"}]
+    "agents": [{"agentRunId": "dev_lead_9a01", "address": "/dev_lead"}, {"agentRunId": "qa_9a02", "address": "/qa"}]
   },
   {
     "run": {"kind": "agent", "runId": "release_agent_66c3"},

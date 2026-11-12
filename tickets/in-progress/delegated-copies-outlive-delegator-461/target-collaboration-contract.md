@@ -263,7 +263,7 @@ Two tests:
 
 Who reads the run's own `delegatedFrom`: the run list's "delegated from" label, the Memory page, a test that checks it equals the Task entry, and the peer back-link (only when `isPeerStarted`). Routing reads the Task entry and the tree.
 
-A team's handoff `to` outside the team (for example `/Teacher` in a team delegated by an org) is kept as written. It is an external target: the planner does not resolve it inside the team, and when it is sent, §2.3 step 2 resolves it. This applies to a delegated team only. A team the user started keeps today's check that every handoff target is in the team.
+A team's handoff `to` outside the team (for example `/ceo_agent` in a copy of an org's mounted team, which carries the org's handoffs from its members; O5) is kept as written. It is an external target: the planner does not resolve it inside the team, and when it is sent, §2.3 step 2 resolves it. This applies to a delegated team only. A team the user started keeps today's check that every handoff target is in the team.
 
 ### 3.3 A run's own address
 
@@ -405,12 +405,18 @@ Read this section from the run you start. Each of §5.1 … §5.3 is a story of 
 | `software_engineering_team_73d7` (U) | Team, coordinator `solution_designer_7a33`, members `architecture_reviewer_cd34`, `implementation_engineer_864a`, `code_reviewer_2e4f` | `/solution_designer`, `/architecture_reviewer`, … | The user (§5.2) |
 | `image_maker_44a1` (I2) | Agent | `/image_maker` | U's `solution_designer`, Task T3 |
 | `company_org_9d00` (O) | Org: `ceo_agent_1f2e`, `cto_2a3b`, `Teacher_5c6d`; mounted team `/dev_team` with `dev_lead_4c3d`, `qa_8e9f` | `/ceo_agent`, `/cto`, `/Teacher`, `/dev_team`, `/dev_team/dev_lead`, `/dev_team/qa` | The user (§5.3) |
-| `study_group_7a7a` (S) | Team, members `student_31aa` (coordinator), `tutor_31bb`; handoff `to: "/Teacher"` | `/student`, `/tutor` | O's `ceo_agent`, Task T4, at `/study_group` |
+| `dev_team_9a9a` (C) | Team, a copy of the org's mounted team: `dev_lead_9a01` (coordinator), `qa_9a02`; handoff `{ "from": "/dev_lead", "to": "/ceo_agent" }` | `/dev_lead`, `/qa` | O's `ceo_agent`, Task T4, at `/dev_team` (an in-run placement of O) |
 | `node-b-1f0e` | A peer node | — | — |
 
 Two rules hold in every case below:
 - **A message inside one run** is stored once, in that run's log. **A message between two runs** is stored in both runs' logs with one `messageId` (§3.4).
-- **A delivered message** returns `{ "accepted": true, "code": "DELIVERED", "message": "Delivered message to <address or run ID>.", "target_agent_run_id": "<receiver>" }` to the sender, and wakes the receiver once (restoring it if it is stopped).
+- **A delivered message** returns `{ "accepted": true, "code": "DELIVERED", "message": …, "target_agent_run_id": "<receiver>" }` to the sender, with today's message text (REQ-009; SR-054):
+  - by address: `"Delivered message to <address>."`;
+  - by run ID on this node: `"Message delivered."`;
+  - to a run on another node: `"Delivered message to <run ID> on node \"<node name>\"."`.
+
+  It wakes the receiver once, restoring it if it is stopped. A refused `send_message_to` is `{ "accepted": false, "code", "message" }`. A refused `delegate_task` is `{ "delegated": false, "message" }`, with no code.
+- **Delegation to a peer node is by description only, as today:** a saved Task (`task_id`) is refused (S25).
 
 ---
 
@@ -439,7 +445,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S14 | M closes T6; E keeps working on T1 | T-1, DL-12 |
 | S15 | E hands on sub-work again: it joins T1, its newest open Task | DL-13 |
 | S16 | T1 is deleted | T-3, R-9 |
-| S17 | M delegates T7 to a team on a peer node | DL-9, DL-10 |
+| S17 | M delegates work to a team on a peer node (a Task with no Project, T7) | DL-9, DL-10, DL-8 |
 | S18 | The peer team reports to M | R-10 |
 | S19 | M closes T7: the peer run is fenced; its next report is refused | T-1, R-8, R-10 |
 | S20 | Refused: runs of different Tasks | R-7 |
@@ -447,6 +453,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
 | S24 | An old prefixed address is corrected | A-5, A-6 |
+| S25 | Refused: a saved Task to a peer node | DL-9, DL-11 |
 
 ### 5.2 You start a team: the Software Engineering Team on its own (U)
 
@@ -471,9 +478,9 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | O2 | The CEO agent messages the mounted team | IN-5, A-2 |
 | O3 | The dev lead messages its teammate | IN-6, A-3 |
 | O4 | Refused: an address that is not in the dev team | IN-6, C-4 |
-| O5 | The CEO agent delegates Task T4 to a study group team | DL-3 |
-| O6 | The study group follows its handoff to the org's Teacher | B-5 |
-| O7 | The study group reaches the org's mounted team | B-4 |
+| O5 | The CEO agent delegates Task T4 to a copy of the org's mounted team | DL-3 |
+| O6 | The copy follows its handoff to the org's CEO agent | B-5 |
+| O7 | The copy reaches another org agent | B-4 |
 | O8 | The dev lead delegates Task T5 | DL-4 |
 
 <!-- end of generated part -->
@@ -495,8 +502,8 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | B-1 | A delegated team's member (S3) | `"/project_task_manager"` | Its Task's assigner, a standalone agent | 2 | The run ID only | Same | 412: the same receiver |
 | B-2 | A sub-work run (S7) | `"/project_task_manager"` | Its Task's assigner, not its delegator | 2 | The run ID only | Same | 3: the same receiver |
 | B-3 | A run delegated by a team member (U4) | `"/solution_designer"` | The assigning team's member | 2 | The run ID only | Same | 6: the same receiver |
-| B-4 | A run delegated by an org (O7) | `"/ceo_agent"`, `"/dev_team/dev_lead"` | The org's agents | 2 | The run ID only | Same | 2: the same receiver |
-| B-5 | The same, by its handoff rule (O6) | `"/Teacher"` | The org's agent | 2 | The run ID only | Same | 0 sends |
+| B-4 | A run delegated by an org (O7) | `"/Teacher"`, `"/dev_team/dev_lead"` | The org's agents | 2 | The run ID only | Same | 2: the same receiver |
+| B-5 | The same, by its handoff rule (O6) | `"/ceo_agent"` | The org's agent | 2 | The run ID only | Same | 0 sends |
 | C-1 | An assigner (S22) | `"/software_engineering_team"` | Not found: run ID only | — | — | Same as today's code | 53 older sends (2026-08 … 2026-10), before that rule |
 | C-2 | A sub-work run (S7) | `"/solution_designer"` | Its own member of that name, else not found | 1 or — | — | Same | — |
 | C-3 | A delegated run (S22) | `"/product_team"` | Not found: run ID only | — | — | Same | In C-1's 53 |

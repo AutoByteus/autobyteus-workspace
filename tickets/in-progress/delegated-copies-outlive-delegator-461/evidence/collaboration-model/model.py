@@ -14,9 +14,12 @@ CLOSED = ("This task agent's Task is closed. Only the agent that assigned the Ta
           "then message the task agent's run id (for a task agent team, its coordinator's run id).")
 OTHER_TASK = "You can't message this agent: it works on a different Task."
 
+SAVED_TASK_TO_PEER = "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
+
 class Refused(Exception):
-    def __init__(self, code, message):
-        super().__init__(message); self.code = code; self.message = message
+    """A refusal. `tool` decides its shape: send_message_to answers {accepted, code, message}; delegate_task {delegated, message}."""
+    def __init__(self, code, message, tool="send_message_to"):
+        super().__init__(message); self.code = code; self.message = message; self.tool = tool
 
 def addr_of_def(def_id): return "/" + def_id.replace("-", "_")
 
@@ -38,6 +41,7 @@ class World:
         self.result = None
         self.receiver_sees = None
         self.node_ids = {"A": "node-a-77d2", "B": "node-b-1f0e"}
+        self.node_names = {"A": "node-a", "B": "node-b"}
 
     # ---------- paths
     @staticmethod
@@ -281,11 +285,14 @@ class World:
         self.activate(receiver)
         addr = self.reaching_address(receiver, sender)
         if a[0] != b[0]:
-            self.receiver_sees = f'You received a message from the agent with sender run id "{sender}" on node "{self.node_ids[a[0]]}".'
+            self.receiver_sees = f'You received a message from the agent with sender run id "{sender}" on node "{self.node_names[a[0]]}".'
         else:
             self.receiver_sees = (f'You received a message from the agent with sender address "{addr}" and sender run id "{sender}".' if addr
                                   else f'You received a message from the agent with sender run id "{sender}".')
-        self.result = {"accepted": True, "code": "DELIVERED", "message": f"Delivered message to {shown_as}.", "target_agent_run_id": receiver}
+        if a[0] != b[0]: text = f'Delivered message to {receiver} on node "{self.node_names[b[0]]}".'   # to another node
+        elif shown_as is None: text = "Message delivered."                     # by run ID, on this node
+        else: text = f"Delivered message to {shown_as}."                       # by address
+        self.result = {"accepted": True, "code": "DELIVERED", "message": text, "target_agent_run_id": receiver}
     def _admit(self, sender, receiver):
         a, b = self.run_of(sender), self.run_of(receiver)
         if a == b: return
@@ -317,20 +324,37 @@ class World:
         self._deliver(sender, receiver, content, message_type, message_id, at, address); return step
     def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message"):
         self.run_of(receiver); self._admit(sender, receiver)
-        self._deliver(sender, receiver, content, message_type, message_id, at, receiver)
+        self._deliver(sender, receiver, content, message_type, message_id, at, None)
     def handoff_rules(self, agent_id):
         node, kind, run_id = self.run_of(agent_id); own = self.agent_info(agent_id)[0]; f = self.file_of((node, kind, run_id))
         return {"handoffs": [{"when": h["rules"][0], "recipient_address": h["to"]} for h in f.get("handoffs", []) if h["from"] == own]}
 
     # ---------- delegation
     def delegate(self, sender, address, at, new_run, task_key=None, description=None, node=None, peer_run_node=None):
+        try:
+            return self._delegate(sender, address, at, new_run, task_key, description, node, peer_run_node)
+        except Refused as r:
+            r.tool = "delegate_task"; raise
+    def _placement_of(self, run, address):
+        """An org's in-run mounted team at `address`: (team definition, its members' addresses, the org's handoffs from them)."""
+        node, kind, run_id = run
+        if kind != "agent_org": return None
+        f = self.file_of(run)
+        for m in f["rootOrg"]["members"]:
+            if m["address"] == address and "members" in m:
+                return m["teamDefinitionId"], m["address"], [h for h in f["handoffs"] if h["from"].startswith(address + "/")]
+        return None
+    def _delegate(self, sender, address, at, new_run, task_key, description, node, peer_run_node):
         """delegate_task(recipient_address, task_id?, description?, node?). `new_run` names the new run: (kind, run id, {member def: agent id})."""
         snode, skind, srun = srun_key = self.run_of(sender)
         own, prefix, team, _ = self.agent_info(sender)
         if address == own: raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.")
         if (skind == "agent_team" and address in team) or (prefix and (address == prefix or address.startswith(prefix + "/"))):
             raise Refused("COLLABORATION_SELF_TARGET_REJECTED", f"{address} is in your own team; you can't delegate to it. Talk with it using send_message_to.")
-        def_id = next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
+        if peer_run_node and task_key:
+            raise Refused("SAVED_TASK_TO_PEER", SAVED_TASK_TO_PEER)
+        placement = self._placement_of(srun_key, address)
+        def_id = placement[0] if placement else next((d for d in list(self.defs.agents) + list(self.defs.teams) if addr_of_def(d) == address), None)
         f = self.file_of(srun_key)
         own_def = f.get("agentDefinitionId") or f.get("rootTeam", {}).get("teamDefinitionId") or f.get("rootOrg", {}).get("orgDefinitionId")
         if def_id is None or def_id == own_def:
@@ -376,6 +400,12 @@ class World:
         else:
             for i in members.values(): self.runs[i] = (rnode, "agent_team", run_id)
             tf = self._team_file(run_id, def_id, members, at); tf["delegatedFrom"] = own_df
+            if placement:
+                # a copy of an org's in-run placement carries the org's handoffs from its members, team-local; a `to`
+                # outside the team is kept as written, an external target (contract §3.2)
+                pre = placement[1]
+                loc = lambda x: x[len(pre):] if x.startswith(pre + "/") else x
+                tf["handoffs"] = [{"from": loc(h["from"]), "to": loc(h["to"]), "rules": list(h["rules"])} for h in placement[2]]
             self.disk[self.run_file(rnode, "agent_team", run_id)] = tf
             d = self.defs.teams[def_id]
             self.add_row(rnode, "agent_team", {"teamRunId": run_id, "teamDefinitionId": def_id, "teamDefinitionName": d["name"],
@@ -439,7 +469,7 @@ class World:
             for e in self.disk.get(rp, {"agentRunResources": []})["agentRunResources"]:
                 if e["closedAt"] is None: e["closedAt"] = at
             self._stop_runs_without_open_task(node, task["taskId"], at)
-        self.result = {"taskId": task["taskKey"], "status": status}
+        self.result = {"taskId": task.get("taskKey") or task["taskId"], "status": status}  # abbreviated: the Task's identity and status
     def delete_task(self, node, task_key, at):
         task = self.task_by_key(node, task_key); rp = self.resources_path(node, task)
         for e in self.disk.get(rp, {"agentRunResources": []})["agentRunResources"]:

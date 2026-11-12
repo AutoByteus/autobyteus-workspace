@@ -1041,3 +1041,24 @@
 - Done: the design's composition steps 3, 5 and 6, with the reason. If a root use of the full port remains beyond `isOpen` and `statusChanged`, the Implementation Engineer reports it, and it either moves to the delegation owners or joins the narrow port, if it is a records read.
 
 - ARCH-REV-028 (2026-11-11): Pass, no finding. The narrow `RunTaskRecords` port is Principle 16's resolution; `isOpen` reads the same records `ProjectTaskService` wraps, so the gate-head re-check reads the authority (AR-017) and the records keep one owner.
+
+### SR-054 — The contract corrected to today's results (answers CRR-008 Requirement Gaps CR-461-012 and CR-461-013); the org story's real path
+
+- Triggering: the code review's failure-origin review of API/E2E (CRR-008) found two Requirement Gaps, places where the contract disagreed with REQ-009 ("today's results and texts") while the code kept today's behavior. It also raised a question on CR-461-009.
+  - **CR-461-012:** the contract said every delivered message returns "Delivered message to <address or run ID>." Today a run-ID delivery returns "Message delivered." (`send-message-to-tool-result-contract.ts:32`), and a delivery to another node returns `Delivered message to <run ID> on node "<peer>".` (`remote-refusal-codes.ts` `remoteDeliveredText`).
+  - **CR-461-013:** contract S17 gave a saved Task to a peer node, which today is refused (`remote-refusal-codes.ts:31`, "A saved Task (task_id) can't be given to an agent on another node yet …").
+  - **CR-461-009's question:** if the definition validator refuses a team definition with a handoff outside it, what product path creates such a team?
+- The Solution Designer's errors:
+  - the model's delivery text was one line for all three cases;
+  - the peer story used a saved Task;
+  - the model printed `delegate_task` refusals in `send_message_to`'s shape, where today's is `{ delegated: false, message }` (`root-task-dispatch.ts:101`, `task-delegation-target.ts:18`), found while fixing;
+  - the org story delegated a catalog "Study Group" team whose saved definition handed off outside itself, which the definition check does not admit.
+- Decision: **the contract follows today's results and texts (REQ-009), with no change to intended behavior.**
+  - The model gives the three delivery texts, the peer saved-Task refusal, and the delegate refusal shape.
+  - The peer story delegates by description (S17, a Task with no Project), closes it by its ID (S19), and shows the saved-Task refusal (S25).
+  - The org story now uses the real path to an outside handoff: an org agent delegates to the org's own in-run mounted team (`/dev_team`), whose copy carries the org's handoffs from its members, made team-local, with the outside `to` (`/ceo_agent`) kept (O5–O7). That copy is how the 2 legacy teams with an outside handoff came about.
+  - The design's compiler row names when it keeps an outside `to` (planning a delegated team), and keeps the validator's and a user-started team's check.
+- Done: `model.py`, `stories.py`, `walkthrough.py`; the walkthrough regenerated; contract §5.0 (rules and runs), §3.2's example, §5.4.1 B-4 and B-5; the design's compiler row and test. `walkthrough.py --check` passes, and the examples have 0 findings.
+- Approval: these correct the contract to the approved requirements (REQ-009) and change no intended behavior. The user is informed.
+- The three Local Fixes of CRR-008 (CR-461-009, CR-461-010, CR-461-011) are the Implementation Engineer's.
+

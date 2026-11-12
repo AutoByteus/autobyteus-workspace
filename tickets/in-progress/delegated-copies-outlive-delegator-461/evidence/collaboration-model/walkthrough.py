@@ -91,7 +91,9 @@ def render():
             changes, unchanged = diff(before, w.disk, two_nodes)
             md += ["---", "", f"#### {s['id']} — {s['title']} [{s['cases']}]", "", f"**Call:** {s['call']}", ""]
             for r in results: md += [f"**Result to the caller:** `{json.dumps(r, ensure_ascii=False)}`", ""]
-            if refused: md += [f"**Result:** refused, `{{ \"accepted\": false, \"code\": \"{refused.code}\", \"message\": {json.dumps(refused.message)} }}`", ""]
+            if refused and refused.tool == "delegate_task":
+                md += [f"**Result:** refused, `{{ \"delegated\": false, \"message\": {json.dumps(refused.message)} }}`", ""]
+            elif refused: md += [f"**Result:** refused, `{{ \"accepted\": false, \"code\": \"{refused.code}\", \"message\": {json.dumps(refused.message)} }}`", ""]
             md += [f"**How:** {s['found']}", ""]
             for x in seen: md += [f"**The receiver sees:** `{x}`", ""]
             if changes: md += ["**On disk after this step:**", ""] + sum(([c, ""] for c in changes), [])
