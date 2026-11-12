@@ -9,8 +9,8 @@ export interface BackgroundTaskCounts {
 /**
  * @store agentBackgroundTaskStore
  * @description Live background tasks per run. Each server snapshot replaces the task with the
- * same id (upsert), so a missed update is corrected by the next one. Not persisted: the list
- * starts empty after a reload.
+ * same id (upsert), so a missed update is corrected by the next one. Not persisted: after a
+ * reload the list starts from the tasks the node knows now (`seedTasks`, autobyteus-473).
  */
 export const useAgentBackgroundTaskStore = defineStore('agentBackgroundTask', {
   state: () => ({
@@ -30,6 +30,19 @@ export const useAgentBackgroundTaskStore = defineStore('agentBackgroundTask', {
   },
 
   actions: {
+    /**
+     * The run's tasks as the node knows them now (the background-task view of an event-stream run): a task the store
+     * does not have is added, and one it has as running takes the answer when that shows it ended. A task the store
+     * has already ended is never replaced, so an older answer cannot undo a newer stream event (a status only moves
+     * from running to an end).
+     */
+    seedTasks(runId: string, tasks: readonly BackgroundTask[]) {
+      for (const task of tasks) {
+        const known = this.tasksByRunId.get(runId)?.get(task.taskId);
+        if (!known || (known.status === 'running' && task.status !== 'running')) this.upsertTask(runId, task);
+      }
+    },
+
     upsertTask(runId: string, task: BackgroundTask) {
       let tasks = this.tasksByRunId.get(runId);
       if (!tasks) {
