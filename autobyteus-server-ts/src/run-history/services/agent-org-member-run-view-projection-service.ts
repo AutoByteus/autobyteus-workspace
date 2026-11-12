@@ -1,3 +1,4 @@
+import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
@@ -41,7 +42,7 @@ export interface AgentOrgMemberRunProjection {
 }
 
 export class AgentOrgMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf">;
+  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "agentOf" | "mapOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
@@ -49,7 +50,7 @@ export class AgentOrgMemberRunViewProjectionService {
 
   constructor(options: {
     /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf">;
+    tree: Pick<DelegationTree, "peerChildrenOf" | "childrenOf" | "agentOf" | "mapOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: AgentOrgExecutionTreeLocationService;
@@ -83,8 +84,7 @@ export class AgentOrgMemberRunViewProjectionService {
     return {
       agentRunId: projection.runId,
       memberAddress: location.memberAddress,
-      conversation: resolveInterAgentSenderAddresses(projection.conversation, (runId) =>
-        new AgentOrgExecutionIndex(location.tree).getAgent(runId)?.address ?? null),
+      conversation: resolveInterAgentSenderAddresses(projection.conversation, await this.senderAddresses(location.tree, conversationSenders(projection.conversation))),
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
@@ -105,8 +105,14 @@ export class AgentOrgMemberRunViewProjectionService {
       beforeCursor,
       canonicalSubject: `org:${location.rootRunId}:member:${location.memberAddress}:agent:${location.agentRunId}`,
     });
-    const index = new AgentOrgExecutionIndex(location.tree);
-    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
+    return resolveActiveTracePageSenderAddresses(page, await this.senderAddresses(location.tree, tracePageSenders(page)));
+  }
+
+  /** The senders' addresses as the member got them (contract §2.5, SR-060). */
+  private senderAddresses(tree: AgentOrgExecutionIndex["tree"], senders: readonly string[]) {
+    const index = new AgentOrgExecutionIndex(tree);
+    return receivedSenderAddresses({ receiverRun: { rootSubjectKind: "agent_org", rootRunId: tree.rootOrg.orgRunId }, tree: this.tree,
+      ownAddressOf: (runId) => index.getAgent(runId)?.address ?? null, senderAgentRunIds: senders });
   }
 
   async getTokenUsageSummary(

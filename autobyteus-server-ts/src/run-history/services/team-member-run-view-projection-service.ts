@@ -1,3 +1,4 @@
+import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import { peerRunLinksOf } from "../../agent-collaboration/execution/remote/peer-run-link.js";
 import { remoteChildOf, remoteMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
@@ -38,7 +39,7 @@ export interface TeamMemberRunProjection {
 }
 
 export class TeamMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationTree, "peerChildrenOf">;
+  private readonly tree: Pick<DelegationTree, "peerChildrenOf" | "agentOf" | "mapOf">;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: TeamRunExecutionTreeLocationService;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
@@ -48,7 +49,7 @@ export class TeamMemberRunViewProjectionService {
      * The relationships between runs, from the Task entries (SR-047): the runs this team delegated to peers. A run it
      * delegated to on this node is not one of its members; it is read by its own identity (CR-461-014).
      */
-    tree: Pick<DelegationTree, "peerChildrenOf">;
+    tree: Pick<DelegationTree, "peerChildrenOf" | "agentOf" | "mapOf">;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: TeamRunExecutionTreeLocationService;
@@ -75,8 +76,7 @@ export class TeamMemberRunViewProjectionService {
     });
     return {
       agentRunId: projection.runId,
-      conversation: resolveInterAgentSenderAddresses(projection.conversation, (runId) =>
-        new TeamExecutionIndex(location.tree).getAgent(runId)?.address ?? null),
+      conversation: resolveInterAgentSenderAddresses(projection.conversation, await this.senderAddresses(location.tree, conversationSenders(projection.conversation))),
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
@@ -96,8 +96,14 @@ export class TeamMemberRunViewProjectionService {
       beforeCursor,
       canonicalSubject: `team:${location.rootTeamRunId}:agent:${location.agentRunId}`,
     });
-    const index = new TeamExecutionIndex(location.tree);
-    return resolveActiveTracePageSenderAddresses(page, (runId) => index.getAgent(runId)?.address ?? null);
+    return resolveActiveTracePageSenderAddresses(page, await this.senderAddresses(location.tree, tracePageSenders(page)));
+  }
+
+  /** The senders' addresses as the member got them (contract §2.5, SR-060). */
+  private senderAddresses(tree: TeamExecutionIndex["tree"], senders: readonly string[]) {
+    const index = new TeamExecutionIndex(tree);
+    return receivedSenderAddresses({ receiverRun: { rootSubjectKind: "agent_team", rootRunId: tree.rootTeam.teamRunId }, tree: this.tree,
+      ownAddressOf: (runId) => index.getAgent(runId)?.address ?? null, senderAgentRunIds: senders });
   }
 
   /** The member's artifacts: live while the team runs, else its stored file changes. */
