@@ -1292,3 +1292,17 @@
   - `validate_contract_examples.py`: 0 findings.
 - **Next action:** architecture review.
 - **ARCH-REV-041 passed SR-067.** Its note is applied: `runDeleted` is called before the files are removed, and the startup build re-adds a run whose removal failed. A restore that meets a run with no files, which happens to a message already past the tree, answers R-11.
+
+### SR-068 — `hasCollaboration` returns on the agent run history item (answers IR-013, codegen)
+
+- **Triggering:** the Implementation Engineer's codegen check of base's web against the branch's server. Base's web needs `hasCollaboration` to show a listed, not-open agent run's delegated rows (`RunListRow` / `RunDefinitionGroups` → `AgentRunTaskRows` → `ensureStoredView`; `useMobileRunTree.ts:61`). SR-061's item table listed it as "stay removed".
+- **The Solution Designer's gap:** the table contradicted the contract. §3.5 and the model (S1) keep the stored flag, set by the first delegation, and the branch's history row still stores it. Only the API field had gone.
+- **Decision:** it returns on the agent run history item, read from the stored row, as at base (rule 1, rule 3). The engineer's option (a) is taken, but sourced from the stored flag rather than the tree, because the contract records it there. Option (b), one view read per listed run, was rejected.
+- **The engineer's other codegen items are confirmed:**
+  - `closed_task_executions` on the org history read and `agentRunCollaborationStatuses` return, under rule 1;
+  - `isTaskTeam` / `startedByAgentName` stay removed;
+  - `TaskRoot.hostRoot` → `delegatingRun` is the contract's rename;
+  - the standalone member file-change and trace queries stay removed: rule 2 reads a local child by its own identity, and a peer's files stay on its node.
+- **Requirements:** unchanged.
+- **Next action:** architecture review.
+
