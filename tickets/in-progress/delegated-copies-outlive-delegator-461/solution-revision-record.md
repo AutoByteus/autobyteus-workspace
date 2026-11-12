@@ -1234,5 +1234,21 @@
   - rule 2 gains both paragraphs, with tests;
   - the two DS-8 items are marked as superseded;
   - the revision line is updated.
-- **Next action:** the Implementation Engineer. Both decisions follow from rule 2, which ARCH-REV-038 passed, so this is not routed to review again. It is visible in the next code review.
+- **Next action:** architecture review, together with SR-065. *Corrected:* at first the Solution Designer sent this only to the Implementation Engineer, reasoning that it followed from rule 2. The user pointed out that a server behavior change in a High-risk package goes to architecture review.
+
+### SR-065 — A peer child keeps base's route; each local child's model options come from its own queries (answers the IR-013 follow-up)
+
+- **Triggering:** the Implementation Engineer's follow-up to SR-064. The removal list also covered two things beyond local children:
+  1. A peer child's Stop has no route except `stopDelegatedExecution` → the delegator's root → `stopRemoteChild` (autobyteus-278 DEC-804).
+  2. The children's model options were served by `DelegatedChildLaunches.modelOptions`.
+- **The Solution Designer's gap:** SR-061 and SR-064 wrote rule 2 for runs on this node, and did not say what happens to a child on a peer node, which has no standard path here.
+- **Decision:**
+  - Rule 2 covers runs on this node. A peer child keeps base's route through its delegator's peer link.
+  - Its Stop stays on `stopDelegatedExecution`, narrowed to peer rows. A local reference is refused as `NOT_FOUND`. A stopped delegator is refused with `ROOT_NOT_ACTIVE`, as at base.
+  - The service shrinks to that route and is renamed `PeerChildStop`.
+  - The editor reads each local child's model options with that run's own queries (`AgentRunModelOptions`, `TeamRunModelOptions`).
+  - `delegatedLaunchModelOptions`, `updateDelegatedLaunchSelections` and `DelegatedChildLaunches` are removed.
+- **No requirement change:** a peer child's Stop behaves as at base.
+- **Done:** a paragraph under rule 2 with tests, and the corrected removal-plan row.
+- **Next action:** architecture review, together with SR-064.
 
