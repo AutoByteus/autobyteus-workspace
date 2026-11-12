@@ -18,7 +18,7 @@ import { noChildCommands, testViewSources } from "../../helpers/child-rows-feed.
 async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeof createRecoveryFixture>>) {
  const root=kind==='agent_team'?createTeamRootExecutionIdentity('team-run-root'):createAgentOrgRootExecutionIdentity('org-run-1');
  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});
- const memberExecutionContext=new MemberExecutionContext({identity,teamScoped: true, collaborationRole: "team_member",
+ const memberExecutionContext=new MemberExecutionContext({identity,teamScoped: true, collaborationRole: "team_member", inOrganization: false,
   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),
   tasks:{root,delegationSource:vi.fn(),ownedTaskOf:vi.fn(()=>null),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,

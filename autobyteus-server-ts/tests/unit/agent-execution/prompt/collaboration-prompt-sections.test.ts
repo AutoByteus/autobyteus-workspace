@@ -30,12 +30,15 @@ const context = (input: {
   address: string;
   teamInstruction?: string | null;
   handoffs?: boolean;
+  /** Default: an agent of an Org run. */
+  inOrganization?: boolean;
 }): MemberExecutionContext => {
   const identityRoot = root(input.rootKind);
   return new MemberExecutionContext({
     identity: createCollaborationMemberExecutionIdentity({ root: identityRoot, memberAddress: input.address, agentRunId: "member-run" }),
     teamScoped: input.role !== "standalone_agent",
     collaborationRole: input.role,
+    inOrganization: input.inOrganization ?? input.rootKind === "agent_org",
     authoredEnclosingScopeInstruction: input.teamInstruction ?? null,
     collaboration: new MemberCollaborationContext({
       outgoingHandoffs: input.handoffs ? [handoff] : [],
@@ -71,6 +74,15 @@ describe.each([
 
 describe("collaboration prompt properties", () => {
   const rendered = (input: Parameters<typeof context>[0]) => renderCollaborationSections(context(input));
+
+  it("autobyteus-461 SR-058: a member of a team run whose Task an org assigned reads the organization line, as a member of an organization's team does", () => {
+    const delegatedByOrg = rendered({ role: "team_member", rootKind: "agent_team", address: "/software_team/code_reviewer", handoffs: true, inOrganization: true });
+    const inOrg = rendered({ role: "team_member", rootKind: "agent_org", address: "/software_team/code_reviewer", handoffs: true });
+    expect(delegatedByOrg).toBe(inOrg);
+    expect(delegatedByOrg).toContain("You can also talk with the organization's other agents and agent teams at their addresses.");
+    expect(rendered({ role: "team_member", rootKind: "agent_team", address: "/software_team/code_reviewer", handoffs: true }))
+      .not.toContain("the organization's other agents");
+  });
 
   it.each(VIEWS)("never states the agent's own address, nor uses a word the agent should not read (%s)", (_label, input) => {
     const prompt = composeSharedCarpenterPrompt({ semanticMemoryPath: null, agentDefinition: agent, memberExecutionContext: context(input) });

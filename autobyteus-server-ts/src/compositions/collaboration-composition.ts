@@ -2,6 +2,8 @@ import path from "node:path";
 import { ChildRowsFeed, type ChildRowProjection } from "../agent-collaboration/delegation/child-rows-feed.js";
 import { ChildRowsStreams } from "../agent-collaboration/delegation/child-rows-streams.js";
 import { DelegationTree } from "../agent-collaboration/delegation/delegation-tree.js";
+import { RunCollaborationContext } from "../agent-collaboration/delegation/run-collaboration-context.js";
+import type { AgentOrgDefinitionService } from "../agent-org-definition/services/agent-org-definition-service.js";
 import { CrossRunAddressResolution } from "../agent-collaboration/communication/cross-run-address-resolution.js";
 import { CrossRunMessageDelivery } from "../agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegatedRunCommands } from "../agent-collaboration/execution/delegation/delegated-run-commands.js";
@@ -67,6 +69,8 @@ const taskChangeMarks: ProjectChangeMarks = {
 export type TaskSide = Readonly<{
   resources: TaskExecutionResourceService;
   tree: DelegationTree;
+  /** A run's collaboration context derived from the tree (SR-058), asked by every kind's member context builder. */
+  runCollaboration: RunCollaborationContext;
   taskRecords: RunTaskRecords;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
@@ -75,20 +79,27 @@ export type TaskSide = Readonly<{
 /**
  * Steps 1–2 of the composition root (autobyteus-461 design "Dependency Rules And The Composition Root"; SR-047, SR-053):
  * the Task agent run resources of both Task roots, loaded once (after app-data migrations; a damaged file is non-fatal);
- * the `DelegationTree` built from them and set as their entries listener; and the run side's `RunTaskRecords`. The run
- * services (step 3) are created next, with the tree and the records.
+ * the `DelegationTree` built from them and set as their entries listener; the `RunCollaborationContext` derived from it
+ * (SR-058); and the run side's `RunTaskRecords`. The run services (step 3) are created next, with these.
  */
-export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memoryDir: string }>): Promise<TaskSide> => {
+export const composeTaskSide = async (input: Readonly<{
+  appDataDir: string;
+  memoryDir: string;
+  orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
+}>): Promise<TaskSide> => {
   const adHocTasksLayout = new AdHocTasksLayout(path.join(input.appDataDir, "ad-hoc-tasks"));
   const projectsLayout = new ProjectsLayout(path.join(input.appDataDir, "projects"));
   const resources = new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasksLayout));
   await resources.load();
   // The relationships between runs, from the Task records (TC-11); kept current inside each Task's ordered change
   // (AR-017). A run's agents are read from its own parts on the first need, never at startup (469 D-11).
-  const tree = new DelegationTree(() => resources, new RunOwnAgentsReader(input.memoryDir));
+  const ownFiles = new RunOwnAgentsReader(input.memoryDir);
+  const tree = new DelegationTree(() => resources, ownFiles);
   tree.build();
   resources.setEntriesListener(tree);
-  return Object.freeze({ resources, tree, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
+  const runCollaboration = new RunCollaborationContext({ tree, orgs: ownFiles,
+    orgInstruction: async (orgDefinitionId) => (await input.orgDefinitions.getDefinitionById(orgDefinitionId))?.instructions?.trim() || null });
+  return Object.freeze({ resources, tree, runCollaboration, taskRecords: createRunTaskRecords(resources, taskChangeMarks), projectsLayout, adHocTasksLayout });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */

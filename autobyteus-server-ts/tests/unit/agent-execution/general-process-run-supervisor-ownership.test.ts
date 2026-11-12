@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { openTaskRecords } from "../../helpers/no-delegations.js";
 import { noDelegations } from "../../helpers/no-delegations.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -71,6 +72,7 @@ const createSupervisorInput = () => {
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     taskRecords: { isOpen: vi.fn(() => true), statusChanged: vi.fn() },
     delegationTree: noDelegations(),
+    runCollaboration: NOT_DELEGATED as never,
   };
 };
 
@@ -144,7 +146,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const conflictingTeamManager = AgentTeamRunManager.initializeProcessInstance({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
       memoryDir: "/tmp/general-process-run-supervisor-conflict",
       flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
-      memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService),
+      memberExecutionContextBuilder: new MemberExecutionContextBuilder(input.agentTeamDefinitionService, NOT_DELEGATED),
       modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     });
     try {

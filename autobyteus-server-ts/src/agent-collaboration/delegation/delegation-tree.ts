@@ -58,6 +58,10 @@ export type ChildRowsChange = Readonly<{
 
 type Source = Pick<TaskExecutionResourcePort, "taskIdsWithEntries" | "entriesOf">;
 const keyOf = rootExecutionIdentityKey;
+const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
+/** The model's order of runs: (kind, run ID), by code point. */
+const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
+  compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
 const newest = (entries: readonly TaskRunEntry[]): TaskRunEntry | undefined =>
   entries.reduce<TaskRunEntry | undefined>((best, entry) => !best || entry.linkedAt > best.linkedAt
     || (entry.linkedAt === best.linkedAt && entry.taskId > best.taskId) ? entry : best, undefined);
@@ -186,6 +190,22 @@ export class DelegationTree implements TaskEntriesListener {
     const runs = new Map<string, RootExecutionIdentity>();
     for (const entry of this.byTask.get(taskId) ?? []) {
       if (entry.role === "assigned") runs.set(keyOf(entry.delegatedFrom.delegatingRun), entry.delegatedFrom.delegatingRun);
+    }
+    return [...runs.values()];
+  }
+
+  /**
+   * The runs that assigned this run's Tasks, as address step 2 reads them (contract §2.3, `model.py` `resolve`): its open
+   * Tasks in Task-ID order, else all its Tasks; each Task's assigners in run order; each run once. Empty for a run no
+   * Task names.
+   */
+  assignersOfTasksOf(run: TaskExecutionReference): readonly RootExecutionIdentity[] {
+    const entries = this.tasksOf(run);
+    const open = [...new Set(entries.filter((entry) => entry.open).map((entry) => entry.taskId))].sort();
+    const taskIds = open.length ? open : [...new Set(entries.map((entry) => entry.taskId))].sort();
+    const runs = new Map<string, RootExecutionIdentity>();
+    for (const taskId of taskIds) {
+      for (const assigner of [...this.assignersOf(taskId)].sort(byRun)) if (!runs.has(keyOf(assigner))) runs.set(keyOf(assigner), assigner);
     }
     return [...runs.values()];
   }

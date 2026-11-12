@@ -195,6 +195,7 @@ export class GeneralProcessRunSupervisor {
 
       const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
         input.agentTeamDefinitionService,
+        input.runCollaboration,
       );
       const memoryLocationService = new AgentMemoryLocationService({
         memoryDir,
@@ -257,6 +258,7 @@ export class GeneralProcessRunSupervisor {
       standaloneRootManager = new StandaloneAgentRunRootManager({
         memoryDir,
         definitions: input.agentDefinitionService,
+        runCollaboration: input.runCollaboration,
         host: {
           getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
           activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),

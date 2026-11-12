@@ -1,3 +1,4 @@
+import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
 import type { AppConfig } from "../../config/app-config.js";
@@ -68,6 +69,8 @@ export type ApplicationPlatformBuildInput = Readonly<{
   modelSelectionValidator: RunModelSelectionValidator;
   /** The relationships between runs, from the Task entries (SR-047). */
   delegationTree: DelegationTree;
+  /** A run's collaboration context, derived from the tree (SR-058). */
+  runCollaboration: RunCollaborationContext;
   /** The run side's Task records (SR-053). */
   taskRecords: RunTaskRecords;
   /** The host's provider relays for application runs (`null`: the host runs no credential proxy). */
@@ -125,6 +128,7 @@ export const buildApplicationPlatformRuntime = (
     artifactDeliverySink: artifactDeliveryQueue,
     modelSelectionValidator: input.modelSelectionValidator,
     delegationTree: input.delegationTree,
+    runCollaboration: input.runCollaboration,
     taskRecords: input.taskRecords,
     applicationAgentTools: applicationAgentToolAssembly.capability,
     });

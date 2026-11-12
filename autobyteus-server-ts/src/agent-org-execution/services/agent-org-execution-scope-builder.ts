@@ -92,6 +92,7 @@ export class AgentOrgExecutionScopeBuilder {
         identity,
         teamScoped: true,
         collaborationRole: scope.role,
+        inOrganization: true,
         authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveInstruction(scope.instructionDefinition) : null,
         collaboration: new MemberCollaborationContext({
           outgoingHandoffs: scope.outgoingHandoffs,

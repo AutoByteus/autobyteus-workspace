@@ -159,6 +159,7 @@ export const buildApplicationExecutionScopeKernel = (
     });
     const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
       input.agentTeamDefinitionService,
+      input.runCollaboration,
     );
     const memoryLocator = new AgentRunMemoryLocator({ memoryDir: input.memoryDir });
     const activityInspector = new AgentConversationActivityInspector();

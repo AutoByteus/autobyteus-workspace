@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import "reflect-metadata";
@@ -51,7 +52,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => view(['small','equal','large'].map(model_identifier => ({ model_identifier } as any)))) };
   const capacity = { resolveMany: vi.fn(() => ({ small: 128000, equal: 128000, large: 272000 })) };
   const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
-  const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any);
+  const memberExecutionContextBuilder = new MemberExecutionContextBuilder({} as any, NOT_DELEGATED);
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'model-save-unit-'));
   memoryDirs.push(memoryDir);
   const packageDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: 'root', ancestorTeamRunIds: [] });

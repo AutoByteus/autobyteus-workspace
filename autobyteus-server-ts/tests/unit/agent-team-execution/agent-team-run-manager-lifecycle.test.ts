@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import type { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
@@ -17,7 +18,7 @@ const modelSelectionValidator = Object.freeze({
 const flatTeamExecutionFactory = new FlatTeamExecutionFactory();
 const memberExecutionContextBuilder = new MemberExecutionContextBuilder({
   getDefinitionById: async () => null,
-} as never);
+} as never, NOT_DELEGATED);
 
 const createManager = () => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/api-e2e-agent-team-run-manager",

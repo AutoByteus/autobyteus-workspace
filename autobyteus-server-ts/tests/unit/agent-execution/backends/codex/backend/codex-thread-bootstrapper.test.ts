@@ -265,7 +265,7 @@ describe("CodexThreadBootstrapper", () => {
           identity: createCollaborationMemberExecutionIdentity({
             root, memberAddress: "/collaborator", agentRunId: "run-1",
           }),
-          teamScoped: false, collaborationRole: "standalone_agent",
+          teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false,
           collaboration: new MemberCollaborationContext({
             deliverLogicalMessage: async () => ({ accepted: true }),
           }),

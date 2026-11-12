@@ -1,4 +1,5 @@
 import type { DelegationTree } from "../../agent-collaboration/delegation/delegation-tree.js";
+import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
@@ -41,6 +42,8 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries, built by the composition root (SR-047 step 2). */
   delegationTree: DelegationTree;
+  /** A run's collaboration context, derived from the tree (SR-058). */
+  runCollaboration: RunCollaborationContext;
   /**
    * Platform notices that ride along with each run's next external input, told when runs are
    * published and released (the host composition owns and closes it). None by default.
@@ -82,6 +85,7 @@ export const requireGeneralProcessRunSupervisorInput = (
     || typeof input.modelSelectionValidator.listOptions !== "function"
     || !input.taskRecords
     || !input.delegationTree
+    || !input.runCollaboration
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }

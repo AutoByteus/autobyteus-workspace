@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -85,6 +86,7 @@ const createScope = async () => {
     providerRelayAccess: null,
     runPasses: null,
     delegationTree: noDelegations(),
+    runCollaboration: NOT_DELEGATED as never,
     taskRecords: openTaskRecords(),
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;

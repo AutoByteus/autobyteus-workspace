@@ -4,10 +4,6 @@ import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from
 import { runReferenceOf } from "../execution/task/task-execution-resource-port.js";
 
 const NO_LONGER = (address: string) => `${address} is no longer an address: your team is addressed from its own root.`;
-const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
-/** The model's order of runs: (kind, run ID), by code point. */
-const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
-  compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
 
 /**
  * `send_message_to(address)` beyond the sender's own run (contract §2.3, `model.py` `resolve`). The sender's root
@@ -22,7 +18,7 @@ const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
 export class CrossRunAddressResolution {
   constructor(private readonly dependencies: Readonly<{
     /** The relationships, and each run's standing agents (the tree is their one owner, read once per run). */
-    tree(): Pick<DelegationTree, "tasksOf" | "assignersOf" | "standingOf">;
+    tree(): Pick<DelegationTree, "tasksOf" | "assignersOfTasksOf" | "standingOf">;
   }>) {}
 
   /** The receiving agent's run ID; `null` when the sender's run has no Task entries. Refusals throw. */
@@ -49,15 +45,10 @@ export class CrossRunAddressResolution {
   private async assignersAgent(run: RootExecutionIdentity, address: string): Promise<string | null | undefined> {
     const reference = runReferenceOf(run);
     const tree = this.dependencies.tree();
-    const entries = reference ? tree.tasksOf(reference) : [];
-    if (!entries.length) return undefined;
-    const open = [...new Set(entries.filter((entry) => entry.open).map((entry) => entry.taskId))].sort();
-    const taskIds = open.length ? open : [...new Set(entries.map((entry) => entry.taskId))].sort();
-    for (const taskId of taskIds) {
-      for (const assigner of [...tree.assignersOf(taskId)].sort(byRun)) {
-        const agentRunId = (await this.dependencies.tree().standingOf(assigner))?.agents.get(address);
-        if (agentRunId) return agentRunId;
-      }
+    if (!reference || !tree.tasksOf(reference).length) return undefined;
+    for (const assigner of tree.assignersOfTasksOf(reference)) {
+      const agentRunId = (await tree.standingOf(assigner))?.agents.get(address);
+      if (agentRunId) return agentRunId;
     }
     return null;
   }

@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../helpers/no-delegations.js";
 import { testActivationManager } from "./agent-run-preparation-fixtures.js";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -127,7 +128,7 @@ export const configuredRootFixture = async (placement: Placement, options: {
       config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
-      memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never), executionTreeStore: { write } as never,
+      memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never, NOT_DELEGATED), executionTreeStore: { write } as never,
       communicationStore: { write: sidecarWrite, appendMessage: sidecarWrite } as never,
       onTerminated: vi.fn(),
     });

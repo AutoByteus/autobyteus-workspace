@@ -1,4 +1,5 @@
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 import {
   MemberCollaborationContext,
   MemberExecutionContext,
@@ -21,13 +22,14 @@ import {
   type MemberHostTeam,
 } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 
-/** The enclosing scope of an Agent that is not a member of the TeamRun's own definition. */
 /** Team subject adapter that prepares the root-neutral AgentRun member context. */
 export class MemberExecutionContextBuilder {
   private readonly summaryCache = new Map<string, Promise<{ instruction: string | null }>>();
 
   constructor(
-    private readonly teamDefinitionService: AgentTeamDefinitionService = AgentTeamDefinitionService.getInstance(),
+    private readonly teamDefinitionService: Pick<AgentTeamDefinitionService, "getDefinitionById">,
+    /** Whether the team run works on a Task an org assigned (the organization line, SR-058). */
+    private readonly runCollaboration: Pick<RunCollaborationContext, "inOrganization">,
   ) {}
 
   async build(input: {
@@ -84,6 +86,7 @@ export class MemberExecutionContextBuilder {
       identity,
       teamScoped: true,
       collaborationRole: scope.role,
+      inOrganization: this.runCollaboration.inOrganization(root),
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
       tasks: input.taskCapability,
@@ -98,7 +101,3 @@ export class MemberExecutionContextBuilder {
     return this.summaryCache.get(teamDefinitionId)!;
   }
 }
-
-let cached: MemberExecutionContextBuilder | null = null;
-export const getMemberExecutionContextBuilder = (): MemberExecutionContextBuilder =>
-  cached ??= new MemberExecutionContextBuilder();

@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const cutState = vi.hoisted(() => ({ cut: null as string | null }));
@@ -150,6 +151,7 @@ const createHarness = (input: {
     providerRelayAccess: null,
     runPasses: null,
     delegationTree: noDelegations(),
+    runCollaboration: NOT_DELEGATED as never,
     taskRecords: openTaskRecords(),
   };
   return {

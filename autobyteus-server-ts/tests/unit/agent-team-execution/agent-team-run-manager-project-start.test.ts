@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 /**
  * A Team run started under a Project (projects-left-navigation, SR-009, DS-002): `AgentTeamRunManager.createTeamRun`
@@ -16,7 +17,7 @@ import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-ru
 const createManager = (write: ReturnType<typeof vi.fn>) => new AgentTeamRunManager({ delegationTree: noDelegations(), taskRecords: openTaskRecords(),
   memoryDir: "/tmp/agent-team-run-manager-project-start",
   flatTeamExecutionFactory: new FlatTeamExecutionFactory(),
-  memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
+  memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED),
   modelSelectionValidator: { validateMany: async () => [], validate: async ({ selection }: never) => ({ kind: "valid" as const, selection }) } as never,
   activeRootDirectory: new ActiveCollaborationRootDirectory(),
   executionTreeStore: { write, read: vi.fn(async () => null) } as never,

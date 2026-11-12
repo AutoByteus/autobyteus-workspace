@@ -45,7 +45,7 @@ const build = (
     ancestorTeamRunIds: kind === "agent_team" ? [] : ["mounted-team-run"],
   });
   const memberExecutionContext = new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity,
     authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({

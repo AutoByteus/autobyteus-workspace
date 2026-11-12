@@ -27,7 +27,7 @@ const build = (input: { target?: RuntimeKind; history?: "none" | "present" | "in
   const identity = createCollaborationMemberExecutionIdentity({ root, memberAddress: "/Worker", agentRunId: "agent-run" });
   const scope = createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] });
   const memberExecutionContext = new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member", identity, authoredEnclosingScopeInstruction: "Stay in scope.",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false, identity, authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
     tasks: { root, delegationSource: vi.fn(), ownedTaskOf: () => null, submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
   });

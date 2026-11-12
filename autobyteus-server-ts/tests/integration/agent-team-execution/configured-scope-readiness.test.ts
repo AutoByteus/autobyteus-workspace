@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -103,7 +104,7 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
   return materializeTeamRoot({ delegationTree: noDelegations(), taskRecords: openTaskRecords(), config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
     messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
-    memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never), executionTreeStore: new TeamRunExecutionTreeStore(),
+    memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never, NOT_DELEGATED), executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationStore(), onTerminated: vi.fn(),
   });
 };

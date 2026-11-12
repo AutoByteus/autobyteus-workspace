@@ -12,16 +12,18 @@ import {
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
+import type { RunCollaborationContext } from "../../agent-collaboration/delegation/run-collaboration-context.js";
 
 
 /**
  * Builds the host member context of an eligible standalone run; its root passes it to the host's
- * activation. Tool calls resolve the run's active root at call time, so a root that is replaced
+ * activation. Its role, and an org copy's handoff rules and instruction, come from `RunCollaborationContext`. Tool calls resolve the run's active root at call time, so a root that is replaced
  * (after a fail-stop) or stopped answers for itself.
  */
 export class StandaloneHostMemberContextBuilder {
   constructor(private readonly options: Readonly<{
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+    runCollaboration: Pick<RunCollaborationContext, "ofAgentRun">;
     getActiveRoot(hostRunId: string): StandaloneAgentRunRoot | null;
     readStoredHostAddress(hostRunId: string): Promise<AgentTeamAddress | null>;
   }>) {}
@@ -42,12 +44,16 @@ export class StandaloneHostMemberContextBuilder {
       memberAddress: await this.resolveHostAddress(metadata),
       agentRunId: metadata.runId,
     });
+    // SR-058: a delegated run's agent is a task agent; a copy of an org's configured agent keeps its rules and instruction.
+    const collaboration = await this.options.runCollaboration.ofAgentRun(metadata.runId);
     return new MemberExecutionContext({
       identity,
-      teamScoped: false,
-      collaborationRole: "standalone_agent",
-      authoredEnclosingScopeInstruction: null,
+      teamScoped: collaboration.placement !== null,
+      collaborationRole: collaboration.role,
+      inOrganization: false,
+      authoredEnclosingScopeInstruction: collaboration.placement?.instruction ?? null,
       collaboration: new MemberCollaborationContext({
+        outgoingHandoffs: collaboration.placement?.handoffs ?? [],
         deliverLogicalMessage: async (message) => {
           const active = this.options.getActiveRoot(metadata.runId);
           return active

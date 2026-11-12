@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -86,6 +87,7 @@ describe("application platform runtime isolation", () => {
       const setDurably = vi.fn();
       const runtime = buildApplicationPlatformRuntime({
         delegationTree: noDelegations(),
+        runCollaboration: NOT_DELEGATED as never,
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,
@@ -226,6 +228,7 @@ describe("application platform runtime isolation", () => {
     expect(() => {
       publishedRuntime = buildApplicationPlatformRuntime({
         delegationTree: noDelegations(),
+        runCollaboration: NOT_DELEGATED as never,
         taskRecords: openTaskRecords(),
         contextFilePathEnvironment: {
           appDataDir: root,

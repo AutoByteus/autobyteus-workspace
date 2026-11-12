@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -66,7 +67,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
     factory: new FlatTeamExecutionFactory(),
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({
       getDefinitionById: async (id: string) => (id === "product-team" ? { instructions: "Ship the product UI." } : { instructions: "Root team rules." }),
-    } as never),
+    } as never, NOT_DELEGATED),
     executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationStore(),
     collaboratorAdmission: admission(options.runnable ?? true),

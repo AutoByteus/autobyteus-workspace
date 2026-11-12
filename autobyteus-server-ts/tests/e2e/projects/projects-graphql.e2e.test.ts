@@ -53,7 +53,7 @@ const resetProjectsSingletons = () => {
  * and the delegation tree listens to their changes, which every Task change needs.
  */
 const composeProjectTaskService = async (appDataDir: string) => {
-  const side = await composeTaskSide({ appDataDir, memoryDir: path.join(appDataDir, "memory") });
+  const side = await composeTaskSide({ appDataDir, memoryDir: path.join(appDataDir, "memory"), orgDefinitions: { getDefinitionById: async () => null } });
   initializeProjectTaskServiceProcessInstance({ taskExecutionResources: side.resources });
 };
 

@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import { describe, expect, it, vi } from "vitest";
 import {
   createRootExecutionPhysicalScope,
@@ -20,7 +21,7 @@ import {
 const buildBuilder = (definitions: Record<string, { name?: string; instructions?: string }> = {}) =>
   new MemberExecutionContextBuilder({
     getDefinitionById: vi.fn(async (id: string) => definitions[id] ?? null),
-  } as never);
+  } as never, NOT_DELEGATED);
 
 const buildContext = (config: TeamRunConfig, agents: readonly TeamRunAgentNode[]) => new TeamRunContext({
   physicalScope: createRootExecutionPhysicalScope({

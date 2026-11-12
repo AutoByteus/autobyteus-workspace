@@ -1,3 +1,4 @@
+import { NOT_DELEGATED } from "../../helpers/run-collaboration.js";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
@@ -78,7 +79,7 @@ describe("Brief package team prompt authority", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     } as const;
     const memberExecutionContext = await new MemberExecutionContextBuilder(
-      definitions.agentTeamDefinitionService,
+      definitions.agentTeamDefinitionService, NOT_DELEGATED,
     ).build({
       teamContext: new TeamRunContext({
         physicalScope: createRootExecutionPhysicalScope({

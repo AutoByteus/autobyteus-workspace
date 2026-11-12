@@ -161,7 +161,7 @@ export const testMemberExecutionContext = (input: {
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
   const agentRunId = input.agentRunId ?? `run-${getAgentTeamAddressBasename(memberAddress) ?? "agent"}`;
   return new MemberExecutionContext({
-    teamScoped: true, collaborationRole: "team_member",
+    teamScoped: true, collaborationRole: "team_member", inOrganization: false,
     identity: createCollaborationMemberExecutionIdentity({
       root: createTeamRootExecutionIdentity(rootTeamRunId),
       memberAddress,

@@ -16,6 +16,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import type { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { runCollaborationOf } from "../../../helpers/run-collaboration.js";
 
 /** A standalone run's root with real persistence: its agent is a double that records reservations and restores. */
 export const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
@@ -109,6 +110,7 @@ export const buildManager = async (taskExecutionResources: InMemoryTaskExecution
     memoryDir,
     activeRootDirectory: directory,
     definitions: { getAgentDefinitionById: (id) => catalog.getAgentDefinition(id) },
+    runCollaboration: runCollaborationOf(delegationTree),
     host: {
       getActiveRun: () => (host.run.isActive() ? host.run as never : null),
       activateHost: restores,

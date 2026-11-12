@@ -19,7 +19,7 @@ import { testMemberExecutionContext } from "../../../fixtures/current-team-run-f
 const teamMember = testMemberExecutionContext({
   teamRunId: "team-run", rootTeamRunId: "team-run", teamDefinitionId: "team-def", memberAddress: "/worker", agentRunId: "run-worker",
 });
-const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent" });
+const standaloneHost = new MemberExecutionContext({ ...teamMember, teamScoped: false, collaborationRole: "standalone_agent", inOrganization: false });
 // Every *_project name, so a Project mutation tool that should not exist would still show up here.
 const projectMutation = (name: string) => /_project$/.test(name);
 
