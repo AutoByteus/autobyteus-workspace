@@ -47,12 +47,10 @@ export const teamAgentReadSubject = (
 export const orgAgentReadSubject = (orgRunId: string, index: AgentOrgExecutionViewIndex, agentRunId: string): AgentViewReadSubject => {
   const agent = index.agents.get(agentRunId);
   if (agent?.kind === 'task') return Object.freeze({ kind: 'run', runId: agentRunId });
-  if (agent?.kind === 'task_team_member') {
-    // A child team's members come in the team run's own space (its own file's addresses).
-    const member = index.requireTeam(agent.host.runId).execution.members.find((candidate) => candidate.agentRunId === agentRunId);
-    return Object.freeze({ kind: 'teamMember', teamRunId: agent.host.runId, memberAddress: member?.address ?? agent.address, agentRunId });
-  }
-  const address = agent?.address ?? index.remoteAgents.get(agentRunId)?.address ?? '';
+  // A child team's member address is in the team run's own space, as the server sends it.
+  if (agent?.kind === 'task_team_member') return Object.freeze({ kind: 'teamMember', teamRunId: agent.host.runId, memberAddress: agent.address, agentRunId });
+  const address = agent?.address ?? index.remoteAgents.get(agentRunId)?.address;
+  if (address === undefined) throw new Error(`AgentRun '${agentRunId}' is not an agent of AgentOrg run '${orgRunId}'.`);
   return Object.freeze({ kind: 'agentOrgMember', orgRunId, memberAddress: address, agentRunId });
 };
 

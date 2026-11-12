@@ -46,7 +46,11 @@ describe('orgAgentReadSubject (an Org view)', () => {
       .toMatchObject({ kind: 'agentOrgMember', orgRunId: 'org-run', agentRunId: 'agent-lead-configured' })
     expect(orgAgentReadSubject('org-run', index, 'agent-worker-task')).toEqual({ kind: 'run', runId: 'agent-worker-task' })
     expect(orgAgentReadSubject('org-run', index, 'agent-task-lead'))
-      .toMatchObject({ kind: 'teamMember', teamRunId: 'team-task', agentRunId: 'agent-task-lead' })
+      .toEqual({ kind: 'teamMember', teamRunId: 'team-task', memberAddress: index.requireAgent('agent-task-lead').address, agentRunId: 'agent-task-lead' })
+  })
+
+  it('refuses an agent the Org view does not index (CR-461-016)', () => {
+    expect(() => orgAgentReadSubject('org-run', index, 'unknown-run')).toThrow("AgentRun 'unknown-run' is not an agent of AgentOrg run 'org-run'.")
   })
 })
 
