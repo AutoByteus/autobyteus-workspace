@@ -1191,3 +1191,16 @@
 - Approval: the user's direction. Rule 2's one visible point, a delegated team's members' live statuses unselected, stays as at base (rule 1 projects them), so nothing the user sees changes.
 - Next action: architecture review; then the Implementation Engineer, with the held CR-461-033 work rebased onto this
 
+### SR-062 — One view sequence per run, owned by the view (answers ARCH-REV-036 AR-024)
+
+- Triggering: ARCH-REV-036 accepted SR-061 except AR-024. Base's three clients take the row events inside the view's numbered stream, and a gap or an unnumbered frame forces a reopen. SR-061 returned those events "in base's shapes" but kept SR-044's unnumbered delivery; both cannot hold with base's web. The checkpoint reads raised the same question: whose sequence, and whose open work.
+- Read: the checkpoints bracket a stored hydration, and the stream resumes at their `changeSequence` (`teamRunContextHydrationService.ts:358-372`, `agentOrgStreamingService.ts:490-505`). So the sequence must be shared by a run's stream and its checkpoint. The reviewer's option (a), a sequence per connection, would not serve the checkpoint.
+- The Solution Designer's gap: SR-061 kept SR-044 without checking it against base's numbered clients.
+- Decision (on the merits): **the view's sequence belongs to the view.**
+  - One owner per run, `RunViewStream`, numbers every frame of its view in one order: the run's own events (its live root hands them over instead of numbering them), the tree's row events and the rows' status events. It exists whether or not the run is loaded.
+  - Snapshots carry the base, connections get the frames after it, and a mode switch stays in the same sequence.
+  - The checkpoint answers the view's sequence and the run's own open work.
+  - SR-044's hold and idempotence are replaced, because a numbered stream gives "after the snapshot, in order, once". The web's changes drop to two.
+- Done: the design's "The frontend contract" (sequencing, the SR-044 row, the web changes, tests). `walkthrough.py --check` passes.
+- Next action: architecture review (AR-024)
+

@@ -215,6 +215,19 @@ The frontend renders them and decides nothing about relationships. The closed se
 
 The same holds for a child's Settings: a launch edited in the delegator's Settings is saved through that run's own stopped-run save, the call its own Settings uses. The delegator's view only shows rows. Nothing about a delegated run goes through the delegator.
 
+**The view's sequence: one per run, owned by the view** (SR-062, ARCH-REV-036 AR-024). Base's three clients take the row events inside the view's numbered stream (`advanceSequencedStream`; `agentRunCollaborationContext.ts:158-161`, `agentOrgExecutionContext.ts:232-235`, `teamExecutionViewState.ts:371`). A gap or an unnumbered frame forces a reopen. The checkpoints (`getTeamRunExecutionCheckpoint`, `getAgentOrgExecutionCheckpoint`) are read around a stored hydration, and the stream resumes at their `changeSequence` (`teamRunContextHydrationService.ts:358-372`, `agentOrgStreamingService.ts:490-505`). So:
+- **One owner per run X, `RunViewStream`** (`agent-collaboration/delegation/run-view-stream.ts`), created by the composition root's view stream registry, numbers **every frame of X's view in one order**:
+  - X's own events, which X's root, while live, hands to it in place of numbering them itself;
+  - the tree's row events (`ChildRowsFeed`);
+  - the delegated rows' status events (`LocalChildObservation`).
+
+  It exists whether or not X's root is loaded, so a stopped run's view (SR-045, SR-046) is numbered by the same owner. Its sequence lives as long as the process, like base's.
+- **A snapshot** carries the sequence it was taken at. A connection receives the frames after it, in order. A switch between stored and live mode is ordinary frames in the same sequence, with no new base. A team stream batch keeps its range (`change_sequence` … `change_sequence_through`) in the view's numbers.
+- **A checkpoint** answers `changeSequence` as X's view sequence, and `hasOpenExecutionWork` as X's own run's open work (false while its root is not loaded). A child's status change or row change is a numbered frame, so a recovery that spans one sees the sequence move and retries, as base's recovery already does for any change.
+- **What this replaces:** SR-044's hold during a snapshot, and its idempotent handling. A numbered stream already gives the frames after the snapshot, in order, each once. So base's clients take the row events exactly as at base.
+
+**Sequencing tests** (SR-062): a stopped run's view and a live one each get consecutive frames mixing the run's own events, row events and status events; a snapshot taken between frames is followed by exactly the frames after it; a stored-to-live switch keeps the sequence; a checkpoint-bracketed recovery resumes at the checkpoint's sequence, and retries when a child's status changed during it.
+
 **Rule 3: the acceptance check of the frontend contract.** For each story of `stories.py`, a characterization at `827f1e68dc` captures the snapshots, events and list reads the web receives. The branch gives the same, except where rule 2 applies: a child's conversation, output and commands, which move to the child's own stream.
 
 **Every earlier web-facing item:**
@@ -222,7 +235,7 @@ The same holds for a child's Settings: a launch edited in the delegator's Settin
 | Item | Decision |
 | --- | --- |
 | `child_runs_changed` / `CHILD_RUNS_CHANGED` (SR-042, SR-043) | **Goes.** `ChildRowsFeed` stays as the owner and emits base's started, closed and reopened events with their records, built from the collaboration tree |
-| Session ordering and membership idempotence (SR-044) | **Stays,** applied to base's events. An event held during a snapshot is sent after it. The Team client's `TASK_EXECUTION_STARTED` skips a row it already holds, as base's reopened handling already does: the one web change of this item |
+| Session ordering and membership idempotence (SR-044) | **Replaced** by the view's sequence (SR-062): every frame of a run's view is numbered by `RunViewStream`, and a connection gets the frames after its snapshot. No web change |
 | `closed_task_executions`, `closedTaskExecutionsDigest`, `task_executions_reopened` (removed by SR-041) | **Return,** with base's meaning, now produced by the tree. They are no longer dead |
 | `delegated_launch_selections_changed`, the Memory explorer's `isTaskTeam` / `startedByAgentName` / `TASK_AGENT` / `TASK_TEAM_MEMBER`, `hasCollaboration` (removed) | **Stay removed:** nothing produces them, and rule 2 covers a child's Settings |
 | The view stream lives with the open view (SR-045) | **Stays:** a real change, because a stopped delegator's children keep working |
@@ -237,7 +250,6 @@ The same holds for a child's Settings: a launch edited in the delegator's Settin
 **What the web still changes, and why:**
 1. The view stream is kept for a stopped run (SR-045).
 2. Selecting a delegated row binds the conversation and composer to that run's own context and stream (rule 2), and a child's Settings save goes to its own save.
-3. The Team client's `TASK_EXECUTION_STARTED` is idempotent (SR-044).
 
 Everything else on the web returns to base.
 
