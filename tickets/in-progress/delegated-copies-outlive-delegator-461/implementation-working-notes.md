@@ -480,3 +480,12 @@ delegated run whose Tasks are all closed while it still runs, SR-061; it leaves 
 change for X: an added row → `task_execution_started` (or `task_executions_reopened` when it was in X's closed set); a
 removed row → `task_executions_closed`. Stream events carry the projected record, so a projector reads nothing.
 Statuses: `local_child_presentation` restricted to status frames (`LocalChildObservation`, statuses only).
+
+Progress (`4564af8e4d`, WIP): steps 3b and 4 on the server, production compiles. The three views read the run's
+`RunViewStream` (`run-view-rows.ts`: `readRowsAtBase` sync, `readViewRows` after, `readRowEvent` at send time,
+`nestByPlacement`); `ChildRowsFeed` emits base's row events into each affected run's stream; the closed set is
+`CollaborationTree.closedRows`; `LocalChildFollowers.follow(run)` (statuses only); `RunViewChildren.read(run)` for the
+history and inspection reads (team resume read has `closedTaskExecutions` again). Next: rewrite the tests (feed,
+observation, three handlers, helpers `tests/helpers/child-rows-feed.ts`), then remove `DelegatedRunCommands` and the
+team and org handlers' child routing and `@` handling (rule 2), SR-039's child launch routing, the checkpoint answers,
+then the web (step 6), the characterization (7), the sequencing tests (8).
