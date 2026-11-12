@@ -15,6 +15,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-007 | Code Reviewer CRR-010 (`code-review-report.md` "Round 6", Targeted Delta Review of IR-006); round 7 | CR-461-016 | `Local Fix` | CRR-010 | Implemented; targeted re-review by Code Review, then API/E2E |
 | IR-008 | Code Reviewer CRR-012 (failure-origin review of API/E2E round 2, `d7f8b02773`), routed by the Solution Designer with SR-055, SR-056; round 8 | CR-461-017, CR-461-018, CR-461-019, CR-461-020; CR-461-021 (as SR-055/056) | `Local Fix` (017 … 020); `Design Impact` answered by SR-055, SR-056 (021) | SR-055, SR-056, ARCH-REV-030, ARCH-REV-031, CRR-011, CRR-012 | Implemented; targeted re-review by Code Review, then API/E2E |
 | IR-009 | Code Reviewer CRR-013 (`code-review-report.md` "Round 8", Full Review of the whole change at IR-008), routed by the Solution Designer with SR-057; round 9 | CR-461-022, CR-461-023, CR-461-024, CR-461-025, CR-461-026; CR-461-027 (as SR-057) | `Local Fix` (022 … 026); `Design Impact` answered by SR-057 (027) | SR-057, ARCH-REV-032, CRR-013 | Implemented; targeted re-review by Code Review, then API/E2E |
+| IR-010 | Code Reviewer CRR-014 (`code-review-report.md` "Round 9", Full Re-Audit of IR-009); round 10; with the user's request to merge the remote base | CR-461-028, CR-461-029 | `Local Fix` | CRR-014 | Implemented; merged with `origin/personal`; targeted re-review by Code Review, then API/E2E |
 
 ## Revision Entries
 
@@ -219,4 +220,21 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: IMP-36 (server), IMP-37 (web), IMP-38 (contracts) on `d9e124f844`.
 - Next recipient or routing: Code Reviewer, targeted re-review; then API/E2E.
 - Remaining limitations or risks: the listed child's `node` carries the node's name as well as its ID (the row is "marked with its node"; the name is read from this node's registry, not from the peer). Server E2E suites and web probes that use the removed member reads: `tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts`, `tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts`, `autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs` (API/E2E).
+
+### IR-010 — No guessed coordinator or member team; dead exports; the remote base merged (CR-461-028, CR-461-029)
+
+- Triggering role, report path, and round: Code Reviewer CRR-014 (`code-review-report.md` "Round 9", Full Re-Audit of IR-009: Fail, two Local Fixes; CR-461-022 … -027 resolved). Round 10. The user asked to merge the remote base, which had moved on.
+- Triggering finding IDs: CR-461-028, CR-461-029 (`Local Fix`). Large / High unchanged.
+- Prior authoritative result: IR-009 at `d9e124f844` (+ `1bdb9135c6`).
+- Current authoritative result: `994ae84850` (CR-461-028, -029), `8a47481617` (merge of `origin/personal` at `3228eff74b`), and the handoff commit.
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-014.
+- Approved behavior or requirement IDs affected: none changed.
+- Implementation delta:
+  - **CR-461-028.** A team child's coordinator is never guessed: the adapters of `DelegatedChildRun` take it from the member at the team's coordinator address (the views) or the member the Task entry names (the poll) and refuse a team without it, as do the org's peer rows and the agent-run view index's `coordinatorOf` / `coordinatorRunIdOf` (the same `members[0]` fallback, in a file this round touches). `DelegatedChildRun` is a tight union (a team child always has its coordinator, an agent child none). `AgentRootChildAgent` is a tight union (a `task_team_member` always has its team run, a `task_agent` never), so `agentRunAgentReadSubject` reads a team child's member through its team run with no fallthrough.
+  - **CR-461-029.** Removed `ChildRunNodeDto`, `ListedRunChild`, `isRemoteExecutionKnown` and `RunHistoryIndexFile` (with the import only it used); contracts dist rebuilt.
+  - **Merge.** `origin/personal` (95 commits: autobyteus-452, -472, -473, -479, -480, -486; version 1.5.13-beta.6) merged at `8a47481617`. One conflict, the phone probe's case imports and runners: both sides kept. This ticket's stopped-delegator phone cases are renumbered MSP-37 … MSP-39 → MSP-50 … MSP-52 (the merged state has MSP-37 autobyteus-471, MSP-38 autobyteus-9, MSP-39 … MSP-49 the merged tickets); the probe's case IDs are unique again.
+- Tests: `delegatedChildRuns.spec.ts` (a team child's coordinator from every source; refused when no member is it); `agentReads.spec` (every team child's member read through its team run, every direct child as its own run).
+- Local validation and result: IMP-39 (server), IMP-40 (web), IMP-41 (contracts) on the merged state `8a47481617`.
+- Next recipient or routing: Code Reviewer, targeted re-review of CR-461-028, -029 and the merge; then API/E2E.
+- Remaining limitations or risks: API/E2E's earlier evidence names this ticket's phone cases MSP-37 … MSP-39; they are MSP-50 … MSP-52 now.
 

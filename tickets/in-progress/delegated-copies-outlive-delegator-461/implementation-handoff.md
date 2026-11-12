@@ -1,12 +1,12 @@
 # Implementation Handoff — autobyteus-461 (delegated runs are runs of their own)
 
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461`
-Branch: `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`.
+Branch: `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`, merged up to `origin/personal` `3228eff74b` in round 10 (`8a47481617`).
 Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Large / High → independent architecture review was selected (passed ARCH-REV-014 on SR-039, ARCH-REV-019 on SR-044, ARCH-REV-022 … ARCH-REV-028 on SR-047 … SR-053, ARCH-REV-030 on SR-055, ARCH-REV-031 on SR-056, ARCH-REV-032 on SR-057); this handoff goes to Code Review (targeted re-review, round 9).
+- Upstream review applicability and handoff-rule result: Large / High → independent architecture review was selected (passed ARCH-REV-014 on SR-039, ARCH-REV-019 on SR-044, ARCH-REV-022 … ARCH-REV-028 on SR-047 … SR-053, ARCH-REV-030 on SR-055, ARCH-REV-031 on SR-056, ARCH-REV-032 on SR-057); this handoff goes to Code Review (targeted re-review, round 10).
 - Requirements doc: `requirements-doc.md`
 - Investigation notes: `investigation-notes.md`
 - Solution revision record: `solution-revision-record.md` (through SR-057)
@@ -14,17 +14,22 @@ Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 - Supplemental task artifacts: `target-collaboration-contract.md` (revision 8, the authority with its executable model), `evidence/collaboration-model/` (`model.py`, `stories.py`, `walkthrough.py`), `collaboration-walkthrough.md`, `evidence/data-model-validation/`
 - Design review report: `design-review-report.md`
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report: `code-review-report.md` CRR-013 (round 8, a full review of the whole change: CR-461-022 … CR-461-026 Local Fixes; CR-461-027 a Design Impact, designed as SR-057). Before it, CRR-012 (failure-origin review of API/E2E round 2: CR-461-017 … CR-461-020 Local Fixes; CR-461-021 a Design Impact, designed as SR-055 and SR-056). Earlier rounds: CRR-005 (round 3) … CRR-010 (round 7)
+- Triggering rework report: `code-review-report.md` CRR-014 (round 9, a Full Re-Audit: CR-461-028, CR-461-029 Local Fixes). Before it, CRR-013 (round 8, a full review of the whole change: CR-461-022 … CR-461-026 Local Fixes; CR-461-027 a Design Impact, designed as SR-057). Before it, CRR-012 (failure-origin review of API/E2E round 2: CR-461-017 … CR-461-020 Local Fixes; CR-461-021 a Design Impact, designed as SR-055 and SR-056). Earlier rounds: CRR-005 (round 3) … CRR-010 (round 7)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (round 9)
+- Implementation cycle: `Rework` (round 10)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-009` (IR-001: the initial implementation; IR-002 … IR-008: rounds 2 … 8)
+- Current implementation revision ID: `IR-010` (IR-001: the initial implementation; IR-002 … IR-009: rounds 2 … 9)
 - Related solution revision IDs: SR-018 … SR-057 (round 9: SR-057 a listed run's peer children in the poll's answer; round 8: SR-055 one listed-runs poll for every kind, SR-056 the row projection split by data lifetime; round 3: SR-045 the stream lives with the open view, SR-046 stored and live view sessions, SR-047 owners passed in from one composition root, SR-048 restore → live → post, SR-049 roots don't delegate, SR-052 the application host composes the same steps (replaces SR-050/051), SR-053 narrow `RunTaskRecords` port)
 - Related architecture-review revision IDs: ARCH-REV-005 … ARCH-REV-032
-- Related code-review revision IDs: CRR-002 … CRR-013 (CRR-013: a full review of the whole change; CRR-008, CRR-012: failure-origin reviews of API/E2E rounds 1 and 2; CRR-011: Pass, informational); delivery: `N/A`
-- Triggering finding IDs: CR-461-022 … CR-461-026, CR-461-027 as SR-057 (round 9, IR-009); CR-461-017 … CR-461-020, CR-461-021 as SR-055/056 (round 8, IR-008); CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+- Related code-review revision IDs: CRR-002 … CRR-014 (CRR-014: a Full Re-Audit of IR-009; CRR-013: a full review of the whole change; CRR-008, CRR-012: failure-origin reviews of API/E2E rounds 1 and 2; CRR-011: Pass, informational); delivery: `N/A`
+- Triggering finding IDs: CR-461-028, CR-461-029 (round 10, IR-010); CR-461-022 … CR-461-026, CR-461-027 as SR-057 (round 9, IR-009); CR-461-017 … CR-461-020, CR-461-021 as SR-055/056 (round 8, IR-008); CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+
+**Round 10 (IR-010):**
+- CR-461-028: a team child's coordinator is never guessed (every adapter, the org's peer rows and the view index refuse a team without its coordinator member; the `members[0]` fallbacks are gone), and a team child's member always has its team run (`AgentRootChildAgent` and `DelegatedChildRun` are tight unions), so it is always read through that team run.
+- CR-461-029: four dead exports removed.
+- The remote base merged (`origin/personal` `3228eff74b`, 95 commits); this ticket's phone probe cases are now MSP-50 … MSP-52 (were MSP-37 … MSP-39, taken by the merged tickets).
 
 **Round 9 (IR-009):**
 - CR-461-022: the agent-run view has its read owner (`agentRunAgentReadSubject`): a child here is read by its own identity, a child on a peer node through the run; its stored state, browse subject and Team tab consume it. The server's standalone member reads answer peer children only; their trace page, file list and file content reads (two GraphQL queries, one REST route) are removed.
@@ -153,6 +158,7 @@ A delegated run (agent or team, local or on a peer) is now an ordinary run with 
 
 ## Known Risks
 
+- **Phone probe case IDs renumbered** (round 10, the merge): this ticket's stopped-delegator cases are MSP-50 … MSP-52 (`mobile-stopped-delegator-cases.mjs`); API/E2E's earlier evidence calls them MSP-37 … MSP-39.
 - **Server E2E suites and web probes using the reads removed in round 9** (CR-461-022, API/E2E): `autobyteus-server-ts/tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts` (`agentRunCollaborationMemberFileChanges`, and the member projection of a local child, now refused), `tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts` (the removed query and route, wholly), `autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs` (lines about 187, 334, 343). A child here is read by its own run now.
 - **Browser probes still query the removed `agentRunCollaborationStatuses`** (API/E2E): `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (about lines 1803-1890, the op name `GetAgentRunCollaborationStatuses`), `stopped-delegator-views-probe.mjs` (174, 331), `mobile-closed-task-rows-cases.mjs` (47, 324-442).
 - **The Projects list** keeps its team rows (members only, as before SR-055 too); its agent runs are polled (in Projects mode every run is listed, window `null`).
@@ -203,7 +209,7 @@ macOS (Darwin 25.5), Node 22, pnpm; server tests with vitest 4.1; no provider ke
 
 ## Checks Run
 
-Evidence files are in `evidence/implementation/`. Round 1 (IMP-01 … IMP-10) ran on `3c95473e1c`. Round 2 (IMP-11 … IMP-17) ran on `7a32bb8832`; the handoff commit adds the ticket documents and one integration fixture fix (IMP-16). Round 3 (IMP-18 … IMP-25) ran on `4a3f221c72`, and the web checks on `296ad69b43` (one web test typing fix). Round 9 (IMP-36 … IMP-38) ran on `d9e124f844`, the round's last code commit. Round 8 (IMP-33 … IMP-35) ran on `a9f34ce3e6`; IMP-33's two failed files were rerun and IMP-34 ran on `40927e92ea` (one server test restated). Round 7 (IMP-32, web only; no server code changed) ran on `9f4709571b`. Round 6 (IMP-30, IMP-31) ran on `d3c57a8569`. Round 5 (IMP-27 … IMP-29) ran on `d188941869`. Round 4 (IMP-26) ran on `a54e78ccb7`; integration and web specs were not rerun for it (removal of unread code and two mutations with no product caller; the affected unit and integration files passed before the commit: `Tests  135 passed`). The handoff commits add only the ticket documents and evidence.
+Evidence files are in `evidence/implementation/`. Round 1 (IMP-01 … IMP-10) ran on `3c95473e1c`. Round 2 (IMP-11 … IMP-17) ran on `7a32bb8832`; the handoff commit adds the ticket documents and one integration fixture fix (IMP-16). Round 3 (IMP-18 … IMP-25) ran on `4a3f221c72`, and the web checks on `296ad69b43` (one web test typing fix). Round 10 (IMP-39 … IMP-41) ran on the merged state `8a47481617`. Round 9 (IMP-36 … IMP-38) ran on `d9e124f844`, the round's last code commit. Round 8 (IMP-33 … IMP-35) ran on `a9f34ce3e6`; IMP-33's two failed files were rerun and IMP-34 ran on `40927e92ea` (one server test restated). Round 7 (IMP-32, web only; no server code changed) ran on `9f4709571b`. Round 6 (IMP-30, IMP-31) ran on `d3c57a8569`. Round 5 (IMP-27 … IMP-29) ran on `d188941869`. Round 4 (IMP-26) ran on `a54e78ccb7`; integration and web specs were not rerun for it (removal of unread code and two mutations with no product caller; the affected unit and integration files passed before the commit: `Tests  135 passed`). The handoff commits add only the ticket documents and evidence.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -245,6 +251,9 @@ Evidence files are in `evidence/implementation/`. Round 1 (IMP-01 … IMP-10) ra
 | IMP-36 | server type gate; `pnpm test:unit`; `pnpm test:integration` | `d9e124f844` | macOS, Node 22.23 | all server src and tests: the tree's parts and standing, required collaborators, the peer-only member reads, peer children in the poll, the removed dead code | CR-461-022 … -024, CR-461-026, SR-057 | Pass | `IMP-36-server-checks.log` | `[typecheck] PASS` at 1014; unit `Tests  7896 passed \| 9 skipped (7905)`; integration `Tests  483 passed \| 69 skipped (552)` |
 | IMP-37 | web type gate, web-boundary and localization guards, literal audit, `codegen:check`, full spec suite | `d9e124f844` | macOS, Node 22.23 | the agent-run read owner, the row builders of every kind (open and listed, here and on a peer node), the removed dead code | CR-461-022, CR-461-025, CR-461-026, SR-057 | Pass | `IMP-37-web-checks-and-specs.log` | `[typecheck] PASS` at 93; guards `Passed.`; `Passed with zero unresolved findings.`; `[codegen:check]` exit 0; `Tests  5649 passed \| 2 skipped (5651)` |
 | IMP-38 | `pnpm test` in `autobyteus-collaboration-stream-contracts` | `d9e124f844` | macOS, Node 22.23 | the listed child with its node; the removed contract types | SR-057, CR-461-026 | Pass | `IMP-38-contract-tests.log` | `# pass 41`, `# fail 0`; the rebuilt dist equals the committed one |
+| IMP-39 | server type gate; `pnpm test:unit`; `pnpm test:integration`, on the merged state | `8a47481617` | macOS, Node 22.23 | all server src and tests after the merge | CR-461-029, the merge | Pass after one rerun | `IMP-39-server-checks.log` | `[typecheck] PASS` at 1014; unit `Tests  7910 passed \| 9 skipped (7919)`; integration `Tests  1 failed \| 482 passed`: `file-system-watcher.integration.test.ts` (from the merge, autobyteus-452; not touched by this ticket) failed under the suite's load and passed 3 of 3 alone (`Tests  14 passed (14)`) |
+| IMP-40 | web type gate, guards, literal audit, `codegen:check`, full spec suite, probe syntax and unique case IDs, on the merged state | `8a47481617` | macOS, Node 22.23 | the coordinator and member-team refusals, the dead exports, the merged web | CR-461-028, CR-461-029, the merge | Pass | `IMP-40-web-checks-and-specs.log` | `[typecheck] PASS` at 93; guards `Passed.`; audit `Passed with zero unresolved findings.`; `[codegen:check]` exit 0; `[probe] case IDs: 52, duplicates: []`; `Tests  5734 passed \| 2 skipped (5736)` |
+| IMP-41 | `pnpm test` in `autobyteus-collaboration-stream-contracts`, on the merged state | `8a47481617` | macOS, Node 22.23 | the contracts after removing `ChildRunNodeDto` | CR-461-029 | Pass | `IMP-41-contract-tests.log` | `# pass 41`, `# fail 0`; the rebuilt dist equals the committed one |
 
 - Not run, and why (round 8 adds): a browser check of the listed rows on the desktop and the phone (Frontend Rendered-Result Check); the contract model check (`walkthrough.py --check`): the contract and its model are unchanged this round, so IMP-17 holds. Round 3 adds: the contract model check (`walkthrough.py --check`): the contract and its model are unchanged since `7a32bb8832`, so IMP-17 holds; a browser check of the stream lifetime and SR-048 in both layouts; the agent-run root's reconnect after a WebSocket 1000 close (noted mid-round, not verified). Earlier: server E2E suites (`pnpm test:e2e`, gated runtime suites), browser probes, the isolated desktop instance, and the contract's stories run against two server instances (design "Validation", the acceptance test) — owned by API/E2E. `tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` needs a rewrite for the new model (Known Risks).
 
