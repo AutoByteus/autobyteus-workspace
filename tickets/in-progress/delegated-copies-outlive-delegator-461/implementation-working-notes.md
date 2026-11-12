@@ -366,3 +366,34 @@ mocks steps 4-8); commit; send to code reviewer.
 - Unused team-root harness (its tests went with the hosting machinery) now serves the SR-052 test with a real tree.
 - FU-014: restore mutations left without a caller (public API; not removed).
 - Not verified: the agent-run root's reconnect after a WS 1000 close (noted mid-round; no test written).
+
+## IR-013 plan: SR-060 … SR-063 (ARCH-REV-038 Pass; the frontend contract, before DS-8)
+
+Base for "return to base" on the web and contracts: this ticket's own changes are `git diff 3228eff74b HEAD` (the
+`origin/personal` merge point), not `827f1e68dc` (the merge brought 95 other commits). Measured: web 238 files,
+contracts 10 files, server src 307 files.
+
+Steps, each committed when its checks pass:
+1. Trace pages' sender addresses: `collaborationTreeOf(run).reachingAddressOf(sender)` (uncommitted:
+   `received-sender-addresses.ts` + the team and org member view services); test: an in-run, an assigner and a child sender.
+2. Renames: `DelegationTree` → `DelegationIndex` (`delegation-index.ts`), `RunCollaborationMap` → `CollaborationTree`
+   (`collaboration-tree.ts`), `mapOf` → `collaborationTreeOf`; glossary note.
+3. `RunViewStream` (`agent-collaboration/delegation/run-view-stream.ts`): base's `RootEventPublisher` moved out of the
+   root (move, don't rewrite); one per run from the composition root's registry, process-lived (`liveSequenceId` per
+   instance; `lastMessageChangeSequence` only the run's own messages); the live root hands its events over;
+   `ChildRowsFeed` and `LocalChildObservation` (statuses only) emit into it; snapshot connection: base sequence + tree rows
+   + cached statuses in one sync step, then the run's own parts (live: in its gate with base's queue; stopped: files).
+   A mode switch is an in-band snapshot through the same connection at the current sequence (27d6f014b9). Checkpoints:
+   the view's sequence; `hasOpenExecutionWork` = the run's own open work.
+4. Base's shapes from the tree: nested placement at every depth (server part of the held patch, `stash@{0}` /
+   `HELD-CR-461-033-rows-at-every-depth.patch`), `task_execution_started` / `TASK_EXECUTION_STARTED`, `task_executions_closed`,
+   `task_executions_reopened`, `closed_task_executions` + digest (base's meaning: all Tasks closed while running),
+   `remote_task_execution_started` / `_summary`, `agentRunCollaborationStatuses` with digest, history reads with delegated rows.
+5. Remove: `DelegatedRunCommands`, the team child ack (CR-461-034), the child `@` handling (CR-461-032),
+   `child_runs_changed` / `CHILD_RUNS_CHANGED`, `runCollaborationStatuses`, SR-039's child launch routing, CR-461-010/-019
+   selection fixes; `LocalChildObservation` keeps statuses only.
+6. Web: back to 3228eff74b except the two kept changes (SR-045 stream for a stopped run; rule 2: a delegated row binds
+   to its own run's context and stream, and its Settings save goes to its own save).
+7. Rule 3: a per-story characterization at `827f1e68dc` (`evidence/collaboration-model/stories.py`) of the snapshots,
+   events and list reads the web receives; the branch asserts the same except rule 2's moves.
+8. Sequencing tests (design "Sequencing tests"); Round 35 notes (derived tree; map and loaded root agree on step 1: done).
