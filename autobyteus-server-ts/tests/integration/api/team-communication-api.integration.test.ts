@@ -149,7 +149,15 @@ describe("Team communication API integration", () => {
       memberExecutionContextBuilder: {} as never,
       modelSelectionValidator: { validate: () => undefined } as never,
     });
+    // The participant read composes the runs below the root (autobyteus-461 SR-072): none here.
+    const [{ configureStudioApplicationApiServices }, { DelegatedRunAgentsReader }] = await Promise.all([
+      import("../../../src/api/graphql/studio-application-api-services.js"),
+      import("../../../src/run-history/services/delegated-run-agents-reader.js"),
+    ]);
+    const studio = configureStudioApplicationApiServices(new Proxy({ delegatedRunAgents: new DelegatedRunAgentsReader(noDelegations()) } as Record<string, unknown>,
+      { get: (target, name) => target[name as string] ?? {} }) as never);
     releaseOwnedRunManagers = () => {
+      studio.close();
       AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
       AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
     };
