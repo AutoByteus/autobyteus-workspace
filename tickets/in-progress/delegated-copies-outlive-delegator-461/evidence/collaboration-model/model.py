@@ -467,8 +467,18 @@ class World:
     def delegate_existing(self, sender, target_run, task_key, message_id, at):
         """delegate_task(target_*_run_id, task_id): only the delegator of the run's most recent assignment."""
         snode, skind, srun = self.run_of(sender); run = (snode, target_run[0], target_run[1])
-        last = [e for t, e in self.entries_of(snode, run) if e["role"] == "assigned"][-1]
-        if last["delegatedFrom"]["delegatorAgentRunId"] != sender: raise Refused("TASK_DELEGATION_NOT_ALLOWED", "Only the run's last assigner.")
+        assigned = [e for t, e in self.entries_of(snode, run) if e["role"] == "assigned"]
+        if assigned:
+            last = assigned[-1]
+        else:
+            # every Task of the run was deleted (F-24, base): its own delegatedFrom names who may give it a new Task
+            f = self.file_of(run); df = {k: v for k, v in f["delegatedFrom"].items() if k != "nodeId"}
+            last = {"role": "assigned", "delegatedFrom": df, "recipientAddress": f.get("address") or addr_of_def(f["agentDefinitionId"]),
+                    "agentRun": {"kind": "agent", "agentRunId": run[2]} if run[1] == "agent" else
+                                {"kind": "team", "teamRunId": run[2], "coordinatorAgentRunId": self.entry_agent(run)}}
+        if last["delegatedFrom"]["delegatorAgentRunId"] != sender:
+            raise Refused("TASK_DELEGATION_NOT_ALLOWED", f"{run[2]} is not one of your task agents. Use a run id that delegate_task returned to you, "
+                          "or delegate to a new task agent with recipient_address.", tool="delegate_task")
         task = self.task_by_key(snode, task_key)
         entry = {k: copy.deepcopy(last[k]) for k in ("role", "delegatedFrom", "recipientAddress", "agentRun")}
         entry.update({"linkedAt": at, "start": "started", "closedAt": None})

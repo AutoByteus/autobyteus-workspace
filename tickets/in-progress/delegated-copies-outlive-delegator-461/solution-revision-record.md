@@ -1360,3 +1360,36 @@
   - architecture review (narrow);
   - the Implementation Engineer.
 
+### SR-072 — The Team tab's messages; CR-461-055's seven questions (answers CRR-024)
+
+- **Triggering:** CRR-024, the failure-origin review of API/E2E round 5. It raised Design Impact CR-461-054 (F-26) and Requirement Gap CR-461-055 (F-23, F-24, F-27, F-30, F-31, F-36, K-13). Its six Local Fixes were released to the Implementation Engineer first, CR-461-048, the data loss, ahead of the rest.
+- **CR-461-054, F-26, the Team tab's messages:**
+  - **Evidence at base:** base composed the root's log with every task execution's own log (`composeMessageLogs` over `taskAgentLogOwners`).
+  - **Decision:** the same composition over `subtreeOf(X)`, live through a node-level `RunMessagesFeed` published once per message at the receiver's commit, and snapshot-exact by base's queue and message-ID deduplication.
+  - **The one accepted difference:** a refused message is never written, because the receiver re-checks before writing, so it is not shown.
+  - **The Solution Designer's gap:** rule 1 named the rows (SR-058) but not the Team tab's messages, and TC-13 had split the logs.
+- **CR-461-055:**
+  - **F-23:** the assigner's message to a run whose Task is DONE is refused with R-8, the same for an agent run and a team's member.
+    - Base gave a team copy's member "No running agent has the run id …", because a released copy had left its host root. That statement is false now: the run exists, and its Task is closed.
+    - REQ-003 wakes a stopped run of an open Task, not of a closed one.
+    - Model: S10.
+  - **F-24:** a new Task for a run whose Tasks were all deleted is accepted from the delegator named in the run's own `delegatedFrom`, as base accepted it (REQ-009). TC-9 governs messages between unrelated runs, not this assignment, which relates them again. Model: U11.
+  - **F-27:** a delegated run's runtime switch, from its own Settings, is accepted. This was already decided (DS-10 tests, AR-016: "eligible for the runtime switch"), and REQ-002 says it is configured like any run. Base refused it only because a hosted copy shared its host's runtime. No change.
+  - **F-30:** "works" in T-5 and DS-13 means an open entry and not stopped: running, initializing or idle. The model already read it so (an open entry and not stopped). DS-13's guard now counts idle too, so its "stop it first" is true.
+  - **F-31:** launch inheritance is one hop: from the immediate delegator's saved launch at delegation time. Base used the top run's saved edit because every copy shared the top root. Each run now owns its configuration (REQ-002, P6). **Flagged to the user as the one behavior change in this set.**
+  - **F-36:** a peer team row's `coordinator_address` is its own-team address (`/lead`). That is TC-12 option 1, the user's decision, applied to peers by SR-030. Rule 1 keeps the shape, not the old prefixed value.
+  - **K-13:** S23 and S24 are moved before S16, when E still works, because a stopped run cannot act. Their results are unchanged.
+- **Requirements:** REQ-005 and REQ-009 are restored where the branch differed (F-23, F-24). F-31 is decided within the user's direction that each run is its own, and the user is informed.
+- **Model:**
+  - S10 now includes the assigner's refused message;
+  - U11 is new;
+  - S23 and S24 are moved;
+  - contract: T-5 (works), R-8 (the assigner while DONE), and the follow-up Task and launch-inheritance rules;
+  - 49 states.
+- **Checks:**
+  - `walkthrough.py --check`: three "match" lines;
+  - the validator: 0 findings.
+- **Next action:**
+  - architecture review;
+  - then the Implementation Engineer.
+

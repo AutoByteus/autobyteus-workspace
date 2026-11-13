@@ -87,9 +87,10 @@ def standalone():
           op=lambda: w.send_by_run_id("product_designer_1a2b", SD, "One more question …", "collabmsg_G1", "2026-11-10T14:05:00.000Z"),
           found="Rule (a). E is restored and woken once: its row's `terminatedAt` is back to `null`.", today="The same.", checked="—"),
      dict(id="S10", title="M closes T1", cases="T-1, R-8",
-          call='`update_task(task_id: "demo-1", status: "DONE")`, by M',
-          op=lambda: w.update_task(M, "demo-1", "DONE", "2026-11-10T15:00:00.000Z"),
-          found="Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), except the assigner's continuation (S11).",
+          call='`update_task(task_id: "demo-1", status: "DONE")`, by M. Then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "Are you done?")`, by M',
+          op=lambda: (w.update_task(M, "demo-1", "DONE", "2026-11-10T15:00:00.000Z"),
+                      w.send_by_run_id(M, SD, "Are you done?", "x", "2026-11-10T15:05:00.000Z")),
+          found="Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), the assigner's included: M can continue E only after the Task is open again (S11). For a member of a team, the same refusal is given as for an agent run (F-23).",
           today="The same.", checked="—"),
      dict(id="S11", title="M reopens T1 and continues E", cases="T-2, R-6",
           call='`update_task(task_id: "demo-1", status: "IN_PROGRESS")`, then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more change …")`, by M',
@@ -117,6 +118,16 @@ def standalone():
           op=lambda: w.delegate(SD, "/image_maker", "2026-11-10T16:50:00.000Z", ("agent", "image_maker_88e8", None), description="Draw the import icon …"),
           found="E's newest entry, T6, is closed, but its older T1 is open. Sub-work joins the newest open entry, T1: E is still working on T1. It is refused only when none of E's entries is open (§2.4).",
           today="The same.", checked="—"),
+     dict(id="S23", title="Refused: a run that works on a Task uses `task_id`", cases="DL-11",
+          call='`delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E has Task entries)',
+          op=lambda: w.delegate(SD, "/research_agent", "2026-11-10T20:00:00.000Z", ("agent", "y", None), task_key="demo-2"),
+          found="A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.",
+          today="The same.", checked="—"),
+     dict(id="S24", title="An old prefixed address is corrected", cases="A-5, A-6",
+          call='`send_message_to(recipient_address: "/software_engineering_team/code_reviewer", content: "…")`, by `solution_designer_65a9`, copying an address from its conversation before the migration',
+          op=lambda: w.send_by_address(SD, "/software_engineering_team/code_reviewer", "…", "x", "2026-11-10T20:10:00.000Z"),
+          found="Not a member (step 1), and it begins with E's `recipientAddress`, the name E was delegated to. The refusal is a correction: it names the address to use. Nothing is stored for it, so it works whenever an old address is copied, also long after the migration. The team's own address (`\"/software_engineering_team\"`) is corrected the same way, naming the coordinator.",
+          today="Today the prefixed address is the member's address.", checked="11 delegated teams with an open Task; 3,311 stored sends used the prefixed form."),
      dict(id="S16", title="T1 is deleted", cases="T-3, R-9",
           call="The user deletes T1 from the Project.",
           op=lambda: w.delete_task("A", "demo-1", "2026-11-10T17:00:00.000Z"),
@@ -154,16 +165,6 @@ def standalone():
           op=lambda: w.send_by_address(M, "/software_engineering_team", "…", "x", "2026-11-10T19:50:00.000Z"),
           found="A delegated run's agents have no address in M's space; M reaches E by run ID (S4). The same holds for E writing `\"/product_team\"` (C-3).",
           today="The same as today's code; 53 older sends (2026-08 … 2026-10) reached a delegated run by address before that rule.", checked="53 older sends."),
-     dict(id="S23", title="Refused: a run that works on a Task uses `task_id`", cases="DL-11",
-          call='`delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E has Task entries)',
-          op=lambda: w.delegate(SD, "/research_agent", "2026-11-10T20:00:00.000Z", ("agent", "y", None), task_key="demo-2"),
-          found="A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.",
-          today="The same.", checked="—"),
-     dict(id="S24", title="An old prefixed address is corrected", cases="A-5, A-6",
-          call='`send_message_to(recipient_address: "/software_engineering_team/code_reviewer", content: "…")`, by `solution_designer_65a9`, copying an address from its conversation before the migration',
-          op=lambda: w.send_by_address(SD, "/software_engineering_team/code_reviewer", "…", "x", "2026-11-10T20:10:00.000Z"),
-          found="Not a member (step 1), and it begins with E's `recipientAddress`, the name E was delegated to. The refusal is a correction: it names the address to use. Nothing is stored for it, so it works whenever an old address is copied, also long after the migration. The team's own address (`\"/software_engineering_team\"`) is corrected the same way, naming the coordinator.",
-          today="Today the prefixed address is the member's address.", checked="11 delegated teams with an open Task; 3,311 stored sends used the prefixed form."),
      dict(id="S25", title="Refused: a saved Task to a peer node", cases="DL-9, DL-11",
           call='`delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`, by M',
           op=lambda: w.delegate(M, "/research_team", "2026-11-10T20:20:00.000Z", ("agent_team", "z", {}), task_key="demo-7", node="node-b", peer_run_node="B"),
@@ -191,6 +192,7 @@ def team():
     def u0():
         w.start_team("A", U, "software-engineering-team", U_MEMBERS, "2026-11-01T09:00:00.000Z")
         w.create_task("A", "project_8f21", "project_task_3c3c", "demo-3", "Design the onboarding", "IN_PROGRESS", "2026-11-01T09:05:00.000Z")
+        w.create_task("A", "project_8f21", "project_task_8d8d", "demo-8", "Polish the onboarding", "TODO", "2026-11-01T09:06:00.000Z")
     steps = [
      dict(id="U0", title="The user starts the Software Engineering Team on its own", cases="RUN-2", call="The user starts the team from its page.", op=u0,
           found="An ordinary team file rooted at `/`, with the definition's members and handoffs, and its run list row. There is no `delegatedFrom`: the user started it. Each member's memory folder appears when the member first runs; the team's log when the first message is sent.",
@@ -243,6 +245,12 @@ def team():
           op=lambda: w.send_by_run_id("image_maker_44a1", "software_engineering_team_73d7", "Mockups ready …", "x", "2026-11-01T15:00:00.000Z"),
           found="`send_message_to` talks with agents. A team run's ID is answered with its coordinator's run ID, whether the team runs or not, so the sender can resend. This is base's code and text (REQ-009). Nothing is written.",
           today="The same; today it was answered only while the team's host root was loaded.", checked="—"),
+     dict(id="U11", title="T3 is deleted; the solution designer gives the image agent a new Task", cases="T-3, DL-7",
+          call='The user deletes T3. Then `delegate_task(target_agent_run_id: "image_maker_44a1", task_id: "demo-8")`, by `solution_designer_7a33`',
+          op=lambda: (w.delete_task("A", "demo-3", "2026-11-01T15:10:00.000Z"),
+                      w.delegate_existing(U_SD, ("agent", "image_maker_44a1"), "demo-8", "collabmsg_U4", "2026-11-01T15:20:00.000Z")),
+          found="T3's runs are stopped and its folder removed, so the image agent and the upscaler are runs of their own (TC-3). A new Task can still be given to the image agent by run ID, as at base (F-24, REQ-009). With no entry left, its own `delegatedFrom` names who may: its delegator, the solution designer. The new entry repeats that `delegatedFrom` and the run's own address, and the image agent is in U's tree again.",
+          today="The same.", checked="—"),
     ]
     return w, steps
 

@@ -26,6 +26,8 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S13 | E works on T1 and T6 and hands on sub-work: it joins T6 | DL-12 |
 | S14 | M closes T6; E keeps working on T1 | T-1, DL-12 |
 | S15 | E hands on sub-work again: it joins T1, its newest open Task | DL-13 |
+| S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
+| S24 | An old prefixed address is corrected | A-5, A-6 |
 | S16 | T1 is deleted | T-3, R-9 |
 | S17 | M delegates work to a team on a peer node (a Task with no Project, T7) | DL-9, DL-10, DL-8 |
 | S18 | The peer team reports to M | R-10 |
@@ -33,8 +35,6 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S20 | Refused: a run whose Task is closed, messaged by a run of another Task | R-8, R-7 |
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
-| S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
-| S24 | An old prefixed address is corrected | A-5, A-6 |
 | S25 | Refused: a saved Task to a peer node | DL-9, DL-11 |
 | S26 | Refused: the user deletes M while a run it delegated to works | T-5 |
 | S27 | The user stops the research agent and deletes M; the research agent's report is refused | T-4, T-8, R-11 |
@@ -1027,11 +1027,13 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 #### S10 — M closes T1 [T-1, R-8]
 
-**Call:** `update_task(task_id: "demo-1", status: "DONE")`, by M
+**Call:** `update_task(task_id: "demo-1", status: "DONE")`, by M. Then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "Are you done?")`, by M
 
 **Result to the caller:** `{"taskId": "demo-1", "status": "DONE"}`
 
-**How:** Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), except the assigner's continuation (S11).
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CLOSED", "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)." }`
+
+**How:** Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), the assigner's included: M can continue E only after the Task is open again (S11). For a member of a team, the same refusal is given as for an agent run (F-23).
 
 **On disk after this step:**
 
@@ -2125,6 +2127,42 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
+#### S23 — Refused: a run that works on a Task uses `task_id` [DL-11]
+
+**Call:** `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E has Task entries)
+
+**Result:** refused, `{ "delegated": false, "message": "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." }`
+
+**How:** A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** The same.
+
+**Checked on the user's data:** —
+
+---
+
+#### S24 — An old prefixed address is corrected [A-5, A-6]
+
+**Call:** `send_message_to(recipient_address: "/software_engineering_team/code_reviewer", content: "…")`, by `solution_designer_65a9`, copying an address from its conversation before the migration
+
+**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_TARGET_NOT_FOUND", "message": "/software_engineering_team/code_reviewer is no longer an address: your team is addressed from its own root. Use /code_reviewer." }`
+
+**How:** Not a member (step 1), and it begins with E's `recipientAddress`, the name E was delegated to. The refusal is a correction: it names the address to use. Nothing is stored for it, so it works whenever an old address is copied, also long after the migration. The team's own address (`"/software_engineering_team"`) is corrected the same way, naming the coordinator.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** Today the prefixed address is the member's address.
+
+**Checked on the user's data:** 11 delegated teams with an open Task; 3,311 stored sends used the prefixed form.
+
+---
+
 #### S16 — T1 is deleted [T-3, R-9]
 
 **Call:** The user deletes T1 from the Project.
@@ -2761,42 +2799,6 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S23 — Refused: a run that works on a Task uses `task_id` [DL-11]
-
-**Call:** `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`, by `solution_designer_65a9` (E has Task entries)
-
-**Result:** refused, `{ "delegated": false, "message": "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task." }`
-
-**How:** A run that works on a Task delegates part of its own work, by description only; it cannot assign another Task. Nothing is written.
-
-**On disk after this step:** nothing changes.
-
-**In memory:** unchanged.
-
-**Against today:** The same.
-
-**Checked on the user's data:** —
-
----
-
-#### S24 — An old prefixed address is corrected [A-5, A-6]
-
-**Call:** `send_message_to(recipient_address: "/software_engineering_team/code_reviewer", content: "…")`, by `solution_designer_65a9`, copying an address from its conversation before the migration
-
-**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_TARGET_NOT_FOUND", "message": "/software_engineering_team/code_reviewer is no longer an address: your team is addressed from its own root. Use /code_reviewer." }`
-
-**How:** Not a member (step 1), and it begins with E's `recipientAddress`, the name E was delegated to. The refusal is a correction: it names the address to use. Nothing is stored for it, so it works whenever an old address is copied, also long after the migration. The team's own address (`"/software_engineering_team"`) is corrected the same way, naming the coordinator.
-
-**On disk after this step:** nothing changes.
-
-**In memory:** unchanged.
-
-**Against today:** Today the prefixed address is the member's address.
-
-**Checked on the user's data:** 11 delegated teams with an open Task; 3,311 stored sends used the prefixed form.
-
----
-
 #### S25 — Refused: a saved Task to a peer node [DL-9, DL-11]
 
 **Call:** `delegate_task(recipient_address: "/research_team", node: "node-b", task_id: "demo-7")`, by M
@@ -2927,6 +2929,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | U8 | A description-only delegation from a run that works on no Task | DL-8 |
 | U9 | Refused: runs of different open Tasks | R-7 |
 | U10 | Refused: a team run's ID, answered with its coordinator's | R-12 |
+| U11 | T3 is deleted; the solution designer gives the image agent a new Task | T-3, DL-7 |
 
 ---
 
@@ -3035,6 +3038,24 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
+**Created:** `projects/project_8f21/tasks/project_task_8d8d/task.json`:
+```json
+{
+  "taskId": "project_task_8d8d",
+  "projectId": "project_8f21",
+  "taskKey": "demo-8",
+  "title": "Polish the onboarding",
+  "description": "…",
+  "status": "TODO",
+  "dependsOnTaskIds": [],
+  "partOfTaskId": null,
+  "createdAt": "2026-11-01T09:06:00.000Z",
+  "updatedAt": "2026-11-01T09:06:00.000Z",
+  "contextFiles": [],
+  "comments": []
+}
+```
+
 **Against today:** The same.
 
 **Checked on the user's data:** 601 of 601 team runs the user started are rooted at `/` with members as direct children; 133 have handoffs, all inside the team; 0 nested sub-teams.
@@ -3068,7 +3089,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
 
 **In memory:** unchanged.
 
@@ -3105,7 +3126,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
 
 **In memory:** unchanged.
 
@@ -3184,7 +3205,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
 
 **In memory (the `DelegationIndex`):**
 ```json
@@ -3265,7 +3286,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/run_metadata.json`, `memory/run_history_index.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/run_metadata.json`, `memory/run_history_index.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
 
 **In memory:** unchanged.
 
@@ -3365,7 +3386,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, `memory/agents/image_maker_44a1/run_metadata.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, `memory/agents/image_maker_44a1/run_metadata.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
 
 **In memory (the `DelegationIndex`):**
 ```json
@@ -3539,7 +3560,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, `memory/agents/image_maker_44a1/run_metadata.json`, `memory/agents/upscaler_55b2/` (memory folder), `memory/agents/upscaler_55b2/run_metadata.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`.
+**Unchanged:** `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, `memory/agents/image_maker_44a1/run_metadata.json`, `memory/agents/upscaler_55b2/` (memory folder), `memory/agents/upscaler_55b2/run_metadata.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`, `projects/project_8f21/tasks/project_task_3c3c/task.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
 
 **In memory (the `DelegationIndex`):**
 ```json
@@ -3641,6 +3662,137 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **In memory:** unchanged.
 
 **Against today:** The same; today it was answered only while the team's host root was loaded.
+
+**Checked on the user's data:** —
+
+---
+
+#### U11 — T3 is deleted; the solution designer gives the image agent a new Task [T-3, DL-7]
+
+**Call:** The user deletes T3. Then `delegate_task(target_agent_run_id: "image_maker_44a1", task_id: "demo-8")`, by `solution_designer_7a33`
+
+**Result to the caller:** `{"delegated": true, "target_kind": "agent", "target_agent_run_id": "image_maker_44a1"}`
+
+**How:** T3's runs are stopped and its folder removed, so the image agent and the upscaler are runs of their own (TC-3). A new Task can still be given to the image agent by run ID, as at base (F-24, REQ-009). With no entry left, its own `delegatedFrom` names who may: its delegator, the solution designer. The new entry repeats that `delegatedFrom` and the run's own address, and the image agent is in U's tree again.
+
+**On disk after this step:**
+
+**Changed:** `memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl`, new line:
+```json
+{
+  "messageId": "collabmsg_U4",
+  "senderAgentRunId": "solution_designer_7a33",
+  "receiverAgentRunId": "image_maker_44a1",
+  "content": "New Task assigned to you: demo-8. …",
+  "messageType": "task_assignment",
+  "referenceFiles": [],
+  "createdAt": "2026-11-01T15:20:00.000Z"
+}
+```
+
+**Changed:** `memory/agents/image_maker_44a1/communication_messages_active.jsonl`, new line:
+```json
+{
+  "messageId": "collabmsg_U4",
+  "senderAgentRunId": "solution_designer_7a33",
+  "receiverAgentRunId": "image_maker_44a1",
+  "content": "New Task assigned to you: demo-8. …",
+  "messageType": "task_assignment",
+  "referenceFiles": [],
+  "createdAt": "2026-11-01T15:20:00.000Z"
+}
+```
+
+**Changed:** `memory/run_history_index.json`, changed row:
+```json
+{
+  "runId": "upscaler_55b2",
+  "agentDefinitionId": "upscaler",
+  "agentName": "Upscaler",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-01T13:30:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": "2026-11-01T15:10:00.000Z"
+}
+```
+
+**Removed:** `projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json`
+
+**Removed:** `projects/project_8f21/tasks/project_task_3c3c/task.json`
+
+**Created:** `projects/project_8f21/tasks/project_task_8d8d/agent_run_resources.json`:
+```json
+{
+  "taskId": "project_task_8d8d",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "delegatedFrom": {
+        "delegatingRun": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+        "delegatorAgentRunId": "solution_designer_7a33"
+      },
+      "recipientAddress": "/image_maker",
+      "agentRun": {"kind": "agent", "agentRunId": "image_maker_44a1"},
+      "linkedAt": "2026-11-01T15:20:00.000Z",
+      "start": "started",
+      "closedAt": null
+    }
+  ]
+}
+```
+
+**Unchanged:** `ad-hoc-tasks/adhoc_task_91a1/agent_run_resources.json`, `ad-hoc-tasks/adhoc_task_91a1/task.json`, `memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/` (memory folder), `memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json`, `memory/agents/image_maker_44a1/` (memory folder), `memory/agents/image_maker_44a1/run_metadata.json`, `memory/agents/research_agent_8f80/` (memory folder), `memory/agents/research_agent_8f80/run_metadata.json`, `memory/agents/upscaler_55b2/` (memory folder), `memory/agents/upscaler_55b2/run_metadata.json`, `memory/team_run_history_index.json`, `projects/project_8f21/tasks/project_task_8d8d/task.json`.
+
+**In memory (the `DelegationIndex`):**
+```json
+[
+  {
+    "run": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+    "tree": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+    "parent": null,
+    "tasks": [],
+    "agents": [
+      {"agentRunId": "architecture_reviewer_cd34", "address": "/architecture_reviewer"},
+      {"agentRunId": "code_reviewer_2e4f", "address": "/code_reviewer"},
+      {"agentRunId": "implementation_engineer_864a", "address": "/implementation_engineer"},
+      {"agentRunId": "solution_designer_7a33", "address": "/solution_designer"}
+    ]
+  },
+  {
+    "run": {"kind": "agent", "runId": "research_agent_8f80"},
+    "tree": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+    "delegatorAgentRunId": "solution_designer_7a33",
+    "tasks": [
+      {
+        "taskId": "adhoc_task_91a1",
+        "role": "assigned",
+        "open": true,
+        "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
+      }
+    ],
+    "agents": [{"agentRunId": "research_agent_8f80", "address": "/research_agent"}]
+  },
+  {
+    "run": {"kind": "agent", "runId": "image_maker_44a1"},
+    "tree": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+    "parent": {"kind": "agent_team", "runId": "software_engineering_team_73d7"},
+    "delegatorAgentRunId": "solution_designer_7a33",
+    "tasks": [
+      {
+        "taskId": "project_task_8d8d",
+        "role": "assigned",
+        "open": true,
+        "assigner": {"kind": "agent_team", "runId": "software_engineering_team_73d7"}
+      }
+    ],
+    "agents": [{"agentRunId": "image_maker_44a1", "address": "/image_maker"}]
+  }
+]
+```
+
+**Against today:** The same.
 
 **Checked on the user's data:** —
 

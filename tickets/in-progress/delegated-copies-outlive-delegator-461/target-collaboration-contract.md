@@ -298,7 +298,8 @@ The rules (CM-9, unchanged):
 - **Within one run**, a message is stored once, in that run's log.
 - **Between two runs**, it is stored in both runs' logs with one `messageId`.
 - **A new delegated run's work packet** is its first input, kept in its own memory. It is not a logged message.
-- **Another Task for an existing run** is delivered as a `task_assignment` message, which is stored in both runs' logs.
+- **Another Task for an existing run** is delivered as a `task_assignment` message, which is stored in both runs' logs. Only the delegator of the run's most recent assignment may give it. When every Task of the run was deleted, the run's own `delegatedFrom` names that delegator, as base accepted it (SR-072, F-24; U11).
+- **Launch inheritance is one hop** (SR-072, F-31). A new delegated run inherits the saved launch of the run that delegated it, at the time of the delegation. A later edit of a run further up applies to that run's own future delegations, not to runs its descendants start.
 
 **TC-13 (new): one place for an agent run's log.** Today there are two places:
 - 8 agent runs the user started log at `agents/<id>/collaboration/communication_messages_*`.
@@ -478,6 +479,8 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S13 | E works on T1 and T6 and hands on sub-work: it joins T6 | DL-12 |
 | S14 | M closes T6; E keeps working on T1 | T-1, DL-12 |
 | S15 | E hands on sub-work again: it joins T1, its newest open Task | DL-13 |
+| S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
+| S24 | An old prefixed address is corrected | A-5, A-6 |
 | S16 | T1 is deleted | T-3, R-9 |
 | S17 | M delegates work to a team on a peer node (a Task with no Project, T7) | DL-9, DL-10, DL-8 |
 | S18 | The peer team reports to M | R-10 |
@@ -485,8 +488,6 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S20 | Refused: a run whose Task is closed, messaged by a run of another Task | R-8, R-7 |
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
-| S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
-| S24 | An old prefixed address is corrected | A-5, A-6 |
 | S25 | Refused: a saved Task to a peer node | DL-9, DL-11 |
 | S26 | Refused: the user deletes M while a run it delegated to works | T-5 |
 | S27 | The user stops the research agent and deletes M; the research agent's report is refused | T-4, T-8, R-11 |
@@ -506,6 +507,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | U8 | A description-only delegation from a run that works on no Task | DL-8 |
 | U9 | Refused: runs of different open Tasks | R-7 |
 | U10 | Refused: a team run's ID, answered with its coordinator's | R-12 |
+| U11 | T3 is deleted; the solution designer gives the image agent a new Task | T-3, DL-7 |
 
 ### 5.3 You start an org (O)
 
@@ -560,7 +562,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | R-5 | A run → its Task's assigner | (b) | S3, U4 |
 | R-6 | The assigner → a run of its reopened Task | (b), the assigner continues it | S11 |
 | R-7 | Runs of different Tasks | Refused: "it works on a different Task" | S20 |
-| R-8 | Anyone → a run whose Tasks are all closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`, "Only the agent that assigned…"), except R-6; answered before R-7 | S10, S20 |
+| R-8 | Anyone → a run whose Tasks are all closed, the assigner included while the Task is DONE or CANCELLED | Refused (`TASK_AGENT_RESOURCE_CLOSED`, "Only the agent that assigned…"), the same for an agent run and a team's member (SR-072, F-23); except R-6; answered before R-7 | S10, S20 |
 | R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S16, 5.4.4 |
 | R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S18 |
 | R-12 | Anyone → a team run's ID | Refused (`TARGET_IS_TEAM_RUN`), naming its coordinator's run ID, whether the team runs or not (base's text) | U10 |
