@@ -61,11 +61,10 @@ const byRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): number =>
   compare(a.rootSubjectKind, b.rootSubjectKind) || compare(a.rootRunId, b.rootRunId);
 
 /**
- * A run's collaboration tree (autobyteus-461 SR-060, SR-061, contract §4). Glossary: the design called it the run's
- * "collaboration map" (`RunCollaborationMap`) until SR-061; it is the tree the user sees under the run, and the
- * `DelegationIndex` (earlier `DelegationTree`) is the forest it is derived from.
- * every cross-run answer for one run, derived from the
- * `DelegationIndex` when asked (`delegationIndex.collaborationTreeOf(run)`), never stored. It works whether or not the run is loaded:
+ * A run's collaboration tree (autobyteus-461 SR-060, SR-061, contract §4): every cross-run answer for one run, derived
+ * from the `DelegationIndex` when asked (`delegationIndex.collaborationTreeOf(run)`), never stored. Glossary: the design
+ * called it the run's "collaboration map" (`RunCollaborationMap`) until SR-061; it is the tree the user sees under the
+ * run, and the `DelegationIndex` (earlier `DelegationTree`) is the forest it is derived from. It works whether or not the run is loaded:
  * it reads only the tree's nodes, their per-run agents (read once) and, at use, the runs' own files. The questions
  * about a run's own parts (its members, its own addresses, steps 1 and 3) stay with its own index.
  */
