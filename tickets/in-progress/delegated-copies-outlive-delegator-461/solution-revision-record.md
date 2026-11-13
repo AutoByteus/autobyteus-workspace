@@ -1488,4 +1488,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - `walkthrough.py --check`: three "match" lines;
   - the validator: 0 findings.
 - **Next action:** the Implementation Engineer, then the full code review.
-
+- **K-15 confirmed by the user** (relayed by the code reviewer): a delegator must be stopped before its history can be deleted, as at base. The model's S26 already reflects it (SR-077, a1b060c7ec).
