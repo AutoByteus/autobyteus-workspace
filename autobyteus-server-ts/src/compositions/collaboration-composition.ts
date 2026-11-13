@@ -1,3 +1,6 @@
+import { createRunConversationAvailability } from "../agent-collaboration/execution/task/run-conversation-availability.js";
+import { getAgentConversationActivityInspector } from "../agent-memory/services/agent-conversation-activity-inspector.js";
+import { createStoredTeamRunExecutionTreeLocationService } from "../run-history/services/team-run-execution-tree-location-service.js";
 import { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import { isStandaloneRootMessageEvent } from "../standalone-agent-run-root/domain/standalone-root-event.js";
 import { isTeamRunMessageEvent } from "../agent-team-execution/domain/team-run-event.js";
@@ -186,6 +189,9 @@ export const composeCollaboration = async (input: Readonly<{
       },
       recordCollaborating: (agentRunId, address) => runs.agentRunService.recordCollaborating(agentRunId, address),
       reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender),
+      conversationOf: createRunConversationAvailability({ memoryDir, inspector: getAgentConversationActivityInspector(),
+        liveAgents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents,
+        teamMembers: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);

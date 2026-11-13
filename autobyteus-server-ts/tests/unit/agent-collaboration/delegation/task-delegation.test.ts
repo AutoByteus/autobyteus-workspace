@@ -1,3 +1,4 @@
+import type { AgentConversationActivity } from "../../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
 import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it, vi } from "vitest";
 import { acceptWorkPacketIfAllowed, TaskDelegation, type LocalDelegationPlacement, type WorkPacket } from "../../../../src/agent-collaboration/execution/task/task-delegation.js";
@@ -29,7 +30,7 @@ const harness = (reader: RunFilesReader = NO_RUN_PARTS) => {
   const recordCollaborating = vi.fn(async () => undefined);
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
     deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
-    reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender) });
+    reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender), conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
   const folders: (string | null)[] = [];
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
@@ -193,7 +194,7 @@ describe("TaskDelegation.toNewRun", () => {
       tree.build();
       tasks.setEntriesListener(tree);
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null });
+        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
       const delegate = () => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
         senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it." } as never, placement });
       return { tasks, tree, delegate };
@@ -227,7 +228,8 @@ describe("TaskDelegation.toNewRun", () => {
   });
 
   describe("toExistingRun (S8, DS-6: a follow-up Task by run ID)", () => {
-    const followUp = async (deliverToRun = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string })) => {
+    const followUp = async (deliverToRun = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string }),
+      activity: AgentConversationActivity = { kind: "present" }) => {
       const tasks = new InMemoryTaskExecutionResources();
       const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
       tree.build();
@@ -237,7 +239,8 @@ describe("TaskDelegation.toNewRun", () => {
         delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
       await tasks.markStarted({ teamRunId: E.rootRunId });
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
-        channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null });
+        channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null,
+        conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity })) });
       const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
         sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
         assign: { copy: copy as never, taskId } });
@@ -263,6 +266,22 @@ describe("TaskDelegation.toNewRun", () => {
       await expect(h.give(M, M.rootRunId, { agentRunId: "never_delegated" })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("is not one of your task agents") });
       expect(h.tasks.assignments).toEqual([]);
       expect(h.deliverToRun).not.toHaveBeenCalled();
+    });
+
+    it("CR-461-043: a run that cannot be restored is refused with base's text before anything changes, and no path is shown", async () => {
+      const none = await followUp(undefined, { kind: "none" });
+      await expect(none.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: false, message: "The delegated Team at "
+        + "'/software_engineering_team' cannot be restored: its coordinator '/solution_designer' has no saved conversation to continue. Start a new delegation for this work." });
+      expect(none.tasks.assignments).toEqual([]);
+      expect(none.deliverToRun).not.toHaveBeenCalled();
+      expect(none.tasks.entry({ teamRunId: E.rootRunId })).toMatchObject({ taskId: "T1", start: "started" });
+      const unreadable = await followUp(undefined, { kind: "indeterminate", error: new Error("raw_traces.jsonl could not be read (ENOENT)") });
+      const refused = await unreadable.give(M, M.rootRunId, { teamRunId: E.rootRunId });
+      expect(refused).toEqual({ delegated: false, message: "The delegated Team at '/software_engineering_team' cannot be restored: the saved conversation of its "
+        + "coordinator '/solution_designer' cannot be read (raw_traces.jsonl could not be read (ENOENT)). Its files were left unchanged. Start a new delegation "
+        + "for this work, or restore its saved conversation from a backup." });
+      expect((refused as { message: string }).message).not.toMatch(/memory\/|\/agents\/|\/agent_teams\//);
+      expect(unreadable.tasks.assignments).toEqual([]);
     });
 
     it("a work message that is not delivered marks the new entry failed and says what to do", async () => {

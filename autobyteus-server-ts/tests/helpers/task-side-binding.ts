@@ -26,6 +26,7 @@ export const testTaskSide = (tasks: InMemoryTaskExecutionResources, channel?: ()
     starter: { startAgent: notInThisTest, startTeam: notInThisTest } as never,
     deliverWorkPacket: notInThisTest, discard: async () => undefined, recordCollaborating: async () => undefined,
     reachingAddress: async () => null,
+    conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
     deliverToRun: notInThisTest,
     // A test that gives no channel uses the process's, as it did before the channel was required of the delegation.
     channel: channel ?? (() => resolveRemoteRunChannel()),

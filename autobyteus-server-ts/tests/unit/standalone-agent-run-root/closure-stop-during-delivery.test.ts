@@ -31,7 +31,7 @@ describe("a closure stop and a follow-up Task delivered while the agent run stop
     const resolver = createCollaborationRootResolver({ standaloneRoots: h.manager, teamRuns: {} as never, orgRuns: {} as never });
     const roots = new Set<unknown>();
     const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-      channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null,
+      channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
       deliverToRun: async (input) => {
         const resolved = await resolver.resolveOrRestore(createAgentRootExecutionIdentity(HOST));
         if (resolved?.kind !== "agent") throw new Error("no root");

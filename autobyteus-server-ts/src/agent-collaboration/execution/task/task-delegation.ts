@@ -1,3 +1,4 @@
+import { taskExecutionConversationUnavailable, type RunConversationAvailability } from "./run-conversation-availability.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
 import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
@@ -104,6 +105,8 @@ export class TaskDelegation {
      * one owner of the work packet's sender address for every delegator kind (CR-461-031); `null`: run ID only.
      */
     reachingAddress(sender: CollaborationMemberExecutionIdentity, receiverRun: RootExecutionIdentity): Promise<string | null>;
+    /** Whether an existing run can take a follow-up Task: its entry agent live, or its saved conversation readable (CR-461-043). */
+    conversationOf(execution: TaskExecutionReference, entry: Readonly<{ agentRunId: string; address: string }>): Promise<RunConversationAvailability>;
   }>) {}
 
   /**
@@ -314,6 +317,11 @@ export class TaskDelegation {
       entryAgentRunId = current.entryAgentRunId;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId });
+      // As base: a run that cannot be restored is refused before anything changes (CR-461-043).
+      const conversation = await this.dependencies.conversationOf(execution, { agentRunId: entryAgentRunId, address: current.recipientAddress });
+      if (conversation.activity.kind !== "present") {
+        throw taskExecutionConversationUnavailable({ execution, address: current.recipientAddress, entryAddress: conversation.entryAddress, activity: conversation.activity });
+      }
       const otherOpenTaskReferences = await tasks.openTaskReferencesOf(execution, taskId);
       await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId }, execution, taskId,
         ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: entryAgentRunId } : {}) });
