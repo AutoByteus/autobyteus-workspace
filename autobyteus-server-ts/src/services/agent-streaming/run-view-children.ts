@@ -2,7 +2,7 @@ import type { ChildRowProjection, ChildRowsFeed } from "../../agent-collaboratio
 import type { LocalChildAgentStatus } from "../../agent-collaboration/execution/delegation/local-child-observation.js";
 import type { LocalChildFollowers } from "../../agent-collaboration/execution/delegation/local-child-followers.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { readViewRows, type ViewRows } from "./run-view-rows.js";
+import { readViewSnapshot, type ViewRows } from "./run-view-rows.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 /**
@@ -14,7 +14,7 @@ export class RunViewChildren {
   constructor(private readonly input: Readonly<{
     feed: Pick<ChildRowsFeed, "rowsOf">;
     projection: ChildRowProjection;
-    followers: Pick<LocalChildFollowers, "statuses">;
+    followers: Pick<LocalChildFollowers, "statuses" | "currentStatuses">;
   }>) {}
 
   /**
@@ -26,8 +26,11 @@ export class RunViewChildren {
     return Object.freeze({ statuses: await this.input.followers.statuses(run), closedTaskExecutions: Object.freeze(closed) });
   }
 
-  async read(run: RootExecutionIdentity): Promise<Readonly<{ rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>> {
-    const rows = await readViewRows(this.input.projection, run, { rows: this.input.feed.rowsOf(run), statuses: [] });
-    return Object.freeze({ rows, statuses: await this.input.followers.statuses(run) });
+  /**
+   * The rows, and a status for every agent of the rows read, by the views' one builder (`readViewSnapshot`, CR-461-071):
+   * a row whose record cannot be read is left out with its agents, so the statuses name only listed agents.
+   */
+  read(run: RootExecutionIdentity): Promise<Readonly<{ rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>> {
+    return readViewSnapshot({ projection: this.input.projection, followers: this.input.followers }, run, { rows: this.input.feed.rowsOf(run), statuses: [] });
   }
 }

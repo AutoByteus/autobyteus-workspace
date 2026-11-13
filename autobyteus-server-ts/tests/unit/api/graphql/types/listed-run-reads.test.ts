@@ -16,6 +16,7 @@ import { AgentRunCollaborationResolver } from "../../../../../src/api/graphql/ty
 import { CollaborationRootHistoryResolver } from "../../../../../src/api/graphql/types/collaboration-root-history.js";
 import { withTeamRows } from "../../../../../src/api/graphql/types/listed-team-rows.js";
 import { agentChildRow } from "../../../../helpers/child-rows-feed.js";
+import { projectAgentCollaborationView } from "../../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 
 /**
  * autobyteus-461 SR-061 rule 1 (SR-068): the run list's reads return in base's shapes, filled from the collaboration tree:
@@ -24,9 +25,32 @@ import { agentChildRow } from "../../../../helpers/child-rows-feed.js";
 const placed = (run: Record<string, string>, nodeId?: string) => ({ row: { run, ...(nodeId ? { nodeId } : {}) }, host: { hostKind: "root", hostRunId: "x" } });
 
 describe("the run list's reads", () => {
+  it("CR-461-071 (F-52, rule 7): a delegated run whose own file became unreadable after its parts were read is left out with its agents; the delegator's view opens", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const row = (agentRunId: string) => ({ row: { run: { agentRunId }, recipientAddress: `/${agentRunId}` }, host: { hostKind: "root", hostRunId: "host" } });
+    const children = new RunViewChildren({
+      feed: { rowsOf: () => ({ open: [row("writer"), row("helper")], closed: [] }) } as never,
+      projection: { rowOf: async (child: { run: { agentRunId: string } }) => {
+        if (child.run.agentRunId === "helper") throw new Error("Unterminated string in JSON at position 527");
+        return { kind: "local" as const, row: agentChildRow("writer") };
+      } } as never,
+      // The tree's parts were read before the file was truncated: the earlier statuses still name the helper.
+      followers: { statuses: async () => [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }, { agentRunId: "helper", memberAddress: "/helper", status: "idle" }],
+        currentStatuses: (run) => run.rootRunId === "writer" ? [{ agentRunId: "writer", status: "running" }] : [] } });
+    const { rows, statuses } = await children.read({ rootSubjectKind: "agent", rootRunId: "host" });
+    expect(rows.taskExecutions.map((execution) => (execution as { agentRunId: string }).agentRunId)).toEqual(["writer"]);
+    expect(statuses).toEqual([{ agentRunId: "writer", memberAddress: "/writer", status: "running" }]);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("The run 'helper' delegated under agent run 'host' was left out of its view"));
+    // The contract accepts the view (it rejected a status naming the left-out row's agent: "Agent root status identity mismatch.").
+    expect(() => projectAgentCollaborationView({ hostRunId: "host", isActive: true, baseChangeSequence: 0, liveSequenceId: "live", lastMessageChangeSequence: 0,
+      snapshot: { host: { address: "/manager", agentRunId: "host", agentDefinitionId: "manager" }, createdAt: "2026-11-01T00:00:00.000Z", statuses: [], inputStates: [] } as never,
+      rows, childStatuses: statuses })).not.toThrow();
+    warn.mockRestore();
+  });
+
   it("RunViewChildren.poll: its rows' statuses and its local closed set, reading no row record", async () => {
     const projection = { rowOf: vi.fn() };
-    const children = new RunViewChildren({ projection, followers: { statuses: async () => [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }] },
+    const children = new RunViewChildren({ projection, followers: { statuses: async () => [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }], currentStatuses: () => [] },
       feed: { rowsOf: () => ({ open: [], closed: [placed({ agentRunId: "done" }), placed({ agentRunId: "far" }, "node-b")] }) } as never });
     await expect(children.poll({ rootSubjectKind: "agent", rootRunId: "host" })).resolves.toEqual({
       statuses: [{ agentRunId: "writer", memberAddress: "/writer", status: "running" }], closedTaskExecutions: [{ agentRunId: "done" }] });

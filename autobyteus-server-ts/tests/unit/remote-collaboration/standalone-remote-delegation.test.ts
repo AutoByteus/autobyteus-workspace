@@ -280,7 +280,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const inspection = (await a.manager.getInspection(DELEGATOR))!;
     // Its rows as the run's view and history reads give them (SR-061): from its collaboration tree, the peer row with its node.
     const children = new RunViewChildren({ feed: new ChildRowsFeed({ streams: testViewStreams(), tree: a.taskSide.tree, isRunning: () => false }),
-      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }), followers: { statuses: async () => [] } });
+      projection: createChildRowProjection({ memoryDir: a.memoryDir, tree: a.taskSide.tree, channel: () => null }), followers: { statuses: async () => [], currentStatuses: () => [] } });
     const { rows } = await children.read(createAgentRootExecutionIdentity(DELEGATOR));
     const view = projectAgentCollaborationView({ ...inspection, rows, childStatuses: [] });
     if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");

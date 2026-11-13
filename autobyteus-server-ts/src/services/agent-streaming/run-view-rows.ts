@@ -91,7 +91,8 @@ export const readViewRows = async (projection: ChildRowProjection, run: RootExec
  * agents are known once its record is read, so the rest are filled then, from those synchronous sources only; a later
  * status frame follows the snapshot in the view's order. Addresses are the row's own.
  */
-export const readViewSnapshot = async (sources: Pick<RunViewRowSources, "projection" | "followers">, run: RootExecutionIdentity, atBase: RowsAtBase):
+export const readViewSnapshot = async (sources: Readonly<{ projection: ChildRowProjection; followers: Pick<LocalChildFollowers, "currentStatuses"> }>,
+  run: RootExecutionIdentity, atBase: RowsAtBase):
   Promise<Readonly<{ rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>> => {
   const rows = await readViewRows(sources.projection, run, atBase);
   const known = new Map(atBase.statuses.map((status) => [status.agentRunId, status.status]));
