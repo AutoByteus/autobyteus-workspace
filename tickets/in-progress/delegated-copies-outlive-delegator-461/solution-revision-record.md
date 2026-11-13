@@ -1450,3 +1450,15 @@ No architecture review: this restores base behavior and withdraws one test line.
 
 No architecture review: these follow REQ-006, an approved exception, rule 2 and base.
 
+### SR-076 — A message whose Task closes during its write: kept and shown, as at base (answers CR-461-060 TDR-001)
+
+- **Triggering:** the Implementation Engineer's Unclear on CR-461-060, the TDR-001 part. A Task that closes during the receiver's durable write leaves the bytes on disk. Only the post-write check sees the closure, and an append-only log can't take the write back.
+- **The Solution Designer's gap:** SR-072 said a refused message is never written, and accepted a difference from base. That holds for a refusal before the write, but this race can't be prevented without new coupling. Base kept and showed the record (469 REQ-012, `root-message-append.ts:43`); F-26 had first flagged exactly that message as missing.
+- **Decision:** option (c), base's behavior.
+  - A refusal before the write writes nothing.
+  - A closure during the write keeps the record in the receiver's log, answers the sender with `TASK_AGENT_RESOURCE_CLOSED`, and the composed Team tab shows it.
+  - Rejected: (a), the closure waiting on every run's log lock (it couples the Task side to each run), and (b), a refusal marker (a new record kind and new readers).
+  - SR-072's accepted difference is withdrawn.
+- **Requirements:** unchanged; base's behavior is kept.
+- **Next action:** the Implementation Engineer. TDR-001's expectation changes: the refusal is answered and the record is shown.
+
