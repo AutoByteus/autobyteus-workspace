@@ -1,4 +1,4 @@
-import type { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
+import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import type { RunViewRowSources } from "../services/agent-streaming/run-view-rows.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -17,7 +17,7 @@ export type RunViewSources = Readonly<{
   rows: RunViewRowSources;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The closed-Task input fence (DS-15): a delegated Team run member's input is refused before the run is restored. */
-  closedTasks: Pick<ClosedTaskFence, "refusal">;
+  closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
   readStoredTeamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   readStoredOrgTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null>;
 }>;
@@ -28,7 +28,7 @@ export const createRunViewSources = (input: Readonly<{
   streams: RunViewStreams;
   rows: RunViewRowSources;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
-  closedTasks: Pick<ClosedTaskFence, "refusal">;
+  closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
 }>): RunViewSources => {
   const layout = new AgentMemoryLayout(input.memoryDir);
   const teamTrees = new TeamRunExecutionTreeStore();

@@ -64,7 +64,7 @@ export class AgentRunCommandCoordinator {
 
     const record = begin.record;
     // DS-15 (SR-070): a run whose Task is closed takes no input. Refused before anything is resolved, restored or shown.
-    const refusal = this.standaloneRuns?.inputRefusal(record.runId) ?? null;
+    const refusal = await this.standaloneRuns?.inputRefusal(record.runId) ?? null;
     if (refusal) return this.refuse(record, refusal);
     const activeRunAtStart = this.agentRunService.getAgentRun(record.runId);
     const requiresActivation = !activeRunAtStart;

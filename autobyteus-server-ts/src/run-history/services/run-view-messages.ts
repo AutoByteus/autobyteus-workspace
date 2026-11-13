@@ -6,7 +6,7 @@ export type RunMessageRecords = Readonly<{
   isOwnAgent(agentRunId: string): boolean;
 }>;
 
-/** A run's view's messages (SR-072): the composed list, and which agents are its tree's (its own and its open rows'). */
+/** A run's view's messages (SR-072, SR-074): the composed list, and which agents are its tree's (its own and its open rows'). */
 export type RunViewMessages = Readonly<{
   messages: readonly CollaborationCommunicationMessage[];
   isAgentOfTree(agentRunId: string): boolean;
@@ -42,24 +42,24 @@ export const composeMessageLogs = (
 };
 
 /**
- * The messages of the view of run X (autobyteus-461 SR-072, CR-461-054; rule 1): X's own log composed with the own log of
- * every run below it, open or closed, at every depth, as base composed its root's log with every task execution's. Base's
- * in-view rule, its tree being X's agents and those of every run below. A message between two runs is in both logs and
- * kept once. The view's tree, for its participants, is X's agents and those of its open rows. A run below whose records
- * cannot be read is left out, with a warning naming it.
+ * The messages of the view of run X (autobyteus-461 SR-072, SR-074; rule 1): X's own log composed with the own log of
+ * every run of its open subtree, at every depth, as base composed its root's log with its open copies'. One rule, base's
+ * `isMessageOfView(message, own(X), tree(X))`, the same live (`RunMessagesFeed`): `tree(X)` is X's agents and those of its
+ * open rows. A closed run's messages with X's own agents stay, in X's own log (DEC-001). A message between two runs is
+ * kept once. A run whose records cannot be read is left out, with a warning naming it. `below` is the set taken at one
+ * moment, the read's start (ARCH-REV-048).
  */
 export const composeRunViewMessages = (input: Readonly<{
   own: RunMessageRecords;
-  below: readonly Readonly<{ run: string; records: RunMessageRecords | Error; open: boolean }>[];
+  below: readonly Readonly<{ run: string; records: RunMessageRecords | Error }>[];
 }>): RunViewMessages => {
   const readable = input.below.flatMap((entry) => {
-    if (!(entry.records instanceof Error)) return [{ ...entry, records: entry.records }];
+    if (!(entry.records instanceof Error)) return [entry.records];
     console.warn(`The messages of run '${entry.run}' are left out of its delegator's view: ${entry.records.message}`);
     return [];
   });
-  const isTreeAgent = (id: string) => input.own.isOwnAgent(id) || readable.some((entry) => entry.records.isOwnAgent(id));
-  const messages = composeMessageLogs([input.own.messages, ...readable.map((entry) => entry.records.messages)],
-    (message) => isMessageOfView(message, input.own.isOwnAgent, isTreeAgent));
-  const open = readable.filter((entry) => entry.open);
-  return Object.freeze({ messages, isAgentOfTree: (id: string) => input.own.isOwnAgent(id) || open.some((entry) => entry.records.isOwnAgent(id)) });
+  const isAgentOfTree = (id: string) => input.own.isOwnAgent(id) || readable.some((records) => records.isOwnAgent(id));
+  const messages = composeMessageLogs([input.own.messages, ...readable.map((records) => records.messages)],
+    (message) => isMessageOfView(message, input.own.isOwnAgent, isAgentOfTree));
+  return Object.freeze({ messages, isAgentOfTree });
 };

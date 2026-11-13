@@ -140,7 +140,7 @@ const commandReadyRun = () => ({
 
 /** The eligible run's root, reduced to its host-command order: ready, bind, post. */
 const rootCommandPort = (current: ReturnType<typeof harness>): StandaloneRunCommandPort => ({
-  inputRefusal: () => null,
+  inputRefusal: async () => null,
   postUserMessage: async (input) => {
     const { run } = await current.service.activateHost(input.runId, HOST);
     input.onActiveRunReady?.(run);
@@ -655,7 +655,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
     const mentions = [{ kind: "agent_team" as const, definitionId: "product-team" }];
     const port = (outcome: "posted" | "rejected" | "failed"): StandaloneRunCommandPort => ({
-      inputRefusal: () => null,
+      inputRefusal: async () => null,
       postUserMessage: vi.fn(async (input) => {
         expect(input.mentions).toEqual(mentions);
         input.onActiveRunReady?.(activeRun as never);
@@ -726,7 +726,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const activeRun = commandReadyRun();
     const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ ...APPLICATION_OWNED, startedAt: "2026-08-17T20:01:00.000Z" }) }] });
     current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
-    const plain: StandaloneRunCommandPort = { inputRefusal: () => null, postUserMessage: vi.fn(async () => null) };
+    const plain: StandaloneRunCommandPort = { inputRefusal: async () => null, postUserMessage: vi.fn(async () => null) };
     await expect(exactCommandCoordinator(current, plain).postUserMessage({
       runId: RUN_ID, messageId: "m-1", dedupeKey: "d-1", message: new AgentInputUserMessage("Ask @Product Team"),
       mentions: [{ kind: "agent_team", definitionId: "product-team" }],

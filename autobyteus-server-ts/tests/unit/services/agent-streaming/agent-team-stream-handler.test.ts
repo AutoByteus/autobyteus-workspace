@@ -422,7 +422,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
 
     it("a stopped run is refused before it is restored: nothing registers, no snapshot or status follows, nothing is posted", async () => {
       const harness = createHarness({ stopped: true });
-      harness.closedTasks.refusal.mockReturnValue(closed);
+      harness.closedTasks.refusal.mockResolvedValue(closed);
       const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
       sessions.push({ handler: harness.handler, id: sessionId! });
       const before = sent(harness.connection).length;
@@ -443,7 +443,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
 
     it("a live run refuses the message and an approval; an interrupt still reaches it", async () => {
       const harness = createHarness();
-      harness.closedTasks.refusal.mockReturnValue(closed);
+      harness.closedTasks.refusal.mockResolvedValue(closed);
       const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
       sessions.push({ handler: harness.handler, id: sessionId! });
       await harness.handler.handleMessage(sessionId!, send("3"));
@@ -455,10 +455,10 @@ describe("AgentTeamStreamHandler current root stream", () => {
 
     it("after the assigner reopens it, the user's message is posted", async () => {
       const harness = createHarness({ stopped: true });
-      harness.closedTasks.refusal.mockReturnValue(closed);
+      harness.closedTasks.refusal.mockResolvedValue(closed);
       const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
       sessions.push({ handler: harness.handler, id: sessionId! });
-      harness.closedTasks.refusal.mockReturnValue(null);
+      harness.closedTasks.refusal.mockResolvedValue(null);
       await harness.handler.handleMessage(sessionId!, send("4"));
       expect(harness.teamRunService.resolveManagedTeamRun).toHaveBeenCalledOnce();
       expect(harness.executeAgentCommand).toHaveBeenCalledWith("nested-task-agent-run-001", expect.objectContaining({ kind: "post_message" }));

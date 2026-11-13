@@ -107,7 +107,7 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
 
 describe('AgentOrg execution checkpoint (autobyteus-461 SR-045, SR-062)', () => {
   it('a stopped Org\'s checkpoint is its view\'s sequence, with no open work of its own', () => {
-    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run] }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
+    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
     const stream = streams.streamOf(createAgentOrgRootExecutionIdentity('org-stopped'))
     stream.publish({ kind: 'a row event' }); stream.publish({ kind: 'a status event' })
     viewStreams.current = streams

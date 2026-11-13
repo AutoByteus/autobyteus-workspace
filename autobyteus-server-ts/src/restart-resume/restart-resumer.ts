@@ -1,4 +1,4 @@
-import type { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
+import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { AgentOperationResult } from "../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
 import type { AgentRunInputOptions } from "../agent-execution/input/agent-run-input-contract.js";
@@ -52,7 +52,7 @@ export class RestartResumer {
     /** Who delegated to whom (the Task entries); `null` when the Task records are not loaded (nothing is related). */
     tree: Pick<DelegationIndex, "parentOf">;
     /** DS-15 (SR-070): a run whose Task is closed takes no input, the resume notice included; it is not restored. */
-    closedTasks: Pick<ClosedTaskFence, "refusal">;
+    closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
     now?: () => Date;
     concurrency?: number;
   }>) {}
@@ -138,7 +138,8 @@ export class RestartResumer {
     try {
       // A cheap pre-filter before restoring; the guards are the re-check after the restore and the first-input rule.
       if (this.dependencies.liveRuns.getActiveRun(entry.agentRunId)) return this.skipped(label, "it is already live (it received new input)");
-      if (this.dependencies.closedTasks.refusal(entry.root)) return this.skipped(label, "its Task is closed");
+      const fenced = await this.dependencies.closedTasks.refusal(entry.root);
+      if (fenced) return this.skipped(label, fenced.code === "TASK_AGENT_RESOURCE_CLOSED" ? "its Task is closed" : "its Task record cannot be read");
       const before = await this.dependencies.rootHistory(entry.root);
       if (before !== "present") return this.skipped(label, describeState(before));
       const resolved = await this.dependencies.rootResolver.resolveOrRestore(entry.root);

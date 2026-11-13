@@ -6,7 +6,7 @@ import { collaboratorPortOf } from "../run-history/services/run-collaborator-por
 import { createRunConversationAvailability } from "../agent-collaboration/execution/task/run-conversation-availability.js";
 import { getAgentConversationActivityInspector } from "../agent-memory/services/agent-conversation-activity-inspector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../run-history/services/team-run-execution-tree-location-service.js";
-import { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
+import { ClosedTaskEntryFence, ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import { isStandaloneRootMessageEvent, standaloneRootMessageEvent } from "../standalone-agent-run-root/domain/standalone-root-event.js";
 import { isTeamRunMessageEvent, teamRunMessageEvent } from "../agent-team-execution/domain/team-run-event.js";
 import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../agent-org-execution/domain/agent-org-run-event.js";
@@ -80,7 +80,8 @@ export type TaskSide = Readonly<{
   viewStreams: RunViewStreams;
   taskRecords: RunTaskRecords;
   /** The closed-Task input fence over the tree and the Task records (DS-15, SR-070). */
-  closedTasks: ClosedTaskFence;
+  /** The closed-Task fence where input enters, before a run's root loads (DS-15, SR-074). */
+  closedTasks: ClosedTaskEntryFence;
   projectsLayout: ProjectsLayout;
   adHocTasksLayout: AdHocTasksLayout;
 }>;
@@ -109,7 +110,8 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   return Object.freeze({ resources, tree, // Each run's view stream; which events are messages is each root kind's rule (SR-062).
     viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent },
       { tree, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } }), taskRecords,
-    closedTasks: new ClosedTaskFence({ tree, tasks: taskRecords }), projectsLayout, adHocTasksLayout });
+    closedTasks: new ClosedTaskEntryFence({ fence: new ClosedTaskFence({ tree, tasks: taskRecords }), tasks: taskRecords, files: new RunOwnAgentsReader(input.memoryDir) }),
+    projectsLayout, adHocTasksLayout });
 };
 
 /** What steps 4–8 create that the host passes on: the view streams' sources and the GraphQL reads. */

@@ -76,7 +76,7 @@ export const noViewRows = () => followTestChildRows().rows;
 
 /** View sources for a stream handler under test whose run is live (no stored tree, no rows). */
 /** A closed-Task fence (DS-15) that takes every input; a test sets `refusal` to close a run's Task. */
-export const openTasks = () => ({ refusal: vi.fn((_run: RootExecutionIdentity): ClosedTaskRefusal | null => null) });
+export const openTasks = () => ({ refusal: vi.fn(async (_run: RootExecutionIdentity): Promise<ClosedTaskRefusal | null> => null) });
 
 export const testViewSources = () => {
   const rows = followTestChildRows();

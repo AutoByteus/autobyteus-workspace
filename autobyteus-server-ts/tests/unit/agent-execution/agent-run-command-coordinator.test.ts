@@ -208,7 +208,7 @@ describe("AgentRunCommandCoordinator", () => {
 
   it("DS-15: a run whose Task is closed is refused with base's text before anything is resolved, restored or shown", async () => {
     const refusal = { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED" as const, message: "Your Task is DONE or CANCELLED, so you can't start new work." };
-    const standaloneRuns = { inputRefusal: vi.fn(() => refusal), postUserMessage: vi.fn(async () => null) };
+    const standaloneRuns = { inputRefusal: vi.fn(async () => refusal), postUserMessage: vi.fn(async () => null) };
     const { coordinator, registry, published, agentRunService } = buildCoordinator({ standaloneRuns });
     const result = await coordinator.postUserMessage(command("msg-closed"));
     expect(result.ack).toMatchObject({ state: "rejected", accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: refusal.message });

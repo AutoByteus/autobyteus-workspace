@@ -1,4 +1,4 @@
-import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { ClosedTaskEntryFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RootSnapshotConnection, RunViewStreams, SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { ChildRowRootEvent } from "../../agent-collaboration/delegation/child-rows-feed.js";
@@ -24,7 +24,7 @@ export type TeamViewSources = Readonly<{
   /** The run's registration (managed) and its end, by its identity. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The closed-Task input fence (DS-15, SR-070): a member's input is refused before the run is restored. */
-  closedTasks: Pick<ClosedTaskFence, "refusal">;
+  closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
   /** The managed, active team run; null while it is stopped (never restores). */
   activeTeamRun(teamRunId: string): RootTeamRun | null;
   /** The stopped run's own stored tree; null when there is no such run. */

@@ -29,8 +29,8 @@ const message = (messageId: string, senderAgentRunId: string, receiverAgentRunId
 const REMOTE_RUN_ID = "remote-publisher-run";
 const host = { agentRunId: "manager", address: "/manager" };
 /**
- * A tree of local agent runs below `manager` for the participant read (SR-072): `all` at every depth, open or closed;
- * `open`, the view's rows. Each run's agents are its own.
+ * A tree of local agent runs below the read's root (SR-072, SR-074): `all` at every depth, open or closed (past
+ * participants); `open`, the view's rows (the logs it composes, its tree). Each run's agents are its own.
  */
 const treeBelow = (all: readonly string[], open: readonly string[]) => ({ subtreeOf: () => all.map((agentRunId) => ({ agentRunId })),
   collaborationTreeOf: () => ({ rows: () => open.map((agentRunId) => ({ run: { agentRunId } })) }),
@@ -136,5 +136,16 @@ describe("collaborationParticipantMessages", () => {
     const helper = await read("helper");
     expect(helper.messages.map((entry) => entry.messageId)).toEqual(["w2", "w3"]);
     expect(helper.pastParticipants).toEqual([]);
+  });
+
+  it("SR-074, one rule: on reload, a message between a run below X and X's own delegator is not in X's view; a two-hop message is", async () => {
+    // X is the worker, delegated by the Manager; the helper is below it. w3 (Manager -> helper) is in the helper's log.
+    const w2 = message("w2", "worker", "helper", "2026-11-01T00:00:02.000Z");
+    const w3 = message("w3", "manager", "helper", "2026-11-01T00:00:03.000Z");
+    const logs: Record<string, unknown[]> = { worker: [w2], helper: [w2, w3] };
+    const records = async (runId: string) => ({ host: { agentRunId: runId, address: `/${runId}` }, messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: runId, messages: logs[runId] ?? [] } });
+    const read = (agentRunId: string) => withStudioServices({ delegatedRunAgents: new DelegatedRunAgentsReader(treeBelow(["helper"], ["helper"])) },
+      () => withHubRecords(records, () => readCollaborationParticipantMessages({ rootKind: "agent", rootRunId: "worker", agentRunId })));
+    expect((await read("helper")).messages.map((entry) => entry.messageId)).toEqual(["w2"]);
   });
 });

@@ -86,7 +86,7 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
     } } as never,
     now: () => new Date("2026-11-01T10:00:30.000Z"),
     concurrency: options.concurrency,
-    closedTasks: { refusal: (root: RootExecutionIdentity) => options.closed?.includes(root.rootRunId) ? { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED" as const, message: "closed" } : null },
+    closedTasks: { refusal: async (root: RootExecutionIdentity) => options.closed?.includes(root.rootRunId) ? { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED" as const, message: "closed" } : null },
   });
   return { resumer, live, history, posts, refuse, published, order, rootResolver, roots, maxInFlight: () => maxInFlight };
 };

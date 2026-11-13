@@ -53,7 +53,7 @@ export const configureE2eStudioApplicationApiServices = (
   return configureStudioApplicationApiServices({
     runViewChildren: overrides.runViewChildren ?? NO_DELEGATIONS_VIEW_CHILDREN,
     delegatedRunAgents: overrides.delegatedRunAgents ?? NO_DELEGATIONS_RUN_AGENTS,
-    runViewStreams: overrides.runViewStreams ?? new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run] }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } }),
+    runViewStreams: overrides.runViewStreams ?? new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } }),
     agentDefinitionService,
     agentTeamDefinitionService,
     agentOrgDefinitionService: overrides.agentOrgDefinitionService

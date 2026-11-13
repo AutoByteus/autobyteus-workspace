@@ -6,9 +6,10 @@ import { NO_RUN_PARTS } from "../../../helpers/run-agents-reader.js";
 import { testViewStreams } from "../../../helpers/view-streams.js";
 
 /**
- * autobyteus-461 SR-072 (CR-461-054): the node's message feed. A committed message is numbered, once, as its kind's
- * message event in the open view of each of its two runs and of every run above either; a run whose view no one opened
- * gets nothing; the message moves each view's `lastMessageChangeSequence`.
+ * autobyteus-461 SR-072, SR-074 (CR-461-054, -056): the node's message feed. A committed message is numbered, once, as its
+ * kind's message event in the open view of each of its two runs and of every run above either, when base's in-view rule
+ * holds for that view (both agents' runs in its tree, X and its open rows, or one of them X); a run whose view no one
+ * opened gets nothing; the message moves each view's `lastMessageChangeSequence`.
  */
 const M = { rootSubjectKind: "agent" as const, rootRunId: "manager" };
 const W = { rootSubjectKind: "agent_team" as const, rootRunId: "worker" };
@@ -45,20 +46,28 @@ describe("RunMessagesFeed (SR-072)", () => {
     expect(w.streams.streamOf(M).getLivePosition()).toMatchObject({ changeSequence: 1, lastMessageChangeSequence: 1 });
   });
 
-  it("a message between the Manager and the helper, two hops down, reaches each view once; a message inside the Manager reaches only its view", async () => {
+  it("a message inside the Manager reaches only its view", async () => {
     const w = await world();
     const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
-    w.streams.messages.publish({ message: message("x2", "manager", "helper"), senderRun: M, receiverRun: H });
-    expect([atM.length, atW.length, atH.length]).toEqual([1, 1, 1]);
     w.streams.messages.publish({ message: message("x3", "manager", "manager-mate"), senderRun: M, receiverRun: M });
-    expect([atM.length, atW.length, atH.length]).toEqual([2, 1, 1]);
+    expect([atM.length, atW.length, atH.length]).toEqual([1, 0, 0]);
   });
 
-  it("a closed run is still below its delegator: its messages reach the views above it", async () => {
+  it("SR-074, one rule: a message between a run below X and X's own delegator is not in X's view; the Manager's and the helper's views show it", async () => {
+    const w = await world();
+    const [atM, atW, atH] = [w.seen(M), w.seen(W), w.seen(H)];
+    // The worker's view: the helper is in its tree, the Manager is not, and neither is the worker's own.
+    w.streams.messages.publish({ message: message("x6", "manager", "helper"), senderRun: M, receiverRun: H });
+    expect([atM.length, atW.length, atH.length]).toEqual([1, 0, 1]);
+  });
+
+  it("SR-074: a closed run is out of its delegator's tree: messages between closed runs below leave the Manager's view; its own agents' stay", async () => {
     const w = await world();
     w.tasks.close("T1");
-    const atM = w.seen(M);
+    const [atM, atW] = [w.seen(M), w.seen(W)];
     w.streams.messages.publish({ message: message("x4", "worker-lead", "helper"), senderRun: W, receiverRun: H });
+    expect([atM.length, atW.length]).toEqual([0, 1]);
+    w.streams.messages.publish({ message: message("x7", "worker-lead", "manager"), senderRun: W, receiverRun: M });
     expect(atM).toHaveLength(1);
   });
 

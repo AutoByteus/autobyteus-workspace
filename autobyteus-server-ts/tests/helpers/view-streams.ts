@@ -6,13 +6,13 @@ import { isTeamRunMessageEvent, teamRunMessageEvent } from "../../src/agent-team
 import { isStandaloneRootMessageEvent, standaloneRootMessageEvent } from "../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 
 /** A tree with no delegations: each run is its own chain (its messages reach only its own view). */
-const NO_DELEGATIONS: Pick<DelegationIndex, "chainOf"> = { chainOf: (run) => [run] };
+const NO_DELEGATIONS: Pick<DelegationIndex, "chainOf" | "collaborationTreeOf"> = { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never };
 
 /**
  * Each run's view stream, with each root kind's message rule and message event, as the composition root creates them
  * (SR-062), and the node's message feed over them (SR-072), over `tree` (none by default).
  */
-export const testViewStreams = (tree: Pick<DelegationIndex, "chainOf"> = NO_DELEGATIONS): RunViewStreams =>
+export const testViewStreams = (tree: Pick<DelegationIndex, "chainOf" | "collaborationTreeOf"> = NO_DELEGATIONS): RunViewStreams =>
   new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent },
     { tree, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } });
 

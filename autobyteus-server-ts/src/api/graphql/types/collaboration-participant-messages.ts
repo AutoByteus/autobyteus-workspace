@@ -14,7 +14,7 @@ import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-
 import { isPublicMessage } from "../../../services/agent-streaming/public-message-scope.js";
 import { getTeamCommunicationProjectionService } from "../../../services/team-communication/team-communication-projection-service.js";
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { createRootExecutionIdentity, rootExecutionIdentityKey } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { runIdentityOf } from "../../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../../agent-collaboration/execution/task/task-execution-reference.js";
 import { composeRunViewMessages, type RunMessageRecords, type RunViewMessages } from "../../../run-history/services/run-view-messages.js";
@@ -41,19 +41,17 @@ const readRunRecords = async (rootKind: CollaborationRootKind, rootRunId: string
 };
 
 /**
- * The records of the view of run X (SR-072): X's own log composed with the own log of every local run below it, at every
- * depth, open or closed (`composeRunViewMessages`); its tree is X's agents and those of its open rows.
+ * The records of the view of run X (SR-072, SR-074): X's own log composed with the own log of every local run of its open
+ * subtree (`composeRunViewMessages`), the set taken once, at the read's start (ARCH-REV-048).
  */
 const readRootRecords = async (rootKind: CollaborationRootKind, rootRunId: string): Promise<RunViewMessages> => {
-  const root = createRootExecutionIdentity({ rootSubjectKind: rootKind, rootRunId });
-  const below = getStudioDelegatedRunAgents();
-  const open = new Set(below.runsBelow(root, "open").map((run) => rootExecutionIdentityKey(runIdentityOf(run))));
+  const openBelow = getStudioDelegatedRunAgents().openRunsBelow(createRootExecutionIdentity({ rootSubjectKind: rootKind, rootRunId }));
   const readBelow = async (ref: TaskExecutionReference) => {
     const run = runIdentityOf(ref);
     const records = await readRunRecords(run.rootSubjectKind, run.rootRunId).catch((error: unknown) => error instanceof Error ? error : new Error(String(error)));
-    return { run: run.rootRunId, records, open: open.has(rootExecutionIdentityKey(run)) };
+    return { run: run.rootRunId, records };
   };
-  const [own, runs] = await Promise.all([readRunRecords(rootKind, rootRunId), Promise.all(below.runsBelow(root, "all").map(readBelow))]);
+  const [own, runs] = await Promise.all([readRunRecords(rootKind, rootRunId), Promise.all(openBelow.map(readBelow))]);
   return composeRunViewMessages({ own, below: runs });
 };
 

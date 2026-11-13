@@ -9,7 +9,7 @@ import { RunViewStreams } from "../../../../src/agent-collaboration/delegation/r
 type Frame = Readonly<{ kind: "message" | "row" | "status" }>;
 const streams = () => new RunViewStreams({ agent: ((event: Frame) => event.kind === "message") as never,
   agent_team: ((event: Frame) => event.kind === "message") as never, agent_org: ((event: Frame) => event.kind === "message") as never },
-  { tree: { chainOf: (run) => [run] }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
+  { tree: { chainOf: (run) => [run], collaborationTreeOf: () => ({ rows: () => [] }) as never }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
 const TEAM = { rootSubjectKind: "agent_team" as const, rootRunId: "squad" };
 
 describe("a run's view sequence", () => {

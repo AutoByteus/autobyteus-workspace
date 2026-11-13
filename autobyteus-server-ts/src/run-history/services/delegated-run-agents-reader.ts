@@ -34,12 +34,11 @@ export class DelegatedRunAgentsReader {
   }
 
   /**
-   * The local runs below this run, at every depth (SR-072, the Team tab's messages): `all`, open or closed (the logs its
-   * view composes); `open`, the view's rows (the agents of its tree). A peer's run is left out: its messages stay on its node.
+   * The local runs of this run's open subtree, at every depth: its view's rows (SR-072, SR-074), whose logs its Team tab
+   * composes and whose agents are its tree. A peer's run is left out: its messages stay on its node.
    */
-  runsBelow(root: RootExecutionIdentity, which: "all" | "open"): readonly TaskExecutionReference[] {
-    return which === "all" ? this.delegatedRuns.subtreeOf(root)
-      : this.delegatedRuns.collaborationTreeOf(root).rows().flatMap((row) => row.nodeId === undefined ? [row.run] : []);
+  openRunsBelow(root: RootExecutionIdentity): readonly TaskExecutionReference[] {
+    return this.delegatedRuns.collaborationTreeOf(root).rows().flatMap((row) => row.nodeId === undefined ? [row.run] : []);
   }
 
   /** Every agent run ID of every run delegated from this run, one hop at a time and recursively (token totals). */

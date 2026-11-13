@@ -62,7 +62,7 @@ export type StandaloneRunCommandPort = Readonly<{
    * The closed-Task fence (DS-15, SR-070): the refusal of input to the run, checked before anything is resolved, restored
    * or shown; `null` when it takes input (or is not an eligible run).
    */
-  inputRefusal(runId: string): ClosedTaskRefusal | null;
+  inputRefusal(runId: string): Promise<ClosedTaskRefusal | null>;
   /** In the root's gate: the fence again, host ready, `onActiveRunReady`, mention admission, then the post. */
   postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null>;
 }>;

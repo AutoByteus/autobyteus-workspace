@@ -4,7 +4,8 @@ import { DelegationIndex } from "../../../src/agent-collaboration/delegation/del
 import { createAgentRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
-import { HOST, buildManager, cleanupDirectories } from "./helpers/standalone-root-harness.js";
+import { HOST, buildManager, cleanupDirectories, metadata } from "./helpers/standalone-root-harness.js";
+import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 
 /**
  * autobyteus-461 DS-15 (SR-070, G-4): the user's message to a delegated agent run whose Task is closed. It is refused with
@@ -38,7 +39,7 @@ describe("DS-15: the user's message to a closed delegated agent run", () => {
   it("is refused before its root is resolved or restored: nothing registers, activates or binds", async () => {
     const f = await delegatedHost();
     f.tasks.close("T1");
-    expect(f.manager.inputRefusal(HOST)).toEqual(refused.refusal);
+    await expect(f.manager.inputRefusal(HOST)).resolves.toEqual(refused.refusal);
     await expect(f.post()).resolves.toEqual(refused);
     expect(f.registrations).toEqual([]);
     expect(f.manager.hasRoot(HOST)).toBe(false);
@@ -73,20 +74,37 @@ describe("DS-15: the user's message to a closed delegated agent run", () => {
     await expect(f.post()).resolves.toMatchObject({ kind: "posted", post: { accepted: true } });
   });
 
-  it("CR-461-051 (autobyteus-469 DEC-010): while its Task record cannot be read, a delegated run fails closed at its gate head; its agent is not made ready", async () => {
+  it("CR-461-051, SR-074: while its Task record cannot be read, a delegated run is refused before its root is loaded: nothing registers or runs", async () => {
     const f = await delegatedHost();
     // Its Task's record is damaged: no readable Task names it (as after a restart), and the Task side reports the damage.
     f.tasks.deleteTask("T1");
     f.tasks.damaged.add("T1");
-    f.setMetadata({ delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } });
-    await expect(f.post()).resolves.toEqual({ kind: "refused", refusal: { accepted: false, code: "TASK_AGENT_RESOURCES_UNAVAILABLE",
-      message: "Task run data could not be read (T1). Fix or restore the file and restart the app; other features keep working." } });
+    // Its own file says it was delegated.
+    await new AgentRunMetadataStore(f.memoryDir).writeMetadata(HOST, metadata(f.memoryDir, { delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } }));
+    const unavailable = { accepted: false, code: "TASK_AGENT_RESOURCES_UNAVAILABLE",
+      message: "Task run data could not be read (T1). Fix or restore the file and restart the app; other features keep working." };
+    await expect(f.manager.inputRefusal(HOST)).resolves.toEqual(unavailable);
+    await expect(f.post()).resolves.toEqual({ kind: "refused", refusal: unavailable });
+    expect(f.registrations).toEqual([]);
+    expect(f.manager.hasRoot(HOST)).toBe(false);
+    expect(f.restores).not.toHaveBeenCalled();
     expect(f.onActiveRunReady).not.toHaveBeenCalled();
     expect(f.host.run.postUserMessage).not.toHaveBeenCalled();
-    // A run the user started (no delegatedFrom) takes its message meanwhile.
+    // A run the user started (its file names no delegator) takes its message meanwhile.
     const user = await delegatedHost();
     user.tasks.deleteTask("T1");
     user.tasks.damaged.add("T1");
     await expect(user.post()).resolves.toMatchObject({ kind: "posted", post: { accepted: true } });
+  });
+
+  it("CR-461-051: a loaded delegated root refuses at its gate head while a Task record cannot be read; its agent is not made ready", async () => {
+    const f = await delegatedHost();
+    f.setMetadata({ delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } });
+    const root = (await f.manager.resolveRoot(HOST))!;
+    f.tasks.deleteTask("T1");
+    f.tasks.damaged.add("T1");
+    await expect(root.postHostUserMessage({ message: new AgentInputUserMessage("Are you there?"), postOptions: {}, onActiveRunReady: f.onActiveRunReady }))
+      .resolves.toMatchObject({ kind: "refused", refusal: { code: "TASK_AGENT_RESOURCES_UNAVAILABLE" } });
+    expect(f.onActiveRunReady).not.toHaveBeenCalled();
   });
 });

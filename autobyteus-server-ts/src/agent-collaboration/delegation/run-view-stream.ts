@@ -136,7 +136,7 @@ export class RunViewStreams {
 
   constructor(
     private readonly isMessageEvent: Readonly<Record<RootExecutionIdentity["rootSubjectKind"], (event: never) => boolean>>,
-    feed: Readonly<{ tree: Pick<DelegationIndex, "chainOf">; events: RunMessageEvents }>,
+    feed: Readonly<{ tree: Pick<DelegationIndex, "chainOf" | "collaborationTreeOf">; events: RunMessageEvents }>,
   ) {
     this.messages = new RunMessagesFeed({ ...feed, openStreamOf: (run) => this.streams.get(rootExecutionIdentityKey(run)) ?? null });
   }

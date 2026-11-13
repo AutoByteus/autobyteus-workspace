@@ -1,4 +1,5 @@
 import type { DelegationIndex } from "../../delegation/delegation-index.js";
+import type { RunOwnAgentsReader } from "../../../run-history/store/run-own-agents-reader.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
 import { runReferenceOf, type RunTaskRecords } from "./task-execution-resource-port.js";
@@ -18,9 +19,9 @@ const REFUSAL: ClosedTaskRefusal = Object.freeze({ accepted: false, code: "TASK_
  * at the head of a loaded root's gate; it reads the Task side's records, the authority (AR-017). Created at step 1–2.
  *
  * Damaged Task data (CR-461-051, autobyteus-469 DEC-010): a delegated run that no readable Task names may belong to a
- * Task whose record cannot be read, so while any cannot, it fails closed with the Task side's message. Only the run's own
- * root knows it was delegated (its file's `delegatedFrom`), so this is answered at its gate head, before its agent is
- * made ready: no model request follows.
+ * Task whose record cannot be read, so while any cannot, it fails closed with the Task side's message. Whether the run
+ * was delegated is its own file's `delegatedFrom`: a loaded root passes it from its own options at its gate head; where
+ * input enters, `ClosedTaskEntryFence` reads it before the root is loaded (SR-074).
  */
 export class ClosedTaskFence {
   constructor(private readonly dependencies: Readonly<{
@@ -43,6 +44,24 @@ export class ClosedTaskFence {
   assertOpen(run: RootExecutionIdentity, delegated = false): void {
     const refusal = this.refusal(run, delegated);
     if (refusal) throw new TaskDelegationError(refusal.code, refusal.message);
+  }
+}
+
+/**
+ * The fence where input enters, before the run's root is resolved or restored (DS-15, SR-074): a refused input registers
+ * no root, shows no status and binds no stream. While a Task record cannot be read, whether the run was delegated is read
+ * from its own file (`RunOwnAgentsReader.delegationOf`); otherwise nothing is read.
+ */
+export class ClosedTaskEntryFence {
+  constructor(private readonly dependencies: Readonly<{
+    fence: Pick<ClosedTaskFence, "refusal">;
+    tasks: Pick<RunTaskRecords, "unreadable">;
+    files: Pick<RunOwnAgentsReader, "delegationOf">;
+  }>) {}
+
+  async refusal(run: RootExecutionIdentity): Promise<ClosedTaskRefusal | null> {
+    const delegated = this.dependencies.tasks.unreadable() ? (await this.dependencies.files.delegationOf(run)) !== null : false;
+    return this.dependencies.fence.refusal(run, delegated);
   }
 }
 
