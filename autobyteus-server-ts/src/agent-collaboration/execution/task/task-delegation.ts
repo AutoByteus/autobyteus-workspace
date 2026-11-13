@@ -80,14 +80,20 @@ const ownNameRefusal = (senderRun: RootExecutionIdentity, ownName: string | unde
 const firstLineOf = (description: string): string => description.split(/\r?\n/).map((line) => line.trim()).find(Boolean) ?? "";
 const workText = (description: string, comments: readonly string[]): string =>
   comments.length ? [description, "", "Comments:", ...comments.map((comment) => `- ${comment}`)].join("\n") : description;
-/** A coded refusal from the runtime or the Task side (as opposed to an infrastructure fault), as the agent reads it. */
 /**
- * A refusal the agent reads as `{ delegated: false, message }`: a delegation refusal or the Task side's rejection, as base
- * (`asTaskDelegationError`). Any other error is thrown, so the tool answers base's `{ error: { code, message } }`, e.g.
- * TASK_DELEGATION_ERROR for an unknown Task key (CR-461-059).
+ * A new run's refusal the agent reads as `{ delegated: false, message }`: a delegation refusal or the Task side's
+ * rejection, as base (`asTaskDelegationError`). Any other error is thrown, so the tool answers base's
+ * `{ error: { code, message } }`, e.g. TASK_DELEGATION_ERROR for an unknown Task key by `recipient_address` (CR-461-059).
  */
 const asRefusal = (error: unknown): TaskDelegationOutcome | null =>
   error instanceof TaskDelegationError || taskExecutionResourceRejectionCode(error) ? { delegated: false, message: message(error) } : null;
+/**
+ * A run-ID assignment's refusal: any coded error, as base's `assignToExistingCopy` (`refusalCode`), e.g. an unknown
+ * Task key is `{ delegated: false, message }` on this path (CR-461-059, F-47). An uncoded error is thrown.
+ */
+const asRunIdRefusal = (error: unknown): TaskDelegationOutcome | null =>
+  error instanceof TaskDelegationError || (error instanceof Error && typeof (error as { code?: unknown }).code === "string")
+    ? { delegated: false, message: message(error) } : null;
 
 /**
  * `delegate_task`'s order for a new run (design DS-1, `TaskDelegation`), root-neutral: the standalone, team and org roots
@@ -385,7 +391,7 @@ export class TaskDelegation {
         ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: entryAgentRunId } : {}) });
       content = buildExistingCopyTaskMessage({ taskReference, projectId: saved.projectId, description: saved.description, comments: saved.comments, otherOpenTaskReferences });
     } catch (error) {
-      const refusal = asRefusal(error);
+      const refusal = asRunIdRefusal(error);
       if (refusal) return refusal;
       throw error;
     }

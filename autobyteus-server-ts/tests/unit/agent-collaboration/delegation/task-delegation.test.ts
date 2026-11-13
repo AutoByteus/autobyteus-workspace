@@ -344,6 +344,20 @@ describe("TaskDelegation.toNewRun", () => {
       expect(h.deliverToRun).not.toHaveBeenCalled();
     });
 
+    it.each([["target_team_run_id", { teamRunId: E.rootRunId }], ["target_agent_run_id", { agentRunId: "solution_designer_65a9" }]])(
+      "CR-461-059 (F-47): by %s, an unknown Task key is base's refusal { delegated: false, message }, not the recipient path's error", async (_form, copy) => {
+        const h = await followUp();
+        await expect(h.give(M, M.rootRunId, copy, "nope-9")).resolves.toEqual({ delegated: false, message: "Task 'nope-9' was not found." });
+        expect(h.tasks.assignments).toEqual([]);
+        expect(h.deliverToRun).not.toHaveBeenCalled();
+      });
+
+    it("an uncoded failure on the run-ID path is thrown, as base", async () => {
+      const h = await followUp();
+      vi.spyOn(h.tasks, "resolveAssignment").mockRejectedValueOnce(new Error("disk unreadable"));
+      await expect(h.give(M, M.rootRunId, { teamRunId: E.rootRunId })).rejects.toThrow("disk unreadable");
+    });
+
     it("SR-072 F-24 (U11): a run whose Tasks were all deleted is given a new Task by the delegator its own file names; the entry repeats its delegation and address", async () => {
       const own: RunOwnDelegation = { delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, recipientAddress: "/software_engineering_team",
         entryAgentRunId: "solution_designer_65a9" };
