@@ -576,15 +576,16 @@ describe('observational Org history, exact deliberate continuation and retained 
 
 describe('Org strict candidate and terminal boundaries', () => {
   it('does not partially mutate retained AgentContexts when the staged projection is invalid', async () => {
-    // Only the selected member is staged (autobyteus-358): select the one whose projection is invalid.
-    const { org, context } = await open('agent-task-worker')
+    // Only the selected member is staged (autobyteus-358): select the one whose projection is invalid (a configured agent;
+    // a delegated row is read as its own run, autobyteus-461 rule 2).
+    const { org, context } = await open('agent-director')
     context.requirement = 'do not lose'; context.contextFilePaths = [attachment('unsent')]
     const state = context.state; const config = context.config
     socket.close()
     mocks.query.mockImplementation(async ({ variables }: any) => {
       if (!variables.agentRunId) return inspectionResult()
       const result = projectionResult(variables)
-      if (variables.agentRunId === 'agent-task-worker') result.data.getAgentOrgMemberRunProjection.agentRunId = 'wrong-exact-id'
+      if (variables.agentRunId === 'agent-director') result.data.getAgentOrgMemberRunProjection.agentRunId = 'wrong-exact-id'
       return result
     })
     const store = useAgentOrgContextsStore()

@@ -59,11 +59,18 @@ describe('staged AgentOrg context hydration and publication', () => {
     } } }))
   })
 
+  it('a focused delegated row stages nothing through the Org: it is read as its own run (autobyteus-461 rule 2; SDV-03)', async () => {
+    await hydrateAgentOrgExecutionContext({ orgRunId: 'org-run', view: taskBearingView(), focus: { kind: 'agent_execution', agentRunId: 'agent-worker-task' } })
+    const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
+    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(0)
+    expect(queried(GetAgentOrgMemberFileChanges)).toHaveLength(0)
+  })
+
   it('builds configured and fresh task runs with shared placement addresses and stages only the focused one (autobyteus-358)', async () => {
     const context = await hydrateAgentOrgExecutionContext({
       orgRunId: 'org-run',
       view: taskBearingView(),
-      focus: { kind: 'agent_execution', agentRunId: 'agent-worker-task' },
+      focus: { kind: 'agent_execution', agentRunId: 'agent-worker-configured' },
     })
 
     const entries = context.listAgentContextEntries()
@@ -85,12 +92,12 @@ describe('staged AgentOrg context hydration and publication', () => {
     const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
     expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(1)
     expect(queried(GetAgentOrgMemberFileChanges).map(([options]) => options.variables)).toEqual([{
-      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-configured',
     }])
     expect(queried(GetRunFileChanges)).toHaveLength(0)
     expect(mocks.query).toHaveBeenCalledWith(expect.objectContaining({
       variables: {
-        orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+        orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-configured',
       },
     }))
   })
@@ -140,19 +147,19 @@ describe('staged AgentOrg context hydration and publication', () => {
     })
     const paths = (runId: string) => useRunFileChangesStore().getArtifactsForRun(runId).map((entry) => entry.path)
 
-    it.each([true, false])('commits the focused member artifact list on publication, a nested Team member included; no other (active=%s; AC-003)', async (active) => {
+    it.each([true, false])('commits the focused member artifact list on publication, a mounted Team member included; no other (active=%s; AC-003)', async (active) => {
       serve()
       const base = structuredClone(taskBearingView())
       const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
       const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view,
-        focus: { kind: 'agent_execution', agentRunId: 'agent-task-lead' } })
-      expect(paths('agent-task-lead')).toEqual([])
+        focus: { kind: 'agent_execution', agentRunId: 'agent-lead-configured' } })
+      expect(paths('agent-lead-configured')).toEqual([])
 
-      expect(staged.commit()).toBe('agent-task-lead')
+      expect(staged.commit()).toBe('agent-lead-configured')
 
-      expect(paths('agent-task-lead')).toEqual(['/outputs/1.png', '/outputs/2.png'])
+      expect(paths('agent-lead-configured')).toEqual(['/outputs/1.png', '/outputs/2.png'])
       for (const { agentRunId } of staged.context.listAgentContextEntries()) {
-        if (agentRunId !== 'agent-task-lead') expect(paths(agentRunId)).toEqual([])
+        if (agentRunId !== 'agent-lead-configured') expect(paths(agentRunId)).toEqual([])
       }
     })
 
@@ -165,14 +172,14 @@ describe('staged AgentOrg context hydration and publication', () => {
 
       expect(() => staged.commit()).toThrow("AgentOrg activity changed before 'org-run' hydration could commit.")
       expect(paths('agent-director')).toEqual([])
-      expect(paths('agent-task-lead')).toEqual([])
+      expect(paths('agent-lead-configured')).toEqual([])
     })
 
     it('fails staging when the focused member artifacts fail, as for its projection (AC-007)', async () => {
-      serve('agent-task-lead')
+      serve('agent-lead-configured')
       await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
-        focus: { kind: 'agent_execution', agentRunId: 'agent-task-lead' } }))
-        .rejects.toThrow('artifacts unavailable for agent-task-lead')
+        focus: { kind: 'agent_execution', agentRunId: 'agent-lead-configured' } }))
+        .rejects.toThrow('artifacts unavailable for agent-lead-configured')
       expect(paths('agent-director')).toEqual([])
     })
   })
@@ -194,15 +201,15 @@ describe('staged AgentOrg context hydration and publication', () => {
 
   it('rejects an unavailable focused projection without publishing any staged activities', async () => {
     mocks.query.mockImplementation(async ({ variables }) => ({ data: { getAgentOrgMemberRunProjection:
-      variables.agentRunId === 'agent-task-worker' ? null : {
+      variables.agentRunId === 'agent-worker-configured' ? null : {
         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
         conversation: [], hasEarlierActiveTraceEvents: false,
         activities: [{ kind: 'tool', invocationId: 'staged-tool', toolName: 'read_file', status: 'success', result: 'done', ts: 1 }],
       },
     } }))
     await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
-      focus: { kind: 'agent_execution', agentRunId: 'agent-task-worker' } }))
-      .rejects.toThrow("Projection unavailable for 'agent-task-worker'")
+      focus: { kind: 'agent_execution', agentRunId: 'agent-worker-configured' } }))
+      .rejects.toThrow("Projection unavailable for 'agent-worker-configured'")
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
     expect(useAgentActivityStore().getActivities('agent-task-lead')).toEqual([])
   })

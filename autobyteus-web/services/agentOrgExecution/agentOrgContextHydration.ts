@@ -14,6 +14,7 @@ import {
   resetRecentEventMonitorBaseline,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator'
 import { GetAgentOrgMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
+import { orgDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
@@ -155,7 +156,10 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
     return Object.freeze({ seed, entry: Object.freeze({ agentRunId: seed.agentRunId, memberAddress: seed.address, context }) satisfies AgentOrgContextEntry })
   })
   const focus = typeof input.focus === 'string' ? index.configuredSelection(input.focus) : input.focus
-  const focused = local.find((item) => item.seed.agentRunId === index.selectedAgent(focus)?.agentRunId) ?? null
+  const selected = local.find((item) => item.seed.agentRunId === index.selectedAgent(focus)?.agentRunId) ?? null
+  // A delegated run is read as its own run (rule 2, `delegatedRunsStore`), never through the Org's member reads, which
+  // refuse it: a focused delegated row stages nothing here (found by SDV-03: the reopen failed on it and retried).
+  const focused = selected && !orgDelegatedRunSubject(index, selected.seed.agentRunId) ? selected : null
   const expectedActivityRevision = focused ? useAgentActivityStore().getActivityContentRevision(focused.seed.agentRunId) : 0
   const staged = focused ? applyProjection(focused.entry.context, focused.seed, await fetchMemberRunState({
     fetchProjection: () => fetchProjection(input.orgRunId, focused.seed),
