@@ -22,6 +22,8 @@ vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (
 import { useMobileRunOpening } from '../useMobileRunOpening';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
 import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 
@@ -112,6 +114,42 @@ describe('useMobileRunOpening', () => {
     expect(store.failure).toBeNull();
     router.back(); await flushPromises();
     expect(router.currentRoute.value.query).toEqual({ ...ORG_KEYS, memberAddress: '/lead' });
+  });
+
+  // autobyteus-461 CR-461-053 (F-34): a run the Org delegated is shown as its own run (rule 2), once that run is open.
+  const delegatedOrgRow = () => row({ kind: 'orgExecution', orgRun, agentRunId: 'worker', address: '/worker' }, 'org:org-1/task-agent:worker');
+  const withDelegatedWorker = () => {
+    vi.spyOn(useAgentOrgContextsStore(), 'contextFor').mockReturnValue({ index: { agents: new Map([['worker', { kind: 'task' }]]) } } as never);
+    const runs = useDelegatedRunsStore();
+    let settle!: () => void;
+    vi.spyOn(runs, 'whenOpen').mockReturnValue(new Promise<void>((resolve) => { settle = resolve; }));
+    return { runs, settle: () => settle() };
+  };
+
+  it('an Org\'s delegated row commits once its own run is open, with its binding (CR-461-053)', async () => {
+    const { opening, store } = await setup();
+    shared.execute.mockResolvedValue({ disposition: 'committed' });
+    const { runs, settle } = withDelegatedWorker();
+    const binding = vi.spyOn(runs, 'bindingOf').mockReturnValue(null);
+    const done = opening.open(delegatedOrgRow());
+    await flushPromises();
+    expect(shared.execute).toHaveBeenCalledWith({ rootSubjectKind: 'agent_org', rootRunId: 'org-1', action: 'inspect', agentRunId: 'worker', memberAddress: '/worker' });
+    expect(runs.whenOpen).toHaveBeenCalledWith({ kind: 'agent', agentRunId: 'worker' });
+    expect(store.pending?.key).toBe('org:org-1/task-agent:worker');
+    binding.mockReturnValue({ context: {} } as never);
+    settle(); await done;
+    expect(store.pending).toBeNull();
+    expect(store.failure).toBeNull();
+  });
+
+  it('an Org\'s delegated row whose own run cannot be opened fails the open (CR-461-053)', async () => {
+    const { opening, store } = await setup();
+    shared.execute.mockResolvedValue({ disposition: 'committed' });
+    const { runs, settle } = withDelegatedWorker();
+    vi.spyOn(runs, 'errorFor').mockReturnValue('The run could not be read.');
+    const done = opening.open(delegatedOrgRow());
+    settle(); await done;
+    expect(store.failure).toEqual({ key: 'org:org-1/task-agent:worker' });
   });
 
   // Review residual 2: the list entry is rewritten before the action; after a failed Org open it keeps that Org's keys.

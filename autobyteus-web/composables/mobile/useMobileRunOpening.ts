@@ -7,7 +7,10 @@ import {
   useWorkspaceHistorySubjectActions,
   type WorkspaceHistorySubjectAction,
 } from '~/composables/useWorkspaceHistorySubjectActions';
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
+import { orgDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -38,6 +41,12 @@ export function useMobileRunOpening(disclosure: {
   const opening = useMobileRunOpeningStore();
   const navigation = useMobileNavigation();
   const collaboration = useAgentRunCollaborationStore();
+  const orgContexts = useAgentOrgContextsStore();
+  const delegatedRuns = useDelegatedRunsStore();
+  const orgDelegatedRunOf = (orgRunId: string, agentRunId: string) => {
+    const index = orgContexts.contextFor(orgRunId)?.index;
+    return index ? orgDelegatedRunSubject(index, agentRunId) : null;
+  };
   const { addToast } = useToasts();
   const { t } = useLocalization();
 
@@ -64,7 +73,15 @@ export function useMobileRunOpening(disclosure: {
   const runSharedAction = async (key: string, open: MobileRowOpen): Promise<void> => {
     if (isOrgOpen(open)) {
       const outcome = await subject.execute(orgCommandOf(open));
-      if (outcome.disposition === 'committed') opening.commit(key);
+      if (outcome.disposition !== 'committed') return;
+      // A run the Org delegated is shown as its own run (rule 2), once that run is open: until then there is nothing to
+      // show, and a failed open fails this one (CR-461-053, F-34).
+      const own = open.kind === 'orgExecution' ? orgDelegatedRunOf(open.orgRun.rootRunId, open.agentRunId) : null;
+      if (own) {
+        await delegatedRuns.whenOpen(own);
+        if (delegatedRuns.errorFor(own) || !delegatedRuns.bindingOf(own)) return;
+      }
+      opening.commit(key);
       return;
     }
     if (open.kind === 'agentRun') return selection.onOpenAgentRun(open.run);

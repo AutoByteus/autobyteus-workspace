@@ -91,6 +91,8 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   }
 
   const errorFor = (subject: DelegatedRunSubject): string | null => errors[runKey(subject)] ?? null
+  /** Settles when the run's open in flight does (at once when none is): then `bindingOf` or `errorFor` answers. */
+  const whenOpen = (subject: DelegatedRunSubject): Promise<void> => opening.get(runKey(subject)) ?? Promise.resolve()
 
   const interactionOf = (subject: DelegatedRunSubject): AgentInteractionPort => {
     if (subject.kind === 'agent') {
@@ -142,5 +144,5 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   const ownsAgentRun = (agentRunId: string): boolean => owned.has(`agent:${agentRunId}`)
   const ownsTeamRun = (teamRunId: string): boolean => owned.has(`agent_team:${teamRunId}`)
 
-  return { ensureOpen, bindingOf, errorFor, stop, ownsAgentRun, ownsTeamRun }
+  return { ensureOpen, whenOpen, bindingOf, errorFor, stop, ownsAgentRun, ownsTeamRun }
 })

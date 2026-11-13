@@ -5,6 +5,7 @@ import { refreshRunNavigationTopologyForStore, type RunHistoryNavigationStoreSta
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentRunStore } from '~/stores/agentRunStore'
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore'
+import { useRunListStore } from '~/stores/runListStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
@@ -49,6 +50,13 @@ describe('a delegated run opened from its delegator\'s view (CR-461-044)', () =>
     refreshRunNavigationTopologyForStore(store, 'test')
     expect(store.navigationProjection!.runIndexById['own-run']).toBeDefined()
     expect(store.navigationProjection!.runIndexById['worker-run']).toBeUndefined()
+  })
+
+  it('is not a top-level run of the phone\'s run list either: one owner for both lists (CR-461-053, F-33)', () => {
+    useAgentContextsStore().runs.set('worker-run', context('worker-run'))
+    useAgentContextsStore().runs.set('own-run', context('own-run'))
+    useDelegatedRunsStore().ensureOpen({ kind: 'agent', agentRunId: 'worker-run' })
+    expect(useRunListStore().entries.map((entry) => entry.runId)).toEqual(['own-run'])
   })
 
   it('keeps its stream and status through the list\'s poll; a run the user opened that is not listed is torn down as before', async () => {
