@@ -1,3 +1,4 @@
+import type { DelegatorCatalog } from "./delegator-catalog.js";
 import { taskExecutionConversationUnavailable, type RunConversationAvailability } from "./run-conversation-availability.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
@@ -107,6 +108,8 @@ export class TaskDelegation {
     reachingAddress(sender: CollaborationMemberExecutionIdentity, receiverRun: RootExecutionIdentity): Promise<string | null>;
     /** Whether an existing run can take a follow-up Task: its entry agent live, or its saved conversation readable (CR-461-043). */
     conversationOf(execution: TaskExecutionReference, entry: Readonly<{ agentRunId: string; address: string }>): Promise<RunConversationAvailability>;
+    /** A delegated run's catalog copy at an address its own catalog does not offer: its delegator's (CR-461-041). */
+    delegatorCatalog: Pick<DelegatorCatalog, "placementAt">;
   }>) {}
 
   /**
@@ -193,8 +196,18 @@ export class TaskDelegation {
       placement = await input.resolvePlacement(work.delegation, folder);
     } catch (error) {
       // Today's refusal of the placement step: nothing at the address the sender can delegate to; anything else throws.
-      if ((error as { code?: unknown } | null)?.code === "COLLABORATION_TARGET_NOT_FOUND") return { delegated: false, message: message(error) };
-      throw error;
+      if ((error as { code?: unknown } | null)?.code !== "COLLABORATION_TARGET_NOT_FOUND") throw error;
+      // A delegated run's member gets its delegator's catalog copy at that address, as base's hosted copy did (CR-461-041).
+      let fromDelegator: LocalDelegationPlacement | null;
+      try {
+        fromDelegator = await this.dependencies.delegatorCatalog.placementAt({ senderRun: input.senderRun, senderAgentRunId: input.sender.agentRunId,
+          address: input.spawn.recipient_address, work: work.delegation, folder });
+      } catch (cause) {
+        if ((cause as { code?: unknown } | null)?.code === "COLLABORATION_TARGET_NOT_FOUND") return { delegated: false, message: message(cause) };
+        throw cause;
+      }
+      if (!fromDelegator) return { delegated: false, message: message(error) };
+      placement = fromDelegator;
     }
     const delegatedFrom = { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId };
     const runOrigin = { delegatingRun: { kind: input.senderRun.rootSubjectKind, runId: input.senderRun.rootRunId }, delegatorAgentRunId: input.sender.agentRunId };

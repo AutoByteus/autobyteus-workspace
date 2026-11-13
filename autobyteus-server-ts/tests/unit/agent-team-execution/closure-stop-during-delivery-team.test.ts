@@ -67,7 +67,7 @@ describe("a closure stop and a follow-up Task delivered while the team run stops
     (manager as unknown as { register(root: RootTeamRun): void }).register(ending as unknown as RootTeamRun);
     const resolver = createCollaborationRootResolver({ standaloneRoots: {} as never, teamRuns: manager, orgRuns: {} as never });
     const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-      channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
+      channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }),
       deliverToRun: async (input) => {
         const resolved = await resolver.resolveOrRestore(createTeamRootExecutionIdentity("eng"));
         return (resolved!.root as unknown as { acceptFromRun(input: unknown): Promise<{ accepted: boolean }> }).acceptFromRun(input);

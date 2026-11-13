@@ -1,3 +1,6 @@
+import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
+import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { collaboratorPortOf } from "../run-history/services/run-collaborator-port.js";
 import { createRunConversationAvailability } from "../agent-collaboration/execution/task/run-conversation-availability.js";
 import { getAgentConversationActivityInspector } from "../agent-memory/services/agent-conversation-activity-inspector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../run-history/services/team-run-execution-tree-location-service.js";
@@ -124,7 +127,7 @@ export type Collaboration = Readonly<{
 export const composeCollaboration = async (input: Readonly<{
   memoryDir: string;
   taskSide: TaskSide;
-  runs: Pick<GeneralProcessRunSupervisor, "agentRunService" | "teamRunService" | "standaloneRootManager" | "teamRunHistoryService" | "delegatedWorkGuard">;
+  runs: Pick<GeneralProcessRunSupervisor, "agentRunService" | "teamRunService" | "agentOrgRunService" | "standaloneRootManager" | "teamRunHistoryService" | "delegatedWorkGuard">;
   rootResolver: CollaborationRootResolver;
   activeRoots: Pick<ActiveCollaborationRootDirectory, "resolve" | "onRegistrationChanged">;
   /** This node's channel to its peers (`null` where it has none). */
@@ -192,6 +195,11 @@ export const composeCollaboration = async (input: Readonly<{
       conversationOf: createRunConversationAvailability({ memoryDir, inspector: getAgentConversationActivityInspector(),
         liveAgents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents,
         teamMembers: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
+      delegatorCatalog: new DelegatorCatalog({ tree, admission: () => getCollaboratorAdmission(),
+        portOf: (run, viewer) => collaboratorPortOf({ memoryDir,
+          activeAgentRoot: (runId) => runs.standaloneRootManager.getActive(runId),
+          activeTeamRun: (teamRunId) => runs.teamRunService.getActiveTeamRun(teamRunId),
+          activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer) }),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);

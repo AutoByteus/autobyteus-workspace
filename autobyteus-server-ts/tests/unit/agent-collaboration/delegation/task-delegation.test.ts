@@ -18,7 +18,7 @@ const agentPlacement: LocalDelegationPlacement = { kind: "agent", address: "/ima
 const teamPlacement: LocalDelegationPlacement = { kind: "agent_team", address: "/product_team" as never, coordinatorAddress: "/product_team/designer" as never,
   source: { kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" as never, members: [], handoffs: [], defaultLaunchConfiguration: launch } };
 
-const harness = (reader: RunFilesReader = NO_RUN_PARTS) => {
+const harness = (reader: RunFilesReader = NO_RUN_PARTS, fromDelegator: LocalDelegationPlacement | null = null) => {
   const tasks = new InMemoryTaskExecutionResources();
   const tree = new DelegationIndex(() => tasks, reader);
   tree.build();
@@ -30,11 +30,15 @@ const harness = (reader: RunFilesReader = NO_RUN_PARTS) => {
   const recordCollaborating = vi.fn(async () => undefined);
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
     deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
-    reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender), conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
+    reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender), delegatorCatalog: { placementAt: vi.fn(async () => fromDelegator) }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
   const folders: (string | null)[] = [];
-  const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement = agentPlacement) => delegation.toNewRun({
+  const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement | null = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
-    senderRun, spawn: spawn as never, resolvePlacement: async (_work, folder) => { folders.push(folder); return placement; } });
+    senderRun, spawn: spawn as never, resolvePlacement: async (_work, folder) => {
+      folders.push(folder);
+      if (!placement) throw Object.assign(new Error(`'${String(spawn.recipient_address)}' is not the address of an available agent or agent team.`), { code: "COLLABORATION_TARGET_NOT_FOUND" });
+      return placement;
+    } });
   return { tasks, tree, starter, deliverWorkPacket, discard, recordCollaborating, delegate, folders };
 };
 
@@ -71,6 +75,16 @@ describe("the work packet's sender address (CR-461-031)", () => {
 });
 
 describe("TaskDelegation.toNewRun", () => {
+  it("CR-461-041: an address its own root does not offer is answered with its delegator's catalog copy; with none, the refusal stands", async () => {
+    const h = harness(NO_RUN_PARTS, agentPlacement);
+    await expect(h.delegate(E, "designer", { recipient_address: "/image_maker", description: "Draw." }, null)).resolves.toMatchObject({ delegated: true });
+    expect(h.starter.startAgent).toHaveBeenCalledWith(expect.objectContaining({ source: agentPlacement.source, address: agentPlacement.address }));
+    const none = harness();
+    await expect(none.delegate(E, "designer", { recipient_address: "/image_maker", description: "Draw." }, null)).resolves.toEqual({ delegated: false,
+      message: "'/image_maker' is not the address of an available agent or agent team." });
+    expect(none.starter.startAgent).not.toHaveBeenCalled();
+  });
+
   it.each([["an agent run", undefined], ["a team run", "team"]] as const)(
     "CR-461-003 (race table row 5): %s whose Task closes while it starts is refused at its gate head, discarded, and nothing starts", async (_kind, which) => {
       const h = harness();
@@ -194,7 +208,7 @@ describe("TaskDelegation.toNewRun", () => {
       tree.build();
       tasks.setEntriesListener(tree);
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
+        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
       const delegate = () => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
         senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it." } as never, placement });
       return { tasks, tree, delegate };
@@ -240,7 +254,7 @@ describe("TaskDelegation.toNewRun", () => {
       await tasks.markStarted({ teamRunId: E.rootRunId });
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
         channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null,
-        conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity })) });
+        delegatorCatalog: { placementAt: async () => null }, conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity })) });
       const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
         sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
         assign: { copy: copy as never, taskId } });
