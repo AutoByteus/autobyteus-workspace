@@ -39,6 +39,13 @@ export class LocalChildFollowers {
     return this.followed.get(rootExecutionIdentityKey(run))?.observation.cachedStatuses() ?? [];
   }
 
+  /** A delegated run's agents' current statuses, from its own root (only its running agents; the rest are offline). */
+  currentStatuses(run: RootExecutionIdentity): readonly Readonly<{ agentRunId: string; status: string }>[] {
+    if (run.rootSubjectKind === "agent_org") return [];
+    return this.ports.agents(run.rootSubjectKind).pairedAgentStatuses(run.rootRunId)
+      .map((entry) => Object.freeze({ agentRunId: entry.agentRunId, status: String(entry.status) }));
+  }
+
   /** Every agent of the run's open local rows with its live status (the history reads' answer). */
   statuses(run: RootExecutionIdentity): Promise<LocalChildAgentStatus[]> {
     return localChildStatuses(run, this.ports);

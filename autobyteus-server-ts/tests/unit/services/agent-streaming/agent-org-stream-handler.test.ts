@@ -5,6 +5,8 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { projectDelegatedTeamRun } from "../../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
+import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 import { agentChildRow, delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-run-1";
@@ -306,6 +308,34 @@ describe("AgentOrgStreamHandler", () => {
       await test.feed.settled();
       expect(parse(client).at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
         event: { kind: "task_execution_started", host_kind: "root", host_run_id: orgRunId, execution: { agentRunId: "analyst" } } } });
+    });
+
+    it("CR-461-039: a live Org's snapshot gives every listed agent a status (a stopped delegated team's members, a newly listed run, and a running one) and parses", async () => {
+      const test = harness(orgPackage());
+      const org = createAgentOrgRootExecutionIdentity(orgRunId);
+      const teamTree = testExecutionTree({ rootTeamRunId: "copy", coordinatorAddress: "/lead",
+        children: [testAgentNode("/lead", { agentRunId: "copy-lead" }), testAgentNode("/qa", { agentRunId: "copy-qa" })] });
+      const teamRow = projectDelegatedTeamRun({ kind: "agent_team", address: "/target", teamRunId: "copy", coordinatorAgentRunId: "copy-lead",
+        delegatorAgentRunId: "agent-worker-configured", startedAt: "2026-11-01T00:00:00.000Z",
+        members: [{ address: "/lead", agentRunId: "copy-lead", agentDefinitionId: "lead" }, { address: "/qa", agentRunId: "copy-qa", agentDefinitionId: "qa" }] },
+        { ...teamTree, handoffs: [] } as never);
+      (test.feed.rows as { projection: unknown }).projection = { rowOf: async (child: { run: { agentRunId?: string; teamRunId?: string }; recipientAddress: string }) => ({ kind: "local",
+        row: child.run.teamRunId ? teamRow : agentChildRow(child.run.agentRunId!, child.recipientAddress) }) };
+      // Nothing cached (the followers' reads are asynchronous); only the new run's agent is running in its own root.
+      test.feed.rows.followers.currentStatuses.mockImplementation((run) => run.rootRunId === "fresh" ? [{ agentRunId: "fresh", status: "running" }] : []);
+      test.feed.report({ run: org, added: [{ ...delegatedChild("idle", org) }, { ...delegatedChild("fresh", org) },
+        { ...delegatedChild("copy", org), run: { teamRunId: "copy" }, entryAgentRunId: "copy-lead", recipientAddress: "/target" } as never], removed: [] });
+      await test.feed.settled();
+      const client = connection();
+      const sessionId = await test.handler.connect(client.socket, orgRunId);
+      const snapshot = parse(client).find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as {
+        root_org: { agent_statuses: Array<{ agent_run_id: string; member_address: string; status: string }> } };
+      const statuses = new Map(snapshot.root_org.agent_statuses.map((status) => [status.agent_run_id, [status.member_address, status.status]]));
+      expect(statuses.get("idle")).toEqual(["/idle", "offline"]);
+      expect(statuses.get("fresh")).toEqual(["/fresh", "running"]);
+      expect(statuses.get("copy-lead")).toEqual(["/lead", "offline"]);
+      expect(statuses.get("copy-qa")).toEqual(["/qa", "offline"]);
+      test.handler.disconnect(sessionId!);
     });
 
     it("rule 3: every new run an Org delegates sits in its root, a mounted team's member's too, live and in the snapshot (base's placement, story 5.3)", async () => {

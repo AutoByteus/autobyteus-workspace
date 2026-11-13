@@ -9,7 +9,7 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { AgentOrgRun, AgentOrgRunPackageSnapshot } from "../../agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-org-run-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, readViewSnapshot, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from "./agent-org-execution-view-projector.js";
 
 /** What an Org run's view session needs, passed in by the composition (autobyteus-461 SR-046, SR-061 … SR-063). */
@@ -108,7 +108,7 @@ export class OrgViewSession {
 
   private async enterLive(run: AgentOrgRun): Promise<void> {
     const connection = await run.openViewSnapshotConnection(() => this.atBase(),
-      async (own, atBase): Promise<ViewSnapshot> => ({ own, statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) }));
+      async (own, atBase): Promise<ViewSnapshot> => ({ own, ...await readViewSnapshot(this.sources.rows, this.identity, atBase) }));
     try {
       // The run's own end reaches the view as its unregistration (an in-band stored snapshot follows), not as a close.
       const stopEvents = this.show(connection, run.isActive());
@@ -127,7 +127,8 @@ export class OrgViewSession {
       const tree = await this.sources.readStoredTree(this.orgRunId);
       if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
       // A stopped Org reports no statuses of its own; its rows' come from their own runs.
-      return { own: { tree, statuses: [], inputStates: [] }, statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) };
+      // An inactive Org's snapshot carries no statuses (the contract's correlation rule); its rows' statuses follow as frames.
+      return { own: { tree, statuses: [], inputStates: [] }, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase), statuses: [] };
     });
     try {
       this.leaveMode = this.show(connection, false);

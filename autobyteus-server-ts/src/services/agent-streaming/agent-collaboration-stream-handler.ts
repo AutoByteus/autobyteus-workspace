@@ -1,6 +1,6 @@
 import { executePeerCommand, PEER_MENTIONS_REFUSAL } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewSnapshot, type RunViewRowSources } from "./run-view-rows.js";
 import { randomUUID } from "node:crypto";
 import {
   CollaborationStreamClientMessageSchema,
@@ -90,7 +90,7 @@ export class AgentCollaborationStreamHandler {
     let barrier;
     try {
       barrier = await root.openViewSnapshotConnection(() => readRowsAtBase(this.views, identity),
-        async (own, atBase) => ({ own, statuses: atBase.statuses, rows: await readViewRows(this.views.projection, identity, atBase) }));
+        async (own, atBase) => ({ own, ...await readViewSnapshot(this.views, identity, atBase) }));
     } catch (cause) {
       stopFollowing();
       egress.send(error("AGENT_ROOT_STREAM_UNAVAILABLE", String(cause)));

@@ -9,7 +9,7 @@ import type { ActiveCollaborationRootDirectory } from "../../agent-collaboration
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type ProjectedRowEvent, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
+import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewSnapshot, type ProjectedRowEvent, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
 import { storedTeamPackageSnapshot } from "./stored-view-children.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot, projectTeamRowEvent } from "./team-execution-view-projector.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
@@ -110,7 +110,7 @@ export class TeamViewSession {
 
   private async enterLive(root: RootTeamRun): Promise<void> {
     const connection = await root.openViewSnapshotConnection(() => this.atBase(),
-      async (own, atBase): Promise<ViewSnapshot> => ({ own, statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) }));
+      async (own, atBase): Promise<ViewSnapshot> => ({ own, ...await readViewSnapshot(this.sources.rows, this.identity, atBase) }));
     try {
       const stopEvents = this.show(connection as RootSnapshotConnection<ViewSnapshot, TeamViewEvent>, true);
       this.mode = { kind: "live", root };
@@ -127,7 +127,7 @@ export class TeamViewSession {
       const atBase = this.atBase();
       const tree = await this.sources.readStoredTree(this.teamRunId);
       if (!tree) throw new TeamRunNotFoundError(`Team run '${this.teamRunId}' not found`);
-      return { own: storedTeamPackageSnapshot(tree), statuses: atBase.statuses, rows: await readViewRows(this.sources.rows.projection, this.identity, atBase) };
+      return { own: storedTeamPackageSnapshot(tree), ...await readViewSnapshot(this.sources.rows, this.identity, atBase) };
     });
     try {
       this.leaveMode = this.show(connection, false);

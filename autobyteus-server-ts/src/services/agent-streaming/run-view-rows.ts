@@ -13,7 +13,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 export type RunViewRowSources = Readonly<{
   feed: Pick<ChildRowsFeed, "rowsOf">;
   projection: ChildRowProjection;
-  followers: Pick<LocalChildFollowers, "follow" | "cachedStatuses">;
+  followers: Pick<LocalChildFollowers, "follow" | "cachedStatuses" | "currentStatuses">;
   /** The peer rows' live status and output (SR-066): followed after a view's snapshot; Retry asks again. */
   peers: Pick<PeerChildObservation, "follow" | "refresh">;
   /** A peer run by its own ID (SR-066): a view's command for a peer row goes to its handle, never through a root. */
@@ -83,6 +83,35 @@ export const readViewRows = async (projection: ChildRowProjection, run: RootExec
     remoteTaskExecutions: Object.freeze(remote),
     closedTaskExecutions: Object.freeze(records.filter((entry) => entry.closed && entry.record?.kind === "local").map((entry) => referenceOf(entry.placed))),
   });
+};
+
+/**
+ * A snapshot's rows and a status for every agent they list (CR-461-039; an Org's contract requires one for each): the
+ * status read at the snapshot's base (SR-063), else the run's current status from its own root, else `offline`. A row's
+ * agents are known once its record is read, so the rest are filled then, from those synchronous sources only; a later
+ * status frame follows the snapshot in the view's order. Addresses are the row's own.
+ */
+export const readViewSnapshot = async (sources: Pick<RunViewRowSources, "projection" | "followers">, run: RootExecutionIdentity, atBase: RowsAtBase):
+  Promise<Readonly<{ rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>> => {
+  const rows = await readViewRows(sources.projection, run, atBase);
+  const known = new Map(atBase.statuses.map((status) => [status.agentRunId, status.status]));
+  const statuses: LocalChildAgentStatus[] = [];
+  const visit = (row: CollaborationTaskExecutionDto): void => {
+    const team = "teamRunId" in row;
+    const rowRun: RootExecutionIdentity = team ? { rootSubjectKind: "agent_team", rootRunId: row.teamRunId } : { rootSubjectKind: "agent", rootRunId: row.agentRunId };
+    let current: Map<string, string> | null = null;
+    for (const agent of team ? row.members : [row]) {
+      let status = known.get(agent.agentRunId);
+      if (status === undefined) {
+        current ??= new Map(sources.followers.currentStatuses(rowRun).map((entry) => [entry.agentRunId, entry.status]));
+        status = current.get(agent.agentRunId) ?? "offline";
+      }
+      statuses.push(Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address, status }));
+    }
+    if (team) row.taskExecutions.forEach(visit);
+  };
+  rows.taskExecutions.forEach(visit);
+  return Object.freeze({ rows, statuses: Object.freeze(statuses) });
 };
 
 /** A row event with its records read, as each view kind projects it (base's events). */
