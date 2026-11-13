@@ -1,4 +1,6 @@
 import type { RunViewChildren } from "../../services/agent-streaming/run-view-children.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
+import { rootRestoreRefusal, unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
 import type { DelegatedWorkGuard } from "../../run-history/services/delegated-work-guard.js";
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -63,6 +65,8 @@ export class AgentOrgRunService {
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksDelegatedFrom">;
     /** Archive and delete wait for the runs it delegated to (REQ-007). */
     workGuard: Pick<DelegatedWorkGuard, "guard">;
+    /** Base's token-usage restore check (SR-078); defaults to the process capability. */
+    tokenUsage?: Pick<TokenUsageCapability, "assertExistingRunRestoreReady">;
   }>) {}
 
   /**
@@ -178,6 +182,32 @@ export class AgentOrgRunService {
     const of = <K extends string>(entries: ReadonlyMap<K, AgentLaunchConfiguration>) =>
       new Map([...entries.keys()].map((address) => [address, canonical.get(address)!] as const));
     return Object.freeze({ root: canonical.get("/")!, teams: of(launch.teams), agents: of(launch.agents) });
+  }
+
+  /** Base's restore admission (SR-078, CR-461-069), before the stored file is read: its reason, or `null` when it may restore. */
+  restoreRefusal(agentOrgRunId: string): Promise<RootRestoreRefusal | null> {
+    const orgRunId = required(agentOrgRunId, "agentOrgRunId");
+    return rootRestoreRefusal({ tokenUsage: this.dependencies.tokenUsage ?? new TokenUsageCapability(),
+      isCataloged: () => this.dependencies.manager.isCatalogedPackage(orgRunId),
+      notCataloged: { code: "AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED", message: `AgentOrg '${orgRunId}' is not an admitted current package.` } });
+  }
+
+  /**
+   * A stopped Org restored for its first input (SR-046, SR-078): the active run, else base's admission answers with its own
+   * reason; a restore that fails after admission is answered as a run that cannot be restored (the detail logged).
+   */
+  async restoreForInput(agentOrgRunId: string): Promise<AgentOrgRun | RootRestoreRefusal> {
+    const orgRunId = required(agentOrgRunId, "agentOrgRunId");
+    const active = this.getActive(orgRunId);
+    if (active) return active;
+    const refused = await this.restoreRefusal(orgRunId);
+    if (refused) return refused;
+    try {
+      return await this.restore(orgRunId);
+    } catch (error) {
+      // A concurrent restore registered it first.
+      return this.getActive(orgRunId) ?? unrestorableRoot({ kind: "AgentOrg run", code: "AGENT_ORG_RUN_NOT_RESTORABLE", runId: orgRunId, error });
+    }
   }
 
   async restore(agentOrgRunId: string): Promise<AgentOrgRun> {

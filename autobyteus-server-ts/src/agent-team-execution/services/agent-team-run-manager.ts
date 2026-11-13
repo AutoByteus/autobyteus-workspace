@@ -197,6 +197,12 @@ export class AgentTeamRunManager {
     });
   }
 
+  /** Whether the run's stored package is admitted (base's restore check, SR-078); nothing is read or loaded. */
+  async isCatalogedPackage(rootTeamRunId: string): Promise<boolean> {
+    await this.packageCatalog.awaitReady();
+    return this.packageCatalog.isAdmitted(required(rootTeamRunId, "rootTeamRunId"));
+  }
+
   closeRootAdmission(): void { this.rootAdmissionOpen = false; }
 
   private assertRootAdmissionOpen(): void {

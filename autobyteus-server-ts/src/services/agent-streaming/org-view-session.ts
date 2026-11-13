@@ -1,3 +1,4 @@
+import { unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
 import {
   CollaborationStreamServerMessageSchema,
   type CollaborationStreamServerMessage,
@@ -25,6 +26,10 @@ export type OrgViewSources = Readonly<{
 }>;
 
 export class OrgRunNotFoundError extends Error {}
+/** An admitted stopped Org whose stored file cannot be read: answered with a reason, the detail logged (CR-461-069). */
+export class OrgRunNotRestorableError extends Error {
+  constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
+}
 
 type ViewSnapshot = Readonly<{ own: AgentOrgRunPackageSnapshot; rows: ViewRows; statuses: readonly LocalChildAgentStatus[] }>;
 
@@ -49,7 +54,11 @@ export class OrgViewSession {
   constructor(
     readonly orgRunId: string,
     private readonly send: (message: CollaborationStreamServerMessage) => void,
-    private readonly sources: OrgViewSources & Readonly<{ activeOrgRun(orgRunId: string): AgentOrgRun | null }>,
+    private readonly sources: OrgViewSources & Readonly<{
+      activeOrgRun(orgRunId: string): AgentOrgRun | null;
+      /** Base's restore admission of the stopped Org (SR-078, CR-461-069), asked before its stored file is read. */
+      restoreRefusal(orgRunId: string): Promise<RootRestoreRefusal | null>;
+    }>,
   ) {
     this.identity = createAgentOrgRootExecutionIdentity(orgRunId);
     // The rows' statuses are followed into the run's stream while the view is open: each one after a base is a frame.
@@ -121,10 +130,14 @@ export class OrgViewSession {
   }
 
   private async enterStored(): Promise<void> {
+    // Base's view answered a root its restore would refuse as not found, never with its stored file's parse error.
+    if (await this.sources.restoreRefusal(this.orgRunId)) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
     const stream = this.sources.streams.streamOf<AgentOrgRunEvent>(this.identity);
     const connection = await stream.openSnapshotConnection(async (): Promise<ViewSnapshot> => {
       const atBase = this.atBase();
-      const tree = await this.sources.readStoredTree(this.orgRunId);
+      const tree = await this.sources.readStoredTree(this.orgRunId).catch((error: unknown) => {
+        throw new OrgRunNotRestorableError(unrestorableRoot({ kind: "AgentOrg run", code: "AGENT_ORG_RUN_NOT_RESTORABLE", runId: this.orgRunId, error }));
+      });
       if (!tree) throw new OrgRunNotFoundError(`AgentOrg run '${this.orgRunId}' was not found.`);
       // A stopped Org reports no statuses of its own; its rows' come from their own runs.
       // An inactive Org's snapshot carries no statuses (the contract's correlation rule); its rows' statuses follow as frames.

@@ -22,6 +22,7 @@ import {
   type TeamScopeLaunchInput,
 } from "./flat-team-topology-planner.js";
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
+import { rootRestoreRefusal, unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
 import type { TeamRunSelectionPatch } from "./team-run-selection-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
@@ -222,6 +223,31 @@ export class TeamRunService {
     } catch (error) {
       await this.safeTerminate(normalized);
       throw error;
+    }
+  }
+
+  /** Base's restore admission (SR-078, CR-461-069), before the stored file is read: its reason, or `null` when it may restore. */
+  restoreRefusal(teamRunId: string): Promise<RootRestoreRefusal | null> {
+    const normalized = required(teamRunId, "teamRunId");
+    return rootRestoreRefusal({ tokenUsage: this.tokenUsageReadiness, isCataloged: () => this.manager.isCatalogedPackage(normalized),
+      notCataloged: { code: "TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED", message: `TeamRun '${normalized}' is not an admitted current package.` } });
+  }
+
+  /**
+   * A stopped run restored for its first input (SR-046, SR-078): the managed run, else base's admission answers with its
+   * own reason; a restore that fails after admission is answered as a run that cannot be restored (the detail logged).
+   */
+  async restoreForInput(teamRunId: string): Promise<RootTeamRun | RootRestoreRefusal> {
+    const normalized = required(teamRunId, "teamRunId");
+    const managed = this.getManagedTeamRun(normalized);
+    if (managed) return managed;
+    const refused = await this.restoreRefusal(normalized);
+    if (refused) return refused;
+    try {
+      return await this.restoreTeamRun(normalized);
+    } catch (error) {
+      // A concurrent restore registered it first.
+      return this.getManagedTeamRun(normalized) ?? unrestorableRoot({ kind: "Team run", code: "TEAM_RUN_NOT_RESTORABLE", runId: normalized, error });
     }
   }
 

@@ -365,6 +365,12 @@ export class AgentOrgRunManager {
     }
     if (errors.length) throw new AggregateError(errors, "Failed to stop all AgentOrg runs.");
   }
+  /** Whether the run's stored package is admitted (base's restore check, SR-078); nothing is read or loaded. */
+  async isCatalogedPackage(orgRunId: string): Promise<boolean> {
+    await this.packageCatalog.awaitReady();
+    return this.packageCatalog.isAdmitted(required(orgRunId, "orgRunId"));
+  }
+
   closeRootAdmission(): void { this.rootAdmissionOpen = false; }
 
   private async materialize(

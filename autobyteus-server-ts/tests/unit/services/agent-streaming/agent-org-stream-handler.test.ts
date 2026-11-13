@@ -80,11 +80,13 @@ const harness = (snapshot = { tree, messages, statuses, inputStates: [] },
   const identity = createAgentOrgRootExecutionIdentity(orgRunId);
   const service = {
     getActive: vi.fn((id: string) => id === orgRunId && managed ? run : null),
-    restore: vi.fn(async () => { managed = true; registrations.register(identity); return run; }),
+    // The first message's restore (SR-046), after base's admission (SR-078; admitted unless a test says otherwise).
+    restoreForInput: vi.fn(async () => { managed = true; registrations.register(identity); return run as unknown; }),
+    restoreRefusal: vi.fn(async (_id: string): Promise<{ accepted: false; code: string; message: string } | null> => null),
     recordRunActivity,
   };
   const readStoredTree = vi.fn(async (id: string) => id === orgRunId ? snapshot.tree : null);
-  return { publisher, executeAgentCommand, executeAgentCommandWithExecutionKind, recordRunActivity, service, run, feed, registrations,
+  return { publisher, executeAgentCommand, executeAgentCommandWithExecutionKind, recordRunActivity, service, run, feed, registrations, readStoredTree,
     stop: () => { managed = false; registrations.unregister(identity); },
     handler: new AgentOrgStreamHandler(service as never,
       { streams: feed.streams, rows: feed.rows, registrations, readStoredTree }) };
@@ -290,6 +292,44 @@ describe("AgentOrgStreamHandler", () => {
     expect(client.socket.close).toHaveBeenCalledWith(4004);
   });
 
+  describe("SR-078 (CR-461-069): a stopped Org its migration could not convert answers base's reasons, never a schema error", () => {
+    const notCataloged = { accepted: false as const, code: "AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED", message: `AgentOrg '${orgRunId}' is not an admitted current package.` };
+    const send = (sessionId: string, test: ReturnType<typeof harness>) => test.handler.handleMessage(sessionId, JSON.stringify({ type: "SEND_MESSAGE", payload: {
+      root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-1",
+      content: "Start please", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1" } }));
+
+    it("the view connect asks the restore admission before reading the stored file: refused, it answers AGENT_ORG_NOT_FOUND", async () => {
+      const test = harness(undefined, { stopped: true }); const client = connection();
+      test.service.restoreRefusal.mockResolvedValue(notCataloged);
+      expect(await test.handler.connect(client.socket, orgRunId)).toBeNull();
+      expect(JSON.parse(client.sent.at(-1) ?? "{}")).toMatchObject({ type: "ERROR", payload: { code: "AGENT_ORG_NOT_FOUND" } });
+      expect(client.socket.close).toHaveBeenCalledWith(4004);
+      expect(test.readStoredTree).not.toHaveBeenCalled();
+    });
+
+    it("an admitted Org whose stored file cannot be parsed: answered as not restorable, the schema detail in the log only", async () => {
+      const test = harness(undefined, { stopped: true }); const client = connection();
+      test.readStoredTree.mockRejectedValueOnce(new Error("Invalid AgentOrg execution tree: rootOrg.members[0].schemaVersion must be 2"));
+      expect(await test.handler.connect(client.socket, orgRunId)).toBeNull();
+      const error = JSON.parse(client.sent.at(-1) ?? "{}");
+      expect(error).toMatchObject({ type: "ERROR", payload: { code: "AGENT_ORG_RUN_NOT_RESTORABLE",
+        message: `AgentOrg run '${orgRunId}' cannot be restored: its saved state cannot be read. Its files were left unchanged.` } });
+      expect(JSON.stringify(client.sent)).not.toMatch(/schemaVersion|rootOrg/);
+    });
+
+    it("the first message answers the admission's own reason code and text on its acknowledgement; nothing is posted", async () => {
+      const test = harness(undefined, { stopped: true }); const client = connection();
+      const sessionId = await test.handler.connect(client.socket, orgRunId);
+      test.service.restoreForInput.mockResolvedValueOnce({ accepted: false, code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+        message: "Token usage history must finish migrating before existing runs can be restored." });
+      await send(sessionId!, test);
+      expect(JSON.parse(client.sent.at(-1) ?? "{}")).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected",
+        code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED", message: "Token usage history must finish migrating before existing runs can be restored." } });
+      expect(test.executeAgentCommandWithExecutionKind).not.toHaveBeenCalled();
+      test.handler.disconnect(sessionId!);
+    });
+  });
+
   describe("SR-046: a stopped Org's view (stored mode), never restored to serve the view", () => {
     const flush = async () => { for (let i = 0; i < 10; i += 1) await new Promise((resolve) => setTimeout(resolve, 0)); };
     const parse = (client: ReturnType<typeof connection>) => client.sent.map((raw) => CollaborationStreamServerMessageSchema.parse(JSON.parse(raw)));
@@ -303,7 +343,7 @@ describe("AgentOrgStreamHandler", () => {
       expect(messages[1]).toMatchObject({ payload: { root_org: { is_active: false, base_change_sequence: 0, agent_statuses: [], live_sequence_id: test.publisher.liveSequenceId,
         closed_task_executions: [] } } });
       expect(messages[2]).toMatchObject({ payload: { is_active: false } });
-      expect(test.service.restore).not.toHaveBeenCalled();
+      expect(test.service.restoreForInput).not.toHaveBeenCalled();
       test.feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [delegatedChild("analyst")], removed: [] });
       await test.feed.settled();
       expect(parse(client).at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 1,
@@ -379,7 +419,7 @@ describe("AgentOrgStreamHandler", () => {
         mentions: [{ kind: "agent", definition_id: "code-reviewer" }] } }));
       expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "REMOTE_RUN_MENTIONS_UNSUPPORTED" } });
       expect(peer.postMessage).toHaveBeenCalledOnce();
-      expect(test.service.restore).not.toHaveBeenCalled();
+      expect(test.service.restoreForInput).not.toHaveBeenCalled();
       expect(test.executeAgentCommand).not.toHaveBeenCalled();
       test.handler.disconnect(sessionId!);
     });
@@ -390,12 +430,12 @@ describe("AgentOrgStreamHandler", () => {
       await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: {
         root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-1" } }));
       expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "AGENT_ORG_STOPPED" } });
-      expect(test.service.restore).not.toHaveBeenCalled();
+      expect(test.service.restoreForInput).not.toHaveBeenCalled();
       await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-2",
         content: "Start please", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1" } }));
       await flush();
-      expect(test.service.restore).toHaveBeenCalledOnce();
+      expect(test.service.restoreForInput).toHaveBeenCalledOnce();
       expect(test.executeAgentCommandWithExecutionKind).toHaveBeenCalledOnce();
       const tail = parse(client).slice(-3);
       expect(tail.map((message) => message.type)).toEqual(["AGENT_COMMAND_ACK", "ROOT_EXECUTION_VIEW_SNAPSHOT", "ROOT_LIFECYCLE"]);

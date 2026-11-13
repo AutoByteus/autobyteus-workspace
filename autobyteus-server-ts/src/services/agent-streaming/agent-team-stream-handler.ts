@@ -23,7 +23,7 @@ import { createSequencedStreamEgressControlComposition } from "./websocket-egres
 import { teamStreamSequencedShape } from "./websocket-egress/team-stream-sequenced-shape.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import { TeamRunNotFoundError, TeamViewSession, type TeamViewSources } from "./team-view-session.js";
+import { TeamRunNotFoundError, TeamRunNotRestorableError, TeamViewSession, type TeamViewSources } from "./team-view-session.js";
 
 export type WebSocketConnection = { send(data: string): void; close(code?: number): void };
 type TeamStreamSink = AgentStreamServerMessageSink<TeamStreamServerMessage>;
@@ -76,8 +76,8 @@ export class AgentTeamStreamHandler {
 
   constructor(
     private readonly sessionManager: AgentSessionManager,
-    private readonly teamRunService: Pick<TeamRunService, "getActiveTeamRun" | "resolveManagedTeamRun" | "recordRunActivity">,
-    private readonly sources: Omit<TeamViewSources, "activeTeamRun">,
+    private readonly teamRunService: Pick<TeamRunService, "getActiveTeamRun" | "restoreForInput" | "restoreRefusal" | "recordRunActivity">,
+    private readonly sources: Omit<TeamViewSources, "activeTeamRun" | "restoreRefusal">,
   ) {}
 
   async connect(connection: WebSocketConnection, teamRunIdInput: string): Promise<string | null> {
@@ -96,15 +96,18 @@ export class AgentTeamStreamHandler {
       createControls: (options) => createSequencedStreamEgressControlComposition(teamStreamSequencedShape, options),
       onSendError: (error) => console.error(`Team WebSocket egress failed: session=${sessionId}, run=${teamRunId}: ${String(error)}`),
     });
-    const view = new TeamViewSession(teamRunId, egress, { ...this.sources, activeTeamRun: (id) => this.teamRunService.getActiveTeamRun(id) });
+    const view = new TeamViewSession(teamRunId, egress, { ...this.sources, activeTeamRun: (id) => this.teamRunService.getActiveTeamRun(id),
+      restoreRefusal: (id) => this.teamRunService.restoreRefusal(id) });
     this.sessions.set(sessionId, { view, egress });
     egress.send(parseTeamStreamServerMessage({ type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: teamRunId } }));
     try {
       await view.showCurrentMode();
     } catch (error) {
-      egress.send(error instanceof TeamRunNotFoundError ? errorMessage("TEAM_NOT_FOUND", error.message) : errorMessage("TEAM_STREAM_UNAVAILABLE", String(error)));
+      egress.send(error instanceof TeamRunNotFoundError ? errorMessage("TEAM_NOT_FOUND", error.message)
+        : error instanceof TeamRunNotRestorableError ? errorMessage(error.refusal.code, error.refusal.message)
+        : errorMessage("TEAM_STREAM_UNAVAILABLE", String(error)));
       this.cleanupSession(sessionId);
-      connection.close(error instanceof TeamRunNotFoundError ? 4004 : 1011);
+      connection.close(error instanceof TeamRunNotFoundError || error instanceof TeamRunNotRestorableError ? 4004 : 1011);
       return null;
     }
     console.info(`Agent Team WebSocket connected: session=${sessionId}, run=${teamRunId}`);
@@ -164,8 +167,9 @@ export class AgentTeamStreamHandler {
     if (!live && command.kind !== "post_message") {
       return { accepted: false, code: "TEAM_RUN_STOPPED", message: `Team run '${teamRunId}' is stopped. A message to one of its members starts it.` };
     }
-    const run = live ?? await this.teamRunService.resolveManagedTeamRun(teamRunId);
-    if (!run) return { accepted: false, code: "RUN_NOT_FOUND", message: `Team run '${teamRunId}' was not found.` };
+    // The first input restores it: base's admission answers first, with its own reason (SR-078, CR-461-069).
+    const run = live ?? await this.teamRunService.restoreForInput(teamRunId);
+    if ("accepted" in run) return run;
     if (command.kind === "post_message") await view.showCurrentMode();
     return run.executeAgentCommand(agentRunId, command);
   }
@@ -222,14 +226,16 @@ export class AgentTeamStreamHandler {
     if (peer) return mentions.length ? PEER_MENTIONS_REFUSAL : executePeerCommand(peer, agentRunId, { kind: "post_message", message: userMessage(payload, payload.content) });
     // DS-15: refused before its mentions restore the run; a stopped delegated run that cannot be restored is refused with
     // base's text (CR-461-070), sent as TEAM_SEND_MESSAGE_REJECTED.
+    // A stopped run is then asked base's restore admission (SR-078), with its own reason codes.
     const identity = createTeamRootExecutionIdentity(view.teamRunId);
+    const stopped = !this.teamRunService.getActiveTeamRun(view.teamRunId);
     const refusal = await this.sources.closedTasks.refusal(identity)
-      ?? (this.teamRunService.getActiveTeamRun(view.teamRunId) ? null : await this.sources.restorability.refusal(identity));
+      ?? (stopped ? await this.teamRunService.restoreRefusal(view.teamRunId) ?? await this.sources.restorability.refusal(identity) : null);
     if (refusal) return refusal;
     let content = payload.content;
     if (mentions.length) {
-      const root = this.teamRunService.getActiveTeamRun(view.teamRunId) ?? await this.teamRunService.resolveManagedTeamRun(view.teamRunId);
-      if (!root) return { accepted: false, code: "RUN_NOT_FOUND", message: `Team run '${view.teamRunId}' was not found.` };
+      const root = this.teamRunService.getActiveTeamRun(view.teamRunId) ?? await this.teamRunService.restoreForInput(view.teamRunId);
+      if ("accepted" in root) return root;
       const admission = await root.resolveCollaboratorMentions({ focusedAgentRunId: agentRunId, mentions });
       if (!admission.admitted) {
         return { accepted: false, code: admission.code, message: admission.message,

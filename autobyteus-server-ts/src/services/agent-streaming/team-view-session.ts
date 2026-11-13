@@ -1,3 +1,4 @@
+import { unrestorableRoot, type RootRestoreRefusal } from "../../agent-collaboration/execution/services/root-restore-admission.js";
 import type { DelegatedRunRestorability } from "../../agent-collaboration/execution/task/delegated-run-restorability.js";
 import type { ClosedTaskEntryFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
@@ -30,11 +31,17 @@ export type TeamViewSources = Readonly<{
   restorability: Pick<DelegatedRunRestorability, "refusal">;
   /** The managed, active team run; null while it is stopped (never restores). */
   activeTeamRun(teamRunId: string): RootTeamRun | null;
+  /** Base's restore admission of the stopped run (SR-078, CR-461-069), asked before its stored file is read. */
+  restoreRefusal(teamRunId: string): Promise<RootRestoreRefusal | null>;
   /** The stopped run's own stored tree; null when there is no such run. */
   readStoredTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
 }>;
 
 export class TeamRunNotFoundError extends Error {}
+/** An admitted stopped run whose stored file cannot be read: answered with a reason, the detail logged (CR-461-069). */
+export class TeamRunNotRestorableError extends Error {
+  constructor(readonly refusal: RootRestoreRefusal) { super(refusal.message); }
+}
 
 /** What a team run's view stream carries: the run's own events, its rows' (`ChildRowsFeed`) and their statuses. */
 type TeamViewEvent = TeamRunEvent | LocalChildRootEvent | RemoteRunRootEvent | ChildRowRootEvent;
@@ -125,10 +132,14 @@ export class TeamViewSession {
   }
 
   private async enterStored(): Promise<void> {
+    // Base's view answered a root its restore would refuse as not found, never with its stored file's parse error.
+    if (await this.sources.restoreRefusal(this.teamRunId)) throw new TeamRunNotFoundError(`Team run '${this.teamRunId}' not found`);
     const stream = this.sources.streams.streamOf<TeamViewEvent>(this.identity);
     const connection = await stream.openSnapshotConnection(async (): Promise<ViewSnapshot> => {
       const atBase = this.atBase();
-      const tree = await this.sources.readStoredTree(this.teamRunId);
+      const tree = await this.sources.readStoredTree(this.teamRunId).catch((error: unknown) => {
+        throw new TeamRunNotRestorableError(unrestorableRoot({ kind: "Team run", code: "TEAM_RUN_NOT_RESTORABLE", runId: this.teamRunId, error }));
+      });
       if (!tree) throw new TeamRunNotFoundError(`Team run '${this.teamRunId}' not found`);
       return { own: storedTeamPackageSnapshot(tree), ...await readViewSnapshot(this.sources.rows, this.identity, atBase) };
     });

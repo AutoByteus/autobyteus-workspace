@@ -68,7 +68,9 @@ const createHarness = (input: {
   const team = createTeamRootExecutionIdentity("team-run-root");
   const teamRunService = {
     getActiveTeamRun: vi.fn(() => managed ? root : null),
-    resolveManagedTeamRun: vi.fn(async () => { if (!managed) { managed = true; registrations.register(team); } return root; }),
+    restoreForInput: vi.fn(async () => { if (!managed) { managed = true; registrations.register(team); } return root; }),
+    // Base's restore admission (SR-078): admitted unless a test says otherwise.
+    restoreRefusal: vi.fn(async (_id: string): Promise<{ accepted: false; code: string; message: string } | null> => null),
     recordRunActivity: vi.fn(async () => undefined),
   };
   const readStoredTree = vi.fn(async () => tree);
@@ -319,7 +321,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(output[1]!.payload).toMatchObject({ root_team_run_id: "team-run-root", base_change_sequence: 0, live_sequence_id: harness.stream.liveSequenceId, closed_task_executions: [] });
       expect((output[1]!.payload.agent_statuses as Array<{ status: string }>).every((status) => status.status === "offline")).toBe(true);
       expect(output[2]).toEqual({ type: "TEAM_RUN_LIFECYCLE", payload: { is_active: false } });
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.root.openViewSnapshotConnection).not.toHaveBeenCalled();
       // Its rows stay live: base's row events, numbered in the run's stream.
       harness.feed.report({ run: createTeamRootExecutionIdentity("team-run-root"), added: [delegatedChild("checker")], removed: [] });
@@ -333,7 +335,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
       sessions.push({ handler: harness.handler, id: sessionId! });
       await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "nested-task-agent-run-001", command_id: "c-1" } }));
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "failed", code: "TEAM_RUN_STOPPED" } });
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });
 
@@ -354,7 +356,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { agent_run_id: "peer-run" } });
       expect(JSON.stringify(sent(harness.connection).at(-1))).toContain("REMOTE_RUN_MENTIONS_UNSUPPORTED");
       expect(peer.postMessage).toHaveBeenCalledOnce();
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });
 
@@ -379,7 +381,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
         agent_run_id: "nested-task-agent-run-001", content: "Start please", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1",
       } }));
       await flush();
-      expect(harness.teamRunService.resolveManagedTeamRun).toHaveBeenCalledOnce();
+      expect(harness.teamRunService.restoreForInput).toHaveBeenCalledOnce();
       expect(order).toEqual(["live snapshot", "posted"]);
       const tail = sent(harness.connection).slice(-3);
       expect(tail.map((message) => message.type)).toEqual(["TEAM_EXECUTION_VIEW_SNAPSHOT", "TEAM_RUN_LIFECYCLE", "AGENT_STATUS"]);
@@ -404,6 +406,40 @@ describe("AgentTeamStreamHandler current root stream", () => {
       harness.feed.report({ run: createTeamRootExecutionIdentity("team-run-root"), added: [delegatedChild("checker")], removed: [] });
       await harness.feed.settled();
       expect(sent(harness.connection).at(-1)).toMatchObject({ type: "TASK_EXECUTION_STARTED" });
+    });
+
+    it("SR-078 (CR-461-069): the view connect asks the restore admission before reading the stored file: refused, it answers TEAM_NOT_FOUND", async () => {
+      const harness = createHarness({ stopped: true });
+      harness.teamRunService.restoreRefusal.mockResolvedValue({ accepted: false, code: "TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED", message: "TeamRun 'team-run-root' is not an admitted current package." });
+      expect(await harness.handler.connect(harness.connection, "team-run-root")).toBeNull();
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { code: "TEAM_NOT_FOUND" } });
+      expect(harness.connection.close).toHaveBeenCalledWith(4004);
+      expect(harness.readStoredTree).not.toHaveBeenCalled();
+    });
+
+    it("SR-078 (CR-461-069): an admitted run whose stored file cannot be parsed is answered as not restorable; the schema detail goes to the log only", async () => {
+      const harness = createHarness({ stopped: true });
+      harness.readStoredTree.mockRejectedValueOnce(new Error("team-run-v1: rootTeam.members[0].memberRouteKey is required") as never);
+      expect(await harness.handler.connect(harness.connection, "team-run-root")).toBeNull();
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { code: "TEAM_RUN_NOT_RESTORABLE",
+        message: "Team run 'team-run-root' cannot be restored: its saved state cannot be read. Its files were left unchanged." } });
+      expect(JSON.stringify(harness.connection.send.mock.calls)).not.toMatch(/memberRouteKey|team-run-v1/);
+      expect(harness.connection.close).toHaveBeenCalledWith(4004);
+    });
+
+    it("SR-078 (CR-461-069): the first message answers the admission's own reason code and text; nothing is restored or posted", async () => {
+      const harness = createHarness({ stopped: true });
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      harness.teamRunService.restoreRefusal.mockResolvedValue({ accepted: false, code: "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
+        message: "Token usage history must finish migrating before existing runs can be restored." });
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "Are you there?", context_file_paths: [],
+        image_urls: [], agent_run_id: "nested-task-agent-run-001", message_id: "m-adm", dedupe_key: "d-adm" } }));
+      const error = sent(harness.connection).at(-1);
+      expect(error).toMatchObject({ type: "ERROR", payload: { message: "Token usage history must finish migrating before existing runs can be restored." } });
+      expect(JSON.stringify(error)).toContain("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED");
+      expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
+      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });
 
     it("a run with no stored tree closes with TEAM_NOT_FOUND; disconnect stops following the run", async () => {
@@ -436,7 +472,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
         expect(JSON.stringify(message)).toContain("TASK_AGENT_RESOURCE_CLOSED");
       }
       expect(harness.closedTasks.refusal).toHaveBeenCalledWith(createTeamRootExecutionIdentity("team-run-root"));
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.root.openViewSnapshotConnection).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
       expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
@@ -461,7 +497,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
       sessions.push({ handler: harness.handler, id: sessionId! });
       harness.closedTasks.refusal.mockResolvedValue(null);
       await harness.handler.handleMessage(sessionId!, send("4"));
-      expect(harness.teamRunService.resolveManagedTeamRun).toHaveBeenCalledOnce();
+      expect(harness.teamRunService.restoreForInput).toHaveBeenCalledOnce();
       expect(harness.executeAgentCommand).toHaveBeenCalledWith("nested-task-agent-run-001", expect.objectContaining({ kind: "post_message" }));
     });
   });
@@ -483,7 +519,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(JSON.stringify(error)).toContain("TEAM_SEND_MESSAGE_REJECTED");
       expect(JSON.stringify(error)).toContain("TASK_EXECUTION_CONTEXT_UNAVAILABLE");
       expect(harness.restorability.refusal).toHaveBeenCalledWith(createTeamRootExecutionIdentity("team-run-root"));
-      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.teamRunService.restoreForInput).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });
 

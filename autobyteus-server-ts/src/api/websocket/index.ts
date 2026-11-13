@@ -24,7 +24,7 @@ export async function registerWebsocketRoutes(
   dependencies: {
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRealtimeContracts;
-    agentOrgRunService: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">;
+    agentOrgRunService: Pick<AgentOrgRunService, "getActive" | "restoreForInput" | "restoreRefusal" | "recordRunActivity">;
     teamRunService: ConstructorParameters<typeof AgentTeamStreamHandler>[1];
     standaloneRoots: Pick<StandaloneAgentRunRootManager, "resolveRoot" | "getActive">;
     agentPackageDefinitionChangeHub: AgentPackageDefinitionChangeHub;

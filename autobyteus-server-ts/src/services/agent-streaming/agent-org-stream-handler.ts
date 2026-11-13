@@ -13,7 +13,7 @@ import type { WebSocketConnection } from "./agent-team-stream-handler.js";
 import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import { createRootExecutionStreamEgress, type RootExecutionStreamEgress } from "./websocket-egress/root-execution-stream-egress.js";
-import { OrgRunNotFoundError, OrgViewSession, type OrgViewSources } from "./org-view-session.js";
+import { OrgRunNotFoundError, OrgRunNotRestorableError, OrgViewSession, type OrgViewSources } from "./org-view-session.js";
 
 /** A command for one agent of the Org (every client command but Retry). */
 type AgentCommand = Exclude<CollaborationStreamClientMessage, { type: "REFRESH_REMOTE_TASK_EXECUTIONS" }>;
@@ -71,7 +71,7 @@ const agentCommandOf = (message: Exclude<AgentCommand, { type: "SEND_MESSAGE" }>
 export class AgentOrgStreamHandler {
   private readonly sessions = new Map<string, { egress: RootExecutionStreamEgress; view: OrgViewSession }>();
   constructor(
-    private readonly service: Pick<AgentOrgRunService, "getActive" | "restore" | "recordRunActivity">,
+    private readonly service: Pick<AgentOrgRunService, "getActive" | "restoreForInput" | "restoreRefusal" | "recordRunActivity">,
     private readonly sources: OrgViewSources,
   ) {}
 
@@ -81,7 +81,7 @@ export class AgentOrgStreamHandler {
     const egress = createRootExecutionStreamEgress(connection, `AgentOrg run '${orgRunId}'`);
     const sessionId = randomUUID();
     const view = new OrgViewSession(orgRunId, (message) => egress.send(message),
-      { ...this.sources, activeOrgRun: (id) => this.service.getActive(id) });
+      { ...this.sources, activeOrgRun: (id) => this.service.getActive(id), restoreRefusal: (id) => this.service.restoreRefusal(id) });
     egress.send(CollaborationStreamServerMessageSchema.parse({
       type: "CONNECTED", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId, session_id: sessionId },
     }));
@@ -90,9 +90,11 @@ export class AgentOrgStreamHandler {
     } catch (cause) {
       view.close();
       const notFound = cause instanceof OrgRunNotFoundError;
-      egress.send(error(notFound ? "AGENT_ORG_NOT_FOUND" : "AGENT_ORG_STREAM_UNAVAILABLE", cause instanceof Error ? cause.message : String(cause)));
+      const notRestorable = cause instanceof OrgRunNotRestorableError;
+      egress.send(error(notFound ? "AGENT_ORG_NOT_FOUND" : notRestorable ? cause.refusal.code : "AGENT_ORG_STREAM_UNAVAILABLE",
+        cause instanceof Error ? cause.message : String(cause)));
       egress.dispose();
-      connection.close(notFound ? 4004 : 1011);
+      connection.close(notFound || notRestorable ? 4004 : 1011);
       return null;
     }
     this.sessions.set(sessionId, { egress, view });
@@ -147,8 +149,14 @@ export class AgentOrgStreamHandler {
           session.egress.send(commandAck(message, "rejected", "AGENT_ORG_STOPPED", `AgentOrg run '${orgRunId}' is stopped. A message to one of its agents starts it.`));
           return;
         }
-        // A message to one of the Org's own agents starts the stopped Org, on that first input (SR-046).
-        run = await this.service.restore(orgRunId);
+        // A message to one of the Org's own agents starts the stopped Org, on that first input (SR-046); base's restore
+        // admission answers first, with its own reason (SR-078, CR-461-069).
+        const restored = await this.service.restoreForInput(orgRunId);
+        if ("accepted" in restored) {
+          session.egress.send(commandAck(message, "rejected", restored.code, restored.message));
+          return;
+        }
+        run = restored;
       }
       if (message.type !== "SEND_MESSAGE") {
         const result = await run.executeAgentCommand(target, agentCommandOf(message));
