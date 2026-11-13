@@ -1,0 +1,22 @@
+# DEL-01 post-integration checks (delivery, autobyteus-460)
+# Merged state: ticket branch codex/running-agent-config-reload-460 @ dbd7462dc2 = checkpoint 1e9a7a185d + merge of origin/personal @ ca0a8c0b5b
+# Date: 2026-11-13, macOS (darwin 25.5), Node 22.23.1
+# New base commits integrated: 8 (autobyteus-24, web markdown wrapping; 5 non-ticket files, all in autobyteus-web).
+# Ticket files that the incoming commits also touch: none (comm of the two name lists is empty).
+
+## Check 1: the ticket's focused server suites (env -i PATH HOME TMPDIR LANG)
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/mid-run-workspace-skills.test.ts tests/unit/agent-execution/backends/shared/run-workspace-skills.test.ts tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts --no-watch
+ Test Files  3 passed (3)
+      Tests  30 passed (30)
+EXIT 0
+
+## Check 2: whole agent-execution unit tree (the changed backends and the run boundary)
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution tests/unit/skill-update-notices --no-watch
+ Test Files  160 passed | 4 skipped (164)
+      Tests  1731 passed | 6 skipped (1737)
+EXIT 0
+
+## Check 3: the web notice card spec, now with the autobyteus-24 renderer change merged
+$ pnpm -C autobyteus-web test:nuxt --run components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
