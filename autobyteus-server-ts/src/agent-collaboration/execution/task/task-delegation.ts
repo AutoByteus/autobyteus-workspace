@@ -81,11 +81,13 @@ const firstLineOf = (description: string): string => description.split(/\r?\n/).
 const workText = (description: string, comments: readonly string[]): string =>
   comments.length ? [description, "", "Comments:", ...comments.map((comment) => `- ${comment}`)].join("\n") : description;
 /** A coded refusal from the runtime or the Task side (as opposed to an infrastructure fault), as the agent reads it. */
-const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
-  if (error instanceof TaskDelegationError || taskExecutionResourceRejectionCode(error)) return { delegated: false, message: message(error) };
-  const code = (error as { code?: unknown } | null)?.code;
-  return error instanceof Error && typeof code === "string" ? { delegated: false, message: error.message } : null;
-};
+/**
+ * A refusal the agent reads as `{ delegated: false, message }`: a delegation refusal or the Task side's rejection, as base
+ * (`asTaskDelegationError`). Any other error is thrown, so the tool answers base's `{ error: { code, message } }`, e.g.
+ * TASK_DELEGATION_ERROR for an unknown Task key (CR-461-059).
+ */
+const asRefusal = (error: unknown): TaskDelegationOutcome | null =>
+  error instanceof TaskDelegationError || taskExecutionResourceRejectionCode(error) ? { delegated: false, message: message(error) } : null;
 
 /**
  * `delegate_task`'s order for a new run (design DS-1, `TaskDelegation`), root-neutral: the standalone, team and org roots

@@ -1,3 +1,4 @@
+import { toTaskDelegationToolErrorPayload } from "../../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import type { RunOwnDelegation } from "../../../../src/agent-collaboration/execution/task/run-own-delegation.js";
 import type { AgentConversationActivity } from "../../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
 import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
@@ -211,6 +212,15 @@ describe("TaskDelegation.toNewRun", () => {
     expect(h.tasks.entry({ agentRunId: "image_maker_33f0" })).toMatchObject({ start: "failed" });
     expect(markFailed).toHaveBeenCalledWith({ agentRunId: "image_maker_33f0" }, { code: "TASK_DISPATCH_FAILED", message: "The runtime is not available." });
     expect(h.discard).toHaveBeenCalledWith({ agentRunId: "image_maker_33f0" });
+  });
+
+  it("CR-461-059: an unknown Task key is thrown, so the tool answers base's { error: { code: TASK_DELEGATION_ERROR, message } }", async () => {
+    const h = harness();
+    const thrown = await h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", task_id: "nope-9" }).catch((error: unknown) => error);
+    expect(thrown).toMatchObject({ code: "TASK_NOT_FOUND", message: "Task 'nope-9' was not found." });
+    expect(toTaskDelegationToolErrorPayload(thrown)).toEqual({ error: { code: "TASK_DELEGATION_ERROR", message: "Task 'nope-9' was not found." } });
+    expect(h.starter.startAgent).not.toHaveBeenCalled();
+    expect(h.tasks.links).toEqual([]);
   });
 
   it("a run that cannot be created is refused with the reason; no Task entry is written", async () => {
