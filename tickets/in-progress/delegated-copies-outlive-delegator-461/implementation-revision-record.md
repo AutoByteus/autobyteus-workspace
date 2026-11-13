@@ -425,3 +425,59 @@ The current code and `implementation-handoff.md` remain authoritative.
   - The characterization covers one representative scenario per story (S1/S6/S10 and their Team and Org equivalents), not every step of `stories.py`. Steps that only send messages do not change a view's rows.
   - The peer rows of each story (5.1's peer node) are covered by the contracts and the peer tests, not by a two-node capture.
 
+### IR-015 — The closed-Task input fence (SR-070, DS-15, G-4)
+
+- Triggering role, report path, and round: Solution Designer, SR-070 (DS-15, G-4), passed by ARCH-REV-044 with one note (check before the root is resolved or restored). Round 15.
+- My Unclear question, the refusal text, was answered the same day: user, application and resume input get base's input-fence text, and DS-15 now says so.
+- Triggering finding IDs: SR-070 (G-4). Large / High unchanged.
+- Prior authoritative result: IR-014 at `49f3db1047` (docs `709cf5dd99`, `f6df9f824b`; CRR-018 Pass).
+- Current authoritative result: `07a3a5890e`.
+- Related solution / architecture-review revision IDs: SR-070, ARCH-REV-044. Code review: `N/A` for this round so far.
+- Base characterization (IMP-58, at `827f1e68dc`): the user's message to a delegated copy, through the root's `executeAgentCommand` as the view's stream handler called it:
+  - Task closed and the copy released: `RUN_NOT_FOUND` (the copy had left its root);
+  - Task closed, not yet released: `TASK_AGENT_RESOURCE_CLOSED`, "Your Task is DONE or CANCELLED, so you can't start new work." (`root-task-execution-resource-scope.ts:68, 164`, the input fence).
+  - The second case is the nearest match on the branch, where a closed delegated run stays reachable as its own run.
+- Implementation delta:
+  - **`ClosedTaskFence`** (`agent-collaboration/execution/task/closed-task-fence.ts`):
+    - A run that a Task names (`DelegationIndex.tasksOf`) and whose entry is closed (`RunTaskRecords.isOpen`, the Task side, the authority) is refused with `TASK_AGENT_RESOURCE_CLOSED` and base's text (`CLOSED_TASK_INPUT_MESSAGE`).
+    - A run that no Task names is not fenced.
+    - The task side creates one fence for the composition's consumers. The root builders and the manager, which already receive the tree and the Task records, build their own from them.
+  - **Agent run, before resolve or restore:**
+    - `StandaloneRunCommandPort.inputRefusal(runId)` is checked by `AgentRunCommandCoordinator.postUserMessage` before the `initializing` overlay or anything else is published. The ack is `rejected` with the code and text.
+    - `StandaloneAgentRunRootManager.postUserMessage` checks again before `resolveRoot`.
+    - New outcome kind `refused`; the coordinator clears its overlay if the refusal comes from the gate head.
+  - **Agent run, at the gate head:** `StandaloneAgentRunRoot.postHostUserMessage` checks the fence in its gate before `postToHost`, so it never calls `readyHost`. This covers a loaded root and a peer owner's message.
+  - **Team and Org, before restore:**
+    - `AgentTeamStreamHandler.memberCommand` and `postToMember` check before `getActiveTeamRun` / `resolveManagedTeamRun` (and before a mention resolution, which restores). An interrupt is not fenced.
+    - `AgentOrgStreamHandler` checks before restore, for uniformity; an Org run is never delegated.
+    - The fence reaches both through the view sources (`RunViewSources.closedTasks`, from the composition).
+  - **Team, at the gate head:**
+    - `RootTeamRun.executeAgentCommand` refuses a post or an approval.
+    - The materializer's member input check (`assertExecutionInputAllowed`, base's location) also asserts the fence. That covers application input and a teammate's message to a member of a closed delegated team.
+  - **Restart resume:** `RestartResumer.resumeOne` skips a run whose Task is closed before `resolveOrRestore`, as "its Task is closed".
+  - **Acknowledgement code:** `TASK_AGENT_RESOURCE_CLOSED` is added to the agent stream's SEND_MESSAGE ack code set, on the server (`AgentRunCommandErrorCode`) and the web (`agentCommandTypes.ts`). The shape is unchanged.
+  - **Agent-to-agent delivery** keeps `ASSIGNER_ONLY_REACTIVATION_MESSAGE` (`CrossRunMessageDelivery`), unchanged.
+- Tests:
+  - `closed-task-fence.test.ts`, over the real tree and Task records: an open run takes input; a closed agent or team run is refused with base's text; after the assigner reopens, input is taken; a run no Task names, or whose Task was deleted, is not fenced.
+  - `standalone-agent-run-root/closed-task-input-fence.test.ts`:
+    - a closed run's message registers no root, loads none, activates nothing, binds nothing, posts nothing;
+    - a loaded root refuses at its gate head without making its agent ready;
+    - after the assigner reopens it, the message is posted; a deleted Task's run takes it.
+  - `agent-run-command-coordinator.test.ts`: refused with the code and text; nothing resolved; no frame published on the run's stream.
+  - `agent-team-stream-handler.test.ts`:
+    - stopped team: a message (and a message with mentions) is refused before restore, with no snapshot or status after it;
+    - live team: refused, while an interrupt still passes;
+    - reopened: the message is posted.
+  - `team-root-closed-task-fence.test.ts`, a real `RootTeamRun` over the real tree: the gate head refuses a message and an approval and starts no member; the members' input check refuses; open and deleted-Task runs take the message.
+  - `agent-org-stream-handler.test.ts`: the fence is asked before restore.
+  - `restart-resumer.test.ts`: closed runs are neither resolved nor posted to.
+- Local validation and result:
+  - IMP-58: base characterization.
+  - IMP-59 (`07a3a5890e`): server type gate PASS (1012); unit 7966 passed, none failed.
+  - IMP-60: integration 476 passed; the 3 failures (file watcher timing, and team communication at file level under load) pass alone, 18 of 18.
+  - IMP-61: web type gate PASS (90); agent stream, store and composer specs, 149 files.
+- Next recipient or routing: Code Reviewer.
+- Remaining limitations or risks:
+  - "No status frame in the delegator's view or the list" is shown by the fact that nothing activates or registers: the child's statuses come from its own run's activation. No end-to-end two-view test covers it.
+  - A peer-started run here has no local Task entry, so its fence is its node's (SR-066), as at base.
+

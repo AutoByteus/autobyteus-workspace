@@ -1,0 +1,7 @@
+# commit 07a3a5890e
+$ pnpm typecheck
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+$ npx vitest run --no-watch services/agentStreaming stores composables/agentInput
+ Test Files  149 passed (149)
+      Tests  1447 passed (1447)

@@ -1,0 +1,18 @@
+# commit 07a3a5890e
+$ pnpm test:integration:prepare && pnpm test:integration
+     × returns one idle event stream without stopping other subscribers 8076ms
+     × emits move/rename event 1272ms
+     × emits file creation event with node metadata 4061ms
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+      Tests  3 failed | 476 passed | 73 skipped (552)
+
+# Both failing files, alone (the run overlapped a machine load average of 18-32; file-explorer and team communication are unchanged by DS-15: file-explorer-unchanged-since-3228eff74b)
+$ npx vitest run --no-watch tests/integration/api/team-communication-api.integration.test.ts tests/integration/file-explorer/file-system-watcher.integration.test.ts
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
