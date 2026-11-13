@@ -141,12 +141,6 @@ export class AgentOrgStreamHandler {
           result.accepted ? null : result.code ?? "AGENT_ORG_COMMAND_REJECTED", result.message ?? null));
         return;
       }
-      // DS-15 (SR-070): the closed-Task fence, before the run is restored (an Org run is never delegated; uniform).
-      const refusal = message.type === "INTERRUPT_GENERATION" ? null : this.sources.closedTasks.refusal(createAgentOrgRootExecutionIdentity(orgRunId));
-      if (refusal) {
-        session.egress.send(commandAck(message, "rejected", refusal.code, refusal.message));
-        return;
-      }
       let run = this.service.getActive(orgRunId);
       if (!run) {
         if (message.type !== "SEND_MESSAGE") {

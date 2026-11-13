@@ -16,7 +16,7 @@ export type RunViewSources = Readonly<{
   /** The rows under a run: read with a snapshot's base, their records after it, their statuses followed (SR-061, SR-063). */
   rows: RunViewRowSources;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
-  /** The closed-Task input fence (DS-15): a member's input is refused before its run is restored. */
+  /** The closed-Task input fence (DS-15): a delegated Team run member's input is refused before the run is restored. */
   closedTasks: Pick<ClosedTaskFence, "refusal">;
   readStoredTeamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   readStoredOrgTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null>;

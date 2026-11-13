@@ -5,7 +5,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { agentChildRow, delegatedChild, followTestChildRows, testRegistrations, openTasks } from "../../../helpers/child-rows-feed.js";
+import { agentChildRow, delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
 
 const orgRunId = "org-run-1";
 const agent = testOrgAgentNode("/director", "agent-run-1");
@@ -82,11 +82,10 @@ const harness = (snapshot = { tree, messages, statuses, inputStates: [] },
     recordRunActivity,
   };
   const readStoredTree = vi.fn(async (id: string) => id === orgRunId ? snapshot.tree : null);
-  const closedTasks = openTasks();
-  return { publisher, executeAgentCommand, executeAgentCommandWithExecutionKind, recordRunActivity, service, run, feed, registrations, closedTasks,
+  return { publisher, executeAgentCommand, executeAgentCommandWithExecutionKind, recordRunActivity, service, run, feed, registrations,
     stop: () => { managed = false; registrations.unregister(identity); },
     handler: new AgentOrgStreamHandler(service as never,
-      { streams: feed.streams, rows: feed.rows, registrations, closedTasks, readStoredTree }) };
+      { streams: feed.streams, rows: feed.rows, registrations, readStoredTree }) };
 };
 
 describe("AgentOrgStreamHandler", () => {
@@ -352,21 +351,6 @@ describe("AgentOrgStreamHandler", () => {
       expect(peer.postMessage).toHaveBeenCalledOnce();
       expect(test.service.restore).not.toHaveBeenCalled();
       expect(test.executeAgentCommand).not.toHaveBeenCalled();
-      test.handler.disconnect(sessionId!);
-    });
-
-    it("DS-15: the closed-Task fence is asked before the Org is restored (uniform; an Org run is never delegated, so its fence is open)", async () => {
-      const test = harness(undefined, { stopped: true }); const client = connection();
-      test.closedTasks.refusal.mockReturnValue({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: "Your Task is DONE or CANCELLED, so you can't start new work." });
-      const sessionId = await test.handler.connect(client.socket, orgRunId);
-      await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agent.agentRunId, command_id: "c-closed",
-        content: "Start please", context_file_paths: [], image_urls: [], message_id: "m-1", dedupe_key: "d-1" } }));
-      await flush();
-      expect(parse(client).at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "TASK_AGENT_RESOURCE_CLOSED" } });
-      expect(test.closedTasks.refusal).toHaveBeenCalledWith(createAgentOrgRootExecutionIdentity(orgRunId));
-      expect(test.service.restore).not.toHaveBeenCalled();
-      expect(test.executeAgentCommandWithExecutionKind).not.toHaveBeenCalled();
       test.handler.disconnect(sessionId!);
     });
 
