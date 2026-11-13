@@ -186,7 +186,7 @@ export const runHeadingLinksCases = async (probe) => {
   await attachToBrowserContext(deskContext);
   await deskContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   const deskPage = await deskContext.newPage();
-  const desk = await surfaceOf(deskContext, deskPage, 'desktop', stack.frontendUrl);
+  let desk = null;
   // ---- the phone ------------------------------------------------------------------------------------------------------
   const phoneBrowser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage', `--host-resolver-rules=MAP ${PHONE_HOST} 127.0.0.1`] });
   const phoneOrigin = `http://${PHONE_HOST}:${alpha.port}`;
@@ -195,6 +195,9 @@ export const runHeadingLinksCases = async (probe) => {
     await waitForDevServerReady(stack.frontendUrl, { timeoutMs: 120_000 });
     await deskPage.goto(stack.frontendUrl, { waitUntil: 'networkidle', timeout: 240_000 }).catch(() => undefined);
     await sleep(3_000);
+    // Browser lines count from here: a cold `nuxt dev` re-optimizes dependencies and reloads during the warm-up above
+    // (TESTING.md § Browser probes), which is the harness, not the product.
+    desk = await surfaceOf(deskContext, deskPage, 'desktop', stack.frontendUrl);
     const openDesktopRun = async (run) => {
       await deskPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
       await desktopRunsView(deskPage);
