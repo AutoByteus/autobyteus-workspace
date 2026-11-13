@@ -202,8 +202,8 @@ export class DelegationIndex implements TaskEntriesListener {
     for (const [key, run] of affected) this.reportChildRows(run, before.get(key) ?? []);
   }
 
-  /** A run and each run above it, up to its tree's top. */
-  private chainOf(run: RootExecutionIdentity): RootExecutionIdentity[] {
+  /** A run and each run above it, up to its tree's top: the runs whose subtree holds it (SR-072, the Team tab's live messages). */
+  chainOf(run: RootExecutionIdentity): RootExecutionIdentity[] {
     const chain = [run];
     for (let current = run; ;) {
       const reference = runReferenceOf(current);

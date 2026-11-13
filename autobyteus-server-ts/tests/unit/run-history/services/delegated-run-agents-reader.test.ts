@@ -52,9 +52,18 @@ describe("DelegatedRunAgentsReader (runs delegated from a run)", () => {
     expect(await w.reader.agentRunIds(E)).toEqual(["image"]);
   });
 
-  it("past participants: the asked agents of its one-hop runs, at their own addresses", async () => {
+  it("past participants: the asked agents of the runs below it, at every depth (SR-072), at their own addresses", async () => {
     const w = await world();
-    expect(await w.reader.forAgentRunIds(M, ["coder", "image", "nobody"])).toEqual([{ agentRunId: "coder", address: "/coder" }]);
+    expect(await w.reader.forAgentRunIds(M, ["coder", "image", "nobody"])).toEqual([{ agentRunId: "coder", address: "/coder" }, { agentRunId: "image", address: "/image_maker" }]);
     expect(await w.reader.forAgentRunIds(E, ["image"])).toEqual([{ agentRunId: "image", address: "/image_maker" }]);
+  });
+
+  it("runsBelow (SR-072): every local run below it, open or closed; its open rows at every depth", async () => {
+    const w = await world();
+    expect(w.reader.runsBelow(M, "all")).toEqual([{ teamRunId: "eng" }, { agentRunId: "image" }]);
+    expect(w.reader.runsBelow(M, "open")).toEqual([{ teamRunId: "eng" }, { agentRunId: "image" }]);
+    w.tasks.close("T1");
+    expect(w.reader.runsBelow(M, "all")).toEqual([{ teamRunId: "eng" }, { agentRunId: "image" }]);
+    expect(w.reader.runsBelow(M, "open")).toEqual([]);
   });
 });

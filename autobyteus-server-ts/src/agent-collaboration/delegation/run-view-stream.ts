@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../execution/domain/root-execution-identity.js";
+import type { DelegationIndex } from "./delegation-index.js";
+import { RunMessagesFeed, type RunMessageEvents } from "./run-messages-feed.js";
 
 export type SequencedRootEvent<TEvent> = Readonly<{
   changeSequence: number;
@@ -124,12 +126,20 @@ export class RunViewStream<TEvent> {
 /**
  * The composition root's view stream registry (SR-062): each run's one `RunViewStream`, created on its first use and
  * kept for the life of the process. A run's root, its view sessions, `ChildRowsFeed` and `LocalChildObservation` all
- * take the run's stream from here. Which events are messages is each root kind's rule, given by the composition root.
+ * take the run's stream from here. Which events are messages, and each kind's message event, are each root kind's
+ * rules, given by the composition root. It holds the node's message feed over these streams (`messages`, SR-072).
  */
 export class RunViewStreams {
   private readonly streams = new Map<string, RunViewStream<unknown>>();
+  /** The node's feed of committed messages into the views of their runs and the runs above them (SR-072). */
+  readonly messages: RunMessagesFeed;
 
-  constructor(private readonly isMessageEvent: Readonly<Record<RootExecutionIdentity["rootSubjectKind"], (event: never) => boolean>>) {}
+  constructor(
+    private readonly isMessageEvent: Readonly<Record<RootExecutionIdentity["rootSubjectKind"], (event: never) => boolean>>,
+    feed: Readonly<{ tree: Pick<DelegationIndex, "chainOf">; events: RunMessageEvents }>,
+  ) {
+    this.messages = new RunMessagesFeed({ ...feed, openStreamOf: (run) => this.streams.get(rootExecutionIdentityKey(run)) ?? null });
+  }
 
   streamOf<TEvent>(run: RootExecutionIdentity): RunViewStream<TEvent> {
     const key = rootExecutionIdentityKey(run);

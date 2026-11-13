@@ -58,8 +58,11 @@ export interface RootCommunicationPort {
   logOwnersOf(message: CollaborationCommunicationMessage): readonly StoredMessageLogOwner[];
   /** The root persistence coordinator's `commitMessageAppend` (lock, log write, post-durability step). */
   commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult>;
-  /** The message in the root's view stream (messages between its own agents only). */
-  publishToRootView(message: CollaborationCommunicationMessage): void;
+  /**
+   * The committed message into the views (SR-072): the node's message feed numbers it in the view of this root, of the
+   * sender's run, and of every run above either. Called once per message, at the commit that publishes it.
+   */
+  publishMessage(message: CollaborationCommunicationMessage, senderRun: RootExecutionIdentity): void;
   /** Shows the committed input in the recipient's conversation. */
   presentRecipientInput(message: CollaborationCommunicationMessage, input: AgentInputUserMessage): void;
 }

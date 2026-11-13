@@ -1,3 +1,4 @@
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -83,6 +84,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     rootLaunchConfiguration: AgentLaunchConfiguration;
     persistence: StandaloneRootPersistenceCoordinator;
     publisher: RunViewStream<StandaloneRootEvent>;
+    /** The node's message feed (SR-072): its committed messages into the views of its runs and the runs above them. */
+    messageFeed: Pick<RunMessagesFeed, "publish">;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
     /** The relationships between runs: its peer children, its own Task, and its collaboration tree (step 2's reach, SR-060). */
@@ -133,7 +136,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       // The run's own log; every other agent (another run, or a peer's) keeps its own.
       messageLogOwnerOf: (agentRunId) => this.index.isHost(agentRunId) ? OWN_RUN_LOG : OTHER_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
-      publish: (message) => options.publisher.publish({ kind: "communication", message }),
+      messageFeed: options.messageFeed,
       presentCommittedMessage: (message) => this.delivery.presentCommittedCommunication(message),
     }));
   }

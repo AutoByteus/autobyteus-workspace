@@ -14,40 +14,56 @@ import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-
 import { isPublicMessage } from "../../../services/agent-streaming/public-message-scope.js";
 import { getTeamCommunicationProjectionService } from "../../../services/team-communication/team-communication-projection-service.js";
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
-import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createRootExecutionIdentity, rootExecutionIdentityKey } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { runIdentityOf } from "../../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { TaskExecutionReference } from "../../../agent-collaboration/execution/task/task-execution-reference.js";
+import { composeRunViewMessages, type RunMessageRecords, type RunViewMessages } from "../../../run-history/services/run-view-messages.js";
 
-type RootRecords = Readonly<{
-  messages: readonly CollaborationCommunicationMessage[];
-  isAgentOfTree(agentRunId: string): boolean;
-}>;
-
-/** Each root kind's records owner: the live root's messages, or its stored log validated with its tree. */
-const readRootRecords = async (rootKind: CollaborationRootKind, rootRunId: string): Promise<RootRecords> => {
+/** Each root kind's records owner: the live root's own log and own agents, or its stored log validated with its tree. */
+const readRunRecords = async (rootKind: CollaborationRootKind, rootRunId: string): Promise<RunMessageRecords> => {
   switch (rootKind) {
     case "agent": {
       // A standalone run's one agent is the run itself; every other agent of its messages is of another run.
       const records = await getStandaloneAgentRunRootManager().getCollaborationRecordsSnapshot(rootRunId);
-      return { messages: records.messages.messages, isAgentOfTree: (id) => id === records.host.agentRunId };
+      return { messages: records.messages.messages, isOwnAgent: (id) => id === records.host.agentRunId };
     }
     case "agent_team": {
       const records = await getTeamCommunicationProjectionService().getCollaborationRecordsSnapshot(rootRunId);
       const index = new TeamExecutionIndex(records.executionTree);
-      return { messages: records.messages.messages, isAgentOfTree: (id) => index.getAgent(id) !== null };
+      return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };
     }
     case "agent_org": {
       const records = await AgentOrgRunManager.getInstance().getCollaborationRecordsSnapshot(rootRunId);
       const index = new AgentOrgExecutionIndex(records.executionTree);
-      return { messages: records.messages.messages, isAgentOfTree: (id) => index.getAgent(id) !== null };
+      return { messages: records.messages.messages, isOwnAgent: (id) => index.getAgent(id) !== null };
     }
   }
 };
 
 /**
+ * The records of the view of run X (SR-072): X's own log composed with the own log of every local run below it, at every
+ * depth, open or closed (`composeRunViewMessages`); its tree is X's agents and those of its open rows.
+ */
+const readRootRecords = async (rootKind: CollaborationRootKind, rootRunId: string): Promise<RunViewMessages> => {
+  const root = createRootExecutionIdentity({ rootSubjectKind: rootKind, rootRunId });
+  const below = getStudioDelegatedRunAgents();
+  const open = new Set(below.runsBelow(root, "open").map((run) => rootExecutionIdentityKey(runIdentityOf(run))));
+  const readBelow = async (ref: TaskExecutionReference) => {
+    const run = runIdentityOf(ref);
+    const records = await readRunRecords(run.rootSubjectKind, run.rootRunId).catch((error: unknown) => error instanceof Error ? error : new Error(String(error)));
+    return { run: run.rootRunId, records, open: open.has(rootExecutionIdentityKey(run)) };
+  };
+  const [own, runs] = await Promise.all([readRunRecords(rootKind, rootRunId), Promise.all(below.runsBelow(root, "all").map(readBelow))]);
+  return composeRunViewMessages({ own, below: runs });
+};
+
+/**
  * One participant's messages of one root (autobyteus-358): the Team tab reads them when it is shown, instead of
- * every view carrying the root's whole log. The other agent of each message is an agent of the root, as in the
- * root's view stream (`isPublicMessage`), or an agent of a delegated run of this root that left its tree when its
- * Task closed: those are returned in `pastParticipants` with the address they had, read from the runs' own files
- * (D-5). A run on another node is not a participant: its messages stay on its node.
+ * every view carrying the root's whole log. Its messages are the root's log composed with those of every run below it
+ * (SR-072). The other agent of each message is an agent of the view's tree, the root's or an open row's at any depth
+ * (`isPublicMessage`), or an agent of a run below it that left its tree when its Task closed: those are returned in
+ * `pastParticipants` with the address they had, read from the runs' own files (D-5). A run on another node is not a
+ * participant: its messages stay on its node.
  */
 export const readCollaborationParticipantMessages = async (input: Readonly<{
   rootKind: string;

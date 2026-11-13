@@ -1,3 +1,4 @@
+import { messageFeedInto } from "../../../helpers/view-streams.js";
 import { noDelegations } from "../../../helpers/no-delegations.js";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import fs from "node:fs/promises";
@@ -24,7 +25,7 @@ import { TokenUsageCapability } from "../../../../src/token-usage/providers/toke
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
-import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -99,7 +100,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
   }
   const publisher = new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
-  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
+  run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.

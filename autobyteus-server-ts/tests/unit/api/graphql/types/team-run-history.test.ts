@@ -116,7 +116,7 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
 
   it("a stopped run's checkpoint is its view's sequence, with no open work of its own (autobyteus-461 SR-045, SR-062)", async () => {
     mocks.getActiveTeamRun.mockReturnValue(null);
-    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false });
+    const streams = new RunViewStreams({ agent: () => false, agent_team: () => false, agent_org: () => false }, { tree: { chainOf: (run) => [run] }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
     streams.streamOf(createTeamRootExecutionIdentity("team-run-1")).publish({ kind: "a row event" });
     mocks.viewStreams = streams;
     expect(new TeamRunHistoryResolver().getTeamRunExecutionCheckpoint("team-run-1"))

@@ -1,3 +1,4 @@
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
@@ -96,6 +97,8 @@ export class RootTeamRun {
     messages: TeamCommunicationMessagesSnapshot;
     persistence: TeamRunPersistenceCoordinator;
     publisher: TeamRunEventPublisher<TeamRunEvent>;
+    /** The node's message feed (SR-072): its committed messages into the views of its runs and the runs above them. */
+    messageFeed: Pick<RunMessagesFeed, "publish">;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
@@ -129,6 +132,7 @@ export class RootTeamRun {
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
       commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
       publish: (event) => options.publisher.publish(event),
+      messageFeed: options.messageFeed,
     }));
     this.collaborators = new TeamRunCollaborators({
       admission: options.collaboratorAdmission,

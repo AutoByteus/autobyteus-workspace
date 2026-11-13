@@ -8,7 +8,7 @@ import type { DelegationIndex } from "../../agent-collaboration/delegation/deleg
 export type DelegatedRunAgent = Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 
 /** The runs delegated from a run on this node, open or closed, and each run's agents: the `DelegationIndex` (contract §4). */
-type DelegatedRuns = Pick<DelegationIndex, "childrenOf" | "subtreeOf" | "agentsOf">;
+type DelegatedRuns = Pick<DelegationIndex, "subtreeOf" | "agentsOf" | "collaborationTreeOf">;
 
 /**
  * The agents of the runs delegated from a run, open and closed (REQ-009's token roll-up of every run kind; the Team tab's
@@ -19,15 +19,27 @@ export class DelegatedRunAgentsReader {
   /** `delegatedRuns`: the tree, created by the composition root (SR-047). */
   constructor(private readonly delegatedRuns: DelegatedRuns) {}
 
-  /** The given agent run IDs that are agents of a run delegated from this run (one hop), with their own addresses. */
+  /**
+   * The given agent run IDs that are agents of a run below this run, at every depth, open or closed, with their own
+   * addresses (the Team tab's past participants: its view composes the whole subtree's logs, SR-072).
+   */
   async forAgentRunIds(root: RootExecutionIdentity, agentRunIds: Iterable<string>): Promise<DelegatedRunAgent[]> {
     const wanted = new Set(agentRunIds);
     if (!wanted.size) return [];
     const found: DelegatedRunAgent[] = [];
-    for (const run of this.delegatedRuns.childrenOf(root)) {
+    for (const run of this.delegatedRuns.subtreeOf(root)) {
       for (const agent of await this.agentsOf(run)) if (wanted.has(agent.agentRunId)) found.push(agent);
     }
     return found;
+  }
+
+  /**
+   * The local runs below this run, at every depth (SR-072, the Team tab's messages): `all`, open or closed (the logs its
+   * view composes); `open`, the view's rows (the agents of its tree). A peer's run is left out: its messages stay on its node.
+   */
+  runsBelow(root: RootExecutionIdentity, which: "all" | "open"): readonly TaskExecutionReference[] {
+    return which === "all" ? this.delegatedRuns.subtreeOf(root)
+      : this.delegatedRuns.collaborationTreeOf(root).rows().flatMap((row) => row.nodeId === undefined ? [row.run] : []);
   }
 
   /** Every agent run ID of every run delegated from this run, one hop at a time and recursively (token totals). */

@@ -32,6 +32,7 @@ export const noDelegations = (): DelegationIndex => {
   hasNode: () => false,
   nodeOf: () => null,
   topOf: (run: never) => run,
+  chainOf: (run: never) => [run],
   agentOf: async () => null,
   collaborationTreeOf: (run: never) => new CollaborationTree(tree, NO_RUN_PARTS, run),
   }) as unknown as DelegationIndex;

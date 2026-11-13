@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
  * its numbers; a server restart (a new registry) starts another live sequence.
  */
 const isMessageEvent = (event: { kind: string }) => event.kind === "message";
-const streamsOf = () => new RunViewStreams({ agent: isMessageEvent as never, agent_team: isMessageEvent as never, agent_org: isMessageEvent as never });
+const streamsOf = () => new RunViewStreams({ agent: isMessageEvent as never, agent_team: isMessageEvent as never, agent_org: isMessageEvent as never }, { tree: { chainOf: (run) => [run] }, events: { agent: (message) => message, agent_team: (message) => message, agent_org: (message) => message } });
 const TEAM = { rootSubjectKind: "agent_team" as const, rootRunId: "squad" };
 
 describe("RunViewStreams", () => {

@@ -109,7 +109,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
       messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) || !this.index.getAgent(agentRunId) ? OTHER_RUN_LOG : OWN_RUN_LOG,
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
-      publish: (message) => options.publisher.publish({ kind: "communication", message }),
+      messageFeed: options.messageFeed,
       presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),
     }));
   }

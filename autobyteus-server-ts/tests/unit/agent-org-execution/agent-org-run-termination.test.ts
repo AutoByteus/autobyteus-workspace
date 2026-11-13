@@ -1,3 +1,4 @@
+import { messageFeedInto, NO_MESSAGE_FEED } from "../../helpers/view-streams.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -10,7 +11,7 @@ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-co
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
-import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 describe("AgentOrgRun termination stabilization", () => {
   it("freezes and fences every direct/mounted Agent scope before the persistence drain", async () => {
@@ -70,7 +71,7 @@ describe("AgentOrgRun termination stabilization", () => {
       teams: teams as never,
       callbacks: {} as never,
       persistence: persistence as never,
-      publisher,
+      publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
     });
     run.activate();
 
@@ -109,7 +110,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       teams: { list: vi.fn(() => []), freezeForRootTermination: vi.fn(() => []) } as never,
       callbacks: {} as never,
       persistence: persistence as never,
-      publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
+      publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }), messageFeed: NO_MESSAGE_FEED,
       onTerminated,
     });
     run.activate();

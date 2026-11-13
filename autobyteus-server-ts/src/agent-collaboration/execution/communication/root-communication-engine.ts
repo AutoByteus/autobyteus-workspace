@@ -6,6 +6,7 @@ import {
   rootExecutionIdentityKey,
   sameRootExecutionIdentity,
   type CollaborationMemberExecutionIdentity,
+  type RootExecutionIdentity,
 } from "../domain/root-execution-identity.js";
 import {
   ROOT_NOT_ACCEPTING_MESSAGES,
@@ -132,7 +133,8 @@ export class RootCommunicationEngine {
       createdAt,
     });
     const inputMessage = this.port.buildRecipientInput({ delivery: input, message });
-    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, true);
+    // A message between the run's own agents: this one commit publishes it (SR-072).
+    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, this.port.root);
   }
 
   /**
@@ -180,7 +182,7 @@ export class RootCommunicationEngine {
     const missing = (reason: string) => console.warn(
       `Message '${message.messageId}' to remote run '${endpoint.reference.agentRunId}' was accepted by its node but not recorded here: ${reason}`);
     // Only the sender's record: no slot, no second Task check, not published to the root's view.
-    const control = this.appendFor(message, null, false);
+    const control = this.appendFor(message, null, null);
     try {
       const result = await this.port.commitMessageAppend(control.append);
       if (result.outcome === "conflict") missing(this.port.rejections.commitConflict.message);
@@ -213,7 +215,7 @@ export class RootCommunicationEngine {
       root: this.port.root, message, receiverIdentity: input.receiverIdentity, senderNodeName: input.senderNodeName,
     });
     // A message from a remote run is not published to the root's view (it shows its own agents' messages).
-    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, false);
+    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, assertAllowed, null);
   }
 
   /**
@@ -249,7 +251,8 @@ export class RootCommunicationEngine {
    */
   async commitSentToRun(message: CollaborationCommunicationMessage): Promise<void> {
     const missing = (reason: string) => console.warn(`Message '${message.messageId}' to run agent '${message.receiverAgentRunId}' was delivered but not recorded here: ${reason}`);
-    const control = this.appendFor(message, null, false);
+    // The receiver's commit published it (SR-072); the sender's later commit of the same message does not.
+    const control = this.appendFor(message, null, null);
     try {
       const result = await this.port.commitMessageAppend(control.append);
       if (result.outcome === "conflict") missing(this.port.rejections.commitConflict.message);
@@ -276,8 +279,8 @@ export class RootCommunicationEngine {
     const inputMessage = this.port.buildRecipientInput({ delivery: { senderIdentity: input.senderIdentity, senderDisplayName: input.senderDisplayName,
       senderAddress: input.senderAddress, receiverIdentity: input.receiverIdentity, receiverDisplayName: input.receiverDisplayName,
       content: message.content, messageType: message.messageType, referenceFiles: message.referenceFiles }, message });
-    // A message from another run is not published to this root's view (it shows its own agents' messages).
-    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, input.assertAllowed, false);
+    // The receiver's commit publishes a message between runs, once, into the views of both runs and those above (SR-072).
+    return this.reserveAndCommit(message, inputMessage, input.receiverIdentity.agentRunId, input.receiverDisplayName, input.assertAllowed, input.senderIdentity.root);
   }
 
   /** Holds the recipient's slot, then has the root's coordinator run the one append (DS-004). */
@@ -287,7 +290,8 @@ export class RootCommunicationEngine {
     receiverAgentRunId: string,
     receiverDisplayName: string,
     assertAllowed: () => void,
-    publishToRootView: boolean,
+    /** The sender's run when this commit publishes the message (SR-072); `null` when it does not. */
+    publishFrom: RootExecutionIdentity | null,
   ): Promise<AgentOperationResult> {
     const reservationResult = await this.port.reserveRecipientInput(receiverAgentRunId, inputMessage);
     if (!reservationResult.reserved) {
@@ -298,7 +302,7 @@ export class RootCommunicationEngine {
       input: inputMessage,
       checkTaskScope: assertAllowed,
       present: () => this.port.presentRecipientInput(message, inputMessage),
-    }, publishToRootView);
+    }, publishFrom);
     let result: RootMessageAppendResult;
     try {
       result = await this.port.commitMessageAppend(control.append);
@@ -319,7 +323,7 @@ export class RootCommunicationEngine {
   private appendFor(
     message: CollaborationCommunicationMessage,
     receiver: Parameters<typeof createRootMessageAppend>[0]["receiver"],
-    publishToRootView: boolean,
+    publishFrom: RootExecutionIdentity | null,
   ) {
     return createRootMessageAppend({
       message,
@@ -328,7 +332,7 @@ export class RootCommunicationEngine {
       getMessages: () => this.current,
       setMessages: (messages) => { this.current = messages; },
       logOwnersOf: (entry) => this.port.logOwnersOf(entry),
-      publishToRootView: publishToRootView ? () => this.port.publishToRootView(message) : null,
+      publishToRootView: publishFrom ? () => this.port.publishMessage(message, publishFrom) : null,
       scopeRefusalOf: (error) => taskScopeRefusalOf(error),
     });
   }

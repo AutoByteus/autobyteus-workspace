@@ -64,6 +64,7 @@ export class StandaloneRootBuilder {
       persistence,
       // The run's one view stream, living as long as the process (SR-062, SR-063).
       publisher: this.dependencies.viewStreams.streamOf<StandaloneRootEvent>(createAgentRootExecutionIdentity(input.host.agentRunId)),
+      messageFeed: this.dependencies.viewStreams.messages,
       taskRecords: this.dependencies.taskRecords,
       delegationIndex: this.dependencies.delegationIndex,
       closedTasks: this.closedTasks,

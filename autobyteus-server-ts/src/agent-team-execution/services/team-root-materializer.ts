@@ -128,6 +128,7 @@ export const materializeTeamRoot = async (
       messages: input.messages,
       persistence,
       publisher,
+      messageFeed: input.viewStreams.messages,
       taskRecords: input.taskRecords,
       delegationIndex: input.delegationIndex,
       closedTasks,

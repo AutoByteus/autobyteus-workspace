@@ -35,7 +35,7 @@ export const communicationPortDouble = (root: RootCommunicationPort["root"], ove
   reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservationDouble(agentRunId) })),
   logOwnersOf: () => [OWN_RUN_LOG],
   commitMessageAppend: vi.fn(runAppendDurably),
-  publishToRootView: vi.fn(),
+  publishMessage: vi.fn(),
   presentRecipientInput: vi.fn(),
   ...overrides,
 });

@@ -1,3 +1,4 @@
+import { NO_MESSAGE_FEED } from "../../helpers/view-streams.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import { describe, expect, it, vi } from "vitest";
 import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
@@ -77,7 +78,7 @@ const buildRun = () => {
     teams: teams as never,
     callbacks: {} as never,
     persistence: persistence as never,
-    publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
+    publisher: new RunViewStream<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }), messageFeed: NO_MESSAGE_FEED,
   });
   run.activate();
   return { run, runs, rootAgents, teams, frozenScopes, persistence };

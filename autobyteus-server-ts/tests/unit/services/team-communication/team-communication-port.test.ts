@@ -1,3 +1,5 @@
+import { messageFeedInto } from "../../../helpers/view-streams.js";
+import { teamRunMessageEvent } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { describe, expect, it, vi } from "vitest";
 import { OWN_RUN_LOG } from "../../../../src/run-history/store/message-log-owners.js";
 import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
@@ -53,6 +55,8 @@ const buildHarness = (input: {
     requireContainingTeamRun: vi.fn(async () => ({ reserveDirectAgentInput }) as unknown as TeamRun),
     commitMessageAppend: commit,
     publish,
+    // The node's message feed into the same view (a root with no delegations): its COMMUNICATION events reach `publish`.
+    messageFeed: messageFeedInto({ publish }, teamRunMessageEvent),
   }));
   /** The Team root's delivery hands the engine one intent at a time (TeamRunMessageDelivery). */
   const service = {

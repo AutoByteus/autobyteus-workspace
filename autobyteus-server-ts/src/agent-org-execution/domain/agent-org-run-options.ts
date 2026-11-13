@@ -1,3 +1,4 @@
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree.js";
@@ -23,6 +24,8 @@ export type AgentOrgRunOptions = Readonly<{
     callbacks: FlatTeamExecutionCallbacks;
     persistence: AgentOrgRunPersistenceCoordinator;
     publisher: RunViewStream<AgentOrgRunEvent>;
+    /** The node's message feed (SR-072): its committed messages into the views of its runs and the runs above them. */
+    messageFeed: Pick<RunMessagesFeed, "publish">;
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children (SR-047). */
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf">;

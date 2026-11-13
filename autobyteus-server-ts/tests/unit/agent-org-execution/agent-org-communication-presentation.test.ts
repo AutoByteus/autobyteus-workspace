@@ -1,3 +1,4 @@
+import { messageFeedInto } from "../../helpers/view-streams.js";
 import { noDelegations, openTaskRecords } from "../../helpers/no-delegations.js";
 import type { RootMessageAppend } from "../../../src/agent-collaboration/execution/communication/root-message-append.js";
 import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
@@ -12,7 +13,7 @@ import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-r
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
 import { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
@@ -95,7 +96,7 @@ const createSubject = (options: Readonly<{
     persistence: options.persistence?.(orgRunId) ?? {
       commitMessageAppend: vi.fn(runAppendDurably),
     } as never,
-    publisher,
+    publisher, messageFeed: messageFeedInto(publisher, agentOrgMessageEvent),
   });
   run.activate();
   const sender = (agentRunId: string, memberAddress: string) => ({

@@ -1,3 +1,4 @@
+import type { RunMessagesFeed } from "../../agent-collaboration/delegation/run-messages-feed.js";
 import {
   ROOT_NOT_ACCEPTING_MESSAGES,
   type RootCommunicationPort,
@@ -19,7 +20,8 @@ export const createStandaloneRootCommunicationPort = (input: Readonly<{
   messageLogOwnerOf(agentRunId: string): MessageLogOwner;
   assertDeliveryAllowed: RootCommunicationPort["assertDeliveryAllowed"];
   reserveRecipientInput: RootCommunicationPort["reserveRecipientInput"];
-  publish(message: CollaborationCommunicationMessage): void;
+  /** The node's message feed (SR-072): each committed message into the views of its runs and the runs above them. */
+  messageFeed: Pick<RunMessagesFeed, "publish">;
   presentCommittedMessage: RootCommunicationPort["presentRecipientInput"];
 }>): RootCommunicationPort => {
   const port: RootCommunicationPort = {
@@ -37,7 +39,7 @@ export const createStandaloneRootCommunicationPort = (input: Readonly<{
     reserveRecipientInput: (agentRunId, message) => input.reserveRecipientInput(agentRunId, message),
     logOwnersOf: (message) => messageLogOwners(message, (agentRunId) => input.messageLogOwnerOf(agentRunId)),
     commitMessageAppend: (append) => input.persistence.commitMessageAppend(append),
-    publishToRootView: (message) => input.publish(message),
+    publishMessage: (message, senderRun) => input.messageFeed.publish({ message, senderRun, receiverRun: input.root }),
     presentRecipientInput: (message, recipientInput) => input.presentCommittedMessage(message, recipientInput),
   };
   return Object.freeze(port);

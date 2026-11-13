@@ -1,3 +1,4 @@
+import { messageFeedInto } from "../../helpers/view-streams.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
@@ -23,7 +24,7 @@ import { createTeamCommunicationPort } from "../../../src/services/team-communic
 import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { createStandaloneRootCommunicationPort } from "../../../src/standalone-agent-run-root/services/standalone-root-communication-port.js";
 import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
-import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { isTeamRunMessageEvent, teamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 /**
  * CR-001: a message with a remote endpoint stays in the root's message state, but is not published to the
@@ -89,6 +90,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       }) as unknown as TeamRun),
       commitMessageAppend: vi.fn(runAppendDurably),
       publish: (event) => { publisher.publish(event); },
+      messageFeed: messageFeedInto(publisher, teamRunMessageEvent),
     });
 
     await runConversation(new RootCommunicationEngine(adapter), root);
@@ -115,7 +117,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent", hostRunId: LEAD, messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),
       }),
       project: (event: SequencedRootEvent<StandaloneRootEvent>) => projectAgentCollaborationEvent(LEAD, event),
     },
@@ -126,7 +128,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
         root, persistence: persistence() as never, initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
         isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => OWN_RUN_LOG, assertDeliveryAllowed: () => undefined,
         reserveRecipientInput: vi.fn(async (agentRunId: string) => ({ reserved: true as const, reservation: reservation(agentRunId) })),
-        publish: (message) => { publisher.publish({ kind: "communication", message }); }, presentCommittedMessage: vi.fn(),
+        messageFeed: messageFeedInto(publisher, (message) => ({ kind: "communication" as const, message })), presentCommittedMessage: vi.fn(),
       }),
       project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent("org-root", event),
     },

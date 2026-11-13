@@ -41,4 +41,6 @@ export type TeamRunEvent =
 /** The Team's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
 export const isTeamRunMessageEvent = (event: TeamRunEvent): boolean =>
   event.eventSourceType === TeamRunEventSourceType.COMMUNICATION;
+/** A committed message as the Team's message event (SR-072: the node's message feed numbers it in each view). */
+export const teamRunMessageEvent = (message: CollaborationCommunicationMessage): TeamRunEvent => ({ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload: message });
 

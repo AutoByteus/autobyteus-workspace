@@ -191,6 +191,7 @@ export class AgentOrgExecutionScopeBuilder {
         callbacks,
         persistence: input.persistence,
         publisher,
+        messageFeed: this.dependencies.viewStreams.messages,
         taskRecords: this.dependencies.taskRecords,
         delegationIndex: this.dependencies.delegationIndex,
         memoryLocator: this.dependencies.memoryLocator,

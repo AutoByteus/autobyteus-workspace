@@ -7,9 +7,9 @@ import { createRunConversationAvailability } from "../agent-collaboration/execut
 import { getAgentConversationActivityInspector } from "../agent-memory/services/agent-conversation-activity-inspector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../run-history/services/team-run-execution-tree-location-service.js";
 import { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
-import { isStandaloneRootMessageEvent } from "../standalone-agent-run-root/domain/standalone-root-event.js";
-import { isTeamRunMessageEvent } from "../agent-team-execution/domain/team-run-event.js";
-import { isAgentOrgMessageEvent } from "../agent-org-execution/domain/agent-org-run-event.js";
+import { isStandaloneRootMessageEvent, standaloneRootMessageEvent } from "../standalone-agent-run-root/domain/standalone-root-event.js";
+import { isTeamRunMessageEvent, teamRunMessageEvent } from "../agent-team-execution/domain/team-run-event.js";
+import { agentOrgMessageEvent, isAgentOrgMessageEvent } from "../agent-org-execution/domain/agent-org-run-event.js";
 import { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import path from "node:path";
 import { ChildRowsFeed } from "../agent-collaboration/delegation/child-rows-feed.js";
@@ -107,7 +107,8 @@ export const composeTaskSide = async (input: Readonly<{ appDataDir: string; memo
   resources.setEntriesListener(tree);
   const taskRecords = createRunTaskRecords(resources, taskChangeMarks);
   return Object.freeze({ resources, tree, // Each run's view stream; which events are messages is each root kind's rule (SR-062).
-    viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent }), taskRecords,
+    viewStreams: new RunViewStreams({ agent: isStandaloneRootMessageEvent, agent_team: isTeamRunMessageEvent, agent_org: isAgentOrgMessageEvent },
+      { tree, events: { agent: standaloneRootMessageEvent, agent_team: teamRunMessageEvent, agent_org: agentOrgMessageEvent } }), taskRecords,
     closedTasks: new ClosedTaskFence({ tree, tasks: taskRecords }), projectsLayout, adHocTasksLayout });
 };
 
