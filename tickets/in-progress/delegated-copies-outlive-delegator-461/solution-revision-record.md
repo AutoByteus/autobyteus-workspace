@@ -1489,3 +1489,26 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - the validator: 0 findings.
 - **Next action:** the Implementation Engineer, then the full code review.
 - **K-15 confirmed by the user** (relayed by the code reviewer): a delegator must be stopped before its history can be deleted, as at base. The model's S26 already reflects it (SR-077, a1b060c7ec).
+
+### SR-078 — A preserved copy's history row; an unconvertible root's answers (answers CRR-033's CR-461-068, -069)
+
+- **Triggering:** CRR-033, the failure-origin review of API-REV-008. Its Local Fixes CR-461-070 and -071 were released to the Implementation Engineer first.
+- **CR-461-068 (F-49):**
+  - **(b) Design Impact:** SR-077 promised that a preserved copy becomes an ordinary run after its predecessor's retry. But our migration is terminal (warning success), and its step 8 never ran for the copy, so nothing creates its history row.
+    - **Decision:** `ensureRunHistoryRow(run)` builds the row from the run's own file, as step 8 does, the first time a specific operation on that run needs it. This is a per-operation check, which the guideline keeps separate from startup.
+    - **Rejected:**
+      - retrying a terminal migration (guideline §6);
+      - a startup pass over the corpus (guideline §6, and DS-10's own lessons);
+      - withdrawing the promise (REQ-011).
+  - **(a) Requirement Gap:** the save before the retry answers base's `INTERNAL_ERROR` "Run ownership could not be verified", which is base's answer for a run ID with no own file. SR-077's `NOT_FOUND` was wrong, and the expectation is corrected to base's answer.
+  - **The Solution Designer's gap:** SR-077 stated a premise without checking it against the runner's terminal statuses and against what creates the row.
+- **CR-461-069 (F-51):** a team or org root its migration could not convert.
+  - The view connect asks base's restore admission before reading the file, and answers as base's view did (`TEAM_NOT_FOUND`).
+  - The first message answers the admission's reason codes and texts (`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED`, `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED`), as base's restore mutation did.
+  - No raw schema error reaches the user; the detail goes to the log only (rule 7).
+  - **The Solution Designer's gap:** SR-046 removed the restore mutation without placing its admission answers.
+- **Requirements:** unchanged.
+- **Next action:**
+  - architecture review (narrow);
+  - then the Implementation Engineer.
+
