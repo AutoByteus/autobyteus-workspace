@@ -313,7 +313,10 @@ recorded as one boundary, as Grok reports it.
 Configured skills are symlinked into `.grok/skills/<name>` in the run working
 directory. The shared workspace skill materializer applies the same
 collision, repair, and release rules as `.codex/skills` and `.claude/skills`.
-The symlinks are removed on terminate or failure.
+The symlinks are removed on terminate or failure. A skill added to the agent's
+definition while the run is going is linked there too, through the run's
+`RunWorkspaceSkills` (see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)),
+and released with the others.
 
 ## Persistence
 

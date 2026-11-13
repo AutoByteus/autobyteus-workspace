@@ -462,7 +462,11 @@ of a skill used by an active or resumable run changes, that run receives one
 platform notice naming each changed skill package with its current folder and
 listing exactly the files that changed, were added or were removed. Busy runs
 get it like an agent message; idle or stopped runs
-get it with their next input. See
+get it with their next input. A skill added to or removed from the agent's
+definition (the agents page, a package file edit) while a run of it is going is
+announced the same way: for an added skill the run's runtime also sets it up
+(links it, as at run start) before the notice, so the agent can use it without a
+restart; a removed skill is announced and nothing is unlinked. See
 [Skill Update Notices](./skill_update_notices.md).
 
 ## Operational Limits

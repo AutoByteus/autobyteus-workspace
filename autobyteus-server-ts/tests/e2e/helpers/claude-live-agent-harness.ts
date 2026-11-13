@@ -25,6 +25,7 @@ import {
   buildStandaloneClaudeProcessEnv,
   type ClaudeCliExecutableCandidate,
 } from "../../helpers/claude-cli-executable-candidates.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 export type StreamMessage = { type?: string; payload?: Record<string, unknown> };
 
@@ -69,7 +70,7 @@ const buildRunContext = (
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       memoryDir,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
         workingDirectory: workspaceRoot,
@@ -106,7 +107,6 @@ export const createClaudeLiveAgentHarness = async (input: {
     agentTools.runSessions,
     {} as never,
     new ClaudeSdkClient(),
-    { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
   // The harness owns the session through the returned value; the exact-ownership callback the
   // backend factory uses for release on a cancelled preparation has nothing to record here.

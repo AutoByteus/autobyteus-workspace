@@ -14,7 +14,6 @@ import {
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import type { CodexAppServerMessage } from "../../../src/agent-execution/backends/codex/thread/codex-app-server-message.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
@@ -204,7 +203,6 @@ const createCodexFactory = (input: {
   return new CodexAgentRunBackendFactory(
     input.threadManager,
     threadBootstrapper,
-    new CodexThreadCleanup(),
     requireAgentToolsTestHost().runSessions,
   );
 };
@@ -271,7 +269,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -487,7 +484,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -643,7 +639,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);

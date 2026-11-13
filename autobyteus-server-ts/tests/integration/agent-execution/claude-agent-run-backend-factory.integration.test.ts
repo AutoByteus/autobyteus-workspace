@@ -207,7 +207,6 @@ const createFactory = (input: {
       workspaceResolver: inert,
       clientManager: inert,
       threadManager: inert,
-      threadCleanup: inert,
     },
     claude: {
       workspaceResolver: {

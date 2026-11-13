@@ -21,10 +21,10 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
-import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../helpers/fake-claude-streaming-sdk.js";
 import type { AgentToolMcpRunSessionActivationInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -108,7 +108,7 @@ const createRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools,
       workspaceId: null,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: input.modelIdentifier,
         workingDirectory: input.workspaceRoot,
@@ -167,7 +167,6 @@ const createExplicitSessionManager = (): ClaudeSessionManager =>
     requireAgentToolsTestHost().runSessions,
     getWorkspaceManager(),
     getClaudeSdkClient(),
-    getClaudeWorkspaceSkillMaterializer(),
   );
 
 const startTurn = async (
@@ -220,9 +219,6 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
       activator,
       getWorkspaceManager(),
       sdkClient as never,
-      {
-        cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined),
-      } as never,
     );
     const runId = `claude-manager-activator-${randomUUID()}`;
     const session = await manager.createRunSession(createRunContext({

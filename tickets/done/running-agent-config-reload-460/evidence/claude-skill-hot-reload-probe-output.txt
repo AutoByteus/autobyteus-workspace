@@ -1,0 +1,14 @@
+Probe: claude-skill-hot-reload-probe.mjs, run 2026-11-13 by the Solution Designer (autobyteus-460).
+Command (from /tmp/probe460/ws, real signed-in Claude CLI, model haiku, one streaming session as the app runs it):
+  env -u ANTHROPIC_API_KEY -u CLAUDECODE -u CLAUDE_CODE_ENTRYPOINT node claude-skill-hot-reload-probe.mjs <claude-agent-sdk 0.3.280 path> /tmp/probe460/ws /tmp/probe460/skills/beta-skill
+Fixture: /tmp/probe460/ws/.claude/skills/alpha-skill -> /tmp/probe460/skills/alpha-skill (symlink, as WorkspaceSkillMaterializer creates); beta-skill linked after turn 1; alpha unlinked after turn 2.
+
+INIT session=c09f4adc-fa22-49ba-b64d-38a0c4392f53 claude_code_version=2.1.280 skills=["alpha-skill","deep-research",... (user-level skills)]
+T1 (alpha linked at start) ANSWER: alpha-skill, dataviz, update-config, ...
+INIT session=c09f4adc-... skills=["alpha-skill","beta-skill","deep-research",...]
+T2 (beta linked mid-session) ANSWER: alpha-skill, ..., beta-skill
+INIT session=c09f4adc-... skills=["beta-skill","deep-research",...]          <- the CLI dropped alpha from its own list
+T3 (alpha unlinked mid-session) ANSWER: alpha-skill, ..., beta-skill          <- the model still names alpha (earlier context)
+
+Result (Measured): the Claude CLI picks up a skill folder linked into <cwd>/.claude/skills mid-session at the next turn,
+and drops an unlinked one from its own list, but the model keeps what it was told earlier: a removal needs an explicit notice.

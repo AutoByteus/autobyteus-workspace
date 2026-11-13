@@ -1,12 +1,10 @@
 import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
 import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
-import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type { CodexAppServerClientLease } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexThreadManager } from "../thread/codex-thread-manager.js";
 import type { CodexThreadBootstrapper } from "./codex-thread-bootstrapper.js";
-import type { CodexThreadCleanup } from "./codex-thread-cleanup.js";
 import { CodexAgentRunBackend } from "./codex-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import type { AgentToolMcpRunSessionExposure } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -15,27 +13,24 @@ import type { AgentToolMcpRunSessionExposure } from "../../../../agent-tools/mcp
 export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly threadManager: CodexThreadManager;
   private readonly threadBootstrapper: CodexThreadBootstrapper;
-  private readonly threadCleanup: CodexThreadCleanup;
   private readonly agentToolSessions: AgentToolMcpRunSessionExposure;
   constructor(
     threadManager: CodexThreadManager,
     threadBootstrapper: CodexThreadBootstrapper,
-    threadCleanup: CodexThreadCleanup,
     agentToolSessions: AgentToolMcpRunSessionExposure,
   ) {
     this.threadManager = threadManager;
     this.threadBootstrapper = threadBootstrapper;
-    this.threadCleanup = threadCleanup;
     this.agentToolSessions = agentToolSessions;
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
-    const skills: MaterializedWorkspaceSkill[] = [];
+    const workspaceSkills = this.threadBootstrapper.createRunWorkspaceSkills(request.kind === "new" ? request.runId : request.context.runId);
     const clients: CodexAppServerClientLease[] = [];
     let runContext: CodexRunContext | null = null;
     return createBackendPreparation({
       prepare: async (assertAccepting) => {
-        const guard = { assertAccepting, ownSkill: (skill: MaterializedWorkspaceSkill) => { skills.push(skill); },
+        const guard = { assertAccepting, workspaceSkills,
           ownCodexClient: (lease: CodexAppServerClientLease) => { clients.push(lease); } };
         runContext = request.kind === "new"
           ? await this.threadBootstrapper.bootstrapForCreate(new AgentRunContext({ runId: request.runId, config: request.config, runtimeContext: null }), guard)
@@ -52,7 +47,8 @@ export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
         if (runContext) {
           try { await this.threadManager.releasePreparation(runContext); } catch (error) { errors.push(error); }
         }
-        try { await this.threadCleanup.cleanupPreparedWorkspaceSkills(skills); } catch (error) { errors.push(error); }
+        // The run's links: released here when preparation failed before the thread owned them (idempotent).
+        try { await workspaceSkills.release(); } catch (error) { errors.push(error); }
         for (const lease of clients) {
           try { await lease.release(); } catch (error) { errors.push(error); }
         }

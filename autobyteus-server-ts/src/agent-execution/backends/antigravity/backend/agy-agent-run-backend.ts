@@ -25,11 +25,20 @@ import { readAgyNativeToolArguments } from "../stream/agy-native-tool-arguments-
 import type { AgyStreamMessage } from "../stream/agy-stream-message.js";
 import { AgyBackgroundTaskMonitor } from "../stream/agy-background-task-monitor.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTask } from "../../../domain/agent-background-task.js";
+import type { SkillService } from "../../../../skills/services/skill-service.js";
+import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
+import { addAgyRunCapsuleSkills, type AgyRunCapsule } from "../capsule/agy-run-capsule.js";
 
 /** The run's Agent Tools session and the exposure it was last given. */
 export type AgyAgentToolsBinding = Readonly<{
   runSessions: AgentToolMcpRunSessionExposure;
   exposure: RuntimeAgentToolExposure;
+}>;
+
+/** The run's capsule (its skill links and manifest) and the catalog its definition's skills resolve through. */
+export type AgyCapsuleSkillsBinding = Readonly<{
+  capsule: AgyRunCapsule;
+  skillService: Pick<SkillService, "resolveConfiguredSkillBindingsForAgent" | "resolveSkillScope">;
 }>;
 
 export class AgyAgentRunBackend implements AgentRunBackend {
@@ -49,9 +58,12 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private argumentLookup: AbortController | null = null;
   private toolExposure: RuntimeAgentToolExposure;
   private readonly agentToolSessions: AgentToolMcpRunSessionExposure;
+  /** Skill adds, one after another. */
+  private skillAdds: Promise<void> = Promise.resolve();
 
   constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess,
-    converterOptions: AgyStreamEventConverterOptions, agentTools: AgyAgentToolsBinding) {
+    converterOptions: AgyStreamEventConverterOptions, agentTools: AgyAgentToolsBinding,
+    private readonly capsuleSkills: AgyCapsuleSkillsBinding) {
     this.toolExposure = agentTools.exposure;
     this.agentToolSessions = agentTools.runSessions;
     const conversationId = context.runtimeContext.conversationId;
@@ -146,6 +158,24 @@ export class AgyAgentRunBackend implements AgentRunBackend {
 
   getToolNames(): readonly string[] {
     return [...this.agentToolSessions.describeForRun(this.runId).enabledTools];
+  }
+
+  /**
+   * Links the definition's skills the run does not have yet into its capsule (`.agents/skills`) and its manifest,
+   * so a resume keeps them. Whether a live AGY process lists a new folder is not proven; the skill notice gives the
+   * agent its path either way. No release ordering is needed: the capsule is this run's own and kept for resume.
+   */
+  applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    const { capsule, skillService } = this.capsuleSkills;
+    const next = this.skillAdds.then(() => addAgyRunCapsuleSkills({
+      capsule, runId: this.runId, agentDefinitionId: this.context.config.agentDefinitionId,
+      bindings: skillService.resolveConfiguredSkillBindingsForAgent(definition),
+      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(skillService.resolveSkillScope(definition)),
+    })).catch((error: unknown) => {
+      console.warn(`AGY_CAPSULE_SKILLS_ADD_FAILED: run=${this.runId}: ${String(error)}`);
+    });
+    this.skillAdds = next;
+    return next;
   }
 
   async terminate(): Promise<AgentOperationResult> {

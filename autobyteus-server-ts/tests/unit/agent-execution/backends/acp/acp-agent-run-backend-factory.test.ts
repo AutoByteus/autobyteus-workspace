@@ -145,14 +145,14 @@ describe("AcpAgentRunBackendFactory", () => {
     const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "def-1" ? variables : {}));
     const spawn = vi.spyOn(AcpAgentProcess, "spawn");
     try {
-      const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun } });
+      const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, integrationsStartingOnRestart: async () => [] } });
       backends.push(await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare());
       expect(environmentForRun).toHaveBeenCalledWith({ runId: "run-1", agentDefinitionId: "def-1" }, process.env);
       const env = spawn.mock.calls[0]![0].env as Record<string, string>;
       expect(env).toMatchObject({ ...variables, FAKE_ACP_FIXTURE: fixturePath("prompt"), PATH: process.env.PATH });
       expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
 
-      const { factory: other } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun } });
+      const { factory: other } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, integrationsStartingOnRestart: async () => [] } });
       backends.push(await other.beginPreparation({ kind: "new", config: config({ agentDefinitionId: "def-2" }), runId: "run-2" }).prepare());
       expect(spawn.mock.calls[1]![0].env).not.toHaveProperty("AUTOBYTEUS_GITHUB_API_URL");
     } finally {

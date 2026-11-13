@@ -17,6 +17,7 @@ import type { CodexWorkspaceResolver } from "../../../src/agent-execution/backen
 import type { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../src/skills/services/skill-service.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import { testPreparationGuard } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -216,8 +217,6 @@ const listSkills = async (
   return results;
 };
 
-/** Accepts every acquisition; the test releases materialized skills itself. */
-const acceptingGuard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
 
 const createBootstrapper = (input: {
   workspaceRoot: string;
@@ -332,16 +331,12 @@ describeCodexBootstrapperIntegration(
         });
 
         const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), testPreparationGuard(bootstrapper));
 
         // D-19 (beta.1): Codex lists only a different copy, so the configured copy is exposed in the workspace.
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("codex-runtime-duplicate"));
-        expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+        expect(runContext.runtimeContext.workspaceSkills?.hasSkills()).toBe(true);
         const canonicalLinkPath = path.join(workspaceRoot, ".codex", "skills", skillName);
-        expect(runContext.runtimeContext.materializedConfiguredSkills[0]).toMatchObject({
-          name: skillName,
-          materializedRootPath: canonicalLinkPath,
-        });
         expect(await fs.readlink(canonicalLinkPath)).toBe(path.resolve(configuredSkill.rootPath));
         expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
           mcp_servers: {
@@ -356,7 +351,7 @@ describeCodexBootstrapperIntegration(
           path.join(workspaceRoot, ".codex", "skills"),
         );
         expect(workspaceSkillEntries.sort()).toEqual([folderName, skillName].sort());
-        await materializer.cleanupMaterializedWorkspaceSkills(runContext.runtimeContext.materializedConfiguredSkills);
+        await runContext.runtimeContext.requireWorkspaceSkills().release();
         await expect(fs.lstat(canonicalLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
       },
       60_000,
@@ -401,16 +396,16 @@ describeCodexBootstrapperIntegration(
         const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
         const bootstrapper = createBootstrapper({ workspaceRoot, configuredSkills: [configuredSkill], clientManager, materializer });
 
-        const created = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
-        expect(created.runtimeContext.materializedConfiguredSkills).toEqual([]);
+        const created = await bootstrapper.bootstrapForCreate(createRunContext(), testPreparationGuard(bootstrapper));
+        expect(created.runtimeContext.workspaceSkills?.hasSkills()).toBe(false);
         const fresh = createRunContext();
         const restored = await bootstrapper.bootstrapForRestore(new AgentRunContext({
           runId: fresh.runId,
           config: fresh.config,
           runtimeContext: { threadId: "existing-thread", activeTurnId: null } as never,
-        }), acceptingGuard);
+        }), testPreparationGuard(bootstrapper));
         expect(restored.runtimeContext.threadId).toBe("existing-thread");
-        expect(restored.runtimeContext.materializedConfiguredSkills).toEqual([]);
+        expect(restored.runtimeContext.workspaceSkills?.hasSkills()).toBe(false);
 
         // The preflight left the user's link alone.
         expect((await fs.lstat(linkPath)).isSymbolicLink()).toBe(true);
@@ -470,17 +465,11 @@ describeCodexBootstrapperIntegration(
 
         const runContext = await bootstrapper.bootstrapForCreate(
           createRunContext("gpt-5.6-luna"),
-          acceptingGuard,
+          testPreparationGuard(bootstrapper),
         );
 
         expect(runContext.runtimeContext.codexThreadConfig.model).toBe("gpt-5.6-luna");
-        expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
-        const [descriptor] = runContext.runtimeContext.materializedConfiguredSkills;
-        expect(descriptor).toMatchObject({
-          name: skillName,
-          sourceRootPath: path.resolve(configuredSkill.rootPath),
-          materializedRootPath: canonicalLinkPath,
-        });
+        expect(runContext.runtimeContext.workspaceSkills?.hasSkills()).toBe(true);
         expect((await fs.lstat(canonicalLinkPath)).isSymbolicLink()).toBe(true);
         expect(await fs.readlink(canonicalLinkPath)).toBe(
           path.resolve(configuredSkill.rootPath),
@@ -494,9 +483,7 @@ describeCodexBootstrapperIntegration(
 
         await clientManager.close();
         clientManager = null;
-        await materializer.cleanupMaterializedWorkspaceSkills(
-          runContext.runtimeContext.materializedConfiguredSkills,
-        );
+        await runContext.runtimeContext.requireWorkspaceSkills().release();
         await expect(fs.lstat(canonicalLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
         await expect(fs.stat(configuredSkill.rootPath)).resolves.toBeTruthy();
         await expect(fs.stat(discoverableSkillRoot)).resolves.toBeTruthy();
@@ -531,14 +518,11 @@ describeCodexBootstrapperIntegration(
           materializer,
         });
 
-        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), acceptingGuard);
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), testPreparationGuard(bootstrapper));
 
-        expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
-        const [descriptor] = runContext.runtimeContext.materializedConfiguredSkills;
-        expect(descriptor?.name).toBe(skillName);
-        expect(descriptor?.materializedRootPath).toBe(
-          path.join(workspaceRoot, ".codex", "skills", skillName),
-        );
+        expect(runContext.runtimeContext.workspaceSkills?.hasSkills()).toBe(true);
+        // The run's link in the workspace's skill folder.
+        const descriptor = { materializedRootPath: path.join(workspaceRoot, ".codex", "skills", skillName) };
         expect((await fs.lstat(descriptor.materializedRootPath)).isSymbolicLink()).toBe(true);
         expect(await fs.readlink(descriptor.materializedRootPath)).toBe(
           path.resolve(configuredSkill.rootPath),
@@ -590,9 +574,7 @@ describeCodexBootstrapperIntegration(
 
         await clientManager.close();
         clientManager = null;
-        await materializer.cleanupMaterializedWorkspaceSkills(
-          runContext.runtimeContext.materializedConfiguredSkills,
-        );
+        await runContext.runtimeContext.requireWorkspaceSkills().release();
         await expect(fs.stat(descriptor.materializedRootPath)).rejects.toThrow();
         await expect(fs.stat(configuredSkill.rootPath)).resolves.toBeTruthy();
       },

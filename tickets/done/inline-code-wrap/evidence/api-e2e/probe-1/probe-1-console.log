@@ -1,0 +1,19 @@
+# probe-1 (autobyteus-24 API/E2E): console output of the phone-shell probe
+# Command: corepack pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/aee-24/probe-1 --cases=MSP-44,MSP-45,MSP-46,MSP-50,MSP-51,MSP-52
+# Product commit b1955d4a7; test code: working tree committed next as the API/E2E test commit (probe-1 lacked only the 'heading'/'inline' screenshot parts); Linux, Node v22.23.3, Chromium 153 headless; 2026-11-13
+> autobyteus@1.5.13-beta.6 test:e2e:mobile-shell /home/autobyteus/workspace/.codex/worktrees/inline-code-wrap/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/aee-24/probe-1 --cases=MSP-44,MSP-45,MSP-46,MSP-50,MSP-51,MSP-52
+[mobile-shell] MSP-44 …
+[mobile-shell] MSP-44 Pass
+[mobile-shell] MSP-45 …
+[mobile-shell] MSP-45 Pass
+[mobile-shell] MSP-46 …
+[mobile-shell] MSP-46 Pass
+[mobile-shell] MSP-50 …
+[mobile-shell] MSP-50 Pass
+[mobile-shell] MSP-51 …
+[mobile-shell] MSP-51 Pass
+[mobile-shell] MSP-52 …
+[mobile-shell] MSP-52 Pass
+mobile-shell probe: Pass
+exit 0

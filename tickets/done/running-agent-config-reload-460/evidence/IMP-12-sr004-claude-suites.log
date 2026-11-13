@@ -1,0 +1,12 @@
+# IMP-12
+# Command: vitest run tests/unit/agent-execution/backends/claude tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts tests/unit/agent-execution/backends/mid-run-workspace-skills.test.ts tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts tests/integration/agent-execution/claude-session-manager.integration.test.ts --no-watch; and pnpm -C autobyteus-server-ts typecheck
+# Commit: 07d5d69b30 + SR-004 change (IR-002 working tree)
+# Environment: macOS darwin, Node v22.23.1
+# Date: 2026-11-13 12:50
+
+ Test Files  26 passed | 1 skipped (27)
+      Tests  281 passed | 16 skipped (297)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.3s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 26.4s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS

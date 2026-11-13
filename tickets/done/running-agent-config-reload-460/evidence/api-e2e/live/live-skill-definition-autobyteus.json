@@ -1,0 +1,196 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "gpt-5.5",
+  "codeword": "QUOKKA-3635",
+  "skillFolder": null,
+  "initialSkills": [],
+  "steps": [
+    {
+      "label": "1 no skills",
+      "content": "Reply with exactly: READY-1",
+      "reply": "READY-1",
+      "notices": []
+    },
+    {
+      "label": "2 skill added",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "reply": "{\"path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md\",\"include_line_numbers\":false}QUOKKA-3635",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n"
+        }
+      ]
+    },
+    {
+      "label": "3 skill removed",
+      "content": "Reply with exactly: DONE-3",
+      "reply": "DONE-3",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is now available: A skill the run starts with. Not needed for codewords.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/anchor-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available."
+        }
+      ]
+    },
+    {
+      "label": "4 resumed after stop",
+      "content": "What is the probe codeword now? Reply with only the codeword.",
+      "reply": "{\"path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md\",\"include_line_numbers\":false}WOMBAT-9986",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available."
+        }
+      ]
+    }
+  ],
+  "toolCallsAfterAdd": [
+    {
+      "toolName": "read_file",
+      "toolArgs": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md",
+        "include_line_numbers": false
+      },
+      "toolError": null
+    }
+  ],
+  "usedSkillTool": false,
+  "linksReleasedAtStop": false,
+  "resumedCodeword": "WOMBAT-9986",
+  "terminate": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-e3b72085-0287-4570-980d-2aa9e0db72bd",
+      "dedupeKey": "agent_run_input:e2e:e2e-e3b72085-0287-4570-980d-2aa9e0db72bd",
+      "content": "Reply with exactly: READY-1",
+      "media": null,
+      "ts": 1794573392.558
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "READY-1",
+      "media": null,
+      "ts": 1794573395.9
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+      "ts": 1794573400.011
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-6fc7ee9b-0f78-41b0-bbf6-e8aabbce2d31",
+      "dedupeKey": "agent_run_input:e2e:e2e-6fc7ee9b-0f78-41b0-bbf6-e8aabbce2d31",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794573400.014
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "",
+      "media": null,
+      "ts": 1794573403.831
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "call_0b33yBENIs9KRF9X7vC8S1eV",
+      "role": null,
+      "content": "",
+      "toolName": "read_file",
+      "toolArgs": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md",
+        "include_line_numbers": false
+      },
+      "toolResult": "---\nname: codeword-probe\ndescription: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\n---\n\nThe current probe codeword is QUOKKA-3635. Reply with it exactly when asked.\n",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573403.859
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "QUOKKA-3635",
+      "media": null,
+      "ts": 1794573406.034
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is now available: A skill the run starts with. Not needed for codewords.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/anchor-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794573410.371
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-cd3cc9fb-b4d3-43ac-9975-0657b106a549",
+      "dedupeKey": "agent_run_input:e2e:e2e-cd3cc9fb-b4d3-43ac-9975-0657b106a549",
+      "content": "Reply with exactly: DONE-3",
+      "media": null,
+      "ts": 1794573410.371
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "DONE-3",
+      "media": null,
+      "ts": 1794573411.843
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794573416.077
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-37308c02-9f85-4366-9364-757c13a68918",
+      "dedupeKey": "agent_run_input:e2e:e2e-37308c02-9f85-4366-9364-757c13a68918",
+      "content": "What is the probe codeword now? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794573416.077
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "",
+      "media": null,
+      "ts": 1794573418.016
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "call_jrls8HSggjhXK3PMc1AVaBkQ",
+      "role": null,
+      "content": "",
+      "toolName": "read_file",
+      "toolArgs": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md",
+        "include_line_numbers": false
+      },
+      "toolResult": "---\nname: codeword-probe\ndescription: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\n---\n\nThe current probe codeword is WOMBAT-9986. Reply with it exactly when asked.\n",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573418.047
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "WOMBAT-9986",
+      "media": null,
+      "ts": 1794573419.714
+    }
+  ]
+}

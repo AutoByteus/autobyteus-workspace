@@ -14,6 +14,7 @@ import { CodexApprovalPolicy } from "../../src/agent-execution/backends/codex/th
 import { createCodexThreadStartupGate } from "../../src/agent-execution/backends/codex/thread/codex-thread-startup-gate.js";
 import { CodexAppServerClient } from "../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
+import { createTestRunWorkspaceSkills } from "./run-workspace-skills-fixtures.js";
 
 type ThreadEventInput = Readonly<{
   method: string;
@@ -54,7 +55,7 @@ const createRunContext = (runId: string) =>
       llmConfig: null,
       memberExecutionContext: null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: "gpt-5.4-mini",
         workingDirectory: "/tmp/codex-thread-event-harness",

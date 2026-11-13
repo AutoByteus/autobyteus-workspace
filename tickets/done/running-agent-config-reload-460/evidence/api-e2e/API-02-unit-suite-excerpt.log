@@ -1,0 +1,5 @@
+# API-02 pnpm -C autobyteus-server-ts test:unit | commit c7685b20c6 | macOS Node v22.23.1 | 2026-11-13 13:05 | load: 12.02 12.37 19.20
+ Test Files  987 passed | 5 skipped (992)
+      Tests  8441 passed | 9 skipped (8450)
+   Duration  898.28s (transform 24.77s, setup 27.13s, import 420.85s, tests 345.54s, environment 1.16s)
+EXIT 0

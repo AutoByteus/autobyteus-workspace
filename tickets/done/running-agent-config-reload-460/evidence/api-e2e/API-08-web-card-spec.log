@@ -1,0 +1,4 @@
+# API-08 pnpm -C autobyteus-web exec nuxt prepare; pnpm -C autobyteus-web test:nuxt --run components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts | commit c7685b20c6 | 2026-11-13 13:35
+ ✓ components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts (9 tests) 60ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)

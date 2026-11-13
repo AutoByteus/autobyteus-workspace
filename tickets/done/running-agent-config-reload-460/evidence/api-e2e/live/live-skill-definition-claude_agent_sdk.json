@@ -1,0 +1,232 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "codeword": "QUOKKA-4050",
+  "skillFolder": [
+    ".claude",
+    "skills"
+  ],
+  "initialSkills": [],
+  "steps": [
+    {
+      "label": "1 no skills",
+      "content": "Reply with exactly: READY-1",
+      "reply": "READY-1",
+      "notices": []
+    },
+    {
+      "label": "2 skill added",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "reply": "QUOKKA-4050",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+          "turn_id": "skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772:turn:0e7af5c8-81c7-4446-aa78-9b0dbb80d822"
+        }
+      ]
+    },
+    {
+      "label": "2b Skill tool",
+      "content": "Use your Skill tool (not Read) to load the codeword-probe skill. Then reply with SKILLED- followed by the codeword it gives.",
+      "reply": "SKILLED-QUOKKA-4050",
+      "notices": []
+    },
+    {
+      "label": "3 skill removed",
+      "content": "Reply with exactly: DONE-3",
+      "reply": "DONE-3",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is now available: A skill the run starts with. Not needed for codewords.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/anchor-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+          "turn_id": "skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772:turn:3e492556-4643-4f3d-937d-f8bacf3988a7"
+        }
+      ]
+    },
+    {
+      "label": "4 resumed after stop",
+      "content": "What is the probe codeword now? Reply with only the codeword.",
+      "reply": "WOMBAT-8045",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available.",
+          "turn_id": "skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772:turn:2858c425-4a4e-4fe5-bf36-9fe658c6569a"
+        }
+      ]
+    }
+  ],
+  "linkAfterAdd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk/.claude/skills/codeword-probe",
+  "toolCallsAfterAdd": [
+    {
+      "toolName": "Read",
+      "toolArgs": {
+        "file_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md"
+      },
+      "toolError": null
+    }
+  ],
+  "usedSkillTool": false,
+  "skillToolStep": [
+    {
+      "toolName": "Skill",
+      "toolArgs": {
+        "skill": "codeword-probe"
+      },
+      "toolError": null,
+      "toolResult": "Launching skill: codeword-probe"
+    }
+  ],
+  "linksReleasedAtStop": true,
+  "resumedCodeword": "WOMBAT-8045",
+  "terminate": {
+    "success": true,
+    "message": "Agent run terminated successfully."
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-2d4d5d06-883c-4e05-ba9d-15e93bbac659",
+      "dedupeKey": "agent_run_input:e2e:e2e-2d4d5d06-883c-4e05-ba9d-15e93bbac659",
+      "content": "Reply with exactly: READY-1",
+      "media": null,
+      "ts": 1794573365.397
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "READY-1",
+      "media": null,
+      "ts": 1794573367.165
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+      "ts": 1794573371.35
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-df4d3254-4321-4c7f-8da2-29219f622996",
+      "dedupeKey": "agent_run_input:e2e:e2e-df4d3254-4321-4c7f-8da2-29219f622996",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794573371.35
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01MnAQiPsopArYSwWxVAsVXU",
+      "role": null,
+      "content": "",
+      "toolName": "Read",
+      "toolArgs": {
+        "file_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md"
+      },
+      "toolResult": "1\t---\n2\tname: codeword-probe\n3\tdescription: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\n4\t---\n5\t\n6\tThe current probe codeword is QUOKKA-4050. Reply with it exactly when asked.\n7\t",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573372.939
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "QUOKKA-4050",
+      "media": null,
+      "ts": 1794573373.778
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-8749e5fa-79c0-455c-879b-ce435a165dbe",
+      "dedupeKey": "agent_run_input:e2e:e2e-8749e5fa-79c0-455c-879b-ce435a165dbe",
+      "content": "Use your Skill tool (not Read) to load the codeword-probe skill. Then reply with SKILLED- followed by the codeword it gives.",
+      "media": null,
+      "ts": 1794573374.993
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01AJ16sLrFCWfbbnHsh1bWEx",
+      "role": null,
+      "content": "",
+      "toolName": "Skill",
+      "toolArgs": {
+        "skill": "codeword-probe"
+      },
+      "toolResult": "Launching skill: codeword-probe",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573376.041
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "SKILLED-QUOKKA-4050",
+      "media": null,
+      "ts": 1794573377.234
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is now available: A skill the run starts with. Not needed for codewords.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/anchor-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794573381.46
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-e3660511-cea0-4262-8527-9257a8da61ef",
+      "dedupeKey": "agent_run_input:e2e:e2e-e3660511-cea0-4262-8527-9257a8da61ef",
+      "content": "Reply with exactly: DONE-3",
+      "media": null,
+      "ts": 1794573381.46
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "DONE-3",
+      "media": null,
+      "ts": 1794573382.695
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794573387.301
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-5455f1a7-6d26-4ba8-8e73-a9ebb898fed0",
+      "dedupeKey": "agent_run_input:e2e:e2e-5455f1a7-6d26-4ba8-8e73-a9ebb898fed0",
+      "content": "What is the probe codeword now? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794573387.301
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01VzBvjhAzMemWfayWQDnoib",
+      "role": null,
+      "content": "",
+      "toolName": "Read",
+      "toolArgs": {
+        "file_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe/SKILL.md"
+      },
+      "toolResult": "1\t---\n2\tname: codeword-probe\n3\tdescription: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\n4\t---\n5\t\n6\tThe current probe codeword is WOMBAT-8045. Reply with it exactly when asked.\n7\t",
+      "toolError": null,
+      "media": null,
+      "ts": 1794573389.568
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "WOMBAT-8045",
+      "media": null,
+      "ts": 1794573390.554
+    }
+  ]
+}

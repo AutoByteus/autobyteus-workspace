@@ -55,6 +55,7 @@ import { createTokenUsageUpdatedPayload } from "../../../../../../src/agent-exec
 import { foldTokenUsageObservation } from "../../../../../../src/token-usage/projections/token-usage-run-fold.js";
 import type { TokenUsageRunRecord } from "../../../../../../src/token-usage/domain/token-usage-run-record.js";
 import { emptyTrustedDimensions, type ResolvedTokenPricingPolicy } from "../../../../../../src/token-usage/pricing/token-pricing-policy.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const CLAUDE_TEST_PRICE: ResolvedTokenPricingPolicy = {
   pricing_policy_key: null, price_config_id: null, model_provider: null, model_identifier: null, model_value: null,
@@ -119,7 +120,7 @@ const createSession = (input: {
       memoryDir: input.memoryDir ?? null,
       llmConfig: input.llmConfig ?? null,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: "haiku",
         workingDirectory: "/tmp",

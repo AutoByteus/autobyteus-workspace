@@ -1,0 +1,28 @@
+# IMP-04
+# Command: pnpm -C autobyteus-server-ts test:integration (excerpt)
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-13 12:42
+
+     × AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh 10604ms
+     × emits add + modify + delete events 8083ms
+     × emits move/rename event 12062ms
+     × emits file creation event with node metadata 4075ms
+     × emits folder creation and deletion events 8062ms
+     × respects nested .gitignore files 8085ms
+     × respects root .gitignore files 8062ms
+     × treats moves into ignored directories as deletes from the visible tree 9332ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts > package auto-refresh: the next delegation sees current definitions > AC-002/AC-015(b)/QR-004: edits reach every reader; other agents never disappear during the refresh
+Error: Hook timed out in 10000ms.
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects root .gitignore files
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > treats moves into ignored directories as deletes from the visible tree
+Error: Timed out waiting for event
+     26|       reject(new Error("Timed out waiting for event"));
+ Test Files  2 failed | 88 passed | 20 skipped (110)
+      Tests  8 failed | 528 passed | 69 skipped (605)

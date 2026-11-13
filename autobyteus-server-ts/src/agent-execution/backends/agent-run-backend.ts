@@ -92,4 +92,10 @@ export interface AgentRunBackend {
   applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult>;
   /** The tool names the runtime has now. */
   getToolNames(): readonly string[];
+  /**
+   * Sets up this definition's skills that the run does not have yet, as its runtime does at activation (a link in
+   * its skill folder; AutoByteus native: nothing). Never removes a skill. A skill that cannot be set up is logged;
+   * the returned promise does not reject for it.
+   */
+  applyDefinitionSkills(definition: AgentDefinition): Promise<void>;
 }

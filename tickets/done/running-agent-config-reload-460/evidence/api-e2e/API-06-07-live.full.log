@@ -1,0 +1,926 @@
+# API-06/API-07 env -i PATH=<inherited PATH> HOME=/Users/normy USER=normy LOGNAME=normy TMPDIR=$TMPDIR LANG=en_US.UTF-8 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_SKILL_DEFINITION_E2E=1 LIVE_SKILL_DEFINITION_RUNTIMES=claude_agent_sdk,autobyteus,codex_app_server,grok_build,deepseek_harness DEEPSEEK_HARNESS_COMMAND=/tmp/ab460-dsh-bin/dsh LIVE_SKILL_DEFINITION_EVIDENCE_DIR=<evidence>/live pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts --reporter=verbose --no-watch | commit c7685b20c6 + test changes | 2026-11-13 13:35 | CLIs: claude 2.1.323, codex 0.169.0, grok 1.0.77, dsh 0.2.2-rc.1
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:90540) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/.env
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39m[2026-11-13T12:36:03.430Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mLoading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mNode access: local control socket not opened. The node's local control socket path is 125 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/node-access/local-control.sock. Use a shorter data folder path.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition created successfully with ID: skill-definition-claude-agent-sdk-044213cc
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreated and registered workspace ID: agent_ws_9487ecfa9bea832eb3a42bee4d25517bc73fb82088f060d3815df32766ddabe5
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_9487ecfa9bea832eb3a42bee4d25517bc73fb82088f060d3815df32766ddabe5
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent websocket attached for run skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772
+Created agent session 4ee3a909-b314-416b-9bd0-a1a0e002bb27 for run skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772
+Agent WebSocket connected: session=4ee3a909-b314-416b-9bd0-a1a0e002bb27, run=skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-claude-agent-sdk-044213cc updated successfully.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-claude-agent-sdk-044213cc updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-claude-agent-sdk-044213cc updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude_agent_sdk.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_9487ecfa9bea832eb3a42bee4d25517bc73fb82088f060d3815df32766ddabe5
+
+(node:90540) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mClosed agent session 4ee3a909-b314-416b-9bd0-a1a0e002bb27
+Agent WebSocket disconnected: 4ee3a909-b314-416b-9bd0-a1a0e002bb27
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_agent_sdk_044213cc_be4f6d1ef27b4093beb4d4709f695772/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22ma skill added to or removed from a running agent's definition (live E2E)[2m > [22mclaude_agent_sdk: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message[33m 28805[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition created successfully with ID: skill-definition-autobyteus-2fede879
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-autobyteus
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-autobyteus.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreated and registered workspace ID: agent_ws_a0b3663d054a1aae24c9015a05ede564f76d633937656d58d32b24b71d2b40a3
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-autobyteus
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-autobyteus.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_a0b3663d054a1aae24c9015a05ede564f76d633937656d58d32b24b71d2b40a3
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/media
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentRuntimeState initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': LLM instance 'OpenAILLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' with config: 'skill-definition-autobyteus-2fede879'.
+AgentWorker initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'.
+Registered AgentContext for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Context registered.
+Agent facade initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' created and stored successfully.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' requesting runtime to start.
+AgentRuntime for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Starting worker.
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Starting...
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' asyncRun(): Starting.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (event store initialized).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (status deriver initialized).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (AgentEventInbox initialized).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' to become idle (timeout: 30s)...
+AgentEventStream (ID: 573f1cd4-176d-4c6e-8961-c4dacc702fe7) initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Subscribed to notifier.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Bootstrapper starting direct lifecycle execution.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Executing SystemPromptProcessingStep.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': No configured skills. Skipping skill catalog.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Final processed system prompt configured and captured. Trace ID: rt_1794573392525_66fa39e4-8e35-4095-91bc-e6c9d8f38925. Final length: 4401.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: 573f1cd4-176d-4c6e-8961-c4dacc702fe7) for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: 2da09053-7214-4adb-b07f-f5f2f5089580) initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent websocket attached for run skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124
+Created agent session ac8c5be7-b9fd-455d-bbe8-ec981d465bcb for run skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124
+Agent WebSocket connected: session=ac8c5be7-b9fd-455d-bbe8-ec981d465bcb, run=skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': UserInputContextBuildingProcessor completed. Final content length: 27
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-autobyteus-2fede879 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': UserInputContextBuildingProcessor completed. Final content length: 457
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': UserInputContextBuildingProcessor completed. Final content length: 47
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-autobyteus-2fede879 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': UserInputContextBuildingProcessor completed. Final content length: 502
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-autobyteus-2fede879 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mRemoving agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Attempting graceful shutdown.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 454b387d-763f-4b70-ae17-8cbd0c8af043, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' asyncRun() loop has finished.
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Shutdown resource cleanup completed successfully.
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mUnregistered AgentContext for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'.
+AgentRuntime for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentRuntime for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: 2da09053-7214-4adb-b07f-f5f2f5089580) for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: 2da09053-7214-4adb-b07f-f5f2f5089580) for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-autobyteus
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-autobyteus.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_a0b3663d054a1aae24c9015a05ede564f76d633937656d58d32b24b71d2b40a3
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/media
+Resolved skill 'codeword-probe' to path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/skills/codeword-probe
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentRuntimeState initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': LLM instance 'OpenAILLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' with config: 'skill-definition-autobyteus-2fede879'.
+AgentWorker initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'.
+Registered AgentContext for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Context registered.
+Agent facade initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' restored and stored successfully.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' requesting runtime to start.
+AgentRuntime for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Starting worker.
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Starting...
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' asyncRun(): Starting.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (event store initialized).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (status deriver initialized).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (AgentEventInbox initialized).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' to become idle (timeout: 30s)...
+AgentEventStream (ID: fff8a81e-3208-499d-85d4-29c8034f8d87) initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Subscribed to notifier.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Bootstrapper starting direct lifecycle execution.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Executing SystemPromptProcessingStep.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Added 1 configured skill catalog entries with paths.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Final processed system prompt configured and captured. Trace ID: rt_1794573416032_21d5b8a3-2024-4ee1-bdab-341a784f4dea. Final length: 5217.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: fff8a81e-3208-499d-85d4-29c8034f8d87) for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: bf5eb1b5-9dde-4364-8b18-a1d10f990f0d) initialized for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': UserInputContextBuildingProcessor completed. Final content length: 572
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': UserInputContextBuildingProcessor completed. Final content length: 47
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent run 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mClosed agent session ac8c5be7-b9fd-455d-bbe8-ec981d465bcb
+Agent WebSocket disconnected: ac8c5be7-b9fd-455d-bbe8-ec981d465bcb
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mRemoving agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'. Attempting graceful shutdown.
+Agent 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentExternalEventNotifier (NotifierID: 2991f70c-98a8-4668-ae1f-f23dd36fd819, AgentID: skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' asyncRun() loop has finished.
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Shutdown resource cleanup completed successfully.
+AgentWorker 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mUnregistered AgentContext for agent_id 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124'.
+AgentRuntime for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentRuntime for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: bf5eb1b5-9dde-4364-8b18-a1d10f990f0d) for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgentEventStream (ID: bf5eb1b5-9dde-4364-8b18-a1d10f990f0d) for 'skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124': close() called. Unsubscribing all listeners and signaling.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_autobyteus_2fede879_365c1a7fe74b458ba2f708369080d124/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22ma skill added to or removed from a running agent's definition (live E2E)[2m > [22mautobyteus: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message[33m 28421[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition created successfully with ID: skill-definition-codex-app-server-0b0570a4
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreated and registered workspace ID: agent_ws_760153c229c9c40112048db1459c533f9019feb9f66aac26ffa0639d6f03c0d3
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_760153c229c9c40112048db1459c533f9019feb9f66aac26ffa0639d6f03c0d3
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent websocket attached for run skill_definition_codex_app_server_0b0570a4_05f0fd27daab40c0b8b8782c52c85fca
+Created agent session 2e73455a-85a2-4526-9c88-ca88101223e3 for run skill_definition_codex_app_server_0b0570a4_05f0fd27daab40c0b8b8782c52c85fca
+Agent WebSocket connected: session=2e73455a-85a2-4526-9c88-ca88101223e3, run=skill_definition_codex_app_server_0b0570a4_05f0fd27daab40c0b8b8782c52c85fca
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-codex-app-server-0b0570a4 updated successfully.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_codex_app_server_0b0570a4_05f0fd27daab40c0b8b8782c52c85fca/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-codex-app-server-0b0570a4 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-codex-app-server-0b0570a4 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_760153c229c9c40112048db1459c533f9019feb9f66aac26ffa0639d6f03c0d3
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39m[CodexAppServerClient] stderr: [2m2026-11-13T12:37:26.302064Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/codex-home/config.toml.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39m[CodexAppServerClient] stderr: [2m2026-11-13T12:37:26.340724Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-codex_app_server as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/codex-home/config.toml.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mClosed agent session 2e73455a-85a2-4526-9c88-ca88101223e3
+Agent WebSocket disconnected: 2e73455a-85a2-4526-9c88-ca88101223e3
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_codex_app_server_0b0570a4_05f0fd27daab40c0b8b8782c52c85fca/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22ma skill added to or removed from a running agent's definition (live E2E)[2m > [22mcodex_app_server: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message[33m 31903[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition created successfully with ID: skill-definition-grok-build-9b973798
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-grok_build
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-grok_build.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreated and registered workspace ID: agent_ws_5d790155771df043ae9f977d0da5ec28f83f271e8d4279e445d8a552d98bc8f2
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-grok_build
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-grok_build.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_5d790155771df043ae9f977d0da5ec28f83f271e8d4279e445d8a552d98bc8f2
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent websocket attached for run skill_definition_grok_build_9b973798_5f84b4874ab74acbb1bd9b8f5720231e
+Created agent session 9e05e6cb-3ae6-4164-bb4a-54e7e51aef23 for run skill_definition_grok_build_9b973798_5f84b4874ab74acbb1bd9b8f5720231e
+Agent WebSocket connected: session=9e05e6cb-3ae6-4164-bb4a-54e7e51aef23, run=skill_definition_grok_build_9b973798_5f84b4874ab74acbb1bd9b8f5720231e
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-grok-build-9b973798 updated successfully.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_grok_build_9b973798_5f84b4874ab74acbb1bd9b8f5720231e/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-grok-build-9b973798 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-grok-build-9b973798 updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-grok_build
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-grok_build.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_5d790155771df043ae9f977d0da5ec28f83f271e8d4279e445d8a552d98bc8f2
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mClosed agent session 9e05e6cb-3ae6-4164-bb4a-54e7e51aef23
+Agent WebSocket disconnected: 9e05e6cb-3ae6-4164-bb4a-54e7e51aef23
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_grok_build_9b973798_5f84b4874ab74acbb1bd9b8f5720231e/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22ma skill added to or removed from a running agent's definition (live E2E)[2m > [22mgrok_build: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message[33m 29716[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition created successfully with ID: skill-definition-deepseek-harness-81e8ca5f
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreated and registered workspace ID: agent_ws_39a398e4e083e5a23711607d4941c28cf45caf4ef06f4fab9fbc01de080eae32
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_39a398e4e083e5a23711607d4941c28cf45caf4ef06f4fab9fbc01de080eae32
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent websocket attached for run skill_definition_deepseek_harness_81e8ca5f_5b5037a068c941cda826ad593903a776
+Created agent session 45128ba3-ed8f-41ce-abd9-b949621fea96 for run skill_definition_deepseek_harness_81e8ca5f_5b5037a068c941cda826ad593903a776
+Agent WebSocket connected: session=45128ba3-ed8f-41ce-abd9-b949621fea96, run=skill_definition_deepseek_harness_81e8ca5f_5b5037a068c941cda826ad593903a776
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-deepseek-harness-81e8ca5f updated successfully.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_deepseek_harness_81e8ca5f_5b5037a068c941cda826ad593903a776/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-deepseek-harness-81e8ca5f updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mAgent Definition with ID skill-definition-deepseek-harness-81e8ca5f updated successfully.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-deepseek_harness.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mReusing registered workspace ID: agent_ws_39a398e4e083e5a23711607d4941c28cf45caf4ef06f4fab9fbc01de080eae32
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mClosed agent session 45128ba3-ed8f-41ce-abd9-b949621fea96
+Agent WebSocket disconnected: 45128ba3-ed8f-41ce-abd9-b949621fea96
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_deepseek_harness_81e8ca5f_5b5037a068c941cda826ad593903a776/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22ma skill added to or removed from a running agent's definition (live E2E)[2m > [22mdeepseek_harness: an added skill is set up and followed without a restart; a removed one is announced; both survive a stop between the save and the message[33m 25535[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mAgent Definition created successfully with ID: skill-definition-claude-approval-7dfbbe3d
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude-approval
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude-approval.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mCreated and registered workspace ID: agent_ws_090ebabfc24df3c6ad4e471da6809c2fe2c0b4a304197be4fde69ed6cde4fdce
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude-approval
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/workspace-claude-approval.
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mReusing registered workspace ID: agent_ws_090ebabfc24df3c6ad4e471da6809c2fe2c0b4a304197be4fde69ed6cde4fdce
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mAgent websocket attached for run skill_definition_claude_approval_7dfbbe3d_510b60b82cfa4bb5a9126e1f7b426622
+Created agent session 5ec770ac-ce84-486e-a679-0d3f6969caed for run skill_definition_claude_approval_7dfbbe3d_510b60b82cfa4bb5a9126e1f7b426622
+Agent WebSocket connected: session=5ec770ac-ce84-486e-a679-0d3f6969caed, run=skill_definition_claude_approval_7dfbbe3d_510b60b82cfa4bb5a9126e1f7b426622
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mAgent Definition with ID skill-definition-claude-approval-7dfbbe3d updated successfully.
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_approval_7dfbbe3d_510b60b82cfa4bb5a9126e1f7b426622/raw_traces_manifest.json
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_approval_7dfbbe3d_510b60b82cfa4bb5a9126e1f7b426622/raw_traces_manifest.json
+
+[90mstdout[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mClosed agent session 5ec770ac-ce84-486e-a679-0d3f6969caed
+Agent WebSocket disconnected: 5ec770ac-ce84-486e-a679-0d3f6969caed
+
+[90mstderr[2m | tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22m[2ma skill added to or removed from a running agent's definition (live E2E)[2m > [22m[2mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-22zHb7/app-data/memory/agents/skill_definition_claude_approval_7dfbbe3d_510b60b82cfa4bb5a9126e1f7b426622/raw_traces_manifest.json
+
+ [32m✓[39m tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts[2m > [22ma skill added to or removed from a running agent's definition (live E2E)[2m > [22mclaude_agent_sdk without auto-execute (AR-003, R-001): the Skill tool loads a skill added mid-run to a zero-skills run; every approval asked is recorded[33m 9717[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 13:35:53
+[2m   Duration [22m 164.84s[2m (transform 6.86s, setup 65ms, import 9.75s, tests 154.45s, environment 0ms)[22m
+
+EXIT 0

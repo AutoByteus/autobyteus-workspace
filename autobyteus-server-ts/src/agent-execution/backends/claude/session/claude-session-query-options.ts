@@ -22,7 +22,8 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   const sessionConfig = runContext.runtimeContext.sessionConfig;
   const toolingInput = {
     runtimeToolExposure: runContext.runtimeContext.runtimeToolExposure,
-    hasMaterializedSkills: runContext.runtimeContext.materializedConfiguredSkills.length > 0,
+    // Read per CLI process generation: a skill linked mid-run counts from the next generation.
+    hasMaterializedSkills: runContext.runtimeContext.requireWorkspaceSkills().hasSkills(),
     memberExecutionContext: runContext.config.memberExecutionContext,
   };
   // Every run has an Agent Tools MCP session, even with an empty tool list,

@@ -24,7 +24,6 @@ import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-c
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexAgentRunContext } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-context.js";
 import { CodexAgentRunBackend } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend.js";
-import type { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { CodexApprovalPolicy } from "../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
@@ -32,6 +31,7 @@ import { CodexAppServerClient } from "../../../src/runtime-management/codex/clie
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { activatedAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 const DETAILED = "[CodexSegmentTurnAdmissionRejected]";
 const SUMMARY = "[CodexSegmentTurnAdmissionRejectedSummary]";
@@ -74,13 +74,12 @@ async function harness() {
   const clients = new CodexAppServerClientManager({ createClient: () => client = new CodexAppServerClient({
     command: process.execPath, args: [fixture], cwd, env: {}, requestTimeoutMs: 5000,
   }) });
-  const cleanup = { cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined) };
-  const manager = new CodexThreadManager(clients, cleanup as unknown as CodexThreadCleanup, new CodexClientThreadRouter());
+  const manager = new CodexThreadManager(clients, new CodexClientThreadRouter());
   const createRun = async (runId: string) => {
     const context = new AgentRunContext({ runId,
       config: new AgentRunConfig({ runtimeKind: RUNTIME, agentDefinitionId: "test-rejection-logging",
         llmModelIdentifier: "", autoExecuteTools: false, workspaceId: cwd }),
-      runtimeContext: new CodexAgentRunContext({ codexThreadConfig: {
+      runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(), codexThreadConfig: {
         model: null, workingDirectory: cwd, reasoningEffort: null, serviceTier: null,
         approvalPolicy: CodexApprovalPolicy.NEVER, sandbox: "workspace-write", baseInstructions: null, developerInstructions: null, dynamicTools: [],
       } }),

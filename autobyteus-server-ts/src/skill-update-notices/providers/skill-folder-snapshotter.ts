@@ -15,7 +15,7 @@ export class SkillFolderSnapshotter {
   private readonly digests = new Map<string, CachedDigest>();
 
   /** The skill's snapshot, or null when its folder cannot be read (deleted or replaced mid-read). */
-  async snapshot(skill: ResolvedSkill): Promise<SkillFolderSnapshot | null> {
+  async snapshot(skill: Pick<ResolvedSkill, "name" | "rootPath">): Promise<SkillFolderSnapshot | null> {
     const skillDir = path.resolve(skill.rootPath);
     const ignore = new SkillFolderIgnore(skillDir);
     const files: Record<string, string> = {};

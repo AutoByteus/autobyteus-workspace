@@ -72,7 +72,7 @@ Environment: the server environment without `DSH_PERMISSION_MODE`, `DEEPSEEK_API
 | `DEEPSEEK_BASE_URL` | `http://127.0.0.1:<proxy>/relay/deepseek` (no pass in it) |
 | `DEEPSEEK_API_KEY` | the run's pass (not a key) |
 | `AUTOBYTEUS_DSH_INSTRUCTIONS_FILE` | `<appData>/runtimes/deepseek-harness/runs/<runId>/instructions.md` |
-| `AUTOBYTEUS_DSH_SKILLS_DIR` | `<workspace>/.dsh/skills` |
+| `AUTOBYTEUS_DSH_SKILLS_DIR` | `<workspace>/.dsh/skills` (a skill added to the definition mid-run is linked here too, see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)) |
 
 dsh's shells see `DEEPSEEK_BASE_URL` but not `DEEPSEEK_API_KEY` (dsh scrubs credentials from its shells).
 

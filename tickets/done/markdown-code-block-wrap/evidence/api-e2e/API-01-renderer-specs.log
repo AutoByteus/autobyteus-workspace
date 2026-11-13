@@ -1,0 +1,59 @@
+# API-01 (autobyteus-23): renderer, composable and font-size audit specs
+# Command: pnpm -C autobyteus-web exec vitest run components/conversation/segments/renderer composables/__tests__/useMarkdownSegments tests/integration/app-font-size-fixed-px-audit.integration.test.ts --no-watch
+# Commit: 2dd97f9e8 (source = 417e06da9); Linux container, Node v22.23.3; 2026-11-13T06:15:22Z
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/serverStore.ts" is used
+ RUN  v3.2.7 /home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap/autobyteus-web/stores/serverStore.ts" is used
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 66ms
+ ✓ composables/__tests__/useMarkdownSegments.wrapping.spec.ts (5 tests) 125ms
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | composables/__tests__/useMarkdownSegments.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stdout | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | composables/__tests__/useMarkdownSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts (5 tests) 5ms
+ ✓ composables/__tests__/useMarkdownSegments.spec.ts (3 tests) 44ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 186ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts (7 tests) 157ms
+ ✓ tests/integration/app-font-size-fixed-px-audit.integration.test.ts (2 tests) 284ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (20 tests) 601ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts (13 tests) 645ms
+   ✓ MarkdownRenderer heading links > renders design-principles.md so every Contents entry has exactly one heading  402ms
+ Test Files  9 passed (9)
+      Tests  63 passed (63)
+   Start at  06:15:30
+   Duration  33.17s (transform 12.87s, setup 174.06s, collect 3.59s, tests 2.11s, environment 45.07s, prepare 12.67s)

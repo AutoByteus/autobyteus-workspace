@@ -14,6 +14,7 @@ import { getCodexWorkspaceSkillMaterializer } from "../../../src/agent-execution
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { createGrokBuildAgentRunBackendFactory } from "../../../src/agent-execution/backends/grok/grok-build-agent-run-backend-factory.js";
 import { createAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { testPreparationGuard } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 export async function runtimeFixture(root: string, adapter: "codex" | "claude" | "grok", scope: "CONFIGURED" | "ALL_INSTALLED") {
   const workspace = path.join(root, "workspace"); fs.mkdirSync(workspace);
@@ -55,13 +56,12 @@ export async function runtimeFixture(root: string, adapter: "codex" | "claude" |
         const cleanup = () => backend.terminate(); cleanups.push(cleanup);
         return { cleanup, root: fs.realpathSync(path.join(workspace, ".grok", "skills", "api-writer")) };
       }
-      // No preparation is cancelled here; materialized skills are released through the cleanup below.
-      const guard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
-      const result = await boot!.bootstrapForCreate(new AgentRunContext({ runId: id, config: config(), runtimeContext: null }), guard);
-      const materializer = adapter === "codex" ? getCodexWorkspaceSkillMaterializer() : getClaudeWorkspaceSkillMaterializer();
-      const cleanup = () => materializer.cleanupMaterializedWorkspaceSkills(result.runtimeContext.materializedConfiguredSkills);
+      // No preparation is cancelled here; the run's links are released through the cleanup below.
+      const result = await boot!.bootstrapForCreate(new AgentRunContext({ runId: id, config: config(), runtimeContext: null }), testPreparationGuard(boot!, id));
+      const workspaceSkills = result.runtimeContext.requireWorkspaceSkills();
+      const cleanup = () => workspaceSkills.release();
       cleanups.push(cleanup);
-      return { cleanup, root: result.runtimeContext.materializedConfiguredSkills[0]!.sourceRootPath };
+      return { cleanup, root: fs.realpathSync(path.join(workspace, `.${adapter}`, "skills", "api-writer")) };
     },
     async close() {
       try { for (const cleanup of cleanups.reverse()) await cleanup(); }

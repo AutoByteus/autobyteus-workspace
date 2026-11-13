@@ -18,7 +18,6 @@ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import type { AgentRunInputLifecycle } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
-import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
@@ -243,7 +242,6 @@ const createFactory = async (input: {
       } as never,
       clientManager: input.clientManager,
       threadManager: input.threadManager,
-      threadCleanup: new CodexThreadCleanup(),
     },
     claude: {
       workspaceResolver: inert,
@@ -333,7 +331,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -437,7 +434,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -550,7 +546,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -639,7 +634,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -738,7 +732,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -826,7 +819,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -920,7 +912,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -1030,7 +1021,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -1146,7 +1136,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -1254,7 +1243,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -1415,7 +1403,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     clientManager = new CodexAppServerClientManager();
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(

@@ -120,7 +120,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
       assertAccepting();
       return new AgyAgentRunBackend(new AgentRunContext({ runId, config,
         runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process, { compactionDetection },
-        { runSessions: this.mcpSessions, exposure });
+        { runSessions: this.mcpSessions, exposure }, { capsule, skillService: this.skills });
   }
 
   /** Compaction checkpoints are mapped only on the AGY version proven to stream them. */

@@ -17,12 +17,6 @@ import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecy
 import type {
   AgentToolMcpRunSessionAuthority,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
-import {
-  getClaudeWorkspaceSkillMaterializer,
-} from "../claude-workspace-skill-materializer.js";
-import type {
-  WorkspaceSkillMaterializer,
-} from "../../shared/workspace-skill-materializer.js";
 export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
 
@@ -45,8 +39,6 @@ export class ClaudeSessionManager {
     agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority,
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    workspaceSkillMaterializer: WorkspaceSkillMaterializer =
-      getClaudeWorkspaceSkillMaterializer(),
     private readonly integrationRunAccess: IntegrationRunAccess | null = null,
   ) {
     if (!agentToolMcpRunSessions) {
@@ -55,7 +47,7 @@ export class ClaudeSessionManager {
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
     this.agentToolMcpRunSessions = agentToolMcpRunSessions;
-    this.sessionCleanup = new ClaudeSessionCleanup(workspaceSkillMaterializer);
+    this.sessionCleanup = new ClaudeSessionCleanup();
   }
 
   async createRunSession(

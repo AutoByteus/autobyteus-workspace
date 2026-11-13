@@ -1,0 +1,10 @@
+# IMP-06
+# Command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_SKILL_DEFINITION_E2E=1 vitest run tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts (both runtimes, before step 2b)
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-13 12:42
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+
+Claude (haiku) in this run: step 1 READY-1, no notice; step 2 notice 'Your skill package `codeword-probe` is now available: ...', reply QUOKKA-4428 after a Read of the SKILL.md path; step 3 notice 'is no longer available', reply DONE-3; link released at terminate. Its JSON was overwritten by IMP-07 (same file name).

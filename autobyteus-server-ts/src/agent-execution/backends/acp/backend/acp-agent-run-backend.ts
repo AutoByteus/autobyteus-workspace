@@ -28,6 +28,7 @@ import {
   type AcpPreparationOwner,
 } from "../session/acp-session-launcher.js";
 import type { AcpRunContext } from "./acp-agent-run-context.js";
+import type { RunWorkspaceSkills } from "../../shared/run-workspace-skills.js";
 
 const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 
@@ -39,6 +40,8 @@ export type AcpAgentRunBackendInput = Readonly<{
   instructions: string;
   /** The single holder of the run's process, connection and session; the backend keeps no copies. */
   owner: AcpPreparationOwner;
+  /** The run's workspace skill links (released by `cleanup`); a skill added mid-run is linked through it. */
+  workspaceSkills: RunWorkspaceSkills;
   /** The sink of the session the owner holds now. */
   sink: AcpSessionEventSink;
   launcher: AcpSessionLauncher;
@@ -209,6 +212,15 @@ export class AcpAgentRunBackend implements AgentRunBackend {
 
   getToolNames(): readonly string[] {
     return [...this.openedToolNames];
+  }
+
+  /**
+   * Links the definition's skills the run does not have yet into the workspace's skill folder of the run's agent
+   * (its launch profile's materializer). Whether the agent lists a new folder before its next launch is not proven;
+   * the skill notice gives the agent its path either way.
+   */
+  applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    return this.input.workspaceSkills.addFrom(definition);
   }
 
   /**

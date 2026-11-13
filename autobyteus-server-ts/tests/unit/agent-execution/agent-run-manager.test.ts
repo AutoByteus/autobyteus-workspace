@@ -290,6 +290,7 @@ describe("AgentRunManager candidate lifecycle", () => {
     const passes = new RunPassRegistry();
     const integrationRunAccess: IntegrationRunAccess = {
       environmentForRun: async (run) => ({ AUTOBYTEUS_GITHUB_API_URL: `http://127.0.0.1:1/r/${passes.issue(run, [])}/github/api` }),
+      integrationsStartingOnRestart: async () => [],
     };
     let pass = "";
     const manager = createManager({

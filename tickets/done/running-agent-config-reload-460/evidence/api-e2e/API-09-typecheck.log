@@ -1,0 +1,26 @@
+# API-09 pnpm -C autobyteus-server-ts typecheck | worktree c7685b20c6 + API/E2E test changes | 2026-11-13 13:24
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 236ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 12.4s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 32.4s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS

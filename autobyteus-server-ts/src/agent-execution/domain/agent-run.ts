@@ -37,7 +37,6 @@ import { AgentRunTermination } from "./agent-run-termination.js";
 import type { PreparedAgentRunTermination } from "./prepared-agent-run-termination.js";
 import {
   buildAgentStatusPayload, agentStatusHint,
-  type AgentApiStatus,
   type AgentStatusPayload,
 } from "./agent-status-payload.js";
 
@@ -167,6 +166,15 @@ export class AgentRun {
 
   /** The tool names the runtime has now (the names the agent calls). */
   getToolNames(): readonly string[] { return this.backend.getToolNames(); }
+
+  /**
+   * Sets up this definition's skills that the runtime does not have yet (see
+   * `AgentRunBackend.applyDefinitionSkills`). Rejected on a stopped run.
+   */
+  async applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    if (!this.backend.isActive()) throw new Error(`Agent run '${this.runId}' is not active.`);
+    await this.backend.applyDefinitionSkills(definition);
+  }
 
   /** True when the platform delivers this run's background-task completion notices (native runs). */
   get backgroundTaskNoticesSupported(): boolean { return this.backend.backgroundTaskNotices.kind === "platform"; }

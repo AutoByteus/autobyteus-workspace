@@ -43,7 +43,10 @@ vault, so the runtime never holds the key. See [Provider Relays](#provider-relay
     integration grants and its provider relay grant;
   - `run-pass-revocation.ts`: `RunPassRevocation`, the one way a pass ends
     (`CredentialProxyHost.runPasses`, used by the run managers);
-  - `integration-run-access.ts`: `IntegrationRunAccess`, what backends call;
+  - `integration-run-access.ts`: `IntegrationRunAccess`, what backends call; its
+    read `integrationsStartingOnRestart` tells [Skill Update Notices](./skill_update_notices.md)
+    which integrations a skill added mid-run grants that the run's pass does not
+    hold yet (their access starts at a restart; nothing is granted);
   - `provider-relays/`: the provider relays (definitions, the `/relay/…` route
     family, the Messages stream reader, `ProviderRelayAccess` with its per-run
     observers, the process relay slot);

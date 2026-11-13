@@ -196,6 +196,14 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     return this.session.getAgentToolNames();
   }
 
+  /**
+   * Links the definition's skills the run does not have yet into the workspace's `.claude/skills`; the Claude CLI
+   * lists a folder linked mid-session from its next turn.
+   */
+  applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    return this.context.runtimeContext.requireWorkspaceSkills().addFrom(definition);
+  }
+
   private ensureSubscribed(): void {
     if (this.unsubscribeFromSession) {
       return;

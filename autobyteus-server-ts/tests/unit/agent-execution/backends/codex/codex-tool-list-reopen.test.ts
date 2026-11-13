@@ -12,9 +12,9 @@ import { buildRuntimeAgentToolExposure } from "../../../../../src/agent-executio
 import type { CodexAppServerClient } from "../../../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import type { CodexAppServerClientManager } from "../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { CodexClientThreadRouter } from "../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
-import type { CodexThreadCleanup } from "../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 import type { SystemInstructionCaptureService } from "../../../../../src/agent-memory/services/system-instruction-capture-service.js";
 import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 // The Codex reopen sequence (design: "Codex reopen sequence"), measured in evidence/probe/drive-codex-reopen.mjs.
 
@@ -26,7 +26,7 @@ const createRunContext = (
     runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentDefinitionId: "def", llmModelIdentifier: "gpt",
     autoExecuteTools: false, workspaceId: null, memoryDir: null, llmConfig: null,
   }),
-  runtimeContext: new CodexAgentRunContext({
+  runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
     codexThreadConfig: {
       model: null, workingDirectory: "/tmp/codex-reopen", reasoningEffort: null, serviceTier: null,
       approvalPolicy: CodexApprovalPolicy.ON_REQUEST, sandbox: "workspace-write", baseInstructions: null,
@@ -49,7 +49,6 @@ const createManager = (respond: (method: string, params: Record<string, unknown>
   } as unknown as CodexAppServerClient;
   const manager = new CodexThreadManager(
     { beginAcquire: vi.fn(() => ({ acquire: vi.fn(async () => client), release: vi.fn(async () => undefined) })) } as unknown as CodexAppServerClientManager,
-    { cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup,
     { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter,
     { capture: vi.fn(() => ({ created: false })) } as unknown as SystemInstructionCaptureService,
   );

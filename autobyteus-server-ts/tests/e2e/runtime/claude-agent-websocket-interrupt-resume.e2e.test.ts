@@ -42,6 +42,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -208,7 +209,7 @@ const createClaudeRunContext = (input: {
       autoExecuteTools: false,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       sessionConfig: buildClaudeSessionConfig({
         model: input.modelIdentifier ?? "claude-test-model",
         workingDirectory: input.workspaceRoot,
@@ -243,7 +244,6 @@ const createClaudeAgentRun = async (input: {
     agentToolMcpRunSessions,
     {} as never,
     input.sdkClient,
-    { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
   );
   // The test holds the returned session itself, so it needs no ownership callback.
   const session = await sessionManager.createRunSession(runContext, () => undefined);

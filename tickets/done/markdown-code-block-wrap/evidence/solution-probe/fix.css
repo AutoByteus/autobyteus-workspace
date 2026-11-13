@@ -1,0 +1,4 @@
+.markdown-renderer-segments .markdown-body pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.markdown-renderer-segments .markdown-body pre > code { white-space: inherit; overflow-wrap: inherit; }
+.markdown-renderer-segments .markdown-body .markdown-table-scroll { max-width: 100%; overflow-x: auto; }
+.markdown-renderer-segments .markdown-body .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }

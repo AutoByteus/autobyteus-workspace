@@ -222,8 +222,10 @@ or because Gradle's cache already holds a dependency the runner must download.
   when the test needs another).
 - **Runtimes without a model.** `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`
   (`ANTIGRAVITY_CLI_COMMAND=<absolute path>`, `RUN_AGY_FAILURE_E2E=1`) is a scripted AGY CLI:
-  a message containing `CALL_TOOL:{…}` makes that agent call the real tool. Use it to drive
-  real delegation, Tasks and streams without provider calls.
+  a message containing `CALL_TOOL:{…}` makes that agent call the real tool, and one containing
+  `REPLY_FILE:<absolute path>` makes it answer with that file's text as it is (for example raw
+  Markdown for a rendering case). Use it to drive real delegation, Tasks and streams without
+  provider calls.
 - **Test-only runtime CLI settings.** Never edit the user's CLI config (`~/.codex`,
   `~/.claude`, `~/.grok`). Give the test its own config instead:
   - **A throwaway home.** For example `CODEX_HOME=<temp>` containing a `config.toml` with

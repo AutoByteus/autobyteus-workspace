@@ -76,7 +76,7 @@ export const createCredentialProxyHost = (input: AccessInput & Readonly<{
     });
   });
   const proxyBaseUrl = () => server.requireBaseUrl();
-  const runAccess = new DefaultIntegrationRunAccess({ access, definitions, passes, proxyBaseUrl });
+  const runAccess = new DefaultIntegrationRunAccess({ access, definitions, passes, catalog, proxyBaseUrl });
   const providerRelayAccess = new DefaultProviderRelayAccess({ relays, passes, observers, management, proxyBaseUrl });
   return Object.freeze({
     runAccess,

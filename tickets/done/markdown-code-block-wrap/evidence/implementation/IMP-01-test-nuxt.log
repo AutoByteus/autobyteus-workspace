@@ -1,0 +1,39 @@
+# IMP-01 full web unit/component suite (autobyteus-23)
+# Command: pnpm -C autobyteus-web test:nuxt (pnpm = corepack pnpm 10.28.2 shim); then the one timed-out file alone: pnpm -C autobyteus-web exec vitest run components/projects/__tests__/ProjectTaskBoard.spec.ts --no-watch
+# Code: 417e06da9 (suite started on the identical working tree just before the commit); Linux container, Node 22; 2026-11-13
+# Full log (50k lines) not committed: /tmp/imp06-test-nuxt.log. Excerpt:
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (20 tests) 252ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts (13 tests) 470ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts (7 tests) 150ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 196ms
+ ✓ tests/integration/app-font-size-fixed-px-audit.integration.test.ts (2 tests) 330ms
+ ✓ utils/__tests__/markdownMath.spec.ts (12 tests) 6ms
+ ✓ composables/__tests__/useMarkdownSegments.spec.ts (3 tests) 45ms
+ ✓ utils/__tests__/markdownHeadingAnchors.spec.ts (14 tests) 25ms
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 47ms
+ ✓ composables/__tests__/useMarkdownSegments.wrapping.spec.ts (5 tests) 95ms
+...
+ FAIL  components/projects/__tests__/ProjectTaskBoard.spec.ts > ProjectTaskBoard > shows a failed search request with Retry, keeping the board
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ components/projects/__tests__/ProjectTaskBoard.spec.ts:193:3
+    191|   })
+    192| 
+    193|   it('shows a failed search request with Retry, keeping the board', as…
+       |   ^
+    194|     seed([task('t1', 'Docker image fails on ARM', '2026-09-27T01:00:00…
+    195|     io.query.mockRejectedValueOnce(new Error('Network down'))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 760 passed (761)
+      Tests  1 failed | 5748 passed | 2 skipped (5751)
+   Start at  05:18:19
+   Duration  2525.20s (transform 179.16s, setup 15028.05s, collect 646.80s, tests 173.89s, environment 4469.56s, prepare 1686.40s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1
+# Rerun of the timed-out file alone (machine load during the full run: setup 15028s cumulative; the file does not use the markdown renderer):
+ Test Files  1 passed (1)
+      Tests  16 passed (16)

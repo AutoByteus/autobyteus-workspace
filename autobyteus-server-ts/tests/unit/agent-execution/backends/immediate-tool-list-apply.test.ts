@@ -7,6 +7,7 @@ import { AgyAgentRunBackend } from "../../../../src/agent-execution/backends/ant
 import { AutoByteusAgentRunBackend } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
 import { ClaudeAgentRunBackend } from "../../../../src/agent-execution/backends/claude/backend/claude-agent-run-backend.js";
 import { stubAgyAgentTools } from "../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { stubAgyCapsuleSkills } from "../../../fixtures/run-workspace-skills-fixtures.js";
 
 // The runtimes that take a new tool list from their next model call (REQ-002): AGY and Claude
 // re-list over the Agent Tools GET stream once the session is replaced; native swaps its tools.
@@ -19,7 +20,8 @@ describe("AGY applyDefinitionTools", () => {
     const process = { subscribe: () => () => undefined, onClose: () => () => undefined, stop: async () => undefined };
     const backend = new AgyAgentRunBackend({ runId: "run-agy", config: {
       runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini",
-    }, runtimeContext: { conversationId: "conv-1" } } as never, process as never, { compactionDetection: false }, agentTools);
+    }, runtimeContext: { conversationId: "conv-1" } } as never, process as never, { compactionDetection: false }, agentTools,
+      stubAgyCapsuleSkills("run-agy"));
     return { backend, runSessions: agentTools.runSessions };
   };
 
@@ -73,6 +75,15 @@ describe("AutoByteus applyDefinitionTools", () => {
       .toEqual({ kind: "applied", toolNames: ["read_file", "send_message_to"] });
     expect(build).toHaveBeenCalledOnce();
     expect(agent.replaceTools).toHaveBeenCalledOnce();
+  });
+  it("AutoByteus native sets nothing up for an added skill: its system prompt and tools stay as they are (FU-006)", async () => {
+    const { backend, agent, build } = setup();
+    const prompt = "System prompt with its skill catalog.";
+    (agent.context.state as Record<string, unknown>).processedSystemPrompt = prompt;
+    await backend.applyDefinitionSkills({ skillNames: ["reflection"], toolNames: ["read_file"] } as never);
+    expect((agent.context.state as Record<string, unknown>).processedSystemPrompt).toBe(prompt);
+    expect(build).not.toHaveBeenCalled();
+    expect(agent.replaceTools).not.toHaveBeenCalled();
   });
 });
 

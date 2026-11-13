@@ -1,3 +1,5 @@
+import fs from "node:fs/promises";
+import path from "node:path";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
@@ -8,9 +10,15 @@ import {
   type ClaudeWorkspaceResolver,
 } from "../claude-workspace-resolver.js";
 import {
+  CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE,
   getClaudeWorkspaceSkillMaterializer,
 } from "../claude-workspace-skill-materializer.js";
-import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import {
+  exposedWorkspaceSkillRequests,
+  planExposedWorkspaceSkillRequests,
+  RunWorkspaceSkills,
+} from "../../shared/run-workspace-skills.js";
 import {
   buildClaudeSessionConfig,
   DEFAULT_CLAUDE_PERMISSION_MODE,
@@ -39,8 +47,14 @@ export class ClaudeSessionBootstrapper {
     this.skillService = skillService;
   }
 
-  releaseSkills(skills: MaterializedWorkspaceSkill[]): Promise<void> {
-    return this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(skills);
+  /** The run's workspace skill holder, created by the factory when its preparation starts (one per run). */
+  createRunWorkspaceSkills(runId: string): RunWorkspaceSkills {
+    return new RunWorkspaceSkills({
+      runId,
+      materializer: this.workspaceSkillMaterializer,
+      skillService: this.skillService,
+      planRequests: planExposedWorkspaceSkillRequests,
+    });
   }
 
   async bootstrapForCreate(
@@ -65,6 +79,7 @@ export class ClaudeSessionBootstrapper {
     const workingDirectory = await this.workspaceResolver.resolveWorkingDirectory(
       runContext.config.workspaceId,
     );
+    await ensureWorkspaceSkillsFolder(runContext.runId, workingDirectory);
     const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
       runContext.config.agentDefinitionId,
     );
@@ -77,21 +92,13 @@ export class ClaudeSessionBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const preparedSkills = await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
-      runId: runContext.runId,
-      onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
+    await guard.workspaceSkills.acquire({
       workingDirectory,
-      requests: configuredSkillBindings.map((binding) =>
-        binding.kind === "resolved"
-          ? { kind: "expose-resolved", skill: binding.skill }
-          : { kind: "reconcile-unresolved", name: binding.name }
-      ),
+      requests: exposedWorkspaceSkillRequests(configuredSkillBindings),
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+      assertPreparing: guard.assertAccepting,
     });
     guard.assertAccepting();
-    const materializedConfiguredSkills = preparedSkills.materializedSkills;
-    const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
-      request.kind === "reconcile-unresolved" ? [] : [request.skill]);
     const semanticMemoryPath = await this.semanticMemory.prepareForRun(agentDefinition);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
@@ -114,8 +121,7 @@ export class ClaudeSessionBootstrapper {
         sessionConfig,
         carpenterSystemPrompt,
         runtimeToolExposure,
-        configuredSkills,
-        materializedConfiguredSkills,
+        workspaceSkills: guard.workspaceSkills,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
@@ -124,6 +130,22 @@ export class ClaudeSessionBootstrapper {
   }
 
 }
+
+/**
+ * The Claude CLI watches `<workspace>/.claude/skills` only when that folder exists as its process starts, so a skill
+ * linked there while a run that started with no skills is going would never be listed (DI-001, SR-004). Every
+ * preparation (new and restore) therefore makes sure the folder exists before the session starts; nothing removes
+ * it (the materializer creates the same folder for any run with a skill and leaves it). A failure is logged and
+ * never fails the run: the skill notice gives an added skill's path either way (REQ-008).
+ */
+const ensureWorkspaceSkillsFolder = async (runId: string, workingDirectory: string): Promise<void> => {
+  const folder = path.join(workingDirectory, ...CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE.workspaceSkillsRootSegments);
+  try {
+    await fs.mkdir(folder, { recursive: true });
+  } catch (error) {
+    console.warn(`CLAUDE_WORKSPACE_SKILLS_FOLDER_FAILED: run=${runId}, folder=${folder}: ${String(error)}`);
+  }
+};
 
 let cachedClaudeSessionBootstrapper: ClaudeSessionBootstrapper | null = null;
 

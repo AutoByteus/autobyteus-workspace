@@ -1,0 +1,9 @@
+# IMP-04 web typecheck (autobyteus-24)
+# Command: pnpm -C autobyteus-web typecheck (pnpm = corepack pnpm 10.28.2 shim)
+# Code: identical to b1955d4a7; Linux container, Node 22; 2026-11-13T10:22Z
+[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 96.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 7.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 4.5s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 59.3s
+[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+[typecheck] PASS

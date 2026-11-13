@@ -1,0 +1,5 @@
+# API-04 env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run <5 files> --no-watch | commit c7685b20c6 + test changes | 2026-11-13 13:25
+ Test Files  5 passed (5)
+      Tests  50 passed (50)
+   Duration  142.67s (transform 10.54s, setup 177ms, import 25.16s, tests 116.34s, environment 0ms)
+EXIT 0

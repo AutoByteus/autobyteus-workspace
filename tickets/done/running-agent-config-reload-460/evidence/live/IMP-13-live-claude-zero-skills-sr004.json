@@ -1,0 +1,179 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "codeword": "QUOKKA-7801",
+  "steps": [
+    {
+      "label": "1 no skills",
+      "content": "Reply with exactly: READY-1",
+      "reply": "READY-1",
+      "notices": []
+    },
+    {
+      "label": "2 skill added",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "reply": "QUOKKA-7801",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-WmWfx8/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+          "turn_id": "skill_definition_claude_agent_sdk_a41fb8d7_ce3e5622471e448cbab928b87a765c7b:turn:4ae718e5-7aff-4809-bff7-f3defd1b444a"
+        }
+      ]
+    },
+    {
+      "label": "2b Skill tool",
+      "content": "Use your Skill tool (not Read) to load the codeword-probe skill. Then reply with SKILLED- followed by the codeword it gives.",
+      "reply": "SKILLED-QUOKKA-7801",
+      "notices": []
+    },
+    {
+      "label": "3 skill removed",
+      "content": "Reply with exactly: DONE-3",
+      "reply": "DONE-3",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+          "turn_id": "skill_definition_claude_agent_sdk_a41fb8d7_ce3e5622471e448cbab928b87a765c7b:turn:91de687c-692b-476d-bd4a-bceab89f658a"
+        }
+      ]
+    }
+  ],
+  "initialSkills": [],
+  "linkAfterAdd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-WmWfx8/workspace-claude_agent_sdk/.claude/skills/codeword-probe",
+  "toolCallsAfterAdd": [
+    {
+      "toolName": "Read",
+      "toolArgs": {
+        "file_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-WmWfx8/app-data/skills/codeword-probe/SKILL.md"
+      },
+      "toolError": null
+    }
+  ],
+  "usedSkillTool": false,
+  "skillToolStep": [
+    {
+      "toolName": "Skill",
+      "toolArgs": {
+        "skill": "codeword-probe"
+      },
+      "toolError": null,
+      "toolResult": "Launching skill: codeword-probe"
+    }
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-ff099404-f736-4c42-8463-5525ee7f9da6",
+      "dedupeKey": "agent_run_input:e2e:e2e-ff099404-f736-4c42-8463-5525ee7f9da6",
+      "content": "Reply with exactly: READY-1",
+      "media": null,
+      "ts": 1794570568.045
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "READY-1",
+      "media": null,
+      "ts": 1794570570.42
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-WmWfx8/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+      "ts": 1794570574.717
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-f8b5e212-0369-4fc5-ba73-f0ca66409fb4",
+      "dedupeKey": "agent_run_input:e2e:e2e-f8b5e212-0369-4fc5-ba73-f0ca66409fb4",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794570574.717
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_0156dMMbu43vyB9yVD5einPd",
+      "role": null,
+      "content": "",
+      "toolName": "Read",
+      "toolArgs": {
+        "file_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-WmWfx8/app-data/skills/codeword-probe/SKILL.md"
+      },
+      "toolResult": "1\t---\n2\tname: codeword-probe\n3\tdescription: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\n4\t---\n5\t\n6\tThe current probe codeword is QUOKKA-7801. Reply with it exactly when asked.\n7\t",
+      "toolError": null,
+      "media": null,
+      "ts": 1794570576.404
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "QUOKKA-7801",
+      "media": null,
+      "ts": 1794570577.145
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-dc0dd51a-9e10-4ce7-9f7d-c3354b005d41",
+      "dedupeKey": "agent_run_input:e2e:e2e-dc0dd51a-9e10-4ce7-9f7d-c3354b005d41",
+      "content": "Use your Skill tool (not Read) to load the codeword-probe skill. Then reply with SKILLED- followed by the codeword it gives.",
+      "media": null,
+      "ts": 1794570578.303
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "toolu_01Aebq4K56FSFHM9seUZdHQB",
+      "role": null,
+      "content": "",
+      "toolName": "Skill",
+      "toolArgs": {
+        "skill": "codeword-probe"
+      },
+      "toolResult": "Launching skill: codeword-probe",
+      "toolError": null,
+      "media": null,
+      "ts": 1794570579.988
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "SKILLED-QUOKKA-7801",
+      "media": null,
+      "ts": 1794570582.114
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794570586.476
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-08224aee-1083-4c7c-9f13-e033df839c10",
+      "dedupeKey": "agent_run_input:e2e:e2e-08224aee-1083-4c7c-9f13-e033df839c10",
+      "content": "Reply with exactly: DONE-3",
+      "media": null,
+      "ts": 1794570586.476
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "DONE-3",
+      "media": null,
+      "ts": 1794570587.5
+    }
+  ]
+}

@@ -17,6 +17,7 @@ import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agen
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../src/agent-team-execution/services/inter-agent-message-runtime-builders.js";
 import { createAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { createTestRunWorkspaceSkills } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
   const senderIdentity = {
@@ -66,7 +67,7 @@ describe("teammate input admission into a running Claude turn (the teammate path
         workspaceId: null,
         llmConfig: null,
       }),
-      runtimeContext: new ClaudeAgentRunContext({
+      runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
         sessionConfig: buildClaudeSessionConfig({
           model: "claude-sonnet",
           workingDirectory: "/tmp",
