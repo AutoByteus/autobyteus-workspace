@@ -212,16 +212,17 @@ it('stream staging and inspection staging independently acquire the same exact f
   expect(JSON.stringify(staged.context.getAgentContext('agent-director')!.conversation)).toContain('final:agent-director')
 })
 
-it('opening a historical Org loads the selected member artifact list, a nested Team member included (AC-003, AC-004)', async () => {
+it('opening a historical Org loads the selected member artifact list, a mounted Team member included (AC-003, AC-004)', async () => {
   const artifact = (runId: string, name: string) => ({
     __typename: 'RunFileChangeEntry', id: `${runId}:/outputs/${name}`, runId, path: `/outputs/${name}`, type: 'image',
     status: 'available', sourceTool: 'generated_output', sourceInvocationId: null, content: null,
     createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
   })
-  for (const runId of ['agent-director', 'agent-task-lead']) {
+  for (const runId of ['agent-director', 'agent-lead-configured']) {
     transport.fileChangesByRunId.set(runId, [artifact(runId, '1.png'), artifact(runId, '2.png')])
   }
-  orgs.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' })
+  // A mounted team's configured member; a delegated row is read as its own run, not through the Org (autobyteus-461 rule 2).
+  orgs.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-lead-configured' })
   const open = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(false))
   releaseMembers(await requests(MEMBER, 1), 'historical')
@@ -229,6 +230,6 @@ it('opening a historical Org loads the selected member artifact list, a nested T
 
   const files = useRunFileChangesStore()
   expect(orgs.contexts['org-run']?.isActive).toBe(false)
-  expect(files.getArtifactsForRun('agent-task-lead').map((entry) => entry.path)).toEqual(['/outputs/1.png', '/outputs/2.png'])
+  expect(files.getArtifactsForRun('agent-lead-configured').map((entry) => entry.path)).toEqual(['/outputs/1.png', '/outputs/2.png'])
   expect(files.getArtifactsForRun('agent-director')).toEqual([])
 })
