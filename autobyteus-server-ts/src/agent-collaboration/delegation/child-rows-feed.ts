@@ -63,9 +63,12 @@ export const placementOf = (run: RootExecutionIdentity, row: SubtreeRow, rows: r
  * when it stops). It never starts or restores a run.
  */
 export class ChildRowsFeed {
+  /** Per run, the rows this feed reported closed in its stream and not back since (CR-461-042). */
+  private readonly reportedClosed = new Map<string, Set<string>>();
+
   constructor(private readonly dependencies: Readonly<{
     streams: Pick<RunViewStreams, "streamOf">;
-    tree: Pick<DelegationIndex, "collaborationTreeOf" | "tasksOf">;
+    tree: Pick<DelegationIndex, "collaborationTreeOf">;
     /** Whether a run still runs (its root is live): base's closed set holds only runs that still run. */
     isRunning(run: RootExecutionIdentity): boolean;
   }>) {}
@@ -91,20 +94,26 @@ export class ChildRowsFeed {
   }
 
   /**
-   * At the change itself, in `change.run`'s stream: a new row is started, or reopened when it was closed and still runs
-   * (it has a closed entry: its Task closed, then reopened or followed up); a row that left the open subtree is closed.
+   * At the change itself, in `change.run`'s stream: a row that left the open subtree is closed; a row that comes back
+   * after this stream reported it closed (its assigner reactivated it, or gave it a follow-up Task) is reopened, as at
+   * base (CR-461-042); any other new row is started.
    */
   private changed(change: ChildRowsChange): void {
     const rows = this.dependencies.tree.collaborationTreeOf(change.run).rows();
     const stream = this.dependencies.streams.streamOf<ChildRowRootEvent>(change.run);
+    const runKey = rootExecutionIdentityKey(change.run);
+    const closed = this.reportedClosed.get(runKey) ?? new Set<string>();
     const reopened: PlacedRow[] = [];
     for (const row of change.added) {
       const placed: PlacedRow = Object.freeze({ row, host: placementOf(change.run, row, rows) });
-      const wasClosed = this.dependencies.tree.tasksOf(row.run).some((entry) => !entry.open) && this.dependencies.isRunning(runIdentityOf(row.run));
-      if (wasClosed) reopened.push(placed);
+      if (closed.delete(rowKey(row))) reopened.push(placed);
       else stream.publish({ kind: "task_execution_started", placed });
     }
     if (reopened.length) stream.publish({ kind: "task_executions_reopened", placed: Object.freeze(reopened) });
-    if (change.removed.length) stream.publish({ kind: "task_executions_closed", taskExecutions: Object.freeze([...change.removed]) });
+    if (change.removed.length) {
+      for (const removed of change.removed) closed.add(rootExecutionIdentityKey(runIdentityOf(removed)));
+      stream.publish({ kind: "task_executions_closed", taskExecutions: Object.freeze([...change.removed]) });
+    }
+    if (closed.size) this.reportedClosed.set(runKey, closed); else this.reportedClosed.delete(runKey);
   }
 }

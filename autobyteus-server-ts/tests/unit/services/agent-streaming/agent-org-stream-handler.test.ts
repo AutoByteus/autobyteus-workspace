@@ -424,6 +424,11 @@ describe("AgentOrgStreamHandler", () => {
     await feed.settled();
     expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2,
       event: { kind: "task_executions_closed", task_executions: [{ teamRunId: "eng" }] } } });
+    // CR-461-042: a row back after its assigner reactivated it is base's reopened row, not a new one.
+    feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [], removed: [{ agentRunId: "analyst" }] });
+    feed.report({ run: createAgentOrgRootExecutionIdentity(orgRunId), added: [delegatedChild("analyst")], removed: [] });
+    await feed.settled();
+    expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 4, event: { kind: "task_executions_reopened" } } });
     handler.disconnect(sessionId!);
   });
 });

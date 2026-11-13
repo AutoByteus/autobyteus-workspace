@@ -291,6 +291,20 @@ describe("AgentTeamStreamHandler current root stream", () => {
     expect(output[4]!.payload).toEqual({ change_sequence: 2, task_executions: [{ agent_run_id: "old-helper" }] });
   });
 
+  it("CR-461-042: a row back after its assigner reactivated it is base's TASK_EXECUTIONS_REOPENED, not TASK_EXECUTION_STARTED", async () => {
+    const harness = createHarness();
+    const team = createTeamRootExecutionIdentity("team-run-root");
+    const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+    sessions.push({ handler: harness.handler, id: sessionId! });
+    harness.feed.report({ run: team, added: [delegatedChild("writer")], removed: [] });
+    harness.feed.report({ run: team, added: [], removed: [{ agentRunId: "writer" }] });
+    harness.feed.report({ run: team, added: [delegatedChild("writer")], removed: [] });
+    await harness.feed.settled();
+    const rowEvents = sent(harness.connection).filter((message) => message.type.startsWith("TASK_EXECUTION"));
+    expect(rowEvents.map((message) => message.type)).toEqual(["TASK_EXECUTION_STARTED", "TASK_EXECUTIONS_CLOSED", "TASK_EXECUTIONS_REOPENED"]);
+    expect(rowEvents[2]!.payload).toMatchObject({ change_sequence: 3, executions: [{ parent_team_run_id: "team-run-root", execution: { agent_run_id: "writer" } }] });
+  });
+
   describe("SR-046: a stopped team run's view (stored mode), never restored to serve the view", () => {
     const flush = async () => { for (let i = 0; i < 10; i += 1) await new Promise((resolve) => setTimeout(resolve, 0)); };
 

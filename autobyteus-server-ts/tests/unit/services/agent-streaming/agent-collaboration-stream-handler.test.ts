@@ -115,11 +115,15 @@ describe("AgentCollaborationStreamHandler", () => {
     await feed.settled();
     expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 2,
       event: { kind: "task_executions_closed", task_executions: [{ agentRunId: "writer" }] } } });
-    expect(wire).toHaveLength(5);
+    // CR-461-042: back after its assigner reactivated it, as base's reopened row.
+    feed.report({ run: hostRun, added: [delegatedChild("writer")], removed: [] });
+    await feed.settled();
+    expect(wire.at(-1)).toMatchObject({ type: "ROOT_EXECUTION_EVENT", payload: { change_sequence: 3, event: { kind: "task_executions_reopened" } } });
+    expect(wire).toHaveLength(6);
     handler.disconnect(sessionId!);
     feed.report({ run: hostRun, added: [delegatedChild("late")], removed: [] });
     await feed.settled();
-    expect(wire).toHaveLength(5);
+    expect(wire).toHaveLength(6);
   });
 
   it("a row reported while the snapshot is read is in the snapshot or after it, never both (SR-063)", async () => {
