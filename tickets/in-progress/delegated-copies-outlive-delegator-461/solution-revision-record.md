@@ -1306,3 +1306,17 @@
 - **Requirements:** unchanged.
 - **Next action:** architecture review.
 - **ARCH-REV-042 passed SR-068.** Its note is applied: item 2 of "What the web still changes" names a delegated row's file-change and trace panels, read by the run's own identity. The two web queries through the delegator are deleted.
+
+### SR-069 — A peer run takes no `@` mentions, as at base (answers CR-461-035)
+
+- **Triggering:** CRR-017's Design Impact. The branch refuses a peer row's mentions (`REMOTE_RUN_MENTIONS_UNSUPPORTED`), and the review read base as composing the note and delivering. SR-066 did not say how a peer row's mentions resolve.
+- **Evidence at `827f1e68dc`:**
+  - the web gives a run on another node no mention scope (`useComposerTarget.ts:69`, autobyteus-278 REQ-808, text-only);
+  - base's probe asserts that `@` opens no menu there (`remote-runs-in-tree-probe.mjs:357-360`);
+  - on the server, `resolveCollaboratorMentions` looked the focused agent up in the root's index, which holds no peer agents, so a mention was refused with `RUN_NOT_FOUND` (`root-team-run.ts:292-298`; the standalone and org paths alike).
+- **Decision:** no behavior change, so no user approval is needed. A peer run takes no mentions, as at base. The explicit refusal stays, as a guard with a clearer text. The design names it under SR-066's peer paragraph, with a characterization test.
+- **The Solution Designer's gap:** SR-066 routed a peer row's message without stating its mention rule.
+- **Next action:**
+  - architecture review (narrow);
+  - the code reviewer's Local Fixes CR-461-036 and -037 go to the Implementation Engineer now.
+
