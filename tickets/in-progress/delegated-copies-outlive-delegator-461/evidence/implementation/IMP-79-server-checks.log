@@ -1,0 +1,33 @@
+# commit 7569c83a4c (CR-461-067 f9c2c351a4, C23-03 7569c83a4c); load: 8.24 12.27 14.46
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ pnpm test:unit
+exit 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/skill-update-notices/skill-folder-watcher.test.ts > SkillFolderWatcher > releases a folder's OS handles when no run uses it any more, and still reports changes once it is watched again (CR-005)
+ Test Files  1 failed | 982 passed | 5 skipped (988)
+      Tests  1 failed | 8050 passed | 9 skipped (8060)
+$ pnpm test:integration:prepare && pnpm test:integration
+exit 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > returns one idle event stream without stopping other subscribers
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  3 failed | 492 passed | 69 skipped (564)
+$ DTL e2e (scripted AGY; load: 13.30 16.35 14.09)
+ Test Files  1 passed (1)
+      Tests  2 passed | 1 skipped (3)
+$ (unit) the skill folder watcher file alone, run 1 (load: 7.98 13.43 13.23)
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+$ (integration) the file watcher alone, run 1
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+$ (unit) the skill folder watcher file alone, run 2 (load: 8.21 13.04 13.09)
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+$ (integration) the file watcher alone, run 2
+ Test Files  1 passed (1)
+      Tests  14 passed (14)

@@ -803,3 +803,32 @@ The current code and `implementation-handoff.md` remain authoritative.
   - A peer-started Team with a member in `error` now also idles out. Before, the extra check kept it running; base's delegated task Team behaved this way. DS-7 gives every delegated Team one rule.
   - SDV-01's readiness wait also matches the Manager's own conversation (round 21).
 - Next recipient: Code Reviewer, a full review of the whole change.
+
+### IR-024 — A delegator's open view follows a stopped and restored delegated run (CR-461-067); C23-03
+
+- Triggering role, report path, and round: Code Reviewer CRR-031 (`code-review-report.md`, the full review of the whole change at `2ae95ff56a`): Fail, one `Local Fix`, CR-461-067. CR-461-061, -059 and -066 were resolved. Round 24.
+- Triggering finding IDs: CR-461-067; C23-03 (cleanup); C23-02 (not a finding, noted for API/E2E). Large / High unchanged.
+- Prior authoritative result: IR-023 at `2ae95ff56a`.
+- Current authoritative result: `7569c83a4c` (CR-461-067 `f9c2c351a4`; C23-03 `7569c83a4c`).
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-031.
+- Implementation delta:
+  - **CR-461-067 (`f9c2c351a4`).** A Stop of a local delegated run ends the access's observation, by both accesses (DS-006, the peer owner's rule). `LocalChildObservation` only cleared its entry, so a delegator's open view stopped following that row. After the run's restore, the row kept `offline` or `error` while the run worked, and so did the snapshot that reads the cache.
+    - The follower now follows a view's open row on (`observe`): when the access ends the observation, the row's agents read `offline` and the run is observed again.
+    - `offline` is what a read of the stopped run gives, including a member whose start failed.
+    - After the new observation, the restore is followed by the access's own means: the agent run's host-ready hook on the root it loads, which never starts its agent; the Team's lifecycle.
+    - A row that is no longer open (its run deleted, its Task closed) is not followed again.
+    - The accesses are unchanged: ending on a Stop stays the peer owner's rule.
+  - **C23-03 (`7569c83a4c`):**
+    - `DelegatedTeamIdleShutdown` no longer names a live lease (461 removed it), and `arm()` is private;
+    - `CollaborationTree`'s class comment reads as one sentence again.
+- Tests (each new one fails without the fix):
+  - through the real `StandalonePairedAgentAccess` and `TeamPairedAgentAccess`: a delegator's open view with an agent row, and with a team row, is stopped and then restored. The row reads `offline` at the Stop (the team's failed member too), and the restored run's statuses reach the view.
+  - A row that left the view is not followed after its run ends.
+- Validation (IMP-79 at `7569c83a4c`):
+  - server type gate PASS;
+  - unit 8050 passed, 1 failed: `skill-folder-watcher.test.ts`, a filesystem watcher test merged from autobyteus-460. Alone it passes 7/7 twice;
+  - integration 492 passed, 3 failed, all in the file watcher. Alone it passes 14/14 twice;
+  - DTL-005 passes.
+  - The web is unchanged (IMP-76).
+- Remaining risks: re-observing a stopped agent row loads its root again (never its agent), as a view that opens on a stopped row already does. History counts a run active only while its agent runs, and a history delete ends a lingering root.
+- Next recipient: Code Reviewer, a targeted delta on the follower and its accesses.
