@@ -6,11 +6,11 @@ import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-c
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { DelegationIndex } from "../../delegation/delegation-index.js";
 import { DelegatedRunStartError, type DelegatedRunStarter } from "../delegation/delegated-run-starter.js";
-import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
+import { sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { findRoutingDecisionRecorder } from "../../../model-routing/domain/routing-decision-recorder-binding.js";
 import { decisionRecordsOf, type DelegationWork } from "../../../model-routing/domain/model-routing-types.js";
 import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../domain/agent-team-address.js";
-import { runReferenceOf, taskExecutionResourceRejectionCode, type TaskExecutionResourcePort } from "./task-execution-resource-port.js";
+import { runIdentityOf, runReferenceOf, taskExecutionResourceRejectionCode, type TaskExecutionResourcePort } from "./task-execution-resource-port.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { TaskDelegationError, type AssignToExistingCopyInput, type DelegatedCopy, type SpawnTaskInput, type TaskDelegationOutcome } from "./task-delegation-command.js";
 import {
@@ -88,7 +88,7 @@ const asRefusal = (error: unknown): TaskDelegationOutcome | null => {
 export class TaskDelegation {
   constructor(private readonly dependencies: Readonly<{
     tasks(): TaskExecutionResourcePort;
-    tree(): Pick<DelegationIndex, "currentTaskOf" | "tasksOf" | "runOfAgent">;
+    tree(): Pick<DelegationIndex, "currentTaskOf" | "tasksOf" | "runOfAgent" | "topOf">;
     /** A message to another run (DS-2, `CrossRunMessageDelivery`): stored in both runs' logs, the receiver woken. */
     deliverToRun(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; senderDisplayName: string; targetAgentRunId: string; content: string;
       messageType: string; referenceFiles: readonly string[] }>): Promise<AgentOperationResult | null>;
@@ -327,6 +327,10 @@ export class TaskDelegation {
       if (entries.some((entry) => entry.nodeId !== undefined)) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
       const current = [...entries].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)).at(-1);
       if (!current) throw await this.wrongRunId(execution) ?? notACopyOfThisRun(execution);
+      // A run of another tree was never among the sender's task agents (base hosted it in another root): base's text,
+      // before the Task side's assigner check (CR-461-049, SR-071).
+      const tree = this.dependencies.tree();
+      if (!sameRootExecutionIdentity(tree.topOf(runIdentityOf(execution)), tree.topOf(input.senderRun))) throw notACopyOfThisRun(execution);
       entryAgentRunId = current.entryAgentRunId;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId });

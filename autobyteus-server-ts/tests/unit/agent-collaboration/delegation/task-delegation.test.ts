@@ -300,6 +300,17 @@ describe("TaskDelegation.toNewRun", () => {
       expect(h.deliverToRun).not.toHaveBeenCalled();
     });
 
+    it("CR-461-049: a sender in another tree gets base's \"not one of your task agents\", before the Task side's assigner check", async () => {
+      const h = await followUp();
+      const other = { rootSubjectKind: "agent" as const, rootRunId: "other_manager_77aa" };
+      await expect(h.give(other, other.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: false,
+        message: `${E.rootRunId} is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.` });
+      // In the same tree, another agent than its last assigner keeps the Task side's text.
+      await expect(h.give(M, "someone_else", { teamRunId: E.rootRunId })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("Only the agent that gave this task agent") });
+      expect(h.tasks.assignments).toEqual([]);
+      expect(h.deliverToRun).not.toHaveBeenCalled();
+    });
+
     it("CR-461-043: a run that cannot be restored is refused with base's text before anything changes, and no path is shown", async () => {
       const none = await followUp(undefined, { kind: "none" });
       await expect(none.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: false, message: "The delegated Team at "
