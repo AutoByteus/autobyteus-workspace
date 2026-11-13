@@ -8,6 +8,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { delegatedConversation } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -279,6 +280,9 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
     };
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
@@ -627,8 +631,8 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const nodesBefore = taskNodes(await root.liveTree()).length;
     view = root.state.view; from = view.frames.length;
     const redelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskC }));
-    expect(redelegated).toEqual({ error: { code: "TASK_AGENT_RESOURCE_CLOSED",
-      message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." } });
+    // A refused delegate_task answers {delegated: false, message} with no code (contract §2, SR-054).
+    expect(redelegated).toEqual({ delegated: false, message: "The Task is CANCELLED; set it to TODO or IN_PROGRESS before you delegate it." });
     const fenced = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "While cancelled?" }));
     expect(fenced).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     expect(fenced.message).toMatch(/This Task is CANCELLED\. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again\./);

@@ -9,6 +9,7 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ProjectChangeMessageSchema } from "../../../src/projects/changes/project-change-messages.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -150,8 +151,8 @@ suite("Project Task parts: a parent's close stops its parts' live task agents; t
     const view = await connect("agent-collaboration", rootId, (frames) => frames.some((f) => f.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"));
     const conversationOf = async (agentRunId: string, address: string) => agentRunId === rootId
       ? (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`, { id: agentRunId })).getRunProjection?.conversation
-      : (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-        { h: rootId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+      // Any other agent is in a run this root delegated to: read by its own run (autobyteus-461 rule 2).
+      : (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     const calls = async (content: string) => {
       const before = calledResults(await conversationOf(rootId, "/")).length;
       sendE2eSendMessageCommand(input.socket, { agent_run_id: rootId, content });

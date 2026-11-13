@@ -8,23 +8,23 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-
 
 - Requirements Doc: `requirements-doc.md` (Approved, SR-018 baseline; TC-12 exception SR-035)
 - Investigation Notes: `investigation-notes.md`
-- Solution Revision Record: `solution-revision-record.md` (through SR-057)
+- Solution Revision Record: `solution-revision-record.md` (through SR-069)
 - Design Spec: `design-spec.md` (DS-1 … DS-11; Validation in DS-10 item 9)
 - Supplemental Task Artifacts: `target-collaboration-contract.md` (revision 8, the authority), `evidence/collaboration-model/{model.py,stories.py,walkthrough.py}`, `collaboration-walkthrough.md`, `evidence/data-model-validation/`
 - Design Review Report: `design-review-report.md`
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
 - Implementation Handoff: `implementation-handoff.md` (IR-004)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-015, Pass; earlier CRR-007, CRR-011)
+- Code Review Report: `code-review-report.md` (CRR-018, round 14, Pass; earlier CRR-007, CRR-011, CRR-015, failure-origin CRR-016)
 - Code Review Revision Record: `code-review-revision-record.md`
 - API/E2E Revision Record: `api-e2e-revision-record.md` (created after the first result)
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: 3
-- Trigger: code review pass CRR-015 at `da80596b0a` (merged state `8a47481617`), from `/software_engineering_team/code_reviewer` (round 2: CRR-011 at `f75cf6b96b`; round 1: CRR-007 at `bc223a8ae0`)
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: this file, round 1
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Investigation Round: 4
+- Trigger: code review pass CRR-018 at code `49f3db1047` (docs `709cf5dd99`), from `/software_engineering_team/code_reviewer`. Earlier: round 3 CRR-015 at `da80596b0a`; round 2 CRR-011 at `f75cf6b96b`; round 1 CRR-007 at `bc223a8ae0`
+- Prior Investigation Reviewed: this file, round 3 (API-REV-003)
+- Latest Authoritative Investigation: this file, round 4
 
-Code under test: branch `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`, round 3 head `da80596b0a` (merged state `8a47481617`).
+Code under test: branch `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`, round 4 code `49f3db1047` (head `f6df9f824b`, docs only after the code).
 
 ## Current Requirement And Design Basis
 
@@ -107,70 +107,77 @@ The baseline run of the whole server E2E (API-E01, first run) gives the per-file
 | API-B03 | AC-005, AC-012 | Existing web probes that name removed events | Existing Test (rewrite) | per probe | Keep the rendered coverage of closure, reopen, follow-up Task |
 | API-L01 | AC-001 (real runtime) | Gated live suite or isolated instance with a real model | Journey | decided after API-E01/E02 | AC-001's verification intent names a real runtime |
 | API-F01 | build inputs | Fresh clone, release desktop build | Existing (release job) | TESTING.md "Fresh-start build" | Contracts and generated types changed |
+| CPW | REQ-009 non-goal (texts), contract §2.3, §2.5, wording §3, §8 | Prompt rows, sender headers, `@` notes through real roots | Existing Test (strengthened in round 3) | `collaboration-prompt-wording` | F-11 … F-13 under SR-058 … SR-060 |
+| API-P01 … P04, API-C01 | AC-016, AC-008, REQ-002 (peer), rule 3, C14-01 | Two paired built-server nodes; history read timing | Durable (new) | new suite, capture and measurement | Rounds 11–14 (SR-066, SR-067, rule 3, C14-01) |
 
 - Test progress log needed: `Yes`
 
 ## Durable Coverage To Add / Update / Remove
 
-Round 3 plan (API-REV-003). Tests this ticket's change made untrue are this ticket's work: each is rewritten to the approved behavior or removed with the reason before the ticket can pass. Round 3 rewrote the shared harness and the files below ("Rewritten in round 3"). It then reached product failures (report F-11 … F-15), so under the skill the rest wait for the fix and come first in the next round (`Next Round`). Until rewritten they stay out of broad suite runs. They were found by reading the change (the removed events, mutations, fields and the hosting model) and by the round-2 full run.
+**Round 4 plan (API-REV-004), on code `49f3db1047`.** Rounds 11–14 (SR-058 … SR-069) changed the contract the tests stand on:
+- **Rule 1** brought back base's shapes. Base's events and reads return (`TASK_EXECUTION_STARTED`, `task_executions_closed` / `_reopened`, `agentRunCollaborationStatuses`, `closed_task_executions`, `hasCollaboration`), with rows at every depth. `runCollaborationStatuses` and `CHILD_RUNS_CHANGED` are gone.
+- **Rule 2:** a delegated run is reached only through its own path: its own stream, reads, commands, Settings save and Stop. The delegator's view has no command for a local child. Its member reads refuse a delegated run. `agentRunCollaborationMemberProjection` serves peer agents only. Removed: `stopDelegatedExecution`, `updateDelegatedLaunchSelections` and `delegatedLaunchModelOptions`.
+- **Peer runs** are reached through their own handles.
 
-### Added (done)
+So several of my round-3 rewrites are stale again. The web folder was restored to base `3228eff74b` (commit `12ea5a05d6`). That deleted this ticket's two probes (`stopped-delegator-views-probe.mjs`, `mobile-stopped-delegator-cases.mjs`) and the desktop probe's script line, as a side effect. They are restored from `7442bd3bc2` and moved to rule 1 and rule 2.
 
-`tests/e2e/projects/collaboration-contract-stories.e2e.test.ts` with `tests/fixtures/collaboration-contract/{export_contract_states.py,contract-states.json}` (API-E02); `tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts` (API-E03); `autobyteus-web/tests/e2e/stopped-delegator-views-probe.mjs` (API-B01, API-B02, O-1); `autobyteus-web/tests/e2e/mobile-stopped-delegator-cases.mjs` (MSP-37 … MSP-39, run by `mobile-shell-probe.mjs`); helpers `restore-by-member-message.ts`, `own-run-reads.ts`, `e2e-run-history-services.ts`.
+Found by reading the change (the names above) and by a discovery run of the whole server E2E (`/tmp/api461/r4-E01-discovery.log`: 47 files failed, 137 passed, 71 skipped). The discovery's failures are only input to this plan: each file is decided against the requirements and the design, not against the code.
 
-### Updated (done; passing in the round-2 full run unless noted)
+Tests this ticket's change made untrue are this ticket's work. Each is rewritten or removed with its reason before the ticket can pass. A file marked **Check** may hide a product failure, so it is compared with the contract before any rewrite.
 
-| File | Change |
-| --- | --- |
-| `helpers/collaboration-root-harness.ts`, `helpers/built-studio-roots.ts`, `helpers/agy-runtime-error-fixture.ts` | Restore by a member message; a delegated agent read through its own run (CR-461-014) |
-| `helpers/studio-application-api-services.ts` | The two delegation readers over a tree with no delegation |
-| `token-usage/token-usage-{ledger,unit-prices}-graphql`, `projects/projects-graphql`, `run-history/{recent-run-projection,run-projection-toolcalls}-graphql`, `workspaces/archive-run-history-graphql` | Composed as the 461 composition root does |
-| `agent-org-runs/scoped-org-history-graphql`, `runtime/{agy-switch-back,runtime-switch-members}-built-server` | Restore by a member message |
-| `runtime/{runtime-switch-members-live,claude-team-inter-agent-roundtrip,codex-team-inter-agent-roundtrip,grok-build-live-runtime,deepseek-harness-collaboration-live,mixed-task-delegation,agy-runtime-stop-recovery-live,agent-initiated-collaborators,agy-team-inter-agent-roundtrip,autobyteus-team-runtime-graphql,mixed-team-runtime-graphql,context-file-storage-runtime,context-file-startup-recovery}`, `tests/fixtures/codex-native-multi-agent-system.mjs` | Restore by a member message (gated live suites: not run without their live gate) |
-
-### Rewritten in round 3
-
-| File | Decision | Result |
-| --- | --- | --- |
-| `helpers/own-run-reads.ts`, `helpers/collaboration-root-harness.ts` | Update | One-hop children from `runCollaborationStatuses`; a run two hops down is messaged on its own run's stream; a view message fails on its refusal |
-| `projects/{delegated-copy-project-folder,owner-scoped-member-file-changes}`, `runtime/team-task-event-current-contract` | Update / Replace | Pass |
-| `projects/{project-run-history,daily-assistant-collaborator,hand-started-run-refusal}` | Still Valid on the new harness | Pass |
-| `projects/agent-run-collaboration-member-file-changes` | Stale / Remove | Removed. It tested `agentRunCollaborationMemberFileChanges` and its route, both removed (CR-461-022). Replacement: own-run reads in `owner-scoped-member-file-changes` (`expectOwnRunReads`) and the probe `owner-scoped-file-reads-probe` (B-001, B-005) |
-| `projects/collaboration-prompt-wording` | Still Valid (strengthened) | Fails on F-11 … F-13 |
-| `projects/collaboration-contract-stories` | Update | SR-057 check in S17; K-9's text corrected; Pass |
-| `runtime/{agy,claude}-delegated-background-task` | Update | `CHILD_RUNS_CHANGED`; gated live (API-L01) |
-| `projects/project-task-boundaries` | Update | Task entries use `delegatedFrom`; 4 tests still fail (`PROJECT_OPERATION_UNCONFIRMED`): Next Round |
-| `projects/delegation-forest-restore` | Update | Deep runs messaged on their own run; DF-1 … DF-3 still fail on the team records they check: Next Round |
-| Web: `stopped-delegator-views-probe`, `mobile-stopped-delegator-cases`, `mobile-shell-probe` (MSP-12, MSP-20), `mobile-closed-task-rows-cases`, `mobile-heading-links-cases`, `owner-scoped-file-reads-probe`, `delegated-team-default-collapse-probe` (part), `delegated-copies-large-hub-probe` | Update | The first two ran (API-B01). The rest are rewritten and not yet run: Next Round |
-
-### Next Round: rewrite or remove (first in the next round, before any other case)
+### Shared helpers and restored files
 
 | File | Decision | What changes |
 | --- | --- | --- |
-| `agent-team-runs/team-run-config-graphql`, `run-history/stopped-run-model-config-graphql` | Update (test) | The restore helper counts the restoring message's turn error (`LLM_PROVIDER_ERROR`: these runs name real models) as a refusal; only an error before the live snapshot is one |
-| `runtime/autobyteus-anthropic-stored-config-resume` | Update (test) | Send after `CONNECTED` on the reopened view (`SESSION_NOT_READY`) |
-| `projects/unclean-shutdown-delegated-team-restore` | Update | The delegated teams are runs of their own: restore and message each coordinator on its own team's view, not through the root |
-| `agent-org-runs/controlled-org-publication-http` | Update | Children from the org's inspection (not `rootOrg.taskExecutions`), `CHILD_RUNS_CHANGED` for `task_execution_started`, restore by a member message |
-| `projects/{task-closure-root-visibility,task-reactivation-root-visibility,task-existing-copy-assignment,ad-hoc-task-delegation,teammate-delivery-task-closure-race,delegation-forest-restore,collaboration-model-contract,task-agent-several-tasks,delegated-copy-project-folder,delegated-copy-model-change,delegated-launch-config-defaults,delegated-team-lazy-member-activation,task-copy-idle-lifetime,get-project-task-worker-scope,owner-scoped-member-file-changes,agent-run-collaboration-member-file-changes,delegated-copy-member-contact-host,closed-run-attachments}`, `run-history/open-task-tree-upgrade-startup`, `personal-settings/personal-tools-in-runs`, `model-routing/model-routing-delegation` | Update | A delegated run is found through its Task entries and read through its own run (one hop under its delegator), not inside the top run's tree; closure and reopen asserted on the Task entries, the child rows (`CHILD_RUNS_CHANGED`) and each run's own status, not on removed closed lists; member reads by the run's own identity |
-| `projects/{project-task-context-files-delegation,project-task-parts-live}` | Update | `task_executions_closed` → the closed run's own stop and its child row leaving (`CHILD_RUNS_CHANGED`) |
-| `projects/project-change-feed` | Update | `TaskRoot.hostRoot` → `delegatingRun` |
-| `runtime/team-task-event-current-contract` | Replace | It parses the removed `TASK_EXECUTION_STARTED` payloads: replace with the `CHILD_RUNS_CHANGED` contract (or remove where the stream contract's own tests cover it) |
-| `projects/collaboration-prompt-wording` (CPW-P1/P2) | Checked in round 3: **Still Valid** | The requirements' non-goal: "No change to what an agent reads: tool names, parameters, results and collaboration texts" (only TC-12's addresses are excepted). The differing prompts, sender headers and `@` refusals are product failures F-11 … F-13, not stale assertions. Round 3 adds: soft row checks (every row reported), B's reach of A by A's shown address (CPW-H1, contract §2.3/§2.5 E-4), CPW-M5 (a team view's child row with `@`), and the harness fails a view message on its refusal (ack or `ERROR`) instead of a later timeout |
-| `projects/project-task-boundaries`, `agent/standalone-error-termination-lifecycle`, `memory/memory-collaboration-graphql` | Update | In-test reader reconstruction recomposes the Task side (`composeTaskSide`); the memory suite's hosted task-member fixtures become delegated runs of their own |
-| `app-data-migrations/{collaborators-to-delegated-runs-startup,task-agent-own-run-startup,append-only-message-logs-startup,team-run-v1-production-upgrade,remove-skill-improvement-data-startup}`, `run-history/standalone-unreadable-tree-containment` | Update | These start the built server, so the 461 migration now runs after the migration they test: assert the end state after both (no `collaboration_tree.json`, delegated runs as runs of their own, `delegatedFrom`); a migrated task agent is a run of its own, not "refused as a user-started run" |
-| `remote-collaboration/remote-delegation-two-server` | Update, with each failure checked | Hosting assumptions (tree file, `coordinatingRun` → `delegatingRun`), plus `REMOTE_REQUEST_INVALID runs[0].runId` and an ACK `failed`: check each against the contract before rewriting (possible product failures) |
-| `runtime/{runtime-switch-native-built-server,stopped-run-edit-root-built-server,runtime-switch-members-extended-built-server}`, `agent-org-runs/stopped-org-workspace-graphql` | Check each, then update | Delegated copies' launches and stopped-run edits under the new model: decide per assertion whether the expectation is still approved (possible product failures) |
+| `helpers/collaboration-root-harness.ts` | Update | Children from the view's rows (`taskAgentsIn(liveTree())`, base's reads, rows at every depth). Every agent that is not the root's own is messaged on its own run's stream (rule 2) and read by its own run |
+| `helpers/own-run-reads.ts` | Update | The `runCollaborationStatuses` helpers are removed; a shared "conversation by own run" read for suites with their own drivers |
+| `runtime/team-task-event-current-contract` | Replace (base's file) | Base's `TASK_EXECUTION_STARTED` contract is back (rule 1); base's file passes 2/2 |
+| `runtime/{agy,claude}-delegated-background-task` | Update (gated live, with API-L01) | Base's event name back; the child's output, background tasks and follow-up message are now on its own stream (rule 2) |
+| Web `stopped-delegator-views-probe.mjs`, `mobile-stopped-delegator-cases.mjs`, `package.json` script | Restore, then update | Rule 1 reads for children; rule 2 for the child row |
 
-### Not stale
+### Server suites (per file)
 
-| File | Decision |
-| --- | --- |
-| `file-explorer/file-explorer-websocket-lifecycle` | Still Valid: passes alone twice (`API-E01-r2-file-explorer-isolated.txt`); its full-run failure was a watcher timeout under load |
-| `projects/collaboration-contract-stories` | Added this ticket: its failures are the findings F-6, F-7 |
+| File | Decision | Reason / what changes |
+| --- | --- | --- |
+| `projects/{ad-hoc-task-delegation,task-agent-several-tasks,task-existing-copy-assignment,task-reactivation-root-visibility,get-project-task-worker-scope,collaboration-model-contract,delegated-copy-member-contact-host,project-task-comments-live,project-task-context-files-delegation,project-task-parts-live,delegated-copy-model-change}`, `agent-definitions/agent-package-definitions-live-refresh`, `personal-settings/personal-tools-in-runs`, `runtime/{agy-skill-update-notice-roots,agent-initiated-collaborators}` | Update (rule 2) | Each has its own driver and reads (or messages) a delegated child through the delegator. These are now refused: "is not a run … delegated to a peer node", "was not found in root TeamRun". Read and message the child by its own run. Each remaining assertion is then checked (several-tasks: a `delegated:false` expectation; parts-live: a count) |
+| `projects/{project-change-feed,task-existing-copy-assignment}` | Update | `TaskRoot.hostRoot` → `delegatingRun` (contract rename, SR-068) |
+| `memory/memory-collaboration-graphql` | Update | `isTaskTeam` stays removed (SR-068); delegated runs are listed as runs of their own |
+| `projects/delegated-copy-model-change`, `runtime/{agy-switch-back,runtime-switch-native,runtime-switch-members-extended,runtime-switch-members-live}-built-server` | Update (rule 2) | A child's Settings save is its own stopped-run save (`UpdateStoppedAgentRunSelection` / `UpdateStoppedTeamRunSelections`), its model options its own queries, its Stop its own terminate (SR-064, SR-065) |
+| `app-data-migrations/delegated-runs-own-runs-startup` (API-E03) | Update | "P is E's sub-work, not M's child" asserted one hop in M's view. Rows at every depth (SR-058) put P under E in M's view: assert the placement (P under E), not absence |
+| `projects/{delegated-launch-config-defaults,delegated-team-lazy-member-activation,task-copy-idle-lifetime}` | Check | "owned cleanup: expected [] …": runs or processes left after the suite. Compare with the idle-shutdown and closure rules before rewriting |
+| `projects/{task-closure-root-visibility,teammate-delivery-task-closure-race}` | Check | Timed out on the Manager's messages; delivery outcome missing. May be the driver's child reads, or a product failure |
+| `projects/collaboration-contract-stories` (API-E02) | Update + Check | The SR-057 check uses the removed poll: rewrite it to base's peer rows (rule 1). §5.3 O8 (no result of `delegate_task`): check |
+| `projects/closed-run-attachments` | Check | "Unable to resolve Org context-file owner '<org>/<writer>'" (400): a delegated run's files by its own identity (rule 2)? |
+| `projects/delegated-copy-project-folder` | Check | Capsule timeout for a checker run (passed in round 3) |
+| `projects/project-task-boundaries` | Update | As round 3: reader reconstruction, `PROJECT_OPERATION_UNCONFIRMED` |
+| `projects/unclean-shutdown-delegated-team-restore`, `agent-org-runs/controlled-org-publication-http` | Update | Removed restore mutations and member reads of delegated teams (as round 2's plan) |
+| `remote-collaboration/remote-delegation-two-server` | Update, each failure checked | The rule 2 / SR-066 peer handles, `hostRoot`, `stopDelegatedExecution`; a 400 where 200 was expected, and `delegatingRun` shapes. Possible product failures |
+| `runtime/stopped-run-edit-root-built-server` | Check | "copy one delegates copy two: rejected": may be rule 2 (the command via the delegator) or a product failure |
+| `model-routing/model-routing-delegation` | Check | Routed members never started on Grok |
+| `agent/standalone-error-termination-lifecycle`, `agent-org-runs/stopped-org-workspace-graphql` | Check | GraphQL error; subject mismatch |
+| `app-data-migrations/{collaborators-to-delegated-runs-startup,task-agent-own-run-startup,team-run-v1-production-upgrade,append-only-message-logs-startup,remove-skill-improvement-data-startup}`, `run-history/{open-task-tree-upgrade-startup,standalone-unreadable-tree-containment}` | Update | As round 2's plan: the 461 migration runs after the migration they test. Assert the end state after both (no `collaboration_tree.json`, delegated runs as their own, child reads by own run) |
+| `agent-team-runs/team-run-config-graphql`, `run-history/stopped-run-model-config-graphql`, `runtime/autobyteus-anthropic-stored-config-resume` | Update (test) | As round 2's plan: the restore helper's provider error; send after `CONNECTED` |
+| `terminal/terminal-websocket-lifecycle` | Check (likely environment) | The expected HOME path vs the temp HOME; not a collaboration surface |
 
-### Web probes (API-B03, Next Round)
+### Web probes (API-B03)
 
-`task-closure-tree-probe.mjs`, `projects-left-navigation-probe.mjs` (restore mutations and the removed closed sets), `mobile-closed-task-rows-cases.mjs`, `delegated-team-default-collapse-probe.mjs`, `interrupt-result-presentation-probe.mjs`, `project-manager-ux-probe.mjs`, `cross-scope-agent-mentions-live-probe.mjs`: Update, keeping the rendered coverage of closure, reopen and follow-up Tasks on the 461 model.
+The web folder is base's again, so base's probes match rule 1's shapes. Rule 2 changes the parts that reach a child through the delegator:
+- `stopDelegatedExecution`, `updateDelegatedLaunchSelections` and `delegatedLaunchModelOptions` move to the run's own calls;
+- the member file and trace reads of a local child move to its own reads;
+- the restore mutations are replaced by a member message;
+- `hostRoot` becomes `delegatingRun`.
+
+Each probe that uses one of these is updated (`grep` of these names in `autobyteus-web/tests/e2e`). The rest run as they are.
+
+### New coverage this round
+
+| Case | What | Where |
+| --- | --- | --- |
+| API-P01 | AC-016 / REQ-013: with the delegator stopped (standalone, team member, org agent), a peer Agent and a peer Team child each get Stop, message and interrupt, and the stored conversation opens. The live status stays in the open view. An offline node gives "Couldn't reach {node}." | New two-node built-server suite |
+| API-P02 | AC-008 / SR-067 G-1: archive and delete are refused while a peer child works. An unreachable node is named and does not block | Same suite |
+| API-P03 | REQ-002 peer rows in the list and views, base's shapes (rule 1, SR-057): the listed delegator shows the peer row with its node and no request to the peer | Same suite; rendered in a probe if a peer node can join it |
+| API-P04 | Rule 3's two-node peer capture: base `827f1e68dc` and the branch give the same keys for a peer row's snapshot, events and list reads | Capture at base (temporary worktree build), fixture, branch comparison |
+| API-C01 | C14-01: the history list read's time with many delegated runs under listed Teams and Orgs, against no delegated runs | Built server, measured |
 
 ## Desktop Application Validation Plan
 
@@ -181,17 +188,40 @@ Round 3 plan (API-REV-003). Tests this ticket's change made untrue are this tick
 
 ## Not Tested / Infeasible / Deferred
 
-Round 3 ends at a product `Fail` (report F-11 … F-15). `Next Round` (waiting for the fix; first in the next round):
-- the stale-suite rewrites still listed above (API-E01) and the probes not yet run (API-B03);
-- a paired peer node in the browser probes, for the rendered peer rows (phone and desktop, SR-057) and the agent-run view's peer-child Team tab (CR-461-022). The server answer is proven in API-E02 S17;
-- then API-E01 in full, API-I01, API-L01 and API-F01 on the fixed code.
+Round 4 ends at a product `Fail` (report F-14, F-16 … F-22).
+
+**Done this round:**
+- the shared helpers;
+- memory, API-E03, the change feed and the five own-run read suites (pass);
+- CPW, API-E02, DS-15, C14-01 and the desktop probe (run).
+
+**`Next Round`** (waiting for the fix; the first item comes first):
+- **The remaining stale rewrites of the round-4 plan:**
+  - `delegated-copy-model-change`: its server composition is removed by rule 2; assert each run's own save, Stop and model options;
+  - `task-copy-idle-lifetime`: the child's background frames are on its own stream;
+  - `delegated-team-lazy-member-activation`: the first status vs base;
+  - `collaboration-model-contract`: message the outsider on its own run;
+  - `task-existing-copy-assignment`: TKD's deleted-Task delegation, which R-9 / TC-9 refuses;
+  - `teammate-delivery`: the root's participant reads of a delegated child;
+  - `task-reactivation` QR-001's outcome list;
+  - `get-project-task-worker-scope`: the refusal frame on the copy's own stream;
+  - the migration-startup group;
+  - `remote-delegation-two-server`, `unclean-shutdown`, `controlled-org-publication-http`, `stopped-run-edit-root`, `model-routing`, `closed-run-attachments`, `standalone-error-termination`, `stopped-org-workspace`;
+  - the restore helper's provider errors;
+  - `agent-initiated-collaborators` and the two delegated background-task suites (live, rule 2, with API-L01).
+- **API-B01 phone:** MSP-50 … 52, after rebuilding the phone bundle.
+- **The two-node peer cases:** API-P01 (AC-016 handles with the delegator stopped), API-P02 (the archive and delete guard), API-P03 (peer rows rendered), API-P04 (rule 3's peer capture at base).
+- **DS-15:** restart resume skipping a closed run (a built-server restart), and C15-03's rendered two-view check.
+- **API-B03 web probes:** rule 2 names (investigation, "Web probes").
+- **Then:** API-E01 full, API-I01, API-L01 and API-F01 on the fixed code.
 
 `Not Tested` (could not run): none.
 
 ## Ambiguities Or Reroute Triggers
 
-- F-14 (a run a delegated run delegated to, shown under it): REQ-002 requires every level, while DS-8 and the SR-055 poll give one hop. This may be a design gap; failure-origin review decides.
-- F-11 row 5 (a delegated agent at an org's configured address): the design does not say where such a run takes its handoff rules and instruction from.
+- **F-18:** the contract does not order R-7 and R-8. Base answered R-8.
+- **F-19:** contract R-9 refuses a run of another tree, and REQ-009 asks for base's texts.
+- **Base's nesting of a copy's copy:** whether base's web indents it under the copy needs rule 3's capture.
 
 ## Investigation Decision
 

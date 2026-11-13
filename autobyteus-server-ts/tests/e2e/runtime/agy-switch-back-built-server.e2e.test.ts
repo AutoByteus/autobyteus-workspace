@@ -323,10 +323,11 @@ describe.runIf(ENABLED)("switching back to Antigravity: Org member, delegated co
     await until(() => echoed(copyDir()).length > 0, "the copy answered", 60_000);
     const era1 = ids(active(copyDir()));
     const hop = async (runtimeKind: string, model: string, content: string) => {
-      expect((await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success } }", { input: { rootKind: "AGENT", rootRunId: host.runId, agentRunId: copyId } })).stopDelegatedExecution.success).toBe(true);
+      // The copy is a run of its own: its own Stop and its own stopped-run save (autobyteus-461 rule 2, SR-064).
+      expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: copyId })).terminateAgentRun.success).toBe(true);
       expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: host.runId })).terminateAgentRun.success).toBe(true);
-      const update = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-        { input: { rootKind: "AGENT", rootRunId: host.runId, changes: [{ agentRunId: copyId, selection: { runtimeKind, llmModelIdentifier: model, llmConfig: null } }] } })).updateDelegatedLaunchSelections as Json;
+      const update = (await gql("mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { success outcome message fieldErrors { path message } } }",
+        { input: { agentRunId: copyId, runtimeKind, llmModelIdentifier: model, llmConfig: null } })).updateStoppedAgentRunSelection as Json;
       expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
       await host.call("send_message_to", { target_agent_run_id: copyId, content }, `host wakes the copy with ${runtimeKind}`);
     };

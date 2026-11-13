@@ -1,5 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import WebSocket from "ws";
+import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
 
 type Gql = (query: string, variables?: Record<string, unknown>) => Promise<Record<string, any>>;
 
@@ -26,53 +28,43 @@ export const projectionByOwnRun = async (gql: Gql, memoryDir: string, agentRunId
     { id: run.teamRunId, a: agentRunId })).getTeamMemberRunProjection ?? null;
 };
 
-export type RunKind = "agent" | "agent_team" | "agent_org";
-/** A run another run delegated to, as the listed-runs poll gives it (autobyteus-461 SR-055 … SR-057), in the shape the suites use. */
-export type ChildRun = Readonly<{
-  kind: "agent" | "agent_team";
-  /** An agent run's ID; undefined for a team run. */
-  agentRunId?: string;
-  teamRunId?: string;
-  coordinatorAgentRunId?: string;
-  address: string;
-  delegatorAgentRunId?: string;
-  /** The run that delegated to it, one hop. */
-  parent: Readonly<{ kind: RunKind; runId: string }>;
-  members: Array<{ address: string; agentRunId: string }>;
-  statuses: Array<{ agentRunId: string; memberAddress: string; status: string }>;
-  /** The peer node it runs on; null on this node. */
-  node: Readonly<{ nodeId: string; nodeName: string }> | null;
-}>;
-
 /**
- * The runs a run delegated to, one hop, from `runCollaborationStatuses` (the listed-runs poll; it never restores a run).
- * Since autobyteus-461 a delegated run is a run of its own: it is not inside the delegating run's tree.
+ * The conversation of an agent that is not in run `rootRunId` itself: a run that run (or one of its runs) delegated to,
+ * read by its own run (autobyteus-461 rule 2: the delegator's member reads refuse a delegated run). `undefined` when the
+ * agent is the root's own (a standalone root's agent, or a member of the team run `rootRunId`), or not stored as an agent
+ * or a team member (an org's own agents): the caller then reads it through the root as before.
  */
-export const childRunsOf = async (gql: Gql, run: Readonly<{ kind: RunKind; runId: string }>): Promise<ChildRun[]> => {
-  const answer = (await gql(`query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}`, { runs: [{ kind: run.kind, runId: run.runId }] }))
-    .runCollaborationStatuses as Array<Record<string, any>>;
-  return (answer?.[0]?.children ?? []).map((child: Record<string, any>): ChildRun => {
-    const row = child.row as Record<string, any>;
-    return {
-      kind: row.kind, ...(row.kind === "agent" ? { agentRunId: row.agentRunId } : { teamRunId: row.teamRunId, coordinatorAgentRunId: row.coordinatorAgentRunId }),
-      address: row.address, delegatorAgentRunId: row.delegatorAgentRunId, parent: { kind: run.kind, runId: run.runId },
-      members: row.kind === "agent_team" ? (row.members as Array<Record<string, any>>).map((m) => ({ address: m.address, agentRunId: m.agentRunId })) : [],
-      statuses: child.statuses ?? [], node: child.node ?? null,
-    };
-  });
+export const delegatedConversation = async (gql: Gql, memoryDir: string, rootRunId: string, agentRunId: string): Promise<unknown[] | undefined> => {
+  const run = await ownRunOfAgent(memoryDir, agentRunId);
+  if (!run) return undefined;
+  if (run.kind === "agent" && agentRunId === rootRunId) return undefined;
+  if (run.kind === "team" && run.teamRunId === rootRunId) return undefined;
+  return ((await projectionByOwnRun(gql, memoryDir, agentRunId))?.conversation as unknown[] | undefined) ?? [];
 };
 
-/** Every run delegated from a run, one hop at a time (each local child's own children in turn; a peer's are not asked). */
-export const descendantRunsOf = async (gql: Gql, run: Readonly<{ kind: RunKind; runId: string }>): Promise<ChildRun[]> => {
-  const out: ChildRun[] = [];
-  const queue: Array<Readonly<{ kind: RunKind; runId: string }>> = [run];
-  const seen = new Set<string>([`${run.kind}:${run.runId}`]);
-  while (queue.length) {
-    for (const child of await childRunsOf(gql, queue.shift()!)) {
-      out.push(child);
-      const ref = child.kind === "agent" ? { kind: "agent" as const, runId: child.agentRunId! } : { kind: "agent_team" as const, runId: child.teamRunId! };
-      if (child.node === null && !seen.has(`${ref.kind}:${ref.runId}`)) { seen.add(`${ref.kind}:${ref.runId}`); queue.push(ref); }
-    }
-  }
-  return out;
+/**
+ * The user's messages to an agent on its own run's stream (autobyteus-461 rule 2: the delegator's view has no command for a
+ * run it delegated to): an agent run's own `/ws/agent/<id>`, or a team member's own team `/ws/agent-team/<team>`. One socket
+ * per run, opened on first use. `send` answers `false` for an agent of run `rootRunId` itself (the caller sends it there).
+ */
+export const ownRunSender = (wsBase: string, memoryDir: string, rootRunId: string) => {
+  const sockets = new Map<string, Promise<WebSocket>>();
+  const open = (route: string, id: string, readyType: string) => new Promise<WebSocket>((resolve, reject) => {
+    const socket = new WebSocket(`${wsBase}/ws/${route}/${id}`);
+    const timer = setTimeout(() => reject(new Error(`${route}/${id}: no ${readyType} in 30 s`)), 30_000);
+    socket.on("message", (raw: unknown) => {
+      if ((JSON.parse(String(raw)) as { type?: string }).type === readyType) { clearTimeout(timer); resolve(socket); }
+    });
+    socket.once("error", (error) => { clearTimeout(timer); reject(error); });
+  });
+  const send = async (agentRunId: string, content: string, extra: Record<string, unknown> = {}): Promise<boolean> => {
+    const run = await ownRunOfAgent(memoryDir, agentRunId);
+    if (!run || (run.kind === "agent" && agentRunId === rootRunId) || (run.kind === "team" && run.teamRunId === rootRunId)) return false;
+    const key = run.kind === "agent" ? `agent:${agentRunId}` : `team:${run.teamRunId}`;
+    if (!sockets.has(key)) sockets.set(key, run.kind === "agent" ? open("agent", agentRunId, "CONNECTED") : open("agent-team", run.teamRunId, "TEAM_EXECUTION_VIEW_SNAPSHOT"));
+    sendE2eSendMessageCommand(await sockets.get(key)!, { agent_run_id: agentRunId, content, ...extra });
+    return true;
+  };
+  const close = async () => { for (const socket of sockets.values()) (await socket.catch(() => null))?.terminate(); sockets.clear(); };
+  return { send, close };
 };

@@ -12,6 +12,8 @@ import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-ro
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
+import { CrossRunMessageDelivery } from "../../../src/agent-collaboration/communication/cross-run-message-delivery.js";
+import { delegatedConversation } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
@@ -112,6 +114,24 @@ const spyDeliveries = () => {
     }
   };
   restorers.push(() => { proto.deliver = original; });
+  // autobyteus-461: a message to a run this root delegated to is delivered between runs by CrossRunMessageDelivery.route,
+  // not by the sender root's engine; its outcome is recorded the same way.
+  const crossProto = CrossRunMessageDelivery.prototype as any;
+  const crossOriginal = crossProto.route as (...args: any[]) => Promise<unknown>;
+  crossProto.route = async function spiedRoute(this: unknown, input: { content?: string }, ...rest: unknown[]) {
+    const key = String(input?.content ?? "").trim();
+    if (!deliveryStarts.has(key)) deliveryStarts.set(key, Date.now());
+    try {
+      const value = await crossOriginal.call(this, input, ...rest);
+      if (value) deliveryOutcomes.set(key, { resolved: value });
+      return value;
+    } catch (error) {
+      deliveryOutcomes.set(key, { thrown: { name: (error as Error)?.name, code: (error as { code?: unknown })?.code ?? null,
+        message: (error as Error)?.message } });
+      throw error;
+    }
+  };
+  restorers.push(() => { crossProto.route = crossOriginal; });
 };
 const gateStore = (proto: Record<string, any>, method: string) => {
   const original = proto[method] as (...args: any[]) => Promise<unknown>;
@@ -343,6 +363,9 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
       return (await graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}`, { id: rootId })).getAgentOrgRootHistory.org;
     };
     const conversationOf = async (agentRunId: string, address: string) => {
+      // A run this root (or one of its runs) delegated to is read by its own run (autobyteus-461 rule 2).
+      const ownRead = await delegatedConversation(graphql, path.join(dataDir, "memory"), rootId, agentRunId);
+      if (ownRead) return ownRead;
       if (kind === "agent" && agentRunId === rootId) return (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
         { id: agentRunId })).getRunProjection?.conversation;
       if (kind === "agent") return (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,

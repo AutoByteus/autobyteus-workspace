@@ -9,6 +9,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-007, round 1 | SR-053, IR-004, CRR-007 | N/A | Fail / 61% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-011, round 2 | SR-054, ARCH-REV-029, IR-005 … IR-007, CRR-008 … CRR-011 | Fail / 61% | Fail / 66% |
 | API-REV-003 | Code Reviewer, `code-review-report.md` CRR-015, round 3 | SR-055 … SR-057, CR-461-017 … CR-461-029, CRR-012 … CRR-015 | Fail / 66% | Fail / 71% |
+| API-REV-004 | Code Reviewer, `code-review-report.md` CRR-018 and CRR-020, round 4 | SR-058 … SR-070, IR-011 … IR-016, CRR-016 … CRR-020 | Fail / 71% | Fail / 70% |
 
 ## Revision Entries
 
@@ -124,3 +125,53 @@ None
   - the remaining stale-suite and probe rewrites, first in the next round;
   - the rendered peer rows (a peer node in the browser probes);
   - then API-E01 full, API-I01, API-L01, API-F01 on the fixed code.
+
+### API-REV-004: round 4; rules 1 and 2, DS-15, C14-01; F-11 … F-15 rechecked; F-16 … F-22
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md`. API/E2E round 4:
+  - started on CRR-018 (code `49f3db1047`);
+  - paused while the Implementation Engineer tested;
+  - continued on CRR-020 (code `262afbd6bb`).
+- Triggering finding or case IDs:
+  - the redesign SR-058 … SR-069:
+    - rule 1, base's shapes and rows at every depth;
+    - rule 2, a delegated run reached by its own path;
+    - rule 3;
+    - peer handles;
+  - SR-070 / DS-15 and C15-03;
+  - C14-01;
+  - the cumulative list of CRR-018.
+- Related revision IDs: SR-058 … SR-070, IR-011 … IR-016, CRR-016 … CRR-020
+- Why this revision was recorded: the redesign's validation and the prior-failure recheck
+- Coverage decisions or durable test paths changed:
+  - the round-4 per-file plan (investigation), from a discovery run of the whole server E2E (47 files failed);
+  - the shared harness and helpers moved to base's view reads and own-run reads and sends;
+  - many suites updated (report, "Durable Coverage Changed");
+  - two new suites (DS-15, C14-01 timing);
+  - the web restore's deleted probes restored and moved to rules 1 and 2.
+- Cases added, changed, removed, or rechecked:
+  - Pass: CPW, API-E03, DS-15, API-C01 (measured).
+  - Fail: API-E02 (F-21 at §5.3 O8), API-B01 desktop (F-14 team view, F-22; SDV-01 passes).
+  - Partly: API-E01 rewrites (F-16 … F-20).
+  - Next Round: the phone, the peer cases, rule 3's peer capture, the DS-15 restart and C15-03 rendered, the remaining stale suites, the deferred cases.
+- Commands, environment, fixture, or broader-validation delta:
+  - two server builds (`49f3db1047`, `262afbd6bb`); each finding found on the first was rechecked on the second;
+  - the stories driver now reports the run stream's answer when a step gets no result;
+  - the Solution Designer's commit `2211bec711` swept in five staged files of this round (content unchanged).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-11 a delegated run's prompt | Local Fix | Resolved | CPW-P1 … P3 |
+| F-12 the sender address that does not reach | Local Fix | Resolved | CPW-H1 |
+| F-13 `@` to a child row refused | Local Fix | Resolved (rule 2: the child's own stream) | CPW-M2, M4, M5 |
+| F-14 rows at every depth | Design Impact → SR-058 | Resolved in the agent-run view; open in the team view | API-B01 SDV-01 (pass), SDV-02 (open) |
+| F-15 a second message to a team child | Local Fix → rule 2 | Resolved | API-B01 SDV-02 (`helperRunId` set) |
+
+- Canonical artifacts and sections updated: the coverage investigation (meta, planned cases, the round-4 plan, deferred, ambiguities), the execution report (all sections), the progress log, `evidence/api-e2e/*r4*`
+- Prior result and confidence: Fail / 71%
+- Current result and confidence: Fail / 70%
+- New or remaining failure IDs: F-14 (team view), F-16, F-17, F-18, F-19, F-20, F-21, F-22
+- Recommended owner: Implementation Engineer (Local Fix), Solution Designer (F-18, F-19 Unclear), confirmed by failure-origin review
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.

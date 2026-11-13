@@ -35,7 +35,7 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
 //         switch stays), refuse a running run, then the first message makes the switch.
 //   RS-03 a host with a delegated copy: one Save carries the host's own runtime and the copy's model; the copy keeps its
 //         runtime; the delegated copy cannot switch through the stopped-run mutation (REQ-013); it switches through its own
-//         choice (updateDelegatedLaunchSelections, autobyteus-348; see delegated-copy-model-change DCM-009).
+//         choice (each run's own stopped-run save since autobyteus-461 SR-064; see delegated-copy-model-change DCM-009).
 //   RS-04 a server restart: a pending switch survives it; a switch that was activated (marker first, no user record yet)
 //         still delivers its notice with the first input after the restart, once (I-11, derived from the raw traces).
 //   RS-05 a failed attempt: the archive step fails after the native candidate wrote its instruction; the previous agent's file
@@ -483,8 +483,8 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(copyBefore).toMatchObject({ runtimeKind: AGY });
 
     // The delegated copy itself offers no runtime choice: a switch is refused and nothing is written (REQ-013).
-    const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: hostId, agentRunId: copyId } })).stopDelegatedExecution;
-    expect(stopped).toMatchObject({ success: true });
+    // The copy is a run of its own: its Stop is its own terminate (autobyteus-461 rule 2, SR-064).
+    await terminate(copyId);
     const copyFile = await fs.readFile(path.join(runDir(copyId), "run_metadata.json"), "utf8");
     const refused = await save(copyId, NATIVE, nativeModel);
     expect(refused, JSON.stringify(refused)).toMatchObject({ success: false });
@@ -492,16 +492,17 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
 
     await terminate(hostId);
     const hostBefore = await metadata(hostId);
-    const combined = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }", { input: {
-      rootKind: "AGENT", rootRunId: hostId,
-      changes: [{ agentRunId: copyId, selection: { runtimeKind: AGY, llmModelIdentifier: AGY_ALT, llmConfig: null } }],
-      configuredPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }] } })).updateDelegatedLaunchSelections;
-    expect(combined, JSON.stringify(combined)).toMatchObject({ success: true, outcome: "UPDATED" });
+    // The host's Settings Save across the host and its copy, as the editor composes it from each run's own stopped-run save
+    // (SR-064): the host's own patch first, then the copy's, in row order.
+    const hostSaved = await save(hostId, NATIVE, nativeModel);
+    expect(hostSaved, JSON.stringify(hostSaved)).toMatchObject({ success: true, outcome: "UPDATED" });
+    const copySaved = await save(copyId, AGY, AGY_ALT);
+    expect(copySaved, JSON.stringify(copySaved)).toMatchObject({ success: true, outcome: "UPDATED" });
     const hostAfter = await metadata(hostId);
     expect(hostAfter).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModel, platformAgentRunId: null,
       pendingRuntimeSwitch: { from: expect.objectContaining({ runtimeKind: AGY, platformAgentRunId: hostBefore.platformAgentRunId }) } });
-    // The copy keeps its own runtime; only its chosen model is recorded (in the host's stored tree).
-    expect(await metadata(copyId)).toMatchObject({ runtimeKind: AGY });
+    // The copy keeps its own runtime; its chosen model is recorded in its own file, and the host's view row shows it.
+    expect(await metadata(copyId)).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_ALT });
     const tree = JSON.stringify((await gql("query($id: String!) { agentRunCollaboration(runId: $id) }", { id: hostId })).agentRunCollaboration ?? {});
     expect(tree).toContain(AGY_ALT);
     expect(tree).toContain(copyId);

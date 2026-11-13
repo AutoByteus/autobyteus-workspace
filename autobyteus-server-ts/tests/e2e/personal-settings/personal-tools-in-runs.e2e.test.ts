@@ -8,6 +8,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -103,9 +104,9 @@ suite("Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegatio
     return created.runId as string;
   };
   /** The tools a delegated copy's first turn listed (its first message carries `LIST_TOOLS`); read from the host's collaboration. */
-  const copyTools = async (hostRunId: string, memberAddress: string, runId: string) => {
-    const copyConversation = async () => (await graphql(`query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: hostRunId, a: memberAddress, r: runId })).agentRunCollaborationMemberProjection?.conversation;
+  const copyTools = async (_hostRunId: string, memberAddress: string, runId: string) => {
+    // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through its host.
+    const copyConversation = async () => (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), runId))?.conversation;
     let text: string | undefined;
     await until(async () => { text = stringsWith(await copyConversation(), "TOOLS:")[0]; return Boolean(text); }, `the copy ${memberAddress} ${runId}'s tool list`, 90_000);
     return toolsOf(text!);

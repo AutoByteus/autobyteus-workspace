@@ -362,7 +362,7 @@ suite("The collaboration contract's stories, run against the built server (autob
     /** `record`: false for the setup's own calls (the model's Tasks start in their status), which the model has no result for. */
     async call(agentModelId: string, tool: string, args: Rec, record = true): Promise<Rec> {
       const before = calledResults(await this.conversation(agentModelId)).length;
-      const { socket } = await this.tell(agentModelId, callTool(tool, args));
+      const { socket, frames } = await this.tell(agentModelId, callTool(tool, args));
       let results: string[] = [];
       const deadline = Date.now() + 90_000;
       while (Date.now() < deadline) {
@@ -373,7 +373,10 @@ suite("The collaboration contract's stories, run against the built server (autob
       socket.close();
       if (results.length <= before) {
         const tail = JSON.stringify(await this.conversation(agentModelId).catch((e) => String(e)) ?? null).slice(-1500);
-        throw new Error(`${this.state.id}: no result of ${tool} by ${agentModelId}; its conversation ends: ${tail}`);
+        // What the run's stream answered the message with (a refusal is an ERROR frame or a rejected ack).
+        const answered = frames.filter((f) => f.type === "ERROR" || f.type === "AGENT_COMMAND_ACK" || f.type === "TEAM_STATUS")
+          .map((f) => `${String(f.type)} ${JSON.stringify(f.payload).slice(0, 300)}`);
+        throw new Error(`${this.state.id}: no result of ${tool} by ${agentModelId}; the stream answered: ${JSON.stringify(answered).slice(0, 600)}; its conversation ends: ${tail.slice(-500)}`);
       }
       const result = toolResult(results[before]!);
       // The model's results: a delivered `send_message_to`, an accepted `delegate_task`, an `update_task`; a refused call is a refusal.
@@ -659,13 +662,16 @@ suite("The collaboration contract's stories, run against the built server (autob
         const r = await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", description: "Market study …" });
         const problem = ctx.bindings.bind("adhoc_task_7c7c", r.task_id as string); if (problem) throw new Error(problem);
         await ctx.bindRun("research_team_77aa", r.target_team_run_id as string, "B");
-        // SR-057: the listed-runs poll answers the peer child among M's children, with its node and no statuses.
-        const answer = (await ctx.nodes.A!.gql(`query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}`,
-          { runs: [{ kind: "agent", runId: ctx.real(M) }] })).runCollaborationStatuses as Rec[];
-        const peer = ((answer[0]?.children ?? []) as Rec[]).find((child) => child.row?.teamRunId === r.target_team_run_id);
-        expect(peer, `M's children: ${JSON.stringify(answer).slice(0, 1500)}`).toBeTruthy();
-        expect(peer!.node, JSON.stringify(peer)).toMatchObject({ nodeId: ctx.nodes.B!.nodeId });
-        expect(peer!.statuses, JSON.stringify(peer)).toEqual([]);
+        // The peer row in base's shapes (rule 1, SR-057): M's view lists node B's research team under M with its node, and
+        // M's listed-run poll carries no status for it (no request to the peer per poll).
+        const view = (await ctx.nodes.A!.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: ctx.real(M) })).agentRunCollaboration as Rec;
+        const peer = ((view?.root_agent?.remote_task_executions ?? []) as Rec[]).find((row) => row.team_run_id === r.target_team_run_id);
+        expect(peer, `M's peer rows: ${JSON.stringify(view?.root_agent?.remote_task_executions ?? null).slice(0, 1500)}`).toBeTruthy();
+        expect(peer, JSON.stringify(peer)).toMatchObject({ node_id: ctx.nodes.B!.nodeId, delegator_agent_run_id: ctx.real(M) });
+        const poll = (await ctx.nodes.A!.gql(`query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId statuses{agentRunId}}}`,
+          { ids: [ctx.real(M)] })).agentRunCollaborationStatuses as Rec[];
+        const peerAgents = new Set(((peer!.members ?? []) as Rec[]).map((member) => member.agent_run_id));
+        expect((poll[0]?.statuses as Rec[] ?? []).filter((status) => peerAgents.has(status.agentRunId)), "no peer status per poll").toEqual([]);
       },
       S18: async (ctx) => { await ctx.call("lead_0c11", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" }); },
       S19: async (ctx) => {

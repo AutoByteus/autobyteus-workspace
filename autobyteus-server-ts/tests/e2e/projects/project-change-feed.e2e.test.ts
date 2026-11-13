@@ -33,7 +33,7 @@ const PROJECT_TOOLS = ["list_projects", "list_project_tasks", "create_project", 
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const AD_HOC_ID = /ad_hoc_task_[0-9a-f-]{36}/;
-const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId hostRoot { kind runId } start startError { code message } closed status";
+const ROOT_FIELDS = "kind recipientAddress ingressAgentRunId teamRunId delegatingRun { kind runId } start startError { code message } closed status";
 const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId projectId taskKey title description status dependsOnTaskIds partOfTaskId comments { id createdAt text } createdAt updatedAt
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
@@ -385,7 +385,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const helper = nodes.find((node) => node.agentRunId !== worker)!;
     task = await settledTask(scope, taskId, "delegated Task", (t) => t.root?.status === "idle");
     expect(task.root).toEqual({ kind: "agent", recipientAddress: workerAddress, ingressAgentRunId: worker, teamRunId: null,
-      hostRoot: { kind: "agent", runId: root.rootId }, start: "started", startError: null, closed: false, status: "idle" });
+      delegatingRun: { kind: "agent", runId: root.rootId }, start: "started", startError: null, closed: false, status: "idle" });
     const rootsSeen = monitor.frames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId && f.task.root)
       .map((f) => f.task.root.ingressAgentRunId);
     expect(new Set(rootsSeen)).toEqual(new Set([worker]));
@@ -442,7 +442,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
     const task = await settledTask(scope, taskId, "catalog copy root", (t) => t.root?.start === "started" && t.root?.status === "idle");
     expect(task.root).toMatchObject({ kind: "agent", recipientAddress: `/${segment(names.worker)}`, ingressAgentRunId: delegated.target_agent_run_id,
-      startError: null, closed: false, hostRoot: { kind: "agent_team", runId: root.rootId } });
+      startError: null, closed: false, delegatingRun: { kind: "agent_team", runId: root.rootId } });
     // The Team root refuses its own member: a configured teammate is messaged, not delegated.
     const refused = await root.managerCalls(callTool("delegate_task", { recipient_address: "/manager", description: "Reply OK." }));
     expect(JSON.stringify(refused)).toContain("COLLABORATION_SELF_TARGET_REJECTED");
@@ -452,7 +452,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(teamDelegated.target_kind).toBe("team");
     const teamTask = await settledTask(scope, teamTaskId, "team root", (t) => t.root?.start === "started" && t.root?.status === "idle");
     expect(teamTask.root).toMatchObject({ kind: "team", ingressAgentRunId: teamDelegated.target_team_coordinator_agent_run_id, closed: false,
-      hostRoot: { kind: "agent_team", runId: root.rootId } });
+      delegatingRun: { kind: "agent_team", runId: root.rootId } });
     expect(teamTask.root.teamRunId).toBeTruthy();
     // DONE closes the Team root: Offline.
     await root.managerCalls(callTool("update_task", { task_id: teamTaskId, status: "DONE" }));
@@ -470,7 +470,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: "/worker", task_id: taskId }));
     const task = await settledTask(scope, taskId, "org root", (t) => t.root?.status === "idle");
     expect(task.root).toMatchObject({ kind: "agent", recipientAddress: "/worker", ingressAgentRunId: delegated.target_agent_run_id,
-      hostRoot: { kind: "agent_org", runId: root.rootId }, start: "started", closed: false });
+      delegatingRun: { kind: "agent_org", runId: root.rootId }, start: "started", closed: false });
     await root.managerCalls(callTool("update_task", { task_id: taskId, status: "DONE" }));
     await settledTask(scope, taskId, "org DONE", (t) => t.root?.closed === true && t.root?.status === "offline");
     root.close();
@@ -488,7 +488,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     let task = await settledTask(scope, taskId, "temp task", (t) => t.root?.status === "idle");
     expect(task).toMatchObject({ status: "TODO", description: "Summarize the meeting.", referenceFiles: [] });
     expect(task.root).toMatchObject({ kind: "agent", ingressAgentRunId: delegated.target_agent_run_id, start: "started", closed: false,
-      hostRoot: { kind: "agent", runId: root.rootId } });
+      delegatingRun: { kind: "agent", runId: root.rootId } });
     // AC-020: DONE moves it; root Offline.
     await root.managerCalls(callTool("update_task", { task_id: taskId, status: "DONE" }));
     task = await settledTask(scope, taskId, "temp DONE", (t) => t.status === "DONE" && t.root?.closed === true);

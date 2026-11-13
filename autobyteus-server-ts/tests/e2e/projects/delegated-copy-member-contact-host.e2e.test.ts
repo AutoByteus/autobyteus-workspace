@@ -8,6 +8,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -195,9 +196,9 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
       .agentRunCollaboration?.root_agent?.execution_tree ?? null;
     const hostConversation = async () => (await graphql(`query($id:String!){getRunProjection(runId:$id){conversation}}`,
       { id: hostRunId })).getRunProjection?.conversation;
-    const memberConversation = async (address: string, agentRunId: string) => (await graphql(
-      `query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: hostRunId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the host.
+    const memberConversation = async (_address: string, agentRunId: string) =>
+      (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     const candidatesFor = async (focusedAgentRunId: string | null) => ((await graphql(
       `query($k:String!,$id:String!,$f:String){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id,focusedAgentRunId:$f){availability candidates{kind definitionId}}}`,
       { k: "agent", id: hostRunId, f: focusedAgentRunId })).collaboratorMentionCandidates.candidates as any[]).map((candidate) => candidate.definitionId as string);
@@ -210,15 +211,20 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
         `host tool result for ${content.slice(0, 100)}`, 60_000);
       return results[before]!;
     };
-    /** Posts a user message to a copy member through the Agent-root stream (the task-child composer path); returns its ACK. */
+    /**
+     * Posts a user message to a copy member on its own run's stream: selecting a delegated row binds the composer to that
+     * run (autobyteus-461 rule 2, SR-061); the host's view only shows rows. Returns the run's own command ACK.
+     */
+    const childStreams = new Map<string, Promise<Awaited<ReturnType<typeof connect>>>>();
     const postToChild = async (agentRunId: string, content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {
-      const commandId = randomUUID();
-      view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
-        root_subject_kind: "agent", root_run_id: hostRunId, target_agent_run_id: agentRunId, command_id: commandId,
-        content, context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds(), ...(mentions ? { mentions } : {}) } }));
+      if (!childStreams.has(agentRunId)) childStreams.set(agentRunId, connect("agent", agentRunId, (frames) => frames.some((frame) => frame.type === "CONNECTED")));
+      const stream = await childStreams.get(agentRunId)!;
+      const ids = buildE2eClientCommandIds();
+      stream.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+        agent_run_id: agentRunId, content, context_file_paths: [], image_urls: [], ...ids, ...(mentions ? { mentions } : {}) } }));
       let ack: Frame | undefined;
-      await until(() => Boolean(ack = view.frames.find((frame) => frame.type === "AGENT_COMMAND_ACK" && frame.payload.command_id === commandId)),
-        `ACK for ${commandId}`, 60_000);
+      await until(() => Boolean(ack = stream.frames.find((frame) => frame.type === "AGENT_COMMAND_ACK" && frame.payload.message_id === ids.message_id)),
+        `ACK for ${ids.message_id}`, 60_000);
       return ack!.payload;
     };
     /** Posts a scripted tool call to a copy member and returns the tool result it reports. */

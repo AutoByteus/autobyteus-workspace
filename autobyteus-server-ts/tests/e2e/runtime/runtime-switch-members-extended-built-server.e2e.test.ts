@@ -347,12 +347,12 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     await until(() => echoed(copyDir()).length > 0, "the copy answered", 60_000);
     const agyIds = ids(active(copyDir()));
 
-    const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: host.runId, agentRunId: copyRunId } })).stopDelegatedExecution;
-    expect(stopped).toMatchObject({ success: true });
+    // The copy is a run of its own: its own Stop and its own stopped-run save (autobyteus-461 rule 2, SR-064).
+    expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: copyRunId })).terminateAgentRun.success).toBe(true);
     expect((await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: host.runId })).terminateAgentRun.success).toBe(true);
     const copyBefore = activeText(copyDir());
-    const update = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-      { input: { rootKind: "AGENT", rootRunId: host.runId, changes: [{ agentRunId: copyRunId, selection: { runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null } }] } })).updateDelegatedLaunchSelections as Json;
+    const update = (await gql("mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { success outcome message fieldErrors { path message } } }",
+      { input: { agentRunId: copyRunId, runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null } })).updateStoppedAgentRunSelection as Json;
     expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
     expect(activeText(copyDir()), "the save changed no raw trace of the copy").toBe(copyBefore);
     expect(completeSegments(copyDir()), "nothing archived by the save").toEqual([]);
@@ -419,13 +419,17 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     const agyBefore = Object.fromEntries([one, two, three].flatMap((copy, i) => [[`lead${i + 1}`, ids(active(dirOf(copy.lead)))], ...(i < 2 ? [[`worker${i + 1}`, ids(active(dirOf(copy.worker)))]] : [])]));
     expect(findDir(memory(), three.worker), "the worker of copy three never ran: it has no memory folder").toBeNull();
 
+    // Each team copy is a run of its own: its own Stop, then its own stopped-run save with a team-scope patch, in row order
+    // (autobyteus-461 rule 2, SR-064: the editor composes the Save from each run's own save).
     for (const copy of [one, two, three]) {
-      const stopped = (await gql("mutation($input: DelegatedExecutionTargetInput!) { stopDelegatedExecution(input: $input) { success outcome } }", { input: { rootKind: "AGENT", rootRunId: host.runId, teamRunId: copy.teamRunId } })).stopDelegatedExecution;
+      const stopped = (await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success message } }", { id: copy.teamRunId })).terminateAgentTeamRun;
       expect(stopped, JSON.stringify(stopped)).toMatchObject({ success: true });
     }
-    const update = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }",
-      { input: { rootKind: "AGENT", rootRunId: host.runId, changes: [one, two, three].map((copy) => ({ teamRunId: copy.teamRunId, selection: { runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null } })) } })).updateDelegatedLaunchSelections as Json;
-    expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
+    for (const copy of [one, two, three]) {
+      const update = (await gql("mutation($input: UpdateStoppedTeamRunSelectionsInput!) { updateStoppedTeamRunSelections(input: $input) { success outcome message } }", { input: { teamRunId: copy.teamRunId,
+        selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }] } })).updateStoppedTeamRunSelections as Json;
+      expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
+    }
 
     const switched = async (runId: string, label: string, previous: string[]) => {
       await until(() => !!findDir(memory(), runId) && markers(dirOf(runId)).length > 0, `${label} switched`, 90_000);

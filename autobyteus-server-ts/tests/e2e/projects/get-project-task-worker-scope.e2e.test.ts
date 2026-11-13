@@ -9,6 +9,7 @@ import { randomUUID } from "node:crypto";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { delegatedConversation, ownRunSender } from "../helpers/own-run-reads.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { callTool, calledResults, segment, stringsOf, taskAgentsIn, toolResult, type Rec } from "../helpers/collaboration-root-harness.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
@@ -152,17 +153,23 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
     socket.on("message", (raw: unknown) => frames.push(JSON.parse(String(raw))));
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
     await until(() => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"), `${target.label}: team stream snapshot`, 30_000);
-    const conversationOf = async (agentRunId: string) => (await target.graphql(
+    // A run the team (or one of its runs) delegated to is reached by its own run (autobyteus-461 rule 2): its reads and the
+    // user's messages to it; the team's own members through the team.
+    const memoryDir = path.join(root, "memory");
+    const own = ownRunSender(`ws://${new URL(target.url).host}`, memoryDir, rootRunId);
+    const conversationOf = async (agentRunId: string) => await delegatedConversation(target.graphql, memoryDir, rootRunId, agentRunId) ?? (await target.graphql(
       `query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`, { id: rootRunId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
-    const send = (agentRunId: string, content: string) => sendE2eSendMessageCommand(socket, { agent_run_id: agentRunId, content });
-    return { socket, frames, conversationOf, send, close: () => socket.terminate() };
+    const send = async (agentRunId: string, content: string) => {
+      if (!(await own.send(agentRunId, content))) sendE2eSendMessageCommand(socket, { agent_run_id: agentRunId, content });
+    };
+    return { socket, frames, conversationOf, send, close: () => { socket.terminate(); void own.close(); } };
   };
   const tree = async () => (await server.graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootRunId })).getTeamRunResumeConfig.executionTree;
 
   /** One agent tool call by an AGY agent of the root: the tool's MCP result as the agent received it. */
   const agyCall = async (who: string, agentRunId: string, name: string, args: Rec) => {
     const before = calledResults(await view.conversationOf(agentRunId)).length;
-    view.send(agentRunId, callTool(name, args));
+    await view.send(agentRunId, callTool(name, args));
     let results: string[] = [];
     await until(async () => { results = calledResults(await view.conversationOf(agentRunId)); return results.length > before; },
       `${who} ${name} ${JSON.stringify(args)}`, 90_000);
@@ -176,7 +183,7 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
   /** One agent tool call by a native agent: the tool result text as the model received it, parsed. */
   const nativeCall = async (who: string, agentRunId: string, name: string, args: Rec) => {
     const mark = nativeRequests.length;
-    view.send(agentRunId, `NATIVE_CALL:${JSON.stringify({ name, arguments: args })}`);
+    await view.send(agentRunId, `NATIVE_CALL:${JSON.stringify({ name, arguments: args })}`);
     let answer: (typeof nativeRequests)[number] | undefined;
     await until(() => Boolean(answer = nativeRequests.slice(mark).find((request) => request.lastRole === "tool")), `${who} native ${name} result`, 90_000);
     await until(async () => stringsOf(await view.conversationOf(agentRunId)).some((text) => text === `CALLED:${answer!.lastText}`), `${who} turn completes`, 30_000);
@@ -354,7 +361,7 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
   it("SCP-E2E-004 AC-014: get_project_task is there only for agents whose definition lists it, on MCP and on the native request", async () => {
     const toolsOf = async (who: string, agentRunId: string) => {
       const before = stringsOf(await view.conversationOf(agentRunId)).filter((text) => text.startsWith("TOOLS:")).length;
-      view.send(agentRunId, "LIST_TOOLS");
+      await view.send(agentRunId, "LIST_TOOLS");
       let listed: string[] = [];
       await until(async () => (listed = stringsOf(await view.conversationOf(agentRunId)).filter((text) => text.startsWith("TOOLS:"))).length > before, `${who} tools`, 60_000);
       const tools = (JSON.parse(listed[before]!.slice("TOOLS:".length)) as Rec[]).map((tool) => tool.name as string);
@@ -402,7 +409,7 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
     expect(await agyCall("helper", runs.helper, "get_project_task", { project_id: projectId, task_id: tasks.C.taskKey })).toEqual({ ...outOfScope(tasks.D.taskKey), isError: true });
     // The copy whose Task data can't be read takes no input, so it reads nothing: no model request is made for it.
     const mark = nativeRequests.length, frames = view.frames.length;
-    view.send(runs.native, `NATIVE_CALL:${JSON.stringify({ name: "get_project_task", arguments: { project_id: projectId, task_id: tasks.A.taskKey } })}`);
+    await view.send(runs.native, `NATIVE_CALL:${JSON.stringify({ name: "get_project_task", arguments: { project_id: projectId, task_id: tasks.A.taskKey } })}`);
     let refusal: Frame | undefined;
     await until(() => Boolean(refusal = view.frames.slice(frames).find((frame) => frame.type === "ERROR")), "native copy input refused", 60_000);
     receipt.results.push({ who: "native helper (damaged)", route: "native", refusal });

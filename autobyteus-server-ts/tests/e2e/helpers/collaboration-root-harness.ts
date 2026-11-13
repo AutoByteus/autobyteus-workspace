@@ -12,7 +12,7 @@ import { until } from "./agy-runtime-error-fixture.js";
 import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
 import { restoreByMemberMessage } from "./restore-by-member-message.js";
-import { childRunsOf, descendantRunsOf, ownRunOfAgent, projectionByOwnRun, type RunKind } from "./own-run-reads.js";
+import { ownRunOfAgent, projectionByOwnRun } from "./own-run-reads.js";
 
 /**
  * Drives real Agent, Agent Team and Agent Org roots on a test-owned Studio server with the scripted AGY CLI
@@ -202,17 +202,14 @@ export const startCollaborationHarness = async (label: string) => {
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
     const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-    const rootRef = { kind: (kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org") as RunKind, runId: rootId };
     const ownStreams = new Map<string, Promise<WebSocket>>();
     /**
-     * A run two or more hops below the root is not a row of the root's view (autobyteus-461: a view commands its own
-     * one-hop child rows only, AR-011): the user reaches it on its own run's stream (an agent run's input channel, a team
-     * run's view), as from that run's own view. `false`: the agent is the root's own or a one-hop child's.
+     * An agent that is not the root's own is in a run the root (or one of its runs) delegated to. The user reaches it on its
+     * own run's stream (an agent run's input channel, a team run's view), as from that run's own view: autobyteus-461 rule 2
+     * (SR-061), the delegator's view only shows rows. `false`: the agent is the root's own.
      */
     const viaOwnRun = async (agentRunId: string, content: string, extra: Rec): Promise<boolean> => {
       if (agentRunId === rootId || agentRunId === managerRunId || Object.values(members).includes(agentRunId)) return false;
-      const oneHop = (await childRunsOf(graphql, rootRef)).some((child) => child.agentRunId === agentRunId || child.members.some((m) => m.agentRunId === agentRunId));
-      if (oneHop) return false;
       const own = await ownRunOfAgent(path.join(dataDir, "memory"), agentRunId);
       if (!own) return false;
       const key = own.kind === "agent" ? `agent:${agentRunId}` : `agent_team:${own.teamRunId}`;
@@ -274,9 +271,8 @@ export const startCollaborationHarness = async (label: string) => {
         .catch(async (error) => { throw new Error(`${error}; the agent's conversation ends: ${JSON.stringify(stringsOf(await conversationOf(agentRunId, address)).slice(-8)).slice(0, 2000)}; raw trace tail:\n${await tracesOf(agentRunId)}`); });
       return toolResult(results[before]!);
     };
-    // The runs delegated from this root and, one hop at a time, from them (autobyteus-461: each is a run of its own, found
-    // through its delegating run's children, not inside the root's tree).
-    const taskAgents = async () => descendantRunsOf(graphql, { kind: kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org", runId: rootId });
+    // The runs delegated from this root at every depth: its view's rows, nested by placement, in base's shapes (rule 1).
+    const taskAgents = async () => taskAgentsIn(await liveTree());
     const waitForTaskAgent = async (id: string) => {
       let found: Awaited<ReturnType<typeof taskAgents>>[number] | undefined;
       await until(async () => Boolean(found = (await taskAgents()).find((agent) => agent.agentRunId === id || agent.teamRunId === id)), `${kind}: task agent ${id} recorded`, 60_000);

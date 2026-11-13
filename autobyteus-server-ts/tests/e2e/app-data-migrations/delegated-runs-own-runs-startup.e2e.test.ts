@@ -145,13 +145,24 @@ suite("delegated runs own runs: the built server upgrades released app data at s
       expect(org).toMatchObject({ orgRunId: ORG, isActive: false });
       evidence.opened = opened;
 
-      // The DelegationIndex from the converted entries: the manager's view lists its own child (E) only, one hop.
+      // The DelegationIndex from the converted entries: the manager's view shows its delegated runs at every depth, each
+      // nested under the run that delegated it (SR-058, rule 1): E under M, P (E's sub-work) under E, I (P's) under P.
       const collaboration = (await server.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: M })).agentRunCollaboration as Json;
-      const children = JSON.stringify(collaboration);
       evidence.managerView = collaboration;
-      expect(children).toContain(E);
-      expect(children, "P is E's sub-work, not M's child").not.toContain(P);
-      expect(children, "I is P's sub-work, not M's child").not.toContain(I);
+      const rowOf = (value: unknown, id: string): Json | null => {
+        if (Array.isArray(value)) { for (const item of value) { const found = rowOf(item, id); if (found) return found; } return null; }
+        if (!value || typeof value !== "object") return null;
+        const record = value as Json;
+        const own = record.team_run_id ?? record.teamRunId ?? record.agent_run_id ?? record.agentRunId;
+        if (own === id && (record.started_at ?? record.startedAt)) return record;
+        for (const child of Object.values(record)) { const found = rowOf(child, id); if (found) return found; }
+        return null;
+      };
+      const rowE = rowOf(collaboration, E), rowP = rowOf(collaboration, P);
+      expect(rowE, "E is a row of M's view").toBeTruthy();
+      expect(JSON.stringify(rowE), "P is nested under E (E's sub-work)").toContain(P);
+      expect(rowP, "P is a row of M's view").toBeTruthy();
+      expect(JSON.stringify(rowP), "I is nested under P (P's sub-work)").toContain(I);
       const engineeringView = (await server.gql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: E })).getTeamRunResumeConfig.executionTree;
       evidence.engineeringView = engineeringView;
       expect(JSON.stringify(engineeringView), "E's view lists its own child P").toContain(P);

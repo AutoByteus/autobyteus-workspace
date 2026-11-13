@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -646,9 +647,9 @@ describe("Agent package definitions live refresh at the real server/wire boundar
       .map((entry) => entry.name);
     const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: managerRunId }))
       .agentRunCollaboration?.root_agent?.execution_tree ?? null;
-    const memberConversation = async (address: string, agentRunId: string) => (await graphql(
-      `query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: managerRunId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // A delegated copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the manager.
+    const memberConversation = async (_address: string, agentRunId: string) =>
+      (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     /** Delegates `READ_AGENT_PROMPT` to an address and returns the new copy and the prompt its runtime received. */
     const delegateAndReadPrompt = async (address: string) => {
       const known = new Set(taskNodes(await tree()).map((node) => node.agentRunId ?? node.teamRunId));

@@ -197,11 +197,22 @@ const managerInput = async (root) => {
       content, context_file_paths: [], image_urls: [] } }));
   return { send, close: () => socket.close() };
 };
-/** The runs a root delegated to (one hop), from the listed-runs poll for every run kind (autobyteus-461 SR-055 … SR-057). */
+/**
+ * The runs a root delegated to, at every depth, from its view's rows in base's shapes (autobyteus-461 rule 1, SR-061): the
+ * agent run's collaboration view, the team's resume config tree, the org's history item. Rows carry `startedAt`; the root's
+ * own members do not.
+ */
+const viewTreeOf = async (root) => root.kind === 'agent'
+  ? (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })).agentRunCollaboration
+  : root.kind === 'team' ? (await gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId })).getTeamRunResumeConfig.executionTree
+    : (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId })).getAgentOrgRootHistory?.org;
 const childRunIds = async (root) => {
-  const kind = root.kind === 'agent' ? 'agent' : root.kind === 'team' ? 'agent_team' : 'agent_org';
-  const answer = (await gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind, runId: root.rootId }] })).runCollaborationStatuses;
-  return (answer?.[0]?.children ?? []).map((child) => child.row.kind === 'agent' ? child.row.agentRunId : child.row.coordinatorAgentRunId);
+  const found = [];
+  const visit = (v) => { if (Array.isArray(v)) v.forEach(visit); else if (v && typeof v === 'object') {
+    const startedAt = v.startedAt ?? v.started_at; const id = v.agentRunId ?? v.agent_run_id ?? v.coordinatorAgentRunId ?? v.coordinator_agent_run_id;
+    if (startedAt && id && id !== root.managerRunId && !found.includes(id)) found.push(id); Object.values(v).forEach(visit); } };
+  visit(await viewTreeOf(root));
+  return found;
 };
 /** A root of one kind whose Manager delegated a Task (a project Task) to the worker; returns the worker's run ID. */
 const setupRoot = async (kind, label) => {
@@ -284,11 +295,19 @@ const rootRowDot = async (page, root) => page.locator(rootRowSelector(root)).fir
 const shownRunning = (dotClass) => /bg-(blue|green|amber|emerald)-500|text-(blue|green|amber)-700/.test(dotClass ?? '');
 /** Samples the root row's rendered status for `ms` (longer than the history poll): every sample must show it stopped. */
 const rootStaysShownStopped = async (page, root, ms, label, out) => {
+  // The list shows a Stop within one list poll (about 5 s): wait for the stopped dot first, then every sample must keep it.
+  const settled = await until(`${root.kind}: the root shown stopped (${label})`, async () => {
+    const dot = await rootRowDot(page, root); return dot !== null && !shownRunning(dot) ? dot : null; }, 10000).catch(() => null);
   const samples = [];
   const end = Date.now() + ms;
-  while (Date.now() < end) { samples.push(await rootRowDot(page, root)); await sleep(1500); }
-  out.renderedRootStatus = { ...(out.renderedRootStatus ?? {}), [label]: samples };
-  assert(samples.length > 0 && samples.every((c) => c !== null && !shownRunning(c)), `${root.kind}: the stopped root shows as running in the run list (${label})`, out);
+  while (Date.now() < end) {
+    // A sample that finds no row (the list re-rendering) is read again once before it counts.
+    let dot = await rootRowDot(page, root);
+    if (dot === null) { await sleep(400); dot = await rootRowDot(page, root); }
+    samples.push(dot); await sleep(1500);
+  }
+  out.renderedRootStatus = { ...(out.renderedRootStatus ?? {}), [label]: { settled, samples } };
+  assert(settled !== null && samples.length > 0 && samples.every((c) => c !== null && !shownRunning(c)), `${root.kind}: the stopped root shows as running in the run list (${label})`, out);
 };
 
 /** The common part: with the root stopped and its view open, the worker answers live and the root stays stopped. */
@@ -311,6 +330,13 @@ const childWhileStopped = async (s, page, out) => {
     });
   out.workerAnsweredLive = true;
   out.sentMessages = s.sentMessages?.slice(-3) ?? null;
+  // autobyteus-461 rule 2 (SR-061): the selected delegated row is bound to its own run, so the message leaves on the
+  // worker's own stream (`/ws/agent/<worker>`), never on the delegator's view.
+  // The agent stream names its run in the URL, so its SEND_MESSAGE carries no target: match by socket or by target.
+  const toWorker = (s.sentMessages ?? []).filter((m) => m.target === s.worker || m.socket.startsWith(`/ws/agent/${s.worker}`));
+  out.workerMessageSockets = [...new Set(toWorker.map((m) => m.socket.replace(/\?.*$/, '')))];
+  assert(toWorker.length > 0 && toWorker.every((m) => m.socket.startsWith(`/ws/agent/${s.worker}`)),
+    `${root.kind}: the worker's message did not go on its own stream`, out);
   // Round 2 F-9: the selected worker's Team tab shows its messages, or nothing, never the "can't be shown" error panel.
   const teamTab = page.locator('[data-test="right-side-tab-list"]').locator('button, [role="tab"]', { hasText: /Team/ }).first();
   if (await teamTab.count()) {
@@ -331,8 +357,8 @@ const childWhileStopped = async (s, page, out) => {
   // The worker delegates further: the new row appears live under it (no reload).
   await send(page, callTool('delegate_task', { recipient_address: `/${segment(s.names.helper)}`, description: 'Collect the links.' }));
   const helperId = await until('helper delegated', async () => {
-    // The worker's own children, from the listed-runs poll (autobyteus-461 SR-055: one poll for every run kind).
-    const tree = (await gql('query($runs:[ListedRunInput!]!){runCollaborationStatuses(runs:$runs)}', { runs: [{ kind: 'agent', runId: s.worker }] }).catch(() => null));
+    // The worker's own children, from its own view (rule 1: a delegated run's view has its rows like any run's).
+    const tree = (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: s.worker }).catch(() => null));
     const ids = JSON.stringify(tree ?? {}).match(new RegExp(`${segment(s.names.helper)}_[0-9a-f]+`, 'g'));
     return ids?.[0] ?? null;
   }, 90000).catch(() => null);

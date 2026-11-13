@@ -1,0 +1,28 @@
+# Case: API-E02 §5.3 O8 diagnosis (API-REV-004, round 4) — finding F-21
+# Commit: code 49f3db1047; built server; ENV-1, clean env, scripted AGY CLI
+# Date: 2026-11-13
+# Command: (as API-E02) … -t "5.3" (the driver now reports what the run's stream answered when a step gets no result)
+# Look for: O8: the org stream answers ERROR AGENT_ORG_STREAM_UNAVAILABLE "AgentOrg AgentRun '<dev_lead>' has no status record" to the user's message for its agent; no delegate_task result
+
+O0 diffs: []
+O1 diffs: []
+O2 diffs: []
+O3 diffs: []
+O4 diffs: []
+O5 diffs: []
+O6 diffs: []
+O7 diffs: []
+O8 diffs: ["the step failed: Error: O8: no result of delegate_task by dev_lead_4c3d; the stream answered: [\"ERROR {\\\"code\\\":\\\"AGENT_ORG_STREAM_UNAVAILABLE\\\",\\\"message\\\":\\\"[\\\\n  {\\\\n    \\\\\\\"code\\\\\\\": \\\\\\\"custom\\\\\\\",\\\\n    \\\\\\\"message\\\\\\\": \\\\\\\"AgentOrg AgentRun 'dev_lead_4017ce61ef51475ba65f41448a7498a7' has no status record.\\\\\\\",\\\\n    \\\\\\\"path\\\\\\\": []\\\\n  },\\\\n  {\\\\n    \\\\\\\"code\\\\\\\": \\\\\\\"custom\\\\\\\",\\\\n    \\\\\\\"message\\\\\\\": \\\\\\\"AgentOrg AgentRun 'qa_85297be2de0\"]; its conversation ends: :\"CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"accepted\\\\\\\":false,\\\\\\\"code\\\\\\\":\\\\\\\"COLLABORATION_TARGET_NOT_FOUND\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"Collaboration target '/dev_team/designer' is not a member of your team instance '/dev_team'.\\\\\\\"}\\\"}],\\\"structuredContent\\\":{\\\"accepted\\\":false,\\\"code\\\":\\\"COLLABORATION_TARGET_NOT_FOUND\\\",\\\""]
+# Case: API-E02 §5.3 O8 recheck on 262afbd6bb (API-REV-004, round 4) — F-21 persists
+# Command: (as API-E02) … -t "5.3"
+# Look for: O8 the org stream answers ERROR AGENT_ORG_STREAM_UNAVAILABLE "AgentOrg AgentRun '<dev_lead>' has no status record"
+
+O0 diffs: []
+O1 diffs: []
+O2 diffs: []
+O3 diffs: []
+O4 diffs: []
+O5 diffs: []
+O6 diffs: []
+O7 diffs: []
+O8 diffs: ["the step failed: Error: O8: no result of delegate_task by dev_lead_4c3d; the stream answered: [\"ERROR {\\\"code\\\":\\\"AGENT_ORG_STREAM_UNAVAILABLE\\\",\\\"message\\\":\\\"[\\\\n  {\\\\n    \\\\\\\"code\\\\\\\": \\\\\\\"custom\\\\\\\",\\\\n    \\\\\\\"message\\\\\\\": \\\\\\\"AgentOrg AgentRun 'dev_lead_bc25255c6214402b949e610ac712cfe9' has no status record.\\\\\\\",\\\\n    \\\\\\\"path\\\\\\\": []\\\\n  },\\\\n  {\\\\n    \\\\\\\"code\\\\\\\": \\\\\\\"custom\\\\\\\",\\\\n    \\\\\\\"message\\\\\\\": \\\\\\\"AgentOrg AgentRun 'qa_06a262b9632\"]; its conversation ends: :\"CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"accepted\\\\\\\":false,\\\\\\\"code\\\\\\\":\\\\\\\"COLLABORATION_TARGET_NOT_FOUND\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"Collaboration target '/dev_team/designer' is not a member of your team instance '/dev_team'.\\\\\\\"}\\\"}],\\\"structuredContent\\\":{\\\"accepted\\\":false,\\\"code\\\":\\\"COLLABORATION_TARGET_NOT_FOUND\\\",\\\""]

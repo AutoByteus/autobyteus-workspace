@@ -9,6 +9,7 @@ import WebSocket from "ws";
 import { create } from "tar";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -221,9 +222,9 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
       return results[before]!;
     };
     const tree = async () => (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: runId })).agentRunCollaboration?.root_agent?.execution_tree ?? null;
-    const copyConversation = async (address: string, agentRunId: string) => (await graphql(
-      `query($h:String!,$a:String!,$r:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$a,agentRunId:$r){conversation}}`,
-      { h: runId, a: address, r: agentRunId })).agentRunCollaborationMemberProjection?.conversation;
+    // A copy is a run of its own (autobyteus-461 rule 2): read by its own run, never through the manager.
+    const copyConversation = async (_address: string, agentRunId: string) =>
+      (await projectionByOwnRun(graphql, path.join(dataDir, "memory"), agentRunId))?.conversation;
     /** Delegates `description` to the user agent and returns the new copy once it echoed its first input. */
     const delegateCopy = async (description: string) => {
       const known = new Set(taskNodes(await tree()).map((node) => node.agentRunId));
