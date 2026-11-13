@@ -157,11 +157,9 @@ suite("Delegated AGY agent with a background daemon under idle shutdown (live E2
     };
     sendE2eSendMessageCommand(socket, { agent_run_id: coordinatorRunId,
       content: `Call delegate_task exactly once now with these exact JSON arguments: ${JSON.stringify(delegation)}. Do not call any other tool.` });
-    // The new child row arrives as CHILD_RUNS_CHANGED (autobyteus-461: a delegated run is a run of its own, shown under its delegator).
-    const addedByCoordinator = (m: { type: string; payload: Record<string, any> }) => (m.payload.added as unknown[] | undefined ?? [])
-      .map((row) => asRecord(asRecord(row)?.execution)).find((execution) => execution?.delegator_agent_run_id === coordinatorRunId);
-    const started = await until(() => messages.find((m) => m.type === "CHILD_RUNS_CHANGED" && addedByCoordinator(m)), "CHILD_RUNS_CHANGED");
-    const childRunId = String(addedByCoordinator(started)!.agent_run_id);
+    const started = await until(() => messages.find((m) => m.type === "TASK_EXECUTION_STARTED" &&
+      asRecord(m.payload.execution)?.delegator_agent_run_id === coordinatorRunId), "TASK_EXECUTION_STARTED");
+    const childRunId = String(asRecord(started.payload.execution)!.agent_run_id);
     const childTasks = () => messages.filter((m) => m.type === "BACKGROUND_TASK_UPDATED" && m.payload.agent_run_id === childRunId);
     const childStatuses = () => messages.filter((m) => m.type === "AGENT_STATUS" && m.payload.agent_run_id === childRunId);
     const running = await until(() => childTasks().find((m) => m.payload.status === "running"), "delegated AGY copy's running background task");

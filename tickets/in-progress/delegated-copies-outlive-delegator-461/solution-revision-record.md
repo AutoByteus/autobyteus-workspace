@@ -1320,3 +1320,17 @@
   - architecture review (narrow);
   - the code reviewer's Local Fixes CR-461-036 and -037 go to the Implementation Engineer now.
 
+### SR-070 — The user's message to a delegated run; the closed-Task input fence restored (DS-15, G-4)
+
+- **Triggering:** the user asked for the data-flow spine of a user's message to a task agent or a task agent team member. Walking it found G-4.
+- **G-4, the evidence:**
+  - at base, every input to a hosted copy, the user's included, passed `taskExecutions.assertInputAllowed` and was refused when the copy's Task was closed (`configured-agent-execution-handle.ts:142-155`; `standalone-agent-run-root.ts:240-243`; `root-team-run.ts:210-213`, all at `827f1e68dc`);
+  - on the branch, the team's fence only requires an active root (`team-root-materializer.ts:76`), and the standalone root has none;
+  - so a user's message would revive a closed delegated run, which can now be reached from its Task's page. That is against REQ-005 and rule 3.
+- **The Solution Designer's gap:** the SR-067 walk covered agent messages (DS-2, with the gate-head re-check) but not the user's input to a delegated run. That had no spine.
+- **Decision:** each run's own root checks the Task side in its gate before restoring. A run with a Task entry whose current entry is closed refuses with base's text. A run no Task names is not fenced. This covers user input, application input and restart resume, as at base. DS-15 is added with tests.
+- **Requirements:** unchanged; this restores REQ-005.
+- **Next action:**
+  - architecture review;
+  - then the Implementation Engineer.
+
