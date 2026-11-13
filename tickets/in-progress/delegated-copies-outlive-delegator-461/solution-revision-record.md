@@ -1461,4 +1461,8 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - SR-072's accepted difference is withdrawn.
 - **Requirements:** unchanged; base's behavior is kept.
 - **Next action:** the Implementation Engineer. TDR-001's expectation changes: the refusal is answered and the record is shown.
+- **The Implementation Engineer's closures, confirmed:**
+  - **CR-461-063 (F-45)** was a model gap, like K-13. In S27 a stopped run acted. The story now has the user's message restore the research agent first, which clears its `terminatedAt` as for any run, and then it reports (R-11). The product's Stop records `terminatedAt`, as for any run.
+  - **SR-075 F-41** needs no code change. The card is a live ERROR on the delegated run's own stream, and all three views bind a selected delegated row through one owner (`delegatedRunsStore`). The e2e reads it from the delegated team's own stream.
+  - **CR-461-057** had a product cause (fixed in 573e6a7d07): the agent-run view's composer target fell back to the delegator while a selected delegated row's run was opening.
 

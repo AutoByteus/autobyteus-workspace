@@ -176,11 +176,12 @@ def standalone():
           found="M's open entries are asked: the research agent (S20) works on T2, so the delete is refused and its reason names it. A run on a peer node is asked too, through its node (REQ-013); the research team's T7 entry is closed (S19), so it is not asked. Nothing is written.",
           today="Today deleting M ends the copies it hosts, so nothing is refused.", checked="—"),
      dict(id="S27", title="The user stops the research agent and deletes M; the research agent's report is refused", cases="T-4, T-8, R-11",
-          call='The user stops the research agent, then deletes M. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`',
+          call='The user stops the research agent, then deletes M. Later the user messages the research agent, which restores it (its T2 is open), and it reports: `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`, by `research_agent_9b10`',
           op=lambda: (w.stop(("A", "agent", "research_agent_9b10"), "2026-11-10T20:40:00.000Z"),
                       w.delete_run(("A", "agent", M), "2026-11-10T20:41:00.000Z"),
+                      w.activate("research_agent_9b10"),   # the user's message restores it: a stopped run cannot act (K-13)
                       w.send_by_run_id("research_agent_9b10", M, "Findings …", "x", "2026-11-10T20:45:00.000Z")),
-          found="No run M delegated to works now, so M's folder and its row go. M's Task with no Project, T7, goes with it, as a deleted chat's Temp tasks do at base (K-14). The entries in Project Tasks that name M stay: they are T2's record, and its page still shows who delegated. The tree no longer has M: the research agent is the top of its own tree, and the run list shows it as a run of its own (TC-3). Address step 2 reaches nothing of M's, and a message to M's run ID is refused: no run has it.",
+          found="No run M delegated to works now, so M's folder and its row go. M's Task with no Project, T7, goes with it, as a deleted chat's Temp tasks do at base (K-14). The entries in Project Tasks that name M stay: they are T2's record, and its page still shows who delegated. The tree no longer has M: the research agent is the top of its own tree, and the run list shows it as a run of its own (TC-3). Address step 2 reaches nothing of M's. The research agent acts only after the user's message restores it, which clears its row's `terminatedAt`, as for any run. Its message to M's run ID is then refused: no run has it.",
           today="Today the copies are deleted with M.", checked="—"),
     ]
     return w, steps
