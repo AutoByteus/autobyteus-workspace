@@ -239,7 +239,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining limitations or risks: API/E2E's earlier evidence names this ticket's phone cases MSP-37 … MSP-39; they are MSP-50 … MSP-52 now.
 
 
-### IR-011 — The task header's address, a child's mentions and sends, a delegated run's collaboration context, a run's in-run set (CR-461-030 … -032, -034; SR-058's CR-461-030; SR-059) — in progress
+### IR-011 — The task header's address, a child's mentions and sends, a delegated run's collaboration context, a run's in-run set (CR-461-030 … -032, -034; SR-058's CR-461-030; SR-059) — complete
 
 - Triggering role, report path, and round: Code Reviewer CRR-016 (failure-origin review of API/E2E round 3: three Local Fixes, two Design Impacts), through the Solution Designer. Round 11. My Design Impact on the `@` note during this round, answered by SR-059 (ARCH-REV-034).
 - Triggering finding IDs: CR-461-031, -032, -034 (`Local Fix`); CR-461-030, -033 (Design Impact, designed in SR-058, ARCH-REV-033). Large / High unchanged.
@@ -273,7 +273,7 @@ The current code and `implementation-handoff.md` remain authoritative.
   - A restored org member got no instruction at base (`mode === "fresh"`); a delegated org copy reads it at every activation.
   - The full server unit and integration suites, and the web specs, are not yet rerun for this round.
 
-### IR-012 — Each run's collaboration map, from the forest (SR-060); CR-461-033 held for SR-061 — in progress
+### IR-012 — Each run's collaboration map, from the forest (SR-060); CR-461-033 held for SR-061 — folded into IR-013
 
 - Triggering role, report path, and round: Solution Designer, SR-060 (commit `4e43b030ae`, on the user's direction), ARCH-REV-035 Pass with three notes. Then SR-061 announced: the web side of CR-461-033 and further work on the child-command and child-observation owners are held until it arrives.
 - Triggering finding IDs: SR-060; CR-461-033 (carried from IR-011). Large / High unchanged.
@@ -325,4 +325,56 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result:
   - server type gate PASS (1013);
   - focused server unit areas at `5531101a87`: 468 files and 3866 tests pass, after the vocabulary test's file list moved to the map.
-- Next recipient or routing: none; waiting for SR-061.
+- Next recipient or routing: none at the time; SR-061 … SR-063 arrived and the held work went into IR-013.
+
+### IR-013 — The frontend contract (SR-061 … SR-063), a peer child by its own identity (SR-064 … SR-066), archive and delete (SR-067), base's list reads (SR-068)
+
+- Triggering role, report path, and round: Solution Designer, SR-061 (the user's direction of 2026-11-12) … SR-068; architecture reviews ARCH-REV-036 … ARCH-REV-042, all passed. The Implementation Engineer's Unclear questions, answered as SR-064 (an agent stream follows its run; the Settings save composed in the editor), SR-065 (each child's own options), SR-066 (peer runs as handles, the user's decision), SR-068 (`hasCollaboration` from the stored flag).
+- Triggering finding IDs: SR-060 … SR-068; CR-461-033 (held since IR-011). Large / High unchanged.
+- Prior authoritative result: IR-011 at `518a3aac8a`; IR-012 at `5531101a87`.
+- Current authoritative result: `c46e5c330b` (code), `16815d43a9` (one guard list), `782a9294f8` (web type baseline), `c5142b111b` (view event delivery; integration fakes).
+- Related solution / architecture-review revision IDs: SR-060 … SR-068; ARCH-REV-035 … ARCH-REV-042.
+- Implementation delta (commits `909e471587` … `c46e5c330b`):
+  - **Names and owners (SR-060, SR-061):** `DelegationIndex` and `CollaborationTree` (`collaborationTreeOf(run)`); the trace pages' sender addresses by `reachingAddressOf` (`received-sender-addresses.ts`).
+  - **`RunViewStream` (SR-062, SR-063):** base's `RootEventPublisher` moved out of the root, one per run from the composition root's registry for the life of the process. A snapshot reads its base, the tree's rows and the cached statuses in one synchronous step, then the run's own parts. A mode switch is an in-band snapshot at the current sequence under the same `liveSequenceId`. A stopped run's checkpoint is its view's sequence with no open work.
+  - **Rule 1 (base's shapes):**
+    - the stream contracts are back at `3228eff74b` (minus the launch selections, plus SR-038's peer launches);
+    - `ChildRowsFeed` publishes base's `task_execution_started` / `task_executions_closed` / `task_executions_reopened` into each affected run's stream, with the closed set from the tree (`CollaborationTree.closedRows`);
+    - the views read rows nested by placement (`run-view-rows.ts`); rows show at every depth (the held CR-461-033 server part);
+    - `agentRunCollaborationStatuses`, an Org history's rows and `closed_task_executions`, and `hasCollaboration` (from the row's stored flag) return;
+    - `LocalChildObservation` follows statuses only.
+  - **Rule 2 (each run reached as itself):**
+    - `DelegatedRunCommands`, the child `@` handling, the team child ack and SR-039's launch routing are removed;
+    - web: `delegatedRunSubjects.ts` and `delegatedRunsStore` bind a selected local delegated row to its own run's context, stream, reads and commands in the agent-run, Team and Org views;
+    - the Settings save is composed per run (SR-064), the options come per run (SR-065), and Stop is the run's own terminate;
+    - the agent stream session follows its run by run ID (`agent-run-follower.ts`, SR-064).
+  - **Peer runs (SR-066):**
+    - `PeerAgentRun` / `PeerTeamRun` handles and `peerRunOf`;
+    - `PeerChildObservation` is shared per peer run and numbered by each view;
+    - the views' peer commands and the member projections go through the handle;
+    - the run services forward a peer run's terminate;
+    - removed: the roots' remote command branches, `remoteChildren`, `stopDelegatedExecution`, `DelegatedLaunchSelectionService`, `DelegatedChildLaunches` and the delegated save and options queries.
+  - **DS-13 (SR-067):** `DelegatedWorkGuard.guard` asks open peer runs (`status()`); a node that does not answer is named as not asked. Delete tells `DelegationIndex.runDeleted` first. The startup build skips runs with no stored directory. A message to a run with no files is R-11.
+  - **Web:**
+    - back at `3228eff74b` (`12ea5a05d6`), plus SR-045 re-applied (`6e23a13f3b`) and rule 2;
+    - the documents follow the branch server: `TaskRoot.delegatingRun`; no Memory explorer task fields; no host-scoped member file or trace queries;
+    - `hubChildLoadTarget` serves only a peer child.
+  - **Rule 3:**
+    - base's agent-run view, started and closed events and list poll are recorded at `827f1e68dc` (`IMP-46-*`) and asserted by `agent-view-base-shapes.test.ts`;
+    - found by it and fixed: an Org's row delegated by a mounted team's member sits in that team, as at base.
+- Deviations from the design, for review:
+  - a peer row's `@` mentions are refused (`REMOTE_RUN_MENTIONS_UNSUPPORTED`), because resolving them would need the delegator's root and would restore a stopped team;
+  - an in-band mode-switch snapshot is sent at the current sequence (the designer's 27d6f014b9 wording);
+  - rows nest by placement (team), as base did, not by delegator agent.
+- Local validation and result:
+  - server: type gate PASS (baseline 1012); full unit suite at `c46e5c330b` (IMP-47): 7940 passed, 1 failed (an architecture guard's list still named a default getter `305f2a8987` removed; updated in `16815d43a9`, then 20 of 20);
+  - web (IMP-48): `codegen:check` current; type gate PASS at 90 (baseline shrunk from 93 in `782a9294f8`); guards and audit pass; full suite 762 of 762 files, 5737 tests;
+  - contracts (IMP-49): collaboration 47 of 47, team 19 of 19, presentation 21 of 22 (FU-022, pre-existing); dist clean.
+  - server integration (IMP-50): the first run on `782a9294f8` failed 15 tests in 3 files. Fixed in `c5142b111b`:
+    - the view sessions delivered every event a microtask late (content cadence AC-003), now `inOrderViewDelivery`;
+    - stale fakes and service names;
+    - the team root's dead `openPackageSnapshotConnection` removed.
+  - server unit on `c5142b111b` (IMP-51): 7933 passed. The 5 failures ran 500–1000 s each under the machine's load, and their six files pass alone (67 of 67).
+  - Not run this round: the CPW E2E, the browser probes, and the rendered check (see the handoff).
+- Next recipient or routing: Code Reviewer.
+

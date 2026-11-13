@@ -1,0 +1,24 @@
+# commit c5142b111b
+$ pnpm test:unit
+     × buffers held/terminal facts before dispatch ACK without duplicate forwarding, and ignores during-recovery credit 988366ms
+     × makes no REST request and at most one request per source per interval 534366ms
+       × a same-status write, a reopen and a part's own close never cascade; DONE → CANCELLED reaches parts still open (AC-018, REQ-005) 1031999ms
+     × a commit that does not land publishes nothing and keeps the member pending; sending again completes it with one marker and one segment 968751ms
+     × closes an automatic compaction abandoned by a cancel as failed; the next pairs normally (REQ-G3) 522967ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ FAIL  tests/architecture/server-package-contents.test.ts > the server package
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-collaboration/runtime-switch-member-activation.test.ts > standalone_team: the next input to a switched member > a commit that does not land publishes nothing and keeps the member pending; sending again completes it with one marker and one segment
+ FAIL  tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > buffers held/terminal facts before dispatch ACK without duplicate forwarding, and ignores during-recovery credit
+ FAIL  tests/unit/projects/project-task-parts.test.ts > Project Task parts (services) > closing a parent (REQ-016, REQ-017) > a same-status write, a reopen and a part's own close never cascade; DONE → CANCELLED reaches parts still open (AC-018, REQ-005)
+ FAIL  tests/unit/update-notifications/update-check-request-budget.test.ts > automatic checks' GitHub request budget (AC-003, QR-001) > makes no REST request and at most one request per source per interval
+ FAIL  tests/unit/update-notifications/update-check-request-budget.test.ts > automatic checks' GitHub request budget (AC-003, QR-001) > makes no REST request and at most one request per source per interval
+ FAIL  tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts > Grok Build compaction replayed through the ACP session into memory > closes an automatic compaction abandoned by a cancel as failed; the next pairs normally (REQ-G3)
+ Test Files  6 failed | 962 passed | 5 skipped (973)
+      Tests  5 failed | 7933 passed | 14 skipped (7952)
+
+# The five failures each ran 500-1000 s under a machine load average of 20-70 from other processes; the same files passed in IMP-47 (c46e5c330b). The six files alone:
+$ npx vitest run --no-watch tests/architecture/server-package-contents.test.ts tests/unit/agent-collaboration/runtime-switch-member-activation.test.ts tests/unit/agent-execution/agent-run-compaction-recovery.test.ts tests/unit/projects/project-task-parts.test.ts tests/unit/update-notifications/update-check-request-budget.test.ts tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts
+ Test Files  6 passed (6)
+      Tests  67 passed (67)
+ 2:46  up 24 days, 12:25, 9 users, load averages: 7.67 13.16 24.86

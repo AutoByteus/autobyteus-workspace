@@ -498,3 +498,18 @@ Server type gate PASS; focused areas pass. Next: the web (step 6): restore `auto
 save to its own stopped-run save) and SR-045 (the view stream kept for a stopped run). Base's web read a hosted copy's
 conversation through the delegator's stream; that stream no longer carries a delegated run's output, so rule 2 is the
 one real web change besides SR-045.
+
+Progress (step 6, web): `12ea5a05d6` web back at 3228eff74b (launch selections stay removed); `6e23a13f3b` SR-045
+re-applied (commits 54858f3134, ebff30f833, 4a3f221c72, 296ad69b43, a54e78ccb7). Typecheck note: `.nuxt/types/layouts.d.ts`
+imports `layouts/__tests__/*.spec.ts` as layouts, so `default-drawer.spec.ts` counts twice (4 vs baseline 2); layouts and
+nuxt config equal base: follow-up, not this ticket. SR-064 (option a; Settings composed in the editor) and SR-065 (peer
+Stop stays as `PeerChildStop`; local options from `AgentRunModelOptions` / `TeamRunModelOptions`; remove
+`delegatedLaunchModelOptions`, `updateDelegatedLaunchSelections`, `DelegatedChildLaunches`) passed ARCH-REV-039.
+`d796d508b0` (WIP): rule 2 binding (`delegatedRunSubjects.ts`, `delegatedRunsStore.ts`; agent-run, Team, Org views;
+Team-tab keys by own run) and the server follower (`agent-run-follower.ts`, handler; tests). Next:
+1. rewrite the 34 web specs asserting base's route through the delegator (10 files);
+2. Settings: `delegatedLaunchDraftStore.save` composes each run's own save (row-status check first; parent's own
+   save, then children in row order; partial failure reported); options per child; local Stop = own terminate;
+3. server: `PeerChildStop` (peer only), remove the save/options/`DelegatedChildLaunches`; codegen;
+4. tests: Team and Org peer-child message + interrupt reach the node (ARCH-REV-039 note 1);
+5. remaining server items (SR-039 routing is part of 3; checkpoints; sequencing tests), step 7, docs, handoff.
