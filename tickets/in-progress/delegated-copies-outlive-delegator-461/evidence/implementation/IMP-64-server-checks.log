@@ -1,0 +1,23 @@
+# commit c8166c2685
+# node scripts/typecheck.mjs
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 12.1s
+[typecheck] server tests (tsconfig.tests.json): 1012 errors, exit 2, 30.1s
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+# pnpm test:unit
+     × starts a registered root that is missing as FOLDER_MISSING and arms it when it appears 5025ms
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ Test Files  1 failed | 973 passed | 5 skipped (979)
+      Tests  1 failed | 7978 passed | 9 skipped (7988)
+# changes to the watcher test or its src since 3228eff74b: 0
+# the failed file alone
+     × moves a root to FOLDER_MISSING when it is renamed away and resumes watching when it returns 5006ms
+     × re-arms a root whose folder was replaced in place (GitHub update rename swap) 5457ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  2 failed | 18 passed (20)
+# the branch changes neither the watcher's tests nor its src since 3228eff74b (git log: 0 commits); load average 12.8 / 18.7 / 19.8
+# the failed file alone, again (lower load)
+      Tests  20 passed (20)

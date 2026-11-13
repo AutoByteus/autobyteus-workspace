@@ -1,0 +1,29 @@
+# commit c8166c2685
+$ pnpm codegen:check
+[SUCCESS] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-GXMBwn/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
+$ pnpm typecheck
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.9s
+[typecheck] production errors: 0; test-file errors: 90 in 38 files (baseline 90 in 38 files)
+[typecheck] PASS
+$ pnpm guard:web-boundary
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+$ pnpm guard:localization-boundary
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+$ npx vitest run --no-watch
+   × opening a historical Org loads the selected member artifact list, a nested Team member included (AC-003, AC-004) 1035ms
+stderr | components/projects/__tests__/TaskParts.spec.ts > TaskPartOfPicker (UXJ-004; VIS-011a–e, QR-004) > removes the parent with its labelled ×, returning focus to the search (TR-007)
+stderr | components/projects/__tests__/TaskKeysAndDependencies.spec.ts > TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004) > removes a chosen Task with its labelled ×, returning focus to the search
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  stores/__tests__/agentOrgInspectionApollo.spec.ts > opening a historical Org loads the selected member artifact list, a nested Team member included (AC-003, AC-004)
+ Test Files  1 failed | 764 passed (765)
+      Tests  1 failed | 5745 passed | 2 skipped (5748)
+# The failure is a base-era spec that focused a delegated row (agent-task-lead) and expected the Org's member reads to
+# stage it; c8166c2685 reads a delegated row as its own run. Restated on the mounted team's configured lead in b87be2de33.
+$ npx vitest run --no-watch stores/__tests__/agentOrgInspectionApollo.spec.ts   (at b87be2de33)
+      Tests  25 passed (25)

@@ -497,3 +497,73 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining limitations or risks: C15-03 (a rendered two-view check that a refused input shows no status change) is held for API/E2E.
 - Review result: `Pass`, CRR-020 (round 16; `code-review-report.md`). CR-461-038 is resolved. The Code Reviewer routes to API/E2E.
 
+
+### IR-017 — CRR-021's Local Fixes (CR-461-039 … -044); SR-071 (CR-461-045, -046); two defects the SDV probe found
+
+- Triggering role, report path, and round: Code Reviewer CRR-021 (`code-review-report.md`, failure-origin review of API/E2E round 4, API-REV-004): six `Local Fix` findings for implementation, two `Requirement Gap` findings for the Solution Designer. The designer answered those as SR-071, passed by ARCH-REV-045. Round 17.
+- Triggering finding IDs: CR-461-039 … CR-461-044; CR-461-045 (F-18) and CR-461-046 (F-19) as SR-071. Large / High unchanged.
+- Prior authoritative result: IR-016 at `262afbd6bb` (docs `9e0df63de6`, `a2dd7c8586`; CRR-020 Pass).
+- Current authoritative result: `b87be2de33` (code `c8166c2685`; `b87be2de33` restates one web spec).
+- Related solution / architecture-review revision IDs: SR-071, ARCH-REV-045. Related code-review revision IDs: CRR-021.
+- Implementation delta, one commit per finding:
+  - **CR-461-039 (`204ccbb5bd`), every listed agent gets a status in the snapshot.**
+    - Before: the rows' statuses came only from the followers' cache. The cache is filled asynchronously and holds a status only from a live frame, so a stopped child or a newly listed row had none, and a live Org's snapshot failed its contract ("has no status record").
+    - Now `readViewSnapshot` (`run-view-rows.ts`) gives each agent of each listed local row, in the same synchronous step:
+      - the status read at the base;
+      - else its run's current status from its own root (`LocalChildFollowers.currentStatuses`, `pairedAgentStatuses`);
+      - else `offline`, with the row's own address.
+    - A stopped Org's stored-mode snapshot (`org-view-session.ts`) carries no statuses, as its contract requires. Its rows' statuses follow as frames.
+    - Tests: the Org handler (a live Org's snapshot gives every listed agent a status: a stopped delegated team's members, a newly listed run and a running one, and parses; the existing stopped-Org snapshot test still parses, with none) and the feed helper's followers.
+  - **CR-461-042 (`297c9c8754`), a reactivated row is reopened, not started.**
+    - Before: the feed told "reopened" by a closed Task entry still being present. The assigner's reactivation reopens that same entry, so the row came back as `TASK_EXECUTION_STARTED`.
+    - Now `ChildRowsFeed` remembers, per run, the rows it reported closed in that run's stream (`reportedClosed`). One that comes back is `task_executions_reopened`, as at base.
+    - Tests: the feed, and the agent-run, Team and Org view handlers.
+  - **CR-461-043 (`e56d68f70a`), a follow-up to a run that cannot be restored is refused first.**
+    - Before: `TaskDelegation.toExistingRun` assigned the follow-up Task, then failed at delivery with a raw `ENOENT` naming an internal path.
+    - Now `createRunConversationAvailability` (`execution/task/run-conversation-availability.ts`, read-only, the conversation inspector) is asked after `assertAssignable` and before anything changes. The run can continue when its entry agent is live, or when its saved conversation is readable. A team run's entry is its coordinator, found in the team's saved tree.
+    - Otherwise it refuses with base's text (`taskExecutionConversationUnavailable`, `TASK_EXECUTION_CONTEXT_UNAVAILABLE`, from base's `task-execution-conversation-availability.ts`): "The delegated Team at '…' cannot be restored: … Start a new delegation for this work." No path is named.
+    - Tests: `run-conversation-availability.test.ts` (a live entry agent, nothing read; a stopped agent run's conversation inspected; a stopped team's coordinator found in its saved tree); task delegation (refused with base's text before anything changes, no path shown).
+  - **CR-461-041 (`8cf765990d`), a delegated run's member gets its delegator's catalog copy.**
+    - Before: a delegated team's lead delegating to a catalog address whose definition is one of its own run's members was refused. That definition is in its run, so its catalog offers nothing there, while its Manager gets the catalog copy.
+    - Base answered such a hosted copy from its host's catalog. `DelegatorCatalog` (`execution/task/delegator-catalog.ts`) now gives the catalog copy its delegator's agent would get at that address, with the delegator's launch base and notes. It goes one hop, from the Task entry's delegator, and never offers the run's own definition (U7). `TaskDelegation.toNewRun` asks it when the sender's root answers "not found".
+    - `collaboratorPortOf` (`run-history/services/run-collaborator-port.ts`) is the GraphQL resolver's port read, with the live roots passed in. The composition passes the run services; the resolver wraps it with the process ones.
+    - Tests: `delegator-catalog.test.ts` (the delegator's catalog copy from its launch base; the delegator of each root kind asked through its port; never the run's own definition; nothing for a run no Task names) and the task delegation fallback (with no copy, the refusal stands).
+  - **CR-461-044 (`85e99c74a0`, web), a delegated run opened from its delegator's view is listed once.**
+    - Before: selecting a delegated row opens the run's own context (rule 2). The run list took every open agent context as a top-level run, so the worker was listed at the top of its workspace as well as under its delegator. The list's poll also tore that run's stream down, since it is not a listed run.
+    - Now `delegatedRunsStore` records the runs it opened (`ownsAgentRun`, `ownsTeamRun`). The navigation projection (`runHistoryNavigationStoreActions.ts`) leaves their contexts out unless the list itself has the run. The poll (`reconcileDiscoveredActiveRuns`, `runHistoryLoadActions.ts`) leaves their streams alone.
+    - A run the user opened as itself is listed and polled as before.
+    - Spec: `delegatedRunsNotListed.spec.ts`.
+  - **CR-461-040 (pinned in `85e99c74a0`), the Team view's row two hops down.**
+    - SDV-02 passes from `8cf765990d` on: the helper's row is live in the stopped Team's view. CR-461-039's missing statuses were the likely cause.
+    - Pinned on both sides:
+      - the server's rows and live event for a row two hops down, over the real tree (`child-rows-feed.test.ts`);
+      - the Team view state's listing of it in a stopped Team (`teamExecutionViewState.spec.ts`).
+  - **SR-071 (`f6a427818c`), refusals in base's order, codes and texts.**
+    - F-18 (R-8 before R-7): `CrossRunMessageDelivery.admit` answers in this order:
+      - the assigner's continuation (R-6);
+      - then a receiver whose Tasks are all closed: `TASK_AGENT_RESOURCE_CLOSED`, "Only the agent that assigned…", whoever sends (R-8);
+      - only then runs of different open Tasks: CONFLICT (R-7).
+    - F-19 (R-12): a team run's ID as `target_agent_run_id` is answered `TARGET_IS_TEAM_RUN` with its coordinator's run ID, whether the team runs or not. The coordinator comes from `GlobalAgentRunMessageRouter.teamCoordinatorOf`, from the composition: the live root, else the Task entry's entry agent, else the team's standing from its own file.
+    - `delegate_task` with a team member's run ID gets base's "<id> is not one of your task agents. …" (M-34). The member-specific text (M-37) is withdrawn.
+    - Tests: S20 (cross-run), R-12 with nothing live (router), the member's text (task delegation), the result catalogue.
+  - **Found by the SDV-03 probe (Org), two defects:**
+    - `eb5e9df040`: `AgentOrgRunService.getInspection` passed its rows' statuses for a stopped Org too. An inactive Org's snapshot may carry none, so the read failed ("AgentOrg status identity mismatch"). It now carries none, as in CR-461-039's stored-mode session. Test: `agent-org-inspection-child-statuses.test.ts`.
+    - `c8166c2685` (web): the Org reopen staged the focused delegated row through `GetAgentOrgMemberRunProjection`, which the server refuses, so the reopen retried every few seconds and the rows never appeared.
+      - `stageAgentOrgExecutionContext` now stages no delegated row (`orgDelegatedRunSubject`): it is read as its own run (rule 2).
+      - The base-era specs that staged a delegated row now focus configured agents.
+      - A new spec checks that a focused delegated row makes no member read. It fails without the fix.
+      - One more base-era spec, `agentOrgInspectionApollo.spec.ts`, staged a delegated row's artifacts through the Org; restated on the mounted team's configured lead (`b87be2de33`).
+- The SDV probe (API/E2E's `stopped-delegator-views-probe.mjs`, run here as the reproduction):
+  - Before these fixes, SDV-03 failed twice. The cause was the two defects above, found in the backend log and the Org reopen's retried requests.
+  - SDV-01 failed once at "the Manager started" and once at "worker reply live" in full runs before `eb5e9df040`. It passed alone at `eb5e9df040`, and in the full run at `c8166c2685`. No cause was found in the code. A timing flake in the probe under load stays possible.
+  - SDV-02 passes from `8cf765990d` on.
+- Local validation and result:
+  - IMP-63 (`c8166c2685`): the probe, all cases, Pass (SDV-01 … SDV-03).
+  - IMP-64: server type gate PASS (1012); unit 7978 passed. The one failure is the package folder watcher's timing test, which passes alone.
+  - IMP-65: integration 477 passed. The six failures are file-watcher timing tests; they fail the same way at base back to back, with `fseventsd` saturated.
+  - IMP-66: web codegen current, type gate PASS (90), guards pass, 5745 specs pass after one base-era spec was restated.
+- Next recipient or routing: Code Reviewer (Local Fixes done; Large / High).
+- Remaining limitations or risks:
+  - SDV-01's two earlier failures in full runs have no cause found.
+  - CR-461-042's reopened row is pinned by handler tests, not rendered.
+  - CR-461-041 goes one hop: a run two hops down asks only its own delegator's catalog, as base's host did.
