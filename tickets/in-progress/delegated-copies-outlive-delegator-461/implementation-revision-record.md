@@ -599,3 +599,80 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining limitations or risks: C17-02 (a run two hops down at an address only the top run's catalog offers) is held for API/E2E, as CRR-022 says.
 
 - Review result: `Pass`, CRR-023 (round 18; `code-review-report.md`). CR-461-047 is resolved. The Code Reviewer routes to API/E2E. Its note: `delegation-index.ts` is at 499 effective lines, so a further owner there goes into its own file.
+
+### IR-019 — CRR-024's Local Fixes (CR-461-048 … -053) and SR-072 (F-23, F-24, F-26, F-30)
+
+- Triggering role, report path, and round: Code Reviewer CRR-024 (`code-review-report.md`, the failure-origin review of API/E2E round 5, API-REV-005): six `Local Fix` findings, CR-461-048 (data loss, first) … -053. The Solution Designer's SR-072 answers CR-461-054 (Design Impact, F-26) and CR-461-055 (Requirement Gap: F-23, F-24, F-27, F-30, F-31, F-36, K-13). ARCH-REV-047 passed it, with one wording fix (deliver every queued frame). SR-073 answers my F-32 question. Round 19.
+- Triggering finding IDs: CR-461-048 … -053; SR-072 (CR-461-054, -055); SR-073. Large / High unchanged.
+- Prior authoritative result: IR-018 at `56e4ce773b` (CRR-023 Pass).
+- Current authoritative result: `a0c3a691dc`.
+- Related solution / architecture-review revision IDs: SR-072, SR-073; ARCH-REV-047. Related code-review revision IDs: CRR-024.
+- Implementation delta:
+  - **CR-461-048 (`f0d03a4cda`), data loss.**
+    - 461's migration was registered ahead of the released `20261020_remove_skill_improvement_data`. On data that had not run 20261020, it made the improver's delegated copy a run of its own, and 20261020 then deleted that folder as a helper run (F-25).
+    - It is now registered last, after every migration released in v1.5.13-beta.6 (`3228eff74b`). No dependency runs the other way: 461's migration reads none of the four it now follows.
+    - New `app-data-migration-registry-order.test.ts` pins two rules: the released migrations come first, in their released order; every later one follows them in date order, none dated before the newest released one. It fails on the old registry.
+    - Five placement tests that pinned positions against the registry's end are restated relative to their own place: collaborators, delegated-copy, Skill Improvement removal, Memory Sync names, raw-trace manifest names.
+    - API/E2E's `remove-skill-improvement-data-startup.e2e` on a rebuilt `dist`:
+      - The copy's folder is kept.
+      - The one remaining difference is its `run_metadata.json`, which 461's migration rewrites, as it converts every delegated copy.
+      - SID-2's "every other file byte-identical" predates 461 (autobyteus-205) and needs restating by API/E2E.
+  - **CR-461-049 (`bffd55fb01`).**
+    - `toExistingRun` compares the two runs' tree tops before the Task side's assigner check.
+    - A sender in another tree gets base's "<id> is not one of your task agents. …". At base the run was hosted in another root.
+    - In the same tree, an agent other than the last assigner keeps the Task side's text.
+  - **CR-461-050 (`10e916b96c`).**
+    - Before any placement, `toNewRun` refuses the sender run's own name (its Task entry's `recipientAddress`), or an address inside it, with COLLABORATION_SELF_TARGET_REJECTED. At base the copy was an instance at that address, so CM-1 caught it.
+    - A team run gets the own-team text, an agent run the self text.
+  - **CR-461-051 (`dbfd2d4707`).**
+    - `ClosedTaskFence.refusal(run, delegated)`: while any Task record cannot be read, a delegated run that no readable Task names is refused with the Task side's message, TASK_AGENT_RESOURCES_UNAVAILABLE. A run is delegated when its own file has `delegatedFrom`. This is 469 DEC-010: such a run could not be told apart from an unreadable Task's work.
+    - Only the run's own root knows it was delegated, so it is asked at the standalone and Team gate heads and in a Team member's input check, before the agent is made ready. No model request follows.
+    - The before-restore check cannot know this, so a refused run's root is loaded, but its agent is not made ready.
+    - `RunTaskRecords.unreadable()` was added. The code joins the SEND_MESSAGE ack codes on the server and the web.
+  - **CR-461-052 (`7a3c12b4e4`):** both new-run paths, local and peer, record any failed dispatch as base's TASK_DISPATCH_FAILED with its message.
+  - **CR-461-053 (`dbc26d1466`, web).**
+    - F-33: `topLevelRunSources` is now the one owner of the top-level runs for both the desktop's navigation and the phone's run list. It drops retired runs, and a delegated run opened from its delegator's view unless the list has it.
+    - F-34: an Org's delegated row on the phone commits its open only once the run's own context is open (`delegatedRunsStore.whenOpen`), and fails when that open fails. Before, it committed at once, found no target and went back to the list.
+    - F-32: SR-073, no web change: a listed Team's or Org's delegated rows show once its view is open, as at base. MSP-51 is to open the Team first (API/E2E).
+  - **SR-072 F-30 (`c41d6ac2dc`):** `DelegatedWorkGuard` counts an idle run as working (running, initializing or idle), local and peer.
+  - **SR-072 F-23 (`3b7e6a99d7`, test only).**
+    - While the Task is DONE, the assigner's message to a team's member is refused as for the run (R-8, S10), with base's Task-side text (`1160bb4f33` aligns the contract).
+    - After the Task reopens, it continues the run whichever agent it names (R-6, S11, the model's `_admit`).
+    - The e2e expectation at `task-reactivation-root-visibility` step 11 (a member after IN_PROGRESS) changes: API/E2E.
+  - **SR-072 F-24 (`fcf42b916d`):** a run whose Tasks were all deleted takes a new Task from the delegator its own file names (U11).
+    - `RunOwnAgentsReader.delegationOf` reads the run's own `delegatedFrom`, stored address, definition and entry agent.
+    - `RunOwnDelegations` completes a team run's address, which its file does not keep, from its delegator's catalog (`CollaboratorAdmission.catalogAddressOf`).
+    - The Task side accepts the assignment from that delegator (`ownDelegatorAgentRunId`) and writes the run's own address.
+  - **SR-072 F-26 (`a0c3a691dc`), the Team tab's messages.**
+    - Snapshot: `collaborationParticipantMessages` composes X's log with every local run below it, open or closed, at every depth, with base's `composeMessageLogs` and in-view rule (`run-view-messages.ts`).
+      - Its tree is X's agents and those of its open rows.
+      - Past participants come from the whole subtree.
+      - This read has no paging, at base or now.
+    - Live: `RunMessagesFeed`, held by `RunViewStreams` as `messages`.
+      - A message is published once: inside a run at its commit; between runs at the receiver's commit. The sender's commit and the peer paths do not publish it, as at base.
+      - Each open stream of either run, or of a run above either (`chainOf`), numbers it as its kind's message event.
+      - The port's `publishToRootView` became `publishMessage(message, senderRun)`.
+- Tests: one per finding, each confirmed to fail without its fix where the fix changes code:
+  - the registry order;
+  - the CM-1 own name;
+  - the cross-tree refusal;
+  - the fence and both gate heads with damaged data;
+  - the dispatch code (local, the peer's refusal, an unreachable peer);
+  - the phone's list and the Org open;
+  - the guard's idle run;
+  - F-23's member;
+  - F-24 at the delegation, the Task side, the reader, the owner and the catalog;
+  - F-26's composition (a two-hop message in the Manager's tab, each once), the feed (each view once, a closed run still below, an unopened view gets nothing) and the engine's publication (inside, at the receiver, not at the sender's commit).
+- Local validation and result:
+  - IMP-68: CR-461-048's registry order, the startup e2e on a rebuilt `dist`, and every migration test (625).
+  - IMP-69 (`a0c3a691dc`): server type gate PASS (1012); unit 8006 passed.
+  - IMP-70 (`dbc26d1466`): web codegen current, type gate PASS (90), guards pass, 5749 specs.
+  - IMP-71: integration 479 passed. `team-communication-api` needed the Studio services the participant read now always uses (test fix `a5b80f3d7a`). The watcher's timing failures fail the same way at base.
+  - IMP-72: the views probe. SDV-02, -03 and -04 pass. SDV-01 failed at "the Manager started" in the full run (the worker was still running; the send never reached the server), as in round 17, and passes alone.
+- Next recipient or routing: Code Reviewer (Local Fixes and SR-072 done; Large / High).
+- Remaining limitations or risks:
+  - F-26 live: a message between a run in X's subtree and a run outside it (X's own delegator) is numbered in X's stream, as the design says ("either run"). Base's in-view rule keeps it out of X's composed read, so a Team tab could show it live but not after a reload.
+  - CR-461-051: for damaged Task data, the refusal comes at the gate head, after the run's root is loaded, not before. Only the root knows the run was delegated.
+  - SDV-01's flake at "the Manager started" stays: no cause in the code was found. The worker is still running when the probe clicks.
+  - Expectations API/E2E restates, no code change: SID-2 (byte-identical), `task-reactivation-root-visibility` step 11, MSP-51 (open the Team first), F-31, F-36, K-13, and `teammate-delivery-task-closure-race` (a refused message is never shown).
+

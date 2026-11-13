@@ -1,0 +1,44 @@
+# CR-461-048; working tree on 9485924745 + the registry fix
+$ npx vitest run --no-watch tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts  (unfixed registry, HEAD)
+     × the released migrations come first, in their released order 5ms
+     × autobyteus-461's migration runs after the Skill Improvement removal, which deletes the improver's helper runs first 0ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 1 passed (3)
+$ (the same, with the fix)
+      Tests  3 passed (3)
+$ npx vitest run --no-watch tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts  (API/E2E, F-25), on a stale dist (before the rebuild): not proof
+     × SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open 3450ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+$ pnpm prebuild && pnpm build; then the same e2e on the current dist
+     × SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open 5053ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+# The copy's folder is kept (memory/agents/improver_task_copy_6666/ and its raw_traces_active.jsonl are byte-identical).
+# The one difference: its run_metadata.json, rewritten by 20261111_delegated_runs_own_runs_v1, its intended conversion of a delegated copy.
+# SID-2's 'every other file byte-identical' predates 461's migration (autobyteus-205); API/E2E restates it for the files 461's migration converts.
+- Expected
++ Received
+
+@@ -31,11 +31,11 @@
+    "memory/agents/daily_assistant_ffff/run_metadata.json": "6efc1cec8553c9a9a56999c28a6d7b3162e1c0a76df017b57d40cb7d1f5e8117",
+    "memory/agents/daily_assistant_ffff/skill_improvement/": "dir",
+    "memory/agents/daily_assistant_ffff/skill_improvement/notes.md": "cc5f16644b3b72b8ba0104af89646ac448b4ccfa9406584acc78c76ecd28da8f",
+    "memory/agents/improver_task_copy_6666/": "dir",
+    "memory/agents/improver_task_copy_6666/raw_traces_active.jsonl": "2f25bf05f467568db896ebe582eaba65f96e25227f16a2a6c7f195f7be728d78",
+-   "memory/agents/improver_task_copy_6666/run_metadata.json": "940aeab229ba9eb0b67ad334585bc2039810fff11f0c3d17126e6bfb20b6861d",
++   "memory/agents/improver_task_copy_6666/run_metadata.json": "01e875d1e1f7a5be43fdccda16081a3121ed3317b6cd0a4115776f72c35aa2e7",
+    "memory/agents/memory_compactor_4444/": "dir",
+    "memory/agents/memory_compactor_4444/raw_traces_active.jsonl": "5609d0af6f8148eb03dc38a932acbd8b8703170eefe33472da080f90f0179eaf",
+    "memory/agents/memory_compactor_4444/run_metadata.json": "b73ae106fd3b146700f0c58c62ebf8f6039676608e8cc6c005f13cb716fef644",
+$ npx vitest run --no-watch tests/unit/app-data-migrations tests/app-data-migrations/delegated-runs-own-runs-v1 tests/app-data-migrations/remove-skill-improvement-data
+     × is registered after every run-tree migration (only the autobyteus-290 stored-name renames and the raw-trace manifest runtime names follow), required on startup and startup-only 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 51 passed (52)
+# Five base and branch placement tests pinned positions against the registry's end; restated relative to their own place (collaborators, delegated-copy, Skill Improvement removal, Memory Sync names, raw-trace manifest names).
+$ npx vitest run --no-watch tests/unit/app-data-migrations tests/app-data-migrations
+ Test Files  72 passed (72)
+      Tests  625 passed (625)

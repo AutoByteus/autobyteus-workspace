@@ -9,7 +9,7 @@ Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 - Upstream review applicability and handoff-rule result: Large / High → independent architecture review was selected (passed ARCH-REV-014 on SR-039, ARCH-REV-019 on SR-044, ARCH-REV-022 … ARCH-REV-028 on SR-047 … SR-053, ARCH-REV-030 on SR-055, ARCH-REV-031 on SR-056, ARCH-REV-032 on SR-057, ARCH-REV-033 on SR-058, ARCH-REV-034 on SR-059, ARCH-REV-035 on SR-060, ARCH-REV-036 … ARCH-REV-042 on SR-061 … SR-068); this handoff goes to Code Review (round 13: IR-011 … IR-013 in one review).
 - Requirements doc: `requirements-doc.md`
 - Investigation notes: `investigation-notes.md`
-- Solution revision record: `solution-revision-record.md` (through SR-071)
+- Solution revision record: `solution-revision-record.md` (through SR-073)
 - Design spec: `design-spec.md` (DS-1 … DS-15; SR-071's refusals in base's order; rules 1–3 of SR-061; implementation order steps 1 … 10)
 - Supplemental task artifacts: `target-collaboration-contract.md` (revision 8, the authority with its executable model), `evidence/collaboration-model/` (`model.py`, `stories.py`, `walkthrough.py`), `collaboration-walkthrough.md`, `evidence/data-model-validation/`
 - Design review report: `design-review-report.md`
@@ -18,13 +18,30 @@ Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (round 18: CR-461-047; round 17: CRR-021's Local Fixes and SR-071; round 16: CR-461-038, passed as CRR-020; round 15: SR-070 / DS-15; round 14 was CRR-017's Local Fixes, passed as CRR-018)
+- Implementation cycle: `Rework` (round 19: CRR-024's Local Fixes and SR-072, SR-073; round 18: CR-461-047, passed as CRR-023; round 17: CRR-021's Local Fixes and SR-071; round 16: CR-461-038, passed as CRR-020; round 15: SR-070 / DS-15; round 14 was CRR-017's Local Fixes, passed as CRR-018)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-018` (IR-001: the initial implementation; IR-002 … IR-017: rounds 2 … 17)
+- Current implementation revision ID: `IR-019` (IR-001: the initial implementation; IR-002 … IR-018: rounds 2 … 18)
 - Related solution revision IDs: SR-018 … SR-068 (rounds 11 … 13: SR-058 a delegated run's collaboration context, SR-059 step 2's one enumeration, SR-060 the forest and each run's collaboration map, SR-061 the frontend contract (rules 1–3), SR-062 one view sequence per run, SR-063 `RunViewStream`, SR-064 an agent stream follows its run and the Settings save per run, SR-065 each child's own options, SR-066 a peer run by its own identity, SR-067 every spine walked (DS-13), SR-068 `hasCollaboration`; round 9: SR-057 a listed run's peer children in the poll's answer; round 8: SR-055 one listed-runs poll for every kind, SR-056 the row projection split by data lifetime; round 3: SR-045 the stream lives with the open view, SR-046 stored and live view sessions, SR-047 owners passed in from one composition root, SR-048 restore → live → post, SR-049 roots don't delegate, SR-052 the application host composes the same steps (replaces SR-050/051), SR-053 narrow `RunTaskRecords` port)
-- Related architecture-review revision IDs: ARCH-REV-005 … ARCH-REV-045
-- Related code-review revision IDs: CRR-002 … CRR-022 (CRR-022: round 17, Fail, CR-461-047; CRR-021: failure-origin review of API/E2E round 4; CRR-018, CRR-020: Pass; CRR-016: failure-origin review of API/E2E round 3; CRR-014: a Full Re-Audit of IR-009; CRR-013: a full review of the whole change; CRR-008, CRR-012: failure-origin reviews of API/E2E rounds 1 and 2; CRR-011: Pass, informational); delivery: `N/A`
-- Triggering finding IDs: CR-461-047 (round 18, IR-018); CR-461-039 … -044, and CR-461-045, -046 as SR-071 (round 17, IR-017); CR-461-038 (round 16, IR-016); SR-070 / G-4 (round 15, IR-015); CR-461-036, CR-461-037, and CR-461-035 as SR-069 (round 14, IR-014); SR-060 … SR-068 and CR-461-033 (round 13, IR-013; IR-012 folded in); CR-461-030 … -032, -034, SR-058, SR-059 (round 11, IR-011); CR-461-028, CR-461-029 (round 10, IR-010); CR-461-022 … CR-461-026, CR-461-027 as SR-057 (round 9, IR-009); CR-461-017 … CR-461-020, CR-461-021 as SR-055/056 (round 8, IR-008); CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+- Related architecture-review revision IDs: ARCH-REV-005 … ARCH-REV-047
+- Related code-review revision IDs: CRR-002 … CRR-024 (CRR-024: failure-origin review of API/E2E round 5; CRR-023: Pass; CRR-022: round 17, Fail, CR-461-047; CRR-021: failure-origin review of API/E2E round 4; CRR-018, CRR-020: Pass; CRR-016: failure-origin review of API/E2E round 3; CRR-014: a Full Re-Audit of IR-009; CRR-013: a full review of the whole change; CRR-008, CRR-012: failure-origin reviews of API/E2E rounds 1 and 2; CRR-011: Pass, informational); delivery: `N/A`
+- Triggering finding IDs: CR-461-048 … -053, and SR-072 (CR-461-054, -055), SR-073 (round 19, IR-019); CR-461-047 (round 18, IR-018); CR-461-039 … -044, and CR-461-045, -046 as SR-071 (round 17, IR-017); CR-461-038 (round 16, IR-016); SR-070 / G-4 (round 15, IR-015); CR-461-036, CR-461-037, and CR-461-035 as SR-069 (round 14, IR-014); SR-060 … SR-068 and CR-461-033 (round 13, IR-013; IR-012 folded in); CR-461-030 … -032, -034, SR-058, SR-059 (round 11, IR-011); CR-461-028, CR-461-029 (round 10, IR-010); CR-461-022 … CR-461-026, CR-461-027 as SR-057 (round 9, IR-009); CR-461-017 … CR-461-020, CR-461-021 as SR-055/056 (round 8, IR-008); CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+
+**Round 19 (IR-019), CRR-024's Local Fixes and SR-072, `a0c3a691dc`.** One commit per finding; the details are in IR-019.
+
+- **CR-461-048** (`f0d03a4cda`, data loss): 461's migration runs after every released migration, so 20261020 no longer deletes a delegated copy it made a run of its own. A registry-order test pins the rule.
+- **CR-461-049** (`bffd55fb01`): a sender in another tree gets base's "not one of your task agents".
+- **CR-461-050** (`10e916b96c`): CM-1 refuses a delegated run's own name (its `recipientAddress`) or an address inside it.
+- **CR-461-051** (`dbfd2d4707`): while a Task record cannot be read, a delegated run that no readable Task names fails closed at its gate head (`TASK_AGENT_RESOURCES_UNAVAILABLE`); no model request.
+- **CR-461-052** (`7a3c12b4e4`): a failed dispatch of a new run, local or peer, is recorded as base's `TASK_DISPATCH_FAILED`.
+- **CR-461-053** (`dbc26d1466`, web):
+  - one owner of the top-level runs for the desktop and the phone (F-33);
+  - an Org's delegated row on the phone commits once its run is open (F-34);
+  - F-32 is SR-073: rows show once the view is open; no web change.
+- **SR-072:**
+  - F-30 (`c41d6ac2dc`): an idle run blocks archive and delete.
+  - F-23 (`3b7e6a99d7`, test only): base's text kept (`1160bb4f33`).
+  - F-24 (`fcf42b916d`): a run whose Tasks were all deleted takes a new Task from its own delegator.
+  - F-26 (`a0c3a691dc`): the Team tab composes the subtree's logs; live through the node's `RunMessagesFeed`.
 
 **Round 18 (IR-018), CR-461-047 (CRR-022), `56e4ce773b`:**
 - `DelegationIndex.teamCoordinatorOf` is the one owner of a team run's coordinator when the team does not run: its standing's, else its Task entry's entry agent (a peer's file is on its node, or the file is unreadable).
@@ -199,6 +216,11 @@ Rows for rounds 1 … 10 describe the code as it stood then. Round 13 replaced s
 | REQ-009, delegation from a delegated run (CR-461-041) | A catalog address its own catalog lacks is answered with its delegator's catalog copy | `execution/task/delegator-catalog.ts`, `run-history/services/run-collaborator-port.ts`, `task-delegation.ts` `toNewRun` | Implemented (`8cf765990d`) |
 | REQ-002 "once", DS-11 (CR-461-044) | A delegated run opened from its delegator's view is listed once, under its delegator | web `stores/delegatedRunsStore.ts`, `stores/runHistoryNavigationStoreActions.ts`, `stores/runHistoryLoadActions.ts` | Implemented (`85e99c74a0`) |
 | SR-061 rule 2, Org reopen (SDV-03) | An Org reopen stages no focused delegated row through its member reads | web `services/agentOrgExecution/agentOrgContextHydration.ts` | Implemented (`c8166c2685`) |
+| SR-072 F-26 (CR-461-054; rule 1, REQ-002) | The Team tab of run X shows X's messages and those of every run below it, open or closed; live, each message once in each view of either run or a run above | `run-history/services/run-view-messages.ts`, `api/graphql/types/collaboration-participant-messages.ts`, `run-history/services/delegated-run-agents-reader.ts` (`runsBelow`); `agent-collaboration/delegation/run-messages-feed.ts`, `run-view-stream.ts` (`messages`), `root-communication-engine.ts` (`publishMessage`), the three ports and roots (`messageFeed`) | Implemented (`a0c3a691dc`) |
+| SR-072 F-24 (U11; REQ-009) | A run whose Tasks were all deleted takes a new Task from its own delegator | `execution/task/run-own-delegation.ts`, `run-history/store/run-own-agents-reader.ts` (`delegationOf`), `collaborator-admission.ts` (`catalogAddressOf`), `task-delegation.ts` `toExistingRun`, the Task side's `ownDelegatorAgentRunId` | Implemented (`fcf42b916d`) |
+| SR-072 F-30 (T-5, DS-13) | An idle delegated run blocks archive and delete | `run-history/services/delegated-work-guard.ts` | Implemented (`c41d6ac2dc`) |
+| 469 DEC-010 / MP-003 (CR-461-051; REQ-005) | A delegated run fails closed while Task data cannot be read | `execution/task/closed-task-fence.ts`, the standalone and Team gate heads, the member input check, `RunTaskRecords.unreadable` | Implemented (`dbfd2d4707`) |
+| Release safety (CR-461-048) | 461's migration runs after every released one | `app-data-migrations/app-data-migration-registry.ts`; `app-data-migration-registry-order.test.ts` | Implemented (`f0d03a4cda`) |
 | DS-15 (SR-070, G-4; REQ-005) | A delegated run whose Task is closed takes no user, application or resume input, refused with base's text before its root is resolved or restored; the assigner's continuation reopens it first | `agent-collaboration/execution/task/closed-task-fence.ts`; entry: `agent-run-command-coordinator.ts` (`StandaloneRunCommandPort.inputRefusal`), `standalone-agent-run-root-manager.ts`, `agent-team-stream-handler.ts`, `restart-resumer.ts` (the Org handler's check removed in IR-016, CR-461-038); gate head: `standalone-agent-run-root.ts` (`postHostUserMessage`, outcome `refused`), `root-team-run.ts` (`executeAgentCommand`), `team-root-materializer.ts` (members' `assertExecutionInputAllowed`); composition: `TaskSide.closedTasks`, `RunViewSources.closedTasks` | Implemented; IMP-58 base characterization |
 | SR-069 (CR-461-035) | A peer run takes no `@`, as at base | web `composables/agentInput/useComposerTarget.ts` (unchanged from base; `peerComposerMentionScope.spec.ts`, IMP-53); server `PEER_MENTIONS_REFUSAL` in the three view handlers (each tested) | As at base; nothing is posted |
 | SR-060 (IR-012) | One forest; each run's collaboration map answers step 2, sender address, placement, a copy's context and the rows | `delegation/delegation-index.ts` (`collaborationTreeOf`, `peerRunNamed`, `runDeleted`, `skipUnstored`), `collaboration-tree.ts`, `received-sender-addresses.ts` | Implemented; the old index callers are listed in IR-012 |
@@ -287,6 +309,10 @@ Rows for rounds 1 … 10 describe the code as it stood then. Round 13 replaced s
 
 ## Known Risks
 
+- **Round 19:**
+  - CR-461-051: the before-restore fence cannot know a run was delegated, so for damaged Task data the run's root is loaded, and its gate head refuses before its agent is made ready.
+  - F-26 live: a message whose two agents are a run in X's subtree and a run outside it (e.g. X's own delegator) is numbered in X's stream, as the design says (either run in the set). Base's in-view rule keeps it out of X's composed read, so a Team tab could show it live and not after a reload. This is rare: X's delegator messaging X's descendants. Raised for the reviewer.
+  - The file watcher's timing tests fail under this machine's load, at base too.
 - **Round 17:**
   - SDV-01 failed twice in full probe runs before `eb5e9df040`. It passed alone and in the full run at `c8166c2685`; no cause was found in the code.
   - The file watcher's timing tests fail under this machine's file-event load, at base too (IMP-65).
@@ -435,7 +461,13 @@ Evidence files are in `evidence/implementation/`. Round 17 is IMP-63 … IMP-66,
 | IMP-65 | `pnpm test:integration:prepare && pnpm test:integration` (server); the failed files alone; the same files at base `827f1e68dc` back to back | `c8166c2685` | macOS, Node 22.23; load average 16–36, `fseventsd` at ~150% CPU | stream handlers over real sockets, REST, GraphQL, the Org inspection | CR-461-039, the Org inspection fix | Pass apart from file-watcher timing, which fails the same way at base | `IMP-65-server-integration.log` | `Tests  6 failed \| 477 passed \| 69 skipped (552)`: all six in `file-system-watcher` and `package-auto-refresh` (8-second waits for file events); alone, branch 5 failed and base 4 failed of the same 29, a different set each run; the branch changes neither watcher |
 | IMP-66 | web `codegen:check`, type gate, guards, full spec suite; the failed spec after its restatement | `c8166c2685`; the spec on `b87be2de33` | macOS, Node 22.23 | the whole web with CR-461-044 and the Org staging fix | CR-461-044, the Org staging fix | Pass after one base-era spec restated | `IMP-66-web-checks-and-specs.log` | `generated/graphql.ts is current.`; `[typecheck] PASS` at 90; guards `Passed.`; `Tests  1 failed \| 5745 passed \| 2 skipped (5748)`: `agentOrgInspectionApollo.spec.ts` focused a delegated row through the Org's member reads; restated on the configured lead, `Tests  25 passed (25)` |
 | IMP-67 | server type gate; delegation, communication, backend-factory and architecture tests; web type gate and store specs | `56e4ce773b` | macOS, Node 22.23 | `DelegationIndex.teamCoordinatorOf`, the router, the composition; the navigation actions | CR-461-047 | Pass | `IMP-67-cr047-checks.log` | `[typecheck] PASS` at 1012; `Test Files  78 passed (78)`, `Tests  663 passed (663)`; web `[typecheck] PASS` at 90, `Tests  1165 passed (1165)` |
+| IMP-68 | CR-461-048: the registry-order test on the old and the fixed registry; API/E2E's `remove-skill-improvement-data-startup.e2e` on a rebuilt `dist`; every migration test | `f0d03a4cda` (run on its working tree) | macOS, Node 22.23 | the registry order, 461's migration after 20261020 | CR-461-048 | Pass (data loss fixed); SID-2's byte-identical rule needs restating | `IMP-68-cr048-migration-order.log` | old registry: 2 of 3 fail; fixed: `Tests  3 passed`; e2e: the copy's folder kept, its `run_metadata.json` rewritten by 461's migration; `Tests  625 passed (625)` |
+| IMP-69 | server type gate; `pnpm test:unit` | `a0c3a691dc` | macOS, Node 22.23 | all server src and unit tests | CR-461-048 … -052, SR-072 | Pass | `IMP-69-server-checks.log` | `[typecheck] PASS` at 1012; `Test Files  978 passed`, `Tests  8006 passed \| 9 skipped (8015)` |
+| IMP-70 | web `codegen:check`, type gate, guards, full spec suite | `dbc26d1466` (the web is unchanged after it) | macOS, Node 22.23 | the shared top-level owner, the phone's Org open | CR-461-053 | Pass | `IMP-70-web-checks-and-specs.log` | `[typecheck] PASS` at 90; guards `Passed.`; `Test Files  765 passed (765)`, `Tests  5749 passed \| 2 skipped` |
+| IMP-71 | `pnpm test:integration:prepare && pnpm test:integration`; the failed files again | `a0c3a691dc`; the test fix `a5b80f3d7a` | macOS, Node 22.23; load average 6–30 | sockets, REST, GraphQL, the participant read | SR-072 F-26 | Pass after one test fix; the file watcher's timing as at base | `IMP-71-server-integration.log` | `Tests  4 failed \| 479 passed`: `team-communication-api` lacked the Studio services the read now uses (fixed, `Tests  4 passed`); the watcher's timing (IMP-65's control) |
+| IMP-72 | the stopped-delegator views probe, all cases; SDV-01 alone | `a0c3a691dc`, server rebuilt | macOS, Node 22.23; the probe's own data root and Chrome | the views with the live message feed | SR-072 F-26, CR-461-053 | Pass apart from SDV-01's known flake | `IMP-72-sdv-probe.json`, `IMP-72-sdv-01-worker-still-running.png` | full: SDV-02, -03, -04 Pass; SDV-01 "the Manager started" (the worker still running; the send never reached the server; as in round 17); alone: Pass |
 
+- Not run, and why (round 19): the contract tests (no contract changed); the server E2E suites (API/E2E's), except the one startup e2e for CR-461-048 (IMP-68); the phone in a browser (CR-461-053 is pinned by specs; MSP-50 … 52 are API/E2E's).
 - Not run, and why (round 17): the contract tests (no contract changed this round); the server E2E suites (API/E2E's); the phone layout in a browser.
 - Not run, and why (round 13): the CPW e2e after round 11; the server E2E suites and browser probes (API/E2E, see Known Risks); the rendered check (below); the contract model check (`walkthrough.py --check`) — the contract and its model did not change in round 13. Round 8 adds: a browser check of the listed rows on the desktop and the phone (Frontend Rendered-Result Check); the contract model check (`walkthrough.py --check`): the contract and its model are unchanged this round, so IMP-17 holds. Round 3 adds: the contract model check (`walkthrough.py --check`): the contract and its model are unchanged since `7a32bb8832`, so IMP-17 holds; a browser check of the stream lifetime and SR-048 in both layouts; the agent-run root's reconnect after a WebSocket 1000 close (noted mid-round, not verified). Earlier: server E2E suites (`pnpm test:e2e`, gated runtime suites), browser probes, the isolated desktop instance, and the contract's stories run against two server instances (design "Validation", the acceptance test) — owned by API/E2E. `tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` needs a rewrite for the new model (Known Risks).
 
@@ -458,6 +490,20 @@ Evidence files are in `evidence/implementation/`. Round 17 is IMP-63 … IMP-66,
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- **Round 19, expectations API/E2E restates (decided upstream, no code change):**
+  - `remove-skill-improvement-data-startup` SID-2: 461's migration rewrites the kept copy's `run_metadata.json`; "every other file byte-identical" must leave out the files it converts. The data loss (the folder) is fixed.
+  - `task-reactivation-root-visibility` step 11: the assigner's message to a member after the Task is IN_PROGRESS continues the run (R-6), not "No running agent …" (SR-072 F-23).
+  - MSP-51: open the Team before expecting its delegated row (SR-073, F-32).
+  - F-31 (one-hop launch inheritance) and F-36 (`/lead`): their expectations change (SR-072). K-13: S23 and S24 before S16.
+  - `teammate-delivery-task-closure-race`: assert a refused message is never shown (SR-072).
+  - The ten startup e2e files under `tests/e2e/app-data-migrations` and `projects-startup-migration` may pin registry positions; 461's migration is now last (CR-461-048).
+- **Round 19, to cover:**
+  - F-26: a two-hop message in the Manager's Team tab, live and after a reload; a message between runs once; a closed run's earlier messages kept; a message committed during the read shown once with no reopen.
+  - F-24 (U11): delete a run's only Task, then give it a new one by run ID from its delegator (agent run and team run).
+  - CR-461-051: damage a Task record, restart, message a delegated run: refused, no model request.
+  - CR-461-050: a delegated team's member delegating to its own team's name.
+  - CR-461-052: an unreachable peer at dispatch: `startError.code` is TASK_DISPATCH_FAILED.
+  - CR-461-053: the phone's run list after opening a delegated row (listed once); an Org's delegated row opens its run screen.
 - **Round 17:**
   - Rerun the stopped-delegator views probe several times, to see whether SDV-01 still flakes.
   - The Org case of `teammate-delivery` (CR-461-039).

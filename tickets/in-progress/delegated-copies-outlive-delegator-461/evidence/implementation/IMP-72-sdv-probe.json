@@ -1,0 +1,79 @@
+{
+ "commit": "a0c3a691dc (server rebuilt)",
+ "full": {
+  "command": "pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir /tmp/sdv-out7",
+  "cases": {
+   "SDV-01": "Fail",
+   "SDV-02": "Pass",
+   "SDV-03": "Pass",
+   "SDV-04": "Pass"
+  },
+  "failures": [
+   {
+    "id": "SDV-01",
+    "message": "Timed out: the Manager started"
+   }
+  ]
+ },
+ "sdv01Alone": {
+  "command": "... --output-dir /tmp/sdv-out8 --cases SDV-01",
+  "result": "Pass",
+  "details": {
+   "streams": [
+    {
+     "closed": true,
+     "frames": 5
+    },
+    {
+     "closed": false,
+     "frames": 4
+    }
+   ],
+   "workerRowKept": true,
+   "renderedRootStatus": {
+    "view open after Stop": {
+     "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+     "samples": [
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+     ]
+    },
+    "after a child command": {
+     "settled": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+     "samples": [
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2",
+      "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-2"
+     ]
+    }
+   },
+   "workerAnsweredLive": true,
+   "sentMessages": [
+    {
+     "at": 1794578447501,
+     "socket": "/ws/agent/worker_sdvagent_297e_7577676b44f34b29ab1ddbbbe9a18ee9",
+     "target": null
+    }
+   ],
+   "workerMessageSockets": [
+    "/ws/agent/worker_sdvagent_297e_7577676b44f34b29ab1ddbbbe9a18ee9"
+   ],
+   "workerTeamTab": "Messages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.",
+   "rootStayedStopped": true,
+   "helperRunId": "helper_sdvagent_297e_67d72e0e493c4e8bb356be38c94026ff",
+   "helperRowLive": true,
+   "managerStarted": true,
+   "streamsAfterStart": 0
+  }
+ },
+ "reading": "SDV-01 failed in the full run at 'the Manager started': the worker was still running (its composer showed Stop) when the probe clicked the Manager's row and sent MANAGER-START, which never reached the backend. The same step failed once in round 17 before these changes (IR-017); alone it passes. SDV-02, SDV-03 and SDV-04 pass."
+}
