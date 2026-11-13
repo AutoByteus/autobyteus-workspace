@@ -1,0 +1,15 @@
+# IMP-01 renderer specs and font-size audit (autobyteus-24)
+# Command: pnpm -C autobyteus-web exec vitest run components/conversation/segments/renderer/__tests__ composables/__tests__/useMarkdownSegments.spec.ts composables/__tests__/useMarkdownSegments.sanitization.spec.ts composables/__tests__/useMarkdownSegments.wrapping.spec.ts tests/integration/app-font-size-fixed-px-audit.integration.test.ts --no-watch
+# Code: identical to b1955d4a7 (run just before the commit); Linux container, Node 22; 2026-11-13T10:22Z
+ ✓ composables/__tests__/useMarkdownSegments.sanitization.spec.ts (3 tests) 69ms
+ ✓ composables/__tests__/useMarkdownSegments.wrapping.spec.ts (5 tests) 99ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts (5 tests) 4ms
+ ✓ composables/__tests__/useMarkdownSegments.spec.ts (3 tests) 24ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts (7 tests) 84ms
+ ✓ tests/integration/app-font-size-fixed-px-audit.integration.test.ts (2 tests) 107ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 88ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (20 tests) 189ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.headingLinks.spec.ts (13 tests) 283ms
+ Test Files  9 passed (9)
+      Tests  63 passed (63)
+exit=0

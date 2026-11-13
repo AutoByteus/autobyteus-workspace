@@ -1,23 +1,28 @@
 // Fenced code blocks in rendered Markdown wrap to their box; a table or display equation that cannot fit scrolls
-// sideways inside its own box; the message or document is never wider than its column (autobyteus-23). Cases of
+// sideways inside its own box; the message or document is never wider than its column (autobyteus-23). Inline text
+// wraps too: a path in inline code, a link, a bare URL, a long token or a heading word longer than the line breaks
+// inside it, and no inline-code box hangs past the edge (autobyteus-24). Cases of
 // `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by `mobile-shell-probe.mjs` after the heading-links cases
 // (`--cases=MSP-50,MSP-51,MSP-52` runs only these).
 //
 // On alpha, with test data only:
 //   - `code-wrap-23/code-wrap-23.md` in the probe workspace: a fence without a language (long prose line, a 4-space and a
 //     tab-indented line, a blank line, a 260-character URL), a `python` fence with an indented long line, a fence whose
-//     second line is the file's own absolute path, inline code with a long path, a narrow table and an 8-column table of
+//     second line is the file's own absolute path, inline code with a long path, the user's long heading (autobyteus-24),
+//     a long bare URL, a long token, a list item ending in short inline code, a narrow table and an 8-column table of
 //     unbreakable cells, a long `$$` equation, a tall `\[…\]` equation, a long `math` fence and a Mermaid diagram;
 //   - an agent run whose answer is that document (the scripted runtime's `REPLY_FILE:`), so the Event Monitor shows the
 //     file-action link beside the path fence;
 //   - a delegator (a Project Task Manager run) that sends its task agent the same document (`send_message_to`).
 // Per surface and width, inside each rendered Markdown root: every `pre` has no horizontal overflow and wraps
 // (`white-space: pre-wrap`), the URL line breaks inside the box, every original line starts on a new visual line with
-// its indentation and the blank line kept, highlighting tokens are colored, nothing but inline code (preserved behavior,
-// FU-002) reaches past the root's right edge outside the scroll boxes, the root fits inside every ancestor's box and the
-// page has no horizontal scroll; the narrow table is full width and does not scroll, the wide one scrolls in its box (a
-// real wheel or touch scroll) up to its last cell; no display equation is clipped vertically; the copied text of each
-// block equals its fence source (desktop: Ctrl+C and the clipboard; phone: the selection's text).
+// its indentation and the blank line kept, highlighting tokens are colored, nothing (inline code and links included)
+// reaches past the root's right edge outside the scroll boxes, the root fits inside every ancestor's box, no host that
+// scrolls sideways (the feed, the Files viewer) is wider than its box and the page has no horizontal scroll; the narrow
+// table is full width and does not scroll, the wide one scrolls in its box (a real wheel or touch scroll) up to its last
+// cell; no display equation is clipped vertically; the copied text of each block, of the inline path and of the bare
+// URL equals its source (desktop: Ctrl+C and the clipboard; phone: the selection's text); a word is broken inside only
+// when it is longer than its line (autobyteus-24 AC-107).
 //
 // Cases:
 //   MSP-50 AC-001, AC-005…AC-009  The desktop window (`nuxt dev`) at 1280×900 and 700×900: the agent's answer in its
@@ -46,13 +51,22 @@ const PYTHON = ['def handler(event, context):', '    message = "a long string li
 // A fenced line that is a whole absolute path gets the Event Monitor's file-action link beside the block.
 const pathFence = filePath => `Saved the reviewed draft, with every comment from the review folded in, to:\n${filePath}`;
 const cell = 'autobyteus-web/components/conversation';
+// autobyteus-24: inline text with runs longer than a narrow line.
+const INLINE_PATH = '/home/autobyteus/workspace/autobyteus-marketing-workspace/linkedin/2026-11-12-review/draft-v2.md';
+const HEADING = 'Draft v1 — LinkedIn reply to Shubham Saboo (Elephant/Goldfish Model)';
+const BARE_URL = 'https://www.linkedin.com/feed/update/urn:li:activity:7392837465123456789?utm_source=share&utm_medium=member_desktop';
+const LONG_TOKEN = 'Supercalifragilisticexpialidocious'.repeat(4);
 const documentText = filePath => [
   '# Code wrap 23', '', `${MARKER} draft for review below.`, '',
+  `# ${HEADING}`, '',
   '```', NO_LANGUAGE, '```', '',
   '```python', PYTHON, '```', '',
   'The draft, as a path in a block:', '',
   '```', pathFence(filePath), '```', '',
-  'Inline path `/home/autobyteus/workspace/autobyteus-marketing-workspace/linkedin/2026-11-12-review/draft-v2.md` stays inline.', '',
+  `Inline path \`${INLINE_PATH}\` stays inline.`, '',
+  `Bare URL ${BARE_URL} here.`, '',
+  `Long token ${LONG_TOKEN} end.`, '',
+  '- Source: `source-post.md`, builds on `precedent-review.md`', '',
   '| Name | Value |', '| --- | --- |', '| short | fits |', '',
   `| ${Array.from({ length: 8 }, (_, i) => `c${i + 1}`).join(' | ')} |`, `|${'---|'.repeat(8)}`, `| ${Array(8).fill(cell).join(' | ')} |`, '',
   '$$', `${Array.from({ length: 24 }, (_, i) => `a_{${i + 1}}`).join(' + ')} = b`, '$$', '',
@@ -136,13 +150,21 @@ const measureRoot = (root, fences) => {
     return { overflowX: getComputedStyle(box).overflowX, scrolls: ov(box) > 0, tableWidth: Math.round(table.getBoundingClientRect().width), boxWidth: box.clientWidth, scrollWidth: box.scrollWidth };
   });
   const katex = [...root.querySelectorAll('.katex-display')].map(el => ({ scrolls: ov(el) > 0, clippedY: el.scrollHeight - el.clientHeight, boxWidth: el.clientWidth, errors: el.querySelectorAll('.katex-error').length }));
-  // Elements past the root's right edge outside the boxes that scroll on purpose. Inline code is reported apart: its
-  // wrapping is preserved behavior this change does not touch (BEH-003; FU-002).
-  const past = [...root.querySelectorAll('*')].filter(el => !el.closest('.markdown-table-scroll, .katex-display')
-    && el.getBoundingClientRect().width > 0 && el.getBoundingClientRect().right > rootRight);
-  const isInline = el => (el.closest('code') && !el.closest('pre')) || el.matches('.event-monitor-file-action-link, .event-monitor-file-action-link *');
-  const inlineCodePast = past.filter(isInline).map(el => Math.round(el.getBoundingClientRect().right - rootBox.right));
-  const otherPast = past.filter(el => !isInline(el)).map(el => `${el.tagName.toLowerCase()}.${String(el.className).slice(0, 40)}`);
+  // Elements past the root's right edge outside the boxes that scroll on purpose; inline code, links and headings count
+  // like everything else (autobyteus-24). An inline element's rects are its line fragments, so each one is checked.
+  // Text runs past its element's box without widening it (a long word in a paragraph), so text nodes are checked too.
+  const outside = el => !el.closest('.markdown-table-scroll, .katex-display');
+  const pastBy = rects => Math.round(Math.max(...rects.filter(r => r.width > 0).map(r => r.right)) - rootBox.right);
+  const textRects = (node) => { const range = document.createRange(); range.selectNodeContents(node); return [...range.getClientRects()]; };
+  const texts = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) if (node.nodeValue.trim() && outside(node.parentElement)) texts.push(node);
+  const past = [
+    ...[...root.querySelectorAll('*')].filter(el => outside(el) && [...el.getClientRects()].some(r => r.width > 0 && r.right > rootRight))
+      .map(el => `${el.tagName.toLowerCase()}.${String(el.className).slice(0, 40)} +${pastBy([...el.getClientRects()])}px "${el.textContent.slice(0, 24)}"`),
+    ...texts.filter(node => textRects(node).some(r => r.width > 0 && r.right > rootRight))
+      .map(node => `#text in ${node.parentElement.tagName.toLowerCase()} +${pastBy(textRects(node))}px "${node.nodeValue.trim().slice(0, 24)}"`),
+  ];
   // RSK-001: the root fits inside every ancestor's box (nothing of it cut off or pushing a host wider).
   const cutBy = [];
   for (let el = root.parentElement; el && el !== document.documentElement; el = el.parentElement) {
@@ -154,9 +176,46 @@ const measureRoot = (root, fences) => {
   for (let el = root.parentElement; el && el !== document.body; el = el.parentElement) {
     if (el.scrollWidth > el.clientWidth + 1 && el.clientWidth > 0) hostsOverflowing.push({ tag: el.tagName.toLowerCase(), cls: String(el.className).slice(0, 60), by: el.scrollWidth - el.clientWidth, overflowX: getComputedStyle(el).overflowX });
   }
+  // autobyteus-24 AC-107: a word is broken inside only when it is longer than the line. A visual line break between two
+  // letters or digits is a break inside a word; it is allowed only when the whitespace-delimited token around it is
+  // wider than its line (the browser would otherwise have moved the whole token to the next line). Breaks at spaces,
+  // hyphens, slashes and other punctuation are normal break points and are not checked.
+  const midWordBreaks = [];
+  const alnum = ch => /[A-Za-z0-9]/.test(ch);
+  for (const node of texts) {
+    if (node.parentElement.closest('pre, .mermaid-segment-container')) continue;
+    const value = node.nodeValue;
+    const tops = [];
+    for (let i = 0; i < value.length; i += 1) {
+      const range = document.createRange(); range.setStart(node, i); range.setEnd(node, i + 1);
+      const r = [...range.getClientRects()].find(x => x.width > 0 || x.height > 0);
+      tops.push(r ? Math.round(r.top) : null);
+    }
+    for (let i = 1; i < value.length; i += 1) {
+      if (tops[i] === null || tops[i - 1] === null || tops[i] <= tops[i - 1] + 1) continue;
+      if (!alnum(value[i - 1]) || !alnum(value[i])) continue;
+      let start = i; while (start > 0 && !/\s/.test(value[start - 1])) start -= 1;
+      let end = i; while (end < value.length && !/\s/.test(value[end])) end += 1;
+      const token = value.slice(start, end);
+      // The token's width on one line, in its own font, against the width of the line box it sits in.
+      const probe = document.createElement('span');
+      probe.textContent = token;
+      probe.style.cssText = 'white-space:nowrap;position:absolute;visibility:hidden;left:0;top:0';
+      node.parentElement.appendChild(probe);
+      const inline = node.parentElement.closest('code, a') && getComputedStyle(node.parentElement.closest('code, a')).display === 'inline' ? node.parentElement.closest('code, a') : null;
+      const extra = inline ? (parseFloat(getComputedStyle(inline).paddingLeft) + parseFloat(getComputedStyle(inline).paddingRight)) : 0;
+      const tokenWidth = probe.getBoundingClientRect().width + extra;
+      probe.remove();
+      let block = node.parentElement;
+      while (block && getComputedStyle(block).display === 'inline') block = block.parentElement;
+      const cs = getComputedStyle(block);
+      const lineWidth = block.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (tokenWidth <= lineWidth - 2) midWordBreaks.push(`"${value.slice(Math.max(start, i - 12), i)}|${value.slice(i, Math.min(end, i + 12))}" in ${block.tagName.toLowerCase()} (token ${Math.round(tokenWidth)}px, line ${Math.round(lineWidth)}px)`);
+    }
+  }
   const de = document.documentElement;
   return {
-    rootWidth: Math.round(rootBox.width), rootOverflow: ov(root), pres, tables, katex, inlineCodePast, otherPast, cutBy, hostsOverflowing,
+    rootWidth: Math.round(rootBox.width), rootOverflow: ov(root), pres, tables, katex, past, midWordBreaks, cutBy, hostsOverflowing,
     pageOverflow: de.scrollWidth - de.clientWidth, windowScrollX: window.scrollX,
     mermaidSvgs: root.querySelectorAll('.mermaid-segment-container svg').length,
   };
@@ -193,9 +252,13 @@ const failuresOf = (m, { fences, expectMermaid, expectActionBeside }) => {
     if (!(python.lines[2].chars === 0 && python.lines[3].afterBlank > python.lines[1].afterBlank + 10)) out.push(`python blank line is not kept (gaps ${python.lines[3].afterBlank}/${python.lines[1].afterBlank}px)`);
   }
   if (expectActionBeside && !(pathBlock?.actionLinkBeside)) out.push('no file-action link beside the path block');
-  if (m.otherPast.length) out.push(`past the right edge: ${m.otherPast.join(', ')}`);
-  if (m.cutBy.length && !m.inlineCodePast.length) out.push(`the root does not fit its hosts: ${JSON.stringify(m.cutBy)}`);
-  if (m.pageOverflow > 0 && !m.inlineCodePast.length) out.push(`the page scrolls sideways by ${m.pageOverflow}px`);
+  if (m.past.length) out.push(`past the right edge: ${m.past.join(', ')}`);
+  if (m.midWordBreaks.length) out.push(`a word that fits its line is broken inside: ${m.midWordBreaks.join(', ')}`);
+  if (m.cutBy.length) out.push(`the root does not fit its hosts: ${JSON.stringify(m.cutBy)}`);
+  // A host the user can scroll sideways (the feed, the Files viewer) must not be wider than its box (autobyteus-24 AC-101).
+  const scrollingHosts = m.hostsOverflowing.filter(h => h.overflowX === 'auto' || h.overflowX === 'scroll');
+  if (scrollingHosts.length) out.push(`a host scrolls sideways: ${JSON.stringify(scrollingHosts)}`);
+  if (m.pageOverflow > 0) out.push(`the page scrolls sideways by ${m.pageOverflow}px`);
   if (m.windowScrollX !== 0) out.push(`the window is scrolled sideways (${m.windowScrollX})`);
   if (m.tables.length !== 2) out.push(`${m.tables.length} table boxes`);
   else {
@@ -256,27 +319,42 @@ export const runCodeWrapCases = async (probe) => {
   };
   const shot = async (target, name) => { await target.screenshot({ path: path.join(outputDir, `${name}.png`) }).catch(() => undefined); return `${name}.png`; };
 
-  /** The copied text of each code block: Ctrl+C and the clipboard (desktop), or the selection's text (phone). */
+  /** Selects all of `target`'s text and copies it: Ctrl+C and the clipboard (desktop), or the selection's text (phone). */
+  const copyOf = async (page, target, viaClipboard) => {
+    await target.scrollIntoViewIfNeeded();
+    // How many visual lines the text takes where it is copied from (an inline element's rects are its line fragments).
+    const { selected, visualLines } = await target.evaluate((el) => {
+      const range = document.createRange(); range.selectNodeContents(el);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(range);
+      return { selected: s.toString(), visualLines: new Set([...el.getClientRects()].filter(r => r.width > 0).map(r => Math.round(r.top))).size };
+    });
+    let copied = selected;
+    if (viaClipboard) {
+      await page.evaluate(() => navigator.clipboard.writeText('')).catch(() => undefined);
+      await page.keyboard.press('Control+C');
+      await sleep(150);
+      copied = await page.evaluate(() => navigator.clipboard.readText());
+    }
+    await page.evaluate(() => getSelection().removeAllRanges());
+    return { copied, visualLines };
+  };
+  /** The copied text of each code block, of the inline path and of the bare URL, against its source. */
   const copies = async (page, root, viaClipboard) => {
+    const via = viaClipboard ? 'Ctrl+C + clipboard' : 'selection';
     const count = await root.locator('pre > code').count();
     const out = [];
     for (let i = 0; i < count; i += 1) {
-      const code = root.locator('pre > code').nth(i);
-      await code.scrollIntoViewIfNeeded();
-      const selected = await code.evaluate((el) => {
-        const range = document.createRange(); range.selectNodeContents(el);
-        const s = getSelection(); s.removeAllRanges(); s.addRange(range);
-        return s.toString();
-      });
-      let copied = selected;
-      if (viaClipboard) {
-        await page.evaluate(() => navigator.clipboard.writeText('')).catch(() => undefined);
-        await page.keyboard.press('Control+C');
-        await sleep(150);
-        copied = await page.evaluate(() => navigator.clipboard.readText());
-      }
-      await page.evaluate(() => getSelection().removeAllRanges());
-      out.push({ via: viaClipboard ? 'Ctrl+C + clipboard' : 'selection', equal: copied.replace(/\n$/, '') === fences[i], length: copied.length, sourceLength: fences[i]?.length ?? null });
+      const { copied } = await copyOf(page, root.locator('pre > code').nth(i), viaClipboard);
+      out.push({ what: `code block ${i}`, via, equal: copied.replace(/\n$/, '') === fences[i], length: copied.length, sourceLength: fences[i]?.length ?? null });
+    }
+    // autobyteus-24 AC-106: inline text that wraps copies as written.
+    for (const [what, target, source] of [
+      ['inline path', root.locator('p code').filter({ hasText: INLINE_PATH }), INLINE_PATH],
+      ['bare URL', root.locator('p a').filter({ hasText: BARE_URL }), BARE_URL],
+    ]) {
+      if (!(await target.count())) { out.push({ what, via, equal: false, missing: true }); continue; }
+      const { copied, visualLines } = await copyOf(page, target.first(), viaClipboard);
+      out.push({ what, via, equal: copied === source, length: copied.length, sourceLength: source.length, visualLines });
     }
     return out;
   };
@@ -327,7 +405,8 @@ export const runCodeWrapCases = async (probe) => {
     // Viewport screenshots of each part (an element screenshot of a long message in a scrolling feed is covered by
     // the composer): the code blocks, the tables, the equations.
     const files = [];
-    for (const [part, selector] of [['code', 'pre'], ['python', 'pre.language-python'], ['tables', '.markdown-table-scroll'], ['math', '.katex-display']]) {
+    // autobyteus-24: the long heading, and the paragraphs with the inline path, the bare URL, the long token and the list.
+    for (const [part, selector] of [['heading', 'h1 >> nth=1'], ['inline', 'p:has(code)'], ['code', 'pre'], ['python', 'pre.language-python'], ['tables', '.markdown-table-scroll'], ['math', '.katex-display']]) {
       await root.locator(selector).first().evaluate(el => el.scrollIntoView({ block: 'start' }));
       await sleep(250);
       files.push(await shot(surface.page, `${name}-${part}`));
@@ -339,7 +418,7 @@ export const runCodeWrapCases = async (probe) => {
     return { name, viewport: `${viewport.width}x${viewport.height}`, failures, measured: { ...measured, pres: measured.pres.map(({ lines, ...rest }) => ({ ...rest, lines: lines.map(l => (l.chars ? `${l.chars}ch indent ${l.indentPx}px ${l.visualLines ?? '-'} line(s)${l.afterBlank === null ? '' : ` gap ${l.afterBlank}px`}` : 'blank')) })) }, copied, scroll, screenshots: files };
   };
   const passAll = list => list.every(entry => entry.failures.length === 0);
-  const summary = list => list.map(entry => ({ name: entry.name, viewport: entry.viewport, rootWidth: entry.measured.rootWidth, failures: entry.failures, inlineCodePast: entry.measured.inlineCodePast }));
+  const summary = list => list.map(entry => ({ name: entry.name, viewport: entry.viewport, rootWidth: entry.measured.rootWidth, failures: entry.failures, past: entry.measured.past, midWordBreaks: entry.measured.midWordBreaks }));
 
   // ---- the desktop window ---------------------------------------------------------------------------------------------
   const deskContext = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'en-US', timezoneId: 'UTC', permissions: ['clipboard-read', 'clipboard-write'] });
@@ -397,7 +476,7 @@ export const runCodeWrapCases = async (probe) => {
       }
       await deskPage.setViewportSize({ width: 1280, height: 900 });
       const details = { summary: summary(results), results };
-      assert(passAll(results), 'desktop conversation: every code block wraps inside its box with its lines and indentation, copies its source; tables and equations scroll in their own box; nothing else past the edge (AC-001, AC-005…AC-008)', details);
+      assert(passAll(results), 'desktop conversation: every code block wraps inside its box with its lines and indentation, copies its source; tables and equations scroll in their own box; no text, inline code or link past the edge, no host scrolls sideways, inline path and URL copy as written (AC-001, AC-005…AC-008; autobyteus-24 AC-102, AC-105, AC-106)', details);
       return details;
     });
 
@@ -428,10 +507,10 @@ export const runCodeWrapCases = async (probe) => {
       }
       await waitFor('the document in the Files panel at 700', async () => (await fileRoot().count()) > 0, 30_000).catch(() => undefined);
       if (await fileRoot().count()) results.push(await check(desk, fileRoot(), 'MSP-51-desktop-file-700', { viaClipboard: true, expectMermaid: true, expectActionBeside: false }));
-      else results.push({ name: 'MSP-51-desktop-file-700', viewport: '700x900', failures: ['the Files panel does not show the document at this size'], measured: { rootWidth: 0, inlineCodePast: [] }, screenshots: [await shot(deskPage, 'MSP-51-desktop-file-700-viewport')] });
+      else results.push({ name: 'MSP-51-desktop-file-700', viewport: '700x900', failures: ['the Files panel does not show the document at this size'], measured: { rootWidth: 0, past: [] }, screenshots: [await shot(deskPage, 'MSP-51-desktop-file-700-viewport')] });
       await deskPage.setViewportSize({ width: 1280, height: 900 });
       const details = { summary: summary(results), results };
-      assert(passAll(results), 'desktop Files panel: every code block wraps inside its box with its lines and indentation, copies its source; tables and equations scroll in their own box; nothing past the edge (AC-003, AC-005…AC-008)', details);
+      assert(passAll(results), 'desktop Files panel: every code block wraps inside its box with its lines and indentation, copies its source; tables and equations scroll in their own box; no text, inline code or link past the edge, the viewer does not scroll sideways, inline path and URL copy as written (AC-003, AC-005…AC-008; autobyteus-24 AC-101, AC-105, AC-106)', details);
       return details;
     });
 
@@ -490,7 +569,7 @@ export const runCodeWrapCases = async (probe) => {
         results.push(await check(phone, conversation.locator('.inter-agent-content .markdown-renderer-segments:visible').filter({ hasText: `${MARKER} draft for review` }), `MSP-52-phone-message-${width}`, { viaClipboard: false, expectMermaid: true, expectActionBeside: false }));
       }
       const details = { summary: summary(results), results };
-      assert(passAll(results), 'phone conversation and file viewer: every code block wraps inside its box with its lines and indentation, copies its source; tables and equations scroll in their own box; nothing else past the edge (AC-002, AC-004, AC-005…AC-008)', details);
+      assert(passAll(results), 'phone conversation and file viewer: every code block wraps inside its box with its lines and indentation, copies its source; tables and equations scroll in their own box; no text, inline code or link past the edge, no host scrolls sideways, inline path and URL copy as written (AC-002, AC-004, AC-005…AC-008; autobyteus-24 AC-103, AC-105, AC-106)', details);
       return details;
     });
   } finally {

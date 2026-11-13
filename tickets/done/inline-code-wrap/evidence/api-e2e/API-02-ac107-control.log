@@ -1,0 +1,8 @@
+# API-02 (autobyteus-24): negative control of the new AC-107 assertion (midWordBreaks in measureRoot)
+# Command: node API-02-ac107-control.cjs <abs autobyteus-web/node_modules> <abs autobyteus-web/tests/e2e/mobile-code-wrap-cases.mjs>
+# measureRoot taken from the working-tree cases module (committed next); static page, headless Chromium /usr/bin/chromium; 2026-11-13T10:27:13Z
+# Expect: 0 with the change (overflow-wrap: break-word); > 0 with word-break: break-all (words that fit their line broken inside)
+break-word (the change) 167 midWordBreaks 0 []
+break-word (the change) 390 midWordBreaks 0 []
+word-break: break-all (control) 167 midWordBreaks 10 ["\"r|eply\" in h1 (token 76px, line 167px)","\"Sh|ubham\" in h1 (token 146px, line 167px)","\"Sa|boo\" in h1 (token 98px, line 167px)"]
+word-break: break-all (control) 390 midWordBreaks 4 ["\"(Elep|hant/Goldfis\" in h1 (token 284px, line 390px)","\"res|ponsibilitie\" in p (token 109px, line 390px)","\"indepe|ndent,\" in p (token 93px, line 390px)"]
