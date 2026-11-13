@@ -96,6 +96,35 @@ export class RunOwnAgentsReader implements RunFilesReader {
       definition: { kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }, entryAgentRunId: coordinator.agentRunId } : null;
   }
 
+  /**
+   * The delegation of the run an agent is in, by the agent's run ID, from the runs' own files (CR-461-058, -065): its own
+   * agent run's, else that of the team run it is a member of (the coordinator or any other member). For a run no Task
+   * names any more, so the tree cannot say. `null` when neither file names a local delegator.
+   */
+  async delegationOfAgent(agentRunId: string): Promise<RunOwnDelegationRecord | null> {
+    const own = await this.delegationOf({ rootSubjectKind: "agent", rootRunId: agentRunId });
+    if (own) return own;
+    const team = await this.teamRunOfMember(agentRunId);
+    return team ? this.delegationOf(team) : null;
+  }
+
+  /** The stored team run with this member, read from each team run's own file; one that cannot be read is skipped, named. */
+  private async teamRunOfMember(agentRunId: string): Promise<RootExecutionIdentity | null> {
+    const entries = await fs.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
+      if (error.code === "ENOENT") return [];
+      throw error;
+    });
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: entry.name, ancestorTeamRunIds: [] }), entry.name)
+        .catch((error: unknown) => { console.warn(`Team run '${entry.name}' is skipped: its file cannot be read: ${error instanceof Error ? error.message : String(error)}`); return null; });
+      if (tree && agentsOfMembers(tree.rootTeam.members as readonly MemberNode[]).some((agent) => agent.agentRunId === agentRunId)) {
+        return { rootSubjectKind: "agent_team", rootRunId: entry.name };
+      }
+    }
+    return null;
+  }
+
   async orgPlacementsOf(orgRunId: string): Promise<OrgPlacements | null> {
     const tree = await this.stores.org.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
     if (!tree) return null;

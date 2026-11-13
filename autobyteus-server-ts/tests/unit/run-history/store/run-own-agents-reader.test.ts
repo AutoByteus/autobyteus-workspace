@@ -79,4 +79,32 @@ describe("RunOwnAgentsReader", () => {
       definition: { kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }, entryAgentRunId: "lead-d" });
     for (const runId of ["peer-started", "own", "gone"]) expect(await reader.delegationOf({ rootSubjectKind: "agent", rootRunId: runId })).toBeNull();
   });
+
+  it("delegationOfAgent (CR-461-058, -065): the delegation of the run an agent is in, by its run ID: its own agent run, else the team run it is a member of", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-delegation-of-agent-"));
+    roots.push(memory);
+    const layout = new AgentMemoryLayout(memory);
+    const from = { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } as const;
+    await new AgentRunMetadataStore(memory).writeMetadata("image", { runId: "image", agentDefinitionId: "image-maker", workspaceRootPath: "/w",
+      memoryDir: path.join(memory, "agents", "image"), llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true, runtimeKind: "autobyteus",
+      platformAgentRunId: null, address: "/image_maker", delegatedFrom: from } as never);
+    const delegated = validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "team-d", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead-d" }), testAgentNode("/writer", { agentRunId: "writer-d" })] }), "team-d");
+    await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "team-d", ancestorTeamRunIds: [] }), { ...delegated, delegatedFrom: from } as never);
+    await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "team-u", ancestorTeamRunIds: [] }), validateTeamRunExecutionTreePayload(
+      testExecutionTree({ rootTeamRunId: "team-u", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "lead-u" })] }), "team-u"));
+    const reader = new RunOwnAgentsReader(memory);
+    const manager = { delegatingRun: { rootSubjectKind: "agent", rootRunId: "manager" }, delegatorAgentRunId: "manager" };
+    expect(await reader.delegationOfAgent("image")).toMatchObject({ delegatedFrom: manager, entryAgentRunId: "image" });
+    // The coordinator and any other member: the team run's own delegation.
+    for (const member of ["lead-d", "writer-d"]) expect(await reader.delegationOfAgent(member)).toMatchObject({ delegatedFrom: manager, entryAgentRunId: "lead-d" });
+    // A member of a team the user started, and an unknown run ID: none.
+    for (const agentRunId of ["lead-u", "gone"]) expect(await reader.delegationOfAgent(agentRunId)).toBeNull();
+  });
+
+  it("delegationOfAgent: no team runs stored at all is none", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-delegation-empty-"));
+    roots.push(memory);
+    expect(await new RunOwnAgentsReader(memory).delegationOfAgent("anyone")).toBeNull();
+  });
 });

@@ -48,9 +48,11 @@ const harness = async () => {
     },
   });
   const beforeReceive = { hook: async () => undefined as void };
-  // Each run's own file: the research run's delegation, as its file records it (it outlives its Task's deletion).
-  const runFiles = { delegationOf: vi.fn(async (r: RootExecutionIdentity) => r.rootRunId === "research"
-    ? { delegatedFrom: from(M, "manager"), address: "/research", definition: { kind: "agent" as const, definitionId: "research" }, entryAgentRunId: "research" } : null) };
+  // Each run's own file: the research run's and the eng team run's delegation, as their files record it (it outlives the Task's deletion).
+  const runFiles = { delegationOfAgent: vi.fn(async (agentRunId: string) => agentRunId === "research"
+    ? { delegatedFrom: from(M, "manager"), address: "/research", definition: { kind: "agent" as const, definitionId: "research" }, entryAgentRunId: "research" }
+    : ["designer", "coder"].includes(agentRunId)
+      ? { delegatedFrom: from(M, "manager"), address: null, definition: { kind: "agent_team" as const, definitionId: "eng" }, entryAgentRunId: "designer" } : null) };
   const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles,
     receiverRoot: async (r) => { await beforeReceive.hook(); return receiverRoot(r); } });
   const send = (from: RootExecutionIdentity, sender: string, target: string) => delivery.route({ sender: agent(from, sender), senderDisplayName: sender,
@@ -97,6 +99,17 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     await expect(h.send(M, "manager", "research")).resolves.toEqual({ accepted: false, code: "TASK_NOT_FOUND", message: "The Task was deleted, so its task agent cannot continue." });
     await expect(h.send(E, "designer", "research")).resolves.toBeNull();
     await expect(h.send(M, "manager", "nobody")).resolves.toBeNull();
+    expect(h.log).toEqual([]);
+  });
+
+  it("CR-461-065: the same for a delegated team run, to its coordinator and to any other member; anyone else's is not this route's", async () => {
+    const h = await harness();
+    h.tasks.close("T1"); h.tasks.deleteTask("T1");
+    expect(h.tree.tasksOf({ teamRunId: "eng" })).toEqual([]);
+    for (const member of ["designer", "coder"]) {
+      await expect(h.send(M, "manager", member)).resolves.toEqual({ accepted: false, code: "TASK_NOT_FOUND", message: "The Task was deleted, so its task agent cannot continue." });
+      await expect(h.send(R, "research", member)).resolves.toBeNull();
+    }
     expect(h.log).toEqual([]);
   });
 
@@ -170,7 +183,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn();
-    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOf: async () => null },
+    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null },
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }) });
@@ -182,7 +195,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("SR-076: a refusal after the receiver's durable write is recorded on the sender's side too (TC-13), and answered as the receiver's refusal", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn(async () => undefined);
-    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOf: async () => null },
+    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null },
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE, recordedByReceiver: true }) }) });

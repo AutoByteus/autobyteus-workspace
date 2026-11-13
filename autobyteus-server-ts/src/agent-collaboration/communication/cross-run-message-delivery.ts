@@ -59,8 +59,9 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  *    the same message ID. A refusal writes nothing (CM-9, AR-013), except one after the receiver's durable write: the
  *    receiver's log keeps it (REQ-012), so the sender's records it too (SR-076, TC-13).
  * A target no Task relates to the sender's run (not in the tree, or the sender's own run) is not this route's: `null`;
- * except a delegated agent run whose Task was deleted, messaged by the delegator its own file names: base's
- * `TASK_NOT_FOUND` (CR-461-058, SR-071: base's texts).
+ * except an agent of a delegated run (an agent run, or a team run's member) whose Task was deleted, messaged by the delegator
+ * its run's own file names: base's
+ * `TASK_NOT_FOUND` (CR-461-058, CR-461-065, SR-071: base's texts).
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
@@ -72,8 +73,8 @@ export class CrossRunMessageDelivery {
     receiverRoot(run: RootExecutionIdentity): Promise<CrossRunReceiverRoot | null>;
     /** The sender's own address when, from the receiver, it reaches the sender (contract §2.4); null otherwise. */
     senderAddress(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; receiverRun: RootExecutionIdentity; receiverAgentRunId: string }>): Promise<string | null>;
-    /** A run's own record of its delegation (its file's `delegatedFrom`). */
-    runFiles: Pick<RunOwnAgentsReader, "delegationOf">;
+    /** The own record of the delegation of the run an agent is in (its file's `delegatedFrom`): an agent run's, or its team run's. */
+    runFiles: Pick<RunOwnAgentsReader, "delegationOfAgent">;
   }>) {}
 
   async route(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
@@ -120,9 +121,9 @@ export class CrossRunMessageDelivery {
     return { ...accepted, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
   }
 
-  /** A delegated agent run no Task names, messaged by its own delegator: its Task was deleted (base's refusal). */
+  /** An agent of a delegated run no Task names, messaged by the run's own delegator: its Task was deleted (base's refusal). */
   private async deletedTaskRefusal(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
-    const own = await this.dependencies.runFiles.delegationOf({ rootSubjectKind: "agent", rootRunId: input.targetAgentRunId.trim() });
+    const own = await this.dependencies.runFiles.delegationOfAgent(input.targetAgentRunId.trim());
     return own?.delegatedFrom.delegatorAgentRunId === input.sender.agentRunId ? refusal("TASK_NOT_FOUND", DELETED_TASK_REFUSAL) : null;
   }
 
