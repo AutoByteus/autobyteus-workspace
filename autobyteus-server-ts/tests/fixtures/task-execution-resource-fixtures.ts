@@ -138,6 +138,11 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (entry?.start === "starting") { entry.start = "failed"; this.changed(entry.taskId); }
   }
   isOpen(execution: TaskExecutionReference): boolean { return this.entry(execution)?.open === true; }
+  /** The first damaged Task's message, as the Task side gives it (CR-461-051). */
+  unreadable(): string | null {
+    const [first] = this.damaged;
+    return first === undefined ? null : `Task run data could not be read (${first}). Fix or restore the file and restart the app; other features keep working.`;
+  }
   taskIdsWithEntries(): readonly string[] {
     return [...new Set([...this.entries.values()].flatMap((entry) => [entry.taskId, ...entry.otherOpenTaskIds ?? []]))]
       .filter((taskId) => !this.damaged.has(taskId));

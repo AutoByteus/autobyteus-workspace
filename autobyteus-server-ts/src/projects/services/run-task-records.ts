@@ -7,10 +7,11 @@ import type { TaskExecutionResourceService } from "./task-execution-resource-ser
  * the Task it is the root of (its worker status is read later). Created by the composition root at step 1.
  */
 export const createRunTaskRecords = (
-  resources: Pick<TaskExecutionResourceService, "isOpen" | "rootTaskLocationOf">,
+  resources: Pick<TaskExecutionResourceService, "isOpen" | "rootTaskLocationOf" | "firstUnreadable">,
   marks: Pick<ProjectChangeMarks, "workerStatusChanged">,
 ): RunTaskRecords => Object.freeze({
   isOpen: (execution) => resources.isOpen(execution),
+  unreadable: () => resources.firstUnreadable(),
   statusChanged: (execution) => {
     try {
       const location = resources.rootTaskLocationOf(execution);

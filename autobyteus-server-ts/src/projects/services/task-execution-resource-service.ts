@@ -277,8 +277,12 @@ export class TaskExecutionResourceService {
     if (message) throw new ProjectError("TASK_AGENT_RESOURCES_UNAVAILABLE", message);
   }
   assertAllReadable(): void {
-    const first = this.damaged.values().next();
-    if (!first.done) throw new ProjectError("TASK_AGENT_RESOURCES_UNAVAILABLE", first.value);
+    const first = this.firstUnreadable();
+    if (first) throw new ProjectError("TASK_AGENT_RESOURCES_UNAVAILABLE", first);
+  }
+  /** The first unreadable Task file's message, or `null`. */
+  firstUnreadable(): string | null {
+    return this.damaged.values().next().value ?? null;
   }
 
   /** A new copy is new everywhere: it has no entry in any Task. */

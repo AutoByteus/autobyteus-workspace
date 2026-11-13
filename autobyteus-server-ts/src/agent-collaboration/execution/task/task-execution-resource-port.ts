@@ -145,6 +145,8 @@ export interface TaskExecutionResourcePort {
  */
 export type RunTaskRecords = Readonly<{
   isOpen(execution: TaskExecutionReference): boolean;
+  /** The first unreadable Task record's message, `null` when every one could be read (CR-461-051). Synchronous. */
+  unreadable(): string | null;
   /** Synchronous; never throws and never reads files. */
   statusChanged(execution: TaskExecutionReference): void;
 }>;

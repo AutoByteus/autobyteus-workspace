@@ -52,4 +52,21 @@ describe("DS-15: a loaded delegated team run whose Task is closed", () => {
     g.tasks.close("T"); g.tasks.deleteTask("T");
     await expect(g.root.executeAgentCommand("run-coordinator", { kind: "post_message", message: userMessage() })).resolves.toMatchObject({ accepted: true });
   });
+
+  it("CR-461-051 (autobyteus-469 DEC-010): while its Task record cannot be read, a delegated team fails closed at its gate head and in its members' check", async () => {
+    const f = await harness({ withTeammate: true, delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } });
+    const tasks = f.dependencies.taskRecords as InMemoryTaskExecutionResources;
+    // No readable Task names it (its Task's record is damaged).
+    tasks.damaged.add("T");
+    const unavailable = { accepted: false, code: "TASK_AGENT_RESOURCES_UNAVAILABLE",
+      message: "Task run data could not be read (T). Fix or restore the file and restart the app; other features keep working." };
+    await expect(f.root.executeAgentCommand("run-coordinator", { kind: "post_message", message: userMessage() })).resolves.toEqual(unavailable);
+    expect(f.handles.size).toBe(0);
+    tasks.damaged.clear();
+    await f.root.executeAgentCommand("run-coordinator", { kind: "post_message", message: userMessage() });
+    const check = () => (f.handles.get("run-coordinator")!.input as { assertInputAllowed(): void }).assertInputAllowed();
+    expect(check).not.toThrow();
+    tasks.damaged.add("T");
+    expect(check).toThrow(expect.objectContaining({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" }));
+  });
 });

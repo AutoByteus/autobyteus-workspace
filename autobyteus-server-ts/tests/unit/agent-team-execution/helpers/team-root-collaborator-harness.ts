@@ -1,3 +1,4 @@
+import type { DelegatedFrom } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 import { testViewStreams } from "../../../helpers/view-streams.js";
 import { NOT_DELEGATED } from "../../../helpers/run-collaboration.js";
 import fs from "node:fs/promises";
@@ -54,7 +55,7 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
     : { kind: "model_unavailable" as const }),
 } as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 
-export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string } = {}) => {
+export const harness = async (options: { runnable?: boolean; withTeammate?: boolean; teammateDefinitionId?: string; delegatedFrom?: DelegatedFrom } = {}) => {
   vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-root-collaborators-")); directories.push(memoryDir);
@@ -86,7 +87,7 @@ export const harness = async (options: { runnable?: boolean; withTeammate?: bool
   });
   const root = await materializeTeamRoot({
     config,
-    tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }),
+    tree: { ...buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "SE Team" }), ...(options.delegatedFrom ? { delegatedFrom: options.delegatedFrom } : {}) },
     messages: Object.freeze({ schemaVersion: 1 as const, rootTeamRunId: ROOT, messages: Object.freeze([]) }),
     teamMemoryDir, mode: "fresh", persistInitialPackage: true, ...dependencies,
   });

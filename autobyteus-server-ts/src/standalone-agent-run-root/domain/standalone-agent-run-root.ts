@@ -170,12 +170,13 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /**
    * A user's (or a peer owner's) message for the run's agent. At the gate head, the closed-Task fence (DS-15): a closed
-   * run is refused before it is made ready. Then ready; mentions resolved, nothing added; then posted.
+   * run, or a delegated one while Task data cannot be read (CR-461-051), is refused before it is made ready. Then ready;
+   * mentions resolved, nothing added; then posted.
    */
   postHostUserMessage(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
-      const refusal = this.options.closedTasks.refusal(this.options.root);
+      const refusal = this.options.closedTasks.refusal(this.options.root, Boolean(this.options.delegatedFrom));
       return refusal ? { kind: "refused", refusal } : this.delivery.postToHost(input);
     });
   }

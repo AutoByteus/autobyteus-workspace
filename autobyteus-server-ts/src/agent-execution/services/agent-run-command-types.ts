@@ -35,6 +35,8 @@ export type AgentRunCommandErrorCode =
   | "COLLABORATOR_ADD_FAILED"
   /** DS-15: the run's Task is closed; only its assigner continues it. */
   | "TASK_AGENT_RESOURCE_CLOSED"
+  /** CR-461-051 (autobyteus-469 DEC-010): a delegated run while Task data cannot be read fails closed. */
+  | "TASK_AGENT_RESOURCES_UNAVAILABLE"
   | "UNKNOWN_ERROR";
 
 export type SendMessageCommandAckPayload = {

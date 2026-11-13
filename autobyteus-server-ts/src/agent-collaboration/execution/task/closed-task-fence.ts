@@ -6,7 +6,7 @@ import { runReferenceOf, type RunTaskRecords } from "./task-execution-resource-p
 /** Base's input-fence text for a closed copy (`root-task-execution-resource-scope.ts:164` at 827f1e68dc; IMP-58). */
 export const CLOSED_TASK_INPUT_MESSAGE = "Your Task is DONE or CANCELLED, so you can't start new work.";
 
-export type ClosedTaskRefusal = Readonly<{ accepted: false; code: "TASK_AGENT_RESOURCE_CLOSED"; message: string }>;
+export type ClosedTaskRefusal = Readonly<{ accepted: false; code: "TASK_AGENT_RESOURCE_CLOSED" | "TASK_AGENT_RESOURCES_UNAVAILABLE"; message: string }>;
 
 const REFUSAL: ClosedTaskRefusal = Object.freeze({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: CLOSED_TASK_INPUT_MESSAGE });
 
@@ -16,23 +16,33 @@ const REFUSAL: ClosedTaskRefusal = Object.freeze({ accepted: false, code: "TASK_
  * refuses user, application and resume input with base's text. A run no Task names is not fenced (one the user started,
  * or one whose Task was deleted). Asked where the input enters, before the run's root is resolved or restored, and again
  * at the head of a loaded root's gate; it reads the Task side's records, the authority (AR-017). Created at step 1–2.
+ *
+ * Damaged Task data (CR-461-051, autobyteus-469 DEC-010): a delegated run that no readable Task names may belong to a
+ * Task whose record cannot be read, so while any cannot, it fails closed with the Task side's message. Only the run's own
+ * root knows it was delegated (its file's `delegatedFrom`), so this is answered at its gate head, before its agent is
+ * made ready: no model request follows.
  */
 export class ClosedTaskFence {
   constructor(private readonly dependencies: Readonly<{
     tree: Pick<DelegationIndex, "tasksOf">;
-    tasks: Pick<RunTaskRecords, "isOpen">;
+    tasks: Pick<RunTaskRecords, "isOpen" | "unreadable">;
   }>) {}
 
-  /** The refusal of input to `run`, or `null` when it takes input. */
-  refusal(run: RootExecutionIdentity): ClosedTaskRefusal | null {
+  /** The refusal of input to `run`, or `null` when it takes input. `delegated`: the run's own file has `delegatedFrom`. */
+  refusal(run: RootExecutionIdentity, delegated = false): ClosedTaskRefusal | null {
     const reference = runReferenceOf(run);
-    if (!reference || !this.dependencies.tree.tasksOf(reference).length) return null;
+    if (!reference) return null;
+    if (!this.dependencies.tree.tasksOf(reference).length) {
+      const unreadable = delegated ? this.dependencies.tasks.unreadable() : null;
+      return unreadable ? Object.freeze({ accepted: false, code: "TASK_AGENT_RESOURCES_UNAVAILABLE", message: unreadable }) : null;
+    }
     return this.dependencies.tasks.isOpen(reference) ? null : REFUSAL;
   }
 
-  /** Throws the refusal (`TASK_AGENT_RESOURCE_CLOSED`) when `run` takes no input. */
-  assertOpen(run: RootExecutionIdentity): void {
-    if (this.refusal(run)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", CLOSED_TASK_INPUT_MESSAGE);
+  /** Throws the refusal when `run` takes no input. */
+  assertOpen(run: RootExecutionIdentity, delegated = false): void {
+    const refusal = this.refusal(run, delegated);
+    if (refusal) throw new TaskDelegationError(refusal.code, refusal.message);
   }
 }
 

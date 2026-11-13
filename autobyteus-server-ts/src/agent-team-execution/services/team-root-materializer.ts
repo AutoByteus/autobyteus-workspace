@@ -76,7 +76,8 @@ export const materializeTeamRoot = async (
   const closedTasks = new ClosedTaskFence({ tree: input.delegationIndex, tasks: input.taskRecords });
   const callbacks = createTeamFlatExecutionCallbacks({
     // A member takes input while its run is active and its Task, if a Task names it, is open; nothing is hosted.
-    assertExecutionInputAllowed: () => { requireActiveRoot(); closedTasks.assertOpen(rootIdentity); },
+    // Damaged Task data fails a delegated team closed (CR-461-051): its own tree says it was delegated.
+    assertExecutionInputAllowed: () => { requireActiveRoot(); closedTasks.assertOpen(rootIdentity, Boolean(input.tree.delegatedFrom)); },
     teamContext: new TeamRunContext({
       physicalScope,
       teamRunId: input.config.rootTeam.teamRunId,

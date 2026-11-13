@@ -155,7 +155,7 @@ export class AgentRunCommandCoordinator {
     return { kind: "posted", run, post };
   }
 
-  private refuse(record: AgentRunCommandRecord, refusal: Readonly<{ code: "TASK_AGENT_RESOURCE_CLOSED"; message: string }>): Promise<AgentRunCommandCoordinatorResult> {
+  private refuse(record: AgentRunCommandRecord, refusal: Readonly<{ code: "TASK_AGENT_RESOURCE_CLOSED" | "TASK_AGENT_RESOURCES_UNAVAILABLE"; message: string }>): Promise<AgentRunCommandCoordinatorResult> {
     this.registry.markRejected({ runId: record.runId, messageId: record.messageId, code: refusal.code, message: refusal.message });
     return this.recordResult(this.latestRecord(record), "rejected", false, false);
   }

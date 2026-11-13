@@ -312,7 +312,7 @@ export class RootTeamRun {
         return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in root '${this.teamRunId}'.` };
       }
       // DS-15: a delegated team run whose Task is closed takes no input (a message or an approval), as base fenced a copy.
-      const refusal = command.kind === "interrupt" ? null : this.options.closedTasks.refusal(createTeamRootExecutionIdentity(this.teamRunId));
+      const refusal = command.kind === "interrupt" ? null : this.options.closedTasks.refusal(createTeamRootExecutionIdentity(this.teamRunId), Boolean(this.tree.delegatedFrom));
       if (refusal) return refusal;
       if (command.kind !== "post_message") {
         if (!this.isLiveAgent(agentRunId)) {

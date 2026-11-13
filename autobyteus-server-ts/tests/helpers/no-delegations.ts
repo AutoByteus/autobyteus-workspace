@@ -39,7 +39,7 @@ export const noDelegations = (): DelegationIndex => {
 };
 
 /** The run side's Task records for a test without a Task side: every entry reads open, no status mark is kept. */
-export const openTaskRecords = () => ({ isOpen: () => true, statusChanged: () => undefined });
+export const openTaskRecords = () => ({ isOpen: () => true, unreadable: () => null, statusChanged: () => undefined });
 
 /** An archive and delete guard for a test in which no run delegated: it never refuses, it performs the action. */
 export const noWorkGuard = () => ({ guard: <R>(_run: unknown, _action: unknown, perform: () => Promise<R>) => perform() });

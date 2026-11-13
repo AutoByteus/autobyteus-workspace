@@ -72,4 +72,21 @@ describe("DS-15: the user's message to a closed delegated agent run", () => {
     f.tasks.deleteTask("T1");
     await expect(f.post()).resolves.toMatchObject({ kind: "posted", post: { accepted: true } });
   });
+
+  it("CR-461-051 (autobyteus-469 DEC-010): while its Task record cannot be read, a delegated run fails closed at its gate head; its agent is not made ready", async () => {
+    const f = await delegatedHost();
+    // Its Task's record is damaged: no readable Task names it (as after a restart), and the Task side reports the damage.
+    f.tasks.deleteTask("T1");
+    f.tasks.damaged.add("T1");
+    f.setMetadata({ delegatedFrom: { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } });
+    await expect(f.post()).resolves.toEqual({ kind: "refused", refusal: { accepted: false, code: "TASK_AGENT_RESOURCES_UNAVAILABLE",
+      message: "Task run data could not be read (T1). Fix or restore the file and restart the app; other features keep working." } });
+    expect(f.onActiveRunReady).not.toHaveBeenCalled();
+    expect(f.host.run.postUserMessage).not.toHaveBeenCalled();
+    // A run the user started (no delegatedFrom) takes its message meanwhile.
+    const user = await delegatedHost();
+    user.tasks.deleteTask("T1");
+    user.tasks.damaged.add("T1");
+    await expect(user.post()).resolves.toMatchObject({ kind: "posted", post: { accepted: true } });
+  });
 });

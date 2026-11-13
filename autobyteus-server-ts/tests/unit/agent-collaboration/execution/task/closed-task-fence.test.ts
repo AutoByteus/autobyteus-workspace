@@ -54,4 +54,21 @@ describe("ClosedTaskFence (DS-15)", () => {
     tasks.deleteTask("T1");
     expect(fence.refusal(R)).toBeNull();
   });
+
+  it("CR-461-051 (autobyteus-469 DEC-010): while a Task record cannot be read, a delegated run no readable Task names fails closed; a user's run does not", async () => {
+    const { tasks, fence } = await harness();
+    const native = run("agent", "native_helper"), team = run("agent_team", "squad");
+    tasks.damaged.add("T9");
+    for (const delegated of [native, team]) {
+      expect(fence.refusal(delegated, true)).toEqual({ accepted: false, code: "TASK_AGENT_RESOURCES_UNAVAILABLE",
+        message: "Task run data could not be read (T9). Fix or restore the file and restart the app; other features keep working." });
+      expect(() => fence.assertOpen(delegated, true)).toThrow(expect.objectContaining({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" }));
+      // A run its own file does not name as delegated (one the user started) takes input.
+      expect(fence.refusal(delegated)).toBeNull();
+    }
+    // A run a readable Task names is answered by that Task.
+    expect(fence.refusal(R, true)).toBeNull();
+    tasks.damaged.clear();
+    expect(fence.refusal(native, true)).toBeNull();
+  });
 });
