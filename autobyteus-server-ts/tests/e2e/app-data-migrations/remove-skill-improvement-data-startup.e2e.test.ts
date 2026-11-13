@@ -10,6 +10,7 @@ import {
   IMPROVER_RUNS,
   SERVER_HELPER_RUN,
   USER_RUNS,
+  IMPROVER_TASK_COPY,
   historyIndexWithout,
   historyRow,
   put,
@@ -149,8 +150,14 @@ describe("Removal of the Skill Improvement feature's data on startup (built Stud
     expect(record, JSON.stringify(record)).toMatchObject({ status: "SUCCEEDED", errorMessage: null, attempts: 1 });
     for (const gone of paths.deleted) expect(await exists(path.join(root, gone)), gone).toBe(false);
     await expectHistoryIndex();
-    // Every file that existed and is not the feature's is byte-identical (the server may add its own new files).
-    const expected = without(before, [...paths.deleted, "memory/run_history_index.json", ".env"]);
+    // Every file that existed and is not the feature's is byte-identical (the server may add its own new files),
+    // except the delegated copy's own file, which autobyteus-461's migration (registered last, CR-461-048) converts
+    // by design (contract E6: `taskAgent` → `delegatedFrom`). The copy itself is kept (F-25).
+    const copyMetadata = `memory/agents/${IMPROVER_TASK_COPY}/run_metadata.json`;
+    const expected = without(before, [...paths.deleted, "memory/run_history_index.json", ".env", copyMetadata]);
+    const converted = JSON.parse(await fs.readFile(path.join(root, copyMetadata), "utf8")) as Record<string, unknown>;
+    expect(converted, JSON.stringify(converted)).toMatchObject({ delegatedFrom: { delegatingRun: { kind: "agent", runId: USER_RUNS[0] } } });
+    expect(converted).not.toHaveProperty("taskAgent");
     const keptNow = (files: Record<string, string>) => Object.fromEntries(Object.entries(files).filter(([rel]) => rel in expected));
     expect(keptNow(await snapshot(root))).toEqual(expected);
     // The settings: the three keys are gone, every other line is kept.

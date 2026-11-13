@@ -672,7 +672,13 @@ suite("The collaboration contract's stories, run against the built server (autob
         expect(r.success, r.message).toBe(true);
       },
       S9: async (ctx) => { await ctx.call(P_PD, "send_message_to", { target_agent_run_id: ctx.real(SD), content: "One more question …" }); },
-      S10: async (ctx) => { await ctx.call(M, "update_task", { task_id: key(ctx, "demo-1"), status: "DONE" }); },
+      S10: async (ctx) => {
+        await ctx.call(M, "update_task", { task_id: key(ctx, "demo-1"), status: "DONE" });
+        // SR-072 F-23 / SR-073: the assigner's message while the Task is DONE is refused (R-8), with base's Task-side text.
+        const refused = await ctx.call(M, "send_message_to", { target_agent_run_id: ctx.real(SD), content: "Are you done?" });
+        expect(refused, JSON.stringify(refused)).toMatchObject({ accepted: false });
+        expect(String(refused.message)).toContain("The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.");
+      },
       S11: async (ctx) => {
         await ctx.call(M, "update_task", { task_id: key(ctx, "demo-1"), status: "IN_PROGRESS" });
         await ctx.call(M, "send_message_to", { target_agent_run_id: ctx.real(SD), content: "One more change …" });
@@ -714,8 +720,8 @@ suite("The collaboration contract's stories, run against the built server (autob
       S21: async (ctx) => { await ctx.call(M, "send_message_to", { recipient_address: "/project_task_manager", content: "…" }); },
       S22: async (ctx) => { await ctx.call(M, "send_message_to", { recipient_address: "/software_engineering_team", content: "…" }); },
       // S23, S24: E's Tasks are all closed after S16, so DS-15 fences user input to E; the agent's own call is made directly.
-      S23: async (ctx) => { await ctx.callDirect(SD, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") }); },
-      S24: async (ctx) => { await ctx.callDirect(SD, "send_message_to", { recipient_address: "/software_engineering_team/code_reviewer", content: "…" }); },
+      S23: async (ctx) => { await ctx.call(SD, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") }); },
+      S24: async (ctx) => { await ctx.call(SD, "send_message_to", { recipient_address: "/software_engineering_team/code_reviewer", content: "…" }); },
       S25: async (ctx) => { await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", task_id: key(ctx, "demo-7") }); },
       // SR-067 (DS-13): the user deletes M while a run it delegated to works: refused, naming it; nothing is written.
       S26: async (ctx) => {
@@ -723,7 +729,8 @@ suite("The collaboration contract's stories, run against the built server (autob
         await ctx.nodes.A!.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: ctx.real(M) });
         const r = (await ctx.nodes.A!.gql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: ctx.real(M) })).deleteStoredRun;
         expect(r.success, r.message).toBe(false);
-        expect(r.message).toContain(ctx.real("research_agent_9b10"));
+        // Contract T-5: "its reason names them": by the address it was delegated to, or its run ID.
+        expect(String(r.message), String(r.message)).toMatch(new RegExp(`${ctx.real("research_agent_9b10")}|/research_agent\\b`));
       },
       // The user stops the research agent and deletes M; the research agent's report to M is refused (no run has M's ID).
       S27: async (ctx) => {
@@ -753,12 +760,13 @@ suite("The collaboration contract's stories, run against the built server (autob
   }, 1_200_000);
 
   // ---- §5.2: the Software Engineering Team on its own (U) ----------------------------------------------------------------
-  it("§5.2 U0 … U10: a team the user starts delegates", async () => {
+  it("§5.2 U0 … U11: a team the user starts delegates", async () => {
     const story = FIXTURE.stories.find((s) => s.section === "5.2")!;
     const U = "software_engineering_team_73d7", U_SD = "solution_designer_7a33", IM = "image_maker_44a1";
     await runStory(story, {
       U0: async (ctx) => {
-        await projectWithTasks(ctx, "project_8f21", [["project_task_3c3c", "demo-3", "Design the onboarding", "IN_PROGRESS"]]);
+        await projectWithTasks(ctx, "project_8f21", [["project_task_3c3c", "demo-3", "Design the onboarding", "IN_PROGRESS"],
+          ["project_task_8d8d", "demo-8", "Polish the onboarding", "TODO"]]);
         const members = ["solution-designer", "architecture-reviewer", "implementation-engineer", "code-reviewer"];
         const created = (await ctx.nodes.A!.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
           { input: { teamDefinitionId: ctx.real("software-engineering-team"), teamConfigs: [{ teamAddress: "/", ...config(ctx) }],
@@ -786,6 +794,13 @@ suite("The collaboration contract's stories, run against the built server (autob
       U9: async (ctx) => { await ctx.call("research_agent_8f80", "send_message_to", { target_agent_run_id: ctx.real(IM), content: "…" }); },
       // SR-071: R-12, a team run's ID is answered with its coordinator's.
       U10: async (ctx) => { await ctx.call(IM, "send_message_to", { target_agent_run_id: ctx.real(U), content: "Mockups ready …" }); },
+      // U11 (SR-072 F-24, REQ-009): T3 deleted; its run takes a new Task by run ID from the delegator its own delegatedFrom names.
+      U11: async (ctx) => {
+        expect((await ctx.nodes.A!.gql(`mutation($input:DeleteProjectTaskInput!){deleteProjectTask(input:$input)}`,
+          { input: { projectId: ctx.real("project_8f21"), taskId: ctx.real("project_task_3c3c") } })).deleteProjectTask).toBe(true);
+        const r = await ctx.call(U_SD, "delegate_task", { target_agent_run_id: ctx.real(IM), task_id: key(ctx, "demo-8") });
+        expect(r, JSON.stringify(r)).toMatchObject({ delegated: true, target_kind: "agent", target_agent_run_id: ctx.real(IM) });
+      },
     }, async (ctx) => { await catalog(ctx); });
   }, 900_000);
 

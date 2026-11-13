@@ -20,9 +20,12 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 // (`linked_skills`: `CALL_TOOL:{...}` makes a real platform tool call), native = a test-owned LM Studio stand-in.
 //   SRE-01 A scripted host delegates a copy; the host's own Antigravity process is killed (the root and the copy survive: "a host crash does
 //          not end the root"); the host's model is edited through `updateStoppedAgentRunSelection` (UPDATED); the surviving copy, messaged
-//          through the root, delegates a second copy: it carries the SAVED model, the first copy keeps its started one.
-//   SRE-02 Then the host is edited to the native runtime (a pending runtime switch): a third copy inherits the native runtime; the host
-//          takes its next input (a copy's report wakes it through the root) and switches: one marker, one segment, pending cleared.
+//          on its own stream, delegates a second copy. autobyteus-461 SR-072 F-31 (confirmed by the user): launch inheritance is one
+//          hop, from the immediate delegator's saved launch when the run is created; afterwards the runs are independent. So copy
+//          two carries copy one's launch, not the host's later edit, and copy one keeps its started one.
+//   SRE-02 Then the host is edited to the native runtime (a pending runtime switch): a third copy, delegated by copy one, again
+//          carries copy one's launch; the host takes its next input (the user's message on its own stream) and switches: one
+//          marker, one segment, pending cleared.
 //   SRE-03 While the host is live the edit is refused (RUN_ACTIVE).
 // The host's process is killed by pid, found through AGY_FAKE_PROCESS_LOG (each launch logs its cwd, which names the run).
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
@@ -295,7 +298,8 @@ describe.runIf(ENABLED)("a registered Agent root follows the saved edit of its s
     expect(second.delegated, JSON.stringify(second)).toBe(true);
     const copyTwo = second.target_agent_run_id as string;
     const afterEdit = await copyLaunches();
-    expect(afterEdit[copyTwo], "copy two carries the SAVED model").toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_ALT_MODEL });
+    // SR-072 F-31: one hop. Copy two copies its delegator's (copy one's) launch; the host's edit does not flow down.
+    expect(afterEdit[copyTwo], "copy two carries copy one's launch").toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_MODEL });
     expect(afterEdit[copyOne], "copy one keeps its started launch").toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_MODEL });
     // the copy's report wakes the host again through the root (no manager call); crash it again for the second edit
     await until(async () => await hostActive(), "the root woke the host", 60_000).catch(() => undefined);
@@ -310,8 +314,9 @@ describe.runIf(ENABLED)("a registered Agent root follows the saved edit of its s
     const third = await copyCalls(copyOne, "delegate_task", { recipient_address: `/${segmentName(helper.name)}`, description: "COPY-THREE: answer briefly." }, "copy one delegates copy three");
     expect(third.delegated, JSON.stringify(third)).toBe(true);
     const copyThree = third.target_agent_run_id as string;
-    expect((await copyLaunches())[copyThree], "copy three inherits the new runtime").toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModel });
-    // The marker is written only when the host takes its next input; here it is copy three's report that wakes the host through the root.
+    expect((await copyLaunches())[copyThree], "copy three carries copy one's launch, not the host's pending switch (F-31)").toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_MODEL });
+    // The marker is written only when the host takes its next input: the user's message on the host's own stream.
+    await talk(agentStream(hostId), hostId, "Next input after the switch.", "the host's next input");
     await until(() => markers(hostDir()).length > 0, "the host's next input switched it", 120_000);
     expect(markers(hostDir()), "one marker").toHaveLength(1);
     expect(completeSegments(hostDir()), "one segment").toHaveLength(1);

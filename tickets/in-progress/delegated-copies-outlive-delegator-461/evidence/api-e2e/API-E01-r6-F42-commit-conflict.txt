@@ -1,0 +1,20 @@
+# F-42 (TDR-002: a message waiting for the receiver's own log lock when its Task closes), r6-batchC.log, code 958cb22462
+ FAIL  tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > A Task closing while a teammate message is being saved never fail-stops the root (real HTTP/WS/scoped MCP, Task services and AGY backend, scripted AGY actor) > agent root: Task closure during and before a teammate message save; the root keeps working and restores its history
+AssertionError: agent TDR-002 delivery outcome: expected { resolved: { accepted: false, …(2) } } to match object { resolved: { accepted: false, …(1) } }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "resolved": {
+      "accepted": false,
+-     "code": "TASK_AGENT_RESOURCE_CLOSED",
++     "code": "TEAM_MESSAGE_COMMIT_CONFLICT",
+    },
+  }
+
+ ❯ rootScenario tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts:526:60
+    524|     record.tdr002 = { agentSaw: outcome2, delivery: delivered2, blocke…
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/src/services/team-communication/team-communication-port.ts:33:      commitConflict: Object.freeze({ code: "TEAM_MESSAGE_COMMIT_CONFLICT", message: "Message append conflicts with current root state." }),

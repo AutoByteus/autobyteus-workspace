@@ -506,24 +506,26 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     expect(await statusOf(projectId, taskA)).toBe("TODO");
     expect(keys((await root.snapshot()).closed)).toEqual([]);
 
-    // 11. AC-002 / AC-007: a Team copy is reactivated as a whole through its coordinator; a member is refused.
+    // 11. AC-002 / AC-007, SR-072 F-23: a Team copy's member is answered as its run. While Task B is DONE the assigner's
+    // message is refused (R-8) with base's Task-side text; after IN_PROGRESS the same message continues the run (R-6),
+    // which reopens the Team as a whole.
     view = root.state.view; from = view.frames.length;
     await root.managerCalls(callTool("update_task", { task_id: taskB, status: "DONE" }));
     await until(() => view.frames.slice(from).some(root.closedFrame), "closure of Task B", 60_000);
-    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "IN_PROGRESS" }));
     const resourcesB = await readBytes(path.join(bDir, "agent_run_resources.json"));
-    const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member?" }));
-    // autobyteus-469 DEC-006: a member of a Team copy that left the tree is not in this run (only its coordinator, named by
-    // the Task record, brings the Team back).
-    expect(toMember).toMatchObject({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
-    expect(toMember.message).toMatch(/No running agent has the run id/);
+    const whileDone = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member, while DONE?" }));
+    expect(whileDone).toMatchObject({ accepted: false });
+    expect(whileDone.message).toContain("The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.");
     expect(await readBytes(path.join(bDir, "agent_run_resources.json"))).toBe(resourcesB);
+    await root.managerCalls(callTool("update_task", { task_id: taskB, status: "IN_PROGRESS" }));
     view = root.state.view; from = view.frames.length;
-    const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));
-    expect(teamReactivated).toMatchObject({ accepted: true, target_agent_run_id: coordinator });
-    expect(teamReactivated.message).toMatch(new RegExp(`${coordinator} continues with its conversation\\.$`));
+    const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member? Marker MEMBER-REOPEN-5150." }));
+    expect(toMember).toMatchObject({ accepted: true, target_agent_run_id: mate });
+    expect(toMember.message).toMatch(new RegExp(`${mate} continues with its conversation\\.$`));
     await until(() => view.frames.slice(from).some(root.reopenedFrame), "Team copy reopened event", 30_000);
     expect(keys(root.refsOf(view.frames.slice(from).find(root.reopenedFrame)!))).toEqual([`team:${bNode.teamRunId}`]);
+    const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));
+    expect(teamReactivated).toMatchObject({ accepted: true, target_agent_run_id: coordinator });
     const coordinatorAddress = bNode.members.find((member: any) => member.agentRunId === coordinator)!.address;
     await until(async () => JSON.stringify(await root.conversationOf(coordinator, coordinatorAddress)).includes("TEAM-REOPEN-5150"),
       "coordinator received the message", 60_000);
@@ -541,8 +543,12 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       { input: { projectId, taskId: taskB } })).deleteProjectTask).toBe(true);
     view = root.state.view; from = view.frames.length;
     const deleted = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Deleted?" }));
-    expect(deleted).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
-    expect(deleted.message).toMatch(/The Task was deleted, so its task agent cannot continue/);
+    // Base's code and text (REQ-009; SR-071's rule that refusals keep base's texts; contract R-9 names no text). Soft, so the
+    // later steps run; the answer is recorded.
+    record.deletedTaskMessage = deleted;
+    expect.soft(deleted, JSON.stringify(deleted)).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
+    expect.soft(String(deleted.message)).toMatch(/The Task was deleted, so its task agent cannot continue/);
+    expect(deleted).toMatchObject({ accepted: false });
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
     await leftTree(root, [`team:${bNode.teamRunId}`]);
 
@@ -771,11 +777,13 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       // - reactivated and delivered before the DONE;
       // - the DONE first: refused with the reopen-first hint;
       // - the reactivation committed and the DONE then closed the entry before delivery (P-001). The restore was
-      //   stopped (TASK_EXECUTION_RESTORE_FAILED), or the live-input fence refused it (TASK_AGENT_RESOURCE_CLOSED).
-      //   Either way the result says it continues with its conversation but did not receive the message.
+      //   stopped (TASK_EXECUTION_RESTORE_FAILED), or the live-input fence refused it (TASK_AGENT_RESOURCE_CLOSED), or the
+      //   run was already stopping for the DONE (COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES, base's "This work is stopping or
+      //   has stopped" text; autobyteus-461: the run is its own root). Each result says it continues with its conversation
+      //   but did not receive the message.
       const notReached = /continues with its conversation \(its Task is open again\) but did not receive this message/;
       const outcome = message.accepted ? "reactivated-then-done"
-        : notReached.test(message.message ?? "") && ["TASK_EXECUTION_RESTORE_FAILED", "TASK_AGENT_RESOURCE_CLOSED"].includes(message.code)
+        : notReached.test(message.message ?? "") && ["TASK_EXECUTION_RESTORE_FAILED", "TASK_AGENT_RESOURCE_CLOSED", "COLLABORATION_ROOT_NOT_ACCEPTING_MESSAGES"].includes(message.code)
           ? `done-after-commit:${message.code}`
           : message.code === "TASK_AGENT_RESOURCE_CLOSED" && /This Task is DONE/.test(message.message ?? "") ? "done-first" : "unexpected";
       expect(outcome, JSON.stringify(message)).not.toBe("unexpected");

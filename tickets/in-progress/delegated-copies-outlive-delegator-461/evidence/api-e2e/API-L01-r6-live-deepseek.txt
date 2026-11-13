@@ -1,0 +1,74 @@
+# Case: API-L01 (AC-001 on a real runtime), API-REV-006 round 6, code 958cb22462
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 RUN_AGY_FAILURE_E2E=1 OUTLIVE_LIVE_EVIDENCE=<file> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts --no-watch --reporter=verbose
+# Result: Tests 2 passed (2). Look for: finishedAfterMs (the child's real turn finished after the delegator's Stop), statuses with no interruption, the codeword at the end of the real answer
+ ✓ tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts > LIVE-1 an Agent child's real turn finishes after its delegator's Stop 28099ms
+ ✓ tests/e2e/projects/delegated-run-outlives-delegator-live.e2e.test.ts > LIVE-2 a Team child's coordinator's real turn finishes after its delegator's Stop 16522ms
+      Tests  2 passed (2)
+
+{
+  "agent": {
+    "M": "outlive_manager_723aff_cef0c6af5e6d44bf95656346ba109bcb",
+    "worker": "outlive_writer_723aff_f085e9218db84f7ba393b86984a5a885",
+    "model": "deepseek-v4-flash",
+    "codeword": "OUTLIVE-AGENT-3a73a2",
+    "before": {
+      "statuses": [
+        "running"
+      ]
+    },
+    "statuses": [
+      "running"
+    ],
+    "finishedAfterMs": 26313,
+    "answerTail": " into the Coast Guard in 1939.\\n37. The Nantucket Lightship LV-117 was sunk in a 1934 collision with the liner RMS Olympic.\\n38. Cape Hatteras Lighthouse, the tallest brick lighthouse in the U.S., was moved about 2,900 feet inland in 1999 to escape erosion.\\n39. Automation and solar-powered LED lights closed most keeper posts; Boston Light was automated in 1998.\\n40. GPS and electronic charts have made lighthouses largely redundant for navigation, and many now survive as museums and heritage sites.\\n\\nOUTLIVE-AGENT-3a73a2\"},\"toolResult\":null,\"toolError\":null,\"media\":null,\"ts\":1794588774.656}]}"
+  },
+  "team": {
+    "M": "outlive_manager_723aff_5521efc5393244a29f52b6cc4a3aedd0",
+    "worker": "outlive_lead_723aff_f1a3fe7e5ecb40eb8b414998586beccb",
+    "model": "deepseek-v4-flash",
+    "codeword": "OUTLIVE-TEAM-c4a52f",
+    "before": {
+      "statuses": [
+        "running",
+        "running"
+      ]
+    },
+    "statuses": [
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running",
+      "running"
+    ],
+    "finishedAfterMs": 15100,
+    "answerTail": "rs stood night watches, trimmed wicks and polished the lens until dawn.\\n36. Keeper families often lived at isolated stations, raising children on rocks and islands.\\n37. Keepers' daily logs are now valuable records for maritime historians.\\n38. Automation and electric fog signals began replacing keepers in the twentieth century.\\n39. Solar panels and LED optics now light many remote beacons.\\n40. Boston Light, the last permanently crewed US lighthouse, was automated in 1998.\\n\\nOUTLIVE-TEAM-c4a52f\",\"message_type\":\"result\"},\"toolResult\":null,\"toolError\":null,\"media\":null,\"ts\":1794588791.229}]}"
+  }
+}

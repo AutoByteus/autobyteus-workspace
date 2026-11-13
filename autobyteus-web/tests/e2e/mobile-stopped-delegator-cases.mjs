@@ -213,6 +213,14 @@ export const runStoppedDelegatorCases = async (probe) => {
       const out = { root: { kind, rootId: root.rootId, worker: root.worker } };
       await toList();
       await showsStopped(root, 6_000, 'listed while stopped', out);
+      // SR-073 (as at base): a listed team's or org's delegated rows show once its view is open (an agent run's show in
+      // the list through hasCollaboration). Opening never starts the run (REQ-004); O-1 is sampled again below.
+      if (kind !== 'agent') {
+        await openRow(page.locator(`[data-testid="mobile-run-row-${root.key}"]`).first(), `${id.toLowerCase()}-root-view`);
+        out.rootActiveAfterOpen = await isActive(root);
+        assert(!out.rootActiveAfterOpen, `${kind}: opening the stopped root started it`, out);
+        await toList();
+      }
       await unfold(root);
       let row = null;
       await waitFor(`the worker's row under the ${kind} root`, async () => { await unfold(root); return Boolean(row = await workerRow(root)); }, 30_000)

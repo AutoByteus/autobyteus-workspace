@@ -1,0 +1,29 @@
+# F-41 (org view error card) and F-43 (org team copy not idle-shut-down after a failed member start), r6-batchC.log, code 958cb22462
+ FAIL  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+AssertionError: org F-41: the writer's error card in the delegator's view; frames naming the writer: [{"type":"ROOT_EXECUTION_EVENT","payload":"{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"dtl_org_f4e31c_b6016419bb5b448da47e2c5c950618a2\",\"change_sequence\":11,\"event\":{\"kind\":\"task_execution_started\",\"host_kind\":\"root\",\"host_run_id\":\"dtl_org_f4e31c_b6016419bb5b448da47e2c5c950618a2\",\"execution\":{\"address\":\"/squad\",\"teamRunId\":\"dtl_squad_f4e31c_a8a9e377141045979f6015fa6d0f1fd2\",\"members\":[{\"address\":\"/lead\",\"agentRunId\":\"dtl_worker_f4e31c_"},{"type":"ROOT_EXECUTION_EVENT","payload":"{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"dtl_org_f4e31c_b6016419bb5b448da47e2c5c950618a2\",\"change_sequence\":14,\"event\":{\"kind\":\"agent_presentation\",\"member_address\":\"/writer\",\"agent_run_id\":\"dtl_worker_f4e31c_334583fc5a944bdf8376b20ad1851443\",\"message\":{\"type\":\"AGENT_STATUS\",\"payload\":{\"recoverableBlock\":null,\"status\":\"offline\",\"trigger\":null,\"tool_name\":null,\"error_message\":null,\"error_det"},{"type":"ROOT_EXECUTION_EVENT","payload":"{\"root_subject_kind\":\"agent_org\",\"root_run_id\":\"dtl_org_f4e31c_b6016419bb5b448da47e2c5c950618a2\",\"change_sequence\":79,\"event\":{\"kind\":\"agent_presentation\",\"member_address\":\"/writer\",\"agent_run_id\":\"dtl_worker_f4e31c_334583fc5a944bdf8376b20ad1851443\",\"message\":{\"type\":\"AGENT_STATUS\",\"payload\":{\"recoverableBlock\":null,\"status\":\"initializing\
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ rootScenario tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:500:94
+    498|       const gotCard = await until(() => root.errorCards(copy.members.w…
+    499|       expect.soft(gotCard, `${kind} F-41: the writer's error card in t…
+    500|         + JSON.stringify(root.framesNaming(copy.members.writer.agentRu…
+---
+ FAIL  tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Delegated Team copies start only the members that work reaches, in every root (real HTTP/WS/scoped MCP and AGY backend, scripted AGY actor) > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "org: Error: Timed out waiting for org: copy processes gone after the grace period
++     at Module.until (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/helpers/agy-runtime-error-fixture.ts:21:9)
++     at rootScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:535:5)
++     at async Promise.allSettled (index 2)
++     at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts:611:21
+---

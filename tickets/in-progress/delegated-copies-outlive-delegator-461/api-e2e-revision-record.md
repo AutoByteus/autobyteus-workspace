@@ -11,6 +11,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-003 | Code Reviewer, `code-review-report.md` CRR-015, round 3 | SR-055 … SR-057, CR-461-017 … CR-461-029, CRR-012 … CRR-015 | Fail / 66% | Fail / 71% |
 | API-REV-004 | Code Reviewer, `code-review-report.md` CRR-018 and CRR-020, round 4 | SR-058 … SR-070, IR-011 … IR-016, CRR-016 … CRR-020 | Fail / 71% | Fail / 70% |
 | API-REV-005 | Code Reviewer, `code-review-report.md` CRR-023, round 5 | SR-071, IR-017, IR-018, CRR-021 … CRR-023 | Fail / 70% | Fail / 75% |
+| API-REV-006 | Code Reviewer, `code-review-report.md` CRR-026, round 6 | SR-072 … SR-074, IR-019, IR-020, CRR-024 … CRR-026 | Fail / 75% | Fail / 78% |
 
 ## Revision Entries
 
@@ -240,6 +241,75 @@ None
 - Recommended owner:
   - Implementation Engineer: the Local Fix findings;
   - Solution Designer: the Unclear findings and K-13;
+  - each confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
+
+### API-REV-006: round 6; the round-5 rechecks, the Team tab, AC-001 on a real runtime; F-37 … F-46, K-14
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` CRR-026 (code `958cb22462`, docs `a2e2d00c1b`), API/E2E round 6.
+- Triggering finding or case IDs:
+  - the round-5 rechecks;
+  - SR-072 … SR-074 (the Team tab; F-23, F-24, F-27, F-30, F-31, F-32, F-36, K-13);
+  - the decision-only expectation changes;
+  - the Next Round list.
+- Related revision IDs: SR-072 … SR-074, IR-019, IR-020, CRR-024 … CRR-026
+- Why this revision was recorded: the fix round's validation and the new checks
+- Coverage decisions or durable test paths changed:
+  - new suites `team-tab-subtree-messages` and `delegated-run-outlives-delegator-live` (gated, test vault);
+  - the decided expectations encoded;
+  - the stale rewrites of the report's list;
+  - the remaining stale suites listed with causes.
+- Cases added, changed, removed, or rechecked:
+  - Pass:
+    - Team tab;
+    - the peer suite 44/44;
+    - API-L01 2/2;
+    - API-I01 (in scope);
+    - stories §5.2 12/12, §5.3 9/9;
+    - phone MSP-50, MSP-52.
+  - Fail:
+    - stories §5.1 26/28 (K-14, F-45);
+    - phone MSP-51 (F-44);
+    - desktop SDV-01 (F-46, 4 of 4);
+    - API-E01 (F-37, F-38, F-42, F-43; Unclear F-39, F-40, F-41).
+  - Next Round: in the investigation.
+- Commands, environment, fixture, or broader-validation delta:
+  - one server build and one phone bundle from `958cb22462`;
+  - the stories fixture regenerated (49 states);
+  - the test vault for API-L01 (key values never printed);
+  - a temporary diagnostic in `project-task-tool-manifest.ts`, removed.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-19b | Local Fix | Resolved | EXC-005 |
+| F-23 | Unclear → SR-072 | Resolved as decided | reactivation step 11; S10 |
+| F-24 | Unclear → SR-072 | Resolved (as base) | TKD's deleted-Task step; U11 |
+| F-25 | Local Fix (data loss) | Resolved | SID-2 |
+| F-26 | Design Impact → SR-072/074 | Resolved | TT-1, TT-2 |
+| F-27 | Unclear → SR-072 | Resolved as decided | RS-03 |
+| F-28 | Local Fix | Resolved | lazy activation DTL-004 |
+| F-29 | Local Fix | Resolved | SCP-E2E-006 |
+| F-30 | Unclear → SR-072 | Resolved | S26; change feed |
+| F-31 | Unclear → SR-072 (user-confirmed) | Resolved as decided | SRE-01..03 |
+| F-32 | Unclear → SR-073 | Resolved as decided (open the team first) | MSP-51 (its row shows) |
+| F-33, F-34 | Local Fix | Resolved | MSP-50, MSP-52 |
+| F-35 | Local Fix | Resolved | RC-25 |
+| F-36 | Unclear → SR-072 | Resolved as decided | RC-33 |
+| K-13 | Contract model | Resolved | §5.1 S23, S24 |
+
+- Canonical artifacts and sections updated:
+  - the coverage investigation (meta, the round-6 plan, deferred, ambiguities);
+  - the execution report;
+  - the progress log;
+  - `evidence/api-e2e/*r6*`.
+- Prior result and confidence: Fail / 75%
+- Current result and confidence: Fail / 78%
+- New or remaining failure IDs: F-37, F-38, F-39, F-40, F-41, F-42, F-43, F-44, F-45, F-46; K-14
+- Recommended owner:
+  - Implementation Engineer: F-37, F-38, F-42, F-43, F-44, F-45, F-46;
+  - Solution Designer: F-39, F-40, F-41, K-14;
   - each confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
 

@@ -818,10 +818,9 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const toTeamRun = await other.managerCalls(callTool("send_message_to", { target_agent_run_id: team, content: "Hello from another root." }));
     expect(toTeamRun).toMatchObject({ accepted: false, code: "TARGET_IS_TEAM_RUN",
       message: `${team} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinator}.` });
-    // AC-008: a copy hosted by another root is not a copy of the sender's run (base's text, SR-071). Soft, so the
-    // stopped-team R-12 step below still runs when this text differs.
+    // AC-008: a copy hosted by another root is not a copy of the sender's run (base's text, SR-071; CR-461-049).
     const crossAssign = await other.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
-    expect.soft(crossAssign).toEqual({ delegated: false, message: `${team} is not one of your task agents. Use a run id that delegate_task returned to you, `
+    expect(crossAssign).toEqual({ delegated: false, message: `${team} is not one of your task agents. Use a run id that delegate_task returned to you, `
       + "or delegate to a new task agent with recipient_address." });
     expect(await projectFiles(projectId)).toEqual(files);
     // R-12 (SR-071, base): a team run's ID names its coordinator whether the team runs or not. Stop the delegator and

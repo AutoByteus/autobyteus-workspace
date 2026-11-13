@@ -1385,8 +1385,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(result.delegated, JSON.stringify(result)).toBe(false);
     expect(textOf(result)).toBe(`Node "${LABEL.beta}" could not be reached (fetch failed).`);
     const taskRecords = await teamTaskResourcesWith(alpha, unused);
-    // Base stored TASK_DISPATCH_FAILED for any dispatch failure (REQ-005: the Task rules are unchanged). Soft, so RC-12 gets ids.unusedTeam.
-    expect.soft(taskRecords.map((record) => record.entry), JSON.stringify(taskRecords)).toEqual([expect.objectContaining({ start: "failed",
+    // Base stored TASK_DISPATCH_FAILED for any dispatch failure (REQ-005: the Task rules are unchanged; CR-461-052).
+    expect(taskRecords.map((record) => record.entry), JSON.stringify(taskRecords)).toEqual([expect.objectContaining({ start: "failed",
       startError: { code: "TASK_DISPATCH_FAILED", message: `Node "${LABEL.beta}" could not be reached (fetch failed).` } })]);
     const linked = (await linksOf("agent", ids.solo)).filter((link) => link.teamRunId === unused);
     ids.unusedTeam = unused;
@@ -1519,8 +1519,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const teamRow = rows.find((row) => row.team_run_id === ids.studio.teamRunId);
     expect(agentRow, JSON.stringify(rows)).toMatchObject({ kind: "agent", address: "/publisher", node_id: beta.nodeId, node_name: LABEL.beta });
     expect(teamRow, JSON.stringify(rows)).toMatchObject({ kind: "agent_team", address: "/studio_team", node_name: LABEL.beta });
-    // Rule 1 (base's view shapes): base gave the coordinator's address from the delegator's side. Soft (F-36).
-    expect.soft(teamRow!.coordinator_address, JSON.stringify(teamRow)).toBe("/studio_team/lead");
+    // SR-072 F-36: rule 1 keeps base's shape; the value is the own-team address (TC-12 option 1, SR-030 for peers).
+    expect(teamRow!.coordinator_address, JSON.stringify(teamRow)).toBe("/lead");
     expect((teamRow!.members as Rec[]).map((member) => member.agent_run_id).sort()).toEqual([ids.studio.coord, ids.studio.checker].sort());
     await until(() => remoteSummariesIn(view.frames, ids.studio.teamRunId).length > 0 && remoteSummariesIn(view.frames, ids.team.r2).length > 0, "both summaries", 25_000);
     const studioSummary = remoteSummariesIn(view.frames, ids.studio.teamRunId)[0]!;

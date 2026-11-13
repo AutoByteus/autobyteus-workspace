@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -162,7 +163,8 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
 
   /** One root kind: a Manager in that root drives Task-linked work, closes a Task, reopens it, and stops. */
   /** autobyteus-469 AC-001: the root's tree file on disk, and every stored entry without `nodeId` in a `taskExecutions` list. */
-  const treeFileOf = (kind: Kind, rootId: string) => path.join(dataDir, "memory", ...(kind === "agent" ? ["agents", rootId, "collaboration", "collaboration_tree.json"]
+  // autobyteus-461 contract §6: `collaboration_tree.json` is removed; a standalone agent run's own file is its run_metadata.json.
+  const treeFileOf = (kind: Kind, rootId: string) => path.join(dataDir, "memory", ...(kind === "agent" ? ["agents", rootId, "run_metadata.json"]
     : kind === "team" ? ["agent_teams", rootId, "team_run_execution_tree.json"] : ["agent_orgs", rootId, "agent_org_run_execution_tree.json"]));
   const storedLocalEntries = async (kind: Kind, rootId: string): Promise<Record<string, any>[]> => {
     const found: Record<string, any>[] = [];
@@ -339,6 +341,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
       return keys(after.closed).length === 0 && keys(taskNodes(after.tree).map(refOf)).join() === keys(stillOpen).join();
     }, "Task A's runs left the tree once stopped", 30_000).catch((error) => { throw new Error(`${error}: ${JSON.stringify({ closed: keys(after.closed), tree: keys(taskNodes(after.tree).map(refOf)) })}`); });
     expect(await storedLocalEntries(kind, rootId), "no local delegated run is stored in the tree file").toEqual([]);
+    if (kind === "agent") expect(existsSync(path.join(dataDir, "memory", "agents", rootId, "collaboration", "collaboration_tree.json")), "no collaboration_tree.json (contract §6)").toBe(false);
     const aMessageIdsAfter = (await managerMessages()).filter(touchesTaskA).map((m) => m.messageId);
     expect(aMessageIdsAfter).toEqual(aMessageIdsBefore);
     const memoryHits = spawnSync("grep", ["-rl", aAssigned.agentRunId, path.join(dataDir, "memory")], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);

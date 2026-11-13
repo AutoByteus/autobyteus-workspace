@@ -369,7 +369,10 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const text = JSON.stringify(await conversationOf(agentRunId, address));
       return text.includes(marker) && text.lastIndexOf("OK") > text.indexOf(marker);
     }, `${kind}: ${address} answered ${marker}`, 60_000);
-    return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered, errorCards,
+    /** The frames of this root's views that name an agent run (a failure's details). */
+    const framesNaming = (agentRunId: string) => seen.flat().filter((frame) => JSON.stringify(frame).includes(agentRunId))
+      .map((frame) => ({ type: frame.type, payload: JSON.stringify(frame.payload).slice(0, 400) }));
+    return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered, errorCards, framesNaming,
       freshStatuses, reconnect, closeChannels };
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
@@ -490,11 +493,17 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       expect(failed.message).toMatch(/AGY_MODEL_UNAVAILABLE/);
       await root.signal("writer error", (e) => e.agentRunId === copy.members.writer.agentRunId && e.status === "error");
       // The writer's conversation shows the failure once (SR-004: one error card per failed start).
-      await until(() => root.errorCards(copy.members.writer.agentRunId).length > 0, `${kind}: writer error card`, 15_000);
-      await wait(1_000);
-      const cards = root.errorCards(copy.members.writer.agentRunId);
-      expect(cards, JSON.stringify(cards)).toHaveLength(1);
-      expect(JSON.stringify(cards[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      // The delegator's view carries the delegated member's conversation error card in the agent and team views; in the
+      // org view it is missing (F-41, Unclear: rule 2 reads a delegated run's conversation on its own stream). Soft.
+      const gotCard = await until(() => root.errorCards(copy.members.writer.agentRunId).length > 0, `${kind}: writer error card`, 15_000).then(() => true, () => false);
+      expect.soft(gotCard, `${kind} F-41: the writer's error card in the delegator's view; frames naming the writer: `
+        + JSON.stringify(root.framesNaming(copy.members.writer.agentRunId)).slice(0, 1_500)).toBe(true);
+      if (gotCard) {
+        await wait(1_000);
+        const cards = root.errorCards(copy.members.writer.agentRunId);
+        expect(cards, JSON.stringify(cards)).toHaveLength(1);
+        expect(JSON.stringify(cards[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      }
       expect(await launchesFor(runIdsOf(copy), failedFrom)).toEqual([]);
       await expectStatuses(root, copy, { lead: "idle", reviewer: "idle", writer: "error", tester: "offline" });
       expect((await savedBindings(copy.teamRunId)).writer).toBeNull();
@@ -502,7 +511,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
         content: "Second review. Marker REVIEW-SECOND." }));
       expect(stillWorks, JSON.stringify(stillWorks)).toMatchObject({ accepted: true });
       await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-SECOND");
-      record.memberStartFailure = { result: failed, errorCard: cards[0] };
+      record.memberStartFailure = { result: failed, errorCard: root.errorCards(copy.members.writer.agentRunId)[0] ?? null };
     } else {
       // DTL-004 (AC-003, REQ-004): a copy member delegating its own Team is refused (collaboration-model-contract); it delegates
       // another catalog Team instead, and only that copy's coordinator starts.
@@ -556,7 +565,10 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     // no conversation); root restore and the Manager's message resume only the lead; the tester's first work starts fresh.
     root.closeChannels();
     await terminate(kind, root.rootId);
-    await until(() => offline(copy, MEMBERS) && !processLive(root.managerRunId), `${kind}: root stopped`, 30_000);
+    // REQ-001: the root's Stop stops its own parts only; the delegated team is a run of its own, stopped by its own Stop
+    // (rule 2). Both are stopped before the saved file is given the pre-fix shape.
+    await terminate("team", copy.teamRunId);
+    await until(() => offline(copy, MEMBERS) && !processLive(root.managerRunId), `${kind}: root and copy stopped`, 30_000);
     const legacyBinding = `legacy-unused-${randomUUID()}`;
     const records = await savedCopyRecords(copy.teamRunId);
     for (const file of new Set(records.map((entry) => entry.file))) {

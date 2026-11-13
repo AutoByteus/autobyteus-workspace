@@ -1,0 +1,8 @@
+# project-task-boundaries cause (temporary log, removed), code 958cb22462
+360:DIAG-461 unconfirmed Task cause: Error: TASK_ENTRIES_LISTENER_UNSET: a Task change needs the delegation tree, which the composition sets.
+361-    at TaskExecutionResourceService.requireEntriesListener (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/src/projects/services/task-execution-resource-service.ts:327:38)
+362-    at TaskExecutionResourceService.update (/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/src/projects/services/task-execution-resource-service.ts:332:10)
+363-    at /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/src/projects/services/task-execution-resource-service.ts:139:20
+364-
+--
+      Tests  4 failed | 14 passed (18)

@@ -507,6 +507,11 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     await settledTask(scope, secondId, "second temp task");
     root.close();
     await terminate("agent", root.rootId);
+    // SR-072 F-30 (T-5, DS-13): a delegated run with an open Task that is not stopped (idle included) blocks the delete;
+    // the user stops each first, by its own Stop (rule 2).
+    for (const runId of [delegated.target_agent_run_id, second.target_agent_run_id] as string[]) {
+      await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: runId });
+    }
     const deleted = (await graphql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: root.rootId })).deleteStoredRun;
     expect(deleted.success, deleted.message).toBe(true);
     for (const id of [taskId, secondId]) {

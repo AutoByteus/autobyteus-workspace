@@ -32,12 +32,15 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // - TDR-001 (closure during the write): the Manager's run-ID message to a copy's lead is written while that copy's
 //   Task is closed. The root does not fail-stop; the Manager gets the readable refusal
 //   `{accepted:false, code:"TASK_AGENT_RESOURCE_CLOSED"}` (DEC-005: the same as a closure found before the save); the
-//   record stays in the message log and the root view; the lead never processes the message.
-// - TDR-002 (closure while waiting behind another write, DEC-005 with the slot dropped): another copy's member is
-//   writing a teammate message; the Manager's message to a second copy waits for the log lock; the second copy's Task
-//   is closed. The Manager gets the same readable refusal; that message is never written; the first is delivered.
+//   refused message is never shown in the Team tab (autobyteus-461 SR-072, the one accepted difference from base); the
+//   lead never processes the message. The write was in progress at the closure, so where it is written is recorded.
+// - TDR-002 (closure while waiting behind another write, DEC-005 with the slot dropped): a write to the second copy's own
+//   log is held (its lead → its mate); the Manager's message to that lead waits for that log's lock (each run has its own
+//   log and lock, autobyteus-461 TC-13); the copy's Task is closed. The Manager gets the same readable refusal; that
+//   message is never written. The held write's own outcome is recorded.
 // - TDR-003 (the root keeps working): later messages are accepted and saved; after root stop and restore the history
-//   reads back exactly (TDR-001's record and the blocking message, not TDR-002's), and messaging continues.
+//   reads back exactly the Team tab's messages (the root's own log and its open subtree's, SR-074; neither refused
+//   message), and messaging continues.
 // Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts --no-watch
 // `TEAMMATE_DELIVERY_RACE_E2E_EVIDENCE_DIR` keeps a JSON receipt. The scripted CLI's opt-in `AGY_FAKE_TOOL_LOG` records
@@ -216,7 +219,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
    * kept when its sender or receiver is one of `agentRunIds`, unique by `messageId`, in `createdAt` order. An unfinished
    * last line (an append that never returned) is ignored, as the reader does.
    */
-  const savedHistory = async (agentRunIds: ReadonlySet<string>): Promise<Array<Record<string, any>>> => {
+  const savedHistory = async (agentRunIds: ReadonlySet<string>, where?: Map<string, string[]>): Promise<Array<Record<string, any>>> => {
     const byId = new Map<string, Record<string, any>>();
     const visit = async (dir: string): Promise<void> => {
       for (const entry of await fs.readdir(dir, { withFileTypes: true }).catch(() => [])) {
@@ -228,6 +231,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
           let message: Record<string, any>; try { message = JSON.parse(line); } catch { continue; }
           if (typeof message.messageId !== "string") continue;
           if (agentRunIds.has(message.senderAgentRunId) || agentRunIds.has(message.receiverAgentRunId)) byId.set(message.messageId, message);
+          if (where) where.set(String(message.content), [...(where.get(String(message.content)) ?? []), path.relative(dataDir, file)]);
         }
       }
     };
@@ -476,21 +480,29 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     // DEC-005: the same returned refusal as a closure found before the save, readable by the agent; not a fail-stop.
     expect(delivered1, `${kind} TDR-001 delivery outcome`).toMatchObject({ resolved: { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" } });
     expect(outcome1, `${kind} TDR-001 agent-visible outcome`).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    await until(async () => contents(await savedHistory(rootAgents())).includes(race1), `${kind}: TDR-001 record saved`, 15_000);
-    expect(await root.snapshotMessages(), `${kind} TDR-001 record shown in the root view`).toContain(race1);
+    // SR-072 (the one accepted difference from base): the receiver re-checks before writing, so a refused message is
+    // never written, and never shown in the Team tab.
+    await wait(3_000);
+    const writtenIn = new Map<string, string[]>();
+    // The receiver re-checks before writing (SR-072); here the write was already in progress when the Task closed, so the
+    // record may be in the receiver's own log: where it is, is recorded. It is never shown.
+    await savedHistory(rootAgents(), writtenIn);
+    record.tdr001writtenIn = writtenIn.get(race1) ?? [];
+    expect(await root.snapshotMessages(), `${kind} TDR-001 refused message not shown in the root view`).not.toContain(race1);
     await wait(2_000);
     const leadMemoryC = await closedMemberText(copyC.teamRunId, copyC.members.lead.agentRunId);
     expect(JSON.parse(leadMemoryC).rawTraces?.length, `${kind} TDR-001 recipient's saved memory is read`).toBeGreaterThan(0);
     expect(leadMemoryC, `${kind} TDR-001 recipient never processes`).not.toContain(race1);
 
-    // TDR-002 (CR-001): copy A's lead is writing a teammate message; the Manager's message to B waits for the lock;
-    // B's Task closes; then A's write finishes.
+    // TDR-002 (CR-001): a write to B's log is held (B's lead → B's mate); the Manager's message to B's lead waits for B's
+    // log lock; B's Task closes; then the held write finishes. autobyteus-461: each run has its own log and lock (TC-13),
+    // so the waiting happens only behind a write to the receiver's own log (at base, any write to the shared root log).
     const blocker = `BLOCKER-${kind}-${randomUUID().slice(0, 6)}`;
     const raceB = `RACEB-${kind}-${randomUUID().slice(0, 6)}`;
     const gate2 = holdWrite(blocker);
-    const asked = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyA.members.lead.agentRunId,
-      content: callTool("send_message_to", { recipient_address: copyA.members.mate.address, content: blocker }) }));
-    expect(asked, `${kind} Manager → A lead ${JSON.stringify(asked)}`).toMatchObject({ accepted: true });
+    const asked = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyB.members.lead.agentRunId,
+      content: callTool("send_message_to", { recipient_address: copyB.members.mate.address, content: blocker }) }));
+    expect(asked, `${kind} Manager → B lead ${JSON.stringify(asked)}`).toMatchObject({ accepted: true });
     await Promise.race([gate2.entered, wait(60_000).then(() => { throw new Error(`${kind}: TDR-002 blocking write never started`); })]);
     root.sendToManager(callTool("send_message_to", { target_agent_run_id: copyB.members.lead.agentRunId, content: raceB }));
     await wait(3_000); // the Manager's delivery holds B's slot and waits for the history lock
@@ -504,19 +516,19 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     mark("tdr002 write released");
     const outcome2 = await awaitToolOutcome(raceB, { targetAgentRunId: copyB.members.lead.agentRunId }, `${kind}: TDR-002 sender outcome`);
     mark("tdr002 sender result");
-    const blockerOutcome = await awaitToolOutcome(blocker, { recipientAddress: copyA.members.mate.address }, `${kind}: A lead's teammate message result`);
+    // B's lead was stopped by the closure mid-turn, so it may never see its own tool result: only the delivery owner's
+    // outcome is recorded.
+    await wait(2_000);
+    const blockerOutcome = deliveryOutcomes.get(blocker) ?? null;
     const delivered2 = deliveryOutcomes.get(raceB);
     record.tdr002 = { agentSaw: outcome2, delivery: delivered2, blockerAgentSaw: blockerOutcome, blockerDelivery: deliveryOutcomes.get(blocker),
-      mateAgentRunId: copyA.members.mate.agentRunId, bDeliveryStartedMsBeforeTaskBClosed: taskBClosedAt - (deliveryStarts.get(raceB) ?? taskBClosedAt) };
+      mateAgentRunId: copyB.members.mate.agentRunId, bDeliveryStartedMsBeforeTaskBClosed: taskBClosedAt - (deliveryStarts.get(raceB) ?? taskBClosedAt) };
     expect(delivered2, `${kind} TDR-002 delivery outcome`).toMatchObject({ resolved: { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" } });
     expect(outcome2, `${kind} TDR-002 agent-visible outcome`).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     // Precondition of the CR-001 case: B's delivery was already in flight (its slot held, waiting for the lock) when B closed.
     expect(deliveryStarts.get(raceB), `${kind} TDR-002 B delivery started before Task B closed`).toBeLessThan(taskBClosedAt);
-    expect(blockerOutcome, `${kind} blocking message`).toMatchObject({ accepted: true, target_agent_run_id: copyA.members.mate.agentRunId });
-    expect(deliveryOutcomes.get(blocker)).toMatchObject({ resolved: { accepted: true } });
-    await root.answered(copyA.members.mate, blocker);
+    // The held write inside B was in progress when B's Task closed (as TDR-001's): its outcome is recorded, not asserted.
     const afterRace = contents(await savedHistory(rootAgents()));
-    expect(afterRace, `${kind} history after the races`).toEqual(expect.arrayContaining([race1, blocker]));
     expect(afterRace).not.toContain(raceB);
     expect(await closedMemberText(copyB.teamRunId, copyB.members.lead.agentRunId)).not.toContain(raceB);
 
@@ -525,8 +537,22 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     const afterOutcome = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyA.members.lead.agentRunId, content: after }));
     expect(afterOutcome, `${kind} after the races ${JSON.stringify(afterOutcome)}`).toMatchObject({ accepted: true });
     await root.answered(copyA.members.lead, after);
-    const beforeStop = contents(await savedHistory(rootAgents()));
-    expect(beforeStop).toEqual(expect.arrayContaining([race1, blocker, after]));
+    // The Team tab of the root (SR-072, SR-074): the root's own log and its open subtree's logs (copy A; B and C closed),
+    // by base's in-view rule. Computed from the saved logs by that rule.
+    const rootDir = kind === "agent" ? `memory/agents/${root.managerRunId}/` : kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agent_orgs/${root.rootId}/`;
+    const openDirs = [rootDir, `memory/agent_teams/${copyA.teamRunId}/`];
+    const treeAgents = new Set([root.managerRunId, ...Object.values(copyA.members).map((member) => member.agentRunId)]);
+    const inView = async () => {
+      const where = new Map<string, string[]>();
+      const saved = await savedHistory(rootAgents(), where);
+      return saved.filter((message) => (where.get(String(message.content)) ?? []).some((file) => openDirs.some((dir) => file.startsWith(dir)))
+        && ((treeAgents.has(message.senderAgentRunId) && treeAgents.has(message.receiverAgentRunId))
+          || message.senderAgentRunId === root.managerRunId || message.receiverAgentRunId === root.managerRunId)).map((message) => String(message.content));
+    };
+    const beforeStop = await inView();
+    expect(beforeStop).toEqual(expect.arrayContaining([after]));
+    expect(beforeStop).not.toContain(race1);
+    expect(beforeStop).not.toContain(raceB);
     expect(await root.snapshotMessages(), `${kind} live snapshot`).toEqual(beforeStop);
     root.closeChannels();
     await terminate(kind, root.rootId);
@@ -536,7 +562,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     const postOutcome = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copyA.members.lead.agentRunId, content: post }));
     expect(postOutcome, `${kind} after restore ${JSON.stringify(postOutcome)}`).toMatchObject({ accepted: true });
     await root.answered(copyA.members.lead, post);
-    const final = contents(await savedHistory(rootAgents()));
+    const final = await inView();
     expect(final).toEqual([...beforeStop, ...final.slice(beforeStop.length)]);
     expect(final).toContain(post);
     expect(final).not.toContain(raceB);
