@@ -170,7 +170,7 @@ import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeN
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 import { runFileOpenCases } from './mobile-file-open-cases.mjs';
-// MSP-50, MSP-51, MSP-52 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone.
+// MSP-53, MSP-54, MSP-55 (autobyteus-461 AC-007, SCN-005, O-1): a stopped delegator's run on the phone.
 import { runStoppedDelegatorCases } from './mobile-stopped-delegator-cases.mjs';
 import { runFileZoomCases } from './mobile-file-zoom-cases.mjs';
 import { runLiveFileRefreshCases } from './mobile-live-file-refresh-cases.mjs';
