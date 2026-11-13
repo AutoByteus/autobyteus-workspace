@@ -127,14 +127,36 @@ export class LocalChildObservation {
       this.statuses.set(agentRunId, { agentRunId, memberAddress, status: String((message.payload as { status?: unknown }).status) });
       this.options.publish({ kind: "local_child_presentation", agentRunId, memberAddress, message });
     };
+    await this.observe(entry, access, runId, present);
+  }
+
+  /**
+   * The child's current statuses, then its live ones. Its run's Stop ends the access's observation (DS-006, the peer
+   * owner's rule); a view's open row is followed on (CR-461-067, T-4): its agents read `offline`, as a read of the
+   * stopped run gives (a member whose start failed too), and the run is observed again, so its restore is followed.
+   */
+  private async observe(entry: Followed, access: ReturnType<LocalChildPorts["agents"]>, runId: string,
+    present: (agentRunId: string, message: AgentPresentationMessage) => void): Promise<void> {
     for (const live of access.pairedAgentStatuses(runId)) present(live.agentRunId, pairedAgentStatusFrame(live.status));
+    const ended = (): void => {
+      entry.observation = null;
+      if (entry.closed || this.disposed || !this.isOpenRow(entry)) return;
+      for (const agentRunId of entry.agentRunIds) present(agentRunId, pairedAgentStatusFrame("offline"));
+      void this.observe(entry, access, runId, present);
+    };
     try {
-      const observation = await access.observePairedAgents(runId, present, () => { entry.observation = null; });
+      const observation = await access.observePairedAgents(runId, present, ended);
       if (entry.closed) observation?.close();
       else entry.observation = observation;
     } catch (error) {
       console.warn(`A delegated run's output could not be followed: ${String(error)}`);
     }
+  }
+
+  /** The entry's row is still one of the run's open local rows (a deleted run's or a closed Task's is not). */
+  private isOpenRow(entry: Followed): boolean {
+    const key = keyOf(entry.child.run);
+    return this.options.ports.tree.collaborationTreeOf(this.options.run).rows().some((row) => row.nodeId === undefined && keyOf(row.run) === key);
   }
 
   private close(entry: Followed): void {
