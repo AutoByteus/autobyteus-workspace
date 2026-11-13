@@ -9,7 +9,7 @@ Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 - Upstream review applicability and handoff-rule result: Large / High → independent architecture review was selected (passed ARCH-REV-014 on SR-039, ARCH-REV-019 on SR-044, ARCH-REV-022 … ARCH-REV-028 on SR-047 … SR-053, ARCH-REV-030 on SR-055, ARCH-REV-031 on SR-056, ARCH-REV-032 on SR-057, ARCH-REV-033 on SR-058, ARCH-REV-034 on SR-059, ARCH-REV-035 on SR-060, ARCH-REV-036 … ARCH-REV-042 on SR-061 … SR-068); this handoff goes to Code Review (round 13: IR-011 … IR-013 in one review).
 - Requirements doc: `requirements-doc.md`
 - Investigation notes: `investigation-notes.md`
-- Solution revision record: `solution-revision-record.md` (through SR-073)
+- Solution revision record: `solution-revision-record.md` (through SR-074)
 - Design spec: `design-spec.md` (DS-1 … DS-15; SR-071's refusals in base's order; rules 1–3 of SR-061; implementation order steps 1 … 10)
 - Supplemental task artifacts: `target-collaboration-contract.md` (revision 8, the authority with its executable model), `evidence/collaboration-model/` (`model.py`, `stories.py`, `walkthrough.py`), `collaboration-walkthrough.md`, `evidence/data-model-validation/`
 - Design review report: `design-review-report.md`
@@ -18,13 +18,17 @@ Ticket folder: `tickets/in-progress/delegated-copies-outlive-delegator-461/`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (round 19: CRR-024's Local Fixes and SR-072, SR-073; round 18: CR-461-047, passed as CRR-023; round 17: CRR-021's Local Fixes and SR-071; round 16: CR-461-038, passed as CRR-020; round 15: SR-070 / DS-15; round 14 was CRR-017's Local Fixes, passed as CRR-018)
+- Implementation cycle: `Rework` (round 20: SR-074; round 19: CRR-024's Local Fixes and SR-072, SR-073; round 18: CR-461-047, passed as CRR-023; round 17: CRR-021's Local Fixes and SR-071; round 16: CR-461-038, passed as CRR-020; round 15: SR-070 / DS-15; round 14 was CRR-017's Local Fixes, passed as CRR-018)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-019` (IR-001: the initial implementation; IR-002 … IR-018: rounds 2 … 18)
+- Current implementation revision ID: `IR-020` (IR-001: the initial implementation; IR-002 … IR-019: rounds 2 … 19)
 - Related solution revision IDs: SR-018 … SR-068 (rounds 11 … 13: SR-058 a delegated run's collaboration context, SR-059 step 2's one enumeration, SR-060 the forest and each run's collaboration map, SR-061 the frontend contract (rules 1–3), SR-062 one view sequence per run, SR-063 `RunViewStream`, SR-064 an agent stream follows its run and the Settings save per run, SR-065 each child's own options, SR-066 a peer run by its own identity, SR-067 every spine walked (DS-13), SR-068 `hasCollaboration`; round 9: SR-057 a listed run's peer children in the poll's answer; round 8: SR-055 one listed-runs poll for every kind, SR-056 the row projection split by data lifetime; round 3: SR-045 the stream lives with the open view, SR-046 stored and live view sessions, SR-047 owners passed in from one composition root, SR-048 restore → live → post, SR-049 roots don't delegate, SR-052 the application host composes the same steps (replaces SR-050/051), SR-053 narrow `RunTaskRecords` port)
-- Related architecture-review revision IDs: ARCH-REV-005 … ARCH-REV-047
+- Related architecture-review revision IDs: ARCH-REV-005 … ARCH-REV-048
 - Related code-review revision IDs: CRR-002 … CRR-024 (CRR-024: failure-origin review of API/E2E round 5; CRR-023: Pass; CRR-022: round 17, Fail, CR-461-047; CRR-021: failure-origin review of API/E2E round 4; CRR-018, CRR-020: Pass; CRR-016: failure-origin review of API/E2E round 3; CRR-014: a Full Re-Audit of IR-009; CRR-013: a full review of the whole change; CRR-008, CRR-012: failure-origin reviews of API/E2E rounds 1 and 2; CRR-011: Pass, informational); delivery: `N/A`
-- Triggering finding IDs: CR-461-048 … -053, and SR-072 (CR-461-054, -055), SR-073 (round 19, IR-019); CR-461-047 (round 18, IR-018); CR-461-039 … -044, and CR-461-045, -046 as SR-071 (round 17, IR-017); CR-461-038 (round 16, IR-016); SR-070 / G-4 (round 15, IR-015); CR-461-036, CR-461-037, and CR-461-035 as SR-069 (round 14, IR-014); SR-060 … SR-068 and CR-461-033 (round 13, IR-013; IR-012 folded in); CR-461-030 … -032, -034, SR-058, SR-059 (round 11, IR-011); CR-461-028, CR-461-029 (round 10, IR-010); CR-461-022 … CR-461-026, CR-461-027 as SR-057 (round 9, IR-009); CR-461-017 … CR-461-020, CR-461-021 as SR-055/056 (round 8, IR-008); CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+- Triggering finding IDs: SR-074 (CR-461-056; CR-461-051's placement; round 20, IR-020); CR-461-048 … -053, and SR-072 (CR-461-054, -055), SR-073 (round 19, IR-019); CR-461-047 (round 18, IR-018); CR-461-039 … -044, and CR-461-045, -046 as SR-071 (round 17, IR-017); CR-461-038 (round 16, IR-016); SR-070 / G-4 (round 15, IR-015); CR-461-036, CR-461-037, and CR-461-035 as SR-069 (round 14, IR-014); SR-060 … SR-068 and CR-461-033 (round 13, IR-013; IR-012 folded in); CR-461-030 … -032, -034, SR-058, SR-059 (round 11, IR-011); CR-461-028, CR-461-029 (round 10, IR-010); CR-461-022 … CR-461-026, CR-461-027 as SR-057 (round 9, IR-009); CR-461-017 … CR-461-020, CR-461-021 as SR-055/056 (round 8, IR-008); CR-461-016 (round 7, IR-007); CR-461-014, CR-461-015 (round 6, IR-006); CR-461-009, CR-461-010, CR-461-011 (round 5, IR-005; SR-054 answered CR-461-012/013 with no code change); CR-461-008 (round 4, IR-004); round 3: CR-461-001 (residual), CR-461-005 (residual), CR-461-006 (as SR-045/046/048), CR-461-007
+
+**Round 20 (IR-020), SR-074, `958cb22462`:**
+- One in-view rule, base's `isMessageOfView(message, own(X), tree(X))`, with `tree(X)` = X's agents and those of its open subtree, for the Team tab's read (only the open subtree's logs, the set taken at the read's start) and live (`RunMessagesFeed` numbers a message in a view only when the rule holds there).
+- CR-461-051's check runs where input enters, before the root loads (`ClosedTaskEntryFence`, reading the run's own file only while a Task record is unreadable).
 
 **Round 19 (IR-019), CRR-024's Local Fixes and SR-072, `a0c3a691dc`.** One commit per finding; the details are in IR-019.
 
@@ -310,8 +314,7 @@ Rows for rounds 1 … 10 describe the code as it stood then. Round 13 replaced s
 ## Known Risks
 
 - **Round 19:**
-  - CR-461-051: the before-restore fence cannot know a run was delegated, so for damaged Task data the run's root is loaded, and its gate head refuses before its agent is made ready.
-  - F-26 live: a message whose two agents are a run in X's subtree and a run outside it (e.g. X's own delegator) is numbered in X's stream, as the design says (either run in the set). Base's in-view rule keeps it out of X's composed read, so a Team tab could show it live and not after a reload. This is rare: X's delegator messaging X's descendants. Raised for the reviewer.
+  - CR-461-051 and F-26's live/read difference: resolved in round 20 (SR-074).
   - The file watcher's timing tests fail under this machine's load, at base too.
 - **Round 17:**
   - SDV-01 failed twice in full probe runs before `eb5e9df040`. It passed alone and in the full run at `c8166c2685`; no cause was found in the code.
@@ -466,6 +469,7 @@ Evidence files are in `evidence/implementation/`. Round 17 is IMP-63 … IMP-66,
 | IMP-70 | web `codegen:check`, type gate, guards, full spec suite | `dbc26d1466` (the web is unchanged after it) | macOS, Node 22.23 | the shared top-level owner, the phone's Org open | CR-461-053 | Pass | `IMP-70-web-checks-and-specs.log` | `[typecheck] PASS` at 90; guards `Passed.`; `Test Files  765 passed (765)`, `Tests  5749 passed \| 2 skipped` |
 | IMP-71 | `pnpm test:integration:prepare && pnpm test:integration`; the failed files again | `a0c3a691dc`; the test fix `a5b80f3d7a` | macOS, Node 22.23; load average 6–30 | sockets, REST, GraphQL, the participant read | SR-072 F-26 | Pass after one test fix; the file watcher's timing as at base | `IMP-71-server-integration.log` | `Tests  4 failed \| 479 passed`: `team-communication-api` lacked the Studio services the read now uses (fixed, `Tests  4 passed`); the watcher's timing (IMP-65's control) |
 | IMP-72 | the stopped-delegator views probe, all cases; SDV-01 alone | `a0c3a691dc`, server rebuilt | macOS, Node 22.23; the probe's own data root and Chrome | the views with the live message feed | SR-072 F-26, CR-461-053 | Pass apart from SDV-01's known flake | `IMP-72-sdv-probe.json`, `IMP-72-sdv-01-worker-still-running.png` | full: SDV-02, -03, -04 Pass; SDV-01 "the Manager started" (the worker still running; the send never reached the server; as in round 17); alone: Pass |
+| IMP-73 | server type gate; `pnpm test:unit`; `pnpm test:integration` | `958cb22462` | macOS, Node 22.23; load average 8–17 | the one in-view rule (read and feed), the entry fence | SR-074 | Pass apart from the watcher's timing | `IMP-73-sr074-checks.log` | `[typecheck] PASS` at 1012; `Tests  8010 passed`; integration `Tests  2 failed \| 481 passed`: the file watcher's timing (as at base, IMP-65) |
 
 - Not run, and why (round 19): the contract tests (no contract changed); the server E2E suites (API/E2E's), except the one startup e2e for CR-461-048 (IMP-68); the phone in a browser (CR-461-053 is pinned by specs; MSP-50 … 52 are API/E2E's).
 - Not run, and why (round 17): the contract tests (no contract changed this round); the server E2E suites (API/E2E's); the phone layout in a browser.
@@ -498,7 +502,7 @@ Evidence files are in `evidence/implementation/`. Round 17 is IMP-63 … IMP-66,
   - `teammate-delivery-task-closure-race`: assert a refused message is never shown (SR-072).
   - The ten startup e2e files under `tests/e2e/app-data-migrations` and `projects-startup-migration` may pin registry positions; 461's migration is now last (CR-461-048).
 - **Round 19, to cover:**
-  - F-26: a two-hop message in the Manager's Team tab, live and after a reload; a message between runs once; a closed run's earlier messages kept; a message committed during the read shown once with no reopen.
+  - F-26 / SR-074: a two-hop message in the Manager's Team tab, live and after a reload; a message between a run below X and X's own delegator in neither; a message between runs once; a closed run's messages with X's own agents kept; a message committed during the read shown once with no reopen.
   - F-24 (U11): delete a run's only Task, then give it a new one by run ID from its delegator (agent run and team run).
   - CR-461-051: damage a Task record, restart, message a delegated run: refused, no model request.
   - CR-461-050: a delegated team's member delegating to its own team's name.

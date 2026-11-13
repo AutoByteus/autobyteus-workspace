@@ -676,3 +676,31 @@ The current code and `implementation-handoff.md` remain authoritative.
   - SDV-01's flake at "the Manager started" stays: no cause in the code was found. The worker is still running when the probe clicks.
   - Expectations API/E2E restates, no code change: SID-2 (byte-identical), `task-reactivation-root-visibility` step 11, MSP-51 (open the Team first), F-31, F-36, K-13, and `teammate-delivery-task-closure-race` (a refused message is never shown).
 
+
+### IR-020 — SR-074: one in-view rule for the Team tab's read and live; the unreadable-record check before the root loads
+
+- Triggering role, report path, and round: Solution Designer SR-074, answering my round-19 point (CR-461-056) and the code reviewer's suggestion on CR-461-051. ARCH-REV-048 passed it, with one detail: bind the read's set and filter to `own(X)` / `tree(X)` taken at one moment. Round 20, before CRR-024's re-review.
+- Triggering finding IDs: CR-461-056; CR-461-051 (placement). Large / High unchanged.
+- Prior authoritative result: IR-019 at `a5b80f3d7a` (docs `750f180ef5`), not yet reviewed.
+- Current authoritative result: `958cb22462`.
+- Related solution / architecture-review revision IDs: SR-074; ARCH-REV-048.
+- Implementation delta:
+  - **One rule:** base's `isMessageOfView(message, own(X), tree(X))`, where `tree(X)` is X's agents and those of its open subtree's local runs (`collaborationTreeOf(X).rows`), for both the read and live.
+    - The read (`composeRunViewMessages`) composes the logs of X and its open subtree only. That set is taken once, at the read's start (`DelegatedRunAgentsReader.openRunsBelow`, which replaces `runsBelow(…, "all" | "open")`), and the tree is that set's agents.
+    - `RunMessagesFeed` numbers a message in a view only when the rule holds for its X at that moment, by the runs of the message's two agents: both in X's tree (X and its open local rows), or one of them is X.
+    - Results: a message between a run below X and X's own delegator is shown neither live nor on reload; a two-hop message is shown in both; a closed run's messages with X's own agents stay, because they are in X's own log.
+    - Past participants still come from the whole subtree, to name a closed run's agents in X's own log.
+  - **CR-461-051, before the root loads:** `ClosedTaskEntryFence`, next to `ClosedTaskFence`, answers asynchronously where input enters.
+    - It reads the run's own file (`RunOwnAgentsReader.delegationOf`) only while a Task record is unreadable.
+    - The standalone manager (`inputRefusal` is now asynchronous, and the coordinator awaits it), the Team stream handler and the restart resumer use it. The resumer names an unreadable record as such.
+    - A loaded root's gate head and a member's input check keep the synchronous check with their own `delegatedFrom`.
+- Tests:
+  - the feed: a message between a run below X and X's delegator is not in X's stream but is in the others'; after closure, messages between closed runs leave the Manager's view while its own agents' stay; a message inside the Manager reaches only its view;
+  - the read: on reload, X's view leaves out the message with its delegator and keeps the two-hop one; the reader's `openRunsBelow`;
+  - the entry fence: no file read without damage; a delegated run refused, a user's run not;
+  - the standalone manager: refused before the root loads, nothing registers or runs; a loaded root still refuses at its gate head;
+  - the fakes now asynchronous: coordinator, resumer, Team handler, lifecycle.
+- Local validation and result: IMP-73 (`958cb22462`): server type gate PASS (1012); unit 8010 passed; integration 481 passed. The two failures are the file watcher's timing tests, which fail the same way at base.
+- Next recipient or routing: Code Reviewer, with IR-019 (Large / High).
+- Remaining limitations or risks: the web and the views probe were not rerun; the web did not change, and the server change narrows what a view is sent. SDV-01's flake (IR-019) stays.
+
