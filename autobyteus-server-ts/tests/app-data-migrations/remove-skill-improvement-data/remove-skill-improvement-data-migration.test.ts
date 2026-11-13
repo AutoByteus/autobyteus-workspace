@@ -52,7 +52,7 @@ describe("20261020_remove_skill_improvement_data", () => {
     const at = definitions.findIndex((definition) => definition.id === REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID);
     expect(definitions[at]).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
     expect(definitions.slice(at + 1, at + 4).map((definition) => definition.id)).toEqual(["20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
-    expect(definitions.slice(at + 4).map((definition) => definition.id)).toEqual(["20261111_delegated_runs_own_runs_v1"]);
+    expect(definitions.slice(at + 4).map((definition) => definition.id)).toEqual(["20261111_delegated_runs_own_runs_v1", "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1"]);
   });
 
   it("finds nothing on a fresh data folder", async () => {

@@ -132,8 +132,9 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
     // manifest runtime names (autobyteus-343: it rewrites one value in each manifest, not a run tree or a message log).
     // The one later step that writes run trees and logs, `20261111_delegated_runs_own_runs_v1` (autobyteus-461, after
     // every released migration, CR-461-048), reads this migration's result: the converted collaborators are delegated runs it makes runs of their own.
+    // Its follow-ups (SR-078) apply its steps to the items its predecessors finish later.
     expect(definitions.slice(index + 3).map((definition) => definition.id))
-      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names", "20261111_delegated_runs_own_runs_v1"]);
+      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names", "20261111_delegated_runs_own_runs_v1", "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1"]);
     expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
     expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });

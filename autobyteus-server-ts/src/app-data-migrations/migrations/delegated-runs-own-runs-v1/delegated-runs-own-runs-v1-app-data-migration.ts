@@ -19,6 +19,23 @@ const BUSY_RUN_RECORD = path.join("restart-resume", "busy-runs.json");
 const AGENT_HISTORY_INDEX = "run_history_index.json";
 const TEAM_HISTORY_INDEX = "team_run_history_index.json";
 
+/** The migration's steps (the class comment's numbers): 1 … 3, 4, 5, 5b, 6, 7, 8. */
+export type DelegatedRunsStep = "taskRecords" | "runFiles" | "standaloneTrees" | "agentRunLogs" | "lists" | "busyRuns" | "historyRows";
+/** Which steps a migration of this family applies, under which ID and after which prerequisites (SR-078: the follow-ups). */
+export type DelegatedRunsPlan = Readonly<{
+  id: string;
+  displayName: string;
+  description: string;
+  prerequisiteMigrationIds?: readonly string[];
+  steps: readonly DelegatedRunsStep[];
+}>;
+const MAIN_PLAN: DelegatedRunsPlan = {
+  id: DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID,
+  displayName: "Delegated runs become runs of their own",
+  description: "Stores each delegation once per side (the Task entry and the delegated run's own file) and removes the hosting shapes.",
+  steps: ["taskRecords", "runFiles", "standaloneTrees", "agentRunLogs", "lists", "busyRuns", "historyRows"],
+};
+
 type Disposition = "MIGRATED" | "SKIPPED_ALREADY_CURRENT" | "PRESERVED_UNFINISHED_PREDECESSOR" | "PRESERVED_UNREADABLE"
   | "PRESERVED_UNSUPPORTED" | "FAILED_OPERATION";
 const message = (error: unknown): string => error instanceof Error ? error.message : String(error);
@@ -40,13 +57,18 @@ const message = (error: unknown): string => error instanceof Error ? error.messa
  * No prerequisite hold; registered after its four predecessors (AR-005). A predecessor's unfinished item is left as
  * it is and reported (`PRESERVED_UNFINISHED_PREDECESSOR`); every Task entry is converted in every case. One atomic
  * write per file; nothing is deleted except the converted standalone tree file. Startup only.
+ *
+ * The same steps, with the same builders, are the follow-ups' (SR-078, DS-10 "After the predecessor finishes the item"):
+ * a follow-up applies the steps its predecessor's items need, after that predecessor (`delegated-runs-preserved-items-v1.ts`).
  */
 export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationDefinition {
-  readonly id = DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID;
-  readonly displayName = "Delegated runs become runs of their own";
-  readonly description = "Stores each delegation once per side (the Task entry and the delegated run's own file) and removes the hosting shapes.";
+  readonly id: string;
+  readonly displayName: string;
+  readonly description: string;
+  readonly prerequisiteMigrationIds?: readonly string[];
   readonly requiredOnStartup = true;
   readonly executionPolicy = "STARTUP_ONLY" as const;
+  private readonly steps: ReadonlySet<DelegatedRunsStep>;
 
   private readonly layout: AgentMemoryLayout;
   private readonly details: AppDataMigrationItemDetail[] = [];
@@ -57,21 +79,28 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
     private readonly memoryDir: string,
     private readonly names: DefinitionNameLookup,
     private readonly catalogs: RunHistoryCatalogInvalidation | null = null,
+    plan: DelegatedRunsPlan = MAIN_PLAN,
   ) {
     this.layout = new AgentMemoryLayout(memoryDir);
+    this.id = plan.id;
+    this.displayName = plan.displayName;
+    this.description = plan.description;
+    if (plan.prerequisiteMigrationIds) this.prerequisiteMigrationIds = plan.prerequisiteMigrationIds;
+    this.steps = new Set(plan.steps);
   }
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
     this.details.length = 0;
     this.scanned = 0;
     const scan = await new ReleasedDelegationScan(this.layout).scan();
-    await this.convertTaskRecords(scan);
-    await this.convertRunFiles(scan);
-    await this.convertStandaloneTrees(scan);
-    await this.moveAgentRunLogs(scan);
-    await this.convertLists(scan);
-    await this.convertBusyRunRecord(scan);
-    await this.addHistoryRows(scan);
+    const step = (name: DelegatedRunsStep, run: (scan: ReleasedDelegationScan) => Promise<void>) => this.steps.has(name) ? run.call(this, scan) : Promise.resolve();
+    await step("taskRecords", this.convertTaskRecords);
+    await step("runFiles", this.convertRunFiles);
+    await step("standaloneTrees", this.convertStandaloneTrees);
+    await step("agentRunLogs", this.moveAgentRunLogs);
+    await step("lists", this.convertLists);
+    await step("busyRuns", this.convertBusyRunRecord);
+    await step("historyRows", this.addHistoryRows);
     return this.result();
   }
 

@@ -41,6 +41,7 @@ import { CollaboratorsToDelegatedRunsV1AppDataMigration } from "./migrations/col
 import { AppendOnlyMessageLogsV1AppDataMigration } from "./migrations/append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
 import { RemoveWorkTraceExportsMigration } from "./migrations/remove-work-trace-exports/remove-work-trace-exports-migration.js";
 import { DelegatedRunsOwnRunsV1AppDataMigration } from "./migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
+import { createDelegatedRunsPreservedItemsMigrations } from "./migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.js";
 import { DelegatedCopyOwnFileCompleteV1AppDataMigration } from "./migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
 import { RemoveSkillImprovementDataMigration } from "./migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.js";
 import { NodeIdentityFileNameMigration } from "./migrations/node-identity-file-name/node-identity-file-name-migration.js";
@@ -164,6 +165,9 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // migration (CR-461-048): data that has not run one yet runs it first, so 20261020 removes the improver's helper
     // runs before this makes delegated copies runs of their own.
     new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
+    // autobyteus-461 SR-078: one follow-up per predecessor, each after it and our migration, converts the items that
+    // predecessor finishes later (with our migration's builders); a predecessor stuck FAILED holds back only its own.
+    ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
   ];
 };
 
