@@ -378,3 +378,49 @@ The current code and `implementation-handoff.md` remain authoritative.
   - Not run this round: the CPW E2E, the browser probes, and the rendered check (see the handoff).
 - Next recipient or routing: Code Reviewer.
 
+### IR-014 — CRR-017's Local Fixes (CR-461-036, CR-461-037); SR-069's tests; an Org's rows back in its root
+
+- Triggering role, report path, and round: Code Reviewer CRR-017 (`code-review-report.md`, "Round 13"), through the Solution Designer, who released the Local Fixes and answered CR-461-035 as SR-069 (no code change; tests). Round 14.
+- Triggering finding IDs: CR-461-036, CR-461-037 (`Local Fix`); CR-461-035 (Design Impact → SR-069). Large / High unchanged.
+- Prior authoritative result: IR-013 at `c5142b111b` (docs `ee9d33664e`).
+- Current authoritative result: `1c8264e4f6` (CR-461-037), `49f3db1047` (CR-461-036, the placement revert, SR-069 tests).
+- Related solution / architecture-review revision IDs: SR-069 (with the architecture reviewer, narrow); ARCH-REV `N/A` for the Local Fixes. Related code-review revision IDs: CRR-017.
+- Implementation delta:
+  - **CR-461-037 (C13-03).** `agentRunDelegatedRunSubject` refuses a `task_team_member` without its Team run (throws, naming it); no fallthrough to an agent run. Its doc says a peer run is reached by its own identity (SR-066). New spec `delegatedRunSubjects.spec.ts`.
+  - **CR-461-037 (C13-04).** `readRowEvent` takes the view's run and warns on an unreadable row, naming the row's run, the view's run and the reason, through the same `readRow` as `readViewRows`.
+  - **CR-461-037 (C13-05).**
+    - `run-collaboration-statuses-dtos.ts` is removed from the contracts' src and dist (it had no user and was not exported). The contracts rebuilt with no other dist change.
+    - The server's identity type, the one with users, is renamed `DelegatedRunIdentity`.
+    - `rowRunOf` is removed.
+  - **Suggestion (taken for three of four).**
+    - The standalone, Team and Org member projection services take the composition's `peerRunOf` as a required input instead of building one over the process channel.
+    - The general process run supervisor still builds its own: it is created before step 7, where the channel arrives. Moving it would put the channel in the task side.
+  - **CR-461-036.**
+    - Characterizations at `827f1e68dc` (IMP-52):
+      - story 5.2: a Team member delegates an agent run, which delegates further, and a Team run; then a Task closes;
+      - story 5.3: an Org agent delegates a copy of its mounted team, and the mounted team's member delegates an agent run; then that Task closes.
+    - Each captures the view snapshot, the row events, and the run list's row: `rootTeam` for a Team; `org` and `closed_task_executions` for an Org.
+    - `team-org-view-base-shapes.test.ts` asserts the branch by key paths. Rule 2's parts (a row's own conversation and commands) are not part of a delegator's view.
+  - **Found by CR-461-036 and fixed: the Org's row placement.**
+    - Base hosts every new Org copy at the root (`agent-org-task-execution-adapter.ts:115`), including one delegated by a mounted team's member.
+    - IR-013's `c46e5c330b` had placed such a row in the mounted team. That came from reading base, not from a recording.
+    - Removed: `orgTeamOfDelegator`, `placeInMountedTeam` and the history read's team placement. The two tests now assert base's root placement.
+  - **Found by CR-461-036 and fixed: the Team's list row.**
+    - Base's Team history row carried its delegated rows in `rootTeam.task_executions`; the branch sent none. Base's web reads only `rootTeam.members` (`runHistoryTeamRows.ts:56`), but rule 3 asks for the same shapes.
+    - `withTeamRows` (`api/graphql/types/listed-team-rows.ts`) fills them from the view's rows in `listWorkspaceRunHistory`, `workspaceRunHistory` and `projectRunHistory`, as the Org's history read does. Test in `listed-run-reads.test.ts`.
+  - **SR-069.**
+    - Characterization at `827f1e68dc` (IMP-53): base's composer gives a peer row no mention scope (`null`). The same spec runs on the branch (`peerComposerMentionScope.spec.ts`; `useComposerTarget.ts` is unchanged from base).
+    - The Team and Org view handlers now have the server refusal test (`REMOTE_RUN_MENTIONS_UNSUPPORTED`, nothing posted), as the agent-run view's handler already had.
+  - **Follow-ups.** My FU-024 is renumbered FU-025, because CRR-017's new follow-up took FU-024.
+- Local validation and result (all on `49f3db1047`):
+  - IMP-52: the Team and Org characterizations; branch 6 of 6.
+  - IMP-53: base's peer composer scope is `null`; branch spec and handler refusals pass.
+  - IMP-54: server type gate PASS (1012); unit 7949 passed, with 1 watcher timing test that passes alone.
+  - IMP-55: web codegen current; type gate PASS (90); 764 of 764 spec files.
+  - IMP-56: integration 483 passed.
+  - IMP-57: contracts 47 of 47; dist clean.
+- Next recipient or routing: Code Reviewer (Local Fix done; Large / High).
+- Remaining limitations or risks:
+  - The characterization covers one representative scenario per story (S1/S6/S10 and their Team and Org equivalents), not every step of `stories.py`. Steps that only send messages do not change a view's rows.
+  - The peer rows of each story (5.1's peer node) are covered by the contracts and the peer tests, not by a two-node capture.
+

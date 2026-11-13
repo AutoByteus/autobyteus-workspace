@@ -1,0 +1,44 @@
+import fs from "node:fs/promises";
+import { afterEach, describe, it, vi } from "vitest";
+import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionView } from "../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
+import { projectAgentOrgExecutionTree } from "../../../src/services/agent-streaming/collaboration-execution-tree-dto-projection.js";
+import { createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
+import { buildOrg, cleanupDirectories } from "../agent-org-execution/helpers/org-collaborator-harness.js";
+import { shapeOf } from "./view-shapes-base.test.js";
+
+// autobyteus-461 rule 3 (CR-461-036): base 827f1e68dc characterization of what the web receives for an Org run's view
+// (story 5.3): an Org agent delegates to a copy of the Org's mounted team (O5), and a member of the mounted team
+// delegates an agent run (O8); then the agent run's Task closes (S10). The view snapshot, the row events, and the run
+// list's Org row (`listCollaborationRootHistory`: `org` and `closed_task_executions`). Values normalized to their shape.
+afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
+
+const plain = (value: unknown) => JSON.parse(JSON.stringify(value));
+
+describe("base 827f1e68dc: an Org run's view of its delegated runs (story 5.3)", () => {
+  it("records the shapes", async () => {
+    const f = await buildOrg();
+    const drain = async () => { for (let i = 0; i < 3; i += 1) await flushMicrotasks(); };
+    const events: unknown[] = [];
+    f.owner.subscribeToEvents((sequenced) => { events.push(sequenced); });
+    const member = (memberAddress: string, agentRunId: string) => createCollaborationMemberExecutionIdentity({ root: f.root, memberAddress, agentRunId });
+    const team = await f.owner.delegateToNewCopy({ identity: member("/director", "director") }, { recipient_address: "/target", description: "Ship the release" } as never);
+    await drain();
+    const agent = await f.owner.delegateToNewCopy({ identity: member("/target/lead", "configured-lead") }, { recipient_address: "/code_reviewer", description: "Write the notes" } as never);
+    await drain();
+    const connection = await f.owner.openPackageSnapshotConnection();
+    const snapshot = plain(projectAgentOrgExecutionView(f.owner, connection, []));
+    connection.close();
+    const project = (from: number) => events.slice(from).map((event) => projectAgentOrgExecutionEvent(f.owner, event as never)).filter(Boolean).map(plain);
+    const started = project(0).filter((event) => event.event?.kind === "task_execution_started");
+    const before = events.length;
+    void f.owner.releaseTaskExecutions(f.resources.close((agent as { taskId: string }).taskId));
+    await vi.waitFor(async () => { await drain(); if (!project(before).some((event) => event.event?.kind === "task_executions_closed")) throw new Error("waiting"); });
+    const closed = project(before).filter((event) => event.event?.kind === "task_executions_closed");
+    const after = await f.owner.openPackageSnapshotConnection();
+    const listRow = plain({ org: projectAgentOrgExecutionTree(f.owner.getExecutionTreeSnapshot()), closed_task_executions: after.snapshot.closedTaskExecutions });
+    after.close();
+    const out = { delegations: plain({ team, agent }), addresses: plain(f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions.map((row: { address: string }) => row.address)), snapshot: shapeOf(snapshot), started: shapeOf(started), closed: shapeOf(closed), listRow: shapeOf(listRow) };
+    await fs.writeFile(process.env.CHAR_OUT ?? "/tmp/char-461-org-base.json", JSON.stringify(out, null, 2));
+  });
+});

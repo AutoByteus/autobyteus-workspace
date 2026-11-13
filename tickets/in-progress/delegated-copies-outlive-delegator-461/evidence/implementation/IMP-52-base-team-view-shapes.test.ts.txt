@@ -1,0 +1,48 @@
+import fs from "node:fs/promises";
+import { afterEach, describe, it, vi } from "vitest";
+import { projectExecutionTree, projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../src/services/agent-streaming/team-execution-view-projector.js";
+import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import type { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
+import { ROOT, cleanupDirectories, harness } from "../agent-team-execution/helpers/team-root-collaborator-harness.js";
+import { shapeOf } from "./view-shapes-base.test.js";
+
+// autobyteus-461 rule 3 (CR-461-036): base 827f1e68dc characterization of what the web receives for a Team run's view
+// when its member delegates (story 5.2): an agent run for Task A (U3), which delegates further (U5, nested), and a
+// Team run for Task B; then Task A closes (S10). The view snapshot, the row events, and the run list's Team row
+// (`rootTeam`, `projectExecutionTree(tree).root_team`). Values are normalized to their shape (kinds kept).
+afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
+
+const messageOf = (value: unknown) => JSON.parse(JSON.stringify(value)) as { type: string; payload: unknown };
+
+describe("base 827f1e68dc: a Team run's view of its delegated runs (story 5.2)", () => {
+  it("records the shapes", async () => {
+    const f = await harness();
+    const resources = f.dependencies.taskExecutionResources as InMemoryTaskExecutionResources;
+    resources.addTask("A"); resources.addTask("B");
+    const events: unknown[] = [];
+    f.root.subscribeToEvents((sequenced) => { events.push(sequenced); });
+    const coordinator = f.identity("/coordinator", "run-coordinator");
+    await f.root.delegateToNewCopy({ identity: coordinator }, { recipient_address: "/code_reviewer", task_id: "A" } as never);
+    await flushMicrotasks();
+    const reviewer = f.root.getExecutionTreeSnapshot().rootTeam.taskExecutions[0] as { agentRunId: string; address: string };
+    const reviewerIdentity = createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity(ROOT), memberAddress: reviewer.address, agentRunId: reviewer.agentRunId });
+    let nested = "recorded";
+    await f.root.delegateToNewCopy({ identity: reviewerIdentity }, { recipient_address: "/designer", description: "Check the mockups" } as never)
+      .catch((error: unknown) => { nested = `refused: ${error instanceof Error ? error.message : String(error)}`; });
+    await f.root.delegateToNewCopy({ identity: coordinator }, { recipient_address: "/product_team", task_id: "B" } as never);
+    await flushMicrotasks();
+    const connection = await f.root.openPackageSnapshotConnection();
+    const snapshot = messageOf(projectTeamExecutionViewSnapshot(ROOT, connection, []));
+    connection.close();
+    const project = (from: number) => events.slice(from).map((event) => messageOf(projectSequencedTeamRunEvent(f.root, event as never)));
+    const started = project(0).filter((message) => message.type === "TASK_EXECUTION_STARTED");
+    const before = events.length;
+    void f.root.releaseTaskExecutions(resources.close("A"));
+    await vi.waitFor(() => { if (!project(before).some((message) => message.type === "TASK_EXECUTIONS_CLOSED")) throw new Error("waiting"); });
+    const closed = project(before).filter((message) => message.type === "TASK_EXECUTIONS_CLOSED");
+    const listRootTeam = JSON.parse(JSON.stringify(projectExecutionTree(f.root.getExecutionTreeSnapshot()).root_team));
+    const out = { nested, snapshot: shapeOf(snapshot), started: shapeOf(started), closed: shapeOf(closed), listRootTeam: shapeOf(listRootTeam) };
+    await fs.writeFile(process.env.CHAR_OUT ?? "/tmp/char-461-team-base.json", JSON.stringify(out, null, 2));
+  });
+});
