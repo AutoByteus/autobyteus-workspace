@@ -225,9 +225,10 @@ export class AgentOrgRunService {
   async getInspection(orgRunId: string, children: Pick<RunViewChildren, "read">) {
     const inspection = await this.dependencies.manager.getInspection(orgRunId);
     const run = { rootSubjectKind: "agent_org" as const, rootRunId: inspection.snapshot.tree.rootOrg.orgRunId };
-    // As the view session reads them (org-view-session.ts): an active Org lists a status for every child agent (CR-461-011).
+    // As the view session reads them (org-view-session.ts): an active Org lists a status for every child agent (CR-461-011);
+    // an inactive Org's snapshot carries none (its contract's correlation rule, CR-461-039).
     const { rows, statuses } = await children.read(run);
-    return projectAgentOrgExecutionSnapshot({ ...inspection, rows, childStatuses: statuses });
+    return projectAgentOrgExecutionSnapshot({ ...inspection, rows, childStatuses: inspection.isActive ? statuses : [] });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

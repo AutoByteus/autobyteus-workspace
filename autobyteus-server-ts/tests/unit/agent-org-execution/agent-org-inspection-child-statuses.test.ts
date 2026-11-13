@@ -36,4 +36,14 @@ describe("an active Org's inspection with a delegated child (CR-461-011)", () =>
   it("without the child's status the view is refused by the contract (what the inspection used to send)", async () => {
     await expect(serviceWith().getInspection("org", children([]) as never)).rejects.toThrow("AgentOrg AgentRun 'analyst_run' has no status record.");
   });
+
+  it("a stopped Org's inspection carries no statuses, as its contract requires; its delegated rows are listed (found by SDV-03)", async () => {
+    const stopped = new AgentOrgRunService({ workGuard: noWorkGuard(), manager: { getInspection: vi.fn(async () => ({ ...activeInspection, isActive: false,
+      liveSequenceId: null, lastMessageChangeSequence: null, snapshot: { ...activeInspection.snapshot, statuses: [] } })) } } as never);
+    const dto = await stopped.getInspection("org", children([{ agentRunId: "analyst_run", memberAddress: "/analyst", status: "offline" }]) as never);
+    if (dto.root_subject_kind !== "agent_org") throw new Error("expected an Org view");
+    expect(dto.root_org.agent_statuses).toEqual([]);
+    expect(dto.root_org.execution_tree.rootOrg.taskExecutions).toEqual([expect.objectContaining({ agentRunId: "analyst_run" })]);
+  });
 });
+
