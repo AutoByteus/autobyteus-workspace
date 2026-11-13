@@ -832,3 +832,4 @@ The current code and `implementation-handoff.md` remain authoritative.
   - The web is unchanged (IMP-76).
 - Remaining risks: re-observing a stopped agent row loads its root again (never its agent), as a view that opens on a stopped row already does. History counts a run active only while its agent runs, and a history delete ends a lingering root.
 - Next recipient: Code Reviewer, a targeted delta on the follower and its accesses.
+- Result: Code Review **Pass (CRR-032**, `code-review-report.md` round 24): CR-461-067 and C23-03 resolved. The reviewer routes to API/E2E.
