@@ -705,3 +705,46 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining limitations or risks: the web and the views probe were not rerun; the web did not change, and the server change narrows what a view is sent. SDV-01's flake (IR-019) stays.
 
 - Review result: `Pass`, CRR-026 (round 20, with IR-019; `code-review-report.md`). CR-461-056 is resolved, and the CR-461-051 check now runs before the root loads. The Code Reviewer routes to API/E2E.
+
+### IR-021 — CRR-027's Local Fixes (CR-461-057 … -063); SR-075, SR-076
+
+- Triggering role, report path, and round: Code Reviewer CRR-027 (`code-review-report.md`, the failure-origin review of API/E2E round 6, API-REV-006): seven `Local Fix` findings, CR-461-057 first (a lost message, a regression). The Solution Designer's SR-075 answers CR-461-064 (F-39, F-40, F-41, K-14) and SR-076 answers my TDR-001 question. Round 21.
+- Triggering finding IDs: CR-461-057 … -063; SR-075; SR-076 and its follow-up decision (`acfebaa23a`). Large / High unchanged.
+- Prior authoritative result: IR-020 at `958cb22462` (CRR-026 Pass).
+- Current authoritative result: `d2396dd545`.
+- Related solution / architecture-review revision IDs: SR-075, SR-076. Related code-review revision IDs: CRR-027.
+- Implementation delta:
+  - **CR-461-057 (`573e6a7d07`, web), the lost message.**
+    - Bisected with the probe held fixed: the web was unchanged, and SR-074's server change (`958cb22462`) only shifted the timing.
+    - Browser logging (temporary, reverted) showed the cause. Selecting a delegated row in an agent run's view opens the row's own run (rule 2). Until that run was open, `childTargetFor` answered null and the active target fell back to the delegator's own context.
+    - The probe's typing therefore went to the Manager's draft. When the worker's run opened, the composer switched to the worker's empty draft, and Enter sent nothing. A user could likewise send text meant for the worker to the delegator.
+    - Now the agent-run view answers no target while the selected delegated run opens (`agentRunCollaborationStore.isSelectedChildOpening`), as the Team and Org views already did. The text the user types stays in the run it was typed for.
+    - SDV-01 passes 3 of 3 alone (it failed 4 of 4). The "Manager started" flake does not recur.
+  - **CR-461-062 (same commit), the phone.**
+    - `useMobileRunOpening` is the one owner for every view's delegated rows: an agent run's view, a Team and an Org.
+    - A row its shared action selected commits once its own run is open (`delegatedRunsStore.whenOpen`), and fails when that open fails. Before, only the Org path did this (F-34).
+  - **CR-461-058 (`5560546763`):** the delegator's message to a delegated agent run that no Task names (its Task deleted) gets base's `TASK_NOT_FOUND`, "The Task was deleted, so its task agent cannot continue."
+    - The check reads the run's own file for its delegator.
+    - Anyone else's message falls through as before.
+    - A team member's agent ID does not name its run, so a deleted Task's team run is not covered.
+  - **CR-461-059 (`374f1da5e7`):** `asRefusal` turns only delegation refusals and the Task side's rejections into `{ delegated: false }`, as base did. An unknown Task key reaches the tool as `{ error: { code: "TASK_DELEGATION_ERROR", message } }`.
+  - **CR-461-060.**
+    - TDR-002 (`8d23b7ff7a`): `RootMessageAppend.prepare` checks the Task scope before the root's admission. A closure while the message waits for the log is now answered `TASK_AGENT_RESOURCE_CLOSED`, not a commit conflict, in all three root kinds.
+    - TDR-001 is SR-076, base's behavior. A closure during the durable write keeps the record and answers the refusal.
+  - **SR-076 follow-up (`d2396dd545`).** With the record only in the receiver's log, a reload of the sender's view lost what the live view showed (SR-074). The designer chose option (1).
+    - The receiver's engine marks a refusal of a message from another run that it answered after its durable write (`RecordedRunRefusal`, `recordedByReceiver: true`). Both cases are marked: the Task closing, and the recipient stopping. `RootMessageAppendControl.recorded()` tells it.
+    - `CrossRunMessageDelivery` then commits the message to the sender's log too (`commitSentToRun`, which does not publish it again). The agent gets the receiver's refusal without the mark.
+    - A refusal before the write is not marked, and nothing is recorded. A message inside one root, or from a peer node, answers as before.
+  - **CR-461-061 (`a7c04bf9ab`).**
+    - Cause: a member whose start failed in a way that is not retry-safe keeps its rejected readiness attempt, and `tryPrepareTerminationIfQuiescent` took it as work in flight. The member's team was never quiet.
+    - Fix: a settled attempt is no longer in flight; the run and activation checks after it still guard anything left behind.
+    - It isn't Org-specific: only the e2e's Org variant has a broken member.
+  - **CR-461-063, no product change (raised with the designer).** The delegated run's Stop records `terminatedAt`. S27 then has the same agent call `send_message_to`, which restores the run, and any restore clears `terminatedAt` (base). The model's `send_by_run_id` doesn't reactivate the sender: a model or expectation gap.
+  - **SR-075 F-41, no product change (raised with the designer).** The card is a live ERROR event on the delegated run's own stream (base's mechanism). All three views bind a selected delegated row through `delegatedRunsStore`. The e2e reads it from the Org's view stream, which carries statuses only; only its Org variant has a broken member.
+- Tests: each fix's test fails without it and passes with it.
+  - web: the active target while a child opens; the collaboration store's opening state; the phone's agent-view and Team delegated rows;
+  - server: the deleted-Task refusal; the unknown key's error shape; TDR-002 in the append; the settled failed start, quiet, and a quarantined cleanup, not; the recorded refusal (the engine marks it after the write and not before; the delivery records it on the sender's side, and a plain refusal writes nothing there).
+- Validation: IMP-74, CR-461-057's bisect and SDV-01 (3 of 3), and the web suite. IMP-75, the server type gate and unit and integration suites at `d2396dd545`.
+- Remaining risks:
+  - A deleted Task's team run is not covered by CR-461-058 (no file names a member's run by its agent ID).
+  - SDV-01's readiness wait also matches the Manager's own conversation. It could wait for the worker's name instead.

@@ -1,0 +1,16 @@
+# CR-461-057 (F-46): SDV-01 alone, the probe held fixed (unchanged since a0c3a691dc), the web unchanged since dbc26d1466
+server at 958cb22462 (head):           Fail 'worker reply live', sentMessages []
+server src at a5b80f3d7a (before SR-074): worker step Pass; then 'the Manager started' (the known flake)
+server at head, the feed's in-view rule disabled: Fail 'worker reply live'
+# Browser logging (temporary; reverted): in the failing run the composer's send handler never ran. Right after the worker row's click,
+# the Manager's run was opened again; while the worker's own run opened, childTargetFor answered null and the active target fell back
+# to the Manager's own: the probe's fill went to the Manager's draft, and Enter on the worker's empty draft sent nothing.
+# The server change shifted the timing; the window is the web's (the agent-run view alone fell back; Team and Org answer no target).
+# After the fix (the web working tree, committed next; server rebuilt at head):
+SDV-01 alone, run 1: Pass ['/ws/agent/worker_sdvagent_7bf3_c9bb670df64f40bea561fec0b581ec90']
+SDV-01 alone, run 2: Pass ['/ws/agent/worker_sdvagent_aae8_736ba51274624479b6f51d941fee7d37']
+SDV-01 alone, run 3: Pass ['/ws/agent/worker_sdvagent_0f87_57807d3e5a074320b98f6ec1fb1f2a76']
+$ (web) pnpm typecheck; npx vitest run --no-watch
+[typecheck] PASS
+ Test Files  765 passed (765)
+      Tests  5752 passed | 2 skipped (5754)

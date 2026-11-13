@@ -1,0 +1,22 @@
+# commit d2396dd545; load: load averages: 7.24 9.08 13.46
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ pnpm test:unit
+exit 0
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  979 passed | 5 skipped (984)
+      Tests  8020 passed | 9 skipped (8029)
+$ pnpm test:integration:prepare && pnpm test:integration
+exit 1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits add + modify + delete events
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits move/rename event
+ Test Files  1 failed | 85 passed | 20 skipped (106)
+      Tests  2 failed | 481 passed | 69 skipped (552)
+$ the watcher file alone, run 1 (load: 28.43 25.32 17.90)
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+$ the watcher file alone, run 2 (load: 22.53 24.18 17.67)
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
