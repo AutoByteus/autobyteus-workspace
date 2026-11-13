@@ -619,6 +619,35 @@ run `ERROR`, on a single run's stream (`AgentRunCommandCoordinator`) or a Team
 member's Team stream, by the shared `createUnsentInputFailureObserver` (see
 [Tool List Updates](./tool_list_updates.md)).
 
+### Skills Added To A Running Agent's Definition
+
+`AgentRunBackend.applyDefinitionSkills(definition)` (with `AgentRun` as the thin
+boundary that rejects a stopped run) sets up the definition's skills that the run
+does not have yet, as its runtime does at activation, for
+[Skill Update Notices](./skill_update_notices.md). It never removes a skill, and a
+skill that cannot be set up is logged; the promise does not reject for it.
+
+- Claude, Codex, Grok and DeepSeek: `backends/shared/run-workspace-skills.ts`
+  (`RunWorkspaceSkills`) is the **single holder of a run's workspace skill links,
+  from preparation to release**. The factory creates it when preparation starts;
+  preparation acquires through it (`acquire`), a mid-run add goes through it
+  (`addFrom`: one name per acquisition, adds one after another, Codex asking its
+  `CodexWorkspaceSkillRequestPlanner` which copies it discovers itself), and every
+  release path calls its `release()`: Claude's cleanup `skills` stage, Codex's
+  `releasePreparation`, ACP's `releaseResources`, and each factory's failed
+  preparation. `release()` sets `closed` first, waits for the add in flight (which
+  stops at its next check; the materializer rolls that link back), then releases
+  every held link; a failed release can be retried. Its guard reads `closed`,
+  never the backend's `isActive()`, which stays true on Claude and Codex until
+  their cleanup has ended. Claude's `Skill` tool is allowed per CLI process
+  generation from `hasSkills()`.
+- Antigravity: links into its own run capsule (`addAgyRunCapsuleSkills`), one
+  skill per linker call, and rewrites `manifest.json` atomically with the linked
+  names, so a resume keeps them. The capsule is the run's own and kept for resume,
+  so it needs no release ordering.
+- AutoByteus native: nothing (the notice gives the `SKILL.md` path; the system
+  prompt is not changed mid-run, FU-006).
+
 `GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
 the studio and standalone compositions.
 

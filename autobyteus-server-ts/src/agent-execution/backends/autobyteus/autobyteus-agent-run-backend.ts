@@ -178,6 +178,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return Object.keys(this.agent.context?.state.toolInstances ?? {});
   }
 
+  /**
+   * Nothing to set up: native skills are read in place by their absolute `SKILL.md` path, which the skill notice
+   * gives the agent. The system prompt's skill catalog is not changed mid-run, so the provider's prompt cache stays
+   * valid (FU-006).
+   */
+  async applyDefinitionSkills(_definition: AgentDefinition): Promise<void> {}
+
   getContext(): AgentRunContext<RuntimeAgentRunContext> {
     return this.context;
   }

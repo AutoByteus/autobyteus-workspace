@@ -114,7 +114,11 @@ Team-local skill (for example the Solution Designer's links into its Team
 `shared/` directory) resolve through the capsule link. Links live only inside
 the run's private capsule, never in the selected workspace. Deleting run memory
 removes the link, not the skill. Like Codex and Claude runs, a running or
-resumed AGY run sees the skill folder's current content.
+resumed AGY run sees the skill folder's current content. A skill added to the
+agent's definition while the run is going is linked into the capsule and added
+to `manifest.json` (rewritten atomically), so a resume keeps it
+(`addAgyRunCapsuleSkills`); a run interrupted mid-turn reports inactive and gets
+no link until it is started again (the skill notice still gives the path).
 
 The run's request strength comes from the definition's skill scope
 (`workspaceCollisionPolicyForScope`). A skill that cannot be exposed (unsafe or

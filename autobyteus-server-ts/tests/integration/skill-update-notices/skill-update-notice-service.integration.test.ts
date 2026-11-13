@@ -67,26 +67,50 @@ const createWorld = async () => {
     watches.open.add(dir);
     return { on: () => undefined, close: async () => { watches.open.delete(dir); } };
   };
+  /** Every definition read by ID, in order. */
+  const definitionReads: string[] = [];
+  /** The agent definition change signal (every save fires it). */
+  const definitionListeners = new Set<() => void>();
+  /** Integration names an added skill grants that a run does not hold (by skill name). */
+  const integrationsBySkill = new Map<string, string[]>();
+  const integrationRunAccess = {
+    integrationsStartingOnRestart: vi.fn(async (_run: { runId: string }, skillNames: readonly string[]) =>
+      skillNames.flatMap((name) => integrationsBySkill.get(name) ?? [])),
+  };
   const subsystem = createSkillUpdateNotices({
     // A copy of the definition as it is now (null once deleted), as the definition service returns.
     agentDefinitionService: { getAgentDefinitionById: async (id: string) => {
+      definitionReads.push(id);
       const skillNames = definitions.get(id);
       return (skillNames ? { id, skillNames: [...skillNames] } : null) as never;
     } },
+    definitionChanges: { subscribe: (listener) => {
+      definitionListeners.add(listener);
+      return () => { definitionListeners.delete(listener); };
+    } },
+    integrationRunAccess,
     // Resolves a definition's configured names through the catalog as it is now.
     skillService: {
       resolveConfiguredSkillsForAgent: (definition: { skillNames: string[] } | null) =>
         (definition?.skillNames ?? []).flatMap((name) => {
           const rootPath = catalog.get(name);
-          return rootPath ? [{ name, rootPath }] : [];
+          return rootPath ? [{ name, rootPath, description: `The ${name} skill.` }] : [];
         }) as never,
     },
     createWatch,
   });
   subsystems.push(subsystem);
+  /** Saves the agent definition (as the agents page does): the signal fires; resolves once the pass is done. */
+  const saveAgent = async (definitionId: string, skillNames: readonly string[] | null) => {
+    if (skillNames) defineAgent(definitionId, skillNames);
+    else deleteAgent(definitionId);
+    for (const listener of definitionListeners) listener();
+    await subsystem.service.onDefinitionsChanged();
+  };
   return {
-    root, skillsRoot, createSkill, useSkills, install, uninstall, defineAgent, deleteAgent,
-    subsystem, service: subsystem.service, watches,
+    root, skillsRoot, createSkill, useSkills, install, uninstall, defineAgent, deleteAgent, saveAgent,
+    subsystem, service: subsystem.service, watches, integrationRunAccess, integrationsBySkill, definitionReads,
+    signalListenerCount: () => definitionListeners.size,
   };
 };
 
@@ -96,7 +120,9 @@ const createRun = (world: Awaited<ReturnType<typeof createWorld>>, options: {
   definitionId: string;
   memoryDir?: string | null;
 }) => {
-  const state = { status: "idle" as string, post: "forwarded" as PostBehavior, turn: 0 };
+  const state = { status: "idle" as string, post: "forwarded" as PostBehavior, turn: 0, active: true };
+  /** What happened, in order: a skill set up on the runtime ("setup"), a notice posted ("posted"). */
+  const order: string[] = [];
   const posted: AgentInputUserMessage[] = [];
   const published: AgentRunEvent[] = [];
   const memoryDir = options.memoryDir === undefined ? path.join(world.root, "memory", options.runId) : options.memoryDir;
@@ -106,9 +132,12 @@ const createRun = (world: Awaited<ReturnType<typeof createWorld>>, options: {
     runId: options.runId,
     config: { agentDefinitionId: options.definitionId, memoryDir },
     getStatusSnapshot: () => ({ status: state.status }),
+    isActive: () => state.active,
+    applyDefinitionSkills: vi.fn(async (_definition: unknown) => { order.push("setup"); }),
     publishEvent: vi.fn(async (value: AgentRunEvent) => { published.push(value); }),
     postUserMessage: vi.fn(async (message: AgentInputUserMessage, opts: { lifecycleObserver?: (fact: AgentRunInputLifecycle) => void }) => {
       posted.push(message);
+      order.push("posted");
       if (state.post === "rejected") return { accepted: false };
       queueMicrotask(() => {
         if (state.post === "forwarded") {
@@ -121,7 +150,7 @@ const createRun = (world: Awaited<ReturnType<typeof createWorld>>, options: {
       return { accepted: true };
     }),
   };
-  return { run: run as unknown as AgentRun, state, posted, published };
+  return { run: run as unknown as AgentRun, state, posted, published, order, applyDefinitionSkills: run.applyDefinitionSkills };
 };
 
 /** A real AgentRun over a fake idle backend (start_turn and append supported) with this input preface port. */
@@ -396,7 +425,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     await vi.waitFor(() => expect(world.subsystem.watcher.watchedFolders()).toEqual([]));
   });
 
-  it("CR-002: an active run keeps the definition it was activated with; editing or deleting it never reports a still-installed skill as removed", async () => {
+  it("CR-002: a folder change re-resolves through the run's current definition; a deleted definition never reports a still-installed skill as removed", async () => {
     const world = await createWorld();
     const review = await world.createSkill("code-review");
     const research = await world.createSkill("deep-research");
@@ -405,21 +434,13 @@ describe("SkillUpdateNoticeService (integration)", () => {
     await publish(world, fake);
     fake.state.status = "running";
 
-    // The definition drops deep-research while the run is active; the run still uses it.
-    world.defineAgent("def-a", ["code-review"]);
-    await write(path.join(research, "SKILL.md"), "v2");
-    await world.service.onSkillFoldersChanged([research]);
-    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
-    expect(fake.posted[0]!.content).toContain(`Your skill package \`deep-research\` has been updated (\`${research}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
-    expect(fake.posted[0]!.content).not.toContain("no longer available");
-
     // The definition is deleted while the run is active; its skills are still installed.
-    world.deleteAgent("def-a");
+    await world.saveAgent("def-a", null);
     await write(path.join(review, "SKILL.md"), "v2");
     await world.service.onSkillFoldersChanged([review]);
-    await vi.waitFor(() => expect(fake.published).toHaveLength(2));
-    expect(fake.posted[1]!.content).toContain(`Your skill package \`code-review\` has been updated (\`${review}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
-    expect(fake.posted[1]!.content).not.toContain("no longer available");
+    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
+    expect(fake.posted[0]!.content).toContain(`Your skill package \`code-review\` has been updated (\`${review}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
+    expect(fake.posted[0]!.content).not.toContain("no longer available");
     expect(world.subsystem.watcher.watchedFolders()).toEqual([review, research].sort());
   });
 
@@ -459,7 +480,7 @@ describe("SkillUpdateNoticeService (integration)", () => {
     expect(world.watches.created).toEqual([skillDir]);
   });
 
-  it("AC-002/AC-003: a restored run hears about changes made while it was stopped; a missing record means none", async () => {
+  it("AC-002/AC-003/AC-008: a restored run hears about changes made while it was stopped, added skills included; a missing record means none", async () => {
     const world = await createWorld();
     const skillDir = await world.createSkill("code-review");
     const removedDir = await world.createSkill("deep-research");
@@ -481,7 +502,15 @@ describe("SkillUpdateNoticeService (integration)", () => {
     const preface = await world.service.takePreface(restored.run);
     expect(preface?.text).toContain(`Your skill package \`code-review\` has been updated (\`${skillDir}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
     expect(preface?.text).toContain("Your skill package `deep-research` is no longer available.");
-    expect(preface?.text).not.toContain("brand-new");
+    // Configured while it was stopped: the run was never told about it (DEC-002).
+    const brandNewDir = path.join(world.skillsRoot, "brand-new");
+    expect(preface?.text).toContain([
+      "Your skill package `brand-new` is now available: The brand-new skill.",
+      `Read its instructions before work it governs: \`${path.join(brandNewDir, "SKILL.md")}\`. Resolve relative paths in it from its folder.`,
+      "",
+    ].join("\n"));
+    // Activated with its current definition: no "access starts at restart" sentence is looked up for it.
+    expect(world.integrationRunAccess.integrationsStartingOnRestart).not.toHaveBeenCalled();
 
     // A run restored without a record (pre-feature run): re-created from current files, no notice.
     const legacy = createRun(world, { runId: "run-legacy", definitionId: "def-a" });
@@ -539,6 +568,200 @@ describe("SkillUpdateNoticeService (integration)", () => {
   });
 });
 
+describe("SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001)", () => {
+  /** A run of `def-a` that has `code-review`; `deep-research` exists but is not configured yet. */
+  const startWithOneSkill = async () => {
+    const world = await createWorld();
+    const review = await world.createSkill("code-review");
+    const research = await world.createSkill("deep-research", { "SKILL.md": "# deep-research v1", "references/sources.md": "s1" });
+    world.useSkills("def-a", { "code-review": review });
+    world.install("deep-research", research);
+    const fake = createRun(world, { runId: "run-a", definitionId: "def-a" });
+    await publish(world, fake);
+    return { world, review, research, fake };
+  };
+
+  const addedBlock = (name: string, dir: string) => [
+    `Your skill package \`${name}\` is now available: The ${name} skill.`,
+    `Read its instructions before work it governs: \`${path.join(dir, "SKILL.md")}\`. Resolve relative paths in it from its folder.`,
+    "",
+  ].join("\n");
+
+  it("AC-001: an idle run's runtime sets the added skill up at once; its next input carries one 'now available' notice", async () => {
+    const { world, research, fake } = await startWithOneSkill();
+
+    await world.saveAgent("def-a", ["code-review", "deep-research"]);
+
+    expect(fake.applyDefinitionSkills).toHaveBeenCalledOnce();
+    expect(fake.applyDefinitionSkills).toHaveBeenCalledWith(expect.objectContaining({ id: "def-a", skillNames: ["code-review", "deep-research"] }));
+    expect(fake.posted).toHaveLength(0); // an idle run is never woken
+    expect(world.subsystem.watcher.watchedFolders()).toContain(research);
+    const preface = await world.service.takePreface(fake.run);
+    expect(preface?.text).toBe([
+      "[Platform notice — skill updated]",
+      "",
+      addedBlock("deep-research", research),
+    ].join("\n"));
+    world.service.prefaceDelivered(fake.run, preface!, "turn-1");
+    await vi.waitFor(async () => {
+      const record = JSON.parse(await fs.readFile(path.join(world.root, "memory", "run-a", SEEN_SKILL_VERSIONS_FILE_NAME), "utf8"));
+      expect(Object.keys(record.skills).sort()).toEqual(["code-review", "deep-research"]);
+    });
+    expect(await world.service.takePreface(fake.run)).toBeNull(); // told once
+  });
+
+  it("AC-001/AC-011: a busy run gets the notice now, after its runtime set the skill up", async () => {
+    const { world, research, fake } = await startWithOneSkill();
+    fake.state.status = "running";
+
+    await world.saveAgent("def-a", ["code-review", "deep-research"]);
+
+    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
+    expect(fake.order).toEqual(["setup", "posted"]);
+    expect(fake.posted[0]!.content).toBe(["[Platform notice — skill updated]", "", addedBlock("deep-research", research)].join("\n"));
+    expect(fake.published[0]).toMatchObject({
+      eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
+      payload: { sender_id: SKILL_UPDATE_NOTICE_SENDER_ID, content: fake.posted[0]!.content, turn_id: "turn-1" },
+    });
+  });
+
+  it("AC-003: a removed skill is announced once; later edits of its files produce nothing for that run", async () => {
+    const { world, review, fake } = await startWithOneSkill();
+    fake.state.status = "running";
+
+    await world.saveAgent("def-a", []);
+
+    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
+    expect(fake.posted[0]!.content).toBe([
+      "[Platform notice — skill updated]",
+      "",
+      "Your skill package `code-review` is no longer available.",
+      "",
+      "Do not rely on a skill that is no longer available.",
+    ].join("\n"));
+    expect(fake.applyDefinitionSkills).not.toHaveBeenCalled(); // removal is a message only (DEC-007)
+    await vi.waitFor(() => expect(world.subsystem.watcher.watchedFolders()).toEqual([]));
+
+    await write(path.join(review, "SKILL.md"), "v2");
+    await world.service.onSkillFoldersChanged([review]);
+    await settle();
+    expect(fake.posted).toHaveLength(1);
+  });
+
+  it("AC-004: a save without skill changes, an add then a remove, or a remove then an add back before the next input: no notice", async () => {
+    const { world, fake } = await startWithOneSkill();
+
+    await world.saveAgent("def-a", ["code-review"]); // e.g. only the instructions changed
+    expect(fake.applyDefinitionSkills).not.toHaveBeenCalled();
+    expect(await world.service.takePreface(fake.run)).toBeNull();
+
+    await world.saveAgent("def-a", ["code-review", "deep-research"]);
+    await world.saveAgent("def-a", ["code-review"]);
+    expect(fake.applyDefinitionSkills).toHaveBeenCalledOnce(); // set up by the first save; nothing is removed
+    expect(await world.service.takePreface(fake.run)).toBeNull();
+
+    await world.saveAgent("def-a", []);
+    await world.saveAgent("def-a", ["code-review"]);
+    expect(await world.service.takePreface(fake.run)).toBeNull();
+    expect(fake.posted).toHaveLength(0);
+  });
+
+  it("AC-005: once announced, an added skill's file changes are noticed like any used skill's", async () => {
+    const { world, research, fake } = await startWithOneSkill();
+    fake.state.status = "running";
+    await world.saveAgent("def-a", ["code-review", "deep-research"]);
+    await vi.waitFor(() => expect(fake.published).toHaveLength(1));
+
+    await write(path.join(research, "SKILL.md"), "# deep-research v2");
+    await world.service.onSkillFoldersChanged([research]);
+
+    await vi.waitFor(() => expect(fake.published).toHaveLength(2));
+    expect(fake.posted[1]!.content).toContain(`Your skill package \`deep-research\` has been updated (\`${research}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
+  });
+
+  it("AC-006: an added integration skill says its access starts at a restart; nothing is granted", async () => {
+    const { world, fake } = await startWithOneSkill();
+    const github = await world.createSkill("github-integration");
+    world.install("github-integration", github);
+    world.integrationsBySkill.set("github-integration", ["GitHub"]);
+
+    await world.saveAgent("def-a", ["code-review", "github-integration"]);
+
+    const preface = await world.service.takePreface(fake.run);
+    expect(preface?.text).toContain([
+      "Your skill package `github-integration` is now available: The github-integration skill.",
+      `Read its instructions before work it governs: \`${path.join(github, "SKILL.md")}\`. Resolve relative paths in it from its folder.`,
+      "Its GitHub access starts when this run is restarted (stop the run, then send a message).",
+      "",
+    ].join("\n"));
+    expect(world.integrationRunAccess.integrationsStartingOnRestart).toHaveBeenCalledWith(
+      { runId: "run-a", agentDefinitionId: "def-a" }, ["github-integration"]);
+  });
+
+  it("AC-009: every tracked run of the definition hears it, a team member included", async () => {
+    const { world, research, fake } = await startWithOneSkill();
+    const member = createRun(world, { runId: "team-member-run", definitionId: "def-a" });
+    await publish(world, member);
+    const other = createRun(world, { runId: "other-agent-run", definitionId: "def-b" });
+    world.defineAgent("def-b", ["code-review"]);
+    await publish(world, other);
+
+    await world.saveAgent("def-a", ["code-review", "deep-research"]);
+
+    for (const run of [fake, member]) {
+      expect(run.applyDefinitionSkills).toHaveBeenCalledOnce();
+      expect((await world.service.takePreface(run.run))?.text).toContain(addedBlock("deep-research", research));
+    }
+    expect(other.applyDefinitionSkills).not.toHaveBeenCalled();
+    expect(await world.service.takePreface(other.run)).toBeNull();
+  });
+
+  it("REQ-008: a setup that fails, or a run that is not active, still gets the notice", async () => {
+    const { world, research, fake } = await startWithOneSkill();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    fake.applyDefinitionSkills.mockRejectedValueOnce(new Error("link refused"));
+    const stopped = createRun(world, { runId: "inactive-run", definitionId: "def-a" });
+    await publish(world, stopped);
+    stopped.state.active = false;
+
+    await world.saveAgent("def-a", ["code-review", "deep-research"]);
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("SKILL_UPDATE_SETUP_FAILED:run-a: Error: link refused"));
+    expect((await world.service.takePreface(fake.run))?.text).toContain(addedBlock("deep-research", research));
+    expect(stopped.applyDefinitionSkills).not.toHaveBeenCalled();
+    expect((await world.service.takePreface(stopped.run))?.text).toContain(addedBlock("deep-research", research));
+    warn.mockRestore();
+  });
+
+  it("a definition that no longer exists leaves the run's skills as they are", async () => {
+    const { world, review, fake } = await startWithOneSkill();
+
+    await world.saveAgent("def-a", null);
+
+    expect(await world.service.takePreface(fake.run)).toBeNull();
+    expect(world.subsystem.watcher.watchedFolders()).toEqual([review]);
+  });
+
+  it("QR-001: a burst of saves reads each run's definition at most twice (one pass, then exactly one more)", async () => {
+    const { world, fake } = await startWithOneSkill();
+    world.definitionReads.splice(0);
+
+    world.defineAgent("def-a", ["code-review", "deep-research"]);
+    const passes = Array.from({ length: 5 }, () => world.service.onDefinitionsChanged());
+    await Promise.all(passes);
+
+    expect(world.definitionReads.filter((id) => id === "def-a").length).toBeLessThanOrEqual(2);
+    expect(fake.applyDefinitionSkills).toHaveBeenCalledOnce();
+  });
+
+  it("closing the subsystem stops listening to definition changes", async () => {
+    const { world } = await startWithOneSkill();
+    expect(world.signalListenerCount()).toBe(1);
+    await world.subsystem.close();
+    expect(world.signalListenerCount()).toBe(0);
+  });
+});
+
 describe("SkillUpdateNoticeService with the real folder watcher", () => {
   it("notices a SKILL.md edit end to end after the settle window", async () => {
     const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "skill-notice-watch-")));
@@ -548,7 +771,9 @@ describe("SkillUpdateNoticeService with the real folder watcher", () => {
     await fs.mkdir(path.join(root, "memory"), { recursive: true });
     const subsystem = createSkillUpdateNotices({
       agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id }) as never },
-      skillService: { resolveConfiguredSkillsForAgent: () => [{ name: "code-review", rootPath: skillDir }] as never },
+      definitionChanges: { subscribe: () => () => undefined },
+      integrationRunAccess: null,
+      skillService: { resolveConfiguredSkillsForAgent: () => [{ name: "code-review", rootPath: skillDir, description: "" }] as never },
       settleQuietMs: 150,
       settleCapMs: 600,
     });
@@ -587,7 +812,10 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     const gate = new Promise<void>((resolve) => { open = resolve; });
     const real = new SkillFolderSnapshotter();
     const tracker = new RunSkillTracker({
-      resolveUsedSkills: async () => ({ resolve: () => [{ name: "code-review", rootPath: skillDir }] }),
+      resolution: {
+        readDefinition: async () => null,
+        resolveSkills: () => [{ name: "code-review", rootPath: skillDir, description: "" }],
+      },
       snapshotter: { snapshot: async (skill) => { await gate; return real.snapshot(skill); } },
       store: new SeenSkillVersionsStore(),
       seenVersionsRetryDelaysMs: options.seenVersionsRetryDelaysMs,
@@ -595,7 +823,11 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     const watcher = new SkillFolderWatcher({
       createWatch: () => ({ on: () => undefined, add: () => undefined, unwatch: () => undefined, close: async () => undefined }),
     });
-    const service = new SkillUpdateNoticeService({ tracker, watcher, snapshotter: real });
+    const service = new SkillUpdateNoticeService({
+      tracker, watcher, snapshotter: real,
+      agentDefinitionService: { getAgentDefinitionById: async () => null },
+      integrationRunAccess: null,
+    });
     return { root, skillDir, service, tracker, watcher, open };
   };
 
@@ -614,7 +846,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     expect(tracker.getTrackedRun("run-new")).toBeNull(); // still scanning
     open();
     await vi.waitFor(() => expect(tracker.getTrackedRun("run-new")).not.toBeNull());
-    service.close();
+    await service.close();
     await watcher.close();
     await tracker.close();
   });
@@ -640,7 +872,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     expect(dispatched(0).content.startsWith("[Platform notice — skill updated]")).toBe(true);
     expect(dispatched(0).content).toContain(`Your skill package \`code-review\` has been updated (\`${skillDir}\`).\n\nChanged files:\n- \`SKILL.md\` (changed)\n`);
     expect(dispatched(0).content.endsWith("\n\ncontinue")).toBe(true);
-    service.close();
+    await service.close();
     await watcher.close();
     await tracker.close();
   });
@@ -665,7 +897,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     await tracker.close();
 
     expect(existsSync(memoryDir)).toBe(false);
-    service.close();
+    await service.close();
     await watcher.close();
   });
 
@@ -686,7 +918,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     await fs.rm(memoryDir, { recursive: true, force: true }); // the run is deleted
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(existsSync(memoryDir)).toBe(false);
-    service.close();
+    await service.close();
     await watcher.close();
     await tracker.close();
   });
@@ -698,7 +930,7 @@ describe("SkillUpdateNoticeService tracking off the input path (CR-001)", () => 
     service.runPublished(fakeRun("run-closing", memoryDir), "new");
     await settle();
 
-    const closing = (async () => { await watcher.close(); service.close(); await tracker.close(); })();
+    const closing = (async () => { await watcher.close(); await service.close(); await tracker.close(); })();
     open();
     await closing;
 

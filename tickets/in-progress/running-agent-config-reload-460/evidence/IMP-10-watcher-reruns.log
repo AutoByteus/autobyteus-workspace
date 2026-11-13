@@ -1,0 +1,10 @@
+# IMP-10
+# Command: vitest run tests/unit/skill-update-notices/skill-folder-watcher.test.ts tests/integration/file-explorer/file-system-watcher.integration.test.ts tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts --no-watch
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1, load: 10.96 19.75 51.71
+# Date: 2026-11-13 12:42
+
+ Test Files  3 passed (3)
+      Tests  36 passed (36)
+
+Earlier at load 16.8: the watcher unit file 7/7; file-explorer and auto-refresh 28/29 with the AC-012 'root renamed away' case timing out at 5 s, then that case alone: Tests 1 passed | 14 skipped (15).

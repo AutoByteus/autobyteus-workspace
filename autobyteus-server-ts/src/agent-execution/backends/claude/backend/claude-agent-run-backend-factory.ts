@@ -1,6 +1,5 @@
 import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
 import type { AgentRunBackendPreparationRequest } from "../../agent-run-backend-factory.js";
-import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
 import type { ClaudeSession } from "../session/claude-session.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
@@ -23,12 +22,12 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
-    const skills: MaterializedWorkspaceSkill[] = [];
+    const workspaceSkills = this.sessionBootstrapper.createRunWorkspaceSkills(request.kind === "new" ? request.runId : request.context.runId);
     let runContext: ClaudeRunContext | null = null;
     let session: ClaudeSession | null = null;
     return createBackendPreparation({
       prepare: async (assertAccepting) => {
-        const guard = { assertAccepting, ownSkill: (skill: MaterializedWorkspaceSkill) => { skills.push(skill); } };
+        const guard = { assertAccepting, workspaceSkills };
         let platformAgentRunId: string | null = null;
         if (request.kind === "restore") {
           const runtime = request.context.runtimeContext;
@@ -52,7 +51,8 @@ export class ClaudeAgentRunBackendFactory implements AgentRunBackendFactory {
         if (session) {
           try { await this.sessionManager.releaseExactSession(session); } catch (error) { errors.push(error); }
         }
-        try { await this.sessionBootstrapper.releaseSkills(skills); } catch (error) { errors.push(error); }
+        // The run's links: released here when preparation failed before the session owned them (idempotent).
+        try { await workspaceSkills.release(); } catch (error) { errors.push(error); }
         if (errors.length) throw new AggregateError(errors, "Claude exact preparation release failed.");
       },
     });

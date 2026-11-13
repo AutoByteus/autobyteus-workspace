@@ -30,6 +30,8 @@ export const buildAgentRunRestoreRuntimeContext = (
         sandbox: "workspace-write",
         dynamicTools: null,
       }),
+      // A restore binding: the bootstrapper prepares the run's workspace skills.
+      workspaceSkills: null,
       threadId: platformAgentRunId,
     });
   }
@@ -43,6 +45,8 @@ export const buildAgentRunRestoreRuntimeContext = (
       }),
       carpenterSystemPrompt: "Pending runtime bootstrap.",
       runtimeToolExposure: buildRuntimeAgentToolExposure([], config.memberExecutionContext),
+      // A restore binding: the bootstrapper prepares the run's workspace skills.
+      workspaceSkills: null,
       sessionId: platformAgentRunId,
     });
   }

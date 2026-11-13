@@ -276,6 +276,15 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   }
 
   /**
+   * Links the definition's skills the run does not have yet into the workspace's `.codex/skills` (unless Codex
+   * already discovers that copy itself). Whether a live thread lists a new folder is not proven; the skill notice
+   * gives the agent its path either way.
+   */
+  applyDefinitionSkills(definition: AgentDefinition): Promise<void> {
+    return this.runContext.runtimeContext.requireWorkspaceSkills().addFrom(definition);
+  }
+
+  /**
    * Reopens the thread with the run's current Agent Tools descriptor. On failure the input is not
    * sent (it would reach a thread without the new tools): the dispatch fails with a plain message,
    * and the next turn start tries again. A save during the reopen keeps `reopenPending` set.

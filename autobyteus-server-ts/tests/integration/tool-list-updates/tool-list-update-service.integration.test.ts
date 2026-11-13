@@ -138,6 +138,7 @@ const createAgentRun = (input: {
     interrupt: vi.fn(),
     terminate: vi.fn(),
     applyDefinitionTools: input.runtime.applyDefinitionTools,
+    applyDefinitionSkills: vi.fn(async () => undefined),
     getToolNames: input.runtime.getToolNames,
   };
   const run = new AgentRun({
@@ -355,7 +356,9 @@ describe("AgentRunPlatformNotices: tool list and skill notices behind one slot",
     await fs.writeFile(path.join(skillDir, "SKILL.md"), "v1");
     const skills: SkillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id }) as never },
-      skillService: { resolveConfiguredSkillsForAgent: () => [{ name: "code-review", rootPath: skillDir }] as never },
+      definitionChanges: { subscribe: () => () => undefined },
+      integrationRunAccess: null,
+      skillService: { resolveConfiguredSkillsForAgent: () => [{ name: "code-review", rootPath: skillDir, description: "" }] as never },
       createWatch: () => ({ on: () => undefined, close: async () => undefined }),
     });
     closers.push(() => skills.close());
@@ -411,6 +414,47 @@ describe("AgentRunPlatformNotices: tool list and skill notices behind one slot",
     expect((await agent.send("Three.")).message.content).toBe("Three.");
     await vi.waitFor(() => expect(agent.notices().map((event) => event.payload.sender_id))
       .toEqual([TOOL_LIST_UPDATE_NOTICE_SENDER_ID, SKILL_UPDATE_NOTICE_SENDER_ID]));
+  });
+
+  it("AC-010: a save that changes tools and skills: the tools notice with this input, the skill notice with the next", async () => {
+    const world = await createWorld();
+    world.definitions.set("def", ["alpha"]);
+    const skillDir = path.join(world.root, "skills", "deep-research");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(path.join(skillDir, "SKILL.md"), "v1");
+    const skillNames = new Map<string, string[]>([["def", []]]);
+    const skills = createSkillUpdateNotices({
+      agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id, skillNames: skillNames.get(id) ?? [] }) as never },
+      definitionChanges: world.signal,
+      integrationRunAccess: null,
+      skillService: { resolveConfiguredSkillsForAgent: (definition) =>
+        (definition?.skillNames ?? []).map((name) => ({ name, rootPath: skillDir, description: "Research." })) as never },
+      createWatch: () => ({ on: () => undefined, close: async () => undefined }),
+    });
+    closers.push(() => skills.close());
+    const notices = new AgentRunPlatformNotices([world.service, skills.service]);
+    const agent = createAgentRun({
+      runId: "run-save", definitionId: "def", memoryDir: path.join(world.root, "memory", "run-save"),
+      inputPreface: notices, runtime: createRuntime(["alpha"], "immediate"),
+    });
+    notices.runPublished(agent.run, "new");
+    await skills.tracker.whenTracked("run-save");
+    await settle();
+
+    // One save of the definition: a tool and a skill added.
+    skillNames.set("def", ["deep-research"]);
+    await world.save("def", ["alpha", "beta"]);
+    await skills.service.onDefinitionsChanged();
+
+    const first = await agent.send("One.");
+    expect(first.message.content.startsWith(TOOL_LIST_UPDATE_NOTICE_HEADER)).toBe(true);
+    expect(first.message.content).not.toContain("skill updated");
+    await agent.endTurn();
+    const second = await agent.send("Two.");
+    expect(second.message.content.startsWith("[Platform notice — skill updated]")).toBe(true);
+    expect(second.message.content).toContain("Your skill package `deep-research` is now available: Research.");
+    await agent.endTurn();
+    expect((await agent.send("Three.")).message.content).toBe("Three.");
   });
 
   it("settles only the source that gave the notice, and keeps going past a failing source", async () => {

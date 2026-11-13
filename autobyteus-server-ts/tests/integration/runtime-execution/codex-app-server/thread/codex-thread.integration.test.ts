@@ -18,6 +18,7 @@ import type { CodexSandboxMode } from "../../../../../src/runtime-management/cod
 import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { CodexModelCatalog } from "../../../../../src/llm-management/services/codex-model-catalog.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -50,7 +51,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: input.model,
         workingDirectory: input.workingDirectory,
@@ -203,7 +204,6 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -263,7 +263,6 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -347,7 +346,6 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -419,7 +417,6 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -490,7 +487,6 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);

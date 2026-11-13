@@ -1,0 +1,10 @@
+# IMP-01
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-13 12:42
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 11.8s
+[typecheck] server tests (tsconfig.tests.json): 1180 errors, exit 2, 34.6s
+[typecheck] production errors: 0; test-file errors: 1180 in 364 files (baseline 1180 in 364 files)
+[typecheck] PASS

@@ -1,5 +1,6 @@
 import type { DeliveryDefinitions } from "./delivery-definitions.js";
 import type { IntegrationAccessRule } from "./integration-access-rule.js";
+import type { IntegrationCatalog } from "./integration-catalog.js";
 import type { RunPassRegistry } from "./run-pass-registry.js";
 
 export type IntegrationRunIdentity = Readonly<{ runId: string; agentDefinitionId: string }>;
@@ -14,6 +15,12 @@ export interface IntegrationRunAccess {
    * git config after any existing `GIT_CONFIG_COUNT` entries. The result never holds a token.
    */
   environmentForRun(run: IntegrationRunIdentity, baseEnv: Readonly<Record<string, string | undefined>>): Promise<Readonly<Record<string, string>>>;
+  /**
+   * The display names of the integrations that the run's agent may use through these skills (by name) but that the
+   * run's pass does not hold: their access starts when the run is prepared again (restarted). A read only; it grants
+   * nothing.
+   */
+  integrationsStartingOnRestart(run: IntegrationRunIdentity, skillNames: readonly string[]): Promise<readonly string[]>;
 }
 
 export class DefaultIntegrationRunAccess implements IntegrationRunAccess {
@@ -21,8 +28,22 @@ export class DefaultIntegrationRunAccess implements IntegrationRunAccess {
     access: Pick<IntegrationAccessRule, "grantsForAgent">;
     definitions: DeliveryDefinitions;
     passes: RunPassRegistry;
+    catalog: Pick<IntegrationCatalog, "describe">;
     proxyBaseUrl: () => string;
   }>) {}
+
+  async integrationsStartingOnRestart(run: IntegrationRunIdentity, skillNames: readonly string[]): Promise<readonly string[]> {
+    if (skillNames.length === 0) return [];
+    const names = new Set(skillNames);
+    const held = this.deps.passes.grantedIntegrationIds(run.runId);
+    const grants = await this.deps.access.grantsForAgent(run.agentDefinitionId);
+    return grants
+      .filter((grant) => names.has(grant.skillName) && !held.has(grant.integrationId))
+      .flatMap((grant) => {
+        const described = this.deps.catalog.describe(grant.integrationId);
+        return described ? [described.name] : [];
+      });
+  }
 
   async environmentForRun(
     run: IntegrationRunIdentity,

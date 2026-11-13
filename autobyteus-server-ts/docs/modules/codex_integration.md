@@ -397,6 +397,11 @@ reconciliation.
   `agents/<agent-id>/skills/<skill-name>` package skill root.
 - If the discovery probe fails, AutoByteus falls back to the runtime-owned
   workspace symlink path instead of blocking bootstrap.
+- The same planner (`codex-workspace-skill-request-planner.ts`) plans a skill
+  added to a running agent's definition, through the run's `RunWorkspaceSkills`
+  (see [Agent Execution](./agent_execution.md#skills-added-to-a-running-agents-definition)).
+  Whether a live thread lists the new folder is not proven; the skill notice gives
+  the agent its path.
 - A broken workspace symlink is rechecked and repaired link-only to the current
   resolved source. If the configured name is safe but no source now resolves,
   only the broken link is removed and the optional skill is warned about and

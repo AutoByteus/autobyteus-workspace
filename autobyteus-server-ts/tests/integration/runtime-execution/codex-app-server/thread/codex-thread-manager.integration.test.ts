@@ -14,6 +14,7 @@ import { CodexThreadManager } from "../../../../../src/agent-execution/backends/
 import { CodexApprovalPolicy } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import { CodexModelCatalog } from "../../../../../src/llm-management/services/codex-model-catalog.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
+import { createTestRunWorkspaceSkills } from "../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -42,7 +43,7 @@ const createRunContext = (input: {
       workspaceId: input.workingDirectory,
       llmConfig: null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: input.model,
         workingDirectory: input.workingDirectory,
@@ -149,7 +150,6 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -190,7 +190,6 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
@@ -245,7 +244,6 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     });
     threadManager = new CodexThreadManager(
       clientManager,
-      undefined,
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);

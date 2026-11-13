@@ -14,6 +14,7 @@ import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execut
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -87,7 +88,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
       memberExecutionContext,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
-    runtimeContext: new ClaudeAgentRunContext({
+    runtimeContext: new ClaudeAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
         semanticMemoryPath: null,
         agentDefinition: new AgentDefinition({

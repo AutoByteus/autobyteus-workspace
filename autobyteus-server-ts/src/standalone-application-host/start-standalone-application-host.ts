@@ -244,6 +244,8 @@ export const startStandaloneApplicationHost = async (
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+      // No credential proxy on this host: its runs use no integration.
+      integrationRunAccess: null,
     });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({

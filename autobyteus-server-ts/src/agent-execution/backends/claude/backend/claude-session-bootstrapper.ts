@@ -10,7 +10,12 @@ import {
 import {
   getClaudeWorkspaceSkillMaterializer,
 } from "../claude-workspace-skill-materializer.js";
-import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import type { WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
+import {
+  exposedWorkspaceSkillRequests,
+  planExposedWorkspaceSkillRequests,
+  RunWorkspaceSkills,
+} from "../../shared/run-workspace-skills.js";
 import {
   buildClaudeSessionConfig,
   DEFAULT_CLAUDE_PERMISSION_MODE,
@@ -39,8 +44,14 @@ export class ClaudeSessionBootstrapper {
     this.skillService = skillService;
   }
 
-  releaseSkills(skills: MaterializedWorkspaceSkill[]): Promise<void> {
-    return this.workspaceSkillMaterializer.cleanupMaterializedWorkspaceSkills(skills);
+  /** The run's workspace skill holder, created by the factory when its preparation starts (one per run). */
+  createRunWorkspaceSkills(runId: string): RunWorkspaceSkills {
+    return new RunWorkspaceSkills({
+      runId,
+      materializer: this.workspaceSkillMaterializer,
+      skillService: this.skillService,
+      planRequests: planExposedWorkspaceSkillRequests,
+    });
   }
 
   async bootstrapForCreate(
@@ -77,21 +88,13 @@ export class ClaudeSessionBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const preparedSkills = await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
-      runId: runContext.runId,
-      onAcquired: guard.ownSkill, assertAccepting: guard.assertAccepting,
+    await guard.workspaceSkills.acquire({
       workingDirectory,
-      requests: configuredSkillBindings.map((binding) =>
-        binding.kind === "resolved"
-          ? { kind: "expose-resolved", skill: binding.skill }
-          : { kind: "reconcile-unresolved", name: binding.name }
-      ),
+      requests: exposedWorkspaceSkillRequests(configuredSkillBindings),
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
+      assertPreparing: guard.assertAccepting,
     });
     guard.assertAccepting();
-    const materializedConfiguredSkills = preparedSkills.materializedSkills;
-    const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
-      request.kind === "reconcile-unresolved" ? [] : [request.skill]);
     const semanticMemoryPath = await this.semanticMemory.prepareForRun(agentDefinition);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
@@ -114,8 +117,7 @@ export class ClaudeSessionBootstrapper {
         sessionConfig,
         carpenterSystemPrompt,
         runtimeToolExposure,
-        configuredSkills,
-        materializedConfiguredSkills,
+        workspaceSkills: guard.workspaceSkills,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,

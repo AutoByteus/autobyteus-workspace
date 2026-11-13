@@ -47,6 +47,13 @@ export class RunPassRegistry {
     if (pass && holder) this.holders.set(pass, Object.freeze({ ...holder, grants: new Map() }));
   }
 
+  /** The integrations the run's pass holds now (none without a pass). */
+  grantedIntegrationIds(runId: string): ReadonlySet<string> {
+    const pass = this.passByRunId.get(runId);
+    const holder = pass ? this.holders.get(pass) : undefined;
+    return new Set(holder ? holder.grants.keys() : []);
+  }
+
   lookup(pass: string): RunPassHolder | null {
     return this.holders.get(pass) ?? null;
   }

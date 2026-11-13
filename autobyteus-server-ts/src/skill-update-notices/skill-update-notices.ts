@@ -1,4 +1,6 @@
+import type { AgentDefinitionChangeSignal } from "../agent-definition/services/agent-definition-change-signal.js";
 import type { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
+import type { IntegrationRunAccess } from "../credential-proxy/integration-run-access.js";
 import { SkillService } from "../skills/services/skill-service.js";
 import { SkillFolderWatcher, type SkillFolderWatchFactory } from "./monitor/skill-folder-watcher.js";
 import { SeenSkillVersionsStore } from "./providers/seen-skill-versions-store.js";
@@ -18,11 +20,16 @@ export type SkillUpdateNotices = Readonly<{
 /**
  * Builds the subsystem. A run's used skills are resolved exactly as its runtime resolves them at
  * activation (its agent definition through the skill catalog, `ALL_INSTALLED` and application
- * bundles included). When one of its skill folders changes they are re-resolved with the same
- * definition (the one the run was activated with) through the current catalog.
+ * bundles included). On every agent definition change each tracked run's definition is read again
+ * by ID: a skill added to it is set up on the run's runtime and announced, a removed one announced.
+ * When one of its skill folders changes they are re-resolved with the run's current definition
+ * through the current catalog.
  */
 export const createSkillUpdateNotices = (input: Readonly<{
   agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
+  definitionChanges: Pick<AgentDefinitionChangeSignal, "subscribe">;
+  /** Names the integrations an added skill grants that a run does not hold yet (`null`: this host has none). */
+  integrationRunAccess: Pick<IntegrationRunAccess, "integrationsStartingOnRestart"> | null;
   /** Defaults to the process skill service, looked up when a run's skills are first resolved. */
   skillService?: Pick<SkillService, "resolveConfiguredSkillsForAgent">;
   settleQuietMs?: number;
@@ -40,17 +47,19 @@ export const createSkillUpdateNotices = (input: Readonly<{
     snapshotter,
     store: new SeenSkillVersionsStore(),
     seenVersionsRetryDelaysMs: input.seenVersionsRetryDelaysMs,
-    resolveUsedSkills: async (run) => {
-      // The definition the run was activated with (read once, when the run is tracked).
-      const definition = await input.agentDefinitionService.getAgentDefinitionById(run.config.agentDefinitionId);
-      const skillService = input.skillService ?? SkillService.getInstance();
-      return Object.freeze({
-        resolve: () => skillService.resolveConfiguredSkillsForAgent(definition)
-          .map((skill) => ({ name: skill.name, rootPath: skill.rootPath })),
-      });
-    },
+    resolution: Object.freeze({
+      readDefinition: (run) => input.agentDefinitionService.getAgentDefinitionById(run.config.agentDefinitionId),
+      resolveSkills: (definition) => (input.skillService ?? SkillService.getInstance())
+        .resolveConfiguredSkillsForAgent(definition)
+        .map((skill) => ({ name: skill.name, rootPath: skill.rootPath, description: skill.description })),
+    }),
   });
-  const service = new SkillUpdateNoticeService({ tracker, watcher, snapshotter });
+  const service = new SkillUpdateNoticeService({
+    tracker, watcher, snapshotter,
+    agentDefinitionService: input.agentDefinitionService,
+    integrationRunAccess: input.integrationRunAccess,
+  });
+  const unsubscribe = input.definitionChanges.subscribe(() => { void service.onDefinitionsChanged(); });
   let closing: Promise<void> | null = null;
   return Object.freeze({
     service,
@@ -58,10 +67,12 @@ export const createSkillUpdateNotices = (input: Readonly<{
     tracker,
     close: () => {
       closing ??= (async () => {
-        // Watcher first (no new changes), then the service (no new deliveries), then the tracker,
-        // which waits for tracking and seen-version writes in progress.
+        // No new definition passes and no new folder changes, then the service (no new deliveries; it
+        // waits for a pass in progress), then the tracker, which waits for tracking and seen-version
+        // writes in progress.
+        unsubscribe();
         await watcher.close();
-        service.close();
+        await service.close();
         await tracker.close();
       })();
       return closing;

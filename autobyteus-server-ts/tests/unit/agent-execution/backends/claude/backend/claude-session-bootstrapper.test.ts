@@ -7,6 +7,7 @@ import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-ki
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testPreparationGuard } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const WORKING_DIRECTORY = "/tmp/claude-bootstrapper-workspace";
 
@@ -69,7 +70,7 @@ describe("ClaudeSessionBootstrapper", () => {
       createRunContext({
         autoExecuteTools: true,
         memberExecutionContext,
-      }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined },
+      }), testPreparationGuard(bootstrapper),
     );
 
     expect(runContext.runtimeContext.sessionConfig).toMatchObject({
@@ -93,7 +94,7 @@ describe("ClaudeSessionBootstrapper", () => {
   it("tells a run started under a Project its Project (REQ-006, DS-005)", async () => {
     const { bootstrapper } = createBootstrapper();
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false, project: { projectId: "project_a1", name: "AutoByteus" } }),
-      { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+      testPreparationGuard(bootstrapper));
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
   });
 
@@ -111,7 +112,7 @@ describe("ClaudeSessionBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       autoExecuteTools: false,
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    }), testPreparationGuard(bootstrapper, "run-claude-standalone"));
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(expect.objectContaining({
       runId: "run-claude-standalone",
@@ -122,7 +123,6 @@ describe("ClaudeSessionBootstrapper", () => {
       ],
       workspaceCollisionPolicy: "fail",
     }));
-    expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
   });
 
   it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
@@ -131,21 +131,10 @@ describe("ClaudeSessionBootstrapper", () => {
       { kind: "resolved", skill },
     ], "ALL_INSTALLED");
 
-    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), testPreparationGuard(bootstrapper));
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
       expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
-  });
-  it("uses refreshed effective requests rather than the pre-preparation generation", async () => {
-    const oldSkill = new Skill({ name: "writer", description: "old", content: "old", rootPath: "/g1" });
-    const currentSkill = new Skill({ name: "writer", description: "current", content: "new", rootPath: "/g2" });
-    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([{ kind: "resolved", skill: oldSkill }]);
-    workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills.mockResolvedValue({
-      materializedSkills: [], effectiveRequests: [{ kind: "expose-resolved", skill: currentSkill }],
-    });
-    const context = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }),
-      { assertAccepting: () => undefined, ownSkill: () => undefined });
-    expect(context.runtimeContext.configuredSkills).toEqual([currentSkill]);
   });
 
 });
