@@ -2819,13 +2819,30 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 #### S26 — Refused: the user deletes M while a run it delegated to works [T-5]
 
-**Call:** The user deletes M from the run list.
+**Call:** The user stops M, then deletes it from the run list. (Deleting a running M is refused first, as at base: "Run is active. Terminate it before deleting history.")
 
-**Result:** refused; the user sees `RUN_DELEGATED_WORK_ACTIVE`: "This run can't be deleted while a run it delegated to is working (/research_agent). Try again when it has finished, or stop it first."
+**Result:** refused, the mutation answers `{ "success": false, "message": "This run can't be deleted while a run it delegated to is working (/research_agent). Try again when it has finished, or stop it first." }`
 
-**How:** M's open entries are asked: the research agent (S20) works on T2, so the delete is refused and its reason names it. A run on a peer node is asked too, through its node (REQ-013); the research team's T7 entry is closed (S19), so it is not asked. Nothing is written.
+**How:** M's open entries are asked: the research agent (S20) works on T2, so the delete is refused and its reason names it. A run on a peer node is asked too, through its node (REQ-013); the research team's T7 entry is closed (S19), so it is not asked. Only M's stop is written.
 
-**On disk after this step:** nothing changes.
+**On disk after this step:**
+
+**Changed:** node A: `memory/run_history_index.json`, changed row:
+```json
+{
+  "runId": "project_task_manager_7c8d",
+  "agentDefinitionId": "project-task-manager",
+  "agentName": "Project Task Manager",
+  "workspaceRootPath": "/Users/me/projects/x",
+  "summary": "…",
+  "createdAt": "2026-11-01T08:00:00.000Z",
+  "archivedAt": null,
+  "terminatedAt": "2026-11-10T20:29:00.000Z",
+  "hasCollaboration": true
+}
+```
+
+**Unchanged:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`, node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`, node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/project_task_manager_7c8d/` (memory folder), node A: `memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl`, node A: `memory/agents/project_task_manager_7c8d/run_metadata.json`, node A: `memory/agents/research_agent_9b10/` (memory folder), node A: `memory/agents/research_agent_9b10/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory:** unchanged.
 
@@ -2837,7 +2854,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 #### S27 — The user stops the research agent and deletes M; the research agent's report is refused [T-4, T-8, R-11]
 
-**Call:** The user stops the research agent, then deletes M. Later the user messages the research agent, which restores it (its T2 is open), and it reports: `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`, by `research_agent_9b10`
+**Call:** The user stops the research agent, then deletes M (stopped in S26). Later the user messages the research agent, which restores it (its T2 is open), and it reports: `send_message_to(target_agent_run_id: "project_task_manager_7c8d", content: "Findings …")`, by `research_agent_9b10`
 
 **Result:** refused, `{ "accepted": false, "code": "TARGET_AGENT_RUN_NOT_ACTIVE", "message": "No running agent has the run id 'project_task_manager_7c8d', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you." }`
 

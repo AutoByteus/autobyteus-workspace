@@ -510,6 +510,12 @@ class World:
         or a peer (its row there is not stopped). Otherwise the run's own files and row go. Task entries are the Task's
         record and stay; the tree no longer has the run, so the runs it delegated to are the tops of their own trees."""
         node, kind, run_id = run
+        # an active run is refused first, as at base: the user stops it, then deletes it (K-15)
+        own = self.row(node, kind, run_id)
+        if own is not None and own["terminatedAt"] is None:
+            raise Refused(None, {"agent": "Run is active. Terminate it before deleting history.",
+                                 "agent_team": "Team run is active or stopping. Terminate it before deleting history.",
+                                 "agent_org": "AgentOrg run is active or managed. Terminate it before deleting history."}[kind], tool="user")
         node_of = {v: k for k, v in self.node_ids.items()}
         working = []
         for t, e in self.entries(node):
@@ -517,7 +523,7 @@ class World:
             if (dr["kind"], dr["runId"]) != (kind, run_id) or e["closedAt"] is not None: continue
             ck = self.run_key_of_entry(e); r = self.row(node_of[e["nodeId"]] if "nodeId" in e else node, ck[0], ck[1])
             if r is not None and r["terminatedAt"] is None: working.append(e["recipientAddress"])
-        if working: raise Refused("RUN_DELEGATED_WORK_ACTIVE", DELEGATED_WORK("deleted", ", ".join(working)), tool="user")
+        if working: raise Refused(None, DELEGATED_WORK("deleted", ", ".join(working)), tool="user")
         # its Tasks with no Project go with it (base: task-keys AC-021, a deleted chat's Temp tasks; K-14): a Task with no
         # Project whose assigned entry this run made. A Project Task stays: it belongs to its Project.
         for tid, (k, t) in list(self.tasks(node).items()):

@@ -1466,3 +1466,26 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - **SR-075 F-41** needs no code change. The card is a live ERROR on the delegated run's own stream, and all three views bind a selected delegated row through one owner (`delegatedRunsStore`). The e2e reads it from the delegated team's own stream.
   - **CR-461-057** had a product cause (fixed in 573e6a7d07): the agent-run view's composer target fell back to the delegator while a selected delegated row's run was opening.
 - **SR-076 follow-up (the Implementation Engineer):** with the record only in the receiver's log, the closing run left X's open subtree, and the reload lost it, which broke SR-074's one rule. **Decision: option (1).** On a refusal after the receiver's durable write, the sender also commits the message to its own log. A message in a receiver's log is then always in its sender's log (TC-13), and live and reload agree. Option (2), hiding it everywhere, was rejected: it reverses base, which showed it.
+
+### SR-077 — CR-461-066: the model's S26, and a preserved copy's Settings (answers CRR-030)
+
+- **Triggering:** CRR-030, the failure-origin review of API/E2E round 7 on the merged state. Its two reopened Local Fixes, CR-461-061 and -059, were released to the Implementation Engineer first.
+- **K-15, a model error:**
+  - S26 deleted a running M, but the product refuses that first, as at base ("Run is active. Terminate it before deleting history.");
+  - the model also named a code, `RUN_DELEGATED_WORK_ACTIVE`, that the delete mutation's `{success, message}` result does not carry.
+  - **Fixed:**
+    - `delete_run` refuses an active run first, with base's text per kind;
+    - the delegated-work refusal uses the mutation's shape;
+    - S26 stops M, then deletes, and is refused for the working research agent;
+    - S27 deletes the stopped M.
+  - **The Solution Designer's gap:** the model's refusal used an invented shape, and skipped base's active-run rule.
+- **Q-1, a copy preserved by a failed predecessor:**
+  - **What happens:** it is not a run of its own until the predecessor's retry finishes the item. Its own save answers `NOT_FOUND`, and the host no longer edits it (rule 2).
+  - **Decision:** this is the expected outcome. DS-10 preserves and reports such an item (`PRESERVED_UNFINISHED_PREDECESSOR`) and never half-converts it (`DESIGN.md` rule 7, the data guideline).
+  - **The runner:** it continues past a failed migration (`app-data-migration-runner.ts:80-102`), so 461's migration still runs and reports the item.
+  - The design states it under DS-10. TAU-2's expectation changes.
+- **Checks:**
+  - `walkthrough.py --check`: three "match" lines;
+  - the validator: 0 findings.
+- **Next action:** the Implementation Engineer, then the full code review.
+
