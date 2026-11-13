@@ -26,7 +26,6 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
     workspaceResolver: { marker: "codex-resolver" } as never,
     clientManager: { marker: "codex-client" } as never,
     threadManager: { marker: "codex-thread-manager" } as never,
-    threadCleanup: { marker: "codex-thread-cleanup" } as never,
   },
   claude: {
     workspaceResolver: { marker: "claude-resolver" } as never,
@@ -51,7 +50,6 @@ const PROCESS_LEAVES = [
   "codex.workspaceResolver",
   "codex.clientManager",
   "codex.threadManager",
-  "codex.threadCleanup",
   "claude.workspaceResolver",
   "claude.workspaceSkillMaterializer",
   "claude.sdkClient",
@@ -165,7 +163,7 @@ describe("AgentProviderFactoryBuilder", () => {
     const runSessionsB = { activateForRun: vi.fn() };
     const capabilityA = { marker: "application-capability-a" };
     const capabilityB = { marker: "application-capability-b" };
-    const integrationRunAccess = { environmentForRun: vi.fn(async () => ({})) };
+    const integrationRunAccess = { environmentForRun: vi.fn(async () => ({})), integrationsStartingOnRestart: vi.fn(async () => []) };
     const providerRelayAccess = { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() };
     const first = builder.createForExecution({
       agentDefinitionService: definitionA as never,
@@ -211,13 +209,13 @@ describe("AgentProviderFactoryBuilder", () => {
     const codex = first.codex as unknown as Record<string, unknown>;
     const codexBootstrapper = codex.threadBootstrapper as Record<string, unknown>;
     expect(codex.threadManager).toBe(process.codex.threadManager);
-    expect(codex.threadCleanup).toBe(process.codex.threadCleanup);
     expect(codexBootstrapper.workspaceSkillMaterializer)
       .toBe(process.codex.workspaceSkillMaterializer);
     expect(codexBootstrapper.workspaceResolver).toBe(process.codex.workspaceResolver);
     expect(codexBootstrapper.agentDefinitionService).toBe(definitionA);
     expect(codexBootstrapper.skillService).toBe(process.skillService);
-    expect(codexBootstrapper.clientManager).toBe(process.codex.clientManager);
+    expect((codexBootstrapper.skillRequestPlanner as Record<string, unknown>).clientManager)
+      .toBe(process.codex.clientManager);
     expect(codexBootstrapper.agentToolMcpRunSessions).toBe(runSessionsA);
 
     const claude = first.claude as unknown as Record<string, unknown>;
@@ -226,8 +224,6 @@ describe("AgentProviderFactoryBuilder", () => {
     expect(claudeManager.workspaceManager).toBe(process.workspaceManager);
     expect(claudeManager.sdkClient).toBe(process.claude.sdkClient);
     expect(claudeManager.agentToolMcpRunSessions).toBe(runSessionsA);
-    expect((claudeManager.sessionCleanup as Record<string, unknown>)
-      .workspaceSkillMaterializer).toBe(process.claude.workspaceSkillMaterializer);
     expect(claudeBootstrapper.workspaceResolver).toBe(process.claude.workspaceResolver);
     expect(claudeBootstrapper.workspaceSkillMaterializer)
       .toBe(process.claude.workspaceSkillMaterializer);

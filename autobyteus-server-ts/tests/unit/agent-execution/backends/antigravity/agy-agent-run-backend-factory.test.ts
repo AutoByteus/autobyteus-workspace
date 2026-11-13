@@ -257,7 +257,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
       { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
       createAgentToolMcpRunSessionsStub() as never,
-      { environmentForRun },
+      { environmentForRun, integrationsStartingOnRestart: async () => [] },
     );
     const initial = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "new", config, runId: "run" }));
     await initial.terminate();

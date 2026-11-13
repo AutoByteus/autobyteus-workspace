@@ -11,6 +11,7 @@ import { createCodexThreadStartupGate } from "../../../../../../src/agent-execut
 import { createTokenUsageUpdatedPayload } from "../../../../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { CodexReadyTokenUsageUpdate } from "../../../../../../src/agent-execution/backends/codex/thread/codex-thread-token-usage.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const repoRoot = path.resolve(__dirname, "../../../../../../..");
 /** Live codex-cli 0.162.1 app-server stdout captured by API/E2E (API-L03/L04), one JSON line per frame. */
@@ -26,7 +27,7 @@ const createThread = (autoExecuteTools = true) => {
       runId: "codex-run",
       config: new AgentRunConfig({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentDefinitionId: "def",
         llmModelIdentifier: "gpt-6.1-sol", autoExecuteTools, workspaceId: null, llmConfig: null }),
-      runtimeContext: new CodexAgentRunContext({
+      runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
         codexThreadConfig: { model: "gpt-6.1-sol", workingDirectory: "/tmp/codex-tps", reasoningEffort: "medium",
           serviceTier: null, approvalPolicy: autoExecuteTools ? CodexApprovalPolicy.NEVER : CodexApprovalPolicy.ON_REQUEST,
           sandbox: "workspace-write", baseInstructions: null, developerInstructions: null, dynamicTools: [] },

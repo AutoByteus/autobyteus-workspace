@@ -6,6 +6,7 @@ import { AgentRunContext } from '../../../../../../src/agent-execution/domain/ag
 import { CodexAgentRunContext } from '../../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-context.js';
 import { CodexApprovalPolicy } from '../../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js';
 import { RuntimeKind } from '../../../../../../src/runtime-management/runtime-kind-enum.js';
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const fixture = () => {
   const request = vi.fn<(...args: any[]) => Promise<unknown>>().mockResolvedValue({ data: [], nextCursor: null });
@@ -13,7 +14,7 @@ const fixture = () => {
     runContext: new AgentRunContext({
       runId: 'run-1',
       config: new AgentRunConfig({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentDefinitionId: 'def-1', llmModelIdentifier: 'fixture', autoExecuteTools: true, workspaceId: '/tmp', llmConfig: null }),
-      runtimeContext: new CodexAgentRunContext({ codexThreadConfig: {
+      runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(), codexThreadConfig: {
         model: 'fixture', workingDirectory: '/tmp', reasoningEffort: null, approvalPolicy: CodexApprovalPolicy.NEVER,
         sandbox: 'workspace-write', baseInstructions: null, developerInstructions: null, dynamicTools: [],
       } }),

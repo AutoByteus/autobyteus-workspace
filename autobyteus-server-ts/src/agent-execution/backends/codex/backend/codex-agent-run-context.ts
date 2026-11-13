@@ -1,6 +1,5 @@
-import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
+import type { RunWorkspaceSkills } from "../../shared/run-workspace-skills.js";
 import type { CodexThreadConfig } from "../thread/codex-thread-config.js";
-import type { CodexThreadCleanupTarget } from "./codex-thread-cleanup.js";
 import type { AgentRunContext as SharedAgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexDynamicToolHandlerMap } from "../codex-dynamic-tool.js";
 import {
@@ -10,7 +9,11 @@ import {
 
 export class CodexAgentRunContext {
   readonly codexThreadConfig: CodexThreadConfig;
-  readonly materializedConfiguredSkills: MaterializedWorkspaceSkill[];
+  /**
+   * The run's workspace skill links, held from preparation to release (released only through it). Null only in a
+   * restore binding that was not prepared yet: it holds no links.
+   */
+  readonly workspaceSkills: RunWorkspaceSkills | null;
   readonly dynamicToolHandlers: CodexDynamicToolHandlerMap;
   /** The Agent Tools exposure the run was last given (its definition's tools). */
   runtimeToolExposure: RuntimeAgentToolExposure;
@@ -24,14 +27,14 @@ export class CodexAgentRunContext {
 
   constructor(input: {
     codexThreadConfig: CodexThreadConfig;
-    materializedConfiguredSkills?: MaterializedWorkspaceSkill[] | null;
+    workspaceSkills: RunWorkspaceSkills | null;
     dynamicToolHandlers?: CodexDynamicToolHandlerMap | null;
     runtimeToolExposure?: RuntimeAgentToolExposure | null;
     threadId?: string | null;
     activeTurnId?: string | null;
   }) {
     this.codexThreadConfig = input.codexThreadConfig;
-    this.materializedConfiguredSkills = input.materializedConfiguredSkills ?? [];
+    this.workspaceSkills = input.workspaceSkills;
     this.dynamicToolHandlers = { ...(input.dynamicToolHandlers ?? {}) };
     this.runtimeToolExposure = input.runtimeToolExposure ?? buildRuntimeAgentToolExposure([]);
     this.threadId = input.threadId ?? null;
@@ -39,11 +42,10 @@ export class CodexAgentRunContext {
     this.hasConversationHistory = this.threadId !== null;
   }
 
-  toCleanupTarget(): CodexThreadCleanupTarget {
-    return {
-      workingDirectory: this.codexThreadConfig.workingDirectory,
-      materializedConfiguredSkills: this.materializedConfiguredSkills,
-    };
+  /** The holder of a prepared run's links; a restore binding that was not prepared has none. */
+  requireWorkspaceSkills(): RunWorkspaceSkills {
+    if (!this.workspaceSkills) throw new Error("Codex run context has no workspace skills: it was not prepared.");
+    return this.workspaceSkills;
   }
 }
 

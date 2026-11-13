@@ -18,7 +18,7 @@ const resolveFor = (agentDefinitionId: string, integrationRunAccess: Integration
         sessionConfig: { model: "haiku", workingDirectory: "/tmp", permissionMode: "default", autoExecuteTools: false, additionalDirectories },
         carpenterSystemPrompt: "",
         runtimeToolExposure: buildRuntimeAgentToolExposure([]),
-        materializedConfiguredSkills: [],
+        requireWorkspaceSkills: () => ({ hasSkills: () => false }),
       },
     } as never,
     binding: { kind: "create", sessionId: "11111111-1111-4111-8111-111111111111" },
@@ -33,6 +33,7 @@ const resolveFor = (agentDefinitionId: string, integrationRunAccess: Integration
 describe("Claude run session integration environment", () => {
   const access: IntegrationRunAccess = {
     environmentForRun: vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "agent-allowed" ? { AUTOBYTEUS_GITHUB_API_URL: API_URL } : {})),
+    integrationsStartingOnRestart: async () => [],
   };
 
   it("puts an allowed run's variables in its session options", async () => {

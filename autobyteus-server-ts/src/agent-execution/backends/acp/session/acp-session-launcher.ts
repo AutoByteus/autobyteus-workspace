@@ -8,7 +8,6 @@ import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentCreationError } from "../../../errors.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
-import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
 import type {
   AcpAgentLaunchProfile,
   AcpLaunch,
@@ -22,8 +21,8 @@ import type { AcpAgentSessionProfile } from "../acp-agent-session-profile.js";
 import { AcpAgentSession } from "./acp-agent-session.js";
 
 /**
- * The single holder of one run's ACP launch, process, connection, session and provider call subscription (and its
- * skill links), for creation, restore and reopen alike. Every handle is recorded as soon as it exists, so a
+ * The single holder of one run's ACP launch, process, connection, session and provider call subscription, for
+ * creation, restore and reopen alike (its skill links are held by the run's `RunWorkspaceSkills`). Every handle is recorded as soon as it exists, so a
  * half-opened process is always held; `AcpSessionLauncher.end` ends exactly what it holds now.
  */
 export type AcpPreparationOwner = {
@@ -34,11 +33,10 @@ export type AcpPreparationOwner = {
   session: AcpAgentSession | null;
   /** Removes the current generation's provider call listener (exactly that one). */
   providerCalls: (() => void) | null;
-  skills: MaterializedWorkspaceSkill[];
 };
 
 export const createAcpPreparationOwner = (): AcpPreparationOwner => ({
-  launch: null, process: null, connection: null, session: null, providerCalls: null, skills: [],
+  launch: null, process: null, connection: null, session: null, providerCalls: null,
 });
 
 /** Where a session's output and failure go: the run's backend, once bound; nowhere once detached. */

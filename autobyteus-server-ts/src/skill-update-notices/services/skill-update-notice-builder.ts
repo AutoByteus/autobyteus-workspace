@@ -22,8 +22,29 @@ export const inlineCode = (text: string): string => {
   return `${fence}${pad}${text}${pad}${fence}`;
 };
 
+/** "GitHub", "GitHub and Slack", "GitHub, Slack and Jira". */
+const joinNames = (names: readonly string[]): string =>
+  names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+
+/**
+ * An added skill: its name and description, the absolute path of its `SKILL.md` to read before work it governs,
+ * and, for an integration whose access the run does not hold yet, that the access starts when the run is restarted.
+ */
+const describeAddedSkill = (change: Extract<SkillChange, { kind: "added" }>): string[] => {
+  const description = change.description.replace(/\s+/g, " ").trim();
+  return [
+    `Your skill package \`${change.skillName}\` is now available${description ? `: ${description}` : "."}`,
+    `Read its instructions before work it governs: ${inlineCode(change.skillMdPath)}. Resolve relative paths in it from its folder.`,
+    ...(change.integrationNames.length > 0
+      ? [`Its ${joinNames(change.integrationNames)} access starts when this run is restarted (stop the run, then send a message).`]
+      : []),
+    "",
+  ];
+};
+
 /** One Markdown block per skill; each ends with a blank line, so blocks and lists render apart. */
 const describeChange = (change: SkillChange): string[] => {
+  if (change.kind === "added") return describeAddedSkill(change);
   if (change.kind === "removed") return [`Your skill package \`${change.skillName}\` is no longer available.`, ""];
   const shown = change.files.slice(0, MAX_FILES_PER_SKILL);
   const more = change.files.length - shown.length;
@@ -39,8 +60,8 @@ const describeChange = (change: SkillChange): string[] => {
 
 /**
  * The notice the agent and the web see: the header (the web labels the card by it), then one
- * block per skill naming its folder and listing exactly the files that differ, each with its
- * status, then what to do.
+ * block per skill: an added skill with its `SKILL.md`, an updated one naming its folder and listing
+ * exactly the files that differ, each with its status, or one no longer available; then what to do.
  */
 export const buildSkillUpdateNoticeText = (changes: readonly SkillChange[]): string => {
   const updated = changes.filter((change) => change.kind === "updated");

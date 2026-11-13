@@ -117,7 +117,8 @@ describe("run passes and run access", () => {
     const passes = new RunPassRegistry();
     const grantsForAgent = vi.fn(async (agentDefinitionId: string) => (agentDefinitionId === "agent-a" ? [grant] : []));
     const access = new DefaultIntegrationRunAccess({
-      access: { grantsForAgent }, definitions: new DeliveryDefinitions(), passes, proxyBaseUrl: () => "http://127.0.0.1:5000",
+      access: { grantsForAgent }, definitions: new DeliveryDefinitions(), passes, catalog: { describe: () => null },
+      proxyBaseUrl: () => "http://127.0.0.1:5000",
     });
 
     expect(await access.environmentForRun({ runId: "run-b", agentDefinitionId: "agent-b" }, {})).toEqual({});
@@ -131,6 +132,33 @@ describe("run passes and run access", () => {
     expect(passes.lookup(pass!)?.grants.size).toBe(0);
     new RegistryRunPassRevocation(passes).revokeForRun("run-a");
     expect(passes.lookup(pass!)).toBeNull();
+  });
+
+  it("AC-006: names an integration an added skill grants but the run's pass does not hold; grants nothing (DEC-004)", async () => {
+    const passes = new RunPassRegistry();
+    const grantsForAgent = vi.fn(async (agentDefinitionId: string) => (agentDefinitionId === "agent-a" ? [grant] : []));
+    const access = new DefaultIntegrationRunAccess({
+      access: { grantsForAgent }, definitions: new DeliveryDefinitions(), passes,
+      catalog: { describe: (id) => (id === "github" ? { name: "GitHub", skillName: "github-integration" } : null) },
+      proxyBaseUrl: () => "http://127.0.0.1:5000",
+    });
+    const run = { runId: "run-a", agentDefinitionId: "agent-a" };
+
+    // Prepared before the skill was added: its pass holds no GitHub grant.
+    passes.issue(run, []);
+    expect(passes.grantedIntegrationIds("run-a")).toEqual(new Set());
+    expect(await access.integrationsStartingOnRestart(run, ["github-integration"])).toEqual(["GitHub"]);
+    expect(passes.grantedIntegrationIds("run-a")).toEqual(new Set()); // a read only
+    // Only the skills asked about, and only for an agent the rule grants.
+    expect(await access.integrationsStartingOnRestart(run, ["code-review"])).toEqual([]);
+    expect(await access.integrationsStartingOnRestart({ runId: "run-b", agentDefinitionId: "agent-b" }, ["github-integration"])).toEqual([]);
+
+    // Prepared again (restarted): the pass holds the grant, so nothing starts at a restart.
+    await access.environmentForRun(run, {});
+    expect(passes.grantedIntegrationIds("run-a")).toEqual(new Set(["github"]));
+    expect(await access.integrationsStartingOnRestart(run, ["github-integration"])).toEqual([]);
+    // A run without a pass holds nothing.
+    expect(passes.grantedIntegrationIds("run-unknown")).toEqual(new Set());
   });
 
   it("reads a missing or malformed connections file as not connected, and keeps it until a save", async () => {

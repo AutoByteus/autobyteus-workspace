@@ -1,0 +1,123 @@
+# IMP-05
+# Command: vitest run tests/integration/skill-update-notices tests/integration/tool-list-updates tests/unit/skill-update-notices/skill-update-notice-parts.test.ts tests/unit/credential-proxy/credential-proxy-core.test.ts tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts tests/unit/agent-execution/backends/immediate-tool-list-apply.test.ts --no-watch --reporter=verbose
+# Commit: base 7b8bcf932f + uncommitted implementation (IR-001 working tree)
+# Environment: macOS darwin, Node v22.23.1
+# Date: 2026-11-13 12:42
+
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-001: tells a busy run once through the agent-message path, with the turn id, and records what it saw 57ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-004: one notice per settled burst, listing every changed file; a reverted edit yields none 57ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > lists exactly the files that differ, each with its status; no SKILL.md when only references changed 30ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > DS-003: an idle run is only marked; its next input takes the notice once it is delivered 45ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-009: a failed busy delivery or a returned preface keeps the change for the next input 70ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-007: only runs that use the changed skill hear about it; skills nobody uses are not watched 77ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-005: a skill moved to a new folder with the same files is no notice; one that no longer resolves is removed 56ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > CR-002: a folder change re-resolves through the run's current definition; a deleted definition never reports a still-installed skill as removed 32ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-006: noise inside a skill folder never produces a notice 53ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-008: a skill folder is watched while a run using it is active, and released after 44ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > AC-002/AC-003/AC-008: a restored run hears about changes made while it was stopped, added skills included; a missing record means none 28ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > R-5: ALL_INSTALLED runs share one watch per installed skill folder, all closed when the runs end 169ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService (integration) > delivers through a real AgentRun: an idle run's next input carries the notice in one dispatch 108ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-001: an idle run's runtime sets the added skill up at once; its next input carries one 'now available' notice 80ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-001/AC-011: a busy run gets the notice now, after its runtime set the skill up 35ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-003: a removed skill is announced once; later edits of its files produce nothing for that run 53ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-004: a save without skill changes, an add then a remove, or a remove then an add back before the next input: no notice 35ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-005: once announced, an added skill's file changes are noticed like any used skill's 37ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-006: an added integration skill says its access starts at a restart; nothing is granted 34ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > AC-009: every tracked run of the definition hears it, a team member included 78ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > REQ-008: a setup that fails, or a run that is not active, still gets the notice 48ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > a definition that no longer exists leaves the run's skills as they are 26ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > QR-001: a burst of saves reads each run's definition at most twice (one pass, then exactly one more) 26ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService: skills added to or removed from a running agent's definition (DS-001) > closing the subsystem stops listening to definition changes 24ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService with the real folder watcher > notices a SKILL.md edit end to end after the settle window 967ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService tracking off the input path (CR-001) > a new run's first input is dispatched at once, while its skills are still being scanned 54ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService tracking off the input path (CR-001) > a restored run's first input waits for its check and carries the notice for changes made while it was stopped 75ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService tracking off the input path (CR-001) > DR-001: a run released and deleted while its skills are being scanned does not get its memory folder back 50ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService tracking off the input path (CR-001) > DR-001: a record waits for the runtime to create the memory folder, and stops for good once the run is released 262ms
+ ✓ tests/integration/skill-update-notices/skill-update-notice-service.integration.test.ts > SkillUpdateNoticeService tracking off the input path (CR-001) > DR-001: close waits for tracking and writes in progress; nothing is written after it 76ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > records a new run's tools, then gives an idle immediate run its notice with its next input 116ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > names added and removed tools in one short notice 23ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > gives no notice for a save without tool changes, or a change reverted before the next input (AC-005) 23ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > posts the notice at once to a busy immediate run, and keeps it pending when the post fails 44ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > waits for a turn start on a reopen runtime: an append carries nothing, the turn start carries the notice 24ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > tells a restored run what changed since it last ran, and records a restored run without a record silently (AC-006) 108ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > re-reads each tracked run's own definition, skips a missing one, and coalesces a burst of changes 23ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > ToolListUpdateService > stops applying once a run is released 23ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > AgentRunPlatformNotices: tool list and skill notices behind one slot > keeps the skill notice unchanged behind the composite 80ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > AgentRunPlatformNotices: tool list and skill notices behind one slot > carries one notice per input: tools first, the skill notice with the next input (DEC-006) 184ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > AgentRunPlatformNotices: tool list and skill notices behind one slot > AC-010: a save that changes tools and skills: the tools notice with this input, the skill notice with the next 185ms
+ ✓ tests/integration/tool-list-updates/tool-list-update-service.integration.test.ts > AgentRunPlatformNotices: tool list and skill notices behind one slot > settles only the source that gave the notice, and keeps going past a failing source 3ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > AC-012: a skill added mid-run is linked into the capsule; an unusable one is skipped; the manifest lists the linked ones and survives a resume 15ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > always configures the Agent Tools server, without a transport header 6ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > treats an empty workspace MCP config as no servers and leaves it untouched 25ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > treats an empty global ~/.gemini MCP config as no servers and leaves it untouched 6ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > treats a whitespace-only MCP config as no servers 6ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > still rejects malformed non-empty MCP config 8ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > still rejects a global MCP config that defines the AutoByteus server name 8ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > snapshots full identity and selected workspace without writing user .agents 17ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > writes a manifest without the removed skillAccessMode and restores a capsule whose manifest still stores it 12ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > links the configured package and exposes nothing for a definition without skills 11ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > warns and omits an unresolved named skill while linking resolved skills 7ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > never prints an unsafe configured name or unsafe run identity in skip warnings 3ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > rejects configured skill collisions without overwriting the selected workspace 4ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > lets a user-owned workspace skill win over an all-installed skill of the same name (D-15 Rule 1) 13ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > resumes a linked run whose skill source was removed, without that skill 10ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > resumes a run created with copied skill folders 8ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > rejects user-owned AutoByteus MCP key collisions before generating run config 10ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > isolates two run capsules sharing one selected workspace 7ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > a leftover capsule of an earlier era or a failed start (autobyteus-440) > replaces the capsule of an earlier era: the new start is on fresh files, nothing of the old one stays 7ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > a leftover capsule of an earlier era or a failed start (autobyteus-440) > replaces a leftover from a failed start that stopped halfway (no manifest) 14ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > a leftover capsule of an earlier era or a failed start (autobyteus-440) > removes a skill link without touching the skill folder it points to, and links it again 27ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > a leftover capsule of an earlier era or a failed start (autobyteus-440) > never touches the selected workspace, its own .agents folder included 12ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > a leftover capsule of an earlier era or a failed start (autobyteus-440) > keeps its failure clean: a start that fails after the replacement leaves no capsule behind 26ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts > AGY run capsule > a leftover capsule of an earlier era or a failed start (autobyteus-440) > a restore still reads the capsule of its own era and never replaces it 5ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > SkillFolderSnapshotter (REQ-010) > hashes the skill's files by relative path, skipping noise, the folder's .gitignore and temp files 22ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > SkillFolderSnapshotter (REQ-010) > gives identical digests for a content-identical save and returns null for a missing folder 24ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > diffSkillVersion > marks each differing file changed, added or removed, SKILL.md first, then by path 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > diffSkillVersion > treats a moved folder with the same files as unchanged, and with changes as updated at the new folder 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > diffSkillVersion > reports a skill that no longer resolves as removed, only when the run had seen it 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > diffSkillVersion > reports a skill the run never saw that resolves now as added, with its folder and SKILL.md 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > inlineCode (autobyteus-320, AC-009) > wraps references/__init__.py so it renders literally 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > inlineCode (autobyteus-320, AC-009) > wraps notes/*draft*.md so it renders literally 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > inlineCode (autobyteus-320, AC-009) > wraps a`b.md so it renders literally 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > inlineCode (autobyteus-320, AC-009) > wraps x``y so it renders literally 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > inlineCode (autobyteus-320, AC-009) > wraps `start.md so it renders literally 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > inlineCode (autobyteus-320, AC-009) > wraps end` so it renders literally 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > AC-001: only reference files changed: one block naming the package and its folder, the exact files, no SKILL.md 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > AC-002: SKILL.md changed, a file added and one removed: each with its status, plus the removed-files line 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > AC-003: an updated and a removed skill: one block each, in order; the closing lines cover both 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > says 'these skills' when several skills were updated, and has no re-read line when none was 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > AC-004: 25 changed files list 10, then '…and 15 more files' 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > AC-001/AC-006/AC-008: an added skill: name, description, SKILL.md path and how to read it; an integration's restart sentence; then removed and updated blocks in name order 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice text and message > builds the busy-run message as a SYSTEM, notice-only platform message without a native auto-notification 0ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > SeenSkillVersionsStore > writes the record atomically into the run's memory folder and reads it back 3ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > SeenSkillVersionsStore > never creates a missing memory folder, and stops (leaving no temp file) once told to (DR-001) 2ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > SeenSkillVersionsStore > treats a missing or invalid record as none, and keeps runs without a memory folder in memory 2ms
+ ✓ tests/unit/skill-update-notices/skill-update-notice-parts.test.ts > skill update notice paths are literal (autobyteus-320, AC-009) > puts the skill folder and each changed path in inline code, also a path with a backtick 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > GitHub delivery definition > allows the API's methods on any path, and only git's smart-HTTP endpoints on the git route 3ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > GitHub delivery definition > gives the shell the API address and git's redirection after any existing git config 1ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses //evil.example/x 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos//issues 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /../x 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos/%2e%2e/x 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos/%2E%2E/x 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos/./x 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos\x 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos/%5cx 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos/a%2fb 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses /repos/%zz 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > keeps the path and query on the route's own origin 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > caller path checks (AR-003) > refuses a path off the route's rules 0ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > GitHub token check > answers the login, a rejection on 401, and unchecked when GitHub can't answer 3ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > run passes and run access > issues one unguessable pass per run, reuses it with the latest grants, and revokes it idempotently 2ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > run passes and run access > gives variables and a pass only to runs the access rule grants, and clears an active pass's grants otherwise 1ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > run passes and run access > AC-006: names an integration an added skill grants but the run's pass does not hold; grants nothing (DEC-004) 1ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > run passes and run access > reads a missing or malformed connections file as not connected, and keeps it until a save 21ms
+ ✓ tests/unit/credential-proxy/credential-proxy-core.test.ts > run passes and run access > reads a beta.4 entry (with agent ticks) as its login, and drops the ticks at the next write 23ms
+ ✓ tests/integration/skill-update-notices/native-skill-notice-history.integration.test.ts > native AutoByteus skill update notice history > replays a notice combined into the user's input as a system notice, then the message as sent 7ms
+ ✓ tests/integration/skill-update-notices/native-skill-notice-history.integration.test.ts > native AutoByteus skill update notice history > replays a notice posted alone to a busy run as one system notice and no user message 2ms
+ ✓ tests/unit/agent-execution/backends/immediate-tool-list-apply.test.ts > AGY applyDefinitionTools > replaces the session's exposure and reports the new names; a same list changes nothing 3ms
+ ✓ tests/unit/agent-execution/backends/immediate-tool-list-apply.test.ts > AutoByteus applyDefinitionTools > compares names first: an unchanged list builds nothing; a changed one is given to the agent 1ms
+ ✓ tests/unit/agent-execution/backends/immediate-tool-list-apply.test.ts > AutoByteus applyDefinitionTools > AutoByteus native sets nothing up for an added skill: its system prompt and tools stay as they are (FU-006) 0ms
+ ✓ tests/unit/agent-execution/backends/immediate-tool-list-apply.test.ts > Claude applyDefinitionTools > keeps the exposure for later process generations and replaces the Agent Tools session 1ms
+ Test Files  7 passed (7)
+      Tests  115 passed (115)

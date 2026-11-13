@@ -1,0 +1,138 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "gpt-5.5",
+  "codeword": "QUOKKA-2203",
+  "steps": [
+    {
+      "label": "1 no skills",
+      "content": "Reply with exactly: READY-1",
+      "reply": "READY-1",
+      "notices": []
+    },
+    {
+      "label": "2 skill added",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "reply": "{\"path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-DEjwdX/app-data/skills/codeword-probe/SKILL.md\",\"include_line_numbers\":false}QUOKKA-2203",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-DEjwdX/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n"
+        }
+      ]
+    },
+    {
+      "label": "3 skill removed",
+      "content": "Reply with exactly: DONE-3",
+      "reply": "DONE-3",
+      "notices": [
+        {
+          "sender_id": "system.skill_update_notifier",
+          "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available."
+        }
+      ]
+    }
+  ],
+  "toolCallsAfterAdd": [
+    {
+      "toolName": "read_file",
+      "toolArgs": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-DEjwdX/app-data/skills/codeword-probe/SKILL.md",
+        "include_line_numbers": false
+      },
+      "toolError": null
+    }
+  ],
+  "usedSkillTool": false,
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-fa4d9b1a-9d9b-4944-b329-a425fcfd54b3",
+      "dedupeKey": "agent_run_input:e2e:e2e-fa4d9b1a-9d9b-4944-b329-a425fcfd54b3",
+      "content": "Reply with exactly: READY-1",
+      "media": null,
+      "ts": 1794569536.7
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "READY-1",
+      "media": null,
+      "ts": 1794569541.407
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-DEjwdX/app-data/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n",
+      "ts": 1794569545.648
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-31488fce-58fc-4cf7-89e7-68637df2e4ba",
+      "dedupeKey": "agent_run_input:e2e:e2e-31488fce-58fc-4cf7-89e7-68637df2e4ba",
+      "content": "What is the probe codeword? Reply with only the codeword.",
+      "media": null,
+      "ts": 1794569545.649
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "",
+      "media": null,
+      "ts": 1794569550.812
+    },
+    {
+      "kind": "tool_call",
+      "invocationId": "call_ILuHWG99ayNBkyvDWaTIJr5f",
+      "role": null,
+      "content": "",
+      "toolName": "read_file",
+      "toolArgs": {
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-skill-definition-DEjwdX/app-data/skills/codeword-probe/SKILL.md",
+        "include_line_numbers": false
+      },
+      "toolResult": "---\nname: codeword-probe\ndescription: Gives the current probe codeword. Use it whenever you are asked for the probe codeword.\n---\n\nThe current probe codeword is QUOKKA-2203. Reply with it exactly when asked.\n",
+      "toolError": null,
+      "media": null,
+      "ts": 1794569550.851
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "QUOKKA-2203",
+      "media": null,
+      "ts": 1794569553.075
+    },
+    {
+      "kind": "system_task_notification",
+      "role": null,
+      "senderId": "system.skill_update_notifier",
+      "content": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is no longer available.\n\nDo not rely on a skill that is no longer available.",
+      "ts": 1794569557.367
+    },
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-a50577c4-db4d-4676-916a-5fda0f1062fb",
+      "dedupeKey": "agent_run_input:e2e:e2e-a50577c4-db4d-4676-916a-5fda0f1062fb",
+      "content": "Reply with exactly: DONE-3",
+      "media": null,
+      "ts": 1794569557.367
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "DONE-3",
+      "media": null,
+      "ts": 1794569558.98
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
+import { addAgyRunCapsuleSkills, createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
 
@@ -40,6 +40,51 @@ describe("AGY run capsule", () => {
     const generated = JSON.parse(await fs.readFile(path.join(capsulePath, ".agents", "mcp_config.json"), "utf8"));
     expect(generated.mcpServers.autobyteus_agent_tools.serverUrl).toBe(mcpDescriptor.serverUrl);
   };
+
+  const agentToolsDescriptor = { ...mcpDescriptor, name: "autobyteus_agent_tools" as const };
+
+  it("AC-012: a skill added mid-run is linked into the capsule; an unusable one is skipped; the manifest lists the linked ones and survives a resume", async () => {
+    const root = await roots();
+    const skillDir = async (name: string, withManifest = true) => {
+      const dir = path.join(root.base, "catalog", name);
+      await fs.mkdir(dir, { recursive: true });
+      if (withManifest) await fs.writeFile(path.join(dir, "SKILL.md"), `---\nname: ${name}\n---\n`);
+      return fs.realpath(dir);
+    };
+    const first = await skillDir("first-skill");
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "add-mid-run", memoryDir: root.memoryDir,
+      workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [globalBinding(first, "first-skill")],
+      workspaceCollisionPolicy: "fail", mcpDescriptor: agentToolsDescriptor });
+    const added = await skillDir("added-skill");
+    const broken = await skillDir("broken-skill", false); // no SKILL.md: cannot be linked
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    await addAgyRunCapsuleSkills({ capsule, runId: "add-mid-run", agentDefinitionId: "test-agent", workspaceCollisionPolicy: "fail",
+      bindings: [globalBinding(first, "first-skill"), globalBinding(broken, "broken-skill"), globalBinding(added, "added-skill"),
+        { kind: "unresolved", name: "missing-skill" }] });
+
+    expect(await fs.realpath(path.join(capsule.path, ".agents", "skills", "added-skill"))).toBe(added);
+    await expect(fs.lstat(path.join(capsule.path, ".agents", "skills", "broken-skill"))).rejects.toMatchObject({ code: "ENOENT" });
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("AGY configured skill not added: run=add-mid-run, skill=broken-skill"));
+    const names = (manifest: { skills: Array<{ name: string }> }) => manifest.skills.map((skill) => skill.name);
+    expect(names(capsule.manifest)).toEqual(["first-skill", "added-skill"]);
+    const written = JSON.parse(await fs.readFile(path.join(capsule.path, "manifest.json"), "utf8"));
+    expect(names(written)).toEqual(["first-skill", "added-skill"]);
+    expect((await fs.readdir(capsule.path)).filter((entry) => entry.startsWith(".manifest-"))).toEqual([]);
+
+    // Resumed (stop, then a message): the capsule keeps the link and the manifest names it.
+    const restored = await restoreAgyRunCapsule({ runId: "add-mid-run", memoryDir: root.memoryDir,
+      selectedWorkspacePath: root.workspacePath, mcpDescriptor: agentToolsDescriptor });
+    expect(names(restored.manifest)).toEqual(["first-skill", "added-skill"]);
+    expect(await fs.realpath(path.join(restored.path, ".agents", "skills", "added-skill"))).toBe(added);
+
+    // Once the broken skill gets its SKILL.md, the next add links it; listed names are not linked again.
+    await fs.writeFile(path.join(broken, "SKILL.md"), "---\nname: broken-skill\n---\n");
+    await addAgyRunCapsuleSkills({ capsule: restored, runId: "add-mid-run", agentDefinitionId: "test-agent", workspaceCollisionPolicy: "fail",
+      bindings: [globalBinding(added, "added-skill"), globalBinding(broken, "broken-skill")] });
+    expect(names(restored.manifest)).toEqual(["first-skill", "added-skill", "broken-skill"]);
+    warn.mockRestore();
+  });
 
   it("always configures the Agent Tools server, without a transport header", async () => {
     const root = await roots();

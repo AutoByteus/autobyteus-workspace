@@ -331,6 +331,7 @@ export const buildStudioServer = async (input: {
     platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+      integrationRunAccess: credentialProxyHost.runAccess,
     });
     const runtimeHandoverNotices = new RuntimeHandoverNoticeService({
       journals: getWorkJournalService(),

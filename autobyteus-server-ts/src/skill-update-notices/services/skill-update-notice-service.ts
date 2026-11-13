@@ -1,10 +1,12 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentRunInputPreface, AgentRunPreface } from "../../agent-execution/domain/agent-run-input-preface.js";
 import type { AgentRunActivationKind, AgentRunLifecycleObserver } from "../../agent-execution/domain/agent-run-lifecycle-observer.js";
 import type { AgentRunInputLifecycle } from "../../agent-execution/input/agent-run-input-contract.js";
 import { SKILL_UPDATE_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
+import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import type { SkillChange, SkillFolderSnapshot } from "../domain/skill-update-notice-types.js";
 import type { SkillFolderSnapshotter } from "../providers/skill-folder-snapshotter.js";
 import type { SkillFolderWatcher } from "../monitor/skill-folder-watcher.js";
@@ -31,12 +33,23 @@ type RunNoticeState = {
   dirty: Set<string>;
   /** A notice handed to a dispatch or posted, until its delivery settles. */
   inFlight: { id: string; notice: ComputedNotice; names: ReadonlySet<string> } | null;
+  /**
+   * Skill names a definition change gave the run while it was active: the run was prepared without them, so an
+   * integration they grant may not be held yet. (A name the run hears about at restore came with its activation.)
+   */
+  addedWhileActive: Set<string>;
 };
 
 const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 
 /**
- * Tells runs that a skill they use changed on disk (the governing owner of DS-002/DS-003).
+ * Tells runs that a skill they use changed: on disk, or in their agent definition (added or no longer
+ * available). It also drives the setup of a skill added to a running agent's definition, before the
+ * notice (`AgentRun.applyDefinitionSkills`): the same sequence the tool list updates own for tools.
+ *
+ * - On every agent definition change, one coalesced pass re-reads each tracked run's definition by
+ *   ID; the tracker reports the names added and removed; an added name is set up on the run's
+ *   runtime first (a failure is logged), then the names are marked for the run.
  *
  * - **Busy** runs (a turn in progress) get one notice now, through `AgentRun.postUserMessage`,
  *   the call agent messages use: inside the current turn where the runtime appends, otherwise
@@ -54,12 +67,17 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
   /** Restored runs whose check against what they saw before is still being prepared. */
   private readonly restoring = new Set<AgentRun>();
   private readonly unsubscribeWatcher: () => void;
+  private passRunning: Promise<void> | null = null;
+  private passRequested = false;
   private closed = false;
 
   constructor(private readonly deps: Readonly<{
     tracker: RunSkillTracker;
     watcher: Pick<SkillFolderWatcher, "onSettledChange" | "syncWatchedFolders">;
     snapshotter: Pick<SkillFolderSnapshotter, "snapshot">;
+    agentDefinitionService: Readonly<{ getAgentDefinitionById(definitionId: string): Promise<AgentDefinition | null> }>;
+    /** Which integrations an added skill grants that the run does not hold yet (`null`: this host has none). */
+    integrationRunAccess: Pick<IntegrationRunAccess, "integrationsStartingOnRestart"> | null;
   }>) {
     this.unsubscribeWatcher = deps.watcher.onSettledChange((dirs) => { void this.onSkillFoldersChanged(dirs); });
   }
@@ -157,12 +175,82 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
     await Promise.all(affected.map((runId) => this.deliverIfBusy(runId)));
   }
 
-  /** Stops listening; runs keep any pending notice in memory only for as long as this process lives. */
-  close(): void {
+  // --- agent definition changes (DS-001) ---
+
+  /**
+   * One coalesced pass over the tracked runs per change: a change during a pass asks for exactly
+   * one more pass after it, so a burst of saves applies each run's latest definition once or twice.
+   */
+  onDefinitionsChanged(): Promise<void> {
+    if (this.closed) return Promise.resolve();
+    if (this.passRunning) {
+      this.passRequested = true;
+      return this.passRunning;
+    }
+    const pass = (async () => {
+      do {
+        this.passRequested = false;
+        await this.applyToTrackedRuns();
+      } while (this.passRequested && !this.closed);
+    })().finally(() => { this.passRunning = null; });
+    this.passRunning = pass;
+    return pass;
+  }
+
+  /**
+   * Stops listening and waits for a definition pass in progress; runs keep any pending notice in
+   * memory only for as long as this process lives.
+   */
+  async close(): Promise<void> {
     this.closed = true;
     this.unsubscribeWatcher();
     this.states.clear();
     this.restoring.clear();
+    await this.passRunning;
+  }
+
+  private async applyToTrackedRuns(): Promise<void> {
+    // Runs whose tracking is still in progress are included once it completes.
+    for (const tracked of await this.deps.tracker.trackedRuns()) {
+      if (this.closed) return;
+      if (!this.deps.tracker.isCurrent(tracked)) continue;
+      await this.applyToRun(tracked);
+    }
+  }
+
+  private async applyToRun(tracked: TrackedRun): Promise<void> {
+    const { run } = tracked;
+    let definition: AgentDefinition | null;
+    try {
+      definition = await this.deps.agentDefinitionService.getAgentDefinitionById(run.config.agentDefinitionId);
+    } catch (error) {
+      logger.warn(`SKILL_UPDATE_DEFINITION_READ_FAILED:${run.runId}: ${String(error)}`);
+      return;
+    }
+    // A definition that no longer exists leaves the run with the skills it has.
+    if (!definition || !this.deps.tracker.isCurrent(tracked)) return;
+    let changes: ReturnType<RunSkillTracker["applyDefinition"]>;
+    try {
+      changes = this.deps.tracker.applyDefinition(run.runId, definition);
+    } catch (error) {
+      logger.warn(`SKILL_UPDATE_RESOLVE_FAILED:${run.runId}: ${String(error)}`);
+      return;
+    }
+    if (changes.added.length === 0 && changes.removed.length === 0) return;
+    // Set up first, so the runtime has the skill when the agent hears about it; a failure never stops the notice.
+    if (changes.added.length > 0 && run.isActive()) {
+      try {
+        await run.applyDefinitionSkills(definition);
+      } catch (error) {
+        logger.warn(`SKILL_UPDATE_SETUP_FAILED:${run.runId}: ${String(error)}`);
+      }
+    }
+    if (this.closed || !this.deps.tracker.isCurrent(tracked)) return;
+    const state = this.stateOf(run.runId);
+    for (const name of changes.added) state.addedWhileActive.add(name);
+    for (const name of [...changes.added, ...changes.removed]) state.dirty.add(name);
+    this.syncWatchSet();
+    await this.deliverIfBusy(run.runId);
   }
 
   /** Sends a busy run its notice now through the agent-message path; an idle run stays marked. */
@@ -214,6 +302,7 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
    */
   private async computeNotice(tracked: TrackedRun, names: ReadonlySet<string>): Promise<ComputedNotice> {
     const changes: SkillChange[] = [];
+    const addedWhileActive = this.states.get(tracked.run.runId)?.addedWhileActive;
     const snapshots: SkillFolderSnapshot[] = [];
     const removedNames: string[] = [];
     for (const name of [...names].sort()) {
@@ -225,12 +314,32 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
         logger.warn(`SKILL_UPDATE_SNAPSHOT_FAILED:${name}: ${String(error)}`);
         continue;
       }
-      const change = diffSkillVersion(name, tracked.seen.get(name), current);
+      const versionChange = diffSkillVersion(name, tracked.seen.get(name), current);
+      const change: SkillChange | null = versionChange?.kind === "added"
+        ? {
+            ...versionChange,
+            description: tracked.descriptions.get(name) ?? "",
+            integrationNames: addedWhileActive?.has(name) ? await this.integrationsStartingOnRestart(tracked, name) : [],
+          }
+        : versionChange;
       if (change) changes.push(change);
       if (change?.kind === "removed") removedNames.push(name);
       else if (current) snapshots.push(current);
     }
     return Object.freeze({ text: changes.length > 0 ? buildSkillUpdateNoticeText(changes) : null, snapshots, removedNames });
+  }
+
+  /** The integrations an added skill grants whose access the run does not hold yet; a failed read names none. */
+  private async integrationsStartingOnRestart(tracked: TrackedRun, skillName: string): Promise<readonly string[]> {
+    if (!this.deps.integrationRunAccess) return [];
+    const { run } = tracked;
+    try {
+      return await this.deps.integrationRunAccess.integrationsStartingOnRestart(
+        { runId: run.runId, agentDefinitionId: run.config.agentDefinitionId }, [skillName]);
+    } catch (error) {
+      logger.warn(`SKILL_UPDATE_INTEGRATION_READ_FAILED:${run.runId}: ${String(error)}`);
+      return [];
+    }
   }
 
   private async recordDelivered(runId: string, notice: ComputedNotice): Promise<void> {
@@ -246,7 +355,7 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
   private stateOf(runId: string): RunNoticeState {
     let state = this.states.get(runId);
     if (!state) {
-      state = { dirty: new Set(), inFlight: null };
+      state = { dirty: new Set(), inFlight: null, addedWhileActive: new Set() };
       this.states.set(runId, state);
     }
     return state;

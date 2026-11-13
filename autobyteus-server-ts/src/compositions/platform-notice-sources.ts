@@ -2,6 +2,7 @@ import type { AgentDefinitionChangeSignal } from "../agent-definition/services/a
 import type { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
 import type { AgentRunPlatformNoticeSource } from "../agent-execution/domain/agent-run-platform-notices.js";
 import { createBackgroundTaskNotices } from "../background-task-notices/background-task-notices.js";
+import type { IntegrationRunAccess } from "../credential-proxy/integration-run-access.js";
 import { createSkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 import { createToolListUpdates } from "../tool-list-updates/tool-list-updates.js";
 
@@ -19,9 +20,18 @@ export type PlatformNoticeSources = Readonly<{
 export const createPlatformNoticeSources = (input: Readonly<{
   agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById">;
   definitionChanges: Pick<AgentDefinitionChangeSignal, "subscribe">;
+  /** The host's integration access for the skill notices' "access starts at restart" sentence (`null`: none on this host). */
+  integrationRunAccess: Pick<IntegrationRunAccess, "integrationsStartingOnRestart"> | null;
 }>): PlatformNoticeSources => {
-  const skillUpdateNotices = createSkillUpdateNotices({ agentDefinitionService: input.agentDefinitionService });
-  const toolListUpdates = createToolListUpdates(input);
+  const skillUpdateNotices = createSkillUpdateNotices({
+    agentDefinitionService: input.agentDefinitionService,
+    definitionChanges: input.definitionChanges,
+    integrationRunAccess: input.integrationRunAccess,
+  });
+  const toolListUpdates = createToolListUpdates({
+    agentDefinitionService: input.agentDefinitionService,
+    definitionChanges: input.definitionChanges,
+  });
   const backgroundTaskNotices = createBackgroundTaskNotices();
   return Object.freeze({
     sources: Object.freeze([toolListUpdates.service, skillUpdateNotices.service, backgroundTaskNotices.service]),

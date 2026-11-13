@@ -33,6 +33,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 import { Skill } from "../../../../src/skills/domain/models.js";
 import { fakeAcpLaunchProfile, fixturePath, fixtureSessionId } from "./acp/acp-fake-agent-harness.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { testPreparationGuard } from "../../../fixtures/run-workspace-skills-fixtures.js";
 
 type Runtime = "claude" | "codex" | "grok";
 type Scope = "CONFIGURED" | "ALL_INSTALLED";
@@ -113,41 +114,48 @@ const prepare = async (runtime: Runtime, input: { scope: Scope; restore: boolean
       skillMaterializer: materializer,
     });
     const runConfig = config(RuntimeKind.GROK_BUILD, input.memoryDir);
-    const acquired: MaterializedWorkspaceSkill[] = [];
-    const materialize = materializer.materializeConfiguredWorkspaceSkills.bind(materializer);
-    vi.spyOn(materializer, "materializeConfiguredWorkspaceSkills").mockImplementation(async (request) => {
-      const result = await materialize(request); acquired.push(...result.materializedSkills); return result;
-    });
+    const acquired = recordAcquired(materializer);
     const backend = await factory.beginPreparation(input.restore
       ? { kind: "restore", context: new AgentRunContext({ runId: "grok-run", config: runConfig,
           runtimeContext: new AcpAgentRunContext(fixtureSessionId("load"), workspace) }) }
       : { kind: "new", config: runConfig, runId: "grok-run" }).prepare();
     return { release: () => backend.terminate().then(() => undefined), materialized: acquired };
   }
-  const owned: MaterializedWorkspaceSkill[] = [];
-  const guard = { assertAccepting: () => undefined, ownSkill: (held: MaterializedWorkspaceSkill) => { owned.push(held); } };
   if (runtime === "claude") {
     const materializer = new WorkspaceSkillMaterializer(CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
+    const acquired = recordAcquired(materializer);
     const bootstrapper = new ClaudeSessionBootstrapper(resolver as never, materializer, definitions as never, skills as never);
+    const guard = testPreparationGuard(bootstrapper, "claude-run");
     const runConfig = config(RuntimeKind.CLAUDE_AGENT_SDK, input.memoryDir);
     const context = input.restore
       ? await bootstrapper.bootstrapForRestore(new AgentRunContext({ runId: "claude-run", config: runConfig,
           runtimeContext: { sessionId: "existing-session", hasCompletedTurn: true, activeTurnId: null } as unknown as ClaudeAgentRunContext }), guard)
       : await bootstrapper.bootstrapForCreate(new AgentRunContext({ runId: "claude-run", config: runConfig, runtimeContext: null }), guard);
-    expect(context.runtimeContext.configuredSkills.map((entry) => entry.name)).toEqual([SKILL]);
     if (input.restore) expect(context.runtimeContext.sessionId).toBe("existing-session");
-    return { release: () => bootstrapper.releaseSkills(owned), materialized: context.runtimeContext.materializedConfiguredSkills };
+    return { release: () => context.runtimeContext.requireWorkspaceSkills().release(), materialized: acquired };
   }
   const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
+  const acquired = recordAcquired(materializer);
   const bootstrapper = new CodexThreadBootstrapper(createAgentToolMcpRunSessionsStub() as never, materializer,
     resolver as never, definitions as never, skills as never, codexClientManager(runtime));
+  const guard = testPreparationGuard(bootstrapper, "codex-run");
   const runConfig = config(RuntimeKind.CODEX_APP_SERVER, input.memoryDir);
   const context = input.restore
     ? await bootstrapper.bootstrapForRestore(new AgentRunContext({ runId: "codex-run", config: runConfig,
         runtimeContext: { threadId: "existing-thread", activeTurnId: null } as never }), guard)
     : await bootstrapper.bootstrapForCreate(new AgentRunContext({ runId: "codex-run", config: runConfig, runtimeContext: null }), guard);
   if (input.restore) expect(context.runtimeContext.threadId).toBe("existing-thread");
-  return { release: () => materializer.cleanupMaterializedWorkspaceSkills(owned), materialized: context.runtimeContext.materializedConfiguredSkills };
+  return { release: () => context.runtimeContext.requireWorkspaceSkills().release(), materialized: acquired };
+};
+
+/** The links each acquisition of this materializer returned (what the run holds). */
+const recordAcquired = (materializer: WorkspaceSkillMaterializer): MaterializedWorkspaceSkill[] => {
+  const acquired: MaterializedWorkspaceSkill[] = [];
+  const materialize = materializer.materializeConfiguredWorkspaceSkills.bind(materializer);
+  vi.spyOn(materializer, "materializeConfiguredWorkspaceSkills").mockImplementation(async (request) => {
+    const result = await materialize(request); acquired.push(...result.materializedSkills); return result;
+  });
+  return acquired;
 };
 
 describe.each(["claude", "codex", "grok"] as const)("%s run preparation with the user's workspace skill links (REQ-105)", (runtime) => {

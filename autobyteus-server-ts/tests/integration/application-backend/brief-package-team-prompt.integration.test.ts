@@ -18,6 +18,7 @@ import { createBundleBackedDefinitionServices } from "../../../src/application-p
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberTaskCapability } from "../../fixtures/current-team-run-fixtures.js";
+import { testPreparationGuard } from "../../fixtures/run-workspace-skills-fixtures.js";
 
 const packageRoot = path.resolve("../applications/brief-studio/dist/importable-package");
 const workspaceRoot = path.resolve("../applications/brief-studio");
@@ -154,7 +155,7 @@ describe("Brief package team prompt authority", () => {
         memberExecutionContext,
       }),
       runtimeContext: null,
-    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    }), testPreparationGuard(bootstrapper));
 
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
     expect(memberExecutionContext.authoredEnclosingScopeInstruction).toBe(packageTeam.instructions.trim());

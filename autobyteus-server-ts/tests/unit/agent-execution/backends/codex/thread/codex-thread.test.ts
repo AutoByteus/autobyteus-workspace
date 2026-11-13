@@ -14,6 +14,7 @@ import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-ki
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { testMemberTaskCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { createTestRunWorkspaceSkills } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -35,7 +36,7 @@ const createRunContext = (input: {
       llmConfig: null,
       memberExecutionContext: input.memberExecutionContext ?? null,
     }),
-    runtimeContext: new CodexAgentRunContext({
+    runtimeContext: new CodexAgentRunContext({ workspaceSkills: createTestRunWorkspaceSkills(),
       codexThreadConfig: {
         model: "gpt-5.4-mini",
         workingDirectory: input.workingDirectory,

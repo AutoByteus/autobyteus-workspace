@@ -153,6 +153,12 @@ notices, and pass `new AgentRunPlatformNotices([...sources])` (tool list first)
 as `platformInputNotices`. Shutdown closes it first (no new passes; it waits for
 passes and record writes in progress).
 
+The same signal also drives [Skill Update Notices](./skill_update_notices.md):
+a skill added to or removed from the definition is set up on the runtime and
+announced by that subsystem, with the same coalesced pass. One input carries at
+most one notice, so a save that changes both tools and skills gives the tools
+notice with this input and the skill notice with the next.
+
 ## Ownership Rules
 
 - The service never touches runtime details; it calls
