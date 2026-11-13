@@ -50,6 +50,8 @@ export type RootMessageAppendControl = Readonly<{
   /** Drops the slot when the coordinator threw before the append finished (fail-stopped root, genuine error). */
   abandon(): void;
   closure(): RootMessageAppendClosure | null;
+  /** The message is in this root's log: delivered, or refused after the durable write (REQ-012, SR-076). */
+  recorded(): boolean;
 }>;
 
 /** The recipient of a same-root or remote-to-local message: its held slot and how its input is shown. */
@@ -173,5 +175,6 @@ export const createRootMessageAppend = (input: Readonly<{
       dropSlot();
     },
     closure: () => closure,
+    recorded: () => state === "committed" || state === "closed_after_durability",
   });
 };

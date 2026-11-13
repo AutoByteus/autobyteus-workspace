@@ -2,7 +2,7 @@ import type { RunOwnAgentsReader } from "../../run-history/store/run-own-agents-
 import { MESSAGE_DELIVERED_TEXT, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationIndex } from "../delegation/delegation-index.js";
 import type { CollaborationCommunicationMessage } from "../execution/communication/collaboration-communication-message.js";
-import type { PreparedRunSend } from "../execution/communication/root-communication-engine.js";
+import { isRecordedRunRefusal, type PreparedRunSend, type RecordedRunRefusal } from "../execution/communication/root-communication-engine.js";
 import {
   rootExecutionIdentityKey,
   type CollaborationMemberExecutionIdentity,
@@ -25,7 +25,7 @@ export type CrossRunSenderRoot = Readonly<{
 /** The receiver's root: in its gate it re-checks, writes its own log, and wakes and delivers (restored when stopped). */
 export type CrossRunReceiverRoot = Readonly<{
   acceptFromRun(input: Readonly<{ message: CollaborationCommunicationMessage; senderIdentity: CollaborationMemberExecutionIdentity;
-    senderDisplayName: string; senderAddress: string | null; assertAllowed(): void }>): Promise<AgentOperationResult>;
+    senderDisplayName: string; senderAddress: string | null; assertAllowed(): void }>): Promise<AgentOperationResult | RecordedRunRefusal>;
 }>;
 
 export type CrossRunMessageInput = Readonly<{
@@ -56,7 +56,8 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  *    two runs are related by a Task, else a different Task;
  * 3. the sender's root prepares the message (no state change), the receiver's root accepts it in its gate (it re-checks
  *    "open" from the Task side, writes its own log, wakes and delivers), then the sender's root writes its own log with
- *    the same message ID. A refusal writes nothing (CM-9, AR-013).
+ *    the same message ID. A refusal writes nothing (CM-9, AR-013), except one after the receiver's durable write: the
+ *    receiver's log keeps it (REQ-012), so the sender's records it too (SR-076, TC-13).
  * A target no Task relates to the sender's run (not in the tree, or the sender's own run) is not this route's: `null`;
  * except a delegated agent run whose Task was deleted, messaged by the delegator its own file names: base's
  * `TASK_NOT_FOUND` (CR-461-058, SR-071: base's texts).
@@ -106,7 +107,12 @@ export class CrossRunMessageDelivery {
     const accepted = await receiver.acceptFromRun({ message: prepared.message, senderIdentity: input.sender, senderDisplayName: input.senderDisplayName,
       senderAddress, assertAllowed: () => this.assertStillOpen(receiverRun) });
     if (!accepted.accepted) {
-      return reactivated ? { ...accepted, message: `${accepted.message ?? "The message was not delivered."} ${input.targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` } : accepted;
+      let refused: AgentOperationResult = accepted;
+      if (isRecordedRunRefusal(accepted)) {
+        await sender.commitSentToRun(prepared.message);
+        refused = { accepted: false, code: accepted.code, message: accepted.message };
+      }
+      return reactivated ? { ...refused, message: `${refused.message ?? "The message was not delivered."} ${input.targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` } : refused;
     }
     await sender.commitSentToRun(prepared.message);
     // Today's text (REQ-009, contract §2): by address it names the address; by run ID, "Message delivered." (CR-461-017).

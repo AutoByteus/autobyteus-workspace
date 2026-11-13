@@ -169,11 +169,25 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
 
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
+    const commitSentToRun = vi.fn();
     const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOf: async () => null },
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
-        content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun: vi.fn() }),
+        content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }) });
     await expect(refusing.route({ sender: agent(M, "manager"), senderDisplayName: "manager", targetAgentRunId: "designer", content: "x", messageType: "agent_message", referenceFiles: [] }))
       .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT" });
+    expect(commitSentToRun).not.toHaveBeenCalled();
+  });
+
+  it("SR-076: a refusal after the receiver's durable write is recorded on the sender's side too (TC-13), and answered as the receiver's refusal", async () => {
+    const h = await harness();
+    const commitSentToRun = vi.fn(async () => undefined);
+    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOf: async () => null },
+      senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
+        content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
+      receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE, recordedByReceiver: true }) }) });
+    await expect(delivery.route({ sender: agent(M, "manager"), senderDisplayName: "manager", targetAgentRunId: "designer", content: "x", messageType: "agent_message", referenceFiles: [] }))
+      .resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE });
+    expect(commitSentToRun).toHaveBeenCalledWith(expect.objectContaining({ messageId: "m" }));
   });
 });
