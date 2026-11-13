@@ -1408,3 +1408,22 @@
 
 No architecture review: this restores base behavior and withdraws one test line.
 - **F-23's text** (the Implementation Engineer's question): the assigner's message while its Task is DONE or CANCELLED gets base's Task-side text (`task-assignment-eligibility.ts:41` at `827f1e68dc`): "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again." Others get the closed text. The contract's R-8, the model (S10) and the walkthrough are updated. The e2e step behind F-23 was the R-6 continuation after a reopen, so its expectation changes; there is no code change.
+
+### SR-074 — The Team tab: one in-view rule for the read and for live (answers CR-461-056)
+
+- **Triggering:** CRR-025's Design Impact, raised by the Implementation Engineer. The read used base's `isMessageOfView`, while SR-072's live rule numbered a message in every view whose run set held either run. So a message between a run below X and X's delegator showed live, then vanished on reload.
+- **Evidence at `827f1e68dc`:** `task-agent-message-logs.ts:133-147`. Base had one rule for the stored and loaded view: both agents in the tree, or one of them the run's own agent. The tree is the run's own agents plus its **open** delegated runs. Base composed the run's own log and its open delegated runs' logs.
+- **The Solution Designer's gaps:**
+  - SR-072 wrote a second inclusion rule for live (Principle 11);
+  - SR-072 also said "open or closed" for the composed logs, where base composed only the open delegated runs; the closed runs' messages with the run's own agents stay through its own log.
+- **Decision:**
+  - one rule for both: base's `isMessageOfView(message, own(X), tree(X))`, with `tree(X)` = own plus X's open subtree, at every depth;
+  - the read composes the logs of X and its open subtree;
+  - live numbers a message in X's view only when the rule holds at that moment;
+  - tests for the pair: a message to X's delegator is shown neither live nor on reload, and a two-hop message both.
+- **Also:** the code reviewer's suggestion is adopted. CR-461-051's unreadable-record check runs before the root loads, using `RunOwnAgentsReader.delegationOf`, as ARCH-REV-044 placed DS-15's fence.
+- **Requirements:** unchanged.
+- **Next action:**
+  - architecture review (narrow);
+  - then the Implementation Engineer.
+
