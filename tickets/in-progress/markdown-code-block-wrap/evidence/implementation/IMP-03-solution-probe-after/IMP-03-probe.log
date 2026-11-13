@@ -1,0 +1,10 @@
+# IMP-03 solution reproduction probe on the committed stylesheet (autobyteus-23)
+# Command: NODE_PATH=<web node_modules> WRAPTABLE=1 node evidence/solution-probe/probe.cjs <worktree> <web node_modules> <this folder>   (no fix.css)
+# Code: 417e06da9; headless Chromium /usr/bin/chromium; 2026-11-13T06:01Z
+# Each row: width, then per element [tag, class, client, scroll, horizontalOverflow]
+390 [('DIV', 'markdown-body prose da', 358, 358, False), ('PRE', '', 358, 358, False), ('PRE', 'language-python', 358, 358, False), ('DIV', 'markdown-table-scroll', 358, 358, False), ('TABLE', '', 358, 358, False), ('DIV', 'markdown-table-scroll', 358, 1835, True), ('TABLE', '', 1835, 1835, False), ('PRE', '', 358, 358, False)]
+390 copy-equals-source true
+700 [('DIV', 'markdown-body prose da', 668, 668, False), ('PRE', '', 668, 668, False), ('PRE', 'language-python', 668, 668, False), ('DIV', 'markdown-table-scroll', 668, 668, False), ('TABLE', '', 668, 668, False), ('DIV', 'markdown-table-scroll', 668, 1835, True), ('TABLE', '', 1835, 1835, False), ('PRE', '', 668, 668, False)]
+700 copy-equals-source true
+1280 [('DIV', 'markdown-body prose da', 1248, 1248, False), ('PRE', '', 1248, 1248, False), ('PRE', 'language-python', 1248, 1248, False), ('DIV', 'markdown-table-scroll', 1248, 1248, False), ('TABLE', '', 1248, 1248, False), ('DIV', 'markdown-table-scroll', 1248, 1835, True), ('TABLE', '', 1835, 1835, False), ('PRE', '', 1248, 1248, False)]
+1280 copy-equals-source true
