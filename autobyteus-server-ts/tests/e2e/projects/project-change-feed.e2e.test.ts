@@ -374,7 +374,9 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     // A new copy runs in its Task's Project's first linked folder (autobyteus-97): while the agent's link points at a folder that
     // does not exist on this node, the delegation is refused and nothing starts; once the folder exists, it proceeds there.
     const refused = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
-    expect(JSON.stringify(refused)).toContain("TASK_PROJECT_FOLDER_UNAVAILABLE");
+    // A refused delegate_task is {delegated: false, message} with no code (contract §2, SR-054).
+    expect(refused).toMatchObject({ delegated: false });
+    expect(String(refused.message)).toContain("Nothing was started.");
     expect(await settledTask(scope, taskId, "refused Task")).toMatchObject({ status: "TODO", root: null });
     await fs.mkdir(path.join(dataDir, "missing #?雪"));
     from = monitor.frames.length;

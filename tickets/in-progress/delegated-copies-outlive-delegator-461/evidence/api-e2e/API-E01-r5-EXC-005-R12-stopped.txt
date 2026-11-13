@@ -1,0 +1,41 @@
+# Case: EXC-E2E-005 (SR-071 R-12 live and stopped; F-19b), API-REV-005 round 5, code 56e4ce773b
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts -t EXC-E2E-005 --no-watch --reporter=verbose
+# Result: the only failure is the soft F-19b text (line 824). The live R-12 (line 819) and the stopped-team R-12 after it (TARGET_IS_TEAM_RUN naming the coordinator, owner and team stopped) pass.
+
+ × tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable 2587ms
+   → expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-006 AC-009: a copy that never started (a real start failure) is refused as never started — no real-use trigger remains; unit-covered
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-008 real model (Claude Agent SDK) copy: after Task A is DONE, its follow-up Task B recalls Task A's conversation (AC-002)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable
+AssertionError: expected { delegated: false, …(1) } to deeply equal { delegated: false, …(1) }
+
+- Expected
++ Received
+
+  {
+    "delegated": false,
+-   "message": "exc_squad_44cfda_3fafe883916d45fb8df6c48abf03678b is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.",
++   "message": "Only the agent that gave this task agent its most recent Task can give it a new one. Delegate Task existing-copy-cross-root-0d5d78a4-2 to a new task agent with recipient_address instead.",
+  }
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:824:30
+    822|     // stopped-team R-12 step below still runs when this text differs.
+    823|     const crossAssign = await other.managerCalls(callTool("delegate_ta…
+    824|     expect.soft(crossAssign).toEqual({ delegated: false, message: `${t…
+       |                              ^
+    825|       + "or delegate to a new task agent with recipient_address." });
+    826|     expect(await projectFiles(projectId)).toEqual(files);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  13:01:26
+   Duration  23.05s (transform 6.93s, setup 66ms, import 9.65s, tests 12.73s, environment 0ms)
+

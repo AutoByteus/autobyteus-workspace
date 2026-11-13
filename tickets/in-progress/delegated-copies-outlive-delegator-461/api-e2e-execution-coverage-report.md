@@ -5,26 +5,25 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-004`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-005`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 4.
-  - Started on CRR-018 (code `49f3db1047`). Paused while the Implementation Engineer tested (the user).
-  - Continued on CRR-020 (code `262afbd6bb`, docs `9e0df63de6`), which adds SR-070 / DS-15.
-  - Every finding found on `49f3db1047` was rechecked on `262afbd6bb` before it was counted.
-- Prior round reviewed: API-REV-003 (round 3, at `da80596b0a`, `Fail`: F-11 … F-15).
-- Order of work (the reviewer's list): stale tests first, CPW, API-E02, API-B01, the peer cases, C14-01, the deferred cases; then DS-15 and C15-03 (CRR-020).
+- Round and trigger: round 5, on CRR-023 (code `56e4ce773b`, docs `bc96cddb14`).
+- Prior round reviewed: API-REV-004 (round 4, `Fail`: F-14, F-16 … F-22).
+- Order of work (the reviewer's list):
+  1. round 4's Next Round;
+  2. the rechecks (F-14, F-16 … F-22, SDV-01 … 03);
+  3. the new checks (C17-02, CR-461-042, SR-071's refusals end to end).
 - Deviations from the plan, and why:
-  - **The stale rewrites found product failures** (F-16 … F-20, in the suites rule 2 made stale). Under the skill, the rewrites not yet done wait for the fix and come first in the next round. The investigation lists each file.
-  - **Prior failures were rechecked before routing.** CPW (F-11 … F-13), API-E02, the desktop probe (F-14, F-15).
-  - **C14-01 and DS-15 were run.** Both were asked for this round, and each is independent of the findings.
-  - **Next Round:**
-    - the phone cases (MSP-50 … 52, after a rebuild of the phone bundle);
-    - the two-node peer cases and rule 3's peer capture (new probe and suite work);
-    - API-E01 in full, API-I01, API-B03, API-L01, API-F01;
-    - restart resume of a closed run (DS-15; needs a built-server restart);
-    - C15-03's rendered check.
-  - **The web folder was restored to base by commit `12ea5a05d6`.** That deleted this ticket's two probes. They were restored from `7442bd3bc2` and moved to rules 1 and 2. The Solution Designer's commit `2211bec711` swept in five of the staged files: the two probes and the base versions of `team-task-event-current-contract`, `agy-` and `claude-delegated-background-task`. The content is this round's; the attribution is mixed.
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/tickets/in-progress/delegated-copies-outlive-delegator-461/evidence/api-e2e/` (round 4 files carry `r4`).
+  - **The stale rewrites found product failures again** (F-23 … F-31 in batches R5-A … R5-C). Under the agreed rule, the rewrites not yet done wait for the fix. The investigation lists each one under Next Round.
+  - **All product failures are reported together** at the end of the round (the user's process agreement).
+  - **Every candidate was confirmed in a targeted run.** The whole-E2E discovery run was loaded (AGY model discovery timeouts), so a failure there only counted after a targeted run confirmed it.
+  - **The phone cases had never run in this ticket's round 4 or 5 builds.** The web restore to base (`12ea5a05d6`) had removed both the import and the call of `runStoppedDelegatorCases` from `mobile-shell-probe.mjs`, so `--cases=MSP-50,…` selected nothing. Both are put back.
+  - **Not done this round, in the Next Round list:**
+    - API-P03, the peer rows rendered;
+    - API-P04, rule 3's two-node peer capture at base;
+    - DS-15 restart resume, and C15-03's rendered two-view check;
+    - API-E01 in full, API-I01, API-B03, API-L01, API-F01.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/tickets/in-progress/delegated-copies-outlive-delegator-461/evidence/api-e2e/` (round 5 files carry `r5`).
 
 ## Routing Classification
 
@@ -38,108 +37,134 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `262afbd6bb` (server `dist/` rebuilt, `/tmp/api461/r4b-build.log`); earlier steps on `49f3db1047` (`/tmp/api461/r4-build.log`), each marked | macOS 26.5.2 (Darwin 25.5.0), arm64 | Node v22.23.1; built server per test-owned data root, or the in-process Studio server; scripted AGY CLI `tests/fixtures/agy-failure-cli.mjs` (`AGY_FAKE_CASE=linked_skills`) | Clean env `env -i PATH HOME=<new temp> TMPDIR USER`. Fresh temp data roots, removed after. No provider keys. Never the user's app or `~/.autobyteus` |
-| ENV-2 | as ENV-1 | as ENV-1 | ENV-1 server, Nuxt dev from the worktree (the web is base `3228eff74b` plus rule 2), headless Chrome, all owned by the probe | Desktop viewport |
+| ENV-1 | `56e4ce773b` (server `dist/` rebuilt, `/tmp/api461/r5-build.log`) | macOS 26.5.2 (Darwin 25.5.0), arm64 | Node v22.23.1; built server per test-owned data root, or the in-process Studio server; scripted AGY CLI `tests/fixtures/agy-failure-cli.mjs` | Clean env `env -i PATH HOME=<new temp> TMPDIR USER`. Fresh temp data roots, removed after. No provider keys. Never the user's app or `~/.autobyteus` |
+| ENV-2 | as ENV-1 | as ENV-1 | ENV-1 server, Nuxt dev from the worktree, headless Chrome, all owned by the probe | Desktop viewport |
+| ENV-3 | as ENV-1; phone bundle rebuilt from it (`/tmp/api461/r5-mobile-build.log`) | as ENV-1 | The probe's nodes (alpha, beta, eta), the production phone bundle at `/mobile`, headless Chrome 390×844 paired through Phone Access | Owned by the probe |
+| ENV-4 | as ENV-1 | as ENV-1 | Two to five built-server nodes (alpha, beta, gamma, delta, epsilon) paired through capturing proxies | Owned by the suite |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| API-R01 / R02 | unit parts, type gates | Server unit, contracts, web specs | Reused: the implementation's checks through IMP-62 (IR-015, IR-016) | — | Pass (reused) | IMP rows | as recorded there | Ran on the code under test |
-| CPW | REQ-009 non-goal (texts); contract §2.3, §2.5; wording §3, §8; SR-058 … SR-060 | In-process Studio server, real roots, scoped MCP | `cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts --no-watch` (on `49f3db1047`) | ENV-1 | Pass | `API-E01-r4-CPW.txt` | `Tests 13 passed (13)` | F-11, F-12 and F-13 are resolved. Not rerun on `262afbd6bb`: DS-15 touches no prompt, header or mention code |
-| API-E02 | AC-001 … AC-006, AC-011, AC-015 data; rule 1 peer rows; C8-09 | Built servers (two paired nodes for §5.1); files compared with the contract model after every step | `cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch`; §5.3 again with `-t "5.3"` on `262afbd6bb` | ENV-1 | **Fail** | `API-E02-r4-contract-stories-5.1.txt`, `-5.2.txt`, `-5.3.txt`, `API-E02-r4-O8-org-stream-unavailable.txt` | §5.1 26/26 and §5.2 9/9 clean. §5.3 O8: `"the stream answered: ["ERROR {"code":"AGENT_ORG_STREAM_UNAVAILABLE" … has no status record`" | F-21. S17 now checks the peer row in base's shapes: M's view `remote_task_executions` with node B, and no peer status in M's `agentRunCollaborationStatuses` |
-| API-E03 | AC-014; SR-058 rows at every depth on migrated data | Built server on hand-built data | `… DRO_E2E_EVIDENCE_DIR=<dir> pnpm exec vitest run tests/e2e/app-data-migrations/delegated-runs-own-runs-startup.e2e.test.ts --no-watch` (on `49f3db1047`) | ENV-1 | Pass | `API-E03-r4-delegated-runs-own-runs-startup.txt` | `1 passed`; M's view: P nested under E, I nested under P | Its one-hop assertion was rewritten to the every-depth placement (SR-058) |
-| DS-15 | SR-070 / DS-15; REQ-005; C15-03 (server half) | In-process Studio server, real roots, scoped MCP, own streams | `… pnpm exec vitest run tests/e2e/projects/closed-task-input-fence.e2e.test.ts --no-watch` (new suite, on `262afbd6bb`) | ENV-1 | Pass | `API-DS15-r4-closed-task-input-fence.txt` | `Tests 3 passed (3)` | FENCE-1 (agent) and FENCE-2 (team member): refused with `TASK_AGENT_RESOURCE_CLOSED` and base's text; not restored; no status frame in the delegator's view; delivered after the assigner continues it. FENCE-3: a deleted Task's run takes input. Restart resume and C15-03's rendered check: Next Round |
-| API-C01 (C14-01) | DESIGN.md rule 3 (measure first) | In-process Studio server over HTTP; the web's own list queries | `… RUN_AGY_FAILURE_E2E=1 RUN_HISTORY_LIST_TIMING=1 HISTORY_LIST_TIMING_OUT=<file> … pnpm exec vitest run tests/e2e/run-history/history-list-read-timing.e2e.test.ts --no-watch` (new gated suite, on `262afbd6bb`) | ENV-1 | Pass (measured) | `API-C01-r4-history-list-read-timing.txt` | `ListWorkspaceRunHistory` p50 5 → 21 ms (p95 8 → 48); `ListCollaborationRootHistory` p50 7 → 41 ms (p95 9 → 113); `rowsListed` 36 + 36 | 72 delegated runs (10 agent + 2 team each) under 3 listed Teams and 3 listed Orgs. The cost is linear, about 0.4–1 ms per delegated child per read. Against the 5 s quiet poll this is not slow at this size; by extrapolation about 1 s per read at ~1,000 children under listed Orgs |
-| API-B01 | AC-007, REQ-002 (every depth), SR-048, rule 2; O-1; F-9, F-14, F-15 | Browser, desktop: a stopped delegator's view (agent, team, org) | `cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/stopped-delegator-views-probe.mjs --output-dir <dir>` (on `262afbd6bb`; an earlier run on `49f3db1047` found only probe defects, since fixed) | ENV-2 | **Fail** | `API-B01-r4-SDV-evidence.txt`, `API-B01-r4-SDV-01-worker-listed-twice.png`, `API-B01-r4-SDV-02-helper-row-missing.png` | SDV-01 `"Pass"`, `"helperRowLive": true`, `"workerMessageSockets": ["/ws/agent/<worker>"]`. SDV-02 `"helperRunId"` set, `"rowsShown": ["worker_…"]`. SDV-03 samples `[null]` | **Agent view:** F-14 resolved, rule 2 binding works, O-1 holds. **Team view:** F-15 resolved (the second message to the team's delegated worker is delivered), but the helper's row is missing under the worker (F-14 persists). **Org:** not concluded (see F-21). **Both screenshots:** the delegated worker is listed at the top level too (F-22) |
-| API-E01 (rewrites) | AC-001 … AC-013 regressions | In-process and built servers | `pnpm exec vitest run <files> --no-watch --no-file-parallelism` (clean env); batch A on `49f3db1047` and the recheck batch on `262afbd6bb` | ENV-1 | Partly Pass | `API-E01-r4-findings-F16-F20.txt`; logs `/tmp/api461/r4-batchA.log`, `/tmp/api461/r4b-recheck.log` | 5 of 13 batch-A suites pass on own-run reads; memory 8/8; API-E03 1/1; `team-task-event-current-contract` (base's file) 2/2 | Their failures include F-16 … F-20. Per file in the investigation |
-| API-E01 (discovery) | — | Whole server E2E | `pnpm exec vitest run tests/e2e --no-watch` (on `49f3db1047`) | ENV-1 | Input only | `/tmp/api461/r4-E01-discovery.log` | `Test Files 47 failed \| 137 passed \| 71 skipped (255)` | The plan's input, not a result |
-| API-B01 (phone) | AC-007, REQ-002 | Phone shell | MSP-50 … MSP-52 | — | Next Round | — | — | Needs the phone bundle rebuilt from this code |
-| API-P01 … P04 | AC-016, AC-008 (peer), REQ-002 (peer rows), rule 3 | Two paired built-server nodes; browser with a peer | — | — | Next Round | — | — | New suite and probe work; S17 covers the peer row's server shape |
-| API-E01 (full), API-I01, API-B03, API-L01, API-F01 | as planned | — | — | — | Next Round | — | — | After the fix |
+| API-R01 / R02 | unit parts, type gates | Server unit, contracts, web specs | Reused: the implementation's checks through IR-018 (IMP-67) | — | Pass (reused) | IMP rows | as recorded there | Ran on the code under test. The server typecheck was rerun after this round's test edits: `production errors: 0; test-file errors: 1012 (baseline 1012)`, PASS |
+| API-B01 desktop | AC-007, REQ-002 (every depth, once), SR-048, rule 2, O-1; F-14 (team), F-22; CR-461-042 | Browser, desktop: a stopped delegator's views (agent, team, org) | `cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/stopped-delegator-views-probe.mjs --output-dir <dir>` | ENV-2 | **Pass** | `API-B01-r5-SDV-evidence.txt`, `API-B01-r5-SDV-02-team-worker-answered.png`, `API-B01-r5-SDV-04-after-done.png`, `-row-back.png` | each case `"result": "Pass"`; `"helperRowLive": true`; `"workerMessageSockets": ["/ws/agent/<worker>"]`; `"rootStayedStopped": true`; SDV-04 `"leftAfterDone": true`, `"backAfterReopen": true` | F-14 (team view) and F-22 (desktop) resolved. SDV-01's earlier flake did not recur. New SDV-04: CR-461-042's reopened row |
+| API-B01 phone | AC-007, REQ-002 (phone layout, once); O-1 | Phone shell | `cd autobyteus-web && env -i PATH HOME=<temp> TMPDIR USER node tests/e2e/mobile-shell-probe.mjs --output-dir=<dir> --cases=MSP-50,MSP-51,MSP-52` | ENV-3 | **Fail** | `API-B01-r5-phone-MSP-50-52-evidence.txt`, `API-B01-r5-phone-MSP-51-worker-row-missing.png`, `API-B01-r5-phone-MSP-52-run-screen-not-open.png`, `API-B01-r5-phone-MSP-50-worker-answered.png` | MSP-50 `Pass`; MSP-51 `details.node.rootRows` has the worker in `task_executions` while `details.rows` has none under the team; depth-0 `Worker agent …` rows; MSP-52 `rowKey` `…/task-agent:worker_…`, `screenState: null` | F-32, F-33, F-34 |
+| API-P01, API-P02 | AC-016 / REQ-013 / SR-066; AC-008 / REQ-007 / SR-067 G-1 (peer); the peer suite's earlier cases under rules 1 and 2 | Two to five built-server nodes | `cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 REMOTE_E2E_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch --reporter=verbose` (three runs; test updates between them) | ENV-4 | **Fail** (F-35, F-36 only) | `API-P01-P02-r5-peer-suite.txt` | run 3: `Tests 2 failed \| 42 passed (44)`; RC-43, RC-44 `✓`; RC-25 `startError.code`; RC-33 `coordinator_address` | New RC-43 (AC-016 with stopped solo, team and org delegators; a peer Agent and a peer Team: live status, message, interrupt, stored conversation, Stop; the delegator stays stopped): Pass. New RC-44 (archive and delete refused naming the working peer run; with beta stopped the delete goes ahead and names the run it could not ask): Pass |
+| API-E02 | AC-001 … AC-006, AC-011, AC-015 data; SR-071 (R-8 before R-7, R-12); C8-09 | Built servers (two paired nodes for §5.1); files compared with the regenerated model after every step | `cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 CONTRACT_STORIES_CONTINUE=1 CONTRACT_STORIES_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/collaboration-contract-stories.e2e.test.ts --no-watch --reporter=verbose` (§5.2 first run; §5.3 rerun; §5.1 rerun with `-t "5.1"`) | ENV-1 | **Fail** | `API-E02-r5-contract-stories-5.1.txt`, `-5.2.txt`, `-5.3.txt` | §5.2 `11 of 11`; §5.3 `9 of 9`; §5.1 `24 of 28`, differ `S23, S24, S26, S27` | §5.3 O8 passes (F-21 resolved). U9 (R-7), U10 (R-12 live) and S20 (R-8) match. S23/S24: contract-model note K-13. S26: F-30. S27 follows from S26 |
+| CPW | REQ-009 (texts); C17-02 | In-process Studio server, real roots, scoped MCP | `… pnpm exec vitest run tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts --no-watch --reporter=verbose` | ENV-1 | Pass | `/tmp/api461/r5-batchC.log` | `14 passed` | New CPW-M7 (C17-02): org Manager → squad lead → outsider A; A delegates to `/sibling`, an address only the org's catalog offers: `"delegated":true`, `"target_kind":"agent"`, as at base |
+| SR-071 end to end | R-8 before R-7, R-12 live and stopped, a member's ID in `delegate_task` | In-process server and the stories | EXC-E2E-001 … 005 (`-t "EXC-E2E-005"` for the stopped-team step); stories S20, U9, U10 | ENV-1 | Pass (R-7, R-8, R-12); F-19b open | `API-E01-r5-EXC-005-R12-stopped.txt`, `API-E02-r5-contract-stories-5.2.txt` | EXC-005: the only failure is the soft cross-root delegate text at line 824; the stopped-team step passes | The stopped-team step was stale (it asserted the old "not `TARGET_IS_TEAM_RUN`"); updated to SR-071. A member's ID in `delegate_task`: EXC-001 … 003 `memberAsAgent` pass with base's "… is not one of your task agents …" |
+| API-E01 (rewrites and rechecks) | AC-001 … AC-013 regressions; F-16 … F-20 | In-process and built servers | `pnpm exec vitest run <files> --no-watch --no-file-parallelism --reporter=verbose` (clean env), batches R5-A, R5-B, R5-C | ENV-1 | **Fail** | `API-E01-r5-F23-reactivation.txt`, `-F19b-F24-existing-copy.txt`, `-F25-migration-order.txt`, `-F26-two-hop-message-missing.txt`, `-F27-F29-F31-batchB-C.txt`, `-F28-self-target.txt`; logs `/tmp/api461/r5-batch{A,B,C}.log` | change feed 7/7, model contract 3/3, launch defaults alone Pass, CANCELLED reactivation journeys Pass, EXC-007 Pass | F-16, F-17, F-20 resolved. New F-23 … F-29, F-31 |
+| API-E01 (discovery) | — | Whole server E2E | `pnpm exec vitest run tests/e2e --no-watch` | ENV-1 | Input only | `/tmp/api461/r5-E01-discovery.log` | `48 failed, 137 passed, 72 skipped` | Loaded machine; the plan's input, not a result |
+| API-P03, API-P04, DS-15 restart, C15-03 rendered, API-E01 full, API-I01, API-B03, API-L01, API-F01 | as planned | — | — | — | Next Round | — | — | After the fix |
 
 ### Findings
 
-Round 3's findings, rechecked:
-- F-11, F-12, F-13: resolved (CPW 13/13).
-- F-14: resolved in the agent-run view; still missing in the team view.
-- F-15: resolved (the team view's second message to its worker is delivered).
+Round 4's findings, rechecked on `56e4ce773b`:
+- **Resolved:**
+  - F-14 in the team view (SDV-02);
+  - F-16 (launch defaults pass alone);
+  - F-17 (the CANCELLED reopen journeys pass);
+  - F-18 (SR-071; S20 and U9 match);
+  - F-20 (EXC-007);
+  - F-21 (§5.3 9/9);
+  - F-22 on the desktop.
+- **F-19:** the `TARGET_IS_TEAM_RUN` part is resolved (U10, EXC-005, live and stopped). The cross-root delegate text stays open as F-19b.
 
-| ID | Case | Expected (authority) | Observed (`262afbd6bb`) | Preliminary Classification |
+| ID | Case | Expected (authority) | Observed (`56e4ce773b`) | Preliminary Classification |
 | --- | --- | --- | --- | --- |
-| F-14 (still open for the team view) | API-B01 SDV-02 | REQ-002, SR-058: a run delegated by a delegated run is shown under it, at every depth, in the team's view too | The worker's `delegate_task` returns `"delegated":true` with the helper's run ID, but the stopped team's view shows only the worker (`rowsShown`). The agent-run view shows the helper (SDV-01) | `Local Fix` (web or server; the team view's rows) |
-| F-16 | `delegated-launch-config-defaults` (agent, team and org roots) | REQ-009: `delegate_task` to an address keeps working from a delegated run, "with the same results and texts". At base a hosted copy's member delegated to a catalog agent and got its launch note | A delegated team's lead calling `delegate_task(recipient_address: "/dlc_badsettings_…")` gets `{"delegated":false,"message":"'/dlc_badsettings_…' is not the address of an available agent or agent team. …"}`. The root's own Manager, delegating to the same address in the same run, gets `"delegated":true` with base's note (diagnostic on `49f3db1047`) | `Local Fix` (server: the delegated team run's catalog for `delegate_task`) |
-| F-17 | `task-reactivation-root-visibility` (agent, team, org; DONE and CANCELLED) | Rule 1 / rule 3, and the design's item table: `ChildRowsFeed` "emits base's started, closed and reopened events". Base's test: exactly one `task_executions_reopened` naming the worker after the assigner's reactivating message | The reactivation is accepted ("… continues with its conversation"), but the delegator's open view gets `TASK_EXECUTION_STARTED` for the worker's row, not `TASK_EXECUTIONS_REOPENED` / `task_executions_reopened` (frames recorded) | `Local Fix` (server) |
-| F-18 | `task-reactivation-root-visibility` (non-assigner copy) | Contract R-8: "Anyone → a run whose Task is closed: Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6". Base answered `CLOSED` with "Only the agent that assigned the Task can continue it" | `TASK_AGENT_RESOURCE_CONFLICT` (R-7's "it works on a different Task"). The contract does not order R-7 and R-8 | `Unclear` (the contract's order; base answered R-8) |
-| F-19 | `task-existing-copy-assignment` EXC-E2E-005 and the earlier steps | REQ-009 (same texts). Base: a team run ID from another root answered `TARGET_IS_TEAM_RUN` with the coordinator's run ID | `TARGET_AGENT_RUN_NOT_ACTIVE` "No running agent has the run id …". The delegate refusal texts also differ from base in the earlier steps: "is a member of task agent team …" where base said "is not one of your task agents …" | `Unclear` (contract R-9 refuses these; REQ-009 asks for base's texts) |
-| F-20 | `task-existing-copy-assignment` EXC-E2E-007 (AC-009) | Base: a follow-up Task to a copy whose saved conversation is gone is refused before any change: "… cannot be restored: it has no saved conversation to continue. Start a new delegation …" | The Task is given, then: "Task … was given to the task agent, but the message with its work was not delivered (ENOENT: no such file or directory, open '…/memory/agents/<run>/…')". A raw error with an internal path | `Local Fix` (server) |
-| F-21 | API-E02 §5.3 O8 (DL-4) | Contract §5.3 O8: the dev lead delegates Task T5 and gets the result | The user's message to the org's agent on the org's stream is answered `ERROR AGENT_ORG_STREAM_UNAVAILABLE` "AgentOrg AgentRun '<dev_lead>' has no status record" (and `qa`): the org's view can't be built in that state, and the message never arrives. Same on `49f3db1047` and `262afbd6bb`. The org cases of `teammate-delivery` time out opening the org stream, and SDV-03's org row vanishes, which is probably the same cause | `Local Fix` (server: the org view's statuses) |
-| F-22 | API-B01 SDV-01, SDV-02 (screenshots) | REQ-002: a delegated run "is shown under the run that delegated it, once"; DS-11 (API-E03 asserts it is not a top-level run) | A delegated worker that delegated further is listed at the top level of its workspace ("Worker Sdv… (1)") besides its row under its delegator | `Local Fix` (server list or web; owner per failure-origin review) |
+| F-19b | EXC-E2E-005 (`API-E01-r5-EXC-005-R12-stopped.txt`) | SR-071: `delegate_task` refusals keep base's texts. Base: "`<team>` is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address." | "Only the agent that gave this task agent its most recent Task can give it a new one. Delegate Task … to a new task agent with recipient_address instead." | `Local Fix` (server text) |
+| F-23 | `task-reactivation-root-visibility` DONE journeys, agent, team, org (`API-E01-r5-F23-reactivation.txt`) | autobyteus-469 DEC-006, as at base: the assigner's message to a member of a Team copy whose Task is DONE is refused (`TARGET_AGENT_RUN_NOT_ACTIVE`, "No running agent has the run id …") | `accepted: true`, `code: DELIVERED`. REQ-003 (a message wakes a stopped receiver) may make this intended | `Unclear` (DEC-006 against REQ-003 for a team copy's member) |
+| F-24 | TKD-AGY-001 (`API-E01-r5-F19b-F24-existing-copy.txt`) | Base (the suite cites task-keys AC-019, 022, 023, 027): after the Task is deleted, `delegate_task(target_agent_run_id: <its copy>, task_id: <new Task>)` by the same Manager is accepted (`delegated: true`) | Refused: "… is not one of your task agents …" | `Unclear` (REQ-009 base behavior against contract R-9 / TC-9 for a deleted Task's runs) |
+| F-25 | `remove-skill-improvement-data-startup` (`API-E01-r5-F25-migration-order.txt`) | REQ-011, data guideline: a released migration's partial states are preserved; the 461 migration runs after the released migrations. The improver's delegated copy is kept | `20261111_delegated_runs_own_runs_v1` ran at `…36-768Z` and converted `improver_task_copy_6666` to an own run; `20261020_remove_skill_improvement_data` then ran at `…36-788Z` and "Removed the helper run folder": the copy is gone | `Local Fix` (server: migration order); **data loss** |
+| F-26 | `task-closure-root-visibility`, `teammate-delivery-task-closure-race` (`API-E01-r5-F26-two-hop-message-missing.txt`) | Rule 1 / REQ-002: the delegator's Team tab shows the messages between its runs at every depth, as at base | A delivered two-hop message (the worker to its helper) is missing from the Manager's Team tab; so is the refused one-hop message of `teammate-delivery` | `Local Fix` (server or web) |
+| F-27 | `runtime-switch-native-built-server` RS-03 (`API-E01-r5-F27-F29-F31-batchB-C.txt`) | Base refused a delegated copy's runtime switch from its host's Save | Accepted (`UPDATED`, "Agent runtime and model saved …") on the copy's own save. REQ-002 says "configured while stopped … like any run" | `Unclear` |
+| F-28 | `delegated-team-lazy-member-activation` (`API-E01-r5-F28-self-target.txt`) | Base: a delegated team member calling `delegate_task` with its own team's name is refused with `COLLABORATION_SELF_TARGET_REJECTED` (self words) | "'/dtl_squad_…' is not the address of an available agent or agent team …" | `Local Fix` (server) |
+| F-29 | `get-project-task-worker-scope` SCP-E2E-006 (`API-E01-r5-F27-F29-F31-batchB-C.txt`) | autobyteus-469 DEC-010 / MP-003: a copy whose Task record cannot be read at start fails closed: no model request | Two model requests recorded (`lastText` `NATIVE_CALL:{"name":"get_project_task",…}`) | `Local Fix` (server) |
+| F-30 | API-E02 §5.1 S26 (`API-E01-r5-F30-S26.txt`, `API-E02-r5-contract-stories-5.1.txt`) | Contract T-5 / model S26: deleting M is refused while a run it delegated to works; the model reads "works" as "has an open Task" | M is deleted while the research agent has an open Task but is idle. DS-13 / SR-067 read "works" as live status | `Unclear` (model against DS-13) |
+| F-31 | `stopped-run-edit-root-built-server` SRE-01 … 03 (`API-E01-r5-F27-F29-F31-batchB-C.txt`) | Base: a copy two hops down carries the top run's saved launch edit (`sre-alt-model`) | It carries its immediate delegator's launch (`gemini-3.8-flash-low`) | `Unclear` (launch inheritance two hops down under the own-run model) |
+| F-32 | API-B01 phone MSP-51 | AC-007, REQ-002 (desktop and phone): the stopped team's delegated worker is shown under it | No worker row under the team on the phone. The node's `getTeamRunResumeConfig.executionTree.task_executions` has it; the desktop shows it (SDV-02) | `Local Fix` (web, phone run tree) |
+| F-33 | API-B01 phone MSP-50 … 52 (rows listing) | REQ-002: a delegated run is shown under the run that delegated it, **once** | Opening a delegated worker's row on the phone adds it as a live top-level run (agent root's worker after MSP-50; the org's worker on tap in MSP-52). The node's `listWorkspaceRunHistory` does not list it | `Local Fix` (web, phone run list) |
+| F-34 | API-B01 phone MSP-52 | AC-007: the user opens the stopped org's worker row and messages it | Tapping the org's `task-agent:` row opens no run screen (`screenState: null`, no alert, no failed request) | `Local Fix` (web, phone opening of a delegated row; rule 2) |
+| F-35 | API-P01 RC-25 | REQ-005 (the Task rules unchanged), base: a dispatch that fails stores `startError.code: TASK_DISPATCH_FAILED` | `PEER_UNREACHABLE` (the same message) | `Local Fix` (server) |
+| F-36 | API-P01 RC-33 | Rule 1 (views in base's shapes): a peer Team row's `coordinator_address` was `/studio_team/lead` | `/lead` (the own-team address of contract §3.1's `members`) | `Unclear` (rule 1's value against §3.1's own-team addresses) |
+
+Contract-model note K-13 (for the Solution Designer):
+- §5.1 stops E at S16 (T1 deleted, T6 closed).
+- S23 and S24 then have E's member `solution_designer_65a9` call tools.
+- The server keeps no MCP session for a stopped run, and DS-15 refuses user input to it. So no real path makes that agent act ("Agent tool MCP session is unavailable").
+- DL-11 and A-5/A-6 need a run that works: place S23 and S24 before S16, or give them such a run.
 
 Observations (not findings):
-- The agent-run view shows the helper beside the worker under the Manager, not indented under the worker. Whether base's web nested a copy's copy needs base's capture (rule 3).
-- `delegated-team-lazy-member-activation`: a never-started member's first status is now `offline` before `initializing`. That is DS-8's projection; it is to be compared with base's frames next round.
-- `task-reactivation` QR-001: an outcome the classifier does not list (the message refused while the run was stopping), whose text exists at base. It needs analysis next round.
+- **Wording.** The design's SR-066 paragraph says "the peer protocol (no wire change)". The requirements' External Contracts row allows "a renamed wire field is a clean cut", and the start request's `coordinatingRun` is now `delegatingRun`. The tests follow the requirements; the wording could be aligned.
+- **RC-36.** A newly opened view first gets `PeerChildObservation`'s cached summary of a peer run (`idle` after the run shut down), then the fresh `offline` read within the bound. AC-805 holds.
+- **Agent-run view nesting.** The agent-run view shows the helper beside the worker under the Manager. Whether base's web nested a copy's copy is rule 3's peer and nesting capture (API-P04, Next Round).
 
-Contract-model notes: K-1 … K-12 as before.
+Contract-model notes K-1 … K-12 as before.
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
 | AC-001 | Yes | API-E02 §5.1, §5.2; API-R01 | Not Proven: the real runtime is API-L01 (Next Round) | — |
-| AC-002 … AC-006 | Yes | API-E02 (§5.1 26/26, §5.2 9/9, §5.3 to O7) | Not Proven (F-21 at O8) | — |
-| AC-007 | Yes | API-B01 SDV-01 (Pass), SDV-02 (F-14 team view), SDV-03 (F-21); phone (Next Round) | Not Proven | — |
-| AC-008 | — | — | Not Proven (peer guard, Next Round) | — |
-| AC-009 … AC-013 | mixed | API-R01; API-E01 (partly; F-16 … F-20) | Not Proven | — |
-| AC-014 | Yes | API-E03 | Proven | — |
-| AC-015 | — | API-E02 | Not Proven (F-21) | — |
-| AC-016 | Yes | API-P01 (Next Round); S17 covers the peer row's shape only | Not Proven | — |
-| DS-15 (SR-070) | — | DS-15 suite | Proven for the user's message (agent, team), reopen, deleted Task; restart resume Next Round | — |
+| AC-002 … AC-006 | Yes | API-E02 §5.2 11/11, §5.3 9/9, §5.1 24/28; API-E01 | Not Proven (F-23, F-26; K-13 for S23/S24) | — |
+| AC-007 | Yes | API-B01 desktop SDV-01 … 04 (Pass); phone MSP-50 (Pass), MSP-51/52 (Fail) | Not Proven (F-32, F-33, F-34: phone) | — |
+| AC-008 | — | API-P02 RC-44 (peer, Pass); API-E02 S26 | Not Proven (F-30, local) | — |
+| AC-009 … AC-013 | mixed | API-R01; API-E01; EXC; CPW | Not Proven (F-19b, F-24, F-27, F-28, F-29, F-31) | — |
+| AC-014 | Yes | API-E03 (round 4); the migration-startup group | Not Proven (F-25: a converted delegated copy deleted by a released migration that runs after) | — |
+| AC-015 | — | API-E02 | Not Proven (§5.1 S26/S27) | — |
+| AC-016 | Yes | API-P01 RC-43 | Proven (scripted runtime) | — |
+| DS-15 (SR-070) | — | DS-15 suite (round 4) | Proven for the user's message, reopen, deleted Task; restart resume Next Round | — |
+| SR-071 | — | S20, U9, U10, EXC-001 … 005 | Proven for the order, R-12 live and stopped, a member's ID; F-19b (the cross-root text) open | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 65% | 65% | CPW, API-E02 §5.1/5.2, API-E03, DS-15, SDV-01 | F-14, F-16 … F-22; peer cases | The fix round, API-P01 … P04 |
-| Changed-boundary execution directness | 80% | 80% | Built servers, two nodes, own streams, browser | Peer handles not run | The two-node suite |
-| Cross-boundary integration realism and mock gap | 70% | 70% | Real HTTP/WS/MCP; scripted AGY only | Real runtime | API-L01 |
-| Environment, configuration, identity, and fixture fidelity | 85% | 85% | Clean env, fresh roots, rebuilt server | — | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 65% | 65% | DS-15, stopped-delegator journeys, closure races | Restart resume, stale suites | API-E01, the restart case |
-| User-surface, browser, and desktop-shell confidence | 60% | 60% | SDV-01 | F-14 (team), F-22, phone | The fix round, MSP |
-| Durable regression coverage quality and relevance | 65% | 65% | Every-depth API-E03, DS-15 suite, C14 measurement, strict probe, own-run helpers | Remaining stale suites | The rewrite (per file in the plan) |
+| Requirement and acceptance-criteria proof | 72% | 72% | AC-016 and the peer AC-008 proven; stories 44/48; desktop journeys; SR-071 | F-19b, F-23 … F-36 | The fix round; the Unclear decisions |
+| Changed-boundary execution directness | 85% | 85% | Built servers, five-node peer suite, own streams, browser desktop and phone | Peer rows not rendered | API-P03 |
+| Cross-boundary integration realism and mock gap | 70% | 70% | Real HTTP/WS/MCP between real nodes; scripted AGY only | Real runtime | API-L01 |
+| Environment, configuration, identity, and fixture fidelity | 85% | 85% | Clean env, fresh roots, rebuilt server and phone bundle | — | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 70% | 70% | Peer offline and restart cases, closure races, R-12 stopped, the archive/delete guard | DS-15 restart resume; F-25 | The restart case; the migration group after F-25 |
+| User-surface, browser, and desktop-shell confidence | 65% | 65% | Desktop SDV-01 … 04 all pass | The phone (F-32 … F-34) | The fix round, MSP-50 … 52 |
+| Durable regression coverage quality and relevance | 75% | 75% | The phone cases now run and check "once"; peer suite on the contract; R-12 stopped; CPW-M7; SDV-04 | Remaining stale suites | The rewrite (per file in the plan) |
 
-- Overall post-repository confidence: 70%
-- Overall final confidence: 70%
+- Overall post-repository confidence: 75%
+- Overall final confidence: 75%
 - Calculation method: simple average of the seven categories
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `No`
 - Any final applicable category below `90%`: `Yes`: all seven
 - Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: F-14, F-16 … F-22; the peer cases; the stale suites (Next Round)
+- Confidence-limiting residual risks: F-19b, F-23 … F-36; K-13; the Next Round list
 
 ## Broader Validation Decision (Mandatory)
 
 - Decision: `Required`
 - Execution mode: `Browser`, `Lifecycle`, `Worker or Distributed`
-- The confidence gap it addresses, and the expected gain: the rendered stopped-delegator journeys and the stories on two nodes. Ran this round and found F-14 (team view), F-21 and F-22; the phone and the peer cases are next.
-- Browser validation needed, and why or why not: yes; nesting, listing and the row binding are visible only in the rendered app.
+- The confidence gap it addresses, and the expected gain:
+  - the rendered journeys on the desktop and the phone;
+  - the peer cases on real nodes;
+  - the stories.
+  - This round they proved AC-016 and the peer guard, and found the phone failures F-32 … F-34.
+- Browser validation needed, and why or why not: yes. The phone's rows and opening are visible only in the rendered app; the server reads are correct there.
 
 ## Desktop Application Validation
 
-- Approach executed: probe-owned real stack, desktop (ENV-2). No shell-specific behavior changed.
-- Effect on any already-running desktop application: `None`. Runs were paused while the Implementation Engineer tested; processes this run did not start were left untouched.
-- Behavior not directly proven: the team view's nesting (F-14), the org view (F-21), the phone layout (Next Round).
+- Approach executed: probe-owned real stack, desktop (ENV-2) and phone (ENV-3). No shell-specific behavior changed.
+- Effect on any already-running desktop application: `None`. Processes this run did not start were left untouched.
+- Behavior not directly proven: the phone layout's delegated rows (F-32 … F-34); peer rows rendered (API-P03).
 
 ## Persisted-Data Transition Checks
 
 - Approved persisted-data decision: `Migration Required` (DS-10)
-- Cases proving the migration outcome: API-E03 (on `49f3db1047`; the migration and the readers it uses are unchanged in IR-015/016), API-R01
+- Cases proving the migration outcome: API-E03 (round 4), API-R01; the migration-startup group (`remove-skill-improvement-data-startup` found F-25)
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
-- Residual untested persisted-data risk: the earlier migrations' startup suites (Next Round rewrite)
+- Residual untested persisted-data risk:
+  - **F-25:** the order of the 461 migration against the released `20261020_remove_skill_improvement_data` deletes a converted delegated copy;
+  - the rest of the migration-startup group (Next Round).
 
 ## Compatibility / Legacy Scope Check
 
-- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
+- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No` (the peer wire rename is a clean cut per the requirements; see the observation on the design's wording)
 - Compatibility-only or legacy-retention behavior observed in implementation: `No`
 - Durable coverage added or retained only for compatibility-only behavior: `No`
 - Reroute classification used: N/A
@@ -147,19 +172,43 @@ Contract-model notes: K-1 … K-12 as before.
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes` (the investigation's round-4 plan lists each file).
-  - **Added:**
-    - `projects/closed-task-input-fence` (DS-15);
-    - `run-history/history-list-read-timing` (C14-01, gated `RUN_HISTORY_LIST_TIMING=1`).
-  - **Shared helpers:**
-    - `helpers/collaboration-root-harness.ts`: rows from base's view reads; non-own agents messaged on their own run;
-    - `helpers/own-run-reads.ts`: removed-poll helpers dropped; `delegatedConversation`, `ownRunSender`.
-  - **Updated suites (rule 2 reads and sends, base's names):** ad-hoc, several-tasks, parts-live, comments-live, context-files, existing-copy, reactivation, model-contract, teammate-delivery (spy on the cross-run owner), launch-defaults, lazy activation, idle lifetime, model change, worker scope, member-contact-host, closure visibility, change feed (`delegatingRun`), memory (own members only), API-E03 (every depth), the stories (S17 in base's shapes; a missing result reports the stream's answer), CPW (own-run sends), live-refresh, personal tools, skill-notice, and four runtime-switch suites (own save and Stop).
-  - **Restored to base (rule 1):** `team-task-event-current-contract`, `agy-` and `claude-delegated-background-task`. The latter two still need rule 2 (API-L01).
-  - **Web:**
-    - `stopped-delegator-views-probe.mjs` restored, on base's reads, with the rule-2 binding check, settle time and row retry;
-    - `mobile-stopped-delegator-cases.mjs` restored;
-    - the `test:e2e:stopped-delegator-views` script restored.
+- Repository-resident durable coverage added, updated, or removed this round: `Yes`.
+  - **Web probes:**
+    - `mobile-shell-probe.mjs`: the import and the call of `runStoppedDelegatorCases` put back (lost in the web restore to base).
+    - `mobile-stopped-delegator-cases.mjs`:
+      - REQ-002 "once" checked before and after the worker is opened;
+      - on failure, the node's own list reads and a screenshot of a run screen that did not open.
+    - `stopped-delegator-views-probe.mjs`: new SDV-04 (CR-461-042, the reopened row).
+  - **Peer suite** (`remote-collaboration/remote-delegation-two-server`):
+    - new RC-43 (AC-016) and RC-44 (AC-008 peer guard);
+    - links read from alpha's Task entries (`delegatedFrom`, `recipientAddress`, `nodeId`, `members`);
+    - `delegatingRun` on the wire (start requests, request fields);
+    - no `launches` on alpha's side; the launches on the peer's summary (SR-038);
+    - the agent run's log in its own folder (TC-13);
+    - RC-36 waits for the fresh read;
+    - RC-25 and RC-33 checked softly (F-35, F-36) so the later cases run;
+    - T-5 "names them" by address or run ID.
+  - **Stories** (`collaboration-contract-stories`):
+    - drivers for S26, S27, U9, U10;
+    - `callDirect` (the agent's own MCP endpoint);
+    - titles S0 … S27, U0 … U10;
+    - the fixture `contract-states.json` regenerated (`--check` matches).
+  - **CPW** (`collaboration-prompt-wording`): new CPW-M7 (C17-02).
+  - **Existing-copy** (`task-existing-copy-assignment`):
+    - `delegatedFrom` in stored entries;
+    - EXC-005's stopped-team step moved to SR-071's R-12;
+    - its cross-root text check is soft (F-19b).
+  - **Own-run rewrites (rule 2):**
+    - `teammate-delivery` (the Manager in the snapshot);
+    - `delegated-copy-member-contact-host` (sends by the own run);
+    - `stopped-run-edit-root` (the copy's own stream);
+    - `task-copy-idle-lifetime` (own-run streams);
+    - `delegated-team-lazy-member-activation` (a leading `offline`);
+    - `get-project-task-worker-scope` (the fail-closed invariant only);
+    - `collaboration-model-contract`;
+    - `project-change-feed` (SR-054 refusal shape);
+    - `delegated-copy-model-change` (helpers to own saves, Stop and options; the rest Next Round);
+    - `helpers/collaboration-participant-messages.ts` (delegated rows read by their own identity).
 - Added or updated paths attached for proportional test-code review: `Not Applicable` (Fail round)
 
 ## Dependencies Mocked Or Emulated
@@ -172,22 +221,30 @@ Contract-model notes: K-1 … K-12 as before.
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Built and in-process servers, data roots, probe stacks | Yes | Each suite's `afterAll`, the probes' `finally` | Removed |
-| Temporary diagnostics in `delegated-launch-config-defaults` and `task-reactivation-root-visibility` | Yes | Files restored from their backups | Removed (the output is kept as evidence) |
-| `/tmp/api461/` logs, homes and probe output | Yes | Kept; excerpts committed | Kept |
+| Built and in-process servers, data roots, probe stacks, peer nodes | Yes | Each suite's `afterAll`, the probes' `finally` (`serversLeft: 0`, `rootRemoved: true`) | Removed |
+| `/tmp/api461/` logs, homes and probe output | Yes | Kept; excerpts committed. The peer receipt and node logs hold peer signatures: kept in `/tmp` only, records extracted with signature fields redacted | Kept |
 
 ## Preliminary Classification (On `Fail`)
 
-- `Local Fix` (server): F-16, F-17, F-20, F-21.
-- `Local Fix` (web or server): F-14 (team view), F-22.
-- `Unclear`: F-18, F-19 (the contract's rule order and texts against REQ-009's base texts).
+- `Local Fix`:
+  - server: F-19b, F-25 (data loss), F-28, F-29, F-35;
+  - server or web: F-26;
+  - web, phone: F-32, F-33, F-34.
+- `Unclear`: F-23, F-24, F-27, F-30, F-31, F-36.
+- Contract model (Solution Designer): K-13.
 
 ## Latest Authoritative Result
 
 - Result: `Fail`
-- Criteria not proven: AC-001 … AC-013 and AC-015 … AC-016, except as noted in the proof table; AC-014 is proven.
-- Preliminary classification and recommended owner: Implementation Engineer (Local Fix), Solution Designer (F-18, F-19), confirmed by failure-origin review.
+- Criteria not proven: as the proof table; AC-016 is proven.
+- Preliminary classification and recommended owner:
+  - Implementation Engineer: the Local Fix findings;
+  - Solution Designer: the Unclear ones and K-13;
+  - each confirmed by failure-origin review.
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
-- Notes:
-  - Next round, first: the remaining stale rewrites (the investigation).
-  - Then the phone cases, the two-node peer cases and rule 3's peer capture, restart resume (DS-15), C15-03's rendered check, and API-E01 full, API-I01, API-B03, API-L01, API-F01.
+- Notes, for the next round:
+  - First: the remaining stale rewrites (the investigation's Next Round).
+  - Then:
+    - API-P03, API-P04;
+    - DS-15 restart resume, C15-03 rendered;
+    - API-E01 in full, API-I01, API-B03, API-L01, API-F01.

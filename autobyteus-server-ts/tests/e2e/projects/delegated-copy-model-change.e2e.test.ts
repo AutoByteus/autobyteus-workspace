@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
 // launch is logged with its argv, so the model a copy resumes on is proven at the runtime (`--model`).
 // DCM-009 (autobyteus-348) a stopped agent copy switches its agent runtime (AGY -> Grok) in the Team, Org and Agent roots: the next
 //   message archives exactly the AGY agent's records as one segment and starts the new file with one marker.
-// DCM-001 an agent copy: running → the change is refused (COPY_RUNNING); Stop (the copy alone, the root keeps running);
+// DCM-001 an agent copy: running → the change is refused (its own save: RUN_ACTIVE); Stop (the copy alone, the root keeps running);
 //   options; Save; its next message resumes it with its conversation on the chosen model.
 // DCM-002 a Team copy: Stop as one unit; a Team-level choice reaches its members that follow the Team.
 // DCM-003 a stopped Team run: the copies' choices and the run's own settings in one Save; one unavailable model
@@ -169,15 +169,53 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const index = active.findIndex((run) => run.rootId === rootId);
     if (index >= 0) active.splice(index, 1);
   };
-  const stop = async (rootKind: string, rootRunId: string, target: Rec) => (await graphql(
-    `mutation($input:DelegatedExecutionTargetInput!){stopDelegatedExecution(input:$input){success outcome message notStoppedUnattributed}}`,
-    { input: { rootKind, rootRunId, ...target } })).stopDelegatedExecution;
-  const update = async (rootKind: string, rootRunId: string, changes: Rec[], configuredPatches?: Rec[]) => (await graphql(
-    `mutation($input:UpdateDelegatedLaunchSelectionsInput!){updateDelegatedLaunchSelections(input:$input){success outcome message fieldErrors{path message}}}`,
-    { input: { rootKind, rootRunId, changes, ...(configuredPatches ? { configuredPatches } : {}) } })).updateDelegatedLaunchSelections;
-  const options = async (rootKind: string, rootRunId: string) => (await graphql(
-    `query($k:String!,$r:String!){delegatedLaunchModelOptions(rootKind:$k,rootRunId:$r){scope agentRunId teamRunId currentModelIdentifier replacements{llmModelIdentifier}}}`,
-    { k: rootKind, r: rootRunId })).delegatedLaunchModelOptions as Rec[];
+  // autobyteus-461 rule 2 (SR-064, SR-065): a delegated run is stopped, saved and offered models through its own calls; the
+  // delegator's Settings compose its Save from each run's own stopped-run save. The root arguments are kept for the call sites.
+  const stop = async (_rootKind: string, _rootRunId: string, target: Rec) => target.teamRunId
+    ? (await graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: target.teamRunId })).terminateAgentTeamRun
+    : (await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: target.agentRunId })).terminateAgentRun;
+  const isRunActive = async (target: Rec) => target.teamRunId
+    ? Boolean((await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){isActive}}`, { id: target.teamRunId })).getTeamRunResumeConfig?.isActive)
+    : Boolean((await graphql(`query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}`, { id: target.agentRunId })).getAgentRunResumeConfig?.isActive);
+  /** A second Stop of a stopped run does nothing: the run stays stopped (the removed service answered ALREADY_STOPPED). */
+  const stopAgain = async (target: Rec) => { await stop("", "", target); expect(await isRunActive(target), "a second Stop leaves it stopped").toBe(false); };
+  /** The Save, as the editor composes it (SR-064): each change on its run's own stopped-run save, in row order; the first refusal ends it. */
+  const update = async (_rootKind: string, _rootRunId: string, changes: Rec[], configuredPatches?: Rec[]) => {
+    if (configuredPatches?.length) throw new Error("configured patches go to the delegator's own save; not used by this suite");
+    let last: Rec = { success: true, outcome: "UPDATED", message: null };
+    for (const change of changes) {
+      const { runtimeKind, llmModelIdentifier, llmConfig } = change.selection as Rec;
+      last = change.teamRunId
+        ? (await graphql(`mutation($input:UpdateStoppedTeamRunSelectionsInput!){updateStoppedTeamRunSelections(input:$input){success outcome message}}`,
+          { input: { teamRunId: change.teamRunId, selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind, llmModelIdentifier, llmConfig }] } })).updateStoppedTeamRunSelections
+        : await (async () => {
+          const member = await teamMemberOf(change.agentRunId as string);
+          if (member) return (await graphql(`mutation($input:UpdateStoppedTeamRunSelectionsInput!){updateStoppedTeamRunSelections(input:$input){success outcome message}}`,
+            { input: { teamRunId: member.teamRunId, selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: member.address, runtimeKind, llmModelIdentifier, llmConfig }] } })).updateStoppedTeamRunSelections;
+          return (await graphql(`mutation($input:UpdateStoppedAgentRunSelectionInput!){updateStoppedAgentRunSelection(input:$input){success outcome message fieldErrors{path message}}}`,
+            { input: { agentRunId: change.agentRunId, runtimeKind, llmModelIdentifier, llmConfig } })).updateStoppedAgentRunSelection;
+        })();
+      if (!last.success) return last;
+    }
+    return last;
+  };
+  /** A member of a delegated team run: its team and its address there (from the team's own file). */
+  const teamMemberOf = async (agentRunId: string): Promise<{ teamRunId: string; address: string } | null> => {
+    const teams = await fs.readdir(path.join(dataDir, "memory", "agent_teams")).catch(() => [] as string[]);
+    for (const teamRunId of teams) {
+      const tree = JSON.parse(await fs.readFile(path.join(dataDir, "memory", "agent_teams", teamRunId, "team_run_execution_tree.json"), "utf8").catch(() => "null"));
+      const member = (tree?.rootTeam?.members ?? []).find((m: Rec) => m.agentRunId === agentRunId);
+      if (member) return { teamRunId, address: member.address };
+    }
+    return null;
+  };
+  /** A run's own model options (SR-065: `agentRunModelOptions` / `teamRunModelOptions`), in the rows the suite reads. */
+  const options = async (_rootKind: string, _rootRunId: string, target: Rec) => {
+    const rows = target.teamRunId
+      ? (await graphql(`query($id:String!){teamRunModelOptions(teamRunId:$id){scopeKind currentModelIdentifier replacements{llmModelIdentifier}}}`, { id: target.teamRunId })).teamRunModelOptions as Rec[]
+      : [(await graphql(`query($id:String!){agentRunModelOptions(agentRunId:$id){currentModelIdentifier replacements{llmModelIdentifier}}}`, { id: target.agentRunId })).agentRunModelOptions as Rec];
+    return rows.map((row): Rec => ({ ...row, scope: target.teamRunId ? "team" : "agent", agentRunId: target.agentRunId, teamRunId: target.teamRunId }));
+  };
   const choice = (model: string, runtimeKind = AGY) => ({ runtimeKind, llmModelIdentifier: model, llmConfig: null });
 
   beforeAll(async () => {
@@ -334,12 +372,12 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
 
     // AC-011: a running copy refuses the change; nothing is written.
     await expect(update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: choice(ALT) }]))
-      .resolves.toMatchObject({ success: false, outcome: "COPY_RUNNING" });
+      .resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
     // REQ-009 / AC-002: Stop of the copy alone; the root keeps running and a second Stop finds it stopped.
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED", notStoppedUnattributed: 0 });
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true, outcome: "ALREADY_STOPPED" });
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true });
+    await stopAgain({ agentRunId: copyRunId });
     // REQ-003: the copy's options come from its runtime's catalog.
-    const offered = (await options(root.rootKind, root.rootId)).find((row) => row.agentRunId === copyRunId)!;
+    const offered = (await options(root.rootKind, root.rootId, { agentRunId: copyRunId }))[0]!;
     expect(offered).toMatchObject({ scope: "agent", currentModelIdentifier: MODEL });
     expect(offered.replacements.map((row: Rec) => row.llmModelIdentifier)).toContain(ALT);
     // AC-006: the same validation as stopped-run switching refuses a model its runtime does not offer.
@@ -369,8 +407,8 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const lead = team.target_team_coordinator_agent_run_id as string;
     const teamRunId = team.target_team_run_id as string;
     await until(async () => (await launchesOf(lead)).length > 0, "team: copy lead started", 60_000);
-    await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }])).resolves.toMatchObject({ outcome: "COPY_RUNNING" });
-    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ outcome: "STOPPED" });
+    await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }])).resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true });
     await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }])).resolves.toMatchObject({ outcome: "UPDATED" });
     const from = (await agyLaunches()).length;
     await expect(messageCopy(root, lead, "Please continue the review.")).resolves.toMatchObject({ accepted: true });
@@ -432,8 +470,8 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const lead = team.target_team_coordinator_agent_run_id as string;
     const teamRunId = team.target_team_run_id as string;
     await started(lead, "org: Team copy lead started");
-    await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }])).resolves.toMatchObject({ outcome: "COPY_RUNNING" });
-    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }])).resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true });
     await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }])).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
     let from = (await agyLaunches()).length;
     await expect(messageCopy(root, lead, "Please continue the review.")).resolves.toMatchObject({ accepted: true });
@@ -476,14 +514,14 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     expect(agyLive(lead.agentRunId) && agyLive(nestedRunId) && agyLive(otherRunId)).toBe(true);
 
     // AC-002 / REQ-009: Stop the crew from its row.
-    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED", notStoppedUnattributed: 0 });
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true });
     await until(async () => (await grokMethods()).includes("session/cancel"), "team: the slow member's turn was interrupted", 30_000);
     await until(() => !agyLive(lead.agentRunId) && !agyLive(nestedRunId), "team: the crew and its nested copy stopped", 30_000);
     expect(agyLive(otherRunId), "the other copy keeps running").toBe(true);
     // The PM keeps running: it answers and reaches the other copy.
     await expect(root.managerCalls(callTool("send_message_to", { target_agent_run_id: otherRunId, content: "Still there?" }))).resolves.toMatchObject({ accepted: true });
     // The copy's Task stays open: it is still listed and resumes on the next message.
-    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "ALREADY_STOPPED" });
+    await stopAgain({ teamRunId });
 
     // AC-003 / AC-004: a Team choice; the follower lead and the never-started follower take it; the never-started member
     // with its own default keeps its own model; the nested copy resumes on its started model (REQ-006).
@@ -520,7 +558,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     expect(await launchesOf(reviewer.agentRunId)).toEqual([MODEL]);
 
     // Stop the copy; only the reviewer gets its own model.
-    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true });
     await expect(update(root.rootKind, root.rootId, [{ agentRunId: reviewer.agentRunId, selection: choice(ALT2) }]))
       .resolves.toMatchObject({ success: true, outcome: "UPDATED" });
     const recorded = async () => {
@@ -552,7 +590,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
 
     // One Save with a Team choice and the reviewer's own: the coordinator and the follower take the Team's, the reviewer
     // keeps its own and its conversation.
-    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true });
     await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }, { agentRunId: reviewer.agentRunId, selection: choice(ALT2) }]))
       .resolves.toMatchObject({ success: true });
     expect(await recorded()).toEqual({ team: ALT, members: { lead: null, reviewer: ALT2, tester: null } });
@@ -575,7 +613,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const copyRunId = delegated.target_agent_run_id as string;
     await started(copyRunId, "team: copy started");
     const copyRecord = async () => objectsIn(await root.storedTree()).find((entry) => entry.agent_run_id === copyRunId && entry.started_at)!;
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ outcome: "STOPPED" });
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true });
     // AC-011: the delegating agent wakes the copy while the user edits; the Save is refused and nothing is written.
     let from = (await agyLaunches()).length;
     await expect(messageCopy(root, copyRunId, "Are you there? Marker WAKE.")).resolves.toMatchObject({ accepted: true });
@@ -583,12 +621,13 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const conversation = (await agyLaunches()).slice(from).find((entry) => entry.runId === copyRunId)!.conversation;
     expect(conversation, "the woken copy resumes its conversation").toBeTruthy();
     const refused = await update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: choice(ALT) }]);
-    expect(refused).toMatchObject({ success: false, outcome: "COPY_RUNNING" });
-    expect(refused.message).toMatch(/running/i);
+    expect(refused).toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
+    // The run's own stopped-run save refuses an active run with its own text (SR-064: RUN_ACTIVE).
+    expect(refused.message).toMatch(/became active|running/i);
     expect((await copyRecord()).user_launch_selection ?? null).toBeNull();
     // AC-006: invalid settings are refused and nothing is recorded. (Settings the model does not declare are left out of the
     // saved config instead of refused since claude-anthropic-effort-control SR-004; settings that are not an object stay invalid.)
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ outcome: "STOPPED" });
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true });
     const invalid = await update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: ["temperature", 0.2] } }]);
     expect(invalid).toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
     expect(invalid.fieldErrors.length).toBeGreaterThan(0);
@@ -644,7 +683,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const copyRunId = delegated.target_agent_run_id as string;
     await until(async () => (await launchesOf(copyRunId)).length > 0, `${kind}: copy started`, 60_000);
     const firstStop = await stop(root.rootKind, root.rootId, { agentRunId: copyRunId });
-    expect(firstStop, JSON.stringify(firstStop)).toMatchObject({ success: true, outcome: "STOPPED" });
+    expect(firstStop, JSON.stringify(firstStop)).toMatchObject({ success: true });
 
     const copyDir = findDir(path.join(dataDir, "memory"), copyRunId)!;
     expect(copyDir, "the copy's memory folder").toBeTruthy();
@@ -687,7 +726,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
     const copyRunId = delegated.target_agent_run_id as string;
     await until(async () => (await launchesOf(copyRunId)).length > 0, `${kind}: copy started`, 60_000);
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true });
     const recordedSelection = async () => JSON.stringify(objectsIn(await root.storedTree()).find((record) =>
       (record.agentRunId ?? record.agent_run_id) === copyRunId && (record.startedAt ?? record.started_at)));
     const toClaude = [{ agentRunId: copyRunId, selection: choice(NEW_CLAUDE_MODEL, CLAUDE) }];

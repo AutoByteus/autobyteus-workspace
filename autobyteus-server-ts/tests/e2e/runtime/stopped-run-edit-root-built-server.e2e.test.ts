@@ -245,13 +245,14 @@ describe.runIf(ENABLED)("a registered Agent root follows the saved edit of its s
     const copyCalls = async (copyId: string, name: string, args: Json, label: string): Promise<Json> => {
       const copyDir = () => findDir(memory("agents"), copyId)!;
       const before = callsOf(copyDir()).length;
-      const { socket, messages } = await openSocket({ ...agentStream(hostId), path: `/ws/agent-collaboration/${hostId}` }, label);
-      await until(() => messages.some((m) => m.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"), `${label}: root view`, 60_000);
+      // The copy is a run of its own (autobyteus-461 rule 2): the user's message goes on its own stream, not the host's view.
+      const { socket, messages } = await openSocket({ ...agentStream(hostId), path: `/ws/agent/${copyId}` }, label);
+      await until(() => messages.some((m) => m.type === "CONNECTED"), `${label}: the copy's own stream`, 60_000);
       const id = `e2e-${randomUUID()}`;
-      socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { root_subject_kind: "agent", root_run_id: hostId, target_agent_run_id: copyId, command_id: id,
+      socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { agent_run_id: copyId,
         content: `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`, context_file_paths: [], image_urls: [], message_id: id, dedupe_key: `agent_run_input:e2e:${id}` } }));
-      await until(() => messages.some((m) => m.type === "AGENT_COMMAND_ACK" && m.payload.command_id === id), `${label}: ack (frames: ${messages.map((m) => m.type).join(",")})`, 20_000).catch((error) => { throw new Error(`${error.message} frames=${messages.map((m) => m.type + ":" + JSON.stringify(m.payload).slice(0, 160)).join(" | ")}`); });
-      expect(messages.find((m) => m.type === "AGENT_COMMAND_ACK" && m.payload.command_id === id)!.payload.state, `${label}: accepted`).toBe("accepted");
+      await until(() => messages.some((m) => m.type === "AGENT_COMMAND_ACK" && (m.payload.command_id === id || m.payload.message_id === id)), `${label}: ack (frames: ${messages.map((m) => m.type).join(",")})`, 20_000).catch((error) => { throw new Error(`${error.message} frames=${messages.map((m) => m.type + ":" + JSON.stringify(m.payload).slice(0, 160)).join(" | ")}`); });
+      expect(messages.find((m) => m.type === "AGENT_COMMAND_ACK" && (m.payload.command_id === id || m.payload.message_id === id))!.payload.state, `${label}: accepted`).toBe("accepted");
       await until(() => callsOf(copyDir()).length > before, `${label}: the copy answered`, 90_000);
       await wait(300); socket.close();
       return toolResult(callsOf(copyDir()), before);

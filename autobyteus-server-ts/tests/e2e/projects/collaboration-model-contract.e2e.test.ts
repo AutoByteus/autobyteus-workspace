@@ -8,7 +8,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { delegatedConversation } from "../helpers/own-run-reads.js";
+import { delegatedConversation, ownRunSender } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -153,7 +153,10 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
     const isSnapshot = (frame: Frame) => frame.type === (kind === "team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT");
     const inputChannel = kind === "agent" ? await connect("agent", rootId, (frames) => frames.some((f) => f.type === "CONNECTED")) : null;
     const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
-    const sendTo = (agentRunId: string, content: string) => {
+    // A run this root (or one of its runs) delegated to is messaged on its own run's stream (autobyteus-461 rule 2).
+    const own = ownRunSender(`ws://${url.host}`, path.join(dataDir, "memory"), rootId);
+    const sendTo = async (agentRunId: string, content: string) => {
+      if (await own.send(agentRunId, content)) return;
       if (kind === "org") view.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
         root_subject_kind: "agent_org", root_run_id: rootId, target_agent_run_id: agentRunId,
         command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] } }));
@@ -181,7 +184,7 @@ suite("Collaboration model: message inside, delegate outside (real HTTP/WS/Graph
     /** One scripted tool call by an agent of the root (by run ID and address); returns the tool result it reports. */
     const calls = async (agentRunId: string, address: string, content: string): Promise<Rec> => {
       const before = calledResults(await conversationOf(agentRunId, address)).length;
-      sendTo(agentRunId, content);
+      await sendTo(agentRunId, content);
       let results: string[] = [];
       await until(async () => { results = calledResults(await conversationOf(agentRunId, address)); return results.length > before; },
         `${kind} ${address} tool result for ${content.slice(0, 110)}`, 60_000);

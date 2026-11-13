@@ -10,6 +10,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-011, round 2 | SR-054, ARCH-REV-029, IR-005 … IR-007, CRR-008 … CRR-011 | Fail / 61% | Fail / 66% |
 | API-REV-003 | Code Reviewer, `code-review-report.md` CRR-015, round 3 | SR-055 … SR-057, CR-461-017 … CR-461-029, CRR-012 … CRR-015 | Fail / 66% | Fail / 71% |
 | API-REV-004 | Code Reviewer, `code-review-report.md` CRR-018 and CRR-020, round 4 | SR-058 … SR-070, IR-011 … IR-016, CRR-016 … CRR-020 | Fail / 71% | Fail / 70% |
+| API-REV-005 | Code Reviewer, `code-review-report.md` CRR-023, round 5 | SR-071, IR-017, IR-018, CRR-021 … CRR-023 | Fail / 70% | Fail / 75% |
 
 ## Revision Entries
 
@@ -175,3 +176,70 @@ None
 - New or remaining failure IDs: F-14 (team view), F-16, F-17, F-18, F-19, F-20, F-21, F-22
 - Recommended owner: Implementation Engineer (Local Fix), Solution Designer (F-18, F-19 Unclear), confirmed by failure-origin review
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
+
+### API-REV-005: round 5; the phone, the peer cases, SR-071 end to end; F-14 … F-22 rechecked; F-19b, F-23 … F-36
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` CRR-023 (code `56e4ce773b`, docs `bc96cddb14`), API/E2E round 5.
+- Triggering finding or case IDs:
+  - round 4's Next Round;
+  - the rechecks F-14, F-16 … F-22, SDV-01 … 03;
+  - the new checks C17-02, CR-461-042 and SR-071's refusals end to end.
+- Related revision IDs: SR-071, IR-017, IR-018, CRR-021 … CRR-023
+- Why this revision was recorded: the fix round's validation and the new checks
+- Coverage decisions or durable test paths changed:
+  - **Web:**
+    - the phone probe's lost import and call of the stopped-delegator cases put back;
+    - the phone cases check REQ-002 "once" and record the node's reads on failure;
+    - SDV-04 added.
+  - **Peer suite:**
+    - RC-43, RC-44 added;
+    - the suite moved to the contract (Task-entry links, `delegatingRun`, launches per SR-038, TC-13 logs).
+  - **Stories:** drivers for the regenerated model.
+  - **CPW-M7** added (C17-02).
+  - **EXC-005:** its stopped-team step moved to SR-071.
+  - **Own-run rewrites** of the batch R5-A … R5-C suites.
+- Cases added, changed, removed, or rechecked:
+  - Pass:
+    - API-B01 desktop (SDV-01 … 04);
+    - API-P01 / API-P02 new cases RC-43, RC-44;
+    - CPW 14/14;
+    - SR-071 (S20, U9, U10, EXC R-12 live and stopped);
+    - API-E02 §5.2 11/11 and §5.3 9/9.
+  - Fail:
+    - API-B01 phone (F-32 … F-34);
+    - the peer suite 42/44 (F-35, F-36);
+    - API-E02 §5.1 24/28 (K-13, F-30);
+    - API-E01 rewrites (F-19b, F-23 … F-29, F-31).
+  - Next Round: in the investigation.
+- Commands, environment, fixture, or broader-validation delta:
+  - one server build (`56e4ce773b`) and one phone bundle;
+  - the discovery run was loaded, so each candidate was confirmed in a targeted run;
+  - the peer receipt and node logs hold peer signatures: kept in `/tmp`, records extracted with signature fields redacted.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-14 rows at every depth, team view | Local Fix | Resolved (desktop) | API-B01 SDV-02 |
+| F-16 a delegated team's catalog for `delegate_task` | Local Fix | Resolved | `delegated-launch-config-defaults` (targeted) |
+| F-17 reopen events | Local Fix | Resolved | `task-reactivation` CANCELLED journeys |
+| F-18 R-7 / R-8 order | Unclear → SR-071 | Resolved | S20, U9 |
+| F-19 team run ID; delegate texts | Unclear → SR-071 | `TARGET_IS_TEAM_RUN` resolved (live and stopped); the cross-root text open as F-19b | U10, EXC-005 |
+| F-20 a copy without its conversation | Local Fix | Resolved | EXC-007 |
+| F-21 the org view's statuses | Local Fix | Resolved | API-E02 §5.3 9/9 |
+| F-22 a delegated worker listed top level | Local Fix | Resolved on the desktop; on the phone see F-33 | SDV-01, SDV-02 |
+
+- Canonical artifacts and sections updated:
+  - the coverage investigation (meta, the round-5 plan, deferred, ambiguities);
+  - the execution report (all sections);
+  - the progress log;
+  - `evidence/api-e2e/*r5*`.
+- Prior result and confidence: Fail / 70%
+- Current result and confidence: Fail / 75%
+- New or remaining failure IDs: F-19b, F-23, F-24, F-25, F-26, F-27, F-28, F-29, F-30, F-31, F-32, F-33, F-34, F-35, F-36; K-13
+- Recommended owner:
+  - Implementation Engineer: the Local Fix findings;
+  - Solution Designer: the Unclear findings and K-13;
+  - each confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
+

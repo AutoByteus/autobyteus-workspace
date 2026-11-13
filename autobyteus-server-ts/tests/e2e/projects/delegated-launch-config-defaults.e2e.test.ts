@@ -367,9 +367,9 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `'${TEAM_NOT_OFFERED}' is not offered by ${agentRuntimeName(AGY)} now. Refresh the model list and choose again.`, "team_default");
     const source = f(squad.copy, "source");
     record.squadSource = source;
-    expect(launchOf(f(source, "defaultLaunchConfiguration"))).toEqual(inheritedLaunch());
-    expect(sourceOf(f(source, "defaultLaunchSource"))).toEqual({ origin: "inherited", fallbacks: [teamFallback] });
-    expect(memberSources(source)).toEqual({
+    expect(launchOf(f(source, "defaultLaunchConfiguration")), JSON.stringify(f(source, "defaultLaunchConfiguration"))).toEqual(inheritedLaunch());
+    expect(sourceOf(f(source, "defaultLaunchSource")), JSON.stringify(f(source, "defaultLaunchSource"))).toEqual({ origin: "inherited", fallbacks: [teamFallback] });
+    expect(memberSources(source), JSON.stringify(memberSources(source))).toEqual({
       // A member that follows the team records the copy's team value (here inherited from the run) as its launch.
       lead: { launch: inheritedLaunch(), source: null, followsTeam: true },
       engineer: { launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false },

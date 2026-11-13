@@ -40,9 +40,12 @@ export const readRootMessages = async (graphql: Graphql, input: Readonly<{
 }>): Promise<ParticipantMessage[]> => {
   const byId = new Map<string, ParticipantMessage>();
   for (const agentRunId of input.agentRunIds) {
-    for (const message of await readParticipantMessages(graphql, { rootKind: input.rootKind, rootRunId: input.rootRunId, agentRunId })) {
-      byId.set(message.messageId, message);
-    }
+    // A view's tree also holds the runs it delegated to, at every depth (autobyteus-461 rule 1). They are not participants of
+    // this root (rule 2: each is read by its own identity), so the root refuses them; their messages with this root's agents
+    // are in those agents' lists.
+    const messages = await readParticipantMessages(graphql, { rootKind: input.rootKind, rootRunId: input.rootRunId, agentRunId })
+      .catch((error: unknown) => { if (/is not a participant of/.test(String((error as Error)?.message ?? error))) return []; throw error; });
+    for (const message of messages) byId.set(message.messageId, message);
   }
   return [...byId.values()].sort((left, right) => left.createdAt.localeCompare(right.createdAt) || left.messageId.localeCompare(right.messageId));
 };

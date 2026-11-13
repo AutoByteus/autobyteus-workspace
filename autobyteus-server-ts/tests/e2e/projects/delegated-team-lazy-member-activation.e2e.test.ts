@@ -468,7 +468,11 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-FIRST");
     const reviewerIdle = await root.signal("reviewer idle", (e) => e.agentRunId === copy.members.reviewer.agentRunId && e.status === "idle");
     const reviewerStatuses = root.signals().filter((e) => e.agentRunId === copy.members.reviewer.agentRunId && e.at <= reviewerIdle.at).map((e) => e.status);
-    expect(reviewerStatuses[0], `${kind} reviewer first status ${reviewerStatuses}`).toBe("initializing");
+    // The view projects a never-started member as offline (autobyteus-461 DS-8: "offline" when its run is not active); the
+    // message starts it: its first status after offline is initializing, and nothing ran before.
+    const firstStarted = reviewerStatuses.findIndex((status) => status !== "offline");
+    expect(reviewerStatuses.slice(0, Math.max(firstStarted, 0)).every((status) => status === "offline"), `${kind} reviewer statuses ${reviewerStatuses}`).toBe(true);
+    expect(reviewerStatuses[firstStarted], `${kind} reviewer first status after offline ${reviewerStatuses}`).toBe("initializing");
     expect(reviewerStatuses.at(-1)).toBe("idle");
     expect((await launchesFor(runIdsOf(copy), handoffFrom)).map((entry) => [entry.runId, entry.resumed]))
       .toEqual([[copy.members.reviewer.agentRunId, false]]);

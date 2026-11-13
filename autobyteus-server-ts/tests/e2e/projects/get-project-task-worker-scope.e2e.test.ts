@@ -410,14 +410,10 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
     // The copy whose Task data can't be read takes no input, so it reads nothing: no model request is made for it.
     const mark = nativeRequests.length, frames = view.frames.length;
     await view.send(runs.native, `NATIVE_CALL:${JSON.stringify({ name: "get_project_task", arguments: { project_id: projectId, task_id: tasks.A.taskKey } })}`);
-    let refusal: Frame | undefined;
-    await until(() => Boolean(refusal = view.frames.slice(frames).find((frame) => frame.type === "ERROR")), "native copy input refused", 60_000);
-    receipt.results.push({ who: "native helper (damaged)", route: "native", refusal });
-    // autobyteus-469 DEC-010: a run whose Task record cannot be read is in no tree until it can be read again, so its root
-    // refuses the input as not one of its runs (fail closed: no model request follows).
-    expect(JSON.stringify(refusal!.payload)).toContain("INVALID_TARGET");
-    expect(JSON.stringify(refusal!.payload)).toContain(`AgentRun '${runs.native}' is not in root`);
-    await new Promise((resolve) => setTimeout(resolve, 3_000));
+    // autobyteus-469 DEC-010: a run whose Task record cannot be read fails closed: it takes no input, so no model request
+    // follows. Since autobyteus-461 the user's message goes to the copy's own run (rule 2), not through the team's view.
+    await new Promise((resolve) => setTimeout(resolve, 5_000));
+    receipt.results.push({ who: "native helper (damaged)", route: "native", teamViewFramesAfter: view.frames.slice(frames).map((frame) => frame.type) });
     expect(nativeRequests.slice(mark).filter((request) => request.system.includes(names["Native Helper"]!))).toEqual([]);
     // The manager's list marks the damaged Task, the others are listed as before.
     const list = await agyCall("manager", managerRunId, "list_project_tasks", { project_id: projectId });

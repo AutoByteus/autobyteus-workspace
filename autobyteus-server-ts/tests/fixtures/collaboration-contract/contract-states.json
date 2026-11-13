@@ -378,6 +378,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -391,6 +395,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -699,6 +707,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -712,6 +724,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -1039,6 +1055,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -1052,6 +1072,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -1398,6 +1422,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -1411,6 +1439,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -1831,6 +1863,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -1844,6 +1880,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -1884,6 +1924,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "product_team_e03d"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -2350,6 +2394,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -2363,6 +2411,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -2404,6 +2456,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -2435,6 +2491,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -2973,6 +3033,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -2986,6 +3050,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -3027,6 +3095,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -3058,6 +3130,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -3570,6 +3646,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -3583,6 +3663,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -3624,6 +3708,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -3655,6 +3743,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -4195,6 +4287,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -4208,6 +4304,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -4249,6 +4349,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -4280,6 +4384,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -4816,6 +4924,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -4829,6 +4941,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -4870,6 +4986,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -4901,6 +5021,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -5459,6 +5583,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -5472,6 +5600,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -5513,6 +5645,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -5544,6 +5680,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -6141,6 +6281,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -6154,6 +6298,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -6204,6 +6352,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -6235,6 +6387,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_33f0"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -6886,6 +7042,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -6899,6 +7059,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -6949,6 +7113,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -6981,6 +7149,10 @@
          "kind": "agent",
          "runId": "image_maker_33f0"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -7008,6 +7180,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_e1a1"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -7659,6 +7835,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -7672,6 +7852,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -7722,6 +7906,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -7754,6 +7942,10 @@
          "kind": "agent",
          "runId": "image_maker_33f0"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -7781,6 +7973,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_e1a1"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -8487,6 +8683,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -8500,6 +8700,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -8550,6 +8754,10 @@
          "kind": "agent_team",
          "runId": "product_team_e03d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -8582,6 +8790,10 @@
          "kind": "agent",
          "runId": "image_maker_33f0"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -8610,6 +8822,10 @@
          "kind": "agent",
          "runId": "image_maker_88e8"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -8637,6 +8853,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_e1a1"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -9245,6 +9465,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -9258,6 +9482,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -9298,6 +9526,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_e1a1"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent_team",
@@ -10022,6 +10254,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -10035,6 +10271,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -10076,6 +10316,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -10103,6 +10347,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -10850,6 +11098,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -10863,6 +11115,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -10904,6 +11160,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -10931,6 +11191,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -11679,6 +11943,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -11692,6 +11960,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -11733,6 +12005,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -11760,6 +12036,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -11795,8 +12075,9 @@
     },
     {
      "id": "S20",
-     "title": "Refused: runs of different Tasks",
+     "title": "Refused: a run whose Task is closed, messaged by a run of another Task",
      "cases": [
+      "R-8",
       "R-7"
      ],
      "call": "M: `delegate_task(recipient_address: \"/research_agent\", task_id: \"demo-2\")`. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: \"solution_designer_65a9\", content: \"…\")`",
@@ -11808,8 +12089,8 @@
       }
      ],
      "refused": {
-      "code": "TASK_AGENT_RESOURCE_CONFLICT",
-      "message": "You can't message this agent: it works on a different Task."
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)."
      },
      "receiverSees": [],
      "disk": {
@@ -12567,6 +12848,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -12580,6 +12865,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -12621,6 +12910,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -12648,6 +12941,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -12681,6 +12978,10 @@
         "run": {
          "kind": "agent",
          "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -13477,6 +13778,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -13490,6 +13795,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -13531,6 +13840,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -13558,6 +13871,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -13591,6 +13908,10 @@
         "run": {
          "kind": "agent",
          "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -14388,6 +14709,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -14401,6 +14726,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -14442,6 +14771,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -14469,6 +14802,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -14502,6 +14839,10 @@
         "run": {
          "kind": "agent",
          "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -15298,6 +15639,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -15311,6 +15656,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -15352,6 +15701,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -15379,6 +15732,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -15412,6 +15769,10 @@
         "run": {
          "kind": "agent",
          "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -16209,6 +16570,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -16222,6 +16587,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -16263,6 +16632,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -16290,6 +16663,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -16323,6 +16700,10 @@
         "run": {
          "kind": "agent",
          "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -17120,6 +17501,10 @@
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -17133,6 +17518,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -17174,6 +17563,10 @@
          "kind": "agent",
          "runId": "upscaler_e1a1"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent_team",
          "runId": "software_engineering_team_0218"
@@ -17201,6 +17594,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
         },
         "parent": {
          "kind": "agent",
@@ -17235,6 +17632,10 @@
          "kind": "agent",
          "runId": "research_agent_9b10"
         },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
         "parent": {
          "kind": "agent",
          "runId": "project_task_manager_7c8d"
@@ -17249,6 +17650,1734 @@
            "kind": "agent",
            "runId": "project_task_manager_7c8d"
           }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "research_agent_9b10",
+          "address": "/research_agent"
+         }
+        ]
+       }
+      ],
+      "B": []
+     }
+    },
+    {
+     "id": "S26",
+     "title": "Refused: the user deletes M while a run it delegated to works",
+     "cases": [
+      "T-5"
+     ],
+     "call": "The user deletes M from the run list.",
+     "results": [],
+     "refused": {
+      "code": "RUN_DELEGATED_WORK_ACTIVE",
+      "message": "This run can't be deleted while a run it delegated to is working (/research_agent). Try again when it has finished, or stop it first."
+     },
+     "receiverSees": [],
+     "disk": {
+      "A:memory/agents/project_task_manager_7c8d/run_metadata.json": {
+       "runId": "project_task_manager_7c8d",
+       "agentDefinitionId": "project-task-manager",
+       "address": "/project_task_manager",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/project_task_manager_7c8d",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T08:00:00.000Z"
+      },
+      "A:memory/run_history_index.json": [
+       {
+        "runId": "project_task_manager_7c8d",
+        "agentDefinitionId": "project-task-manager",
+        "agentName": "Project Task Manager",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T08:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null,
+        "hasCollaboration": true
+       },
+       {
+        "runId": "image_maker_33f0",
+        "agentDefinitionId": "image-maker",
+        "agentName": "Image Maker",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T13:10:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T15:00:00.000Z"
+       },
+       {
+        "runId": "upscaler_e1a1",
+        "agentDefinitionId": "upscaler",
+        "agentName": "Upscaler",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T16:30:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T16:40:00.000Z"
+       },
+       {
+        "runId": "image_maker_88e8",
+        "agentDefinitionId": "image-maker",
+        "agentName": "Image Maker",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T16:50:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T17:00:00.000Z"
+       },
+       {
+        "runId": "research_agent_9b10",
+        "agentDefinitionId": "research-agent",
+        "agentName": "Research Agent",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T19:30:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:memory/agents/project_task_manager_7c8d/ (memory)": "created",
+      "A:projects/project_8f21/project_runs.json": {
+       "projectId": "project_8f21",
+       "runs": [
+        {
+         "root": {
+          "kind": "agent",
+          "runId": "project_task_manager_7c8d"
+         },
+         "linkedAt": "2026-11-01T08:00:00.000Z"
+        }
+       ]
+      },
+      "A:projects/project_8f21/tasks/project_task_2b2b/task.json": {
+       "taskId": "project_task_2b2b",
+       "projectId": "project_8f21",
+       "taskKey": "demo-2",
+       "title": "Research competitors",
+       "description": "…",
+       "status": "TODO",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T08:06:00.000Z",
+       "updatedAt": "2026-11-01T08:06:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:projects/project_8f21/tasks/project_task_6a6a/task.json": {
+       "taskId": "project_task_6a6a",
+       "projectId": "project_8f21",
+       "taskKey": "demo-6",
+       "title": "Fix the import bug",
+       "description": "…",
+       "status": "DONE",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T08:07:00.000Z",
+       "updatedAt": "2026-11-10T16:40:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:projects/project_8f21/tasks/project_task_7c7c/task.json": {
+       "taskId": "project_task_7c7c",
+       "projectId": "project_8f21",
+       "taskKey": "demo-7",
+       "title": "Market study",
+       "description": "…",
+       "status": "TODO",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T08:08:00.000Z",
+       "updatedAt": "2026-11-01T08:08:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T09:39:18.439Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [
+        {
+         "from": "/solution_designer",
+         "to": "/architecture_reviewer",
+         "rules": [
+          "When the design is ready for review …"
+         ]
+        },
+        {
+         "from": "/architecture_reviewer",
+         "to": "/implementation_engineer",
+         "rules": [
+          "When the review passes …"
+         ]
+        },
+        {
+         "from": "/implementation_engineer",
+         "to": "/code_reviewer",
+         "rules": [
+          "When the implementation is ready for review …"
+         ]
+        }
+       ],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "teamRunId": "software_engineering_team_0218",
+        "coordinatorAddress": "/solution_designer",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/solution_designer",
+          "agentDefinitionId": "solution-designer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "solution_designer_65a9",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/architecture_reviewer",
+          "agentDefinitionId": "architecture-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "architecture_reviewer_m_5c20",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/implementation_engineer",
+          "agentDefinitionId": "implementation-engineer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "implementation_engineer_m_7d31",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/code_reviewer",
+          "agentDefinitionId": "code-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "code_reviewer_m_3b10",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       }
+      },
+      "A:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "software_engineering_team_0218",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T09:39:18.439Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T17:00:00.000Z"
+       },
+       {
+        "teamRunId": "product_team_e03d",
+        "teamDefinitionId": "product-team",
+        "teamDefinitionName": "Product Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T13:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T15:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/ (memory)": "created",
+      "A:memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_A1",
+        "senderAgentRunId": "solution_designer_65a9",
+        "receiverAgentRunId": "architecture_reviewer_m_5c20",
+        "content": "Design ready for review …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T10:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_B1",
+        "senderAgentRunId": "solution_designer_65a9",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Design approved by the reviewer …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T11:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_C1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "Go ahead …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T11:05:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "See the prototype …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_G1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more question …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T14:05:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_H1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more change …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T15:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_D1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "New Task assigned to you: demo-6. …",
+        "messageType": "task_assignment",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T16:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/ (memory)": "created",
+      "A:memory/agents/project_task_manager_7c8d/communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_B1",
+        "senderAgentRunId": "solution_designer_65a9",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Design approved by the reviewer …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T11:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_C1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "Go ahead …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T11:05:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_E1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Prototype ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:30:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F2",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "product_designer_1a2b",
+        "content": "Looks good …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:40:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_H1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more change …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T15:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_D1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "New Task assigned to you: demo-6. …",
+        "messageType": "task_assignment",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T16:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_P1",
+        "senderAgentRunId": "lead_0c11",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Findings …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T18:30:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T13:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "product-team",
+        "teamDefinitionName": "Product Team",
+        "teamRunId": "product_team_e03d",
+        "coordinatorAddress": "/product_designer",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/product_designer",
+          "agentDefinitionId": "product-designer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "product_designer_1a2b",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/prototyper",
+          "agentDefinitionId": "prototyper",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "prototyper_4e11",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
+      "A:memory/agents/image_maker_33f0/run_metadata.json": {
+       "runId": "image_maker_33f0",
+       "agentDefinitionId": "image-maker",
+       "address": "/image_maker",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/image_maker_33f0",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T13:10:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agents/image_maker_33f0/ (memory)": "created",
+      "A:memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_E1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Prototype ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:30:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "See the prototype …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F2",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "product_designer_1a2b",
+        "content": "Looks good …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:40:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_G1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more question …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T14:05:00.000Z"
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json": {
+       "taskId": "project_task_6a6a",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/software_engineering_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "software_engineering_team_0218",
+          "coordinatorAgentRunId": "solution_designer_65a9"
+         },
+         "linkedAt": "2026-11-10T16:00:00.000Z",
+         "start": "started",
+         "closedAt": "2026-11-10T16:40:00.000Z"
+        },
+        {
+         "role": "subWork",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_0218"
+          },
+          "delegatorAgentRunId": "solution_designer_65a9"
+         },
+         "recipientAddress": "/upscaler",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "upscaler_e1a1"
+         },
+         "linkedAt": "2026-11-10T16:30:00.000Z",
+         "start": "started",
+         "closedAt": "2026-11-10T16:40:00.000Z"
+        }
+       ]
+      },
+      "A:memory/agents/upscaler_e1a1/run_metadata.json": {
+       "runId": "upscaler_e1a1",
+       "agentDefinitionId": "upscaler",
+       "address": "/upscaler",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/upscaler_e1a1",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T16:30:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agents/upscaler_e1a1/ (memory)": "created",
+      "A:memory/agents/image_maker_88e8/run_metadata.json": {
+       "runId": "image_maker_88e8",
+       "agentDefinitionId": "image-maker",
+       "address": "/image_maker",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/image_maker_88e8",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T16:50:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agents/image_maker_88e8/ (memory)": "created",
+      "A:ad-hoc-tasks/adhoc_task_7c7c/task.json": {
+       "taskId": "adhoc_task_7c7c",
+       "projectId": null,
+       "title": "…",
+       "description": "Market study …",
+       "status": "DONE",
+       "createdAt": "2026-11-10T18:00:00.000Z",
+       "updatedAt": "2026-11-10T19:00:00.000Z"
+      },
+      "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T18:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "teamRunId": "research_team_77aa",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/lead",
+          "agentDefinitionId": "lead",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "lead_0c11",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/analyst",
+          "agentDefinitionId": "analyst",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "analyst_5d20",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "nodeId": "node-a-77d2",
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       }
+      },
+      "B:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "research_team_77aa",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T18:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json": {
+       "taskId": "adhoc_task_7c7c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "research_team_77aa",
+          "coordinatorAgentRunId": "lead_0c11"
+         },
+         "nodeId": "node-b-1f0e",
+         "members": [
+          {
+           "address": "/lead",
+           "agentRunId": "lead_0c11"
+          },
+          {
+           "address": "/analyst",
+           "agentRunId": "analyst_5d20"
+          }
+         ],
+         "linkedAt": "2026-11-10T18:00:00.000Z",
+         "start": "started",
+         "closedAt": "2026-11-10T19:00:00.000Z"
+        }
+       ]
+      },
+      "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory)": "created",
+      "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_P1",
+        "senderAgentRunId": "lead_0c11",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Findings …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T18:30:00.000Z"
+       }
+      ],
+      "A:memory/agents/research_agent_9b10/run_metadata.json": {
+       "runId": "research_agent_9b10",
+       "agentDefinitionId": "research-agent",
+       "address": "/research_agent",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/research_agent_9b10",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T19:30:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       }
+      },
+      "A:projects/project_8f21/tasks/project_task_2b2b/agent_run_resources.json": {
+       "taskId": "project_task_2b2b",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_agent",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "research_agent_9b10"
+         },
+         "linkedAt": "2026-11-10T19:30:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/research_agent_9b10/ (memory)": "created"
+     },
+     "trees": {
+      "A": [
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": null,
+        "tasks": [],
+        "agents": [
+         {
+          "agentRunId": "project_task_manager_7c8d",
+          "address": "/project_task_manager"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "tasks": [
+         {
+          "taskId": "project_task_6a6a",
+          "role": "assigned",
+          "open": false,
+          "assigner": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "architecture_reviewer_m_5c20",
+          "address": "/architecture_reviewer"
+         },
+         {
+          "agentRunId": "code_reviewer_m_3b10",
+          "address": "/code_reviewer"
+         },
+         {
+          "agentRunId": "implementation_engineer_m_7d31",
+          "address": "/implementation_engineer"
+         },
+         {
+          "agentRunId": "solution_designer_65a9",
+          "address": "/solution_designer"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "upscaler_e1a1"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9",
+        "tasks": [
+         {
+          "taskId": "project_task_6a6a",
+          "role": "subWork",
+          "open": false,
+          "assigner": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "upscaler_e1a1",
+          "address": "/upscaler"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "node": "node-b-1f0e",
+        "tasks": [
+         {
+          "taskId": "adhoc_task_7c7c",
+          "role": "assigned",
+          "open": false,
+          "assigner": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "lead_0c11",
+          "address": "/lead"
+         },
+         {
+          "agentRunId": "analyst_5d20",
+          "address": "/analyst"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d",
+        "tasks": [
+         {
+          "taskId": "project_task_2b2b",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "research_agent_9b10",
+          "address": "/research_agent"
+         }
+        ]
+       }
+      ],
+      "B": []
+     }
+    },
+    {
+     "id": "S27",
+     "title": "The user stops the research agent and deletes M; the research agent's report is refused",
+     "cases": [
+      "T-4",
+      "T-8",
+      "R-11"
+     ],
+     "call": "The user stops the research agent, then deletes M. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"Findings …\")`",
+     "results": [],
+     "refused": {
+      "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
+      "message": "No running agent has the run id 'project_task_manager_7c8d', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you."
+     },
+     "receiverSees": [],
+     "disk": {
+      "A:memory/run_history_index.json": [
+       {
+        "runId": "image_maker_33f0",
+        "agentDefinitionId": "image-maker",
+        "agentName": "Image Maker",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T13:10:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T15:00:00.000Z"
+       },
+       {
+        "runId": "upscaler_e1a1",
+        "agentDefinitionId": "upscaler",
+        "agentName": "Upscaler",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T16:30:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T16:40:00.000Z"
+       },
+       {
+        "runId": "image_maker_88e8",
+        "agentDefinitionId": "image-maker",
+        "agentName": "Image Maker",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T16:50:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T17:00:00.000Z"
+       },
+       {
+        "runId": "research_agent_9b10",
+        "agentDefinitionId": "research-agent",
+        "agentName": "Research Agent",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T19:30:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T20:40:00.000Z"
+       }
+      ],
+      "A:projects/project_8f21/project_runs.json": {
+       "projectId": "project_8f21",
+       "runs": [
+        {
+         "root": {
+          "kind": "agent",
+          "runId": "project_task_manager_7c8d"
+         },
+         "linkedAt": "2026-11-01T08:00:00.000Z"
+        }
+       ]
+      },
+      "A:projects/project_8f21/tasks/project_task_2b2b/task.json": {
+       "taskId": "project_task_2b2b",
+       "projectId": "project_8f21",
+       "taskKey": "demo-2",
+       "title": "Research competitors",
+       "description": "…",
+       "status": "TODO",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T08:06:00.000Z",
+       "updatedAt": "2026-11-01T08:06:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:projects/project_8f21/tasks/project_task_6a6a/task.json": {
+       "taskId": "project_task_6a6a",
+       "projectId": "project_8f21",
+       "taskKey": "demo-6",
+       "title": "Fix the import bug",
+       "description": "…",
+       "status": "DONE",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T08:07:00.000Z",
+       "updatedAt": "2026-11-10T16:40:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:projects/project_8f21/tasks/project_task_7c7c/task.json": {
+       "taskId": "project_task_7c7c",
+       "projectId": "project_8f21",
+       "taskKey": "demo-7",
+       "title": "Market study",
+       "description": "…",
+       "status": "TODO",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T08:08:00.000Z",
+       "updatedAt": "2026-11-01T08:08:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T09:39:18.439Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [
+        {
+         "from": "/solution_designer",
+         "to": "/architecture_reviewer",
+         "rules": [
+          "When the design is ready for review …"
+         ]
+        },
+        {
+         "from": "/architecture_reviewer",
+         "to": "/implementation_engineer",
+         "rules": [
+          "When the review passes …"
+         ]
+        },
+        {
+         "from": "/implementation_engineer",
+         "to": "/code_reviewer",
+         "rules": [
+          "When the implementation is ready for review …"
+         ]
+        }
+       ],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "teamRunId": "software_engineering_team_0218",
+        "coordinatorAddress": "/solution_designer",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/solution_designer",
+          "agentDefinitionId": "solution-designer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "solution_designer_65a9",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/architecture_reviewer",
+          "agentDefinitionId": "architecture-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "architecture_reviewer_m_5c20",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/implementation_engineer",
+          "agentDefinitionId": "implementation-engineer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "implementation_engineer_m_7d31",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/code_reviewer",
+          "agentDefinitionId": "code-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "code_reviewer_m_3b10",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       }
+      },
+      "A:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "software_engineering_team_0218",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T09:39:18.439Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T17:00:00.000Z"
+       },
+       {
+        "teamRunId": "product_team_e03d",
+        "teamDefinitionId": "product-team",
+        "teamDefinitionName": "Product Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T13:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": "2026-11-10T15:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/ (memory)": "created",
+      "A:memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_A1",
+        "senderAgentRunId": "solution_designer_65a9",
+        "receiverAgentRunId": "architecture_reviewer_m_5c20",
+        "content": "Design ready for review …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T10:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_B1",
+        "senderAgentRunId": "solution_designer_65a9",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Design approved by the reviewer …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T11:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_C1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "Go ahead …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T11:05:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "See the prototype …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_G1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more question …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T14:05:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_H1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more change …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T15:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_D1",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "New Task assigned to you: demo-6. …",
+        "messageType": "task_assignment",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T16:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/ (memory)": "created",
+      "A:memory/agent_teams/product_team_e03d/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T13:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "product-team",
+        "teamDefinitionName": "Product Team",
+        "teamRunId": "product_team_e03d",
+        "coordinatorAddress": "/product_designer",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/product_designer",
+          "agentDefinitionId": "product-designer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "product_designer_1a2b",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/prototyper",
+          "agentDefinitionId": "prototyper",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "prototyper_4e11",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agent_teams/product_team_e03d/product_designer_1a2b/ (memory)": "created",
+      "A:memory/agents/image_maker_33f0/run_metadata.json": {
+       "runId": "image_maker_33f0",
+       "agentDefinitionId": "image-maker",
+       "address": "/image_maker",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/image_maker_33f0",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T13:10:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agents/image_maker_33f0/ (memory)": "created",
+      "A:memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_E1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Prototype ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:30:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "See the prototype …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:31:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_F2",
+        "senderAgentRunId": "project_task_manager_7c8d",
+        "receiverAgentRunId": "product_designer_1a2b",
+        "content": "Looks good …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T13:40:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_G1",
+        "senderAgentRunId": "product_designer_1a2b",
+        "receiverAgentRunId": "solution_designer_65a9",
+        "content": "One more question …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T14:05:00.000Z"
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json": {
+       "taskId": "project_task_6a6a",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/software_engineering_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "software_engineering_team_0218",
+          "coordinatorAgentRunId": "solution_designer_65a9"
+         },
+         "linkedAt": "2026-11-10T16:00:00.000Z",
+         "start": "started",
+         "closedAt": "2026-11-10T16:40:00.000Z"
+        },
+        {
+         "role": "subWork",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_0218"
+          },
+          "delegatorAgentRunId": "solution_designer_65a9"
+         },
+         "recipientAddress": "/upscaler",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "upscaler_e1a1"
+         },
+         "linkedAt": "2026-11-10T16:30:00.000Z",
+         "start": "started",
+         "closedAt": "2026-11-10T16:40:00.000Z"
+        }
+       ]
+      },
+      "A:memory/agents/upscaler_e1a1/run_metadata.json": {
+       "runId": "upscaler_e1a1",
+       "agentDefinitionId": "upscaler",
+       "address": "/upscaler",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/upscaler_e1a1",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T16:30:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agents/upscaler_e1a1/ (memory)": "created",
+      "A:memory/agents/image_maker_88e8/run_metadata.json": {
+       "runId": "image_maker_88e8",
+       "agentDefinitionId": "image-maker",
+       "address": "/image_maker",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/image_maker_88e8",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T16:50:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9"
+       }
+      },
+      "A:memory/agents/image_maker_88e8/ (memory)": "created",
+      "A:ad-hoc-tasks/adhoc_task_7c7c/task.json": {
+       "taskId": "adhoc_task_7c7c",
+       "projectId": null,
+       "title": "…",
+       "description": "Market study …",
+       "status": "DONE",
+       "createdAt": "2026-11-10T18:00:00.000Z",
+       "updatedAt": "2026-11-10T19:00:00.000Z"
+      },
+      "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-10T18:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "teamRunId": "research_team_77aa",
+        "coordinatorAddress": "/lead",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/lead",
+          "agentDefinitionId": "lead",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "lead_0c11",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/analyst",
+          "agentDefinitionId": "analyst",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "analyst_5d20",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       },
+       "delegatedFrom": {
+        "nodeId": "node-a-77d2",
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       }
+      },
+      "B:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "research_team_77aa",
+        "teamDefinitionId": "research-team",
+        "teamDefinitionName": "Research Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-10T18:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json": {
+       "taskId": "adhoc_task_7c7c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_team",
+         "agentRun": {
+          "kind": "team",
+          "teamRunId": "research_team_77aa",
+          "coordinatorAgentRunId": "lead_0c11"
+         },
+         "nodeId": "node-b-1f0e",
+         "members": [
+          {
+           "address": "/lead",
+           "agentRunId": "lead_0c11"
+          },
+          {
+           "address": "/analyst",
+           "agentRunId": "analyst_5d20"
+          }
+         ],
+         "linkedAt": "2026-11-10T18:00:00.000Z",
+         "start": "started",
+         "closedAt": "2026-11-10T19:00:00.000Z"
+        }
+       ]
+      },
+      "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory)": "created",
+      "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_P1",
+        "senderAgentRunId": "lead_0c11",
+        "receiverAgentRunId": "project_task_manager_7c8d",
+        "content": "Findings …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-10T18:30:00.000Z"
+       }
+      ],
+      "A:memory/agents/research_agent_9b10/run_metadata.json": {
+       "runId": "research_agent_9b10",
+       "agentDefinitionId": "research-agent",
+       "address": "/research_agent",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/research_agent_9b10",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-10T19:30:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "project_task_manager_7c8d"
+        },
+        "delegatorAgentRunId": "project_task_manager_7c8d"
+       }
+      },
+      "A:projects/project_8f21/tasks/project_task_2b2b/agent_run_resources.json": {
+       "taskId": "project_task_2b2b",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "project_task_manager_7c8d"
+          },
+          "delegatorAgentRunId": "project_task_manager_7c8d"
+         },
+         "recipientAddress": "/research_agent",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "research_agent_9b10"
+         },
+         "linkedAt": "2026-11-10T19:30:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/research_agent_9b10/ (memory)": "created"
+     },
+     "trees": {
+      "A": [
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "parent": null,
+        "tasks": [
+         {
+          "taskId": "project_task_6a6a",
+          "role": "assigned",
+          "open": false,
+          "assigner": null
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "architecture_reviewer_m_5c20",
+          "address": "/architecture_reviewer"
+         },
+         {
+          "agentRunId": "code_reviewer_m_3b10",
+          "address": "/code_reviewer"
+         },
+         {
+          "agentRunId": "implementation_engineer_m_7d31",
+          "address": "/implementation_engineer"
+         },
+         {
+          "agentRunId": "solution_designer_65a9",
+          "address": "/solution_designer"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "upscaler_e1a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "parent": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_0218"
+        },
+        "delegatorAgentRunId": "solution_designer_65a9",
+        "tasks": [
+         {
+          "taskId": "project_task_6a6a",
+          "role": "subWork",
+          "open": false,
+          "assigner": null
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "upscaler_e1a1",
+          "address": "/upscaler"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "research_team_77aa"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "research_team_77aa"
+        },
+        "parent": null,
+        "node": "node-b-1f0e",
+        "tasks": [
+         {
+          "taskId": "adhoc_task_7c7c",
+          "role": "assigned",
+          "open": false,
+          "assigner": null
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "lead_0c11",
+          "address": "/lead"
+         },
+         {
+          "agentRunId": "analyst_5d20",
+          "address": "/analyst"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "research_agent_9b10"
+        },
+        "tree": {
+         "kind": "agent",
+         "runId": "research_agent_9b10"
+        },
+        "parent": null,
+        "tasks": [
+         {
+          "taskId": "project_task_2b2b",
+          "role": "assigned",
+          "open": true,
+          "assigner": null
          }
         ],
         "agents": [
@@ -17929,6 +20058,10 @@
          "kind": "agent_team",
          "runId": "software_engineering_team_73d7"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -17954,6 +20087,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -18225,6 +20362,10 @@
          "kind": "agent_team",
          "runId": "software_engineering_team_73d7"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -18250,6 +20391,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -18574,6 +20719,10 @@
          "kind": "agent_team",
          "runId": "software_engineering_team_73d7"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -18599,6 +20748,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -18627,6 +20780,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_55b2"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent",
@@ -18948,6 +21105,10 @@
          "kind": "agent_team",
          "runId": "software_engineering_team_73d7"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -18973,6 +21134,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -19001,6 +21166,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_55b2"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent",
@@ -19322,6 +21491,10 @@
          "kind": "agent_team",
          "runId": "software_engineering_team_73d7"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -19347,6 +21520,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -19375,6 +21552,10 @@
         "run": {
          "kind": "agent",
          "runId": "upscaler_55b2"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent",
@@ -19769,6 +21950,10 @@
          "kind": "agent_team",
          "runId": "software_engineering_team_73d7"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -19794,6 +21979,10 @@
         "run": {
          "kind": "agent",
          "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -19823,6 +22012,10 @@
          "kind": "agent",
          "runId": "upscaler_55b2"
         },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
         "parent": {
          "kind": "agent",
          "runId": "image_maker_44a1"
@@ -19850,6 +22043,984 @@
         "run": {
          "kind": "agent",
          "runId": "research_agent_8f80"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33",
+        "tasks": [
+         {
+          "taskId": "adhoc_task_91a1",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "research_agent_8f80",
+          "address": "/research_agent"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "U9",
+     "title": "Refused: runs of different open Tasks",
+     "cases": [
+      "R-7"
+     ],
+     "call": "`send_message_to(target_agent_run_id: \"image_maker_44a1\", content: \"…\")`, by `research_agent_8f80`",
+     "results": [],
+     "refused": {
+      "code": "TASK_AGENT_RESOURCE_CONFLICT",
+      "message": "You can't message this agent: it works on a different Task."
+     },
+     "receiverSees": [],
+     "disk": {
+      "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-01T09:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [
+        {
+         "from": "/solution_designer",
+         "to": "/architecture_reviewer",
+         "rules": [
+          "When the design is ready for review …"
+         ]
+        },
+        {
+         "from": "/architecture_reviewer",
+         "to": "/implementation_engineer",
+         "rules": [
+          "When the review passes …"
+         ]
+        },
+        {
+         "from": "/implementation_engineer",
+         "to": "/code_reviewer",
+         "rules": [
+          "When the implementation is ready for review …"
+         ]
+        }
+       ],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "teamRunId": "software_engineering_team_73d7",
+        "coordinatorAddress": "/solution_designer",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/solution_designer",
+          "agentDefinitionId": "solution-designer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "solution_designer_7a33",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/architecture_reviewer",
+          "agentDefinitionId": "architecture-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "architecture_reviewer_cd34",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/implementation_engineer",
+          "agentDefinitionId": "implementation-engineer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "implementation_engineer_864a",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/code_reviewer",
+          "agentDefinitionId": "code-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "code_reviewer_2e4f",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       }
+      },
+      "A:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "software_engineering_team_73d7",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T09:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_3c3c/task.json": {
+       "taskId": "project_task_3c3c",
+       "projectId": "project_8f21",
+       "taskKey": "demo-3",
+       "title": "Design the onboarding",
+       "description": "…",
+       "status": "IN_PROGRESS",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T09:05:00.000Z",
+       "updatedAt": "2026-11-01T09:05:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U1",
+        "senderAgentRunId": "solution_designer_7a33",
+        "receiverAgentRunId": "architecture_reviewer_cd34",
+        "content": "Please review …",
+        "messageType": "architecture_review_request",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T10:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_U2",
+        "senderAgentRunId": "architecture_reviewer_cd34",
+        "receiverAgentRunId": "implementation_engineer_864a",
+        "content": "Approved, please implement …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T11:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_U3",
+        "senderAgentRunId": "image_maker_44a1",
+        "receiverAgentRunId": "solution_designer_7a33",
+        "content": "Mockups ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/ (memory)": "created",
+      "A:memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/ (memory)": "created",
+      "A:memory/agents/image_maker_44a1/run_metadata.json": {
+       "runId": "image_maker_44a1",
+       "agentDefinitionId": "image-maker",
+       "address": "/image_maker",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/image_maker_44a1",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T12:00:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33"
+       }
+      },
+      "A:memory/run_history_index.json": [
+       {
+        "runId": "image_maker_44a1",
+        "agentDefinitionId": "image-maker",
+        "agentName": "Image Maker",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T12:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null,
+        "hasCollaboration": true
+       },
+       {
+        "runId": "upscaler_55b2",
+        "agentDefinitionId": "upscaler",
+        "agentName": "Upscaler",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T13:30:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       },
+       {
+        "runId": "research_agent_8f80",
+        "agentDefinitionId": "research-agent",
+        "agentName": "Research Agent",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T14:40:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json": {
+       "taskId": "project_task_3c3c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          },
+          "delegatorAgentRunId": "solution_designer_7a33"
+         },
+         "recipientAddress": "/image_maker",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "image_maker_44a1"
+         },
+         "linkedAt": "2026-11-01T12:00:00.000Z",
+         "start": "started",
+         "closedAt": null
+        },
+        {
+         "role": "subWork",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "image_maker_44a1"
+          },
+          "delegatorAgentRunId": "image_maker_44a1"
+         },
+         "recipientAddress": "/upscaler",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "upscaler_55b2"
+         },
+         "linkedAt": "2026-11-01T13:30:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/image_maker_44a1/ (memory)": "created",
+      "A:memory/agents/image_maker_44a1/communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U3",
+        "senderAgentRunId": "image_maker_44a1",
+        "receiverAgentRunId": "solution_designer_7a33",
+        "content": "Mockups ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/ (memory)": "created",
+      "A:memory/agents/upscaler_55b2/run_metadata.json": {
+       "runId": "upscaler_55b2",
+       "agentDefinitionId": "upscaler",
+       "address": "/upscaler",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/upscaler_55b2",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T13:30:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "image_maker_44a1"
+        },
+        "delegatorAgentRunId": "image_maker_44a1"
+       }
+      },
+      "A:memory/agents/upscaler_55b2/ (memory)": "created",
+      "A:ad-hoc-tasks/adhoc_task_91a1/task.json": {
+       "taskId": "adhoc_task_91a1",
+       "projectId": null,
+       "title": "…",
+       "description": "Collect onboarding examples …",
+       "status": "IN_PROGRESS",
+       "createdAt": "2026-11-01T14:40:00.000Z",
+       "updatedAt": "2026-11-01T14:40:00.000Z"
+      },
+      "A:memory/agents/research_agent_8f80/run_metadata.json": {
+       "runId": "research_agent_8f80",
+       "agentDefinitionId": "research-agent",
+       "address": "/research_agent",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/research_agent_8f80",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T14:40:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33"
+       }
+      },
+      "A:ad-hoc-tasks/adhoc_task_91a1/agent_run_resources.json": {
+       "taskId": "adhoc_task_91a1",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          },
+          "delegatorAgentRunId": "solution_designer_7a33"
+         },
+         "recipientAddress": "/research_agent",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "research_agent_8f80"
+         },
+         "linkedAt": "2026-11-01T14:40:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/research_agent_8f80/ (memory)": "created"
+     },
+     "trees": {
+      "A": [
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": null,
+        "tasks": [],
+        "agents": [
+         {
+          "agentRunId": "architecture_reviewer_cd34",
+          "address": "/architecture_reviewer"
+         },
+         {
+          "agentRunId": "code_reviewer_2e4f",
+          "address": "/code_reviewer"
+         },
+         {
+          "agentRunId": "implementation_engineer_864a",
+          "address": "/implementation_engineer"
+         },
+         {
+          "agentRunId": "solution_designer_7a33",
+          "address": "/solution_designer"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33",
+        "tasks": [
+         {
+          "taskId": "project_task_3c3c",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "image_maker_44a1",
+          "address": "/image_maker"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "upscaler_55b2"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "image_maker_44a1"
+        },
+        "delegatorAgentRunId": "image_maker_44a1",
+        "tasks": [
+         {
+          "taskId": "project_task_3c3c",
+          "role": "subWork",
+          "open": true,
+          "assigner": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "upscaler_55b2",
+          "address": "/upscaler"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "research_agent_8f80"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33",
+        "tasks": [
+         {
+          "taskId": "adhoc_task_91a1",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "research_agent_8f80",
+          "address": "/research_agent"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "U10",
+     "title": "Refused: a team run's ID, answered with its coordinator's",
+     "cases": [
+      "R-12"
+     ],
+     "call": "`send_message_to(target_agent_run_id: \"software_engineering_team_73d7\", content: \"Mockups ready …\")`, by `image_maker_44a1`",
+     "results": [],
+     "refused": {
+      "code": "TARGET_IS_TEAM_RUN",
+      "message": "software_engineering_team_73d7 is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: solution_designer_7a33."
+     },
+     "receiverSees": [],
+     "disk": {
+      "A:memory/agent_teams/software_engineering_team_73d7/team_run_execution_tree.json": {
+       "schemaVersion": 1,
+       "createdAt": "2026-11-01T09:00:00.000Z",
+       "archivedAt": null,
+       "applicationBinding": null,
+       "handoffs": [
+        {
+         "from": "/solution_designer",
+         "to": "/architecture_reviewer",
+         "rules": [
+          "When the design is ready for review …"
+         ]
+        },
+        {
+         "from": "/architecture_reviewer",
+         "to": "/implementation_engineer",
+         "rules": [
+          "When the review passes …"
+         ]
+        },
+        {
+         "from": "/implementation_engineer",
+         "to": "/code_reviewer",
+         "rules": [
+          "When the implementation is ready for review …"
+         ]
+        }
+       ],
+       "rootTeam": {
+        "address": "/",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "teamRunId": "software_engineering_team_73d7",
+        "coordinatorAddress": "/solution_designer",
+        "defaultLaunchConfiguration": {
+         "…": "…"
+        },
+        "members": [
+         {
+          "address": "/solution_designer",
+          "agentDefinitionId": "solution-designer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "solution_designer_7a33",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/architecture_reviewer",
+          "agentDefinitionId": "architecture-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "architecture_reviewer_cd34",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/implementation_engineer",
+          "agentDefinitionId": "implementation-engineer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "implementation_engineer_864a",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         },
+         {
+          "address": "/code_reviewer",
+          "agentDefinitionId": "code-reviewer",
+          "role": "…",
+          "description": "…",
+          "agentRunId": "code_reviewer_2e4f",
+          "platformAgentRunId": "…",
+          "launchConfiguration": {
+           "…": "…"
+          }
+         }
+        ]
+       }
+      },
+      "A:memory/team_run_history_index.json": [
+       {
+        "teamRunId": "software_engineering_team_73d7",
+        "teamDefinitionId": "software-engineering-team",
+        "teamDefinitionName": "Software Engineering Team",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T09:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_3c3c/task.json": {
+       "taskId": "project_task_3c3c",
+       "projectId": "project_8f21",
+       "taskKey": "demo-3",
+       "title": "Design the onboarding",
+       "description": "…",
+       "status": "IN_PROGRESS",
+       "dependsOnTaskIds": [],
+       "partOfTaskId": null,
+       "createdAt": "2026-11-01T09:05:00.000Z",
+       "updatedAt": "2026-11-01T09:05:00.000Z",
+       "contextFiles": [],
+       "comments": []
+      },
+      "A:memory/agent_teams/software_engineering_team_73d7/team_communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U1",
+        "senderAgentRunId": "solution_designer_7a33",
+        "receiverAgentRunId": "architecture_reviewer_cd34",
+        "content": "Please review …",
+        "messageType": "architecture_review_request",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T10:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_U2",
+        "senderAgentRunId": "architecture_reviewer_cd34",
+        "receiverAgentRunId": "implementation_engineer_864a",
+        "content": "Approved, please implement …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T11:00:00.000Z"
+       },
+       {
+        "messageId": "collabmsg_U3",
+        "senderAgentRunId": "image_maker_44a1",
+        "receiverAgentRunId": "solution_designer_7a33",
+        "content": "Mockups ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_73d7/architecture_reviewer_cd34/ (memory)": "created",
+      "A:memory/agent_teams/software_engineering_team_73d7/implementation_engineer_864a/ (memory)": "created",
+      "A:memory/agents/image_maker_44a1/run_metadata.json": {
+       "runId": "image_maker_44a1",
+       "agentDefinitionId": "image-maker",
+       "address": "/image_maker",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/image_maker_44a1",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T12:00:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33"
+       }
+      },
+      "A:memory/run_history_index.json": [
+       {
+        "runId": "image_maker_44a1",
+        "agentDefinitionId": "image-maker",
+        "agentName": "Image Maker",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T12:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null,
+        "hasCollaboration": true
+       },
+       {
+        "runId": "upscaler_55b2",
+        "agentDefinitionId": "upscaler",
+        "agentName": "Upscaler",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T13:30:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       },
+       {
+        "runId": "research_agent_8f80",
+        "agentDefinitionId": "research-agent",
+        "agentName": "Research Agent",
+        "workspaceRootPath": "/Users/me/projects/x",
+        "summary": "…",
+        "createdAt": "2026-11-01T14:40:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+       }
+      ],
+      "A:projects/project_8f21/tasks/project_task_3c3c/agent_run_resources.json": {
+       "taskId": "project_task_3c3c",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          },
+          "delegatorAgentRunId": "solution_designer_7a33"
+         },
+         "recipientAddress": "/image_maker",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "image_maker_44a1"
+         },
+         "linkedAt": "2026-11-01T12:00:00.000Z",
+         "start": "started",
+         "closedAt": null
+        },
+        {
+         "role": "subWork",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent",
+           "runId": "image_maker_44a1"
+          },
+          "delegatorAgentRunId": "image_maker_44a1"
+         },
+         "recipientAddress": "/upscaler",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "upscaler_55b2"
+         },
+         "linkedAt": "2026-11-01T13:30:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/image_maker_44a1/ (memory)": "created",
+      "A:memory/agents/image_maker_44a1/communication_messages_active.jsonl": [
+       {
+        "messageId": "collabmsg_U3",
+        "senderAgentRunId": "image_maker_44a1",
+        "receiverAgentRunId": "solution_designer_7a33",
+        "content": "Mockups ready …",
+        "messageType": "agent_message",
+        "referenceFiles": [],
+        "createdAt": "2026-11-01T13:00:00.000Z"
+       }
+      ],
+      "A:memory/agent_teams/software_engineering_team_73d7/solution_designer_7a33/ (memory)": "created",
+      "A:memory/agents/upscaler_55b2/run_metadata.json": {
+       "runId": "upscaler_55b2",
+       "agentDefinitionId": "upscaler",
+       "address": "/upscaler",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/upscaler_55b2",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T13:30:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent",
+         "runId": "image_maker_44a1"
+        },
+        "delegatorAgentRunId": "image_maker_44a1"
+       }
+      },
+      "A:memory/agents/upscaler_55b2/ (memory)": "created",
+      "A:ad-hoc-tasks/adhoc_task_91a1/task.json": {
+       "taskId": "adhoc_task_91a1",
+       "projectId": null,
+       "title": "…",
+       "description": "Collect onboarding examples …",
+       "status": "IN_PROGRESS",
+       "createdAt": "2026-11-01T14:40:00.000Z",
+       "updatedAt": "2026-11-01T14:40:00.000Z"
+      },
+      "A:memory/agents/research_agent_8f80/run_metadata.json": {
+       "runId": "research_agent_8f80",
+       "agentDefinitionId": "research-agent",
+       "address": "/research_agent",
+       "workspaceRootPath": "/Users/me/projects/x",
+       "memoryDir": "…/memory/agents/research_agent_8f80",
+       "llmModelIdentifier": "…",
+       "llmConfig": {
+        "…": "…"
+       },
+       "autoExecuteTools": true,
+       "runtimeKind": "…",
+       "platformAgentRunId": "…",
+       "startedAt": "2026-11-01T14:40:00.000Z",
+       "launchSource": {
+        "origin": "agent_default",
+        "fallbacks": []
+       },
+       "delegatedFrom": {
+        "delegatingRun": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33"
+       }
+      },
+      "A:ad-hoc-tasks/adhoc_task_91a1/agent_run_resources.json": {
+       "taskId": "adhoc_task_91a1",
+       "agentRunResources": [
+        {
+         "role": "assigned",
+         "delegatedFrom": {
+          "delegatingRun": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          },
+          "delegatorAgentRunId": "solution_designer_7a33"
+         },
+         "recipientAddress": "/research_agent",
+         "agentRun": {
+          "kind": "agent",
+          "agentRunId": "research_agent_8f80"
+         },
+         "linkedAt": "2026-11-01T14:40:00.000Z",
+         "start": "started",
+         "closedAt": null
+        }
+       ]
+      },
+      "A:memory/agents/research_agent_8f80/ (memory)": "created"
+     },
+     "trees": {
+      "A": [
+       {
+        "run": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": null,
+        "tasks": [],
+        "agents": [
+         {
+          "agentRunId": "architecture_reviewer_cd34",
+          "address": "/architecture_reviewer"
+         },
+         {
+          "agentRunId": "code_reviewer_2e4f",
+          "address": "/code_reviewer"
+         },
+         {
+          "agentRunId": "implementation_engineer_864a",
+          "address": "/implementation_engineer"
+         },
+         {
+          "agentRunId": "solution_designer_7a33",
+          "address": "/solution_designer"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "image_maker_44a1"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "delegatorAgentRunId": "solution_designer_7a33",
+        "tasks": [
+         {
+          "taskId": "project_task_3c3c",
+          "role": "assigned",
+          "open": true,
+          "assigner": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "image_maker_44a1",
+          "address": "/image_maker"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "upscaler_55b2"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
+        },
+        "parent": {
+         "kind": "agent",
+         "runId": "image_maker_44a1"
+        },
+        "delegatorAgentRunId": "image_maker_44a1",
+        "tasks": [
+         {
+          "taskId": "project_task_3c3c",
+          "role": "subWork",
+          "open": true,
+          "assigner": {
+           "kind": "agent_team",
+           "runId": "software_engineering_team_73d7"
+          }
+         }
+        ],
+        "agents": [
+         {
+          "agentRunId": "upscaler_55b2",
+          "address": "/upscaler"
+         }
+        ]
+       },
+       {
+        "run": {
+         "kind": "agent",
+         "runId": "research_agent_8f80"
+        },
+        "tree": {
+         "kind": "agent_team",
+         "runId": "software_engineering_team_73d7"
         },
         "parent": {
          "kind": "agent_team",
@@ -20937,6 +24108,10 @@
          "kind": "agent_org",
          "runId": "company_org_9d00"
         },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -20966,6 +24141,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "dev_team_9a9a"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
         },
         "parent": {
          "kind": "agent_org",
@@ -21285,6 +24464,10 @@
          "kind": "agent_org",
          "runId": "company_org_9d00"
         },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -21314,6 +24497,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "dev_team_9a9a"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
         },
         "parent": {
          "kind": "agent_org",
@@ -21652,6 +24839,10 @@
          "kind": "agent_org",
          "runId": "company_org_9d00"
         },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -21681,6 +24872,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "dev_team_9a9a"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
         },
         "parent": {
          "kind": "agent_org",
@@ -22078,6 +25273,10 @@
          "kind": "agent_org",
          "runId": "company_org_9d00"
         },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
+        },
         "parent": null,
         "tasks": [],
         "agents": [
@@ -22107,6 +25306,10 @@
         "run": {
          "kind": "agent_team",
          "runId": "dev_team_9a9a"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
         },
         "parent": {
          "kind": "agent_org",
@@ -22139,6 +25342,10 @@
         "run": {
          "kind": "agent",
          "runId": "release_agent_66c3"
+        },
+        "tree": {
+         "kind": "agent_org",
+         "runId": "company_org_9d00"
         },
         "parent": {
          "kind": "agent_org",

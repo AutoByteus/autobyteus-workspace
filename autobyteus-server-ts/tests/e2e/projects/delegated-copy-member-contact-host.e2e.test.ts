@@ -8,7 +8,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { projectionByOwnRun } from "../helpers/own-run-reads.js";
+import { ownRunOfAgent, projectionByOwnRun } from "../helpers/own-run-reads.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
@@ -217,15 +217,31 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
      */
     const childStreams = new Map<string, Promise<Awaited<ReturnType<typeof connect>>>>();
     const postToChild = async (agentRunId: string, content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {
-      if (!childStreams.has(agentRunId)) childStreams.set(agentRunId, connect("agent", agentRunId, (frames) => frames.some((frame) => frame.type === "CONNECTED")));
-      const stream = await childStreams.get(agentRunId)!;
+      // An agent run's own stream answers with its command ACK; a member of a team run is sent on its team's own stream,
+      // which answers a refusal with an ERROR naming the member and an accepted message with the member's input echo.
+      // A member that never ran has no memory folder yet: its team is found from the host's view rows (rule 1).
+      let own = await ownRunOfAgent(path.join(dataDir, "memory"), agentRunId);
+      if (!own) {
+        const view = (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: hostRunId })).agentRunCollaboration;
+        const team = objectsIn(view).find((row) => typeof (row.team_run_id ?? row.teamRunId) === "string" && Array.isArray(row.members)
+          && (row.members as Record<string, any>[]).some((member) => (member.agent_run_id ?? member.agentRunId) === agentRunId));
+        if (team) own = { kind: "team", teamRunId: String(team.team_run_id ?? team.teamRunId) };
+      }
+      const key = own?.kind === "team" ? `team:${own.teamRunId}` : `agent:${agentRunId}`;
+      if (!childStreams.has(key)) childStreams.set(key, own?.kind === "team"
+        ? connect("agent-team", own.teamRunId, (frames) => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"))
+        : connect("agent", agentRunId, (frames) => frames.some((frame) => frame.type === "CONNECTED")));
+      const stream = await childStreams.get(key)!;
       const ids = buildE2eClientCommandIds();
+      const from = stream.frames.length;
       stream.socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
         agent_run_id: agentRunId, content, context_file_paths: [], image_urls: [], ...ids, ...(mentions ? { mentions } : {}) } }));
-      let ack: Frame | undefined;
-      await until(() => Boolean(ack = stream.frames.find((frame) => frame.type === "AGENT_COMMAND_ACK" && frame.payload.message_id === ids.message_id)),
-        `ACK for ${ids.message_id}`, 60_000);
-      return ack!.payload;
+      let answer: Frame | undefined;
+      await until(() => Boolean(answer = stream.frames.slice(from).find((frame) => (frame.type === "AGENT_COMMAND_ACK" && frame.payload.message_id === ids.message_id)
+        || (frame.type === "ERROR" && JSON.stringify(frame.payload).includes(agentRunId))
+        || (frame.type === "MEMBER_INPUT_MESSAGE" && frame.payload.message_id === ids.message_id))), `answer for ${ids.message_id}`, 60_000);
+      if (answer!.type === "AGENT_COMMAND_ACK") return answer!.payload;
+      return answer!.type === "ERROR" ? { state: "rejected", ...answer!.payload } : { state: "accepted", message_id: ids.message_id };
     };
     /** Posts a scripted tool call to a copy member and returns the tool result it reports. */
     const childCalls = async (address: string, agentRunId: string, content: string, mentions?: Array<{ kind: "agent" | "agent_team"; definition_id: string }>) => {

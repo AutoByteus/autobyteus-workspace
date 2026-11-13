@@ -336,11 +336,28 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
       return toolResult(results[before]!);
     };
     const nodes = async () => taskNodes(await liveTree());
-    const signals = () => signalsIn(view.frames);
+    // autobyteus-461 rule 2: the delegator's view relays a delegated run's statuses only; its background-task frames are on
+    // its own stream. Each delegated run's own stream is followed from the moment it is a row of the view.
+    const ownFrames: Array<{ agentRunId: string | null; frames: Frame[] }> = [];
+    const followed = new Set<string>();
+    const followOwnRuns = async () => {
+      for (const node of await nodes()) {
+        const key = node.teamRunId ? `team:${node.teamRunId}` : `agent:${node.agentRunId}`;
+        if (followed.has(key)) continue;
+        followed.add(key);
+        const stream = node.teamRunId
+          ? await connect("agent-team", node.teamRunId, (frames) => frames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT")).catch(() => null)
+          : await connect("agent", node.agentRunId!, (frames) => frames.some((f) => f.type === "CONNECTED")).catch(() => null);
+        // An agent run's own stream names the run in its URL, not in each payload.
+        if (stream) ownFrames.push({ agentRunId: node.teamRunId ? null : node.agentRunId, frames: stream.frames });
+      }
+    };
+    const signals = () => signalsIn([...view.frames, ...ownFrames.flatMap((own) => own.frames.map((frame) => own.agentRunId && typeof frame.payload?.agent_run_id !== "string"
+      ? { ...frame, payload: { ...frame.payload, agent_run_id: own.agentRunId } } : frame))].sort((a, b) => a.at - b.at));
     /** Resolves with the first signal matching, waiting up to `ms`. */
     const signal = async (label: string, match: (entry: Signal) => boolean, ms = 60_000) => {
       let found: Signal | undefined;
-      await until(() => Boolean(found = signals().find(match)), `${kind}: ${label}`, ms);
+      await until(async () => { await followOwnRuns(); return Boolean(found = signals().find(match)); }, `${kind}: ${label}`, ms);
       return found!;
     };
     const answered = (agentRunId: string, address: string, marker: string) => until(async () => {

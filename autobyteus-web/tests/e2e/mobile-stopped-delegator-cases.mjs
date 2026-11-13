@@ -174,9 +174,30 @@ export const runStoppedDelegatorCases = async (probe) => {
       }
       return null;
     };
-    const openRow = async (row) => {
+    const listedRows = () => page.evaluate(() => [...document.querySelectorAll('[data-test="mobile-run-row"]')].map((li) => ({ key: li.getAttribute('data-testid'),
+      depth: li.getAttribute('data-depth'), expanded: li.getAttribute('aria-expanded'), name: li.querySelector('[data-testid="mobile-run-name"]')?.textContent?.trim() })));
+    /** What the node itself lists (the phone's list reads), for a failure's details: the agent runs and the root's rows. */
+    const nodeLists = async (root) => {
+      const history = (await eta.gql('query{listWorkspaceRunHistory(limitPerAgent:20){agentDefinitions{agentName runs{runId isActive hasCollaboration}} teamDefinitions{teamDefinitionName runs{teamRunId isActive members{memberAddress agentRunId}}}}}', {})).listWorkspaceRunHistory;
+      const listedAgentRuns = history.flatMap((ws) => ws.agentDefinitions.flatMap((d) => d.runs.map((r) => ({ agent: d.agentName, ...r }))));
+      const rootRows = root.kind === 'agent'
+        ? (await eta.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId }).catch((e) => ({ error: String(e.message ?? e) })))
+        : root.kind === 'team'
+          ? (await eta.gql('query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}', { id: root.rootId }).catch((e) => ({ error: String(e.message ?? e) })))
+          : (await eta.gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: root.rootId }).catch((e) => ({ error: String(e.message ?? e) })));
+      return { listedAgentRuns, workerListedAsAgentRun: listedAgentRuns.some((r) => r.runId === root.worker), rootRows: redact(JSON.stringify(rootRows)).slice(0, 4000) };
+    };
+    const openRow = async (row, label) => {
+      const rowKey = await row.getAttribute('data-testid').catch(() => null);
       await row.locator('[data-testid="mobile-run-open"]').first().click();
-      await waitFor('the run screen', async () => (await page.evaluate(() => document.querySelector('[data-testid="mobile-run-screen"]')?.getAttribute('data-state'))) === 'open', 30_000);
+      await waitFor('the run screen', async () => (await page.evaluate(() => document.querySelector('[data-testid="mobile-run-screen"]')?.getAttribute('data-state'))) === 'open', 30_000)
+        .catch(async (error) => {
+          error.details = { rowKey, screenState: await page.evaluate(() => document.querySelector('[data-testid="mobile-run-screen"]')?.getAttribute('data-state') ?? null),
+            alerts: await page.evaluate(() => [...document.querySelectorAll('[role="alert"], [role="status"], [data-testid*="error"], [data-testid*="notice"]')].map((el) => el.textContent?.trim()).filter(Boolean).slice(0, 10)),
+            openControls: await row.locator('[data-testid="mobile-run-open"]').count().catch(() => -1) };
+          await shot(page, `${label}-run-screen-not-open`);
+          throw error;
+        });
     };
     const composerSend = async (text) => {
       const box = page.locator('[data-testid="mobile-run-conversation"] textarea').last();
@@ -196,12 +217,15 @@ export const runStoppedDelegatorCases = async (probe) => {
       let row = null;
       await waitFor(`the worker's row under the ${kind} root`, async () => { await unfold(root); return Boolean(row = await workerRow(root)); }, 30_000)
         .catch(async (error) => {
-          error.details = { rows: await page.evaluate(() => [...document.querySelectorAll('[data-test="mobile-run-row"]')].map((li) => ({ key: li.getAttribute('data-testid'),
-            depth: li.getAttribute('data-depth'), expanded: li.getAttribute('aria-expanded'), name: li.querySelector('[data-testid="mobile-run-name"]')?.textContent?.trim() }))) };
+          error.details = { rows: await listedRows(), node: await nodeLists(root).catch((e) => ({ error: String(e.message ?? e) })) };
           await shot(page, `${id.toLowerCase()}-worker-row-missing`);
           throw error;
         });
-      await openRow(row);
+      // REQ-002: a delegated run is shown under the run that delegated it, once: never also as a top-level run.
+      const topLevelWorker = (await listedRows()).filter((r) => r.depth === '0' && r.key?.includes(root.worker));
+      out.workerTopLevelRows = topLevelWorker;
+      if (topLevelWorker.length) out.node = await nodeLists(root).catch((e) => ({ error: String(e.message ?? e) }));
+      await openRow(row, `${id.toLowerCase()}-worker`);
       const before = okCount(await conversation());
       const marker = `PHONE-STOPPED-${kind}`;
       await composerSend(`Status of the notes? Marker ${marker}`);
@@ -212,6 +236,8 @@ export const runStoppedDelegatorCases = async (probe) => {
       assert(!out.rootActiveAfterChild, `${kind}: the stopped root was started by a message to its worker`, out);
       await shot(page, `${id.toLowerCase()}-worker-answered`);
       await showsStopped(root, 15_000, 'after a child command', out);
+      // REQ-002 again after the worker was opened: opening its row must not add it as a top-level run.
+      out.workerTopLevelRowsAfterOpen = (await listedRows()).filter((r) => r.depth === '0' && r.key?.includes(root.worker));
       // The user's message to the root's own member (the Manager) starts it: back on the list, the root's own row (agent)
       // or its Manager member's row (team, org: by the member's run ID in its key, else its member name `manager`).
       await toList();
@@ -229,7 +255,7 @@ export const runStoppedDelegatorCases = async (probe) => {
         out.ownRows = rows;
         assert(managerRow, `${kind}: the Manager's row is listed under the root`, out);
       }
-      await openRow(managerRow);
+      await openRow(managerRow, `${id.toLowerCase()}-manager`);
       const ownMarker = `PHONE-OWN-${kind}`;
       const beforeOwn = okCount(await conversation());
       await composerSend(`Back to work. Marker ${ownMarker}`);
@@ -238,6 +264,8 @@ export const runStoppedDelegatorCases = async (probe) => {
       out.rootStartedOnOwnMember = true;
       await shot(page, `${id.toLowerCase()}-root-started`);
       assert(errors.length === 0, 'phone page errors', errors);
+      assert(out.workerTopLevelRows.length === 0 && out.workerTopLevelRowsAfterOpen.length === 0,
+        `${kind}: the delegated worker is also listed as a top-level run (REQ-002: once)`, out);
       return out;
     });
     await journey('MSP-50', 'agent');

@@ -341,14 +341,15 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
       active.push({ kind, rootId });
     };
     const closeChannels = () => { channels.view.socket.close(); channels.input?.socket.close(); };
-    /** The root's saved messages as freshly opened Team tabs load them (autobyteus-358: per participant). */
+    /** The root's saved messages as freshly opened Team tabs load them (autobyteus-358: per participant; its own Manager always included,
+     * since an Agent root's tree holds only the runs it delegated to). */
     const snapshotMessages = async (): Promise<string[]> => {
       const view = await connect(viewRoute, rootId, (frames) => frames.some(isSnapshot));
       const payload = view.frames.find(isSnapshot)!.payload;
       view.socket.close();
       const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
       const list = await readRootMessages(graphql, { rootKind: kind === "agent" ? "agent" : kind === "org" ? "agent_org" : "agent_team",
-        rootRunId: rootId, agentRunIds: agentRunIdsOfViewTree(body.execution_tree) });
+        rootRunId: rootId, agentRunIds: [...new Set([managerRunId, ...agentRunIdsOfViewTree(body.execution_tree)])] });
       return list.map((message) => String(message.content));
     };
     const send = (agentRunId: string, content: string) => {

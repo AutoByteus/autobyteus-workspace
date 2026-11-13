@@ -50,7 +50,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/stoppe
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['SDV-01', 'SDV-02', 'SDV-03'];
+const ALL_CASES = ['SDV-01', 'SDV-02', 'SDV-03', 'SDV-04'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -458,10 +458,46 @@ const caseStoppedRoot = async (kind) => {
   } finally { await context.close(); }
 };
 
+/**
+ * SDV-04 (autobyteus-461 CR-461-042, rule 1 / rule 3): the reopened row, rendered. The Manager's view is open; the Manager sets
+ * the worker's Task DONE (the row leaves when the worker stops); it reopens the Task and continues the worker by run ID: the
+ * worker's row is listed under the Manager again, live, with no reload.
+ */
+const caseReopenedRow = async () => {
+  const s = await setupRoot('agent', 'SdvReopen');
+  const { page, errors, context } = await newPage();
+  const out = { root: s.root.rootId, worker: s.worker };
+  try {
+    await openRoot(page, s.root, s.names);
+    const row = page.locator(childRow('agent', s.worker));
+    await row.waitFor({ state: 'visible', timeout: 30000 });
+    const input = await managerInput(s.root);
+    try {
+      input.send(callTool('update_task', { task_id: s.taskId, status: 'DONE' }));
+      await until('the worker row leaves after DONE', async () => (await row.count()) === 0, 60000);
+      out.leftAfterDone = true;
+      await shot(page, 'sdv-04-after-done');
+      input.send(callTool('update_task', { task_id: s.taskId, status: 'IN_PROGRESS' }));
+      await sleep(1500);
+      input.send(callTool('send_message_to', { target_agent_run_id: s.worker, content: 'Continue the notes. Marker REOPENED-ROW.' }));
+      await until('the worker row is back, live', async () => (await row.count()) > 0 && await row.first().isVisible(), 60000);
+      out.backAfterReopen = true;
+      await shot(page, 'sdv-04-row-back');
+    } finally { input.close(); }
+    assert(errors.length === 0, 'browser errors', errors);
+    return out;
+  } catch (error) {
+    await shot(page, 'sdv-04-failed').catch(() => undefined);
+    error.details = { ...(error.details ?? {}), ...out };
+    throw error;
+  } finally { await context.close(); }
+};
+
 const CASES = {
   'SDV-01': ['Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it', caseAgentRun],
   'SDV-02': ['Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)', () => caseStoppedRoot('team')],
   'SDV-03': ['Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input', () => caseStoppedRoot('org')],
+  'SDV-04': ["Agent-run view: the worker's row leaves at DONE and is listed again, live, after the Manager reopens and continues it (CR-461-042)", caseReopenedRow],
 };
 
 let result = 'Pass';

@@ -453,6 +453,29 @@ suite("Collaboration prompt wording through real roots (real HTTP/WS/GraphQL/sco
     await h.terminate("team", root.rootId);
   }, 300_000);
 
+  it("CPW-M7 C17-02: a run two hops down delegates to an address only the top run's catalog offers, as base answered a copy hosted in the top run", async () => {
+    // Org root (top): the manager delegates the squad Team (one hop); the squad's lead delegates an outside agent (two hops).
+    // That agent delegates to `/sibling`, an address of the org's catalog that the squad's own catalog does not have. Base hosted
+    // every copy in the org root and answered from its catalog: a new task agent. SR-059: its Task's assigner is the org, so the
+    // org's standing agents are in its reach (step 2).
+    const text = (result: { text: string }) => result.text.replace(/\\+"/g, '"');
+    const orgRoot = await h.startRoot("org", ids);
+    await wake(orgRoot, orgRoot.managerRunId);
+    const squad = await orgRoot.calls(orgRoot.managerRunId, "/manager", callTool("delegate_task", { recipient_address: "/squad", description: "Reply OK." }));
+    expect(squad, JSON.stringify(squad)).toMatchObject({ delegated: true, target_kind: "team" });
+    const lead = squad.target_team_coordinator_agent_run_id as string;
+    await orgRoot.waitForTaskAgent(squad.target_team_run_id as string);
+    const twoHops = text(await h.mcpCall(lead, "delegate_task", { recipient_address: `/${segment(names.outsider)}`, description: "Reply OK." }));
+    expect(twoHops, twoHops).toContain('"delegated":true');
+    const a = JSON.parse(twoHops).target_agent_run_id as string;
+    await orgRoot.waitForTaskAgent(a);
+    const fromTwoHops = text(await h.mcpCall(a, "delegate_task", { recipient_address: "/sibling", description: "Reply OK." }));
+    expect(fromTwoHops, `two hops down → the top run's catalog address: ${fromTwoHops}`).toContain('"delegated":true');
+    expect(fromTwoHops).toContain('"target_kind":"agent"');
+    orgRoot.close();
+    await h.terminate("org", orgRoot.rootId);
+  }, 300_000);
+
   it("CPW-M6 a task agent's in-run set is what it reaches by address (SR-059): delegate_task answers for its assigner's agents as base answered a hosted copy", async () => {
     // Base 827f1e68dc (IMP-43): the assigner's own agent is refused as a delegation target; an assigner's configured
     // placement is delegated to (a new task agent). The list at those addresses: reachable-agents.test.ts.

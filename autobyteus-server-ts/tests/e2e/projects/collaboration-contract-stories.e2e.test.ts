@@ -10,6 +10,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { calledResults, toolResult, type Rec } from "../helpers/collaboration-root-harness.js";
 import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 import { pairNodes } from "../helpers/pair-nodes.js";
+import { findAgyRunCapsule } from "../helpers/agy-run-capsule.js";
 
 // autobyteus-461 acceptance test (design DS-10 "Validation": the contract's stories, run against the server). The contract's
 // executable model (`target-collaboration-contract.md` revision 8, `evidence/collaboration-model/`) generates the expected
@@ -387,6 +388,33 @@ suite("The collaboration contract's stories, run against the built server (autob
       else if (["send_message_to", "delegate_task", "update_task"].includes(tool)) this.results.push({ ...result, __tool: tool });
       return result;
     }
+    /**
+     * One tool call made the way the agent's own CLI makes it: over the run's scoped MCP endpoint (its capsule's
+     * mcp_config.json). For a step whose actor takes no user input: DS-15 fences a run whose Tasks are all closed, so a user
+     * message cannot start the agent's turn, while the model's step is the agent's own call. Recorded as `call` records.
+     */
+    async callDirect(agentModelId: string, tool: string, args: Rec): Promise<Rec> {
+      const run = this.runOf(agentModelId);
+      const memory = path.join(this.nodes[run.node]!.dataDir, "memory");
+      const agent = this.real(agentModelId);
+      let capsule: string | null = null;
+      const deadline = Date.now() + 30_000;
+      while (!(capsule = findAgyRunCapsule(memory, agent)?.path ?? null) && Date.now() < deadline) await sleep(200);
+      if (!capsule) throw new Error(`${this.state.id}: no run capsule for ${agentModelId}`);
+      const server = (JSON.parse(await fsp.readFile(path.join(capsule, ".agents", "mcp_config.json"), "utf8")) as Rec).mcpServers?.autobyteus_agent_tools as Rec;
+      const { Client, StreamableHTTPClientTransport } = await import("@modelcontextprotocol/client");
+      const client = new Client({ name: "collaboration-contract-stories", version: "1.0.0" });
+      await client.connect(new StreamableHTTPClientTransport(new URL(server.serverUrl as string), { requestInit: { headers: (server.headers ?? {}) as Record<string, string> } }));
+      let raw: Rec;
+      try { raw = await client.callTool({ name: tool, arguments: args }) as Rec; } finally { await client.close(); }
+      const result: Rec = raw.structuredContent && typeof raw.structuredContent === "object" ? { ...(raw.structuredContent as Rec), isError: raw.isError === true }
+        : { ...JSON.parse(String((raw.content as Rec[] | undefined)?.[0]?.text ?? "{}")), isError: raw.isError === true };
+      const refused = result.isError || result.accepted === false || result.delegated === false || Boolean(result.error);
+      this.lastResult = result;
+      if (refused) this.refusals.push(result);
+      else if (["send_message_to", "delegate_task", "update_task"].includes(tool)) this.results.push({ ...result, __tool: tool });
+      return result;
+    }
     /** Binds a new run (from a result) and its agents (from its own file, by address). */
     async bindRun(modelRun: string, realRun: string, node = "A") {
       if (typeof realRun !== "string" || !realRun) throw new Error(`${this.state.id}: the call returned no run ID for ${modelRun}: ${JSON.stringify(this.lastResult)?.slice(0, 1500)}`);
@@ -611,7 +639,7 @@ suite("The collaboration contract's stories, run against the built server (autob
   const key = (ctx: Ctx, modelKey: string) => ctx.real(modelKey);
 
   // ---- §5.1: the Project Task Manager (M) with a peer node ---------------------------------------------------------------
-  it("§5.1 S0 … S25: a standalone agent delegates on its node and to a peer node", async () => {
+  it("§5.1 S0 … S27: a standalone agent delegates on its node and to a peer node", async () => {
     const story = FIXTURE.stories.find((s) => s.section === "5.1")!;
     const M = "project_task_manager_7c8d", SD = "solution_designer_65a9", E = "software_engineering_team_0218", P_PD = "product_designer_1a2b";
     await runStory(story, {
@@ -685,9 +713,27 @@ suite("The collaboration contract's stories, run against the built server (autob
       },
       S21: async (ctx) => { await ctx.call(M, "send_message_to", { recipient_address: "/project_task_manager", content: "…" }); },
       S22: async (ctx) => { await ctx.call(M, "send_message_to", { recipient_address: "/software_engineering_team", content: "…" }); },
-      S23: async (ctx) => { await ctx.call(SD, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") }); },
-      S24: async (ctx) => { await ctx.call(SD, "send_message_to", { recipient_address: "/software_engineering_team/code_reviewer", content: "…" }); },
+      // S23, S24: E's Tasks are all closed after S16, so DS-15 fences user input to E; the agent's own call is made directly.
+      S23: async (ctx) => { await ctx.callDirect(SD, "delegate_task", { recipient_address: "/research_agent", task_id: key(ctx, "demo-2") }); },
+      S24: async (ctx) => { await ctx.callDirect(SD, "send_message_to", { recipient_address: "/software_engineering_team/code_reviewer", content: "…" }); },
       S25: async (ctx) => { await ctx.call(M, "delegate_task", { recipient_address: "/research_team", node: "node-b", task_id: key(ctx, "demo-7") }); },
+      // SR-067 (DS-13): the user deletes M while a run it delegated to works: refused, naming it; nothing is written.
+      S26: async (ctx) => {
+        // The user stops M first (a running run's history is not deleted: "Run is active. Terminate it before deleting history.").
+        await ctx.nodes.A!.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: ctx.real(M) });
+        const r = (await ctx.nodes.A!.gql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: ctx.real(M) })).deleteStoredRun;
+        expect(r.success, r.message).toBe(false);
+        expect(r.message).toContain(ctx.real("research_agent_9b10"));
+      },
+      // The user stops the research agent and deletes M; the research agent's report to M is refused (no run has M's ID).
+      S27: async (ctx) => {
+        const stopped = (await ctx.nodes.A!.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: ctx.real("research_agent_9b10") })).terminateAgentRun;
+        expect(stopped.success, stopped.message).toBe(true);
+        await ctx.nodes.A!.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: ctx.real(M) });
+        const deleted = (await ctx.nodes.A!.gql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: ctx.real(M) })).deleteStoredRun;
+        expect(deleted.success, deleted.message).toBe(true);
+        await ctx.call("research_agent_9b10", "send_message_to", { target_agent_run_id: ctx.real(M), content: "Findings …" });
+      },
     }, async (ctx) => {
       await catalog(ctx);
       // Node B: the research team with a default launch (a peer target needs one), shared with node A; the nodes paired.
@@ -707,7 +753,7 @@ suite("The collaboration contract's stories, run against the built server (autob
   }, 1_200_000);
 
   // ---- §5.2: the Software Engineering Team on its own (U) ----------------------------------------------------------------
-  it("§5.2 U0 … U8: a team the user starts delegates", async () => {
+  it("§5.2 U0 … U10: a team the user starts delegates", async () => {
     const story = FIXTURE.stories.find((s) => s.section === "5.2")!;
     const U = "software_engineering_team_73d7", U_SD = "solution_designer_7a33", IM = "image_maker_44a1";
     await runStory(story, {
@@ -736,6 +782,10 @@ suite("The collaboration contract's stories, run against the built server (autob
         await ctx.bindRun("research_agent_8f80", r.target_agent_run_id as string);
         if (typeof r.task_id === "string") ctx.bindings.bind("adhoc_task_91a1", r.task_id);
       },
+      // SR-071: R-7, runs of different open Tasks.
+      U9: async (ctx) => { await ctx.call("research_agent_8f80", "send_message_to", { target_agent_run_id: ctx.real(IM), content: "…" }); },
+      // SR-071: R-12, a team run's ID is answered with its coordinator's.
+      U10: async (ctx) => { await ctx.call(IM, "send_message_to", { target_agent_run_id: ctx.real(U), content: "Mockups ready …" }); },
     }, async (ctx) => { await catalog(ctx); });
   }, 900_000);
 

@@ -583,7 +583,8 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(await fs.readFile(resourcesFile(projectId, taskA), "utf8")).toBe(aFileAtDone);
     expect(await fs.readFile(path.join(taskDir(projectId, taskA), "task.json"), "utf8")).toBe(aTaskAtDone);
     const bEntries = await entriesOf(projectId, taskB, teamKey);
-    expect(bEntries).toEqual([expect.objectContaining({ role: "assigned", assignedBy: root.managerRunId, recipientAddress: squadAddress,
+    // The stored entry names its delegator one hop (contract §3.1).
+    expect(bEntries).toEqual([expect.objectContaining({ role: "assigned", delegatedFrom: { delegatingRun: { kind: kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org", runId: root.rootId }, delegatorAgentRunId: root.managerRunId }, recipientAddress: squadAddress,
       start: "started", closedAt: null, agentRun: { kind: "team", teamRunId: team, coordinatorAgentRunId: coordinator } })]);
     record.assignedB = { assignedB, resumedB, bRoot: bTask.root, aRoot: aTask.root };
 
@@ -682,7 +683,7 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const aEntries = await entriesOf(projectId, taskA, teamKey);
     expect(aEntries).toHaveLength(2);
     expect(aEntries[0]).toEqual(aEntryAtDone[0]);
-    expect(aEntries[1]).toMatchObject({ role: "assigned", assignedBy: root.managerRunId, recipientAddress: squadAddress, start: "started", closedAt: null });
+    expect(aEntries[1]).toMatchObject({ role: "assigned", delegatedFrom: { delegatingRun: { kind: kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org", runId: root.rootId }, delegatorAgentRunId: root.managerRunId }, recipientAddress: squadAddress, start: "started", closedAt: null });
     expect(Date.parse(aEntries[1]!.linkedAt)).toBeGreaterThan(Date.parse(aEntries[0]!.closedAt));
     expect(await fs.readFile(resourcesFile(projectId, taskB), "utf8")).toBe(bFileAtDone);
     await until(async () => (await taskOf(projectId, taskA)).root?.closed === false, "Task A root is the copy again", 30_000);
@@ -817,17 +818,21 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     const toTeamRun = await other.managerCalls(callTool("send_message_to", { target_agent_run_id: team, content: "Hello from another root." }));
     expect(toTeamRun).toMatchObject({ accepted: false, code: "TARGET_IS_TEAM_RUN",
       message: `${team} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinator}.` });
-    // AC-008: a copy hosted by another root is not a copy of the sender's run.
+    // AC-008: a copy hosted by another root is not a copy of the sender's run (base's text, SR-071). Soft, so the
+    // stopped-team R-12 step below still runs when this text differs.
     const crossAssign = await other.managerCalls(callTool("delegate_task", { target_team_run_id: team, task_id: taskB }));
-    expect(crossAssign).toEqual({ delegated: false, message: `${team} is not one of your task agents. Use a run id that delegate_task returned to you, `
+    expect.soft(crossAssign).toEqual({ delegated: false, message: `${team} is not one of your task agents. Use a run id that delegate_task returned to you, `
       + "or delegate to a new task agent with recipient_address." });
     expect(await projectFiles(projectId)).toEqual(files);
-    // A team run of a root that is no longer active gets the existing not-active refusal, as an agent run ID there would.
+    // R-12 (SR-071, base): a team run's ID names its coordinator whether the team runs or not. Stop the delegator and
+    // the team copy (each by its own Stop, rule 2), then send to the stopped team's run ID.
     owner.close();
     await terminate("team", owner.rootId);
+    // The copy may already be stopped by its own idle shutdown; either way it is stopped after this.
+    await graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}`, { id: team });
     const inactive = await other.managerCalls(callTool("send_message_to", { target_agent_run_id: team, content: "Anyone?" }));
-    expect(inactive).toMatchObject({ accepted: false });
-    expect(inactive.code).not.toBe("TARGET_IS_TEAM_RUN");
+    expect(inactive).toMatchObject({ accepted: false, code: "TARGET_IS_TEAM_RUN",
+      message: `${team} is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: ${coordinator}.` });
     other.close();
     await terminate("agent", other.rootId);
     evidence.crossRoot = { team, coordinator, toTeamRun, crossAssign, inactive };
