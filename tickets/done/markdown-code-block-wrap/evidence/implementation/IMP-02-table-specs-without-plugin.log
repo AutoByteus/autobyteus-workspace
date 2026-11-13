@@ -1,0 +1,14 @@
+# IMP-02 negative check (autobyteus-23): the new table specs fail without the plugin
+# Step: comment out `.use(markdownItScrollableTables)` in autobyteus-web/composables/useMarkdownSegments.ts, run
+#   pnpm -C autobyteus-web exec vitest run composables/__tests__/useMarkdownSegments.wrapping.spec.ts --no-watch
+# then restore the line (verified restored: the committed file has the `.use` line; IMP-01 runs with it).
+# Code: implementation working tree before the IR-001 commit; Linux, Node 22, vitest jsdom; 2026-11-13
+# Output (copied from the run):
+   ✓ useMarkdownSegments code block text and table scroll boxes (jsdom) > keeps the exact text of a fence without a language 21ms
+   ✓ useMarkdownSegments code block text and table scroll boxes (jsdom) > keeps the exact text of a highlighted fence with a language 18ms
+   × useMarkdownSegments code block text and table scroll boxes (jsdom) > puts a table in its own scroll box after sanitisation 17ms
+   × useMarkdownSegments code block text and table scroll boxes (jsdom) > puts a table inside a list item in its own scroll box 9ms
+   × useMarkdownSegments code block text and table scroll boxes (jsdom) > keeps cell alignment on a wrapped table 9ms
+      Tests  3 failed | 2 passed (5)
+# The two text specs pass with and without the plugin by design: they guard preserved behavior (REQ-004, AC-007),
+# the exact text of a fence, which a soft wrap must not change.

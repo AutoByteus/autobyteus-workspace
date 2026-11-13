@@ -6,6 +6,7 @@ import { katex } from '@mdit/plugin-katex';
 import katexLib from 'katex';
 import { normalizeMath } from '~/utils/markdownMath';
 import { markdownItPrism } from '~/utils/markdownItPrism'; // Keep using this for non-PlantUML code blocks
+import { markdownItScrollableTables } from '~/utils/markdownItScrollableTables';
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
 import { createHeadingSlugger, HEADING_ANCHOR_ID_PREFIX } from '~/utils/markdownHeadingAnchors';
 import {
@@ -125,6 +126,7 @@ export const useMarkdownSegments = (
     html: true, breaks: true, linkify: true, typographer: true,
   })
   .use(markdownItPrism) // Prism for syntax highlighting of normal code blocks
+  .use(markdownItScrollableTables) // Each table in its own horizontal scroll box
   .use(katex, katexOptions); // KaTeX for rendering math tokens
   allowFileUriLinkTokens(mdWithPrism, options.enableEventMonitorFileActions === true);
 

@@ -221,6 +221,15 @@ if (arg === "--version") {
     if (routingRequest && !content.includes("CALL_TOOL:")) { await routerTurn(routingRequest[1], content); return; }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // `REPLY_FILE:<absolute path>` answers with that file's text as it is (every other reply here is quoted), so a test
+    // gets an agent answer in real Markdown: fenced code, tables, math, as a model writes it (autobyteus-23).
+    const replyFile = /REPLY_FILE:(\/\S+)/.exec(content);
+    if (replyFile && !content.includes("CALL_TOOL:")) {
+      const text = readFileSync(replyFile[1], "utf8");
+      reply(turns * 10, text);
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: text } });
+      return;
+    }
     // `GENERATE_IMAGE:<absolute path>` writes that file and streams the own-MCP generate_image call as AGY 1.2.14 does
     // (same step shape as case mcp_calls), so any run, a delegated copy included, gets a real generated-output artifact.
     const generateImage = /GENERATE_IMAGE:(\/\S+)/.exec(content);
