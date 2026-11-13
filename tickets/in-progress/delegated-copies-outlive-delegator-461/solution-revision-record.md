@@ -1334,3 +1334,4 @@
   - architecture review;
   - then the Implementation Engineer.
 - **ARCH-REV-044 passed SR-070.** Its note is applied: the fence is checked before the root is resolved or restored (in the run's service where input enters), and again at the gate head for a loaded run. The test asserts no registration change, no status frame and no stream binding on a refusal.
+- **SR-070 text corrected** (the Implementation Engineer's IMP-58 characterization): at base the user's input to a closed copy got the input-fence text, "Your Task is DONE or CANCELLED, so you can't start new work." (`TASK_AGENT_RESOURCE_CLOSED`). `ASSIGNER_ONLY_REACTIVATION_MESSAGE` was only for an agent's message to a closed run. DS-15 now names base's input-fence text. The Solution Designer had cited the wrong one of the two base texts.
