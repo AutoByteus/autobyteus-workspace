@@ -8,23 +8,23 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-
 
 - Requirements Doc: `requirements-doc.md` (Approved, SR-018 baseline; TC-12 exception SR-035)
 - Investigation Notes: `investigation-notes.md`
-- Solution Revision Record: `solution-revision-record.md` (through SR-076)
+- Solution Revision Record: `solution-revision-record.md` (through SR-077)
 - Design Spec: `design-spec.md` (DS-1 … DS-15; Validation in DS-10 item 9)
 - Supplemental Task Artifacts: `target-collaboration-contract.md` (revision 8, the authority), `evidence/collaboration-model/{model.py,stories.py,walkthrough.py}`, `collaboration-walkthrough.md`, `evidence/data-model-validation/`
 - Design Review Report: `design-review-report.md`
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (through IR-022)
+- Implementation Handoff: `implementation-handoff.md` (through IR-024)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-029, round 22, Pass; earlier CRR-026, CRR-023, CRR-018, CRR-015, CRR-011, CRR-007; failure-origin CRR-016, CRR-021, CRR-024, CRR-027)
+- Code Review Report: `code-review-report.md` (CRR-032, round 24, Pass; round 23 full review CRR-031; earlier CRR-029, CRR-026, CRR-023, CRR-018, CRR-015, CRR-011, CRR-007; failure-origin CRR-016, CRR-021, CRR-024, CRR-027, CRR-030)
 - Code Review Revision Record: `code-review-revision-record.md`
 - API/E2E Revision Record: `api-e2e-revision-record.md` (created after the first result)
-- Current API/E2E Revision ID: `API-REV-007`
-- Current Investigation Round: 7
-- Trigger: code review pass CRR-029 at code `a529abcbdd` (the merge of origin/personal at `3d738de6e6`: autobyteus-460, -23, -24), from `/software_engineering_team/code_reviewer`. Earlier: round 6 CRR-026 at `958cb22462`; round 5 CRR-023 at `56e4ce773b`; round 4 CRR-018 at `49f3db1047`; round 3 CRR-015 at `da80596b0a`; round 2 CRR-011 at `f75cf6b96b`; round 1 CRR-007 at `bc223a8ae0`
-- Prior Investigation Reviewed: this file, round 6 (API-REV-006)
-- Latest Authoritative Investigation: this file, round 7
+- Current API/E2E Revision ID: `API-REV-008`
+- Current Investigation Round: 8
+- Trigger: code review pass CRR-032 at code `fdf5ad8380`, from `/software_engineering_team/code_reviewer`. Earlier: round 7 CRR-029 at the merged state `a529abcbdd`; round 6 CRR-026 at `958cb22462`; round 5 CRR-023 at `56e4ce773b`; round 4 CRR-018 at `49f3db1047`; round 3 CRR-015 at `da80596b0a`; round 2 CRR-011 at `f75cf6b96b`; round 1 CRR-007 at `bc223a8ae0`
+- Prior Investigation Reviewed: this file, round 7 (API-REV-007)
+- Latest Authoritative Investigation: this file, round 8
 
-Code under test: branch `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`, round 7 code `a529abcbdd` (merged state; head `71ba8aaab8`, docs only after the code). Round 6 was `958cb22462`.
+Code under test: branch `codex/delegated-copies-outlive-delegator-461`, base `origin/personal` `827f1e68dc`, round 8 code `fdf5ad8380` (head `392a1b447d`, docs only after the code). Round 7 was the merged state `a529abcbdd`.
 
 ## Current Requirement And Design Basis
 
@@ -113,6 +113,21 @@ The baseline run of the whole server E2E (API-E01, first run) gives the per-file
 - Test progress log needed: `Yes`
 
 ## Durable Coverage To Add / Update / Remove
+
+**Round 8 plan (API-REV-008), on code `fdf5ad8380`.** Since round 7:
+- CR-461-061 (F-43): a delegated team with a failed member idles out; its followers see that member `offline`;
+- CR-461-059 (F-47): by run ID, base's `{delegated:false, message}`;
+- CR-461-067: a delegator's open view follows a local delegated run across its Stop and restore;
+- SR-077: S26 stops M first, and the refusal is the mutation's shape; Q-1 decided (a preserved copy is not editable until its predecessor finishes).
+
+| Item | Coverage | Where |
+| --- | --- | --- |
+| CR-461-067 | New FOLLOW-A / FOLLOW-T for agent, team and org delegators: a stopped agent child, and a stopped team child with a failed member, show `offline` in the delegator's open view, then the restored run's live status after the Manager's message | new `delegator-view-follows-child` |
+| C23-02 | DS-7's one idle rule. No peer-suite case assumed a peer-started team with an `error` member stays up (none puts a peer member in `error`). The single rule is exercised by DTL-005's Org path (a local delegated team with an `error` member) | lazy activation; peer suite as is |
+| F-43 | DTL-005 in every root | lazy activation |
+| F-47 | EXC-E2E-001 … 003 (`target_team_run_id`) and TKD (`target_agent_run_id`, added); the recipient path unchanged (TKD) | existing-copy |
+| SR-077 | S26/S27 (regenerated fixture; the harness compares a code-less refusal by its text); TAU-2 (`NOT_FOUND` while preserved, then saved after the retry) | stories; task-agent-own-run |
+| Next Round list | the stale suites, API-P03/P04, DS-15 restart, C15-03, API-B03, API-E01 full, API-F01 | per item |
 
 **Round 7 plan (API-REV-007), on the merged state `a529abcbdd`.** A merge of the base: per TESTING.md "Rerun by impact" step 5 the install, the typechecks and every built output are redone (`/tmp/api461/r7-build.log`: install, server and phone bundle, all exit 0), and the full E2E runs this round.
 - **Rechecks of round 6, against the decisions:**
@@ -260,30 +275,19 @@ Each probe that uses one of these is updated (`grep` of these names in `autobyte
 
 ## Not Tested / Infeasible / Deferred
 
-Round 7 ends at a product `Fail` (report: F-43, F-47; K-15; Q-1).
+Round 8 ends at a product `Fail` (report: F-49 … F-52).
 
-**Done this round, on the merged state:**
-- the round-6 rechecks and the decided items;
-- the phone (MSP-53 … 55) and the desktop (SDV-01 … 04);
-- the stories;
-- the merge's skill reload;
-- the peer suite and API-L01;
-- 8 stale suites rewritten and passing.
+**Done this round, on `fdf5ad8380`:**
+- the round-7 rechecks: F-43, F-47 and K-15 resolved; Q-1 decided by SR-077 and tested (F-49);
+- CR-461-067 (new suite, every delegator kind, with the own-stream rule's FOLLOW-S and FOLLOW-E);
+- the stories (§5.1 28/28, §5.2 12/12, §5.3 9/9);
+- C23-02: no RC case needed a change (no peer member in `error`; DS-7 is exercised by DTL-005's Org path);
+- the stale suites: 13 rewritten, one replaced (`standalone-unreadable-tree-containment`: rule 7 on a delegated run's unreadable own file), MR-02 and DCF-02 classified (stale: a member reached by its own team's path) and passing.
 
 **`Next Round`** (waiting for the fix; the first item comes first):
-- **The remaining stale suites, with their causes:**
-  - `projects/unclean-shutdown-delegated-team-restore`: a delegated team's member read through the root team (rule 2: its own team's reads);
-  - `run-history/standalone-unreadable-tree-containment`: its premise, a standalone run's collaboration tree file, is removed (contract §6). Replace with an unreadable run file of its own, or remove with the rationale;
-  - `run-history/open-task-tree-upgrade-startup`:
-    - OT-1/2 test autobyteus-469's stored tree entries, which 461 removes and converts (API-E03 covers the conversion): replace or remove with the rationale;
-    - OT-3 (an unreadable Task record) to keep;
-  - `app-data-migrations/task-agent-own-run-startup` TAU-1/3, `collaborators-to-delegated-runs-startup`, `team-run-v1-production-upgrade`: assert the end state after 461's migration (delegated runs as their own runs, no host-tree entries, member shapes);
-  - TAU-2: Q-1;
-  - `projects/closed-run-attachments`: a delegated run's file through the Org (rule 2: by its own identity);
-  - `projects/project-task-boundaries` E-007: needs a server restart (the composed Task service loads entries once), with entries in the current shape;
-  - `projects/task-copy-idle-lifetime`: follow each run's own stream before its background task starts;
-  - MR-02 and DCF-02: repeatable; classify;
-  - `runtime/agent-initiated-collaborators` and the two delegated background-task suites (live, rule 2).
+- **Recheck F-49 … F-52:** TAU-2, USR-4, team-run-v1's two blocked-root cases, UC-1.
+- **The stale items left:** `projects/project-task-boundaries` E-007 (a server restart with entries in the current shape); `runtime/agent-initiated-collaborators` and the two delegated background-task suites (live, rule 2).
+- **Reruns on the fixed code:** the phone (MSP-53 … 55), the desktop (SDV-01 … 04), the peer suite, API-L01.
 - **The peer cases left:** API-P03 (peer rows rendered), API-P04 (rule 3's two-node capture at base).
 - **DS-15:** restart resume skipping a closed run (extend API-E03's restart-resume data), and C15-03's rendered two-view check.
 - **API-B03 web probes.**
@@ -293,8 +297,10 @@ Round 7 ends at a product `Fail` (report: F-43, F-47; K-15; Q-1).
 
 ## Ambiguities Or Reroute Triggers
 
-- **K-15:** the model deletes a running M and names a refusal code the delete mutation does not carry.
-- **Q-1:** whether a not-yet-converted copy must be editable while an earlier migration fails.
+- **F-49 (a):** SR-077 names `NOT_FOUND` for a preserved copy's own save; the public mutation answers `INTERNAL_ERROR` "Run ownership could not be verified" for any run without its own metadata, as at base.
+- **F-51:** SR-046 serves a stopped team's stored file before any admission check, so a root its migration could not convert fails to parse instead of giving the earlier tickets' refusals.
+- **O-8a:** the former hub context-file route still serves a delegated run's file; the design names only the web's path.
+- **O-8b:** no stream carries the background "stopped" update of a copy that Task DONE stops (its process ends at once, as asserted).
 - **Base's nesting of a copy's copy:** needs rule 3's capture (API-P04).
 
 ## Investigation Decision

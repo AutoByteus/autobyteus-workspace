@@ -13,6 +13,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-005 | Code Reviewer, `code-review-report.md` CRR-023, round 5 | SR-071, IR-017, IR-018, CRR-021 … CRR-023 | Fail / 70% | Fail / 75% |
 | API-REV-006 | Code Reviewer, `code-review-report.md` CRR-026, round 6 | SR-072 … SR-074, IR-019, IR-020, CRR-024 … CRR-026 | Fail / 75% | Fail / 78% |
 | API-REV-007 | Code Reviewer, `code-review-report.md` CRR-029, round 7 (merged state) | SR-075, SR-076, IR-021, IR-022, CRR-027 … CRR-029 | Fail / 78% | Fail / 84% |
+| API-REV-008 | Code Reviewer, `code-review-report.md` CRR-032, round 8 | SR-077, IR-023, IR-024 (code `fdf5ad8380`), CRR-030 … CRR-032 | Fail / 84% | Fail / 86% |
 
 ## Revision Entries
 
@@ -372,3 +373,39 @@ None
   - each confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
 
+### API-REV-008: round 8; CR-461-067, round 23's changes, the stale suites; F-43, F-47, K-15 resolved; F-49 … F-52
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-032 at `fdf5ad8380`, docs head `392a1b447d`), API/E2E round 8
+- Triggering finding or case IDs: CR-461-067; C23-02 (DS-7); round 23's changes (DTL-005 in every root, F-47 on both run-ID forms, S26/S27 and TAU-2 per SR-077); the Next Round list of API-REV-007
+- Related revision IDs: SR-077, IR-023, IR-024, CRR-030 … CRR-032
+- Why this revision was recorded: recheck of round 7's findings on the fix, the new CR-461-067 coverage, and the stale suites
+- Coverage decisions or durable test paths changed:
+  - added `projects/delegator-view-follows-child` (FOLLOW-A, FOLLOW-T, FOLLOW-S, FOLLOW-E);
+  - replaced `run-history/standalone-unreadable-tree-containment` (its premise and trigger are removed by 461; it now checks rule 7 on a delegated run's unreadable own file);
+  - rewrote to 461's shapes and rules: task-agent-own-run-startup, collaborators-to-delegated-runs-startup, team-run-v1-production-upgrade, open-task-tree-upgrade-startup (the hand-built 469 entries dropped: 461's migration converts them, API-E03), unclean-shutdown-delegated-team-restore, closed-run-attachments, task-copy-idle-lifetime (the polled background read; REQ-001 for the root-stop copy), delegated-copy-project-folder DCF-02, model-routing-delegation MR-02, task-existing-copy-assignment TKD, the stories harness and fixture (SR-077), the restore helper's diagnostics.
+- Cases added, changed, removed, or rechecked: R8-A … R8-K and the stories; see the progress log
+- Commands, environment, fixture, or broader-validation delta: ENV-1 and ENV-4 only; the browser, phone, peer and live reruns wait for the fix
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-43 | Local Fix | Resolved | DTL-005 agent/team/Org |
+| F-47 | Local Fix | Resolved | EXC-001 … 003 (`target_team_run_id`), TKD (`target_agent_run_id`) |
+| K-15 | contract model | Resolved (SR-077) | S26, §5.1 28 of 28 |
+| Q-1 | Unclear | Decided (SR-077); tested: see F-49 | TAU-2 |
+| F-48 (candidate) | — | Withdrawn: test construction (the own streams were followed late) | idle-lifetime, FOLLOW-S, FOLLOW-E |
+
+- Canonical artifacts and sections updated:
+  - the coverage investigation (meta, the round-8 plan, deferred, ambiguities);
+  - the execution report;
+  - the progress log;
+  - `evidence/api-e2e/*r8*`.
+- Prior result and confidence: Fail / 84%
+- Current result and confidence: Fail / 86%
+- New or remaining failure IDs: F-49 (a: Unclear, b: Local Fix), F-50 (Local Fix), F-51 (Unclear), F-52 (Local Fix); observations O-8a, O-8b, O-8c
+- Recommended owner:
+  - Implementation Engineer: F-49 (b), F-50, F-52;
+  - Solution Designer: F-49 (a), F-51;
+  - each confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.

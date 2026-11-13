@@ -853,20 +853,13 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
             agentRunId: `${rootTeamRunId}-reviewer-run`,
             launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
           })],
-          // The task agent is its own run (20261017_task_agent_own_run_v1, contract L1): the tree keeps a
-          // link and its facts are in its own run_metadata.json. A link has no `settledAt` (current trees
-          // never record it; the released field survived only while nothing rewrote this tree).
-          taskExecutions: [{
-            address: "/research/reviewer",
-            agentRunId: supported.taskAgentRunId,
-            startedAt: "2026-08-16T12:03:00.000Z",
-          }],
+          // The task agent is its own run (20261017_task_agent_own_run_v1, contract L1); since autobyteus-461 (its migration
+          // runs last) the tree keeps no list of delegated runs (contract §6): the run names its delegator in its own file.
         }),
       ],
-      taskExecutions: [],
     },
   });
-  expect(tree.rootOrg.members[1].taskExecutions[0]).not.toHaveProperty("settledAt");
+  expect(JSON.stringify(tree), "no stored list of delegated runs (461 contract §6)").not.toContain("taskExecutions");
   const memoryRoot = path.dirname(path.dirname(supported.orgDir));
   const own = JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", supported.taskAgentRunId!, "run_metadata.json"), "utf8"));
   // A copy of the configured place `/research/reviewer`: 20261019_delegated_copy_own_file_complete_v1 records the
@@ -879,10 +872,12 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
     llmConfig: NESTED_COORDINATOR_CONFIGURATION.llmConfig,
     autoExecuteTools: NESTED_COORDINATOR_CONFIGURATION.autoExecuteTools,
     workspaceRootPath: NESTED_COORDINATOR_CONFIGURATION.workspaceRootPath,
-    taskAgent: { coordinatingRun: { kind: "agent_org", runId: rootTeamRunId }, address: "/research/reviewer",
-      launchSource: { origin: "configured", fallbacks: [] } },
+    // autobyteus-461 (contract E6): `taskAgent` is replaced by the run's own `address`, `launchSource` and `delegatedFrom`.
+    address: "/research/reviewer",
+    launchSource: { origin: "configured", fallbacks: [] },
+    delegatedFrom: { delegatingRun: { kind: "agent_org", runId: rootTeamRunId } },
   });
-  expect(own.taskAgent).not.toHaveProperty("origin");
+  expect(own).not.toHaveProperty("taskAgent");
   expect(own).not.toHaveProperty("skillAccessMode");
   // Startup ends with the append-only message log conversion: the org's log is JSON Lines.
   const messages = { messages: readMessageLog(supported.orgDir, "agent_org_communication_messages") };
@@ -1156,8 +1151,8 @@ const exerciseHistoryAndNewWork = async (
               launchConfiguration: nestedLaunch,
             })],
             // autobyteus-469 DEC-008: the task reviewer was delegated before Task records existed (this shape keeps
-            // `task_delegation_records.json`); a run with no Task record is in no tree. Its folder stays (below).
-            taskExecutions: [],
+            // `task_delegation_records.json`); a run with no Task record is in no tree. Its folder stays (below). The stored
+            // tree keeps no list of delegated runs (461 contract §6).
           }),
         ],
       },

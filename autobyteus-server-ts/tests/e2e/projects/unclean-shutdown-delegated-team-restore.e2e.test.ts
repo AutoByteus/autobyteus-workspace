@@ -24,7 +24,8 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
 // - USR-1 1,241 zero bytes after the last record (the file size reached the disk, the data did not);
 // - USR-2 a torn last record without `\n`;  USR-3 a torn last record whose `\n` did land;
 // - USR-4 a line with interior zero bytes before the last record (damage a shutdown does not leave at the end).
-// A new server process restores the root and the user sends "continue" to each coordinator on the Team stream:
+// A new server process starts and the user sends "continue" to each coordinator on its delegated team's own stream, which
+// restores that team (autobyteus-461 rule 2; no restore mutation):
 // USR-1..3 are accepted, the coordinator answers, its log keeps the earlier bytes plus the new turn and holds no 0x00, and
 // the server warns "Removed the damaged end of a memory log." naming the file and the exact bytes removed. USR-4 is refused
 // with TASK_EXECUTION_CONTEXT_UNAVAILABLE naming the Team, its coordinator, the damaged line and the next step; the file stays
@@ -62,7 +63,11 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
   let managerLog = "";
   let managerLogBefore = Buffer.alloc(0);
   let restart: Awaited<ReturnType<typeof startServer>>;
-  let restartTeam: Awaited<ReturnType<typeof openTeam>>;
+  const restartTeams = new Map<string, Awaited<ReturnType<typeof openTeam>>>();
+  const restartTeamOf = async (teamRunId: string) => {
+    if (!restartTeams.has(teamRunId)) restartTeams.set(teamRunId, await openTeam(restart, teamRunId));
+    return restartTeams.get(teamRunId)!;
+  };
 
   const startServer = async (label: string) => {
     const env: NodeJS.ProcessEnv = { PATH: process.env.PATH ?? "", HOME: path.join(root, "home"), TMPDIR: process.env.TMPDIR ?? os.tmpdir(),
@@ -107,15 +112,18 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
     .filter((line) => line.includes(cli) && !line.includes("--version")).map((line) => line.trim())
     .filter((line) => { const pid = line.split(/\s+/)[0]!; return spawnSync("lsof", ["-a", "-p", pid, "-d", "cwd", "-Fn"], { encoding: "utf8" }).stdout.includes(root); });
 
-  /** The Team root's stream: the user's messages to any agent of the root, and every frame it sends back. */
-  const openTeam = async (server: Server) => {
-    const socket = new WebSocket(`ws://${new URL(server.url).host}/ws/agent-team/${rootRunId}`);
+  /**
+   * A team run's own stream (the root's, or a delegated team's: autobyteus-461 rule 2, a delegated run is reached by its own
+   * path): the user's messages to its agents, and every frame it sends back. Its member reads are the team's own.
+   */
+  const openTeam = async (server: Server, teamRunId: string = rootRunId) => {
+    const socket = new WebSocket(`ws://${new URL(server.url).host}/ws/agent-team/${teamRunId}`);
     const frames: Frame[] = [];
     socket.on("message", (raw: unknown) => frames.push(JSON.parse(String(raw))));
     await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
     await until(() => frames.some((frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"), `${server.label}: team stream snapshot`, 30_000);
     const conversationOf = async (agentRunId: string) => (await server.graphql(
-      `query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`, { id: rootRunId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
+      `query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`, { id: teamRunId, a: agentRunId })).getTeamMemberRunProjection?.conversation;
     const send = (agentRunId: string, content: string) => sendE2eSendMessageCommand(socket, { agent_run_id: agentRunId, content });
     const errorsFor = (agentRunId: string, from: number) => frames.slice(from).filter((frame) => frame.type === "ERROR" && frame.payload.agent_run_id === agentRunId);
     return { socket, frames, conversationOf, send, errorsFor, close: () => socket.terminate() };
@@ -179,11 +187,13 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
         { id: rootRunId })).getTeamRunResumeConfig.executionTree).find((entry) => entry.teamRunId === teamRunId)), `${caseId}: delegated Team in the tree`, 60_000);
       // The coordinator works on its Task: it receives it and answers; the user then talks with it in non-ASCII text, so the
       // records before the damage hold multi-byte characters (the old repair cut by characters, not bytes).
-      await until(async () => okCount(await view.conversationOf(coordinator)) >= 1, `${caseId}: coordinator answered its Task`, 90_000);
+      const own = await openTeam(first, teamRunId);
+      await until(async () => okCount(await own.conversationOf(coordinator)) >= 1, `${caseId}: coordinator answered its Task`, 90_000);
       for (const [index, text] of NON_ASCII_TURNS.entries()) {
-        view.send(coordinator, `${text} (${caseId})`);
-        await until(async () => okCount(await view.conversationOf(coordinator)) >= index + 2, `${caseId}: coordinator answered turn ${index + 1}`, 90_000);
+        own.send(coordinator, `${text} (${caseId})`);
+        await until(async () => okCount(await own.conversationOf(coordinator)) >= index + 2, `${caseId}: coordinator answered turn ${index + 1}`, 90_000);
       }
+      own.close();
       const coordinatorAddress = node!.members.find((member) => member.agentRunId === coordinator)!.address;
       copies.push({ caseId, teamRunId, address: node!.address, coordinator, coordinatorAddress, logPath: "" });
     }
@@ -228,14 +238,13 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
         damagedLine: d.damagedLine ?? null, recordsBefore: records(d.before).length }])) };
 
     // Server #2: the node restarted; the user opens the run.
+    // Each delegated team is a run of its own: the user's message on its own stream restores it (no restore mutation since
+    // CR-461-008; the root team stays stopped).
     restart = await startServer("server #2");
-    const restored = (await restart.graphql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`, { id: rootRunId })).restoreAgentTeamRun;
-    expect(restored.success, restored.message).toBe(true);
-    restartTeam = await openTeam(restart);
   }, 600_000);
 
   afterAll(async () => {
-    restartTeam?.close();
+    for (const team of restartTeams.values()) team.close();
     for (const server of servers) await stopServer({ child: server.child } as Server, "SIGTERM").catch(() => undefined);
     const leftover = root ? agyProcesses() : [];
     for (const line of leftover) process.kill(Number(line.split(/\s+/)[0]), "SIGKILL");
@@ -256,6 +265,7 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
   const continueAfterDamagedEnd = async (caseId: CaseId) => {
     const copy = copies.find((entry) => entry.caseId === caseId)!;
     const { before, bytesAdded } = damage.get(caseId)!;
+    const restartTeam = await restartTeamOf(copy.teamRunId);
     const okBefore = okCount(await restartTeam.conversationOf(copy.coordinator));
     const from = restartTeam.frames.length;
     const message = `continue (${caseId})`;
@@ -302,12 +312,19 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
   it("USR-4 AC-006: a damaged line before the last record is refused with the Team, coordinator, line and next step; the file is unchanged", async () => {
     const copy = copies.find((entry) => entry.caseId === "USR-4")!;
     const { damaged, damagedLine } = damage.get("USR-4")!;
+    const restartTeam = await restartTeamOf(copy.teamRunId);
     const from = restartTeam.frames.length;
     restartTeam.send(copy.coordinator, "continue (USR-4)");
     await until(() => restartTeam.errorsFor(copy.coordinator, from).length > 0, "USR-4: the refusal", 60_000);
     const [refusal] = restartTeam.errorsFor(copy.coordinator, from);
-    expect(refusal!.payload).toMatchObject({ code: "TEAM_SEND_MESSAGE_REJECTED", details: "TASK_EXECUTION_CONTEXT_UNAVAILABLE", agent_run_id: copy.coordinator });
-    expect(refusal!.payload.message).toBe(`The delegated Team at '${copy.address}' cannot be restored: the saved conversation of its coordinator `
+    // AC-006 essentials (hard): the coordinator's refusal names its damaged line; nothing is delivered; the file is unchanged.
+    // autobyteus-461: the delegated team is reached on its own stream (rule 2); base's code and text, given through the hosting
+    // root, are compared softly and the refusal is recorded.
+    evidence.usr4Refusal = refusal!.payload;
+    expect(refusal!.payload).toMatchObject({ agent_run_id: copy.coordinator });
+    expect(String(refusal!.payload.message)).toContain(`line ${damagedLine}`);
+    expect.soft(refusal!.payload, JSON.stringify(refusal!.payload)).toMatchObject({ code: "TEAM_SEND_MESSAGE_REJECTED", details: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" });
+    expect.soft(refusal!.payload.message).toBe(`The delegated Team at '${copy.address}' cannot be restored: the saved conversation of its coordinator `
       + `'${copy.coordinatorAddress}' cannot be read (line ${damagedLine} of raw_traces_active.jsonl is damaged). Its files were left unchanged. `
       + "Start a new delegation for this work, or restore its saved conversation from a backup.");
     expect(stringsOf(await restartTeam.conversationOf(copy.coordinator)).some((text) => text.includes("continue (USR-4)")), "USR-4: nothing was delivered").toBe(false);
@@ -318,18 +335,19 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
   }, 120_000);
 
   it("USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut", async () => {
-    restartTeam.close();
+    for (const team of restartTeams.values()) team.close();
+    restartTeams.clear();
     const beforeThird = new Map<CaseId, Buffer>();
     for (const copy of copies) beforeThird.set(copy.caseId, await fsp.readFile(copy.logPath));
     await stopServer(restart, "SIGTERM");
     for (const copy of copies) expect(sha(await fsp.readFile(copy.logPath)), `${copy.caseId}: unchanged by the shutdown`).toBe(sha(beforeThird.get(copy.caseId)!));
     const third = await startServer("server #3");
-    const restored = (await third.graphql(`mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}`, { id: rootRunId })).restoreAgentTeamRun;
-    expect(restored.success, restored.message).toBe(true);
-    const view = await openTeam(third);
+    const views: Array<Awaited<ReturnType<typeof openTeam>>> = [];
     const results: Rec = {};
     try {
       for (const copy of copies.filter((entry) => entry.caseId !== "USR-4")) {
+        const view = await openTeam(third, copy.teamRunId);
+        views.push(view);
         const before = beforeThird.get(copy.caseId)!;
         const okBefore = okCount(await view.conversationOf(copy.coordinator));
         const from = view.frames.length;
@@ -354,7 +372,7 @@ suite("A delegated Team whose coordinator's log was damaged by an unclean shutdo
       for (const server of [restart, third]) expect(warningsFor(server.output(), managerLog), `${server.label}: no warning for the intact manager log`).toEqual([]);
       evidence.cases["USR-5"] = { ...results, warningsOnThirdServer: 0 };
     } finally {
-      view.close();
+      for (const view of views) view.close();
       await stopServer(third, "SIGTERM");
     }
   }, 300_000);

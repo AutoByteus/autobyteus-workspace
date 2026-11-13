@@ -1,0 +1,37 @@
+# F-51 (team-run-v1-production-upgrade x2), R8-D/R8-E
+# Expected (base, released-shape upgrade ticket): a user's message to an unconverted / blocked team root is refused with TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED or TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED.
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root
+AssertionError: expected { success: false, …(2) } to match object { success: false, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "message": StringContaining "TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED",
++   "message": "Error: team team-v1-warning-root: the view sent no snapshot: {\"code\":\"TEAM_STREAM_UNAVAILABLE\",\"message\":\"Error: rootTeam.members[1] is missing required field(s): agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration.\",\"error_scope\":null,\"error_effect\":null,\"turn_id\":null,\"change_sequence\":null,\"agent_run_id\":null} [\"CONNECTED\",\"ERROR\"]",
+    "success": false,
+    "teamRunId": null,
+  }
+
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1528:97
+    1526|     ]));
+    1527|     // The unconverted root is not served, and new current work is sti…
+...
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+AssertionError: expected { success: false, …(2) } to match object { success: false, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "message": StringContaining "TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED",
++   "message": "Error: team team-v1-supported-root: the view sent no snapshot: {\"code\":\"TEAM_STREAM_UNAVAILABLE\",\"message\":\"Error: rootTeam.members[1] is missing required field(s): agentDefinitionId, agentRunId, platformAgentRunId, launchConfiguration.\",\"error_scope\":null,\"error_effect\":null,\"turn_id\":null,\"change_sequence\":null,\"agent_run_id\":null} [\"CONNECTED\",\"ERROR\"]",
+    "success": false,
+    "teamRunId": null,
+  }
+
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1598:48
+    1596|     });
+    1597|     const blockedRestore = await restoreTeamRun(first.serverUrl, scena…
+...

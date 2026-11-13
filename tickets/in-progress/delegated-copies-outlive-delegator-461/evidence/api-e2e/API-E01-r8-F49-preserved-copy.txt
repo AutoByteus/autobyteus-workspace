@@ -1,0 +1,23 @@
+# F-49 (TAU-2, task-agent-own-run-startup): a copy preserved by an unfinished predecessor, R8-E/R8-F/R8-G
+# Expected (design-spec.md line 568, SR-077): first start: its own save answers NOT_FOUND; after the predecessor's retry: 'the copy is read as an ordinary run and its own Settings save works'.
+
+   → SR-077 names NOT_FOUND: {"success":false,"outcome":"INTERNAL_ERROR","message":"Run ownership could not be verified; saved settings were not changed.","fieldErrors":[]}: expected { success: false, …(3) } to match object { outcome: 'NOT_FOUND' }
+(3 matching properties omitted from actual)
+   → {"success":false,"outcome":"NOT_FOUND","message":"Run 'c1-reviewer' was not found.","fieldErrors":[]}; 461 migration: {"migrationId":"20261111_delegated_runs_own_runs_v1","status":"SUCCEEDED_WITH_WARNINGS","attempts":1,"summary":"Scanned 26; migrated 23; skipped 3; failed 0.","errorMessage":null,"logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-agent-own-run-e2e-cEDVBH/logs/app-data-migrations/20261111_delegated_runs_own_runs_v1-2026-11-13T22-31-17-531Z.log"}: expected { success: false, …(3) } to match object { success: true, outcome: 'UPDATED' }
+...
+   → {"success":false,"outcome":"NOT_FOUND","message":"Run 'c1-reviewer' was not found.","fieldErrors":[]}; 461 migration: {"migrationId":"20261111_delegated_runs_own_runs_v1","status":"SUCCEEDED_WITH_WARNINGS","attempts":1,"summary":"Scanned 26; migrated 23; skipped 3; failed 0.","errorMessage":null,"logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-agent-own-run-e2e-cEDVBH/logs/app-data-migrations/20261111_delegated_runs_own_runs_v1-2026-11-13T22-31-17-531Z.log"}: expected { success: false, …(3) } to match object { success: true, outcome: 'UPDATED' }
+(2 matching properties omitted from actual)
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007) 6505ms
+...
+AssertionError: SR-077 names NOT_FOUND: {"success":false,"outcome":"INTERNAL_ERROR","message":"Run ownership could not be verified; saved settings were not changed.","fieldErrors":[]}: expected { success: false, …(3) } to match object { outcome: 'NOT_FOUND' }
+(3 matching properties omitted from actual)
+
+...
+    310|     expect.soft(preserved, `SR-077 names NOT_FOUND: ${JSON.stringify(p…
+       |                                                                                    ^
+    311|     await first.stop();
+...
+AssertionError: {"success":false,"outcome":"NOT_FOUND","message":"Run 'c1-reviewer' was not found.","fieldErrors":[]}; 461 migration: {"migrationId":"20261111_delegated_runs_own_runs_v1","status":"SUCCEEDED_WITH_WARNINGS","attempts":1,"summary":"Scanned 26; migrated 23; skipped 3; failed 0.","errorMessage":null,"logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-agent-own-run-e2e-cEDVBH/logs/app-data-migrations/20261111_delegated_runs_own_runs_v1-2026-11-13T22-31-17-531Z.log"}: expected { success: false, …(3) } to match object { success: true, outcome: 'UPDATED' }
+(2 matching properties omitted from actual)
+
+...

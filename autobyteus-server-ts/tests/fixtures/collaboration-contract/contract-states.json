@@ -17566,10 +17566,10 @@
      "cases": [
       "T-5"
      ],
-     "call": "The user deletes M from the run list.",
+     "call": "The user stops M, then deletes it from the run list. (Deleting a running M is refused first, as at base: \"Run is active. Terminate it before deleting history.\")",
      "results": [],
      "refused": {
-      "code": "RUN_DELEGATED_WORK_ACTIVE",
+      "code": null,
       "message": "This run can't be deleted while a run it delegated to is working (/research_agent). Try again when it has finished, or stop it first."
      },
      "receiverSees": [],
@@ -17598,7 +17598,7 @@
         "summary": "…",
         "createdAt": "2026-11-01T08:00:00.000Z",
         "archivedAt": null,
-        "terminatedAt": null,
+        "terminatedAt": "2026-11-10T20:29:00.000Z",
         "hasCollaboration": true
        },
        {
@@ -18498,7 +18498,7 @@
       "T-8",
       "R-11"
      ],
-     "call": "The user stops the research agent, then deletes M. Later the user messages the research agent, which restores it (its T2 is open), and it reports: `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"Findings …\")`, by `research_agent_9b10`",
+     "call": "The user stops the research agent, then deletes M (stopped in S26). Later the user messages the research agent, which restores it (its T2 is open), and it reports: `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"Findings …\")`, by `research_agent_9b10`",
      "results": [],
      "refused": {
       "code": "TARGET_AGENT_RUN_NOT_ACTIVE",

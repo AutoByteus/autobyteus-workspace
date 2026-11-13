@@ -35,7 +35,11 @@ export const restoreByMemberMessage = async (input: Readonly<{
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
     const ready = Date.now() + 30_000;
     while (!frames.some((f) => /SNAPSHOT$/.test(String(f.type))) && Date.now() < ready) await sleep(50);
-    if (!frames.some((f) => /SNAPSHOT$/.test(String(f.type)))) throw new Error(`${input.kind} ${input.runId}: the view sent no snapshot: ${JSON.stringify(frames).slice(0, 800)}`);
+    if (!frames.some((f) => /SNAPSHOT$/.test(String(f.type)))) {
+      // The stream's own refusal (its ERROR payload, with its code) first, then the frames.
+      const errors = frames.filter((f) => f.type === "ERROR").map((f) => JSON.stringify(f.payload));
+      throw new Error(`${input.kind} ${input.runId}: the view sent no snapshot: ${errors.join(" | ")} ${JSON.stringify(frames.map((f) => f.type))}`);
+    }
     const content = input.content ?? "Continue.";
     socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: input.kind === "org"
       ? { root_subject_kind: "agent_org", root_run_id: input.runId, target_agent_run_id: input.memberRunId, command_id: randomUUID(),

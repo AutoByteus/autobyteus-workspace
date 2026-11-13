@@ -962,6 +962,9 @@ suite("Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MC
     expect(unknown).toEqual(notFound(`${k(taskA)}0`));
     const unknownId = `project_task_${randomUUID()}`;
     expect(await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: unknownId }))).toEqual(notFound(unknownId));
+    // CR-461-059 (base): by run ID an unknown Task is `{ delegated: false, message }`; the error shape is the recipient path's only.
+    const unknownByRunId = await root.managerCalls(callTool("delegate_task", { target_agent_run_id: worker, task_id: unknownId }));
+    expect(unknownByRunId).toEqual({ delegated: false, message: `Task '${unknownId}' must identify exactly one current node-local Task (found 0).` });
     record.texts = { afterDeleted, assignedD, unknown };
 
     // Temp tasks (REQ-005, REQ-019, REQ-020, DEC-012): a description-only delegation creates one with its own ID.

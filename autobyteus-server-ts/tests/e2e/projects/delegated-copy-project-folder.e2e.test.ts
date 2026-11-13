@@ -153,9 +153,14 @@ suite("A new delegated copy runs in its Task's Project's first linked folder (re
     expect(coordinator.addDirs).toEqual([folders.F]);
     // The other member starts when it first gets a message.
     const other = team.members.find((member) => member.agentRunId !== delegated.target_team_coordinator_agent_run_id)!;
-    await agentRoot.conversationOf(other.agentRunId, other.address);
-    agentRoot.sendTo(other.agentRunId, "Reply OK.");
-    const member = await launchOf(agentRoot, other.agentRunId);
+    // autobyteus-461 rule 2: a delegated team's member is reached on its own team's stream, not through the delegator's view.
+    const teamSocket = new WebSocket(`ws://${new URL(h.url).host}/ws/agent-team/${delegated.target_team_run_id}`);
+    const teamFrames: Rec[] = [];
+    teamSocket.on("message", (raw: unknown) => teamFrames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { teamSocket.once("open", () => resolve()); teamSocket.once("error", reject); });
+    await until(() => teamFrames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"), "the delegated team's own view", 30_000);
+    sendE2eSendMessageCommand(teamSocket, { agent_run_id: other.agentRunId, content: "Reply OK." });
+    const member = await launchOf(agentRoot, other.agentRunId).finally(() => teamSocket.terminate());
     expect(member.capsule).toBe(folders.F);
     expect(member.addDirs).toEqual([folders.F]);
     evidence.dcf02 = { teamRunId: delegated.target_team_run_id, coordinator, member };

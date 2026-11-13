@@ -259,10 +259,13 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     expect(notes.some((note) => note.toLowerCase().includes("designer")), "the designer used its default: no line").toBe(false);
     // Team members start when first messaged: the coordinator (the designer, on its default) messages both routed members,
     // and each starts on the router's choice (a Grok session with its --model).
+    // autobyteus-461 (TC-12, A-6): a delegated team is rooted at `/`, so its coordinator names a teammate `/engineer`; the
+    // router's request may name the member under the delegation address.
     const coordinatorRunId = result.target_team_coordinator_agent_run_id as string;
+    evidence["MR-02-addresses"] = requests[0]!.addresses;
     for (const address of requests[0]!.addresses as string[]) {
       const sent = await manager.calls(callTool("send_message_to", { target_agent_run_id: coordinatorRunId,
-        content: callTool("send_message_to", { recipient_address: address, content: "Start on the routed launch. Reply OK." }) }));
+        content: callTool("send_message_to", { recipient_address: `/${address.split("/").at(-1)}`, content: "Start on the routed launch. Reply OK." }) }));
       expect(sent.result, JSON.stringify(sent.result)).toMatchObject({ accepted: true });
     }
     await until(async () => (await grokSessions()).length >= 2, "both routed members started on Grok", 90_000);

@@ -1,0 +1,27 @@
+# F-52 (standalone-unreadable-tree-containment UC-1, replaced suite), R8-G
+# Expected (DESIGN.md rule 7): one run's unreadable own file leaves every other run working; the bad run's delegator is another run.
+# Observed: running server: the bad run's own delegator fails to open ('Agent root status identity mismatch.'); new server process (UC-2): contained, warnings name the run.
+
+{
+  "running server": {
+    "view:uc_host_e5848f_d74eccbee51645bebe232b65f5fbbc10": "opens",
+    "view:uc_host_e5848f_b411a2fcdf97459e9331a7b4e4798c00": "opens",
+    "view:bad run's delegator": "[{\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"custom\\\",\\n    \\\"message\\\": \\\"Agent root status identity mismatch.\\\",\\n    \\\"path\\\": []\\n  }\\n]\",\"locations\":[{\"line\":1,\"column\":19}],\"path\":[\"agentRunCollaboration\"]}]"
+  },
+  "new server process": {
+    "view:uc_host_e5848f_d74eccbee51645bebe232b65f5fbbc10": "opens",
+    "view:uc_host_e5848f_b411a2fcdf97459e9331a7b4e4798c00": "opens",
+    "view:bad run's delegator": "opens",
+    "badRead": {
+      "error": "[{\"message\":\"Run package 'agent:uc_helper_e5848f_05081c70ace6426f849e6c5b2575d682' is unavailable.\",\"locations\":[{\"line\":1,\"column\":19}],\"path\":[\"getRunProjection\"]}]",
+      "served": false
+    },
+    "warnings": [
+      "Failed reading run metadata for uc_helper_e5848f_05081c70ace6426f849e6c5b2575d682: Unterminated string in JSON at position 527 (line 10 column 42)",
+      "Failed reading run metadata for uc_helper_e5848f_05081c70ace6426f849e6c5b2575d682: Unterminated string in JSON at position 527 (line 10 column 42)",
+      "[20261019_delegated_copy_own_file_complete_v1] delegated copy 'uc_helper_e5848f_05081c70ace6426f849e6c5b2575d682' is left unchanged and is not loaded (PRESERVED_UNREADABLE): It cannot be read: Unterminated string in JSON at position 527 (line 10 column 42)",
+      "Kept run 'uc_helper_e5848f_05081c70ace6426f849e6c5b2575d682': its record could not be read: Unterminated string in JSON at position 527 (line 10 column 42)",
+      "Failed reading run metadata for uc_helper_e5848f_05081c70ace6426f849e6c5b2575d682: Unterminated string in JSON at position 527 (line 10 column 42)"
+    ]
+  }
+}

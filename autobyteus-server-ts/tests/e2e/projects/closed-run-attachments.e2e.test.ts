@@ -19,9 +19,9 @@ import {
 // reference file, and the user sends the worker a message with a context file. The Task is closed; once the worker has stopped
 // and left the tree, the message's reference still opens through the top run's route, also after a server restart, from the
 // stopped root and after its restore. The Task is then reopened and the Manager continues the worker by its run ID: the
-// worker's context file opens again through the top run's member route.
-// While the Task is closed, the context-file route's answer for the worker is recorded, never asserted: that route resolves its
-// owner through the tree, no screen opens a closed run's conversation, and the route's rule for it is follow-up FU-006.
+// worker's context file opens again. The worker is a run of its own (autobyteus-461 rule 2): the user's message with the file
+// goes on its own stream, and its file is read by its own identity (`/rest/runs/:runId/context-files/…`).
+// While the Task is closed, the context-file route's answer for the worker is recorded, never asserted (follow-up FU-006).
 // The Team root is not covered: a context file of a Team root's delegated run is uploaded through a Team draft owner that this
 // journey cannot address from an existing run.
 // Prerequisite: `pnpm -C autobyteus-server-ts build` for the current worktree (a stale dist is not proof).
@@ -56,17 +56,18 @@ suite("AC-007: a closed run's earlier attachments still open (built server, scri
   const referenceUrl = (s: BuiltStudio, kind: Kind, rootId: string, messageId: string, file: string) =>
     `${s.url}/rest/${kind === "agent" ? "agent-collaborations" : "agent-org-runs"}/${encodeURIComponent(rootId)}/communication/messages/`
     + `${encodeURIComponent(messageId)}/references/${referenceIdOf(messageId, file)}/content`;
-  const contextFileUrl = (s: BuiltStudio, kind: Kind, rootId: string, agentRunId: string, storedFilename: string) =>
-    `${s.url}/rest/${kind === "agent" ? "agent-collaborations" : "agent-org-runs"}/${encodeURIComponent(rootId)}/agent-runs/`
-    + `${encodeURIComponent(agentRunId)}/context-files/${encodeURIComponent(storedFilename)}`;
+  // autobyteus-461 rule 2: a delegated run's own context file is read by its own identity (`/rest/runs/:runId/…`).
+  const contextFileUrl = (s: BuiltStudio, _kind: Kind, _rootId: string, agentRunId: string, storedFilename: string) =>
+    `${s.url}/rest/runs/${encodeURIComponent(agentRunId)}/context-files/${encodeURIComponent(storedFilename)}`;
   const fetchText = async (url: string) => { const response = await fetch(url); return { status: response.status, body: await response.text() }; };
 
-  /** The user sends the worker a message with one context file, as the composer does (upload, finalize, send). */
-  const sendContextFile = async (s: BuiltStudio, kind: Kind, r: Root, worker: string, name: string, bytes: string) => {
-    const draftOwner = kind === "agent" ? { kind: "agent_collaboration_member_draft", hostRunId: r.rootId, agentRunId: worker }
-      : { kind: "org_member_draft", orgRunId: r.rootId, agentRunId: worker };
-    const finalOwner = kind === "agent" ? { kind: "agent_collaboration_member_final", hostRunId: r.rootId, agentRunId: worker }
-      : { kind: "org_member_final", orgRunId: r.rootId, agentRunId: worker };
+  /**
+   * The user sends the worker a message with one context file, as the composer does (upload, finalize, send). The worker is a
+   * run of its own (autobyteus-461 rule 2): its composer's owners are an agent run's, and the message goes on its own stream.
+   */
+  const sendContextFile = async (s: BuiltStudio, kind: Kind, _r: Root, worker: string, name: string, bytes: string) => {
+    const draftOwner = { kind: "agent_draft", draftRunId: worker };
+    const finalOwner = { kind: "agent_final", runId: worker };
     const form = new FormData();
     form.set("owner", JSON.stringify(draftOwner));
     form.set("file", new Blob([bytes], { type: "text/markdown" }), name);
@@ -77,19 +78,18 @@ suite("AC-007: a closed run's earlier attachments still open (built server, scri
       body: JSON.stringify({ draftOwner, finalOwner, attachments: [draft] }) });
     expect(finalized.status, await finalized.clone().text()).toBe(200);
     const [attachment] = (await finalized.json() as { attachments: Rec[] }).attachments;
-    const socket = new WebSocket(`${s.url.replace(/^http/, "ws")}/ws/${kind === "agent" ? "agent-collaboration" : "agent-org"}/${r.rootId}`);
+    const socket = new WebSocket(`${s.url.replace(/^http/, "ws")}/ws/agent/${worker}`);
     s.sockets.push(socket);
     const frames: Rec[] = [];
     socket.on("message", (raw) => frames.push(JSON.parse(String(raw))));
     await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
-    await until(() => frames.some((frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT"), `${kind}: view snapshot`);
+    await until(() => frames.some((frame) => frame.type === "CONNECTED"), `${kind}: the worker's own stream`);
     const content = `Here are my notes for you (${name}).`;
-    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: kind === "agent"
-      ? { root_subject_kind: "agent", root_run_id: r.rootId, target_agent_run_id: worker, command_id: randomUUID(), content,
-        context_file_paths: [attachment!.locator], image_urls: [], ...buildE2eClientCommandIds() }
-      : { root_subject_kind: "agent_org", root_run_id: r.rootId, target_agent_run_id: worker, command_id: randomUUID(), message_id: randomUUID(),
-        dedupe_key: randomUUID(), content, context_file_paths: [attachment!.locator], image_urls: [] } }));
-    await until(() => { const error = frames.find((frame) => frame.type === "ERROR"); if (error) throw new Error(JSON.stringify(error)); return frames.length > 1; },
+    const messageId = `e2e-${randomUUID()}`;
+    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { agent_run_id: worker, content, context_file_paths: [attachment!.locator],
+      image_urls: [], message_id: messageId, dedupe_key: `agent_run_input:e2e:${messageId}` } }));
+    await until(() => { const error = frames.find((frame) => frame.type === "ERROR"); if (error) throw new Error(JSON.stringify(error));
+      return frames.some((frame) => frame.type === "AGENT_COMMAND_ACK" && frame.payload?.message_id === messageId); },
       `${kind}: the message to the worker is taken`);
     socket.close();
     return attachment!.storedFilename as string;

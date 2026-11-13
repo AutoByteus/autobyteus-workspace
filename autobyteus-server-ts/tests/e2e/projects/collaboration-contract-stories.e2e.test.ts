@@ -525,9 +525,10 @@ suite("The collaboration contract's stories, run against the built server (autob
       if (state.refused) {
         const got = this.refusals.at(-1);
         const text = JSON.stringify(got ?? {});
-        if (!got) diffs.push(`refusal: expected ${state.refused.code}, the call was accepted`);
+        if (!got) diffs.push(`refusal: expected ${state.refused.code ?? JSON.stringify(state.refused.message)}, the call was accepted`);
         else {
-          if (!text.includes(state.refused.code)) diffs.push(`refusal: expected code ${state.refused.code}, got ${text.slice(0, 400)}`);
+          // A refusal without a code is a mutation's `{ success, message }` (SR-077): its text alone is compared.
+          if (state.refused.code && !text.includes(state.refused.code)) diffs.push(`refusal: expected code ${state.refused.code}, got ${text.slice(0, 400)}`);
           const message = this.bindings.map(state.refused.message);
           const pieces = message.split(ELLIPSIS).filter((p) => p.trim());
           if (!pieces.every((p) => text.includes(JSON.stringify(p).slice(1, -1)) || text.includes(p))) diffs.push(`refusal: expected the text ${JSON.stringify(message)}, got ${text.slice(0, 600)}`);
