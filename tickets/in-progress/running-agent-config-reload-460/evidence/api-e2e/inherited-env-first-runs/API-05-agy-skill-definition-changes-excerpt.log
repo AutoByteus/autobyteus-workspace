@@ -1,0 +1,5 @@
+# API-05 env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_AGY_FAILURE_E2E=1 RUN_GITHUB_PROXY_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-shell-env-probe-cli.mjs AGY_SKILL_DEFINITION_E2E_EVIDENCE_DIR=<evidence>/API-05 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts --no-watch | commit c7685b20c6 + test changes | 2026-11-13 13:28
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Duration  36.13s (transform 6.94s, setup 59ms, import 9.62s, tests 25.88s, environment 0ms)
+EXIT 0

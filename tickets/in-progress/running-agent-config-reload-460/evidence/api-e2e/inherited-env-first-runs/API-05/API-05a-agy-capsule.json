@@ -1,0 +1,61 @@
+{
+  "add": {
+    "notice": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is now available: Gives the probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/codeword-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\n\nECHO_INPUT after add",
+    "capsuleSkills": [
+      {
+        "name": "anchor-skill",
+        "symlink": true,
+        "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/anchor-skill",
+        "skillMd": "---\nname: anchor-skill\ndescription: A skill the run starts with.\n---\n\nThe anchor-skill codeword is ANCHOR-1.",
+        "marker": "UNREADABLE:ENOENT"
+      },
+      {
+        "name": "codeword-probe",
+        "symlink": true,
+        "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/codeword-probe",
+        "skillMd": "---\nname: codeword-probe\ndescription: Gives the probe codeword.\n---\n\nThe codeword-probe codeword is PROBE-4417.",
+        "marker": "UNREADABLE:ENOENT"
+      }
+    ],
+    "manifest": [
+      "anchor-skill",
+      "codeword-probe"
+    ]
+  },
+  "packageEditRemoval": {
+    "notice": "[Platform notice — skill updated]\n\nYour skill package `anchor-skill` is no longer available.\n\nDo not rely on a skill that is no longer available.\n\nECHO_INPUT after package edit"
+  },
+  "resume": {
+    "notice": "[Platform notice — skill updated]\n\nYour skill package `codeword-probe` is no longer available.\n\nYour skill package `extra-skill` is now available: An extra skill added while the run is stopped.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/extra-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\nDo not rely on a skill that is no longer available.\n\nECHO_INPUT after resume",
+    "capsuleSkills": [
+      {
+        "name": "anchor-skill",
+        "symlink": true,
+        "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/anchor-skill",
+        "skillMd": "---\nname: anchor-skill\ndescription: A skill the run starts with.\n---\n\nThe anchor-skill codeword is ANCHOR-1.",
+        "marker": "UNREADABLE:ENOENT"
+      },
+      {
+        "name": "codeword-probe",
+        "symlink": true,
+        "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/codeword-probe",
+        "skillMd": "---\nname: codeword-probe\ndescription: Gives the probe codeword.\n---\n\nThe codeword-probe codeword is PROBE-4417.",
+        "marker": "UNREADABLE:ENOENT"
+      }
+    ],
+    "manifest": [
+      "anchor-skill",
+      "codeword-probe"
+    ],
+    "extraSkillLinkedAfterResume": false
+  },
+  "addAfterResume": {
+    "notice": "[Platform notice — skill updated]\n\nYour skill package `third-skill` is now available: A skill added after the run was resumed.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/third-skill/SKILL.md`. Resolve relative paths in it from its folder.\n\n\nECHO_INPUT after third",
+    "manifest": [
+      "anchor-skill",
+      "codeword-probe",
+      "extra-skill",
+      "third-skill"
+    ]
+  }
+}

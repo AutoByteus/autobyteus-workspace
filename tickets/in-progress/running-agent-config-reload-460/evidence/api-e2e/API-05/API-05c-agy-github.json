@@ -1,0 +1,30 @@
+{
+  "atStart": {
+    "apiHttp": "skipped",
+    "address": null,
+    "issueNumber": null,
+    "tokenInOutputs": []
+  },
+  "added": "[Platform notice — skill updated]\n\nYour skill package `github-integration` is now available: Reach GitHub through the AutoByteus proxy.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-py032U/integration-source/github/SKILL.md`. Resolve relative paths in it from its folder.\nIts GitHub access starts when this run is restarted (stop the run, then send a message).\n\n\nECHO_INPUT after github add",
+  "restarted": {
+    "apiHttp": "200",
+    "address": "http://127.0.0.1:58103/r/rp_<pass>/github/api",
+    "issueNumber": 1,
+    "tokenInOutputs": []
+  },
+  "resumed": "ECHO_INPUT after restart",
+  "refused": {
+    "status": 403,
+    "error": "INTEGRATION_NOT_ALLOWED"
+  },
+  "removed": "[Platform notice — skill updated]\n\nYour skill package `github-integration` is no longer available.\n\nDo not rely on a skill that is no longer available.\n\nECHO_INPUT after github removal",
+  "allowedAgain": {
+    "status": 200,
+    "error": null
+  },
+  "addedBack": "[Platform notice — skill updated]\n\nYour skill package `github-integration` is now available: Reach GitHub through the AutoByteus proxy.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-py032U/integration-source/github/SKILL.md`. Resolve relative paths in it from its folder.\n\n\nECHO_INPUT after github added back",
+  "afterStop": {
+    "status": 403,
+    "error": "RUN_PASS_INVALID"
+  }
+}

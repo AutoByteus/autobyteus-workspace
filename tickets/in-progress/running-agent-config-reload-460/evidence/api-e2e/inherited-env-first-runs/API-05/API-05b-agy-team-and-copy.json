@@ -1,0 +1,15 @@
+{
+  "members": {
+    "worker": "ab460_worker_13f3c1_99aa93a8d7444dec92aa00e28a0e7adb",
+    "plain": "ab460_plain_13f3c1_d23dcd975dc34061ad022e898e16ce4f"
+  },
+  "copy": {
+    "agentRunId": "ab460_worker_13f3c1_4bee983b15d94e0a8eac29e10bf2550e",
+    "address": "/ab460_worker_13f3c1"
+  },
+  "next": {
+    "worker": "[Platform notice — skill updated]\n\nYour skill package `team-probe` is now available: Gives the team probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/team-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\n\nECHO_INPUT worker second",
+    "copy": "[Platform notice — skill updated]\n\nYour skill package `team-probe` is now available: Gives the team probe codeword.\nRead its instructions before work it governs: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-definition-e2e-ZYFo9s/skills/team-probe/SKILL.md`. Resolve relative paths in it from its folder.\n\n\nYou received a message from the agent with sender address \"/ab460_manager_13f3c1\" and sender run id \"ab460_manager_13f3c1_cd8c6c52f77a4b97828b21831394522d\".\nmessage:\nECHO_INPUT copy second",
+    "plain": "ECHO_INPUT plain second"
+  }
+}
