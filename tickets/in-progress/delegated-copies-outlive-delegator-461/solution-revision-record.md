@@ -1427,3 +1427,4 @@ No architecture review: this restores base behavior and withdraws one test line.
   - architecture review (narrow);
   - then the Implementation Engineer.
 - **ARCH-REV-048 passed SR-074.** Its note is applied: the snapshot's log read and filter are bound to the `own(X)` and `tree(X)` taken in the synchronous step, the same set as its rows.
+- **F-31 confirmed by the user** (2026-11-13): "the changes on the top … shouldn't be inherited or flowing down … the delegator and task agent, task agent team, they are independent". So the one-hop decision stands: a new delegated run copies its immediate delegator's saved launch once, when it is created. After that the runs are independent: an edit to a delegator never changes a run it already delegated to, nor reaches runs its descendants start. The flag is closed.
