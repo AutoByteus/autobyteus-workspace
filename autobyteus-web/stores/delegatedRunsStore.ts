@@ -35,6 +35,8 @@ const runKey = (subject: DelegatedRunSubject): string =>
  */
 export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   const opening = new Map<string, Promise<void>>()
+  /** The runs this store opened for a delegator's view: their contexts and streams are its, not the run list's (CR-461-044). */
+  const owned = reactive(new Set<string>())
   /** The last open failure per run; selecting the row again retries. */
   const errors = reactive<Record<string, string>>({})
 
@@ -62,6 +64,7 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
   /** Opens the run's own context and stream, once (a load in flight is shared). */
   const ensureOpen = (subject: DelegatedRunSubject): void => {
     const key = runKey(subject)
+    owned.add(key)
     if (opening.has(key)) return
     let attempt: Promise<void>
     if (isLoaded(subject)) {
@@ -135,5 +138,9 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
     ? useAgentRunStore().terminateRun(subject.agentRunId)
     : useAgentTeamRunStore().terminateTeamRun(subject.teamRunId)
 
-  return { ensureOpen, bindingOf, errorFor, stop }
+  /** Whether this store opened the agent run (a delegated agent run), or the team run (a delegated team run). */
+  const ownsAgentRun = (agentRunId: string): boolean => owned.has(`agent:${agentRunId}`)
+  const ownsTeamRun = (teamRunId: string): boolean => owned.has(`agent_team:${teamRunId}`)
+
+  return { ensureOpen, bindingOf, errorFor, stop, ownsAgentRun, ownsTeamRun }
 })

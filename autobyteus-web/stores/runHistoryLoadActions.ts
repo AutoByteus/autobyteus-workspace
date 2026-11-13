@@ -8,6 +8,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns';
 import {
@@ -296,10 +297,13 @@ export const reconcileDiscoveredActiveRuns = async (
   const teamContextsStore = useAgentTeamContextsStore();
   const agentTeamRunStore = useAgentTeamRunStore();
 
+  const delegatedRuns = useDelegatedRunsStore();
   for (const [runId, context] of agentContextsStore.runs.entries()) {
     if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
       continue;
     }
+    // A delegated run opened from its delegator's view keeps its own stream (rule 2, SR-045); the list does not hold it.
+    if (delegatedRuns.ownsAgentRun(runId)) continue;
     // A send to this run awaits server activation; this snapshot may predate it (D-14).
     if (agentRunStore.isActivationPending(runId)) {
       continue;

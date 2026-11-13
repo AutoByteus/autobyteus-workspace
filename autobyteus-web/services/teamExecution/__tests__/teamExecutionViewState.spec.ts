@@ -479,4 +479,13 @@ describe('SEGMENT_CONTENT_BATCH (autobyteus-139)', () => {
     });
     expect(state.getChangeSequence()).toBe(0);
   });
+
+  it('CR-461-040: in a stopped Team, a row two hops down (delegated by the Team\'s delegated agent) is listed live under the Team', () => {
+    const state = createStateFixture({ rootActive: false }).state;
+    expectApplied(state.applyMessage(started(1, 'root-team-1', taskAgent('worker-run', 'teacher-run', '/worker'))));
+    expectApplied(state.applyMessage(started(2, 'root-team-1', taskAgent('helper-run', 'worker-run', '/helper'))));
+    const rows = state.listNavigationRows().filter((row) => state.isTaskExecutionRowListed(row))
+    expect(rows.map((row) => [row.agentRunId, row.depth, row.delegatedBy])).toEqual(expect.arrayContaining([['worker-run', 1, 'Teacher'], ['helper-run', 1, 'worker']]))
+  });
 });
+

@@ -5,6 +5,9 @@ import type { SubtreeRow } from "../../../../src/agent-collaboration/delegation/
 import type { RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { SequencedRootEvent } from "../../../../src/agent-collaboration/delegation/run-view-stream.js";
 import { testViewStreams } from "../../../helpers/view-streams.js";
+import { DelegationIndex } from "../../../../src/agent-collaboration/delegation/delegation-index.js";
+import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { readerOfAgentRunIds } from "../../../helpers/run-agents-reader.js";
 
 /**
  * autobyteus-461 SR-061 … SR-063: the feed publishes base's row events into each affected run's view stream at the change
@@ -85,4 +88,25 @@ describe("ChildRowsFeed", () => {
     expect(placementOf(M, fromWorker, rows)).toEqual({ hostKind: "root", hostRunId: "manager" });
     expect(placementOf(M, fromHelper, rows)).toEqual({ hostKind: "root", hostRunId: "manager" });
   });
+
+  it("CR-461-040: over the real tree, a row two hops down (a Team's task agent's helper) is in the Team's rows, at its root, and reaches its stream live", async () => {
+    const tasks = new InMemoryTaskExecutionResources();
+    const tree = new DelegationIndex(() => tasks, readerOfAgentRunIds(async (r) => r.rootRunId === "squad" ? ["lead"] : [r.rootRunId]));
+    tree.build();
+    tasks.setEntriesListener(tree);
+    const streams = testViewStreams();
+    const feed = new ChildRowsFeed({ streams, tree, isRunning: () => true });
+    feed.follow(tree);
+    const seen: SequencedRootEvent<ChildRowRootEvent>[] = [];
+    streams.streamOf<ChildRowRootEvent>(TEAM).subscribe((event) => seen.push(event));
+    tasks.addTask("T1");
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/worker", delegatedFrom: { delegatingRun: TEAM, delegatorAgentRunId: "lead" }, execution: { agentRunId: "worker" } });
+    await tasks.markStarted({ agentRunId: "worker" });
+    await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/helper", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "worker" }, delegatorAgentRunId: "worker" }, execution: { agentRunId: "helper" } });
+    const root = { hostKind: "root", hostRunId: "squad" };
+    expect(feed.rowsOf(TEAM).open.map((placed) => [placed.row.run, placed.host])).toEqual([[{ agentRunId: "worker" }, root], [{ agentRunId: "helper" }, root]]);
+    expect(seen.map(({ event }) => [event.kind, "placed" in event && !Array.isArray(event.placed) ? event.placed.row.run : null])).toEqual([
+      ["task_execution_started", { agentRunId: "worker" }], ["task_execution_started", { agentRunId: "helper" }]]);
+  });
 });
+
