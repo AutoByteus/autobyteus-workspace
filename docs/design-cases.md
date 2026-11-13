@@ -293,3 +293,13 @@ Principle 1 (trace through the real dependency).
 - **The fix:** the probe reads a readable Host-gate refusal and gives the exact cause (the opaque request stays for browser windows); full screen also turns the decor's fitting off on API < 35 and back on when it ends.
 - **Why it mattered:** both items failed in the product on the one runtime and the platform versions the design had not run.
 - **Notice it by:** a premise measured in a stand-in for the real runtime (Chromium for Electron, a fake for a platform API, one OS version for a range), or a platform behaviour that changed at a version inside the supported range (here targetSdk 35 edge-to-edge). Run the premise in the real runtime, or mark it unproven and make the design hold either way.
+
+### Case 22: A Guard That Reads "Active" Instead Of The Fact Ordered Before Release (autobyteus-460, ARCH-REV-001 AR-001)
+
+Principles 1 (several kinds) and 13 (one owner for a sequence).
+
+- **The design said:** a running agent's backend adds a skill link to the shared workspace mid-run through the existing materializer, with `assertAccepting: () => { if (!isActive()) throw … }`; "release is idempotent, so this is safe while the run is released". It was traced on the ACP backend, which sets `active = false` before cleanup.
+- **What the code does:** on Claude and Codex, `isActive()` stays true until the whole cleanup has finished (Claude's skill-release stage runs in parallel with the others; Codex deletes its thread entry only after cleanup). An add finishing after the held list was released passes its last check, and its holder and shared link are never released.
+- **The fix (SR-003):** one owner, `RunWorkspaceSkills`, holds the run's links from preparation to release, owns a `closed` flag and its single in-flight add, and is the only release path: `release()` sets `closed`, awaits the add, then releases.
+- **Why it mattered:** a leaked link in a shared folder stays visible to every other run in that workspace for the life of the process.
+- **Notice it by:** a guard named by meaning ("active", "running", "open") used to order work against a teardown, without citing who sets it and when, relative to the step it must precede, on every runtime or kind; two lists of the same resources (one for preparation, one for the run).
