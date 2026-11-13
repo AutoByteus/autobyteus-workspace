@@ -1,7 +1,7 @@
 import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { peerMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
@@ -42,7 +42,8 @@ export interface AgentOrgMemberRunProjection {
 }
 
 export class AgentOrgMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
+  private readonly tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
+  private readonly peerRunOf: PeerRunOf;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: AgentOrgExecutionTreeLocationService;
   private readonly tokenUsage: TokenUsageRunStore;
@@ -50,7 +51,9 @@ export class AgentOrgMemberRunViewProjectionService {
 
   constructor(options: {
     /** The relationships between runs, from the Task entries (SR-047). */
-    tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf" | "childrenOf" | "agentOf" | "collaborationTreeOf">;
+    tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
+    /** A run on a peer node, by its own identity (SR-066), from the composition. */
+    peerRunOf: PeerRunOf;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: AgentOrgExecutionTreeLocationService;
@@ -59,6 +62,7 @@ export class AgentOrgMemberRunViewProjectionService {
   }) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.tree = options.tree;
+    this.peerRunOf = options.peerRunOf;
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
     this.locations = options.locations ?? new AgentOrgExecutionTreeLocationService({
       memoryDir,
@@ -74,7 +78,7 @@ export class AgentOrgMemberRunViewProjectionService {
     agentRunId: string,
   ): Promise<AgentOrgMemberRunProjection> {
     // N-403, SR-066: an agent of a peer run is read from its node through the run's handle (autobyteus-278).
-    const peer = createPeerRunOf(this.tree)(agentRunId.trim());
+    const peer = this.peerRunOf(agentRunId.trim());
     if (peer) return await peerMemberProjection(peer, agentRunId.trim(), memberAddress) as AgentOrgMemberRunProjection;
     const location = await this.requireLocation(orgRunId, memberAddress, agentRunId);
     const projection = await this.agentViews.getRequiredProjectionFromMetadata({

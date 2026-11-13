@@ -1,7 +1,7 @@
 import { conversationSenders, receivedSenderAddresses, tracePageSenders } from "./received-sender-addresses.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { peerMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { resolveActiveTracePageSenderAddresses } from "../projection/event-monitor-active-trace-page-projection.js";
 import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
@@ -39,7 +39,8 @@ export interface TeamMemberRunProjection {
 }
 
 export class TeamMemberRunViewProjectionService {
-  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf" | "agentOf" | "collaborationTreeOf">;
+  private readonly tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
+  private readonly peerRunOf: PeerRunOf;
   private readonly agentViews: AgentRunViewProjectionService;
   private readonly locations: TeamRunExecutionTreeLocationService;
   private readonly injectedFileChanges: RunFileChangeProjectionService | null;
@@ -49,7 +50,9 @@ export class TeamMemberRunViewProjectionService {
      * The relationships between runs, from the Task entries (SR-047): the runs this team delegated to peers. A run it
      * delegated to on this node is not one of its members; it is read by its own identity (CR-461-014).
      */
-    tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf" | "agentOf" | "collaborationTreeOf">;
+    tree: Pick<DelegationIndex, "agentOf" | "collaborationTreeOf">;
+    /** A run on a peer node, by its own identity (SR-066), from the composition. */
+    peerRunOf: PeerRunOf;
     memoryDir?: string;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
     locations?: TeamRunExecutionTreeLocationService;
@@ -57,6 +60,7 @@ export class TeamMemberRunViewProjectionService {
   }) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
     this.tree = options.tree;
+    this.peerRunOf = options.peerRunOf;
     this.agentViews = options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
     this.locations = options.locations ?? new TeamRunExecutionTreeLocationService({ memoryDir });
     this.injectedFileChanges = options.runFileChangeProjectionService ?? null;
@@ -64,7 +68,7 @@ export class TeamMemberRunViewProjectionService {
 
   async getProjection(rootTeamRunId: string, agentRunId: string): Promise<TeamMemberRunProjection> {
     // N-403, SR-066: an agent of a peer run is read from its node through the run's handle (autobyteus-278).
-    const peer = createPeerRunOf(this.tree)(agentRunId.trim());
+    const peer = this.peerRunOf(agentRunId.trim());
     if (peer) {
       const { memberAddress: _address, ...projection } = await peerMemberProjection(peer, agentRunId.trim(), null);
       return projection as TeamMemberRunProjection;

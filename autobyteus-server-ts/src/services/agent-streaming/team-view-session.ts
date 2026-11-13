@@ -146,7 +146,7 @@ export class TeamViewSession {
       if (!open) return;
       try {
         const event = sequenced.event;
-        const rowEvent = isChildRowRootEvent(event as { kind?: unknown }) ? await readRowEvent(this.sources.rows.projection, event as ChildRowRootEvent) : null;
+        const rowEvent = isChildRowRootEvent(event as { kind?: unknown }) ? await readRowEvent(this.sources.rows.projection, this.identity, event as ChildRowRootEvent) : null;
         const message = this.project(sequenced, rowEvent);
         if (message && open) this.sink.send(message);
       } catch (error) { console.error(`Error projecting a team run's view event: ${String(error)}`); }

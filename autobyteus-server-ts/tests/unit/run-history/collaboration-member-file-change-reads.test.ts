@@ -132,7 +132,7 @@ describe("team member file-change reads name the team run", () => {
     }
     const read = vi.spyOn(store, "read");
     const live = liveChanges();
-    const views = new TeamMemberRunViewProjectionService({ tree: noDelegations(),
+    const views = new TeamMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null,
       memoryDir,
       agentRunViewProjectionService: {} as never,
       locations,
@@ -242,7 +242,7 @@ describe("org member file-change reads name the org run and member", () => {
     }
     const read = vi.spyOn(store, "read");
     const live = liveChanges();
-    const views = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(),
+    const views = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null,
       memoryDir,
       agentRunViewProjectionService: {} as never,
       locations,

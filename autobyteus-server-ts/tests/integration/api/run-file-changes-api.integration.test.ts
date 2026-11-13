@@ -174,7 +174,7 @@ describe("Run file changes API integration", () => {
       setProcessTeamRunHistoryService(new TeamRunHistoryService(getMemoryDir(), {
         tree: noDelegations(), workGuard: noWorkGuard(), teamRunManager: ownedTeamRunManager,
       })),
-      setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: getMemoryDir(), tree: noDelegations() })),
+      setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: getMemoryDir(), tree: noDelegations(), peerRunOf: () => null })),
     ];
 
     processRunFileChanges = new RunFileChangeService();

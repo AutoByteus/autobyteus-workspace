@@ -106,7 +106,7 @@ it('distinguishes a real empty local member trace from a physical read failure w
   const { AgentRunViewProjectionService } = await import('../../../src/run-history/services/agent-run-view-projection-service.js');
   const { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } = await import('autobyteus-ts/memory/store/memory-file-names.js');
   const f = await fixture();
-  const service = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(), memoryDir: f.memoryDir,
+  const service = new AgentOrgMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null, memoryDir: f.memoryDir,
     agentRunViewProjectionService: new AgentRunViewProjectionService(f.memoryDir),
     locations: new AgentOrgExecutionTreeLocationService({ memoryDir: f.memoryDir }) });
   await expect(service.getProjection('org', '/assistant', 'configured')).resolves.toMatchObject({ conversation: [], activities: [] });

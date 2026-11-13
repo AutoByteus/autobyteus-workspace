@@ -164,7 +164,7 @@ export class OrgViewSession {
       if (!open) return;
       try {
         const rowEvent = isChildRowRootEvent(sequenced.event)
-          ? placeInMountedTeam(await readRowEvent(this.sources.rows.projection, sequenced.event), connection.snapshot.own.tree) : null;
+          ? placeInMountedTeam(await readRowEvent(this.sources.rows.projection, this.identity, sequenced.event), connection.snapshot.own.tree) : null;
         const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
         if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
       } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }

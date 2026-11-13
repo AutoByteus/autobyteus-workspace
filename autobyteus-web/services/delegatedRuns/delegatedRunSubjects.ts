@@ -7,7 +7,7 @@ import type { ParticipantMessagesKey } from '~/services/collaborationMessages/co
  * A delegated run on this node, as rule 2 reaches it (autobyteus-461 SR-061): a run of its own, by its own run ID. An
  * agent row is that agent run; a member of a delegated Team is that member of the Team run, at its address in the Team
  * run's own space (as the server sends it). A delegator's view only shows its row. A run on a peer node is not one: it
- * keeps the route through its delegator (autobyteus-278).
+ * is reached by its own identity through the server's peer handle (SR-066), on the view's stream.
  */
 export type DelegatedRunSubject =
   | Readonly<{ kind: 'agent'; agentRunId: string }>
@@ -43,13 +43,16 @@ export const orgDelegatedRunSubject = (index: Pick<AgentOrgExecutionViewIndex, '
   return null
 }
 
-/** An agent run's view's agent, when it is a delegated run on this node; null for the run's own agent and peer runs. */
+/**
+ * An agent run's view's agent, when it is a delegated run on this node; null for the run's own agent and peer runs. A
+ * Team member is always read through its Team run: one without it is refused, never read as an agent run (CR-461-028).
+ */
 export const agentRunDelegatedRunSubject = (index: Pick<AgentRunCollaborationIndex, 'agents'>, agentRunId: string): DelegatedRunSubject | null => {
   const child = index.agents.get(agentRunId)
   if (!child) return null
-  return child.kind === 'task_team_member' && child.teamRunId
-    ? memberSubject(child.teamRunId, child.address, agentRunId)
-    : agentSubject(agentRunId)
+  if (child.kind === 'task_agent') return agentSubject(agentRunId)
+  if (!child.teamRunId) throw new Error(`Task Team member '${agentRunId}' has no Team run.`)
+  return memberSubject(child.teamRunId, child.address, agentRunId)
 }
 
 /** Whose log holds a delegated run's Team tab messages: its own run's (CR-461-020, CR-461-022). */

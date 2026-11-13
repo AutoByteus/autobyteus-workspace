@@ -1,7 +1,6 @@
-import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RunProjection } from "../../run-history/services/agent-run-view-projection-service.js";
 import { peerMemberProjection } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
-import { createPeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
+import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 import { CollaborationMemberNotFoundError } from "../../agent-collaboration/execution/domain/collaboration-member-not-found-error.js";
 
 const required = (value: string, field: string): string => {
@@ -28,20 +27,20 @@ export interface StandaloneRootMemberRunProjection {
  * on its node.
  */
 export class StandaloneRootMemberViewProjectionService {
-  private readonly tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf">;
+  private readonly peerRunOf: PeerRunOf;
 
   constructor(options: Readonly<{
-    /** The relationships between runs, from the Task entries (SR-047): the runs this run delegated to peers. */
-    tree: Pick<DelegationIndex, "peerChildrenOf" | "peerRunNamed" | "parentOf">;
+    /** A run on a peer node, by its own identity (SR-066), from the composition. */
+    peerRunOf: PeerRunOf;
   }>) {
-    this.tree = options.tree;
+    this.peerRunOf = options.peerRunOf;
   }
 
   async getProjection(hostRunId: string, memberAddress: string, agentRunId: string): Promise<StandaloneRootMemberRunProjection> {
     const host = required(hostRunId, "hostRunId");
     const run = required(agentRunId, "agentRunId");
     // SR-066: an agent of a peer run, by its own identity, through the run's handle.
-    const peer = createPeerRunOf(this.tree)(run);
+    const peer = this.peerRunOf(run);
     if (!peer) {
       throw new CollaborationMemberNotFoundError(`AgentRun '${run}' is not a run Agent run '${host}' delegated to a peer node.`);
     }

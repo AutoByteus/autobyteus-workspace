@@ -45,7 +45,7 @@ const harness = (located: unknown = location) => {
     locations,
     agentViews,
     fileChanges,
-    service: new TeamMemberRunViewProjectionService({ tree: noDelegations(),
+    service: new TeamMemberRunViewProjectionService({ tree: noDelegations(), peerRunOf: () => null,
       locations: locations as never,
       agentRunViewProjectionService: agentViews as never,
       runFileChangeProjectionService: fileChanges as never,
@@ -122,7 +122,7 @@ describe("TeamMemberRunViewProjectionService file changes", () => {
     const tree = { ...noDelegations(), runOfAgent: vi.fn(async () => ({ rootSubjectKind: "agent", rootRunId: "worker-child-run" })),
       parentOf: vi.fn(() => ({ delegatingRun: { rootSubjectKind: "agent_team", rootRunId: "team-1" } })) };
     const { agentViews, fileChanges, locations } = harness(null);
-    const service = new TeamMemberRunViewProjectionService({ tree: tree as never, locations: locations as never,
+    const service = new TeamMemberRunViewProjectionService({ tree: tree as never, peerRunOf: () => null, locations: locations as never,
       agentRunViewProjectionService: agentViews as never, runFileChangeProjectionService: fileChanges as never });
     const refused = { name: CollaborationMemberNotFoundError.name, message: "AgentRun 'worker-child-run' was not found in root TeamRun 'team-1'." };
     await expect(service.getProjection("team-1", "worker-child-run")).rejects.toMatchObject(refused);

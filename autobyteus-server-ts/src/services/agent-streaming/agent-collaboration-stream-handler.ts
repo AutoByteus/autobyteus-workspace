@@ -113,7 +113,7 @@ export class AgentCollaborationStreamHandler {
       const unsubscribe = barrier.subscribe(inOrderViewDelivery((event) => isChildRowRootEvent(event.event), async (event) => {
         if (!open) return;
         try {
-          const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, event.event) : null;
+          const rowEvent = isChildRowRootEvent(event.event) ? await readRowEvent(this.views.projection, identity, event.event) : null;
           const projected = projectAgentCollaborationEvent(hostRunId, event, rowEvent);
           if (projected && open) egress.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
         } catch (cause) {

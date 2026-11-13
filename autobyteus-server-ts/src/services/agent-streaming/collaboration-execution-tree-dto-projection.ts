@@ -1,4 +1,4 @@
-import type { ChildRunIdentityDto } from "./child-run-identity.js";
+import type { DelegatedRunIdentity } from "./child-run-identity.js";
 import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
@@ -55,7 +55,7 @@ export const projectAgentCollaborationTree = (input: Readonly<{
  * A child row for an agent run this run delegated to (DS-8): its identity (SR-056: from the tree's per-run data) and its
  * launch details, read fresh from its own `run_metadata.json` (a Settings save changes them, SR-039).
  */
-export const projectDelegatedAgentRun = (identity: Extract<ChildRunIdentityDto, { kind: "agent" }>, metadata: AgentRunMetadata): CollaborationTaskExecutionDto => ({
+export const projectDelegatedAgentRun = (identity: Extract<DelegatedRunIdentity, { kind: "agent" }>, metadata: AgentRunMetadata): CollaborationTaskExecutionDto => ({
   address: identity.address, startedAt: identity.startedAt, ...(identity.delegatorAgentRunId ? { delegatorAgentRunId: identity.delegatorAgentRunId } : {}),
   agentRunId: identity.agentRunId, platformAgentRunId: metadata.platformAgentRunId ?? null,
   source: { kind: "agent", agentDefinitionId: metadata.agentDefinitionId,
@@ -65,7 +65,7 @@ export const projectDelegatedAgentRun = (identity: Extract<ChildRunIdentityDto, 
 });
 
 /** A child row for a team run this run delegated to (DS-8): its identity and its launch details, read fresh from its own file. */
-export const projectDelegatedTeamRun = (identity: Extract<ChildRunIdentityDto, { kind: "agent_team" }>, tree: TeamRunExecutionTreeFile): CollaborationTaskExecutionDto => {
+export const projectDelegatedTeamRun = (identity: Extract<DelegatedRunIdentity, { kind: "agent_team" }>, tree: TeamRunExecutionTreeFile): CollaborationTaskExecutionDto => {
   const team = tree.rootTeam;
   const platformRunOf = new Map(team.members.map((member) => [member.agentRunId, member.platformAgentRunId]));
   const sameLaunch = (member: ConfiguredAgentExecutionNode) => JSON.stringify(projectLaunch(member.launchConfiguration)) === JSON.stringify(projectLaunch(team.defaultLaunchConfiguration));

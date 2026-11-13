@@ -1,4 +1,5 @@
 import type { DelegationIndex } from "../../../src/agent-collaboration/delegation/delegation-index.js";
+import { createPeerRunOf } from "../../../src/agent-collaboration/execution/remote/peer-runs.js";
 import { AgentRunHistoryService, setProcessAgentRunHistoryService } from "../../../src/run-history/services/agent-run-history-service.js";
 import { TeamRunHistoryService, setProcessTeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import { WorkspaceRunHistoryService, setProcessWorkspaceRunHistoryService } from "../../../src/run-history/services/workspace-run-history-service.js";
@@ -33,9 +34,9 @@ export const setE2eRunHistoryServices = (input: Readonly<{
     setProcessAgentRunHistoryService(agentRunHistoryService),
     setProcessTeamRunHistoryService(teamRunHistoryService),
     setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree, agentRunHistoryService, teamRunHistoryService })),
-    setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree })),
-    ...(input.orgMembers ? [setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree }))] : []),
-    setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ tree })),
+    setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree, peerRunOf: createPeerRunOf(tree) })),
+    ...(input.orgMembers ? [setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir: input.memoryDir, tree, peerRunOf: createPeerRunOf(tree) }))] : []),
+    setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf: createPeerRunOf(tree) })),
   ];
   return () => { for (const release of releases.splice(0).reverse()) release(); };
 };

@@ -57,15 +57,19 @@ export const nestByPlacement = (records: readonly LocalRecord[]): CollaborationT
   return root.map(({ execution }) => nest(execution));
 };
 
+/** A row's record; a row whose record cannot be read is left out of the view with a warning naming it (`DESIGN.md` rule 7). */
+const readRow = async (projection: ChildRowProjection, run: RootExecutionIdentity, placed: PlacedRow) => {
+  try { return await projection.rowOf(placed.row); }
+  catch (error) {
+    const child = runIdentityOf(placed.row.run);
+    console.warn(`The run '${child.rootRunId}' delegated under ${run.rootSubjectKind} run '${run.rootRunId}' was left out of its view: ${error instanceof Error ? error.message : String(error)}`);
+    return null;
+  }
+};
+
 /** Reads the records of the rows read at the base, after it: rows whose record cannot be read are left out with a warning. */
 export const readViewRows = async (projection: ChildRowProjection, run: RootExecutionIdentity, atBase: RowsAtBase): Promise<ViewRows> => {
-  const read = async (placed: PlacedRow) => {
-    try { return await projection.rowOf(placed.row); }
-    catch (error) {
-      console.warn(`A run delegated under ${run.rootSubjectKind} run '${run.rootRunId}' was left out of its view: ${error instanceof Error ? error.message : String(error)}`);
-      return null;
-    }
-  };
+  const read = (placed: PlacedRow) => readRow(projection, run, placed);
   const all = [...atBase.rows.open.map((placed) => ({ placed, closed: false })), ...atBase.rows.closed.map((placed) => ({ placed, closed: true }))];
   const records = await Promise.all(all.map(async (entry) => ({ ...entry, record: await read(entry.placed) })));
   const local: LocalRecord[] = [];
@@ -88,13 +92,13 @@ export type ProjectedRowEvent =
   | Readonly<{ kind: "task_executions_closed"; taskExecutions: readonly TaskExecutionReference[] }>
   | Readonly<{ kind: "task_executions_reopened"; executions: readonly Readonly<{ host: PlacedRow["host"]; execution: CollaborationTaskExecutionDto }>[] }>;
 
-/** Reads a row event's records (at send time, in the view's order); `null` when none could be read. */
-export const readRowEvent = async (projection: ChildRowProjection, event: ChildRowRootEvent): Promise<ProjectedRowEvent | null> => {
+/** Reads a row event's records (at send time, in the view's order); `null` when none could be read (each warned, as `readViewRows`). */
+export const readRowEvent = async (projection: ChildRowProjection, run: RootExecutionIdentity, event: ChildRowRootEvent): Promise<ProjectedRowEvent | null> => {
   switch (event.kind) {
     case "task_executions_closed":
       return event;
     case "task_execution_started": {
-      const record = await projection.rowOf(event.placed.row).catch(() => null);
+      const record = await readRow(projection, run, event.placed);
       if (!record) return null;
       return record.kind === "peer"
         ? Object.freeze({ kind: "remote_task_execution_started", execution: record.row })
@@ -103,7 +107,7 @@ export const readRowEvent = async (projection: ChildRowProjection, event: ChildR
     case "task_executions_reopened": {
       const executions = [];
       for (const placed of event.placed) {
-        const record = await projection.rowOf(placed.row).catch(() => null);
+        const record = await readRow(projection, run, placed);
         if (record?.kind === "local") executions.push(Object.freeze({ host: placed.host, execution: record.row }));
       }
       return executions.length ? Object.freeze({ kind: "task_executions_reopened", executions: Object.freeze(executions) }) : null;
@@ -130,6 +134,3 @@ export const inOrderViewDelivery = <S>(isRowEvent: (sequenced: S) => boolean, de
 /** Whether an event of a run's view stream is a row event. */
 export const isChildRowRootEvent = (event: { kind?: unknown }): event is ChildRowRootEvent =>
   event.kind === "task_execution_started" || event.kind === "task_executions_closed" || event.kind === "task_executions_reopened";
-
-/** A row's run, by identity. */
-export const rowRunOf = (placed: PlacedRow): RootExecutionIdentity => runIdentityOf(placed.row.run);
