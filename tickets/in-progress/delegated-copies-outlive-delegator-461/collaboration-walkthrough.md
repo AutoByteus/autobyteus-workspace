@@ -1031,9 +1031,9 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Result to the caller:** `{"taskId": "demo-1", "status": "DONE"}`
 
-**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CLOSED", "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)." }`
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CLOSED", "message": "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again." }`
 
-**How:** Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), the assigner's included: M can continue E only after the Task is open again (S11). For a member of a team, the same refusal is given as for an agent run (F-23).
+**How:** Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), the assigner's included, with base's Task-side text telling it how to continue: set the Task to TODO or IN_PROGRESS, then message again (S11). For a member of a team, the same refusal is given as for an agent run (F-23).
 
 **On disk after this step:**
 

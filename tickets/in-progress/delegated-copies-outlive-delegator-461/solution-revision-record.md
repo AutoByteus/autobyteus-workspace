@@ -1407,4 +1407,4 @@
   - API/E2E, through the code reviewer's route.
 
 No architecture review: this restores base behavior and withdraws one test line.
-
+- **F-23's text** (the Implementation Engineer's question): the assigner's message while its Task is DONE or CANCELLED gets base's Task-side text (`task-assignment-eligibility.ts:41` at `827f1e68dc`): "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again." Others get the closed text. The contract's R-8, the model (S10) and the walkthrough are updated. The e2e step behind F-23 was the R-6 continuation after a reopen, so its expectation changes; there is no code change.

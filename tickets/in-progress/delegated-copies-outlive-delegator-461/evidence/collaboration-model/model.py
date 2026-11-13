@@ -334,6 +334,10 @@ class World:
             if e["role"] == "assigned" and e["closedAt"] is not None and e["delegatedFrom"]["delegatorAgentRunId"] == sender:
                 status = self.tasks(node)[t][1]["status"] if t in self.tasks(node) else None
                 if status in ("TODO", "IN_PROGRESS"): e["closedAt"] = None; return
+                # the assigner while the Task is DONE or CANCELLED: base's Task-side text (task-assignment-eligibility.ts:41)
+                if status is not None:
+                    raise Refused("TASK_AGENT_RESOURCE_CLOSED", f"This Task is {status}. The agent that assigned it can set the Task to TODO or "
+                                  "IN_PROGRESS and then message this run id again.")
             break
         # R-8 before R-7 (base: the closed target is answered before the Task scope): a receiver whose entries are all
         # closed is refused as closed, whoever sends, except the assigner's continuation above

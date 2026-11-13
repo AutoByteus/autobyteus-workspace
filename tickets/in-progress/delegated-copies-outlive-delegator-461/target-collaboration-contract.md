@@ -562,7 +562,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | R-5 | A run → its Task's assigner | (b) | S3, U4 |
 | R-6 | The assigner → a run of its reopened Task | (b), the assigner continues it | S11 |
 | R-7 | Runs of different Tasks | Refused: "it works on a different Task" | S20 |
-| R-8 | Anyone → a run whose Tasks are all closed, the assigner included while the Task is DONE or CANCELLED | Refused (`TASK_AGENT_RESOURCE_CLOSED`, "Only the agent that assigned…"), the same for an agent run and a team's member (SR-072, F-23); except R-6; answered before R-7 | S10, S20 |
+| R-8 | Anyone → a run whose Tasks are all closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), the same for an agent run and a team's member (SR-072, F-23). The text, as at base: to the assigner while its Task is DONE or CANCELLED, "This Task is DONE. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again." (S10); to anyone else, "This task agent's Task is closed. Only the agent that assigned…" (S20). Except R-6; answered before R-7 | S10, S20 |
 | R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S16, 5.4.4 |
 | R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S18 |
 | R-12 | Anyone → a team run's ID | Refused (`TARGET_IS_TEAM_RUN`), naming its coordinator's run ID, whether the team runs or not (base's text) | U10 |

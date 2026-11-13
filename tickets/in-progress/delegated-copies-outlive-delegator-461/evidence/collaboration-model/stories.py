@@ -90,7 +90,7 @@ def standalone():
           call='`update_task(task_id: "demo-1", status: "DONE")`, by M. Then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "Are you done?")`, by M',
           op=lambda: (w.update_task(M, "demo-1", "DONE", "2026-11-10T15:00:00.000Z"),
                       w.send_by_run_id(M, SD, "Are you done?", "x", "2026-11-10T15:05:00.000Z")),
-          found="Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), the assigner's included: M can continue E only after the Task is open again (S11). For a member of a team, the same refusal is given as for an agent run (F-23).",
+          found="Every open entry of T1 gets `closedAt`. Each run of T1 that has no other open Task is stopped: here E, P and I. A message to any of them is now refused (R-8), the assigner's included, with base's Task-side text telling it how to continue: set the Task to TODO or IN_PROGRESS, then message again (S11). For a member of a team, the same refusal is given as for an agent run (F-23).",
           today="The same.", checked="—"),
      dict(id="S11", title="M reopens T1 and continues E", cases="T-2, R-6",
           call='`update_task(task_id: "demo-1", status: "IN_PROGRESS")`, then `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "One more change …")`, by M',
