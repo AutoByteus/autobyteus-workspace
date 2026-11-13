@@ -748,3 +748,24 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining risks:
   - A deleted Task's team run is not covered by CR-461-058 (no file names a member's run by its agent ID).
   - SDV-01's readiness wait also matches the Manager's own conversation. It could wait for the worker's name instead.
+
+### IR-022 — A delegated team run's deleted Task (CR-461-065); the remote base merged
+
+- Triggering role, report path, and round: Code Reviewer CRR-028 (`code-review-report.md` "Round 21": Fail, one `Local Fix`; CR-461-057 … -064 resolved, CR-461-058 for agent runs only). The reviewer also suggested merging the remote base (28 commits behind), so API/E2E round 7 tests the merged state. Round 22.
+- Triggering finding IDs: CR-461-065. Large / High unchanged.
+- Prior authoritative result: IR-021 at `d2396dd545`.
+- Current authoritative result: `5c7d2a9240` (CR-461-065 `7c8f2db955`; merge `152ae2cbb8`; the phone cases renumbered `3e9b61af1c`; the baseline fix `5c7d2a9240`).
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-028.
+- Implementation delta:
+  - **CR-461-065 (`7c8f2db955`).** `RunOwnAgentsReader.delegationOfAgent(agentRunId)` reads the delegation of the run an agent is in, from the runs' own files. It returns the agent run's own delegation, else that of the stored team run the agent is a member of (any member at any depth).
+    - The team run is found by reading each stored team run's own file. That happens only on this path: a target the tree does not know whose ID names no delegated agent run. A file that cannot be read is skipped, with a warning naming it.
+    - `CrossRunMessageDelivery.deletedTaskRefusal` uses it. After the Task is deleted, the delegator's message to the team run's coordinator, or to any other member, gets base's `TASK_NOT_FOUND`, as for an agent run. Anyone else's message is not this route's, as before.
+  - **Merge (`152ae2cbb8`).** `origin/personal` at `3d738de6e6`: 28 commits (autobyteus-460, -23, -24, and the beta.6 delivery record). No conflicts and no dependency changes. Both composition roots gained only the base's `integrationRunAccess` argument, next to this ticket's changes.
+  - **Phone case IDs (`3e9b61af1c`).** autobyteus-23 took MSP-50 … MSP-52 for its code-wrap cases. This ticket's stopped-delegator phone cases are now MSP-53 … MSP-55 (agent, team, org), so the probe's IDs are unique again. Earlier evidence keeps the old numbers.
+- Tests:
+  - the reader's `delegationOfAgent`: an agent run, a delegated team run's coordinator and its other member, a user-started team's member and an unknown ID (none), and no team runs stored at all;
+  - the delivery: the team case, for the coordinator and for another member, from the delegator and from someone else.
+  - The new tests fail without the fix.
+  - **Baseline fix (`5c7d2a9240`).** The merged state failed the web type gate on one cross-package test: `codex-turn-lifecycle-native-to-live-projection.integration.test.ts` did not pass `workspaceSkills`, which autobyteus-460 made required in `CodexAgentRunContext`. Neither side changed the test, so `origin/personal` fails the same way. The test now passes `workspaceSkills: null`, and it passes.
+- Validation: IMP-76 on the merged state. Server: type gate PASS, unit 8045 passed, integration 492 passed with 3 failed (only the file watcher's timing; alone it passes 14/14 twice, and once 13/14 at load 37 on a different test). Web: 5757 passed; the type gate passes after the baseline fix.
+- Remaining risks: SDV-01's readiness wait also matches the Manager's own conversation (round 21). The ticket's earlier evidence names the phone cases MSP-50 … MSP-52.
