@@ -11,20 +11,6 @@ import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-or
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { inOrderViewDelivery, isChildRowRootEvent, readRowEvent, readRowsAtBase, readViewRows, type RunViewRowSources, type ViewRows } from "./run-view-rows.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionSnapshot } from "./agent-org-execution-view-projector.js";
-import { orgTeamOfDelegator } from "./collaboration-execution-tree-dto-projection.js";
-import type { ProjectedRowEvent } from "./run-view-rows.js";
-import type { AgentOrgRunExecutionTreeSnapshot as OrgTree } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-
-/** A row an Org member of a mounted team delegated sits in that team, as at base (rule 3); the Org's own agents' in the root. */
-const placeInMountedTeam = (rowEvent: ProjectedRowEvent | null, tree: OrgTree): ProjectedRowEvent | null => {
-  const place = <T extends Readonly<{ host: Readonly<{ hostKind: "root" | "team"; hostRunId: string }>; execution: { delegatorAgentRunId?: string } }>>(entry: T): T => {
-    const team = entry.host.hostKind === "root" ? orgTeamOfDelegator(tree, entry.execution.delegatorAgentRunId) : null;
-    return team ? { ...entry, host: { hostKind: "team", hostRunId: team } } : entry;
-  };
-  if (rowEvent?.kind === "task_execution_started") return place(rowEvent);
-  if (rowEvent?.kind === "task_executions_reopened") return { ...rowEvent, executions: rowEvent.executions.map(place) };
-  return rowEvent;
-};
 
 /** What an Org run's view session needs, passed in by the composition (autobyteus-461 SR-046, SR-061 … SR-063). */
 export type OrgViewSources = Readonly<{
@@ -163,8 +149,7 @@ export class OrgViewSession {
     const unsubscribe = connection.subscribe(inOrderViewDelivery((sequenced) => isChildRowRootEvent(sequenced.event), async (sequenced) => {
       if (!open) return;
       try {
-        const rowEvent = isChildRowRootEvent(sequenced.event)
-          ? placeInMountedTeam(await readRowEvent(this.sources.rows.projection, this.identity, sequenced.event), connection.snapshot.own.tree) : null;
+        const rowEvent = isChildRowRootEvent(sequenced.event) ? await readRowEvent(this.sources.rows.projection, this.identity, sequenced.event) : null;
         const projected = projectAgentOrgExecutionEvent(this.orgRunId, sequenced, rowEvent);
         if (projected && open) this.send(CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_EVENT", payload: projected }));
       } catch (cause) { console.error(`Error projecting an AgentOrg event: ${String(cause)}`); }

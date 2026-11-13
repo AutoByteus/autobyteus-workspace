@@ -332,6 +332,12 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(peer.postMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "status?", messageId: "m-1", dedupeKey: "d-1" }));
       await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "peer-run", command_id: "c-2" } }));
       expect(peer.interrupt).toHaveBeenCalledOnce();
+      // SR-069: a peer run takes no `@`, as at base; mentions that arrive anyway are refused and nothing is posted.
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "@Code Reviewer?", context_file_paths: [], image_urls: [],
+        agent_run_id: "peer-run", message_id: "m-3", dedupe_key: "d-3", mentions: [{ kind: "agent", definition_id: "code-reviewer" }] } }));
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { agent_run_id: "peer-run" } });
+      expect(JSON.stringify(sent(harness.connection).at(-1))).toContain("REMOTE_RUN_MENTIONS_UNSUPPORTED");
+      expect(peer.postMessage).toHaveBeenCalledOnce();
       expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).not.toHaveBeenCalled();
     });

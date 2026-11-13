@@ -5,6 +5,7 @@ import {
   ProjectRunHistoryService,
 } from "../../../run-history/services/project-run-history-service.js";
 import { RunHistoryAgentGroupObject, WorkspaceHistoryTeamDefinitionObject } from "./run-history.js";
+import { withTeamRows } from "./listed-team-rows.js";
 
 @ObjectType({ description: "The runs started under one Project, grouped as a workspace's are." })
 class ProjectRunHistoryObject {
@@ -25,7 +26,7 @@ export class ProjectRunHistoryResolver {
   ): Promise<ProjectRunHistoryObject> {
     this.service ??= new ProjectRunHistoryService();
     try {
-      return await this.service.projectRunHistory(projectId, limitPerAgent) as ProjectRunHistoryObject;
+      return await withTeamRows(await this.service.projectRunHistory(projectId, limitPerAgent)) as ProjectRunHistoryObject;
     } catch (error) {
       if (error instanceof ProjectRunHistoryError) throw new GraphQLError(error.message, { extensions: { code: error.code } });
       throw error;

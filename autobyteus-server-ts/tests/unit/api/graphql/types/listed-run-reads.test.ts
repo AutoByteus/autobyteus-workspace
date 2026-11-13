@@ -14,6 +14,8 @@ vi.mock("../../../../../src/standalone-agent-run-root/services/standalone-agent-
 
 import { AgentRunCollaborationResolver } from "../../../../../src/api/graphql/types/agent-run-collaboration.js";
 import { CollaborationRootHistoryResolver } from "../../../../../src/api/graphql/types/collaboration-root-history.js";
+import { withTeamRows } from "../../../../../src/api/graphql/types/listed-team-rows.js";
+import { agentChildRow } from "../../../../helpers/child-rows-feed.js";
 
 /**
  * autobyteus-461 SR-061 rule 1 (SR-068): the run list's reads return in base's shapes, filled from the collaboration tree:
@@ -53,9 +55,20 @@ describe("the run list's reads", () => {
     const resolver = new CollaborationRootHistoryResolver();
     const [listedTeam, listedOrg] = await resolver.listCollaborationRootHistory();
     expect(listedTeam).toBe(team);
-    // As at base: a mounted team's member's delegated run sits in that team (rule 3).
-    expect(listedOrg).toMatchObject({ org: { rootOrg: { taskExecutions: [{ agentRunId: "analyst" }],
-      members: [{ agentRunId: "ceo" }, { teamRunId: "dev-team", taskExecutions: [{ agentRunId: "qa" }] }] } }, closed_task_executions: [{ agentRunId: "done" }] });
+    // As at base: every new run an Org delegates sits in its root, a mounted team's member's too (rule 3, story 5.3).
+    expect(listedOrg).toMatchObject({ org: { rootOrg: { taskExecutions: [{ agentRunId: "analyst" }, { agentRunId: "qa" }],
+      members: [{ agentRunId: "ceo" }, { teamRunId: "dev-team", taskExecutions: [] }] } }, closed_task_executions: [{ agentRunId: "done" }] });
     await expect(resolver.getAgentOrgRootHistory("org-run")).resolves.toMatchObject({ closed_task_executions: [{ agentRunId: "done" }] });
+  });
+
+  it("a Team's history item (workspace and Project lists) has its rows in `rootTeam.task_executions`, as at base (rule 3, story 5.2)", async () => {
+    const read = vi.fn(async () => ({ statuses: [], rows: { taskExecutions: [agentChildRow("reviewer", "/code_reviewer")], remoteTaskExecutions: [], closedTaskExecutions: [] } }));
+    io.children = { read };
+    const group = { workspaceRootPath: "/w", teamDefinitions: [{ teamDefinitionId: "se", runs: [{ teamRunId: "team-run", rootTeam: { address: "/", members: [], task_executions: [] } }] }] };
+    const listed = await withTeamRows(group as never) as unknown as typeof group;
+    expect(read).toHaveBeenCalledWith({ rootSubjectKind: "agent_team", rootRunId: "team-run" });
+    expect(listed.teamDefinitions[0]!.runs[0]!.rootTeam).toMatchObject({ address: "/", members: [],
+      task_executions: [{ kind: "task_agent", agent_run_id: "reviewer", address: "/code_reviewer" }] });
+    expect(group.teamDefinitions[0]!.runs[0]!.rootTeam.task_executions).toEqual([]);
   });
 });

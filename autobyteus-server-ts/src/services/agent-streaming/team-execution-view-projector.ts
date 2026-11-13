@@ -118,6 +118,9 @@ const projectCommunicationMessage = (
   created_at: message.createdAt,
 });
 
+/** A Team run's rows in the team stream's shape (base's `task_executions`), nested as they are given. */
+export const projectTeamTaskExecutions = (rows: readonly CollaborationTaskExecutionDto[]) => rows.map(teamTaskExecutionOf);
+
 export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot, delegated: readonly CollaborationTaskExecutionDto[] = []): TeamRunExecutionTreeDto => ({
   created_at: tree.createdAt,
   archived_at: tree.archivedAt,

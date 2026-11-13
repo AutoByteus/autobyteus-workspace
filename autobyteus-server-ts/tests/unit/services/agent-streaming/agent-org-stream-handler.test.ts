@@ -308,7 +308,7 @@ describe("AgentOrgStreamHandler", () => {
         event: { kind: "task_execution_started", host_kind: "root", host_run_id: orgRunId, execution: { agentRunId: "analyst" } } } });
     });
 
-    it("rule 3: a run a mounted team's member delegated sits in that team, live and in the snapshot; a direct agent's in the root (base's placement)", async () => {
+    it("rule 3: every new run an Org delegates sits in its root, a mounted team's member's too, live and in the snapshot (base's placement, story 5.3)", async () => {
       const test = harness(orgPackage(), { stopped: true });
       (test.feed.rows as { projection: unknown }).projection = { rowOf: async (child: { run: { agentRunId: string }; recipientAddress: string }) => ({ kind: "local",
         row: { ...agentChildRow(child.run.agentRunId, child.recipientAddress),
@@ -320,14 +320,14 @@ describe("AgentOrgStreamHandler", () => {
       await test.feed.settled();
       const started = parse(live).filter((message) => message.type === "ROOT_EXECUTION_EVENT").map((message) => message.payload as { event: { host_kind: string; host_run_id: string; execution: { agentRunId: string } } });
       expect(started.map(({ event }) => [event.execution.agentRunId, event.host_kind, event.host_run_id])).toEqual([
-        ["by-team", "team", "team-run-configured"], ["by-worker", "root", orgRunId]]);
+        ["by-team", "root", orgRunId], ["by-worker", "root", orgRunId]]);
       const later = connection();
       await test.handler.connect(later.socket, orgRunId);
       const snapshot = parse(later).find((message) => message.type === "ROOT_EXECUTION_VIEW_SNAPSHOT")!.payload as { root_org: { execution_tree: { rootOrg: {
         taskExecutions: Array<{ agentRunId: string }>; members: Array<{ teamRunId?: string; taskExecutions?: Array<{ agentRunId: string }> }> } } } };
       const rootOrg = snapshot.root_org.execution_tree.rootOrg;
-      expect(rootOrg.taskExecutions.map((row) => row.agentRunId)).toEqual(["by-worker"]);
-      expect(rootOrg.members.find((member) => member.teamRunId === "team-run-configured")?.taskExecutions?.map((row) => row.agentRunId)).toEqual(["by-team"]);
+      expect(rootOrg.taskExecutions.map((row) => row.agentRunId)).toEqual(["by-team", "by-worker"]);
+      expect(rootOrg.members.find((member) => member.teamRunId === "team-run-configured")?.taskExecutions ?? []).toEqual([]);
       test.handler.disconnect(sessionId!);
     });
 
@@ -343,6 +343,12 @@ describe("AgentOrgStreamHandler", () => {
       await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
         target_agent_run_id: "peer-run", command_id: "c-interrupt" } }));
       expect(peer.interrupt).toHaveBeenCalledOnce();
+      // SR-069: a peer run takes no `@`, as at base; mentions that arrive anyway are refused and nothing is posted.
+      await test.handler.handleMessage(sessionId!, JSON.stringify({ type: "SEND_MESSAGE", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
+        target_agent_run_id: "peer-run", command_id: "c-mention", content: "@Code Reviewer?", context_file_paths: [], image_urls: [], message_id: "m-3", dedupe_key: "d-3",
+        mentions: [{ kind: "agent", definition_id: "code-reviewer" }] } }));
+      expect(JSON.parse(client.sent.at(-1)!)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "REMOTE_RUN_MENTIONS_UNSUPPORTED" } });
+      expect(peer.postMessage).toHaveBeenCalledOnce();
       expect(test.service.restore).not.toHaveBeenCalled();
       expect(test.executeAgentCommand).not.toHaveBeenCalled();
       test.handler.disconnect(sessionId!);

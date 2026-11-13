@@ -39,12 +39,9 @@ export class AgentOrgRootHistoryObject {
 const withRows = async (item: CollaborationRootHistoryItem) => {
   if (item.root_subject_kind !== "agent_org") return item;
   const { rows } = await getStudioRunViewChildren().read(createAgentOrgRootExecutionIdentity(item.root_run_id));
-  // A row a mounted team's member delegated sits in that team, as at base (rule 3); the rest in the root.
-  const teamOf = new Map(item.org.rootOrg.members.flatMap((member) => "teamRunId" in member
-    ? member.members.map((agent) => [agent.agentRunId, member.teamRunId] as const) : []));
-  const placed = (team: string | null) => rows.taskExecutions.filter((row) => (teamOf.get(row.delegatorAgentRunId ?? "") ?? null) === team);
-  return { ...item, closed_task_executions: rows.closedTaskExecutions, org: { ...item.org, rootOrg: { ...item.org.rootOrg, taskExecutions: placed(null),
-    members: item.org.rootOrg.members.map((member) => "teamRunId" in member ? { ...member, taskExecutions: placed(member.teamRunId) } : member) } } };
+  // Every new run an Org delegates sits in its root, as at base (`agent-org-task-execution-adapter.ts:115`, rule 3).
+  return { ...item, org: { ...item.org, rootOrg: { ...item.org.rootOrg, taskExecutions: rows.taskExecutions } },
+    closed_task_executions: rows.closedTaskExecutions };
 };
 
 const CollaborationRootHistoryUnion = createUnionType({
