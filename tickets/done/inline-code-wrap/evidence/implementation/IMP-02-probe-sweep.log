@@ -1,0 +1,16 @@
+# IMP-02 solution reproduction probe + width sweep (autobyteus-24, AC-104)
+# Commands: NODE_PATH=<web node_modules> node evidence/solution-probe/probe.cjs <worktree> <web node_modules> <out>   (no candidate CSS)
+#           NODE_PATH=<web node_modules> node evidence/solution-probe/sweep.cjs <web node_modules> <out>/page-<w>.html 150 1300
+# Chromium /usr/bin/chromium headless, playwright-core; 2026-11-13T10:22Z
+## before: base 77963bdf3 sources (run at the start of implementation)
+781 widths overflow
+(probe rows before, from the first run:) 167 textPast heading 209 code 159 link 454 prose 764, hostOverflow 764; 310 textPast heading 66 code 16 link 311 prose 621, hostOverflow 621, inlineCode [16,16,5]
+## after: b1955d4a7
+167 {"textPast":{},"hostOverflow":0,"inlineCode":[],"links":[],"headings":[],"prose":[],"tables":[{"scrolls":true,"table":1835,"box":167}],"preOverflow":[0],"copyEqual":true}
+202 {"textPast":{},"hostOverflow":0,"inlineCode":[],"links":[],"headings":[],"prose":[],"tables":[{"scrolls":true,"table":1835,"box":202}],"preOverflow":[0],"copyEqual":true}
+262 {"textPast":{},"hostOverflow":0,"inlineCode":[],"links":[],"headings":[],"prose":[],"tables":[{"scrolls":true,"table":1835,"box":262}],"preOverflow":[0],"copyEqual":true}
+310 {"textPast":{},"hostOverflow":0,"inlineCode":[],"links":[],"headings":[],"prose":[],"tables":[{"scrolls":true,"table":1835,"box":310}],"preOverflow":[0],"copyEqual":true}
+1248 {"textPast":{},"hostOverflow":0,"inlineCode":[],"links":[],"headings":[],"prose":[],"tables":[{"scrolls":true,"table":1835,"box":1248}],"preOverflow":[0],"copyEqual":true}
+sweep from page-167: 0 widths overflow
+sweep from page-310: 0 widths overflow
+sweep from page-1248: 0 widths overflow

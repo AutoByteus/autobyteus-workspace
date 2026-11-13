@@ -146,7 +146,8 @@
 //   MSP-50…52 autobyteus-23  Fenced code blocks in rendered Markdown wrap to their box; a wide table and a long display
 //                  equation scroll inside their own box; the message or document never gets wider than its column: the
 //                  desktop conversation (an agent's answer, an inter-agent message) and Files panel at 1280 and 700 px,
-//                  the phone's conversation and file viewer at 390 and 360 px; copied text equals the source:
+//                  the phone's conversation and file viewer at 390 and 360 px; copied text equals the source; inline
+//                  code, links, URLs, long words and headings wrap too, with nothing past the edge (autobyteus-24):
 //                  `mobile-code-wrap-cases.mjs` (on alpha, last; its agent answers with the scripted runtime's `REPLY_FILE:`).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves

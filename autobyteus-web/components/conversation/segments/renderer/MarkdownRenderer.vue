@@ -182,6 +182,12 @@ watch(
 </script>
 
 <style>
+/* A run with no break point that is longer than the line (a path, URL, long word) breaks inside to fit it.
+   Inherited by inline code, links, prose and headings; table cells keep their min-content width. */
+.markdown-renderer-segments .markdown-body {
+  overflow-wrap: break-word;
+}
+
 .markdown-renderer-segments .markdown-body pre[class*="language-"] {
   margin: 1em 0;
   padding: 1em;

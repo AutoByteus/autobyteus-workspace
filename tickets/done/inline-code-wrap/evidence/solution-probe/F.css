@@ -1,0 +1,2 @@
+.markdown-renderer-segments .markdown-body { overflow-wrap: break-word; }
+.prose code::before, .prose code::after { content: none !important; }

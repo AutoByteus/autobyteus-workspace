@@ -76,11 +76,12 @@ module.exports = {
               fontWeight: '500',
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
             },
+            // `none`, not '""': an empty generated box lets inline code's end padding hang past the line (autobyteus-24).
             'code::before': {
-              content: '""',
+              content: 'none',
             },
             'code::after': {
-              content: '""',
+              content: 'none',
             },
             '.dark pre': {
               backgroundColor: 'rgb(31 41 55)',
