@@ -30,7 +30,7 @@ describe("the run list's top-level rule (DS-11)", () => {
 describe("archive and delete while a delegated run works (REQ-007; DS-13, SR-067)", () => {
   const child = (run: DelegatedChild["run"], recipientAddress: string, nodeId?: string) =>
     ({ run, recipientAddress, ...(nodeId ? { nodeId } : {}) }) as DelegatedChild;
-  const setup = (peerAnswer: "running" | "idle" | "unreachable") => {
+  const setup = (peerAnswer: "running" | "idle" | "offline" | "unreachable") => {
     const children = [child({ agentRunId: "writer" }, "/writer"), child({ teamRunId: "eng" }, "/eng"), child({ agentRunId: "far" }, "/far", "node-b")];
     const statuses: Record<string, string | null> = { writer: "running", eng: "idle" };
     const runDeleted = vi.fn();
@@ -44,17 +44,17 @@ describe("archive and delete while a delegated run works (REQ-007; DS-13, SR-067
     return { guard, statuses, runDeleted, perform, peerStatus };
   };
 
-  it("is refused, naming the working runs, local and peer; nothing is performed and the tree is not told", async () => {
-    const f = setup("running");
+  it("is refused, naming the working runs (running, initializing or idle: not stopped, SR-072 F-30), local and peer; nothing is performed and the tree is not told", async () => {
+    const f = setup("idle");
     await expect(f.guard.guard(MANAGER, "deleted", f.perform)).resolves.toEqual({ success: false,
-      message: "This run can't be deleted while a run it delegated to is working (/writer, /far). Try again when it has finished, or stop it first." });
+      message: "This run can't be deleted while a run it delegated to is working (/writer, /eng, /far). Try again when it has finished, or stop it first." });
     expect(f.perform).not.toHaveBeenCalled();
     expect(f.runDeleted).not.toHaveBeenCalled();
   });
 
-  it("an idle child does not block; a delete tells the tree before the files go; an archive keeps the tree", async () => {
-    const f = setup("idle");
-    f.statuses.writer = "idle";
+  it("a stopped child does not block; a delete tells the tree before the files go; an archive keeps the tree", async () => {
+    const f = setup("offline");
+    f.statuses.writer = null; f.statuses.eng = "offline";
     f.perform.mockImplementation(async () => { expect(f.runDeleted).toHaveBeenCalledWith(MANAGER); return { success: true, message: "Deleted." }; });
     await expect(f.guard.guard(MANAGER, "deleted", f.perform)).resolves.toEqual({ success: true, message: "Deleted." });
     f.runDeleted.mockClear();
@@ -64,7 +64,7 @@ describe("archive and delete while a delegated run works (REQ-007; DS-13, SR-067
 
   it("a peer run whose node does not answer does not block; the result names it as not asked", async () => {
     const f = setup("unreachable");
-    f.statuses.writer = "idle";
+    f.statuses.writer = null; f.statuses.eng = null;
     await expect(f.guard.guard(MANAGER, "deleted", f.perform)).resolves.toEqual({ success: true,
       message: "Deleted. Not asked, because their nodes didn't answer: /far." });
     expect(f.peerStatus).toHaveBeenCalledOnce();

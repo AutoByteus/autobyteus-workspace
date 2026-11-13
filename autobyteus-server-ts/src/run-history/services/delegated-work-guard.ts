@@ -3,7 +3,8 @@ import type { RootExecutionIdentity } from "../../agent-collaboration/execution/
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { PeerRunOf } from "../../agent-collaboration/execution/remote/peer-runs.js";
 
-const WORKING = new Set(["running", "initializing"]);
+/** Working means not stopped: running, initializing or idle (SR-072 F-30; contract T-5), so "stop it first" is true. */
+const WORKING = new Set(["running", "initializing", "idle"]);
 
 type ActionResult = Readonly<{ success: boolean; message: string }>;
 
