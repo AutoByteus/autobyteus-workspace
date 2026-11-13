@@ -2841,9 +2841,13 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Result:** refused, `{ "accepted": false, "code": "TARGET_AGENT_RUN_NOT_ACTIVE", "message": "No running agent has the run id 'project_task_manager_7c8d', so the message was not sent. Use an exact run id you were given: a sender run id (from a message or your new task), or a run id delegate_task returned to you." }`
 
-**How:** No run M delegated to works now, so M's folder and its row go. The Task entries that name M stay: they are T2's record, and its page still shows who delegated. The tree no longer has M: the research agent is the top of its own tree, and the run list shows it as a run of its own (TC-3). Address step 2 reaches nothing of M's, and a message to M's run ID is refused: no run has it.
+**How:** No run M delegated to works now, so M's folder and its row go. M's Task with no Project, T7, goes with it, as a deleted chat's Temp tasks do at base (K-14). The entries in Project Tasks that name M stay: they are T2's record, and its page still shows who delegated. The tree no longer has M: the research agent is the top of its own tree, and the run list shows it as a run of its own (TC-3). Address step 2 reaches nothing of M's, and a message to M's run ID is refused: no run has it.
 
 **On disk after this step:**
+
+**Removed:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`
+
+**Removed:** node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`
 
 **Removed:** node A: `memory/agents/project_task_manager_7c8d/` (memory folder)
 
@@ -2865,7 +2869,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 }
 ```
 
-**Unchanged:** node A: `ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json`, node A: `ad-hoc-tasks/adhoc_task_7c7c/task.json`, node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/research_agent_9b10/` (memory folder), node A: `memory/agents/research_agent_9b10/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
+**Unchanged:** node A: `memory/agent_teams/product_team_e03d/product_designer_1a2b/` (memory folder), node A: `memory/agent_teams/product_team_e03d/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/product_team_e03d/team_run_execution_tree.json`, node A: `memory/agent_teams/software_engineering_team_0218/architecture_reviewer_m_5c20/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/solution_designer_65a9/` (memory folder), node A: `memory/agent_teams/software_engineering_team_0218/team_communication_messages_active.jsonl`, node A: `memory/agent_teams/software_engineering_team_0218/team_run_execution_tree.json`, node A: `memory/agents/image_maker_33f0/` (memory folder), node A: `memory/agents/image_maker_33f0/run_metadata.json`, node A: `memory/agents/image_maker_88e8/` (memory folder), node A: `memory/agents/image_maker_88e8/run_metadata.json`, node A: `memory/agents/research_agent_9b10/` (memory folder), node A: `memory/agents/research_agent_9b10/run_metadata.json`, node A: `memory/agents/upscaler_e1a1/` (memory folder), node A: `memory/agents/upscaler_e1a1/run_metadata.json`, node A: `memory/team_run_history_index.json`, node A: `projects/project_8f21/project_runs.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_2b2b/task.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/agent_run_resources.json`, node A: `projects/project_8f21/tasks/project_task_6a6a/task.json`, node A: `projects/project_8f21/tasks/project_task_7c7c/task.json`, node B: `memory/agent_teams/research_team_77aa/lead_0c11/` (memory folder), node B: `memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl`, node B: `memory/agent_teams/research_team_77aa/team_run_execution_tree.json`, node B: `memory/team_run_history_index.json`.
 
 **In memory on node A (the `DelegationIndex`):**
 ```json
@@ -2889,14 +2893,6 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
     "delegatorAgentRunId": "solution_designer_65a9",
     "tasks": [{"taskId": "project_task_6a6a", "role": "subWork", "open": false, "assigner": null}],
     "agents": [{"agentRunId": "upscaler_e1a1", "address": "/upscaler"}]
-  },
-  {
-    "run": {"kind": "agent_team", "runId": "research_team_77aa"},
-    "tree": {"kind": "agent_team", "runId": "research_team_77aa"},
-    "parent": null,
-    "node": "node-b-1f0e",
-    "tasks": [{"taskId": "adhoc_task_7c7c", "role": "assigned", "open": false, "assigner": null}],
-    "agents": [{"agentRunId": "lead_0c11", "address": "/lead"}, {"agentRunId": "analyst_5d20", "address": "/analyst"}]
   },
   {
     "run": {"kind": "agent", "runId": "research_agent_9b10"},

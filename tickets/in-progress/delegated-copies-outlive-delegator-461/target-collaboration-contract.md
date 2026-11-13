@@ -598,7 +598,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | T-5 | The user archives or deletes a run whose delegated runs work, on this node or a peer (REQ-013) | Refused with the reason, naming them (TC-2) | — | Its reason names them. S26 |
 | T-6 | The server restarts | — | The tree rebuilt from the Task entries | No run is running; each is restored by its next message |
 | T-7 | A delegated run goes quiet | — | — | Its own idle shutdown (P6); woken by its next message |
-| T-8 | The user deletes a run whose delegated runs have stopped | Its own folder and row removed; the Task entries that name it stay | It leaves the tree: the runs it delegated to are the tops of their own trees, and a Task it assigned has no assigner | Its delegated runs are runs of their own (TC-3); a message to it is refused (R-11). S27 |
+| T-8 | The user deletes a run whose delegated runs have stopped | Its own folder and row removed, and its Tasks with no Project (base: task-keys AC-021; K-14); the entries in Project Tasks that name it stay | It leaves the tree: the runs it delegated to are the tops of their own trees, and a Task it assigned has no assigner | Its delegated runs are runs of their own (TC-3); a message to it is refused (R-11). S27 |
 
 ## 6. Existing data: before → after the migration
 

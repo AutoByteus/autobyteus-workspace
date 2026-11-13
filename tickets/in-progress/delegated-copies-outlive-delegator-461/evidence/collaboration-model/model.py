@@ -518,6 +518,12 @@ class World:
             ck = self.run_key_of_entry(e); r = self.row(node_of[e["nodeId"]] if "nodeId" in e else node, ck[0], ck[1])
             if r is not None and r["terminatedAt"] is None: working.append(e["recipientAddress"])
         if working: raise Refused("RUN_DELEGATED_WORK_ACTIVE", DELEGATED_WORK("deleted", ", ".join(working)), tool="user")
+        # its Tasks with no Project go with it (base: task-keys AC-021, a deleted chat's Temp tasks; K-14): a Task with no
+        # Project whose assigned entry this run made. A Project Task stays: it belongs to its Project.
+        for tid, (k, t) in list(self.tasks(node).items()):
+            if t.get("projectId") is not None: continue
+            if any(dr == (kind, run_id) for dr in self.assigners(node, tid)):
+                for key in [x for x in self.disk if x.startswith(self.p(node, self.task_dir(node, t) + "/"))]: del self.disk[key]
         folder = self.run_file(*run).rsplit("/", 1)[0] + "/"
         for k in [k for k in self.disk if k.startswith(folder)]: del self.disk[k]
         rows = self.disk.get(self.index_path(node, kind), [])

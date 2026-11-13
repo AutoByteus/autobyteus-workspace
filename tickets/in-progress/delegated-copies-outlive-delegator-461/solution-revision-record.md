@@ -1428,3 +1428,25 @@ No architecture review: this restores base behavior and withdraws one test line.
   - then the Implementation Engineer.
 - **ARCH-REV-048 passed SR-074.** Its note is applied: the snapshot's log read and filter are bound to the `own(X)` and `tree(X)` taken in the synchronous step, the same set as its rows.
 - **F-31 confirmed by the user** (2026-11-13): "the changes on the top … shouldn't be inherited or flowing down … the delegator and task agent, task agent team, they are independent". So the one-hop decision stands: a new delegated run copies its immediate delegator's saved launch once, when it is created. After that the runs are independent: an edit to a delegator never changes a run it already delegated to, nor reaches runs its descendants start. The flag is closed.
+
+### SR-075 — CR-461-064's four questions (answers CRR-027)
+
+- **Triggering:** CRR-027, the failure-origin review of API/E2E round 6. Its seven Local Fixes were released to the Implementation Engineer first, CR-461-057 (a lost message, a regression) ahead of the rest. Requirement Gap CR-461-064 had four questions. The rule used: base's behavior holds unless a requirement or a user decision changes it.
+- **F-39, a team-level choice on a stopped delegated team:**
+  - **Decision:** it is saved as for a team the user started. The team default changes, and each member keeps its own saved launch.
+  - **Why:** REQ-006 decides it explicitly ("a stopped delegated run's settings are saved like any stopped run's"). Base's `followsTeam` existed only for hosted copies, and the migration applies any pending team-level choice once (DS-10, step 4).
+  - **Flagged to the user:** this changes behavior for delegated teams.
+- **F-40, a delegated run's `list_available_agents`:** its own definition is left out, as every run's is (autobyteus-455 AC-006; SR-037 in the approved non-goal exception). Base listed it only through its host's list, and then refused delegating to it.
+- **F-41, a delegated run's error card:**
+  - **Decision:** under rule 2, it is part of the run's own conversation, shown when its row is selected, in all three views.
+  - **Rows:** each row shows the `error` status and message.
+  - **What changes:** the Org view's missing card on selection, if it is missing, is a Local Fix. A delegator's own conversation carries no other run's card.
+- **K-14, deleting M and its Task with no Project:** the Tasks with no Project that M assigned are removed with M, as base removes a deleted chat's Temp tasks (task-keys AC-021). The branch already does this. Project Tasks stay.
+  - The model's `delete_run`, the contract's T-8 and S27's text are updated; S27 now removes T7.
+- **Checks:**
+  - `walkthrough.py --check`: three "match" lines;
+  - the validator: 0 findings.
+- **Next action:** the Implementation Engineer. API/E2E updates its expectations through the code reviewer's route: F-39 to the user-started rule, F-40 omitted, S27's T7.
+
+No architecture review: these follow REQ-006, an approved exception, rule 2 and base.
+
