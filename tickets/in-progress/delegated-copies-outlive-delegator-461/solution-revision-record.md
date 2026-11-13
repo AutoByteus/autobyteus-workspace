@@ -1394,3 +1394,17 @@
   - then the Implementation Engineer.
 - **ARCH-REV-046 failed SR-072 on AR-026, which is now answered.** The snapshot's logs are read after the synchronous base step, behind the queue, with the queued message frames numbered after the base and deduplicated by message ID. The test covers a message committed during the read. The sequencing test's wording for `lastMessageChangeSequence` is aligned. The Solution Designer's gap: SR-072 placed the read before the base, which loses a message committed in between.
 - **ARCH-REV-047 passed the AR-026 answer.** Its wording fix is applied: queued message frames are all delivered, and the client ignores a repeated message ID, as at base. None is dropped from the queue, because a dropped frame would leave a sequence gap.
+
+### SR-073 — A listed team's or org's delegated rows show when it is opened, as at base (answers CR-461-053 F-32)
+
+- **Triggering:** the Implementation Engineer, classifying F-32 (on the phone, a stopped team's delegated row is not shown under it) as Unclear.
+- **Evidence:** at `827f1e68dc` and on the branch alike, the web builds a listed team's rows from its open context only (`runHistoryTeamExecutionRows.ts`, `runHistoryTeamRows.ts`), and unfolding a team loads nothing. The desktop's SDV-02 passed because the probe opened the team. A listed agent run shows its rows without opening, through `hasCollaboration`.
+- **The Solution Designer's gap:** the history-poll item's test, "a listed, not-open team and org … show the child's row within one poll", was left standing when SR-061 returned base's queries. It described behavior base's web never had.
+- **Decision (rule 3):** as at base. A listed team's or org's delegated rows show once its view is open, on both layouts. No new web behavior is added. The test line is withdrawn. F-32 becomes a probe change for API/E2E: MSP-51 opens the team first.
+- **Requirements:** unchanged. REQ-002's "shown under the run that delegated it" holds in the open view and for agent runs in the list.
+- **Next action:**
+  - the Implementation Engineer;
+  - API/E2E, through the code reviewer's route.
+
+No architecture review: this restores base behavior and withdraws one test line.
+
