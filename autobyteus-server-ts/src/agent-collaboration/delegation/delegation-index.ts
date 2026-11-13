@@ -408,6 +408,19 @@ export class DelegationIndex implements TaskEntriesListener {
     return Object.freeze({ agents, coordinatorAddress: parts.coordinatorAddress });
   }
 
+  /**
+   * A team run's coordinator, running or not (R-12, SR-071): its standing's, from its own file; where that cannot answer
+   * (a peer's file is on its node, or it is unreadable), its Task entry's entry agent. `null`, reading no file, for a run
+   * no Task names (a live one is the live directory's).
+   */
+  async teamCoordinatorOf(teamRunId: string): Promise<string | null> {
+    const run: RootExecutionIdentity = { rootSubjectKind: "agent_team", rootRunId: teamRunId };
+    if (!this.hasNode(run)) return null;
+    const entry = this.currentTaskOf({ teamRunId });
+    const standing = entry?.nodeId === undefined ? await this.standingOf(run) : null;
+    return (standing?.coordinatorAddress && standing.agents.get(standing.coordinatorAddress)) || (entry?.entryAgentRunId ?? null);
+  }
+
   /** A run's parts: kept for a node once read (an agent run once its address is stored); read again otherwise. */
   private async partsOf(run: RootExecutionIdentity): Promise<RunParts | null> {
     const key = keyOf(run);

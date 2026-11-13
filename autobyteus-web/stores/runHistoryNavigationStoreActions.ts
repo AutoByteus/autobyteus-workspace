@@ -4,7 +4,6 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
 import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
 import { useRunHistoryRetiredRunsStore, withoutRetiredRuns } from '~/stores/runHistoryRetiredRuns';
-import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentOrgRunHistoryItem, RunHistoryWorkspaceGroup } from './runHistoryTypes';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
 import {
@@ -73,9 +72,3 @@ export const applyRunNavigationEffectForStore = (
   store.navigationPatchRevision += 1;
   return true;
 };
-
-export const standaloneNavigationTarget = (input: {
-  runId: string;
-  currentStatus: AgentStatus;
-  summary?: string;
-}): RunNavigationTarget => ({ kind: 'standalone', ...input });

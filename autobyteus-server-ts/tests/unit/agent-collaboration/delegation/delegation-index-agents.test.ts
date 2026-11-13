@@ -79,3 +79,53 @@ describe("DelegationIndex.agentsOf", () => {
     expect(reader.partsOf).toHaveBeenCalledTimes(2);
   });
 });
+
+/** autobyteus-461 R-12 (SR-071, CR-461-047): the one owner of a team run's coordinator when the team does not run. */
+describe("DelegationIndex.teamCoordinatorOf", () => {
+  const team = (agents: RunAgent[], coordinatorAddress: string) => ({ agents, coordinatorAddress, mountedTeams: [] });
+  const build = () => {
+    const tasks = new InMemoryTaskExecutionResources();
+    tasks.addTask("T1"); tasks.addTask("T2"); tasks.addTask("T3");
+    const reader = { orgPlacementsOf: async () => null, configuredPlacementOf: async () => null, isStored: async () => true,
+      partsOf: vi.fn(async (run: { rootRunId: string }) => run.rootRunId === "lone" ? null
+        : team([{ agentRunId: `${run.rootRunId}-writer`, address: "/writer", agentDefinitionId: null }, { agentRunId: `${run.rootRunId}-lead`, address: "/lead", agentDefinitionId: null }], "/lead")) };
+    const tree = new DelegationIndex(() => tasks, reader);
+    tree.build(); tasks.setEntriesListener(tree);
+    return { tasks, reader, tree };
+  };
+
+  it("a stopped delegated team, and a top team run that delegated: its standing's coordinator, from its own file (no live root asked)", async () => {
+    const { tasks, reader, tree } = build();
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/eng", delegatedFrom: from, execution: { teamRunId: "eng" }, teamCoordinatorAgentRunId: "eng-lead" });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T2", recipientAddress: "/writer", execution: { agentRunId: "notes" },
+      delegatedFrom: { delegatingRun: { rootSubjectKind: "agent_team", rootRunId: "top" }, delegatorAgentRunId: "top-lead" } });
+    expect(await tree.teamCoordinatorOf("eng")).toBe("eng-lead");
+    expect(await tree.teamCoordinatorOf("top")).toBe("top-lead");
+    expect(reader.partsOf.mock.calls.map(([run]) => run)).toEqual([{ rootSubjectKind: "agent_team", rootRunId: "eng" }, { rootSubjectKind: "agent_team", rootRunId: "top" }]);
+  });
+
+  it("a peer team run: its entry's entry agent, its file being on its node", async () => {
+    const { tasks, reader, tree } = build();
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/research_team", delegatedFrom: from, execution: { teamRunId: "far" },
+      teamCoordinatorAgentRunId: "lead-far", nodeId: "node-b", members: [{ address: "/lead", agentRunId: "lead-far" }] });
+    expect(await tree.teamCoordinatorOf("far")).toBe("lead-far");
+    expect(reader.partsOf).not.toHaveBeenCalled();
+  });
+
+  it("a team run that is not a node, an agent run's ID, and an ID of no run: null, and no file is read", async () => {
+    const { tasks, reader, tree } = build();
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/writer", delegatedFrom: from, execution: { agentRunId: "notes" } });
+    expect(await tree.teamCoordinatorOf("standalone-team")).toBeNull();
+    expect(await tree.teamCoordinatorOf("notes")).toBeNull();
+    expect(await tree.teamCoordinatorOf("no-such-run")).toBeNull();
+    expect(reader.partsOf).not.toHaveBeenCalled();
+  });
+
+  it("a delegated team whose own file cannot be read: its Task entry's entry agent", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const { tasks, tree } = build();
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T3", recipientAddress: "/lone", delegatedFrom: from, execution: { teamRunId: "lone" }, teamCoordinatorAgentRunId: "lone-lead" });
+    expect(await tree.teamCoordinatorOf("lone")).toBe("lone-lead");
+    warn.mockRestore();
+  });
+});

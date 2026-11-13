@@ -13,6 +13,7 @@ import {
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { sameRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { OTHER_TASK_REFUSAL, type CrossRunMessageDelivery } from "../../agent-collaboration/communication/cross-run-message-delivery.js";
+import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 
 export type GlobalAgentRunMessageDeliveryInput = {
   sender: AgentRunMessageSenderContext;
@@ -48,8 +49,8 @@ export class GlobalAgentRunMessageRouter {
     activeRootDirectory?: ActiveCollaborationRootDirectory;
     /** Messages between two runs of this node (DS-2); created by the composition root. */
     crossRun: Pick<CrossRunMessageDelivery, "route">;
-    /** A team run's coordinator's run ID, whether the team runs or not (R-12, SR-071); `null` for an ID of no team run. */
-    teamCoordinatorOf(teamRunId: string): Promise<string | null>;
+    /** A team run's coordinator when the team does not run (R-12, SR-071): the tree, its one owner. */
+    coordinators: Pick<DelegationIndex, "teamCoordinatorOf">;
   }) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -90,7 +91,7 @@ export class GlobalAgentRunMessageRouter {
 
     // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID, whether the
     // team runs or not (R-12, SR-071).
-    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId) ?? await this.deps.teamCoordinatorOf(targetAgentRunId);
+    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId) ?? await this.deps.coordinators.teamCoordinatorOf(targetAgentRunId);
     if (coordinator) {
       const result = {
         accepted: false,

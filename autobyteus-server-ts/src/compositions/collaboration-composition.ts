@@ -223,15 +223,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessTaskDelegationToolService(new TaskDelegationToolService({ delegation,
       remote: new RemoteDelegation({ delegation, tree, channel: input.remoteChannel }) })));
     releases.push(SendMessageToDispatcher.setProcessInstance(new SendMessageToDispatcher({
-      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, teamCoordinatorOf: async (teamRunId) => {
-        // A delegated team run's coordinator is its Task entry's entry agent; else its standing, from its own file.
-        const entry = tree.currentTaskOf({ teamRunId });
-        if (entry) return entry.entryAgentRunId;
-        const run = { rootSubjectKind: "agent_team" as const, rootRunId: teamRunId };
-        if (!tree.hasNode(run)) return null;
-        const standing = await tree.standingOf(run);
-        return standing?.coordinatorAddress ? standing.agents.get(standing.coordinatorAddress) ?? null : null;
-      } }), tree })));
+      globalRouter: new GlobalAgentRunMessageRouter({ crossRun, coordinators: tree }), tree })));
     releases.push(setProcessStandaloneRootMemberViewProjectionService(new StandaloneRootMemberViewProjectionService({ peerRunOf })));
     releases.push(setProcessTeamMemberRunViewProjectionService(new TeamMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
     releases.push(setProcessAgentOrgMemberRunViewProjectionService(new AgentOrgMemberRunViewProjectionService({ memoryDir, tree, peerRunOf })));
