@@ -10,7 +10,8 @@ import {
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
-import { orgDelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
+import { agentRunDelegatedRunSubject, orgDelegatedRunSubject, teamDelegatedRunSubject, type DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -43,16 +44,34 @@ export function useMobileRunOpening(disclosure: {
   const collaboration = useAgentRunCollaborationStore();
   const orgContexts = useAgentOrgContextsStore();
   const delegatedRuns = useDelegatedRunsStore();
-  const orgDelegatedRunOf = (orgRunId: string, agentRunId: string) => {
-    const index = orgContexts.contextFor(orgRunId)?.index;
-    return index ? orgDelegatedRunSubject(index, agentRunId) : null;
+  const teamContexts = useAgentTeamContextsStore();
+  /**
+   * The run delegated on this node that a row opens, once its shared action selected it (rule 2): a row of an Org, of an
+   * agent run's view (its selected child) or of a Team. `null` for a run's own agents, a peer's run and a run itself.
+   */
+  const delegatedRunOf = (open: MobileRowOpen): DelegatedRunSubject | null => {
+    if (open.kind === 'orgExecution') {
+      const index = orgContexts.contextFor(open.orgRun.rootRunId)?.index;
+      return index ? orgDelegatedRunSubject(index, open.agentRunId) : null;
+    }
+    if (open.kind === 'taskRow') {
+      const host = collaboration.contextFor(open.hostRun.runId);
+      const child = collaboration.selectedChild(open.hostRun.runId);
+      return host && child ? agentRunDelegatedRunSubject(host.index, child) : null;
+    }
+    if (open.kind === 'teamMember') {
+      const team = teamContexts.getTeamContextById(open.target.teamRunId);
+      return team ? teamDelegatedRunSubject(team.view.getExecutionTree(), open.target.agentRunId) : null;
+    }
+    return null;
   };
   const { addToast } = useToasts();
   const { t } = useLocalization();
 
-  /** The shared actions' commit notification: the pending open committed (an earlier open's intent ended at `begin`). */
+  /** The opens their shared action selected (its commit notification; an earlier open's intent ended at `begin`). */
+  const selected = new Set<string>();
   const commitPending = (): void => {
-    if (opening.pending) opening.commit(opening.pending.key);
+    if (opening.pending) selected.add(opening.pending.key);
   };
 
   const selection = useWorkspaceHistorySelectionActions({
@@ -70,37 +89,38 @@ export function useMobileRunOpening(disclosure: {
   });
   const subject = useWorkspaceHistorySubjectActions({ shell: 'mobile' });
 
-  const runSharedAction = async (key: string, open: MobileRowOpen): Promise<void> => {
-    if (isOrgOpen(open)) {
-      const outcome = await subject.execute(orgCommandOf(open));
-      if (outcome.disposition !== 'committed') return;
-      // A run the Org delegated is shown as its own run (rule 2), once that run is open: until then there is nothing to
-      // show, and a failed open fails this one (CR-461-053, F-34).
-      const own = open.kind === 'orgExecution' ? orgDelegatedRunOf(open.orgRun.rootRunId, open.agentRunId) : null;
-      if (own) {
-        await delegatedRuns.whenOpen(own);
-        if (delegatedRuns.errorFor(own) || !delegatedRuns.bindingOf(own)) return;
-      }
-      opening.commit(key);
-      return;
-    }
-    if (open.kind === 'agentRun') return selection.onOpenAgentRun(open.run);
-    if (open.kind === 'taskRow') {
+  /** Runs the row's kind's shared open action; `true` when it selected the row. */
+  const runSharedAction = async (key: string, open: MobileRowOpen): Promise<boolean> => {
+    if (isOrgOpen(open)) return (await subject.execute(orgCommandOf(open))).disposition === 'committed';
+    if (open.kind === 'agentRun') await selection.onOpenAgentRun(open.run);
+    else if (open.kind === 'taskRow') {
       if (collaboration.selectTaskRow(open.hostRun.runId, open.row)) await selection.onSelectRun(open.hostRun);
-      return;
-    }
-    if (open.kind === 'team') return selection.onOpenTeamRun(open.team);
-    return selection.onSelectTeamMember(open.target);
+    } else if (open.kind === 'team') await selection.onOpenTeamRun(open.team);
+    else await selection.onSelectTeamMember(open.target);
+    return selected.has(key);
   };
 
-  /** Runs the row's shared open action, then settles the pending open: committed by the action, else it fails. */
+  /**
+   * Runs the row's shared open action, then settles the pending open. A selected row commits; a run delegated on this
+   * node is shown as its own run (rule 2), so its open commits once that run is open, and fails when that open fails:
+   * until then there is nothing to show (CR-461-053 F-34, CR-461-057, CR-461-062: one owner for every view's rows).
+   * Anything else (failed, rejected, superseded by the store, stream recovery) fails the pending open.
+   */
   const settle = async (key: string, rowOpen: MobileRowOpen): Promise<void> => {
     try {
-      await runSharedAction(key, rowOpen);
+      if (await runSharedAction(key, rowOpen)) {
+        const own = delegatedRunOf(rowOpen);
+        if (own) await delegatedRuns.whenOpen(own);
+        if (!own || (!delegatedRuns.errorFor(own) && delegatedRuns.bindingOf(own))) {
+          opening.commit(key);
+          return;
+        }
+      }
     } catch (error) {
       console.warn('[mobile] Failed to open run:', error);
+    } finally {
+      selected.delete(key);
     }
-    // Not committed (failed, rejected, superseded by the store, stream recovery): the pending open fails.
     opening.fail(key);
   };
 

@@ -83,6 +83,8 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       // A task child selected under this run is the target; the run row selects the run's own agent.
       const childTarget = agentRunCollaborationStore.childTargetFor(context.state.runId);
       if (childTarget) return childTarget;
+      // A selected delegated run still opening: no target yet, never this run's own (CR-461-057).
+      if (agentRunCollaborationStore.isSelectedChildOpening(context.state.runId)) return null;
       const collaborationMessages = agentRunCollaborationStore.hostMessagesView(context.state.runId);
       return Object.freeze({
         kind: 'standalone_agent', access: 'live', context,

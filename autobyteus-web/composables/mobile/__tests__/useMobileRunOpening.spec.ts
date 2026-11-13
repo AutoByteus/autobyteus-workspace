@@ -24,6 +24,7 @@ import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useDelegatedRunsStore } from '~/stores/delegatedRunsStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
 import { createMobileTestRouter, withSetup } from './mobileTestRouter';
 
@@ -94,6 +95,44 @@ describe('useMobileRunOpening', () => {
     expect(shared.actions.onSelectTeamMember).toHaveBeenCalledWith(target);
     expect(selectTaskRow).toHaveBeenCalledWith('host', taskRow);
     expect(shared.actions.onSelectRun).toHaveBeenCalledWith(run);
+  });
+
+  // CR-461-057, CR-461-062: one owner for every view's delegated rows. Each is shown as its own run, once that run is open.
+  it.each([
+    ['an agent run\'s view (its selected child)', 'agent:host/worker', () => {
+      const collaboration = useAgentRunCollaborationStore();
+      vi.spyOn(collaboration, 'selectTaskRow').mockReturnValue(true);
+      vi.spyOn(collaboration, 'contextFor').mockReturnValue({ index: { agents: new Map([['worker', { kind: 'task_agent' }]]) } } as never);
+      vi.spyOn(collaboration, 'selectedChild').mockReturnValue('worker');
+      shared.actions.onSelectRun.mockImplementation(async () => { shared.selectionParams!.emitRunSelected({ type: 'agent', runId: 'host' }); });
+      return row({ kind: 'taskRow', hostRun: run, row: { agentRunId: 'worker' } as never }, 'agent:host/worker');
+    }],
+    ['a stopped Team (its delegated worker)', 'team:t/worker', () => {
+      useAgentTeamContextsStore().teams.set('t', { view: { getExecutionTree: () => ({ root_team: { task_executions: [
+        { kind: 'task_agent', address: '/worker', agent_run_id: 'worker', task_executions: [] }] } }) } } as never);
+      shared.actions.onSelectTeamMember.mockImplementation(async () => { shared.selectionParams!.emitRunSelected({ type: 'team', runId: 't' }); });
+      return row({ kind: 'teamMember', target: { teamRunId: 't', memberAddress: '/worker', agentRunId: 'worker' } }, 'team:t/worker');
+    }],
+  ] as const)('a delegated row of %s commits once its own run is open; it fails when that open fails', async (_view, key, rowOf) => {
+    const { opening, store } = await setup();
+    const tapped = rowOf();
+    const runs = useDelegatedRunsStore();
+    let settle!: () => void;
+    vi.spyOn(runs, 'whenOpen').mockReturnValue(new Promise<void>((resolve) => { settle = resolve; }));
+    const binding = vi.spyOn(runs, 'bindingOf').mockReturnValue(null);
+    const done = opening.open(tapped);
+    await flushPromises();
+    expect(runs.whenOpen).toHaveBeenCalledWith({ kind: 'agent', agentRunId: 'worker' });
+    expect(store.pending?.key).toBe(key);
+    binding.mockReturnValue({ context: {} } as never);
+    settle(); await done;
+    expect(store.pending).toBeNull();
+    expect(store.failure).toBeNull();
+    // Its open fails: so does this one, and the run screen goes back.
+    vi.spyOn(runs, 'whenOpen').mockResolvedValue(undefined);
+    vi.spyOn(runs, 'errorFor').mockReturnValue('The run could not be read.');
+    await opening.open(rowOf());
+    expect(store.failure).toEqual({ key });
   });
 
   it('a task row whose run view is not loaded selects nothing and fails', async () => {

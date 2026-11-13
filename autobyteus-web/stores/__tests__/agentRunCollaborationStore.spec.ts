@@ -77,11 +77,14 @@ describe('agentRunCollaborationStore', () => {
     await store.inspect('host-run')
     expect(store.childTargetFor('host-run')).toBeNull()
     expect(store.hostMessagesView('host-run')).toMatchObject({ rootKind: 'agent', focusedAgentRunId: 'host-run' })
+    expect(store.isSelectedChildOpening('host-run')).toBe(false)
     store.selectChild('host-run', 'pp-run')
-    // Until its own run is open there is no target; the host never loads it.
+    // Until its own run is open there is no target; the host never loads it. The view knows it is opening (CR-461-057).
     expect(store.childTargetFor('host-run')).toBeNull()
+    expect(store.isSelectedChildOpening('host-run')).toBe(true)
     const member = { conversation: 'own pp' }
     own.contexts.set('pp-run', member)
+    expect(store.isSelectedChildOpening('host-run')).toBe(false)
     expect(store.childTargetFor('host-run')).toMatchObject({
       kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' }, address: '/product_team/prototyper', agentRunId: 'pp-run', access: 'live',
       collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/own-ws', context: member,
@@ -91,6 +94,8 @@ describe('agentRunCollaborationStore', () => {
     expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', context: { conversation: 'own cua' } })
     store.selectChild('host-run', 'unknown')
     expect(store.childTargetFor('host-run')).toBeNull()
+    // A child the view no longer has is not opening: the run's own target returns.
+    expect(store.isSelectedChildOpening('host-run')).toBe(false)
     expect(own.ensureOpen.mock.calls.map(([subject]) => subject)).toEqual([
       { kind: 'team_member', teamRunId: 'team-run', memberAddress: '/product_team/prototyper', agentRunId: 'pp-run' },
       { kind: 'agent', agentRunId: 'cua-run' },

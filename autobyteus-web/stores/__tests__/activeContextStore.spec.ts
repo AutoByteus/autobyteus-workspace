@@ -12,6 +12,7 @@ import { useWorkspaceStore } from '../workspace';
 import { useWindowNodeContextStore } from '../windowNodeContextStore';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentTeamRunStore } from '../agentTeamRunStore';
+import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
@@ -236,6 +237,40 @@ describe('activeContextStore interrupt routing', () => {
     expect(implementation.contextFilePaths.map((attachment) => attachment.id))
       .toEqual(['implementation-file']);
     expect(implementation.submissionPending).toBe(true);
+  });
+
+  it('CR-461-057: while a delegated run selected under an agent run opens, the view has no target, never the delegator\'s own; then the run\'s own', () => {
+    const selectionStore = useAgentSelectionStore();
+    const agentContextsStore = useAgentContextsStore();
+    const collaboration = useAgentRunCollaborationStore();
+    const activeContextStore = useActiveContextStore();
+    const manager = createAgentContext('manager-run');
+    agentContextsStore.runs.set('manager-run', manager);
+    agentContextsStore.runs.set('other-run', createAgentContext('other-run'));
+    const childTarget = vi.spyOn(collaboration, 'childTargetFor').mockReturnValue(null);
+    const opening = vi.spyOn(collaboration, 'isSelectedChildOpening').mockReturnValue(false);
+    /** Selects the Manager's run afresh, so the target is read again with the selection's current state. */
+    const reselect = () => { selectionStore.selectRun('other-run', 'agent'); void activeContextStore.activeWorkspaceTarget; selectionStore.selectRun('manager-run', 'agent'); };
+    reselect();
+    expect(activeContextStore.activeWorkspaceTarget?.context.state.runId).toBe('manager-run');
+    // The worker's row is selected; its own run is opening (after the delegator's Stop and the view's reconnect, C3-06).
+    opening.mockReturnValue(true);
+    reselect();
+    expect(activeContextStore.activeWorkspaceTarget).toBeNull();
+    // Text typed meanwhile cannot go to the delegator's draft (and so cannot be sent to it).
+    activeContextStore.updateRequirement('Status of the notes?');
+    expect(agentContextsStore.runs.get('manager-run')!.requirement).toBe('');
+    // Once the worker's run is open, it is the target, with its own draft.
+    const worker = createAgentContext('worker-run');
+    opening.mockReturnValue(false);
+    childTarget.mockReturnValue({ kind: 'agent_run_task_agent', host: { hostRunId: 'manager-run' }, address: '/worker', agentRunId: 'worker-run',
+      access: 'live', context: worker, workspaceRootPath: null, browse: { kind: 'run', runId: 'worker-run' },
+      interaction: { send: vi.fn(), interrupt: vi.fn(), decideTool: vi.fn() } } as never);
+    reselect();
+    expect(activeContextStore.activeWorkspaceTarget?.context.state.runId).toBe('worker-run');
+    activeContextStore.updateRequirement('Status of the notes?');
+    expect(worker.requirement).toBe('Status of the notes?');
+    expect(agentContextsStore.runs.get('manager-run')!.requirement).toBe('');
   });
 
   it('preserves observable standalone Agent draft clearing and transcript insertion', () => {

@@ -394,6 +394,19 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * its own run's context, stream and reads (autobyteus-461 rule 2); null while that run opens. A child on a peer node
    * keeps the route through the host (autobyteus-278).
    */
+  /**
+   * A run this run delegated on this node is selected under it, and its own run is still opening (rule 2): the view has
+   * no target until it is open, never this run's own, as in the Team and Org views (CR-461-057). Typing meanwhile would
+   * otherwise go to the delegator's draft, and its send to the delegator.
+   */
+  const isSelectedChildOpening = (hostRunId: string): boolean => {
+    const collaboration = contextFor(hostRunId)
+    const agentRunId = selectedChild(hostRunId)
+    const local = agentRunId && collaboration ? collaboration.getChild(agentRunId) : null
+    const own = local && collaboration ? agentRunDelegatedRunSubject(collaboration.index, local.agentRunId) : null
+    return Boolean(own && !delegatedRuns().bindingOf(own))
+  }
+
   const childTargetFor = (hostRunId: string): ActiveAgentWorkspaceTarget | null => {
     const collaboration = contextFor(hostRunId)
     const agentRunId = selectedChild(hostRunId)
@@ -460,6 +473,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   return {
     contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, releaseAll, beginHostTermination,
-    selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
+    selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, isSelectedChildOpening, submit,
   }
 })
