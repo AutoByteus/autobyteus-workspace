@@ -420,6 +420,7 @@ The current code and `implementation-handoff.md` remain authoritative.
   - IMP-56: integration 483 passed.
   - IMP-57: contracts 47 of 47; dist clean.
 - Next recipient or routing: Code Reviewer (Local Fix done; Large / High).
+- Review result: `Pass`, CRR-018 (round 14; `code-review-report.md`). CR-461-035 is resolved by SR-069, CR-461-036 and -037 are resolved, and the Org placement revert is confirmed. C14-01 (the per-poll cost of the list's row reads) is held for API/E2E to measure. The Code Reviewer routes to API/E2E.
 - Remaining limitations or risks:
   - The characterization covers one representative scenario per story (S1/S6/S10 and their Team and Org equivalents), not every step of `stories.py`. Steps that only send messages do not change a view's rows.
   - The peer rows of each story (5.1's peer node) are covered by the contracts and the peer tests, not by a two-node capture.
