@@ -149,8 +149,6 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new RemoveWorkTraceExportsMigration(memoryDir),
     // Completes delegated copies' own files so each restores on its own, and removes their origin field.
     new DelegatedCopyOwnFileCompleteV1AppDataMigration(memoryDir, { ledger }),
-    // autobyteus-461: a delegated run becomes a run of its own; registered after its four predecessors, with no hold (AR-005).
-    new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
     // Deletes the removed Skill Improvement feature's data once (records, sessions, helper runs, built-in agent).
     new RemoveSkillImprovementDataMigration(
       memoryDir,
@@ -162,6 +160,10 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new MemorySyncSourceIdNamesMigration(appDataDir, memoryDir),
     // The runtime of each archived raw-trace segment follows the code's RuntimeKind values (autobyteus-343).
     new RawTraceManifestRuntimeNamesMigration(memoryDir),
+    // autobyteus-461: a delegated run becomes a run of its own; with no hold (AR-005). Registered after every released
+    // migration (CR-461-048): data that has not run one yet runs it first, so 20261020 removes the improver's helper
+    // runs before this makes delegated copies runs of their own.
+    new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
   ];
 };
 

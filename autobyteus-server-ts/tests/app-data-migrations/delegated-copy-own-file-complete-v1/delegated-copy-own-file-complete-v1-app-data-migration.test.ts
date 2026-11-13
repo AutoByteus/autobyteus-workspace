@@ -132,12 +132,14 @@ const seedConvertible = async (memory: string) => {
 const byRunId = <T extends object>(list: readonly T[]): T[] => [...list].sort((a: any, b: any) => (a.agentRunId ?? a.teamRunId).localeCompare(b.agentRunId ?? b.teamRunId));
 
 describe("20261019_delegated_copy_own_file_complete_v1", () => {
-  it("is registered after every released run-tree migration (then autobyteus-461's conversion, the Skill Improvement data removal, the autobyteus-290 stored-name renames and the raw-trace manifest runtime names), required on startup and startup-only", () => {
+  it("is registered after every released run-tree migration (then the Skill Improvement data removal, the autobyteus-290 stored-name renames, the raw-trace manifest runtime names, and autobyteus-461's conversion), required on startup and startup-only", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
-    // Then the conversion of every delegated run into a run of its own (autobyteus-461), which reads this result.
-    expect(definitions.at(-6)).toMatchObject({ id: DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
-    expect(definitions.slice(-5).map((definition) => definition.id)).toEqual(["20261111_delegated_runs_own_runs_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
-    expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(definitions.length - 6);
+    // Last, after every released migration (CR-461-048), the conversion of every delegated run into a run of its own
+    // (autobyteus-461), which reads this result.
+    const at = definitions.findIndex((definition) => definition.id === DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID);
+    expect(definitions[at]).toMatchObject({ id: DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    expect(definitions.slice(at + 1).map((definition) => definition.id)).toEqual(["20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names", "20261111_delegated_runs_own_runs_v1"]);
+    expect(definitions.findIndex((definition) => definition.id === TASK_AGENT_OWN_RUN_V1_MIGRATION_ID)).toBeLessThan(at);
   });
 
   it("converts every released shape in one start: catalog copies lose origin, configured-place copies take their slot (AC-005, AC-006, AC-008, AC-011)", async () => {
