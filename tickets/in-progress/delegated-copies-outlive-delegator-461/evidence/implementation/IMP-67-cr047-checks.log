@@ -1,0 +1,12 @@
+# 56e4ce773b (run on its working tree, before the commit)
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ npx vitest run --no-watch tests/unit/agent-collaboration tests/unit/agent-communication tests/unit/compositions tests/unit/agent-execution/backends/autobyteus tests/architecture
+ Test Files  78 passed (78)
+      Tests  663 passed (663)
+$ (web) pnpm typecheck
+[typecheck] PASS
+$ (web) npx vitest run --no-watch stores/__tests__
+ Test Files  119 passed (119)
+      Tests  1165 passed (1165)

@@ -567,3 +567,34 @@ The current code and `implementation-handoff.md` remain authoritative.
   - SDV-01's two earlier failures in full runs have no cause found.
   - CR-461-042's reopened row is pinned by handler tests, not rendered.
   - CR-461-041 goes one hop: a run two hops down asks only its own delegator's catalog, as base's host did.
+- Review result: `Fail`, CRR-022 (round 17), one `Local Fix` (CR-461-047). CR-461-039 … -046 and the two SDV-03 fixes are resolved.
+
+### IR-018 — CR-461-047: one owner of a team run's coordinator; a dead export removed
+
+- Triggering role, report path, and round: Code Reviewer CRR-022 (`code-review-report.md`, "Round 17"): Fail, one `Local Fix`, no design impact. Round 18.
+- Triggering finding IDs: CR-461-047 (C17-01, C17-03). Large / High unchanged.
+- Prior authoritative result: IR-017 at `b87be2de33` (docs `17fe4dfbbb`).
+- Current authoritative result: `56e4ce773b`.
+- Related solution / architecture-review revision IDs: SR-071, ARCH-REV-045 (unchanged). Related code-review revision IDs: CRR-022.
+- Implementation delta:
+  - **C17-01, `DelegationIndex.teamCoordinatorOf(teamRunId)`, the one owner of R-12's coordinator when the team does not run.**
+    - It answers its standing's coordinator, from its own file, whether the team runs or not.
+    - The Task entry's entry agent stays as the answer where the standing cannot answer, as SR-071's design names it ("the run's entry agent, else the team's own file"):
+      - a peer team run, whose file is on its node (no file is read for it);
+      - a local delegated team whose own file is unreadable.
+    - A team run no Task names gets `null` and reads no file. A live one is answered by the live directory, as before. So an arbitrary ID in `send_message_to` never reads a file.
+    - `GlobalAgentRunMessageRouter` asks the live directory, else `coordinators.teamCoordinatorOf` (a `Pick<DelegationIndex, "teamCoordinatorOf">`). The composition passes the index; its inline rule is gone.
+    - `delegation-index.ts` is at 499 effective lines.
+  - **C17-03:** removed `standaloneNavigationTarget` (`runHistoryNavigationStoreActions.ts`, unused) and its now-unused `AgentStatus` import.
+- Tests: `delegation-index-agents.test.ts` "DelegationIndex.teamCoordinatorOf":
+  - a stopped delegated team, and a top team run that delegated, answer from their own files;
+  - a peer team run answers from its entry, with no file read;
+  - a team run that is not a node, an agent run's ID and an unknown ID give `null`, with no file read;
+  - an unreadable file falls back to the entry.
+  - The router and backend-factory tests pass the owner.
+- Local validation and result: IMP-67 at `56e4ce773b`:
+  - server type gate PASS (1012); delegation, communication, backend factory and architecture tests, 78 files, 663 tests;
+  - web type gate PASS (90); store specs, 119 files, 1165 tests.
+- Next recipient or routing: Code Reviewer (Local Fix done; Large / High).
+- Remaining limitations or risks: C17-02 (a run two hops down at an address only the top run's catalog offers) is held for API/E2E, as CRR-022 says.
+
