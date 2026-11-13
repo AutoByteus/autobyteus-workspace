@@ -94,6 +94,18 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     expect(h.log).toEqual([]);
   });
 
+  it("SR-072 F-23 (R-8, S10; R-6, S11): a team's member is answered as its run: refused to the assigner while the Task is DONE, continued once it is open", async () => {
+    const h = await harness();
+    h.tasks.close("T1");
+    // "coder" is a member of E, not its coordinator: the same refusal as for the run (R-8), nothing delivered.
+    await expect(h.send(M, "manager", "coder")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(h.tasks.isOpen({ teamRunId: "eng" })).toBe(false);
+    // After the Task is open again, the assigner's message continues E whichever of its agents it names (model `_admit`).
+    h.tasks.setTaskOpen("T1");
+    await expect(h.send(M, "manager", "coder")).resolves.toMatchObject({ accepted: true, message: expect.stringContaining("coder continues with its conversation.") });
+    expect(h.tasks.isOpen({ teamRunId: "eng" })).toBe(true);
+  });
+
   it("R-8: a run whose Task is closed is refused with the closed text; R-6: its assigner continues it after a reopen, a sub-work run stays closed", async () => {
     const h = await harness();
     h.tasks.close("T1");
