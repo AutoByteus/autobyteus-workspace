@@ -77,22 +77,20 @@ None (no release).
 
 ## Repository Finalization
 
-Recorded after the merge; see the record commit on `personal`.
-
 - Bootstrap context source: `handoff-to-next-role.md` (finalization target `origin/personal`) and RELEASE.md Finalization Target
 - Ticket branch: `codex/markdown-code-block-wrap`
-- Ticket branch commit result: pending at the time of this commit
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed` — `ecb18371b` (delivery DR-001, ticket archived)
+- Ticket branch push result: `Completed` — `origin/codex/markdown-code-block-wrap` @ `ecb18371b` (Secret Gate over `origin/personal..codex/markdown-code-block-wrap` passed first)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
-- Target branch update result: pending
-- Merge into target result: pending (`finalize/markdown-code-block-wrap`, `--no-ff`)
-- Push target branch result: pending
-- User's checkout of the target branch (path): pending (`/home/autobyteus/workspace/autobyteus-workspace`)
-- Repository finalization status: pending
+- Target advanced after verification / acceptance: `No` (`origin/personal` @ `188369c71` at every fetch: before the commit, before the merge, before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` — `git fetch origin personal`; `finalize/markdown-code-block-wrap` created from `origin/personal`
+- Merge into target result: `Completed` — `git merge --no-ff codex/markdown-code-block-wrap` → `e43e2f19a` (parents `188369c71`, `ecb18371b`; tree identical to the ticket branch). The first merge attempt printed `fatal: stash failed` and made no commit; the tree was clean and no autostash is configured, so it was retried unchanged and succeeded; the message was then set (`--amend`, before any push). Secret Gate on the merged state: pass.
+- Push target branch result: `Completed` — `188369c71..e43e2f19a  HEAD -> personal`
+- User's checkout of the target branch (path): `/home/autobyteus/workspace/autobyteus-workspace` — brought up to date after the last push to `personal` (this record commit); the result is in the terminal message to the Solution Designer.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -103,10 +101,11 @@ Recorded after the merge; see the record commit on `personal`.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/home/autobyteus/workspace/.codex/worktrees/markdown-code-block-wrap`
-- Worktree cleanup result: pending (after the last push)
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Cleanup runs after this record commit is pushed (it removes the worktree that holds it); results in the terminal message.
+- Worktree cleanup result: planned — `git worktree remove` of the path above (untracked `*/dist/` build output inside it goes with it)
+- Worktree prune result: planned — `git worktree prune`
+- Local ticket branch cleanup result: planned — delete `codex/markdown-code-block-wrap` and `finalize/markdown-code-block-wrap` (both merged into `personal`)
+- Remote branch cleanup result: planned — delete `origin/codex/markdown-code-block-wrap` (merged)
 
 ## Release Notes Summary
 
@@ -134,9 +133,9 @@ Revert the merge commit on `personal`; the change is CSS and one markdown-it ren
 ## Final Status
 
 - Verification complete: `Yes`
-- Repository finalization complete: pending at this commit
+- Repository finalization complete: `Yes` (`personal` @ `e43e2f19a`, plus this record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: pending
+- Applicable safe cleanup complete or not required: after this commit (see Post-Finalization Cleanup)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after finalization and cleanup
-- Terminal package sent to the Solution Designer: pending
+- Successful terminal package eligible for return: `Yes`, once cleanup and the user's checkout update are done
+- Terminal package sent to the Solution Designer: after cleanup (`Delivery Completed`)

@@ -19,7 +19,7 @@
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: `origin/personal` @ `188369c71` unchanged since bootstrap; already current; no rerun needed.
 - Verification and finalization state: evidence judged sufficient; Secret Gate and hygiene pass; finalization per RELEASE.md.
-- Terminal return to the Solution Designer: `Not yet eligible` at the ticket commit; sent after finalization and cleanup.
+- Terminal return to the Solution Designer: `Not yet eligible` at the ticket commit; eligible after the merge `e43e2f19a` on `personal`; sent after cleanup.
 - Terminal return message/reference: the `Delivery Completed` message to `/software_engineering_team/solution_designer`.
 - Why this baseline was recorded: first completed delivery round.
 - Next recipient/action: Solution Designer (terminal receipt).
