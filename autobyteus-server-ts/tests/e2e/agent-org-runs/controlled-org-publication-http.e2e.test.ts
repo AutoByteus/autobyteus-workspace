@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AgyRuntimeErrorFixture, until } from '../helpers/agy-runtime-error-fixture.js';
 import { readParticipantMessages } from '../../helpers/collaboration-participant-messages.js';
+import { restoreByMemberMessage } from '../helpers/restore-by-member-message.js';
 
 // TESTING.md's real HTTP/WS server with a scripted CLI; no paid/provider inference.
 // The CLI calls actual scoped MCP tools, not fabricated successful tool events.
@@ -136,15 +137,15 @@ suite('controlled agent drives Org publication through real public boundaries', 
     expect(stopped.is_active).toBe(false);
     const treePath = path.join(fixture.dataDir, 'memory', 'agent_orgs', run.rootId, 'agent_org_run_execution_tree.json');
     const bytes = await fs.readFile(treePath);
-    const restore = (await fixture.graphql(`mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success agentOrgRunId}}`,
-      { id: run.rootId })).restoreAgentOrgRun;
-    expect(restore).toMatchObject({ success: true, agentOrgRunId: run.rootId });
+    // autobyteus-461 CR-461-008: no restore mutation; the user's message to one of the Org's own members restores it.
+    await restoreByMemberMessage({ url: `http://${fixture.url.host}`, gql: (query, variables) => fixture.graphql(query, variables),
+      kind: 'org', runId: run.rootId, memberRunId: run.runId });
     fixture.runs.push(run);
     expect(await fs.readFile(treePath)).toEqual(bytes);
     expect((await read()).org.rootOrg.taskExecutions).toEqual(stopped.org.rootOrg.taskExecutions);
     expect((await fixture.projection({ ...run, runId: helperCopy.agentRunId, address: helperCopy.address })).conversation).toEqual(beforeStop.conversation);
     await fixture.save('org-publication-chain.json', { run, other, helperCopy, tasks, communication, referenceUrl,
-      baseline, afterAdmission, sequence, frames: stream.frames, reconnectFrames: reconnected.frames, beforeStop, stopped, restore });
+      baseline, afterAdmission, sequence, frames: stream.frames, reconnectFrames: reconnected.frames, beforeStop, stopped, restore: { by: 'member message', active: (await read()).is_active } });
     await fixture.terminate(run);
     await fixture.terminate(other);
   }, 90000);

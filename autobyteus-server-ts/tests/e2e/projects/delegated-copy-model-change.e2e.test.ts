@@ -26,7 +26,7 @@ import { fileURLToPath } from "node:url";
 //   message archives exactly the AGY agent's records as one segment and starts the new file with one marker.
 // DCM-001 an agent copy: running → the change is refused (its own save: RUN_ACTIVE); Stop (the copy alone, the root keeps running);
 //   options; Save; its next message resumes it with its conversation on the chosen model.
-// DCM-002 a Team copy: Stop as one unit; a Team-level choice reaches its members that follow the Team.
+// DCM-002 a Team copy: Stop as one unit; a Team-level choice changes its default, each member keeps its own launch (SR-075 F-39).
 // DCM-003 a stopped Team run: the copies' choices and the run's own settings in one Save; one unavailable model
 //   refuses the whole Save and writes nothing; after the run is reopened, the copy's next message runs on its choice.
 // DCM-004 the standalone Agent root: Stop, Save, resume on the chosen model.
@@ -44,7 +44,7 @@ import { fileURLToPath } from "node:url";
 // DCM-008 one member of a Team copy (the reviewer, after it has run; REQ-001 "any member", the AC-010 scenario): the copy is
 //   stopped and only the reviewer gets its own model: it resumes on it in the same conversation, while the coordinator and
 //   the never-started member keep their models and the choice is recorded on the reviewer alone; then a Team choice saved
-//   together with the reviewer's own choice: the coordinator and the follower take the Team's, the reviewer keeps its own.
+//   together with the reviewer's own choice: the default changes, every member keeps its own saved launch (SR-075 F-39).
 // DCM-010 (autobyteus-9, AC-012, AC-013) a stopped agent copy saved onto the Claude Agent SDK runtime follows the Claude CLI's
 //   current model list, which the test changes while the server runs (the scripted `claude` of agent-runtimes-fake-cli.mjs,
 //   `claude-models` state): a model it does not offer yet is refused with the "refresh the model list" text, the CLI starts
@@ -412,7 +412,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const root = await startRoot("team");
     const copyRunId = await agentCopyScenario(root);
 
-    // DCM-002: a Team copy stops as one unit; a Team-level choice reaches its members that follow the Team.
+    // DCM-002: a Team copy stops as one unit; a Team-level choice changes its default only (SR-075 F-39).
     const team = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.duo!)}`, description: "Review the notes." }));
     expect(team.delegated, JSON.stringify(team)).toBe(true);
     const lead = team.target_team_coordinator_agent_run_id as string;
@@ -424,8 +424,9 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const from = (await agyLaunches()).length;
     await expect(messageCopy(root, lead, "Please continue the review.")).resolves.toMatchObject({ accepted: true });
     await until(async () => (await launchesOf(lead, from)).length > 0, "team: copy lead resumed", 60_000);
-    // F-39 (Unclear): a team-level choice on a delegated team reaching the members that follow the team (base, design DS-8 item). Soft.
-    expect.soft(await launchesOf(lead, from), "F-39").toEqual([ALT]);
+    // SR-075 F-39: a team-level choice on a stopped delegated team is saved as for a team the user started: the team default
+    // changes and each member keeps its own saved launch (REQ-006).
+    expect(await launchesOf(lead, from), "F-39: the lead keeps its own launch").toEqual([MODEL]);
 
     // DCM-003 (SR-064): the stopped run's Settings Save is composed by the editor from each run's own stopped-run save,
     // in row order (its check-first and its partial-failure report are the editor's). Here each run's own save as the
@@ -494,8 +495,9 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     let from = (await agyLaunches()).length;
     await expect(messageCopy(root, lead, "Please continue the review.")).resolves.toMatchObject({ accepted: true });
     await until(async () => (await launchesOf(lead, from)).length > 0, "org: Team copy lead resumed", 60_000);
-    // F-39 (Unclear): a team-level choice on a delegated team reaching the members that follow the team (base, design DS-8 item). Soft.
-    expect.soft(await launchesOf(lead, from), "F-39").toEqual([ALT]);
+    // SR-075 F-39: a team-level choice on a stopped delegated team is saved as for a team the user started: the team default
+    // changes and each member keeps its own saved launch (REQ-006).
+    expect(await launchesOf(lead, from), "F-39: the lead keeps its own launch").toEqual([MODEL]);
 
     // collaboration-model-contract: collaborators no longer exist, so there is no collaborator to change; messaging an
     // outside address is not found and records nothing, and a stored collaborator is a delegated run (the copies above).
@@ -507,7 +509,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     await terminate("org", root.rootId);
   }, 300_000);
 
-  it("DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model", async () => {
+  it("DCM-006: Stop of a Team copy interrupts a member mid-turn and keeps its nested copy (a run of its own) and the PM and another copy running; a Team choice changes the default and each member keeps its own launch", async () => {
     const root = await startRoot("team");
     const other = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.writer!)}`, description: "Keep writing." }));
     expect(other.delegated, JSON.stringify(other)).toBe(true);
@@ -551,15 +553,15 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     const from = (await agyLaunches()).length;
     await expect(messageCopy(root, lead.agentRunId, "Please continue.")).resolves.toMatchObject({ accepted: true });
     await until(async () => (await launchesOf(lead.agentRunId, from)).length > 0, "team: crew lead resumed", 60_000);
-    // F-39 (Unclear): a team-level choice on a delegated team reaching the members that follow the team (base, design DS-8 item). Soft.
-    expect.soft(await launchesOf(lead.agentRunId, from), "F-39").toEqual([ALT]);
-    for (const [name, model] of [["fresh", ALT], ["own", ALT2]] as const) {
+    // SR-075 F-39: a team-level choice on a stopped delegated team is saved as for a team the user started: the team default
+    // changes and each member keeps its own saved launch (REQ-006).
+    expect(await launchesOf(lead.agentRunId, from), "F-39: the lead keeps its own launch").toEqual([MODEL]);
+    for (const [name, model] of [["fresh", MODEL], ["own", ALT2]] as const) {
       await expect(root.memberCalls(lead, callTool("send_message_to", { recipient_address: members[name]!.address, content: `Work for ${name}.` })))
         .resolves.toMatchObject({ accepted: true });
       await until(async () => (await launchesOf(members[name]!.agentRunId, from)).length > 0, `team: ${name} started`, 60_000);
-      // "fresh" follows the team (F-39, soft); "own" has its own default (kept, as the design says).
-      if (name === "fresh") expect.soft(await launchesOf(members[name]!.agentRunId, from), `${name} F-39`).toEqual([model]);
-      else expect(await launchesOf(members[name]!.agentRunId, from), name).toEqual([model]);
+      // SR-075 F-39: each member keeps its own saved launch ("fresh": the one resolved at delegation; "own": its default).
+      expect(await launchesOf(members[name]!.agentRunId, from), name).toEqual([model]);
     }
     // The nested copy kept running on its started model; it is not touched by the crew's choice.
     await expect(root.memberCalls(lead, callTool("send_message_to", { target_agent_run_id: nestedRunId, content: "Resume the notes." })))
@@ -612,7 +614,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     expect(await launchesOf(tester.agentRunId, from)).toEqual([MODEL]);
     expect(JSON.stringify(await root.conversationOf(reviewer.agentRunId, reviewer.address))).toContain("Marker REVIEW-ONE");
 
-    // One Save with a Team choice and the reviewer's own: the coordinator and the follower take the Team's, the reviewer
+    // One Save with a Team choice and the reviewer's own: the default changes; the coordinator, the follower and the reviewer keep their own launches; the reviewer
     // keeps its own and its conversation.
     await expect(stop(root.rootKind, root.rootId, { teamRunId })).resolves.toMatchObject({ success: true });
     await expect(update(root.rootKind, root.rootId, [{ teamRunId, selection: choice(ALT) }, { agentRunId: reviewer.agentRunId, selection: choice(ALT2) }]))
@@ -625,11 +627,13 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       await until(async () => (await launchesOf(target.agentRunId, from)).length > 0, `team: ${target.address} resumed`, 60_000);
     }
     const after = (await agyLaunches()).slice(from);
-    // F-39 (Unclear): a team-level choice on a delegated team reaching the members that follow the team (base, design DS-8 item). Soft.
-    expect.soft(after.filter((entry) => entry.runId === lead.agentRunId).map((entry) => entry.model), "F-39").toEqual([ALT]);
+    // SR-075 F-39: a team-level choice on a stopped delegated team is saved as for a team the user started: the team default
+    // changes and each member keeps its own saved launch (REQ-006).
+    expect(after.filter((entry) => entry.runId === lead.agentRunId).map((entry) => entry.model), "F-39").toEqual([MODEL]);
     expect(after.filter((entry) => entry.runId === reviewer.agentRunId).map((entry) => [entry.model, entry.conversation])).toEqual([[ALT2, reviewerConversation]]);
-    // F-39 (Unclear): a team-level choice on a delegated team reaching the members that follow the team (base, design DS-8 item). Soft.
-    expect.soft(after.filter((entry) => entry.runId === tester.agentRunId).map((entry) => entry.model), "F-39").toEqual([ALT]);
+    // SR-075 F-39: a team-level choice on a stopped delegated team is saved as for a team the user started: the team default
+    // changes and each member keeps its own saved launch (REQ-006).
+    expect(after.filter((entry) => entry.runId === tester.agentRunId).map((entry) => entry.model), "F-39").toEqual([MODEL]);
     await terminate("team", root.rootId);
   }, 300_000);
 

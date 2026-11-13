@@ -29,7 +29,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //   EX-02 an agent COPY (AGY -> native): the choice is saved, the server restarts before the first message, the first message
 //         fails after the candidate wrote its instruction (obstructed), the file is byte-identical, the retry completes with one
 //         marker and one segment (I-7).
-//   EX-03 a Team COPY with a Team-level choice of another runtime, two copies of one definition woken in opposite orders:
+//   EX-03 a Team COPY with a Team-level choice of another runtime and its members' patches (SR-075 F-39: saved as a team the user
+//         started), two copies of one definition woken in opposite orders:
 //         each member switches at its own first input with its own segment and marker; a member that never ran starts plainly.
 //   EX-04 a configured Team's default runtime edit with its linked members in one save (the `CONFIGURED_TEAM` scope plus a patch per
 //         member, as the web draft planner sends them): each member holds its own pending switch; they switch at their own first
@@ -419,15 +420,17 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
     const agyBefore = Object.fromEntries([one, two, three].flatMap((copy, i) => [[`lead${i + 1}`, ids(active(dirOf(copy.lead)))], ...(i < 2 ? [[`worker${i + 1}`, ids(active(dirOf(copy.worker)))]] : [])]));
     expect(findDir(memory(), three.worker), "the worker of copy three never ran: it has no memory folder").toBeNull();
 
-    // Each team copy is a run of its own: its own Stop, then its own stopped-run save with a team-scope patch, in row order
-    // (autobyteus-461 rule 2, SR-064: the editor composes the Save from each run's own save).
+    // Each team copy is a run of its own: its own Stop, then its own stopped-run save, in row order (autobyteus-461 rule 2,
+    // SR-064: the editor composes the Save from each run's own save). SR-075 F-39: the save is as for a team the user started:
+    // the team scope changes the default only, so the editor sends a patch per member that follows it (as EX-04's planner).
     for (const copy of [one, two, three]) {
       const stopped = (await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success message } }", { id: copy.teamRunId })).terminateAgentTeamRun;
       expect(stopped, JSON.stringify(stopped)).toMatchObject({ success: true });
     }
     for (const copy of [one, two, three]) {
       const update = (await gql("mutation($input: UpdateStoppedTeamRunSelectionsInput!) { updateStoppedTeamRunSelections(input: $input) { success outcome message } }", { input: { teamRunId: copy.teamRunId,
-        selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }] } })).updateStoppedTeamRunSelections as Json;
+        selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null },
+          ...["/lead", "/worker"].map((scopeAddress) => ({ scopeKind: "CONFIGURED_AGENT", scopeAddress, runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }))] } })).updateStoppedTeamRunSelections as Json;
       expect(update, JSON.stringify(update)).toMatchObject({ success: true, outcome: "UPDATED" });
     }
 

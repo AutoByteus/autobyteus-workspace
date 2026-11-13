@@ -487,23 +487,25 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     if (brokenWriter) {
       // DTL-003 (AC-004): a member that cannot start fails the sender's delivery and shows error; the rest are unaffected.
       const failedFrom = (await launches()).length;
+      // SR-075 F-41 (rule 2): the member's error card is part of its own run's conversation, on the delegated team's own
+      // stream (what the view shows when its row is selected); the delegator's view carries its status only.
+      const own = await connect("agent-team", copy.teamRunId, (frames) => frames.some((f) => f.type === "TEAM_EXECUTION_VIEW_SNAPSHOT"));
+      const ownCards = () => own.frames.flatMap((frame) => frame.type === "ERROR" && frame.payload?.agent_run_id === copy.members.writer.agentRunId ? [frame.payload]
+        : objectsIn(frame.payload).filter((record) => record.agent_run_id === copy.members.writer.agentRunId && record.message?.type === "ERROR").map((record) => record.message.payload));
       const failed = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.writer.address,
         content: "Please write. Marker WRITE-FIRST." }));
       expect(failed, `${kind} lead → writer ${JSON.stringify(failed)}`).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED" });
       expect(failed.message).toMatch(/AGY_MODEL_UNAVAILABLE/);
       await root.signal("writer error", (e) => e.agentRunId === copy.members.writer.agentRunId && e.status === "error");
       // The writer's conversation shows the failure once (SR-004: one error card per failed start).
-      // The delegator's view carries the delegated member's conversation error card in the agent and team views; in the
-      // org view it is missing (F-41, Unclear: rule 2 reads a delegated run's conversation on its own stream). Soft.
-      const gotCard = await until(() => root.errorCards(copy.members.writer.agentRunId).length > 0, `${kind}: writer error card`, 15_000).then(() => true, () => false);
-      expect.soft(gotCard, `${kind} F-41: the writer's error card in the delegator's view; frames naming the writer: `
-        + JSON.stringify(root.framesNaming(copy.members.writer.agentRunId)).slice(0, 1_500)).toBe(true);
-      if (gotCard) {
-        await wait(1_000);
-        const cards = root.errorCards(copy.members.writer.agentRunId);
-        expect(cards, JSON.stringify(cards)).toHaveLength(1);
-        expect(JSON.stringify(cards[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
-      }
+      // The writer's conversation shows the failure once (SR-004: one error card per failed start), on its own team's stream.
+      await until(() => ownCards().length > 0, `${kind}: writer error card on the team's own stream`, 15_000)
+        .catch((error) => { throw Object.assign(error, { message: `${error.message}; own-stream frames naming the writer: `
+          + JSON.stringify(own.frames.filter((f) => JSON.stringify(f).includes(copy.members.writer.agentRunId)).map((f) => f.type)).slice(0, 1_500) }); });
+      await wait(1_000);
+      expect(ownCards(), JSON.stringify(ownCards())).toHaveLength(1);
+      expect(JSON.stringify(ownCards()[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      own.socket.close();
       expect(await launchesFor(runIdsOf(copy), failedFrom)).toEqual([]);
       await expectStatuses(root, copy, { lead: "idle", reviewer: "idle", writer: "error", tester: "offline" });
       expect((await savedBindings(copy.teamRunId)).writer).toBeNull();
@@ -511,7 +513,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
         content: "Second review. Marker REVIEW-SECOND." }));
       expect(stillWorks, JSON.stringify(stillWorks)).toMatchObject({ accepted: true });
       await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-SECOND");
-      record.memberStartFailure = { result: failed, errorCard: root.errorCards(copy.members.writer.agentRunId)[0] ?? null };
+      record.memberStartFailure = { result: failed, errorCard: ownCards()[0] ?? null };
     } else {
       // DTL-004 (AC-003, REQ-004): a copy member delegating its own Team is refused (collaboration-model-contract); it delegates
       // another catalog Team instead, and only that copy's coordinator starts.

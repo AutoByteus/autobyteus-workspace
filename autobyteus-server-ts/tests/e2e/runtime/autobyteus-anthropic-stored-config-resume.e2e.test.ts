@@ -325,7 +325,8 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
     // Root default + every member: at least 3 stored llmConfig objects in the team tree.
     expect(await addStaleKeyToStoredConfig(teamRunId), "stored llmConfig objects updated").toBeGreaterThanOrEqual(3);
     // A stopped run's view serves it from its stored file; the first message to one of its members on that view restores it (autobyteus-461 CR-461-008).
-    ws = await openSocket(teamRunId, frames, "agent-team");
+    // The stopped team's view first serves its stored file: the message is sent after its snapshot (as the web sends it).
+    ws = await openSocket(teamRunId, frames, "agent-team", (frame) => frame.type === "TEAM_EXECUTION_VIEW_SNAPSHOT");
     for (const member of TEAM_MEMBERS) {
       expectCleanBody(await sendToMember(ws, member.name, "after restore"), member.model, member.expectedThinking, member.expectedEffort);
     }
@@ -391,7 +392,8 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
 
     expect(await addStaleKeyToStoredConfig(orgRunId), "stored llmConfig objects updated").toBeGreaterThanOrEqual(3);
     // A stopped run's view serves it from its stored file; the first message to one of its members on that view restores it (autobyteus-461 CR-461-008).
-    ws = await openSocket(orgRunId, frames, "agent-org", orgReady);
+    // The stopped Org's view serves its stored file (not active): the message is sent after its snapshot.
+    ws = await openSocket(orgRunId, frames, "agent-org", (frame) => frame.type === "ROOT_EXECUTION_VIEW_SNAPSHOT");
     for (const target of targets) {
       const body = await sendToMember(ws, target, "after restore");
       expectCleanBody(body, target.model, target.expectedThinking, target.expectedEffort);

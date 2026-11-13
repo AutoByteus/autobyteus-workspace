@@ -18498,7 +18498,7 @@
       "T-8",
       "R-11"
      ],
-     "call": "The user stops the research agent, then deletes M. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"Findings …\")`",
+     "call": "The user stops the research agent, then deletes M. Later the user messages the research agent, which restores it (its T2 is open), and it reports: `send_message_to(target_agent_run_id: \"project_task_manager_7c8d\", content: \"Findings …\")`, by `research_agent_9b10`",
      "results": [],
      "refused": {
       "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
@@ -18545,7 +18545,7 @@
         "summary": "…",
         "createdAt": "2026-11-10T19:30:00.000Z",
         "archivedAt": null,
-        "terminatedAt": "2026-11-10T20:40:00.000Z"
+        "terminatedAt": null
        }
       ],
       "A:projects/project_8f21/project_runs.json": {
@@ -18993,15 +18993,6 @@
        }
       },
       "A:memory/agents/image_maker_88e8/ (memory)": "created",
-      "A:ad-hoc-tasks/adhoc_task_7c7c/task.json": {
-       "taskId": "adhoc_task_7c7c",
-       "projectId": null,
-       "title": "…",
-       "description": "Market study …",
-       "status": "DONE",
-       "createdAt": "2026-11-10T18:00:00.000Z",
-       "updatedAt": "2026-11-10T19:00:00.000Z"
-      },
       "B:memory/agent_teams/research_team_77aa/team_run_execution_tree.json": {
        "schemaVersion": 1,
        "createdAt": "2026-11-10T18:00:00.000Z",
@@ -19063,41 +19054,6 @@
         "terminatedAt": null
        }
       ],
-      "A:ad-hoc-tasks/adhoc_task_7c7c/agent_run_resources.json": {
-       "taskId": "adhoc_task_7c7c",
-       "agentRunResources": [
-        {
-         "role": "assigned",
-         "delegatedFrom": {
-          "delegatingRun": {
-           "kind": "agent",
-           "runId": "project_task_manager_7c8d"
-          },
-          "delegatorAgentRunId": "project_task_manager_7c8d"
-         },
-         "recipientAddress": "/research_team",
-         "agentRun": {
-          "kind": "team",
-          "teamRunId": "research_team_77aa",
-          "coordinatorAgentRunId": "lead_0c11"
-         },
-         "nodeId": "node-b-1f0e",
-         "members": [
-          {
-           "address": "/lead",
-           "agentRunId": "lead_0c11"
-          },
-          {
-           "address": "/analyst",
-           "agentRunId": "analyst_5d20"
-          }
-         ],
-         "linkedAt": "2026-11-10T18:00:00.000Z",
-         "start": "started",
-         "closedAt": "2026-11-10T19:00:00.000Z"
-        }
-       ]
-      },
       "B:memory/agent_teams/research_team_77aa/lead_0c11/ (memory)": "created",
       "B:memory/agent_teams/research_team_77aa/team_communication_messages_active.jsonl": [
        {
@@ -19226,36 +19182,6 @@
          {
           "agentRunId": "upscaler_e1a1",
           "address": "/upscaler"
-         }
-        ]
-       },
-       {
-        "run": {
-         "kind": "agent_team",
-         "runId": "research_team_77aa"
-        },
-        "tree": {
-         "kind": "agent_team",
-         "runId": "research_team_77aa"
-        },
-        "parent": null,
-        "node": "node-b-1f0e",
-        "tasks": [
-         {
-          "taskId": "adhoc_task_7c7c",
-          "role": "assigned",
-          "open": false,
-          "assigner": null
-         }
-        ],
-        "agents": [
-         {
-          "agentRunId": "lead_0c11",
-          "address": "/lead"
-         },
-         {
-          "agentRunId": "analyst_5d20",
-          "address": "/analyst"
          }
         ]
        },

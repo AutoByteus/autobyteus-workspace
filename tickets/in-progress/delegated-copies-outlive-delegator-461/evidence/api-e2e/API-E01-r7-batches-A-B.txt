@@ -1,0 +1,120 @@
+# Merged-state rechecks R7-A (merged state a529abcbdd)
+ × tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the e
+ × tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner 9427ms
+ × tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner 10334ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders 157374ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable 1353ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change 3090ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks d
+ × tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/r
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Org root: a coordinator that cannot start fails delegate_task and starts no member (AC-004) 2655ms
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > EX-01: Org members: a native target whose start fails after its instruction was written and is retried, and a Grok tar
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > EX-02: an agent copy AGY -> native: the server restarts after the save, the first message fails after the candidate wr
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > EX-03: Team copies with a Team-level choice of another runtime, woken in different orders: each member switches at its
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > EX-04: a configured Team's default runtime edit with its linked members, in one save: every member switches at its own
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts > EX-05: a Team member's saves before its first input: a second save keeps the first previous binding and session, and s
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > agent root: Task closure during and before a teammate message save; the root keeps working and restores its history 16296ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > team root: Task closure during and before a teammate message save; the root keeps working and restores its history 15620ms
+ ✓ tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts > org root: Task closure during and before a teammate message save; the root keeps working and restores its history 15497ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, re
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED) 6781ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team cop
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate 5052ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > Agent Org root: the same journey through the Org stream; an Org member cannot reactivate 4810ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts > QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry 4961ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save 2826ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model 1150ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publi
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-006: Stop of a Team copy interrupts a member mid-turn and keeps its nested copy (a run of its own) and the PM and another copy run
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the cho
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-009: team root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one 
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one s
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-009: agent root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-010: team root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal sa
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > DCM-010: agent root: a stopped agent copy saved onto the Claude Agent SDK runtime follows the CLI's current model list; each refusal s
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts > a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never se
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets 934ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot 
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members 1267ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE 859ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tas
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded 2649ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts > every frame received in this run is a valid message of the strict server schema 3ms
+ ✓ tests/e2e/projects/team-tab-subtree-messages.e2e.test.ts > TT-1 / TT-2: a two-hop message in the top run's tab live and after a reload; a message between a run below X and X's delegator in neithe
+      Tests  4 failed | 39 passed | 4 skipped (47)
+
+# R7-B
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request
+ × tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); res
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the rou
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and fa
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today whi
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002) 4
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-07 the router's definition, run and workspace are hidden unless internal agents are shown; "Talk to the router" opens its run eit
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-08 the router run's agent tools are its template's, without collaboration tools (AC-011) 64ms
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again 1
+ × tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/r
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts > Org root: a coordinator that cannot start fails delegate_task and starts no member (AC-004) 2639ms
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 3112ms
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restar
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores 2797ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G 476ms
+ × tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-02: a Team copy's default and every member run in F 60378ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G 740ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-04: a Task of a Project with no link, and a description-only delegation, run in the top-level run's folder 681ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-05: with links F1 and F2 the copy runs in F1 299ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-06: a first link that does not exist, or is a file, refuses naming the Project and the folder; no Task entry, no copy 181ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured placement, run in F; their managers stay in G 2647ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts > DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart both keep their folder and 
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key 380ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key 348ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > team run: restore succeeds and every member's request after restore carries no stored stale key 553ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts > Org run: restore succeeds and the member requests after restore carry no stored stale key 2080ms
+ × tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts > background copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are un
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > updates only a stopped standalone run config and restores the same current package after restart 4468ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > updates exact stopped Team scopes and preserves the current V2 package across restart 4189ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > MSR-002: a new agent run and a new Team run store only the settings the model declares 2414ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts > MSR-003: a stopped agent run's and Team run's options say whether the runtime's model list could be read 2610ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > persists the team and exact-Agent configurations and restores them after process restart 4310ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > rejects a 'missing' 'Team' runtime before workspace or run side effects 2206ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > rejects a 'blank' 'Team' runtime before workspace or run side effects 2071ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > rejects a 'unsupported' 'Team' runtime before workspace or run side effects 2157ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > rejects a 'missing' 'Agent' runtime before workspace or run side effects 2128ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > rejects a 'blank' 'Agent' runtime before workspace or run side effects 2061ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts > rejects a 'unsupported' 'Agent' runtime before workspace or run side effects 2071ms
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start complet
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed 4199m
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts > AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history an
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts > AOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > API-MCP: selected default host executes equivalent compact mutations and detailed native reads 184ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction 458ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name 6ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > API-MCP collision: selected protected create_project adapter wins over a configured MCP name 23ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > API-MCP collision: selected protected update_project adapter wins over a configured MCP name 34ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 117ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically 294ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations 429ms
+ × tests/e2e/projects/project-task-boundaries.e2e.test.ts > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 111ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-00
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) 602ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one w
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is ab
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals nat
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOU
+ × tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > OT-1 a closure removes the run from the tree (never stored in the tree file); token total and Memory page keep it 7217ms
+ × tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > OT-2 an upgraded data root: admitted at start; trees hold open runs only; a read writes nothing; a load reads no closed run; the 
+ × tests/e2e/run-history/open-task-tree-upgrade-startup.e2e.test.ts > OT-3 a Task record that cannot be read hides its run with a warning naming the Task; restored, the run is back 10ms
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts > atomically saves every configured child, preserves other scopes, and reads the same current (version-less Org tree) package af
+ × tests/e2e/projects/closed-run-attachments.e2e.test.ts > CRA-1 a reference of a message with the closed run opens through the top run (also after a restart); the run's context file opens again once
+ × tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts > converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second s
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts > keeps delegated-run/task identities, communication references, checkpoint and conversation through fresh reads, reconnect an
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > lists a manager-owned Error runtime as active, terminates it, and retains inactive history 130ms
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > keeps a rejected Error runtime active and retryable without recording false termination 72ms
+      Tests  16 failed | 56 passed | 8 skipped (80)

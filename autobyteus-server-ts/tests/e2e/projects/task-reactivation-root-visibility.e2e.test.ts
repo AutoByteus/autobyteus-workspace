@@ -543,12 +543,14 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
       { input: { projectId, taskId: taskB } })).deleteProjectTask).toBe(true);
     view = root.state.view; from = view.frames.length;
     const deleted = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Deleted?" }));
-    // Base's code and text (REQ-009; SR-071's rule that refusals keep base's texts; contract R-9 names no text). Soft, so the
-    // later steps run; the answer is recorded.
+    // Base's code and text (REQ-009; CR-461-058/-065): the coordinator and any other member of the team.
     record.deletedTaskMessage = deleted;
-    expect.soft(deleted, JSON.stringify(deleted)).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
-    expect.soft(String(deleted.message)).toMatch(/The Task was deleted, so its task agent cannot continue/);
-    expect(deleted).toMatchObject({ accepted: false });
+    expect(deleted, JSON.stringify(deleted)).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
+    expect(String(deleted.message)).toMatch(/The Task was deleted, so its task agent cannot continue/);
+    const deletedMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Deleted, member?" }));
+    record.deletedTaskMemberMessage = deletedMember;
+    expect(deletedMember, JSON.stringify(deletedMember)).toMatchObject({ accepted: false, code: "TASK_NOT_FOUND" });
+    expect(String(deletedMember.message)).toMatch(/The Task was deleted, so its task agent cannot continue/);
     expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
     await leftTree(root, [`team:${bNode.teamRunId}`]);
 

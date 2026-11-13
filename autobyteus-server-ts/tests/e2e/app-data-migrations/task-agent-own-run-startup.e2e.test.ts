@@ -279,9 +279,10 @@ describe("task agent own run: the built server upgrades a faithful released inst
     expect(await fs.stat(path.join(memory, NEW_FOLDERS["c3-writer-copy"]!, "raw_traces_active.jsonl"))).toBeTruthy();
     expect(await fs.stat(path.join(memory, NEW_FOLDERS["c5-analyst"]!, "raw_traces_active.jsonl"))).toBeTruthy();
     expect((await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" })).agentRunCollaboration).toBeTruthy();
-    // The user keeps working: a stopped, migrated task agent's model is changed in the team run's Settings.
-    const changed = (await first.gql(`mutation($input:UpdateDelegatedLaunchSelectionsInput!){updateDelegatedLaunchSelections(input:$input){success outcome message fieldErrors{path message}}}`,
-      { input: { rootKind: "AGENT_TEAM", rootRunId: "team-r", changes: [{ agentRunId: "nd-copy", selection: { runtimeKind: "antigravity_cli", llmModelIdentifier: ALT, llmConfig: null } }] } })).updateDelegatedLaunchSelections;
+    // The user keeps working: a stopped, migrated task agent's model is changed through its own stopped-run save
+    // (autobyteus-461 rule 2, SR-064: the delegator's Settings compose each run's own save).
+    const changed = (await first.gql(`mutation($input:UpdateStoppedAgentRunSelectionInput!){updateStoppedAgentRunSelection(input:$input){success outcome message fieldErrors{path message}}}`,
+      { input: { agentRunId: "nd-copy", runtimeKind: "antigravity_cli", llmModelIdentifier: ALT, llmConfig: null } })).updateStoppedAgentRunSelection;
     expect(changed, JSON.stringify(changed)).toMatchObject({ success: true });
     await first.stop();
     await fs.chmod(blocked, 0o755);

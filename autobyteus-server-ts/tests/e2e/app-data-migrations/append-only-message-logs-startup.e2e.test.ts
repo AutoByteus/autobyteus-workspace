@@ -425,7 +425,8 @@ describe("append-only message logs: the built server converts a faithful release
     await start0.gql(`mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success}}`, { id: orgRunId });
     await start0.stop();
 
-    const dirs = { hub: path.join(memory, "agents", hubId, "collaboration"), helper: path.join(memory, "agents", helperId),
+    // autobyteus-461 TC-13: every agent run logs in its own folder (the current code wrote the hub's log there).
+    const dirs = { hub: path.join(memory, "agents", hubId), helper: path.join(memory, "agents", helperId),
       team: path.join(memory, "agent_teams", teamRunId), org: path.join(memory, "agent_orgs", orgRunId) };
     const [director, analyst] = [orgMembers["/director"]!, orgMembers["/analyst"]!];
     const older = Array.from({ length: BIG_MESSAGE_COUNT }, (_, index): Message => ({ messageId: `older-${String(index).padStart(2, "0")}`,

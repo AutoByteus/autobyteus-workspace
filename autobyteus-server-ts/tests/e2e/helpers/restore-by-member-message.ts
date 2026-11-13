@@ -45,6 +45,9 @@ export const restoreByMemberMessage = async (input: Readonly<{
     const deadline = Date.now() + (input.timeoutMs ?? 60_000);
     while (Date.now() < deadline) {
       const error = frames.find((f) => f.type === "ERROR");
+      // A restored run whose first turn then fails (e.g. its real model has no key: LLM_PROVIDER_ERROR) was restored: the
+      // turn's own error is not a refusal of the message.
+      if (error && await isRunActive(input.gql, input.kind, input.runId)) return;
       if (error) throw new Error(`${input.kind} ${input.runId}: the member message was refused: ${JSON.stringify(error.payload)}`);
       // Active, and the view brought live (its second, in-band snapshot): the message has been handed to the restored run.
       if (frames.filter((f) => /SNAPSHOT$/.test(String(f.type))).length >= 2 && await isRunActive(input.gql, input.kind, input.runId)) return;

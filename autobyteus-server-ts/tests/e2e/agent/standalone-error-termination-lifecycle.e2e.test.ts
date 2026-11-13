@@ -17,7 +17,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
-import { AgentRunHistoryService } from "../../../src/run-history/services/agent-run-history-service.js";
+import { AgentRunHistoryService, setProcessAgentRunHistoryService } from "../../../src/run-history/services/agent-run-history-service.js";
 import { WorkspaceRunHistoryService } from "../../../src/run-history/services/workspace-run-history-service.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
@@ -210,6 +210,8 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
     agentRunManager: manager,
     statusProjectionService,
   });
+  // autobyteus-461: the composition root registers the process history service (SR-047 step 8); this suite builds its own.
+  cleanups.push(setProcessAgentRunHistoryService(historyService));
   workspaceHistoryHolder.service = new WorkspaceRunHistoryService({ tree: noDelegations(),
     agentRunHistoryService: historyService,
     teamRunHistoryService: { listTeamRunHistory: vi.fn(async () => []) } as never,

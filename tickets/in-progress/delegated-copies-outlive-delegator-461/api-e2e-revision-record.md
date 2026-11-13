@@ -12,6 +12,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-004 | Code Reviewer, `code-review-report.md` CRR-018 and CRR-020, round 4 | SR-058 … SR-070, IR-011 … IR-016, CRR-016 … CRR-020 | Fail / 71% | Fail / 70% |
 | API-REV-005 | Code Reviewer, `code-review-report.md` CRR-023, round 5 | SR-071, IR-017, IR-018, CRR-021 … CRR-023 | Fail / 70% | Fail / 75% |
 | API-REV-006 | Code Reviewer, `code-review-report.md` CRR-026, round 6 | SR-072 … SR-074, IR-019, IR-020, CRR-024 … CRR-026 | Fail / 75% | Fail / 78% |
+| API-REV-007 | Code Reviewer, `code-review-report.md` CRR-029, round 7 (merged state) | SR-075, SR-076, IR-021, IR-022, CRR-027 … CRR-029 | Fail / 78% | Fail / 84% |
 
 ## Revision Entries
 
@@ -310,6 +311,64 @@ None
 - Recommended owner:
   - Implementation Engineer: F-37, F-38, F-42, F-43, F-44, F-45, F-46;
   - Solution Designer: F-39, F-40, F-41, K-14;
+  - each confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
+
+### API-REV-007: round 7 on the merged state; F-37 … F-46 rechecked; F-43 remains; F-47, K-15, Q-1
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` CRR-029 (merged state `a529abcbdd`), API/E2E round 7.
+- Triggering finding or case IDs:
+  - the round-6 rechecks;
+  - SR-075 (F-39, F-40, F-41, K-14), SR-076 (TDR-001);
+  - the phone renumbering (MSP-53 … 55);
+  - the merge's autobyteus-460 skill reload;
+  - the Next Round list.
+- Related revision IDs: SR-075, SR-076, IR-021, IR-022, CRR-027 … CRR-029
+- Why this revision was recorded: the fix round's validation on the merged state
+- Coverage decisions or durable test paths changed: the decided expectations; 8 stale suites rewritten; the merged skill suite adapted to rule 2; the restore helper; the stories driver (S26's refusal).
+- Cases added, changed, removed, or rechecked:
+  - Pass:
+    - phone MSP-53 … 55;
+    - desktop SDV-01 … 04;
+    - peer 44/44;
+    - API-L01 2/2;
+    - the merge check;
+    - stories §5.2 12/12, §5.3 9/9.
+  - Fail:
+    - R7-A (F-47, F-43);
+    - R7-B (F-43; stale suites);
+    - stories §5.1 S26 (K-15, the model).
+- Commands, environment, fixture, or broader-validation delta:
+  - a frozen install and rebuilt outputs after the merge;
+  - the stories fixture regenerated.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-37 | Local Fix | Resolved (coordinator and member) | reactivation step 12 |
+| F-38 | Local Fix | Resolved (`recipient_address` path); see F-47 for the run-ID path | TKD-AGY-001 |
+| F-39 | Unclear → SR-075 | Behaves as decided | DCM-002/005/006/008, EX-03 |
+| F-40 | Unclear → SR-075 | Behaves as decided | member-contact-host |
+| F-41 | Unclear → SR-075 | Resolved (own stream) | DTL-003 |
+| F-42 (+TDR-001) | Local Fix; SR-076 | Resolved | TDR-001, TDR-002 ×3 |
+| F-43 | Local Fix | **Remains** | DTL-005 Org |
+| F-44 | Local Fix | Resolved | MSP-54 |
+| F-45 | model gap (CR-461-063) | Resolved | S27 |
+| F-46 | Local Fix | Resolved | SDV-01 |
+| K-14 | contract model | Resolved | S27 |
+
+- Canonical artifacts and sections updated:
+  - the coverage investigation (meta, the round-7 plan, deferred, ambiguities);
+  - the execution report;
+  - the progress log;
+  - `evidence/api-e2e/*r7*`.
+- Prior result and confidence: Fail / 78%
+- Current result and confidence: Fail / 84%
+- New or remaining failure IDs: F-43, F-47; K-15; Q-1
+- Recommended owner:
+  - Implementation Engineer: F-43, F-47;
+  - Solution Designer: K-15, Q-1;
   - each confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
 

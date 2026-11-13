@@ -729,6 +729,8 @@ suite("The collaboration contract's stories, run against the built server (autob
         await ctx.nodes.A!.gql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}`, { id: ctx.real(M) });
         const r = (await ctx.nodes.A!.gql(`mutation($id:String!){deleteStoredRun(runId:$id){success message}}`, { id: ctx.real(M) })).deleteStoredRun;
         expect(r.success, r.message).toBe(false);
+        // The refusal is this step's result (a GraphQL mutation, not a tool call): the harness compares its text with the model's.
+        ctx.refusals.push(r);
         // Contract T-5: "its reason names them": by the address it was delegated to, or its run ID.
         expect(String(r.message), String(r.message)).toMatch(new RegExp(`${ctx.real("research_agent_9b10")}|/research_agent\\b`));
       },

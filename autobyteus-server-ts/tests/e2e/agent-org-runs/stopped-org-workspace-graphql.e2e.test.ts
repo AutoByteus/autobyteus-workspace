@@ -136,9 +136,13 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     const affected = expected.rootOrg.members.find((member: Json) => member.address === "/team");
     affected.defaultLaunchConfiguration.workspaceRootPath = b;
     for (const member of affected.members) member.launchConfiguration.workspaceRootPath = b;
-    expect(saved.canonical).toEqual(expected); // Protect every field except approved Team/child paths.
-    expect((await readConfig(first, orgRunId)).executionTree).toEqual(expected);
-    expect(JSON.parse(await fs.readFile(treeFile, "utf8"))).toEqual(expected);
+    // autobyteus-461 contract §6: the stored tree has no `taskExecutions` (each run's delegations are its Task entries); the
+    // config read keeps base's view shape (rule 1) with its rows. Every other field is compared exactly.
+    const stored = <T>(value: T): T => JSON.parse(JSON.stringify(value, (key, inner) => key === "taskExecutions" ? undefined : inner));
+    expect(JSON.stringify(JSON.parse(await fs.readFile(treeFile, "utf8")))).not.toContain("taskExecutions");
+    expect(stored(saved.canonical)).toEqual(stored(expected)); // Protect every field except approved Team/child paths.
+    expect(stored((await readConfig(first, orgRunId)).executionTree)).toEqual(stored(expected));
+    expect(JSON.parse(await fs.readFile(treeFile, "utf8"))).toEqual(stored(expected));
     expect(expected).not.toHaveProperty("schemaVersion");
     for (const member of expected.rootOrg.members) {
       for (const agent of member.members ?? [member]) expect(agent.platformAgentRunId).toBeNull();
@@ -153,12 +157,13 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     affected.defaultLaunchConfiguration.workspaceRootPath = c;
     for (const member of affected.members) member.launchConfiguration.workspaceRootPath = c;
     affected.members.find((member: Json) => member.address === "/team/lead").launchConfiguration.llmConfig = { reasoning_effort: "high" };
-    expect(mixed.canonical).toEqual(expected);
+    expect(stored(mixed.canonical)).toEqual(stored(expected));
 
     await first.stop(); servers.delete(first);
     const second = await start();
-    expect(await readConfig(second, orgRunId)).toMatchObject({ isActive: false, executionTree: expected,
-      editability: { editable: true } });
+    const reread = await readConfig(second, orgRunId);
+    expect(reread).toMatchObject({ isActive: false, editability: { editable: true } });
+    expect(stored(reread.executionTree)).toEqual(stored(expected));
     expect(await fs.readFile(path.join(a!, "retained.txt"), "utf8")).toBe("A project file must not move\n");
     expect(await fs.readdir(b!)).toEqual(["destination.txt"]);
     expect(await fs.readdir(c!)).toEqual([]);

@@ -1,0 +1,14 @@
+# Merge regression: autobyteus-460 agy-skill-definition-changes-transport, merged state a529abcbdd
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-shell-env-probe-cli.mjs pnpm exec vitest run tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts --no-watch
+## first run (the merged suite read the copy through its delegator)
+ ✓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts > API-05a (AC-012, AC-001, AC-003, AC-008): an added skill is linked into the capsule and announced; a package-file removal is announced; both survive stop, a save while stopped, and resume 11969ms
+ × tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts > API-05b (AC-009): a Team member and a delegated copy of the same agent each get their own link and their own notice 924ms
+   → [{"message":"AgentRun 'ab460_worker_913a1a_2fb2d3f1212f4e0cb155eebf032d455c' is not a run Agent run 'ab460_manager_913a1a_d1bfc203bf924d369e2fe56d865c8a48' delegated to a peer node.","locations":[{"line":1,"column":41}],"path":["agentRunCollaborationMemberProjection"]}]
+ ↓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts > API-05c (AC-006, AC-007): GitHub added to a running agent starts at restart; removed is refused and announced; added back works without a restart
+Error: [{"message":"AgentRun 'ab460_worker_913a1a_2fb2d3f1212f4e0cb155eebf032d455c' is not a run Agent run 'ab460_manager_913a1a_d1bfc203bf924d369e2fe56d865c8a48' delegated to a peer node.","locations":[{"line":1,"column":41}],"path":["agentRunCollaborationMemberProjection"]}]
+      Tests  1 failed | 1 passed | 1 skipped (3)
+## after the read by the copy's own run
+ ✓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts > API-05a (AC-012, AC-001, AC-003, AC-008): an added skill is linked into the capsule and announced; a package-file removal is
+ ✓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts > API-05b (AC-009): a Team member and a delegated copy of the same agent each get their own link and their own notice 1800ms
+ ↓ tests/e2e/runtime/agy-skill-definition-changes-transport.e2e.test.ts > API-05c (AC-006, AC-007): GitHub added to a running agent starts at restart; removed is refused and announced; added back wo
+      Tests  2 passed | 1 skipped (3)

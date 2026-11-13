@@ -32,15 +32,15 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // - TDR-001 (closure during the write): the Manager's run-ID message to a copy's lead is written while that copy's
 //   Task is closed. The root does not fail-stop; the Manager gets the readable refusal
 //   `{accepted:false, code:"TASK_AGENT_RESOURCE_CLOSED"}` (DEC-005: the same as a closure found before the save); the
-//   refused message is never shown in the Team tab (autobyteus-461 SR-072, the one accepted difference from base); the
-//   lead never processes the message. The write was in progress at the closure, so where it is written is recorded.
+//   record stays in the receiver's log and the sender's, and the Team tab shows it (autobyteus-461 SR-076, as at base); the
+//   lead never processes the message.
 // - TDR-002 (closure while waiting behind another write, DEC-005 with the slot dropped): a write to the second copy's own
 //   log is held (its lead → its mate); the Manager's message to that lead waits for that log's lock (each run has its own
 //   log and lock, autobyteus-461 TC-13); the copy's Task is closed. The Manager gets the same readable refusal; that
 //   message is never written. The held write's own outcome is recorded.
 // - TDR-003 (the root keeps working): later messages are accepted and saved; after root stop and restore the history
-//   reads back exactly the Team tab's messages (the root's own log and its open subtree's, SR-074; neither refused
-//   message), and messaging continues.
+//   reads back exactly the Team tab's messages (the root's own log and its open subtree's, SR-074; TDR-001's record,
+//   not TDR-002's), and messaging continues.
 // Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/teammate-delivery-task-closure-race.e2e.test.ts --no-watch
 // `TEAMMATE_DELIVERY_RACE_E2E_EVIDENCE_DIR` keeps a JSON receipt. The scripted CLI's opt-in `AGY_FAKE_TOOL_LOG` records
@@ -484,11 +484,15 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
     // never written, and never shown in the Team tab.
     await wait(3_000);
     const writtenIn = new Map<string, string[]>();
-    // The receiver re-checks before writing (SR-072); here the write was already in progress when the Task closed, so the
-    // record may be in the receiver's own log: where it is, is recorded. It is never shown.
-    await savedHistory(rootAgents(), writtenIn);
+    // SR-076 (base, 469 REQ-012): the Task closed during the receiver's durable write: the record is kept in the receiver's
+    // log and, between two runs, in the sender's (the Manager's) too, so the Team tab shows it live and after a reload.
+    await until(async () => { writtenIn.clear(); await savedHistory(rootAgents(), writtenIn); return (writtenIn.get(race1) ?? []).length >= 2; },
+      `${kind}: TDR-001 record in both logs`, 15_000).catch(() => undefined);
     record.tdr001writtenIn = writtenIn.get(race1) ?? [];
-    expect(await root.snapshotMessages(), `${kind} TDR-001 refused message not shown in the root view`).not.toContain(race1);
+    const managerDir = kind === "agent" ? `memory/agents/${root.managerRunId}/` : kind === "team" ? `memory/agent_teams/${root.rootId}/` : `memory/agent_orgs/${root.rootId}/`;
+    expect(writtenIn.get(race1) ?? [], `${kind} TDR-001 kept in the sender's log`).toEqual(expect.arrayContaining([expect.stringContaining(managerDir)]));
+    expect(writtenIn.get(race1) ?? [], `${kind} TDR-001 kept in the receiver's log`).toEqual(expect.arrayContaining([expect.stringContaining(`memory/agent_teams/${copyC.teamRunId}/`)]));
+    expect(await root.snapshotMessages(), `${kind} TDR-001 record shown in the root view`).toContain(race1);
     await wait(2_000);
     const leadMemoryC = await closedMemberText(copyC.teamRunId, copyC.members.lead.agentRunId);
     expect(JSON.parse(leadMemoryC).rawTraces?.length, `${kind} TDR-001 recipient's saved memory is read`).toBeGreaterThan(0);
@@ -550,8 +554,7 @@ suite("A Task closing while a teammate message is being saved never fail-stops t
           || message.senderAgentRunId === root.managerRunId || message.receiverAgentRunId === root.managerRunId)).map((message) => String(message.content));
     };
     const beforeStop = await inView();
-    expect(beforeStop).toEqual(expect.arrayContaining([after]));
-    expect(beforeStop).not.toContain(race1);
+    expect(beforeStop).toEqual(expect.arrayContaining([race1, after]));
     expect(beforeStop).not.toContain(raceB);
     expect(await root.snapshotMessages(), `${kind} live snapshot`).toEqual(beforeStop);
     root.closeChannels();

@@ -56,7 +56,12 @@ const titled = (args: Record<string, unknown>): Record<string, unknown> => "proj
   ? { ...args, title: (typeof args.description === "string" && firstLine(args.description)) || "A titled Task" } : args;
 /** A saved context file as agents read it (REQ-013): `{name, path}`; `path` is the saved copy, named by its stored file name. */
 const storedNameOf = (file: { path: string }) => path.basename(file.path);
-const reset = () => { releaseProjectTaskServiceProcessInstance(getProjectTaskService()); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
+// Reader reconstruction: fresh Project readers and stores. The Project Task service is the composition's (autobyteus-461: it
+// carries the delegation tree as its entries listener, set by the composition root); it is released only with the server.
+const reset = (releaseTaskService = false) => {
+  if (releaseTaskService) releaseProjectTaskServiceProcessInstance(getProjectTaskService());
+  resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests();
+};
 
 describe("Project Task production HTTP boundaries", () => {
   let root: string, origin: string, mcpUrl: string, app: FastifyInstance;
@@ -124,7 +129,7 @@ describe("Project Task production HTTP boundaries", () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-http-e2e-"));
     process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = path.join(root, "temp_workspace");
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
-    appConfigProvider.resetForTests(); appConfigProvider.config.setCustomAppDataDir(root); reset();
+    appConfigProvider.resetForTests(); appConfigProvider.config.setCustomAppDataDir(root); reset(true);
     registerProjectTaskTools();
     const started = await startStudioE2eRuntimeServer(); app = started.fastify; origin = started.mainUrl.origin;
     authority = started.agentToolsMcpHost.sessionAuthorities.begin({ scopeIdentity: "project-task-http-test" }).complete({
@@ -159,7 +164,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect((await rpc(one.descriptor.serverUrl, "ping")).status).toBe(404);
   }, 120000);
   afterAll(async () => {
-    authority?.close(); if (app) await app.close(); reset(); appConfigProvider.resetForTests();
+    authority?.close(); if (app) await app.close(); reset(true); appConfigProvider.resetForTests();
     if (originalTemp === undefined) delete process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR; else process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = originalTemp;
     for (const key of Object.keys(process.env)) if (key.startsWith("ENABLE_") || key.startsWith("AUTOBYTEUS_")) delete process.env[key]; Object.assign(process.env, flags);
     if (origin) await expect(fetch(origin, {signal: AbortSignal.timeout(1500)})).rejects.toThrow();

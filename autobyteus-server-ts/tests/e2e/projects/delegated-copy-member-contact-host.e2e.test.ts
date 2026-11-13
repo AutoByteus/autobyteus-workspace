@@ -345,18 +345,12 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     // A non-host list is the host entry plus exactly the host's own list (same addresses). For a member of the delegated
     // team (contract §2.3, design "What a delegated run sees as in its run", TC-12): step 1 lists its own team at its
     // team's root (`/lead`, `/reviewer`); a definition reached there is not listed again at its catalog address (its own
-    // team first). Base also listed the run's own name (the solo copy's `/dcm_solo…`, the team's `/dcm_squad…`), though
-    // CM-1 refuses delegating to it; REQ-009 "no change to what an agent reads": F-40, soft.
+    // team first). SR-075 F-40: a run's own definition stays out of its list, as every run's does (autobyteus-455 AC-006):
+    // the solo copy's `/dcm_solo…` and the team's `/dcm_squad…`.
     const addresses = (result: Record<string, any>) => listedBy(result).map((entry) => entry.address).sort();
-    const ownTeamCatalog = [names.lead, names.reviewer].map((name) => `/${segment(name)}`);
-    const reviewerExpected = [...addresses(hostList).filter((address) => !ownTeamCatalog.includes(address)), hostAddress, "/lead", "/reviewer"].sort();
-    expect(addresses(reviewerList)).toEqual(expect.arrayContaining(reviewerExpected.filter((address) => address !== `/${segment(names.squad)}`)));
-    expect(addresses(reviewerList).filter((address) => !reviewerExpected.includes(address)), "nothing outside the expected list").toEqual([]);
-    expect.soft(addresses(reviewerList), "F-40: base listed the run's own name").toEqual(reviewerExpected);
-    const soloExpected = [...addresses(hostList), hostAddress].sort();
-    expect(addresses(soloList)).toEqual(expect.arrayContaining(soloExpected.filter((address) => address !== `/${segment(names.solo)}`)));
-    expect(addresses(soloList).filter((address) => !soloExpected.includes(address)), "nothing outside the expected list").toEqual([]);
-    expect.soft(addresses(soloList), "F-40: base listed the run's own name").toEqual(soloExpected);
+    const ownTeamCatalog = [names.lead, names.reviewer, names.squad].map((name) => `/${segment(name)}`);
+    expect(addresses(reviewerList)).toEqual([...addresses(hostList).filter((address) => !ownTeamCatalog.includes(address)), hostAddress, "/lead", "/reviewer"].sort());
+    expect(addresses(soloList)).toEqual([...addresses(hostList).filter((address) => address !== `/${segment(names.solo)}`), hostAddress].sort());
     const plainMarker = `PLAIN_WORDS_${randomUUID().slice(0, 8)}`;
     const soloSend = toolResult(await childCalls(soloCopy.address, soloCopy.agentRunId!,
       callTool("send_message_to", { recipient_address: hostAddress, content: `Status for the manager: ${plainMarker}.` })));
