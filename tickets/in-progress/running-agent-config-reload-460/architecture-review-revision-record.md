@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Solution Designer handoff 2026-11-13 (Large / High) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001 (blocking), AR-002, AR-003, AR-004 |
 | ARCH-REV-002 | Round 2 / SR-003 revision for ARCH-REV-001 | SR-003 | Fail | Pass | AR-001…AR-004 resolved |
+| ARCH-REV-003 | Round 3 / SR-004 revision for implementation DI-001 | SR-004 | Pass | Pass | None new |
 
 ## Revision Entries
 
@@ -51,3 +52,25 @@ None.
 - Material classification changes: none (Large / High)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: stale "is active" row in the design's Architecture Investigation Evidence table (follow DS-003); AR-002 retry happens at the next pass that adds a name, not every save; `release()` must stay retryable after a failed release; AGY after an interrupt gets no capsule link until a new start (notice still gives the path, FU-002); integration sentence timing (carried); U-001
+
+### ARCH-REV-003 — Round 3: Claude skills folder ensured at preparation (DI-001)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460/tickets/in-progress/running-agent-config-reload-460/design-review-report.md`
+- Review round and trigger: round 3; `handoff-architecture-design-complete.md` section "Round 3" (SR-004)
+- Triggering role, report path, and finding IDs: implementation engineer DI-001 (`implementation-handoff.md`, IR-001; `evidence/live/IMP-07…09`) via the Solution Designer
+- Relevant solution revision IDs: SR-004 (requirements unchanged at SR-002)
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result: confirmed the measured premise (folder must exist at CLI process start; empty is enough) and the design response: `ClaudeSessionBootstrapper` ensures `<workspace>/.claude/skills` on new and restore preparation, from the exported Claude profile segments, never removed. Verified the materializer already creates (`workspace-skill-links.ts:104`) and never removes this folder, so this is within the approved direction (REQ-008, AC-011 kept), not a new product policy. Added MP-003.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-003 | Resolved (ARCH-REV-002) | Resolved, statement superseded | SR-004; design evidence table, DS-003, Claude mapping row, Risks | IMP-07 shows the round-2 statement (only `allowedTools` differs) was incomplete; SR-004 states the measured cause and fix |
+| AR-001, AR-002, AR-004 | Resolved | Resolved (unaffected) | — | SR-004 touches only the Claude bootstrapper |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Large / High)
+- Recommended recipient: Implementation Engineer (resume IR-001); informational notice to the Solution Designer
+- Remaining risks or uncertainty: failed folder `mkdir` should be logged, not fail preparation (REQ-008); U-001 for Codex/Grok/DeepSeek/AGY unchanged

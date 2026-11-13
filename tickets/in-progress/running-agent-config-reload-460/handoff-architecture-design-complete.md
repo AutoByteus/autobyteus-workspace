@@ -68,3 +68,16 @@ Independent architecture review of `design-spec.md` against the approved `requir
 - AR-004: added and removed in the tracker's `skillDirs` terms; AC-004 walked through in Guidance.
 - Also: investigation-notes correction; `docs/design-cases.md` Case 22 added.
 - Route: `/software_engineering_team/architecture_reviewer` (round 2).
+
+## Round 3 — revised for implementation DI-001 (SR-004, 2026-11-13)
+
+- Result: `Architecture Design Complete` (revised), Large / High, unchanged. Requirements unchanged (Approved, SR-002; AC-011 kept).
+- DI-001 (implementation engineer, `implementation-handoff.md` IR-001; live evidence `evidence/live/IMP-07…09`): the Claude CLI watches `<cwd>/.claude/skills` only if the folder exists when its process starts. My SR-001 probe started with the folder present.
+- Decision (Solution Designer, within the direction; DI-001 option (a)):
+  - Claude preparation (new and restore) ensures `<workspace>/.claude/skills` exists before the session starts, using the Claude materialization profile's segments, and never removes it.
+  - It is the folder the materializer already creates (`workspace-skill-links.ts:104`) and leaves behind today.
+  - Owner: `ClaudeSessionBootstrapper`. No new owner, boundary or contract.
+  - Not extended to Codex, Grok or DeepSeek (unmeasured, U-001).
+- Design sections changed: evidence table, DS-003, Claude file mapping row, Risks. `docs/design-cases.md` Case 21 gained this ticket.
+- Implementation state: branch `codex/running-agent-config-reload-460`, commits `a5c616f542` (design package) and `07d5d69b30` (implementation). The implementation is otherwise complete. The implementation engineer resumes IR-001 with this change, then Code Review.
+- Route: `/software_engineering_team/architecture_reviewer` (round 3).

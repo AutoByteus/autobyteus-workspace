@@ -5,16 +5,16 @@
 - Upstream Requirements Doc: `tickets/in-progress/running-agent-config-reload-460/requirements-doc.md` (Approved, SR-002)
 - Upstream Investigation Notes: `tickets/in-progress/running-agent-config-reload-460/investigation-notes.md`
 - Upstream Solution Revision Record: `tickets/in-progress/running-agent-config-reload-460/solution-revision-record.md`
-- Reviewed Design Spec: `tickets/in-progress/running-agent-config-reload-460/design-spec.md` (SR-003, status Ready)
-- Supplemental Task Artifacts Reviewed: `evidence/claude-skill-hot-reload-probe.mjs`, `evidence/claude-skill-hot-reload-probe-output.txt`, `follow-ups.md`, `handoff-architecture-design-complete.md` (incl. "Round 2"); `docs/design-cases.md` Case 22 (worktree diff)
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
+- Reviewed Design Spec: `tickets/in-progress/running-agent-config-reload-460/design-spec.md` (SR-004, status Ready)
+- Supplemental Task Artifacts Reviewed: `evidence/claude-skill-hot-reload-probe.mjs`, `evidence/claude-skill-hot-reload-probe-output.txt`, `follow-ups.md`, `handoff-architecture-design-complete.md` (incl. "Round 2"); `docs/design-cases.md` Case 22 (worktree diff); round 3: `implementation-handoff.md` (DI-001), `evidence/live/IMP-07…09-*.json`
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004
 - Architecture Review Revision Record: `tickets/in-progress/running-agent-config-reload-460/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Solution Designer round-2 handoff, 2026-11-13 (SR-003, revised for ARCH-REV-001)
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, Fail: AR-001 blocking; AR-002…AR-004 non-blocking)
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460` at `7b8bcf932f` (base `origin/personal`). Files opened: `skill-update-notices/skill-update-notices.ts`, `services/run-skill-tracker.ts`, `services/skill-update-notice-service.ts`, `services/skill-version-diff.ts`; `tool-list-updates/services/tool-list-update-service.ts:140-215`; `agent-execution/backends/shared/workspace-skill-materializer.ts` (whole file); Claude `claude-agent-run-backend-factory.ts`, `claude-session-bootstrapper.ts:42-124`, `claude-session-cleanup.ts`, `claude-session-manager.ts:126-185`, `claude-session.ts:187, 322`, `claude-session-query-options.ts`, `claude-session-tooling-options.ts:140-149`; Codex `codex-agent-run-context.ts`, `codex-agent-run-backend.ts:111-113, 224-240`, `codex-thread-manager.ts:104-150, 214, 270`, `codex-thread-bootstrapper.ts:80-125, 375-437`; ACP `acp-agent-run-backend.ts:85-95, 184-273`, `acp-agent-run-backend-factory.ts:80-175`; AGY `agy-run-capsule.ts`, `agy-configured-skill-linker.ts`; `credential-proxy/integration-run-access.ts`, `integration-access-rule.ts:61-69`, `run-pass-registry.ts` (method list); `compositions/platform-notice-sources.ts`; `agent-execution/domain/agent-run.ts:156-166`. Round 2 additionally: `codex-agent-run-backend-factory.ts:32-62`, `provider-preparation-guard.ts`, `agy-agent-run-backend.ts:79, 95-160`, and a search for every user of `materializedConfiguredSkills` / `ownSkill` (11 files, all Claude/Codex/guard, all named in the SR-003 file mapping).
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: Solution Designer round-3 handoff, 2026-11-13 (SR-004, revised for implementation DI-001)
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, Pass)
+- Latest Authoritative Round: 3
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/running-agent-config-reload-460` at `7b8bcf932f` (base `origin/personal`). Files opened: `skill-update-notices/skill-update-notices.ts`, `services/run-skill-tracker.ts`, `services/skill-update-notice-service.ts`, `services/skill-version-diff.ts`; `tool-list-updates/services/tool-list-update-service.ts:140-215`; `agent-execution/backends/shared/workspace-skill-materializer.ts` (whole file); Claude `claude-agent-run-backend-factory.ts`, `claude-session-bootstrapper.ts:42-124`, `claude-session-cleanup.ts`, `claude-session-manager.ts:126-185`, `claude-session.ts:187, 322`, `claude-session-query-options.ts`, `claude-session-tooling-options.ts:140-149`; Codex `codex-agent-run-context.ts`, `codex-agent-run-backend.ts:111-113, 224-240`, `codex-thread-manager.ts:104-150, 214, 270`, `codex-thread-bootstrapper.ts:80-125, 375-437`; ACP `acp-agent-run-backend.ts:85-95, 184-273`, `acp-agent-run-backend-factory.ts:80-175`; AGY `agy-run-capsule.ts`, `agy-configured-skill-linker.ts`; `credential-proxy/integration-run-access.ts`, `integration-access-rule.ts:61-69`, `run-pass-registry.ts` (method list); `compositions/platform-notice-sources.ts`; `agent-execution/domain/agent-run.ts:156-166`. Round 2 additionally: `codex-agent-run-backend-factory.ts:32-62`, `provider-preparation-guard.ts`, `agy-agent-run-backend.ts:79, 95-160`, and a search for every user of `materializedConfiguredSkills` / `ownSkill` (11 files, all Claude/Codex/guard, all named in the SR-003 file mapping). Round 3 (branch at `07d5d69b30`): `shared/workspace-skill-links.ts:103-104` (`createOrAcceptSameSourceLink` creates the parent folder recursively; no `rm`/`rmdir` of it anywhere in `workspace-skill-links.ts` or `workspace-skill-materializer.ts`), `claude/claude-workspace-skill-materializer.ts:9-12` (exported `CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE`, segments `[".claude", "skills"]`), `evidence/live/IMP-07/08/09` (one variable changed per run).
 
 ## Routing Classification Review
 
@@ -22,7 +22,7 @@
 - Architectural risk: `High`
 - Classification rationale reviewed: three subsystems change (skill notices; `AgentRun` + backend contract + five backends + new shared per-run owner; credential proxy read), about 20 production files; a new mid-run acquisition of shared workspace links racing run release, a contract method every runtime implements, and a changed persisted seen-record reading.
 - Independent Architecture Review required by the classification: `Yes`
-- Classification evidence or correction required: none. SR-003 keeps Large / High; the ownership move of the link holder across three runtimes strengthens it.
+- Classification evidence or correction required: none. SR-003 keeps Large / High; SR-004 adds one Claude preparation step within the reviewed owner and does not change it.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -52,11 +52,14 @@
 
 Overall: every row `Confirmed`.
 
+Round 3 (SR-004, DI-001): the round-1 premise "Claude lists a folder linked mid-session at the next turn" held only when `.claude/skills` existed at CLI process start (designer's probe started with it; IMP-07 absent → `Unknown skill`; IMP-08 one skill → listed; IMP-09 empty folder → listed). SR-004 keeps AC-011 and REQ-008 ("set up as at run start") by having Claude preparation (new and restore) ensure the folder exists before the session starts. This is within the approved direction, not a new product policy: the materializer already creates and never removes this exact folder for every Claude run that has had a skill (`workspace-skill-links.ts:104`), so the only change visible to the user is an empty `.claude/skills` in a workspace that never had such a run. Not extended to Codex, Grok or DeepSeek (unmeasured, U-001; the notice covers them).
+
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `evidence/claude-skill-hot-reload-probe*` | Pass | Pass | Pass | Pass (the zero-skills Claude case it does not cover is now stated in Risks and given to the live check, AR-003) | Pass | — |
+| `evidence/claude-skill-hot-reload-probe*` | Pass | Pass | Pass | Pass (its scope — folder present at start — is now stated next to IMP-07…09) | Pass | — |
+| `evidence/live/IMP-07…09-*.json` (implementation, DI-001) | Pass | Pass (design evidence table row, SR-004, implementation-handoff DI-001) | Pass (`initialSkills`, `linkAfterAdd`, `skillToolStep` per run) | Pass | Pass (evidence) | — |
 | `follow-ups.md` | Pass | Pass | Pass | Pass | Pass | — |
 
 ## Task Design Health Assessment Verdict
@@ -74,7 +77,7 @@ Overall: every row `Confirmed`.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary | Pass | Pass | Pass (`AgentRun.applyDefinitionSkills` facade, backend owner) | Pass | Pass | Pass | Pass |
 | DS-002 | Primary | Pass | Pass | N/A | Pass | Pass (tracker loads; service delivers, as today) | Pass | Pass |
-| DS-003 | Bounded local | Pass | Pass: `closed` is set synchronously by `release()`, the only release path, before any held link is read | Pass | Pass | Pass: `RunWorkspaceSkills` drives close → await add → release; AGY's reason for no ordering holds (per-run capsule, never shared) | Pass | Pass |
+| DS-003 | Bounded local | Pass | Pass: `closed` is set synchronously by `release()`, the only release path, before any held link is read; Claude folder exists from preparation on (SR-004) | Pass | Pass | Pass: `RunWorkspaceSkills` drives close → await add → release; AGY's reason for no ordering holds (per-run capsule, never shared); folder creation is a Claude preparation step owned by `ClaudeSessionBootstrapper`, before session start | Pass | Pass |
 | DS-004 | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
@@ -156,6 +159,7 @@ Vocabulary (Principle 15): `Pass — deviation recorded, reason holds`. The desi
 | `agent-run-backend.ts`, `agent-run.ts` | Pass | Pass | N/A | Pass | — |
 | `backends/shared/run-workspace-skills.ts` | Pass | Pass | Pass | Pass | Holder from preparation to release |
 | `backends/provider-preparation-guard.ts` | Pass | Pass | N/A | Pass | `ownSkill` removed; `ownCodexClient` stays |
+| `claude/backend/claude-session-bootstrapper.ts` (SR-004 step) | Pass | Pass | N/A | Pass | Ensures `<workspace>/.claude/skills` from `CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE.workspaceSkillsRootSegments` — the same exported constant the materializer uses, so the path has one source (Principle 11); Claude-only runtime fact stays in the Claude bootstrapper, not in the shared `RunWorkspaceSkills` |
 | Claude / Codex / ACP / AGY / native backends + factories | Pass | Pass | N/A | Pass | — |
 | `codex/codex-workspace-skill-request-planner.ts` | Pass | Pass | Pass | Pass | Needs the client manager and an optional `ownCodexClient` (today in the guard) |
 | `credential-proxy/integration-run-access.ts`, `run-pass-registry.ts` | Pass | Pass | N/A | Pass | — |
@@ -221,6 +225,14 @@ Vocabulary (Principle 15): `Pass — deviation recorded, reason holds`. The desi
 - Reachability: `Reachable` (the window is the duration of the add, longest on Codex because of `skills/list`; the two triggers are independent and the existing code already treats this race as a contract to uphold at bootstrap).
 - Review consequence / proportionate response: round 1: AR-001. Round 2: resolved by SR-003. With `closed` set synchronously by `release()` before any held link is read, every `onAcquired` push is followed by an `assertAccepting` that reads `closed` (`workspace-skill-materializer.ts:134, 142`; the managed path returns through `:134`), so a push after release is always rolled back, and `release()` also awaits the in-flight add.
 
+### `MP-003` — A Claude run starts with no `.claude/skills` folder in its workspace (round 3)
+
+- Related approved requirement: AC-011, REQ-008.
+- Initiating basis: `User` — the user starts (or resumes) a Claude run of an agent with no skills, in a workspace where no Claude run with skills has run, then adds a skill (SCN-001).
+- Forward path: preparation links nothing, so the materializer never creates the folder (`workspace-skill-links.ts:104` runs only per link) → CLI process starts without the folder → mid-run link → CLI does not list it (IMP-07).
+- Reachability: `Reachable` (measured).
+- Review consequence: SR-004's folder step is proportionate; it is a recursive mkdir of a folder the product already creates and keeps.
+
 ### `MP-002` — An Antigravity mid-run add can land in the capsule after the run stopped (round 2, from the SR-003 AGY reasoning)
 
 - Related contract: AC-012 (AGY link in its run folder, kept for resume).
@@ -247,15 +259,22 @@ None open. Round-1 findings and their resolution (details in `architecture-revie
 - AR-003: Resolved. Zero-skills Claude behavior stated in Risks with the auto-execute citation; live check named; `hasSkills()` read per process generation.
 - AR-004: Resolved. Added/removed defined in `skillDirs` terms; notice content decided by the `seen` diff at delivery; AC-004 walked through in both orders.
 
+Round 3: no new findings. SR-004 (DI-001) accepted: AR-003's statement about the zero-skills Claude run was incomplete (it covered `allowedTools` only), and SR-004 replaces it with the measured cause and a fix inside the reviewed owner. No new owner, boundary, contract or persisted data.
+
 ## Classification
 
 N/A (Pass).
 
 ## Recommended Recipient
 
-Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
+Implementation Engineer (`/software_engineering_team/implementation_engineer`), to resume IR-001; informational notice to the Solution Designer.
 
 ## Residual Risks
+
+Round 3 notes for implementation (non-blocking):
+- Folder step failure: the design does not say what a failed `mkdir` of `.claude/skills` does. Follow REQ-008 ("a failure to set it up is logged and never fails the run"): log with the run ID and continue preparation. A run with skills would still meet any real problem at its first link, as today.
+- Use the exported profile constant for the segments; do not repeat `".claude", "skills"` in the bootstrapper.
+- Investigation notes carry no SR-004 entry; the design's evidence table and the solution revision record hold it (sufficient).
 
 Round 2 notes for implementation (non-blocking):
 - Stale row: the design's Architecture Investigation Evidence table still says "Mid-run additions reuse it unchanged with an 'is active' guard and push into the run-held list". Follow DS-003, the Ownership Map and the Examples (`closed` guard).
@@ -270,5 +289,5 @@ Round 2 notes for implementation (non-blocking):
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001 resolved by SR-003; MP-002 harmless / overlap Not Reachable)
-- Notes: all round-1 findings resolved in SR-003; requirements unchanged (SR-002); classification Large / High.
+- Material-Premise Gate: `Pass` (MP-001 resolved by SR-003; MP-002 harmless / overlap Not Reachable; MP-003 Reachable, addressed by SR-004)
+- Notes: round 3 accepts SR-004 (DI-001); requirements unchanged (SR-002, AC-011 kept); classification Large / High.

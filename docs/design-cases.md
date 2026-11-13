@@ -284,7 +284,7 @@ Principle 1.
 - **Why it mattered:** restoring after a reload was the requirement; the main way to make a run on the phone missed it.
 - **Notice it by:** an identity a design stores or sends outward (a route, a URL, a record) taken from a callback or a creation call without tracing where that value is minted and whether it is re-keyed later (draft, temporary, pending IDs). Look for an existing "promote" or "re-key" step and for code that already follows it.
 
-### Case 21: A Premise Checked On A Stand-In Or One Platform Version (autobyteus-435, CRR-003 CR-002, CR-003)
+### Case 21: A Premise Checked On A Stand-In Or One Platform Version (autobyteus-435, CRR-003 CR-002, CR-003; autobyteus-460, DI-001)
 
 Principle 1 (trace through the real dependency).
 
@@ -292,6 +292,7 @@ Principle 1 (trace through the real dependency).
 - **What the real dependency does:** the packaged Electron window does not apply CORS to its `file://` requests: it reads the 403 and its code (`type: basic`), so the opaque branch never ran and the page said "isn't an AutoByteus node". On Android 9–14 the decor still fits system windows, so the content frame started after the cutout although the window spanned the screen; Android 15 hid this by forcing edge-to-edge, and the insets owner's own comment said so.
 - **The fix:** the probe reads a readable Host-gate refusal and gives the exact cause (the opaque request stays for browser windows); full screen also turns the decor's fitting off on API < 35 and back on when it ends.
 - **Why it mattered:** both items failed in the product on the one runtime and the platform versions the design had not run.
+- **Again in autobyteus-460 (implementation DI-001):** the design said "the Claude CLI lists a skill folder linked into `.claude/skills` mid-session". The probe's workspace already had that folder, with a link, when the session started. Live, a run whose workspace had no `.claude/skills` at process start never listed the added skill: the CLI watches the folder only if it exists when it starts. Fix (SR-004): Claude preparation ensures the folder exists. Lesson: a probe's starting state is part of the premise; run it from each starting state the product has (here zero skills and some skills).
 - **Notice it by:** a premise measured in a stand-in for the real runtime (Chromium for Electron, a fake for a platform API, one OS version for a range), or a platform behaviour that changed at a version inside the supported range (here targetSdk 35 edge-to-edge). Run the premise in the real runtime, or mark it unproven and make the design hold either way.
 
 ### Case 22: A Guard That Reads "Active" Instead Of The Fact Ordered Before Release (autobyteus-460, ARCH-REV-001 AR-001)

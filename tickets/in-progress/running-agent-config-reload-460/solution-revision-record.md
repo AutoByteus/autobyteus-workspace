@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-460, 2026-11-13 dispatch) | N/A | N/A | Ready for Approval | BEH-001…008, REQ-001…007 | Per-runtime findings; option A recommended; DEC-001, DEC-004, DEC-005 sent to the user |
 | SR-002 | Mixed | User conversation 2026-11-13 (approval and direction) | N/A | Ready for Approval | Approved; design Ready | REQ-003, REQ-008 (new), AC-011, AC-012, DEC-001, 004, 005, 007 | Approved: message on all runtimes + setup on add; removal message only; design written; Large / High |
 | SR-003 | Design | ARCH-REV-001 (Fail, Design Impact) | AR-001, AR-002, AR-003, AR-004 | Design Ready (SR-002) | Design Ready (revised) | REQ-008, AC-004, AC-011, AC-012 | `RunWorkspaceSkills` single holder with `closed` + release order; per-name adds; Claude zero-skills case stated; added/removed in tracker terms |
+| SR-004 | Design | Implementation DI-001 (IR-001) | DI-001 | Design Ready (SR-003, ARCH-REV-002 Pass) | Design Ready (SR-004) | REQ-008, AC-011 | Claude preparation ensures `<workspace>/.claude/skills` exists; AC-011 kept |
 
 ## Revision Entries
 
@@ -85,3 +86,26 @@
 
 - 2026-11-13: architecture review ARCH-REV-002 `Pass` on SR-003 (informational; the reviewer handed off to `/software_engineering_team/implementation_engineer`). Recorded only; no forwarding.
 - Factual correction after the pass: the design's Architecture Investigation Evidence row and one Task Design Health line still said "is active" guard. Both now point to DS-003's `closed` guard, as the reviewer noted. No design change.
+
+### SR-004 — Claude watches its skills folder only if it exists at process start (DI-001)
+
+- Phase and classification: Design, `Design Impact` (wrong premise, measured)
+- Trigger: implementation engineer, DI-001 (`implementation-handoff.md`, IR-001), with live evidence `evidence/live/IMP-07…09` (Claude CLI 2.1.323)
+- Finding: the probe (SR-001) started with `.claude/skills` present. A Claude run whose workspace had no such folder at process start never lists a skill linked mid-run. An empty folder at start is enough.
+- Prior status: design Ready (SR-003, ARCH-REV-002 Pass); requirements Approved (SR-002)
+- Current status: design Ready (SR-004); requirements unchanged
+- Decision (Solution Designer, within the approved direction; option (a) of DI-001): Claude preparation (new and restore) ensures `<workspace>/.claude/skills` exists before the session starts, and never removes it.
+  - Reasoning: REQ-008 asks that the runtime gets the skill set up "as at run start", and AC-011 asks that Claude lists it.
+  - The folder is the one the materializer already creates (`workspace-skill-links.ts:104`) and leaves behind for every Claude run that has had a skill, so the only visible change is that it appears in workspaces that never had such a run.
+  - Option (b), narrowing AC-011, would weaken an approved outcome when a cheap, consistent fix exists.
+  - Not extended to Codex, Grok or DeepSeek: unmeasured (U-001), and the notice covers them.
+- Intended behavior changed: No (AC-011 kept). The user is informed in the Solution Designer's conversation.
+- Canonical sections changed: design-spec (Solution basis, evidence table, DS-003, Claude file mapping row, Risks); `docs/design-cases.md` Case 21 (this ticket added as a repeat)
+- Classification: unchanged, `Large` / `High`
+- Review impact: a small change in one Claude file, within the reviewed ownership (Claude bootstrapper). No new owner, boundary or contract. Sent for architecture re-review (round 3), per the recovery rule and the handoff rules for a revised Large / High package.
+- Next action: architecture review round 3; then the implementation engineer resumes IR-001
+
+#### SR-004 notes (no new round)
+
+- 2026-11-13: architecture review ARCH-REV-003 `Pass` on SR-004, no new findings (informational; the reviewer handed off to the implementation engineer, which resumes IR-001). Recorded only; no forwarding.
+- Design text completed after the pass, as the reviewer told the implementer: a failed `.claude/skills` mkdir is logged and never fails preparation (REQ-008). No design change.
