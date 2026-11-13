@@ -80,5 +80,5 @@ export const openTasks = () => ({ refusal: vi.fn(async (_run: RootExecutionIdent
 
 export const testViewSources = () => {
   const rows = followTestChildRows();
-  return { streams: rows.streams, rows: rows.rows, registrations: testRegistrations(), closedTasks: openTasks(), readStoredTree: async () => null };
+  return { streams: rows.streams, rows: rows.rows, registrations: testRegistrations(), closedTasks: openTasks(), restorability: { refusal: async () => null }, readStoredTree: async () => null };
 };

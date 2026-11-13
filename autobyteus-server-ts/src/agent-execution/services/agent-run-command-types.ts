@@ -37,6 +37,8 @@ export type AgentRunCommandErrorCode =
   | "TASK_AGENT_RESOURCE_CLOSED"
   /** CR-461-051 (autobyteus-469 DEC-010): a delegated run while Task data cannot be read fails closed. */
   | "TASK_AGENT_RESOURCES_UNAVAILABLE"
+  /** CR-461-070: a delegated run whose entry agent's saved conversation cannot continue (base's refusal). */
+  | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"
   | "UNKNOWN_ERROR";
 
 export type SendMessageCommandAckPayload = {

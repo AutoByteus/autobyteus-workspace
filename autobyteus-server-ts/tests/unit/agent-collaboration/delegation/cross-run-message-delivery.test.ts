@@ -48,18 +48,20 @@ const harness = async () => {
     },
   });
   const beforeReceive = { hook: async () => undefined as void };
+  // Whether a delegated run can be restored (CR-461-070): every run can unless a test says otherwise.
+  const restorability = { refusal: vi.fn(async (_run: RootExecutionIdentity): Promise<{ accepted: false; code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE"; message: string } | null> => null) };
   // Each run's own file: the research run's and the eng team run's delegation, as their files record it (it outlives the Task's deletion).
   const runFiles = { delegationOfAgent: vi.fn(async (agentRunId: string) => agentRunId === "research"
     ? { delegatedFrom: from(M, "manager"), address: "/research", definition: { kind: "agent" as const, definitionId: "research" }, entryAgentRunId: "research" }
     : ["designer", "coder"].includes(agentRunId)
       ? { delegatedFrom: from(M, "manager"), address: null, definition: { kind: "agent_team" as const, definitionId: "eng" }, entryAgentRunId: "designer" } : null) };
-  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles,
+  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles, restorability,
     receiverRoot: async (r) => { await beforeReceive.hook(); return receiverRoot(r); } });
   const send = (from: RootExecutionIdentity, sender: string, target: string) => delivery.route({ sender: agent(from, sender), senderDisplayName: sender,
     targetAgentRunId: target, content: "hello", messageType: "agent_message", referenceFiles: [] });
   const sendAs = (from: RootExecutionIdentity, sender: string, target: string, shownAs: string) => delivery.route({ sender: agent(from, sender),
     senderDisplayName: sender, targetAgentRunId: target, shownAs, content: "hello", messageType: "agent_message", referenceFiles: [] });
-  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles };
+  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles, restorability };
 };
 
 describe("CrossRunMessageDelivery (DS-2)", () => {
@@ -84,6 +86,19 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     const h = await harness();
     const result = await h.sendAs(E, "coder", "manager", "/manager");
     expect(result).toMatchObject({ accepted: true, agentRunId: "manager", message: "Delivered message to /manager." });
+  });
+
+  it("CR-461-070 (F-50): the delegator's message to a delegated run whose entry agent's saved conversation cannot be read is base's refusal, before anything is restored", async () => {
+    const h = await harness();
+    const unrestorable = { accepted: false as const, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" as const,
+      message: "The delegated Agent at '/research' cannot be restored: its saved conversation cannot be read (line 2 is not JSON). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup." };
+    h.restorability.refusal.mockResolvedValueOnce(unrestorable);
+    const restored = vi.fn();
+    h.beforeReceive.hook = async () => { restored(); };
+    await expect(h.send(M, "manager", "research")).resolves.toEqual(unrestorable);
+    expect(h.restorability.refusal).toHaveBeenCalledWith(R);
+    expect(restored).not.toHaveBeenCalled();
+    expect(h.log).toEqual([]);
   });
 
   it("R-7: runs of different Tasks are refused with today's text; nothing is written", async () => {
@@ -183,7 +198,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn();
-    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null },
+    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null },
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }) });
@@ -195,7 +210,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("SR-076: a refusal after the receiver's durable write is recorded on the sender's side too (TC-13), and answered as the receiver's refusal", async () => {
     const h = await harness();
     const commitSentToRun = vi.fn(async () => undefined);
-    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null },
+    const delivery = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOfAgent: async () => null }, restorability: { refusal: async () => null },
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE, recordedByReceiver: true }) }) });

@@ -220,4 +220,16 @@ describe("AgentRunCommandCoordinator", () => {
     expect(agentRunService.resolveCommandReadyAgentRun).not.toHaveBeenCalled();
     expect(published).toEqual([]);
   });
+
+  it("CR-461-070 (F-50): a delegated run that cannot be restored is refused with base's code and text in the ack, before anything is resolved", async () => {
+    const refusal = { accepted: false as const, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" as const,
+      message: "The delegated Agent at '/research' cannot be restored: its saved conversation cannot be read (line 2 is not JSON). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup." };
+    const standaloneRuns = { inputRefusal: vi.fn(async () => refusal), postUserMessage: vi.fn(async () => null) };
+    const { coordinator, published, agentRunService } = buildCoordinator({ standaloneRuns });
+    const result = await coordinator.postUserMessage(command("msg-unrestorable"));
+    expect(result.ack).toMatchObject({ state: "rejected", accepted: false, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE", message: refusal.message });
+    expect(standaloneRuns.postUserMessage).not.toHaveBeenCalled();
+    expect(agentRunService.resolveCommandReadyAgentRun).not.toHaveBeenCalled();
+    expect(published).toEqual([]);
+  });
 });

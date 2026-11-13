@@ -29,6 +29,8 @@ export interface SendMessageCommandAckPayload {
     | 'TASK_AGENT_RESOURCE_CLOSED'
     /** autobyteus-461 CR-461-051: a delegated run while Task data cannot be read fails closed. */
     | 'TASK_AGENT_RESOURCES_UNAVAILABLE'
+    /** autobyteus-461 CR-461-070: a delegated run whose entry agent's saved conversation cannot continue (base's refusal). */
+    | 'TASK_EXECUTION_CONTEXT_UNAVAILABLE'
     | 'UNKNOWN_ERROR';
   message?: string;
   /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */

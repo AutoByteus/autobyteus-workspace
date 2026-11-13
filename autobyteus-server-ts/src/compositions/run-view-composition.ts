@@ -1,4 +1,5 @@
 import type { ClosedTaskEntryFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
+import type { DelegatedRunRestorability } from "../agent-collaboration/execution/task/delegated-run-restorability.js";
 import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import type { RunViewRowSources } from "../services/agent-streaming/run-view-rows.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -18,6 +19,8 @@ export type RunViewSources = Readonly<{
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The closed-Task input fence (DS-15): a delegated Team run member's input is refused before the run is restored. */
   closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
+  /** Whether a stopped delegated run can be restored (CR-461-070): asked before a message restores it. */
+  restorability: Pick<DelegatedRunRestorability, "refusal">;
   readStoredTeamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   readStoredOrgTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null>;
 }>;
@@ -29,6 +32,7 @@ export const createRunViewSources = (input: Readonly<{
   rows: RunViewRowSources;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
+  restorability: Pick<DelegatedRunRestorability, "refusal">;
 }>): RunViewSources => {
   const layout = new AgentMemoryLayout(input.memoryDir);
   const teamTrees = new TeamRunExecutionTreeStore();
@@ -38,6 +42,7 @@ export const createRunViewSources = (input: Readonly<{
     rows: input.rows,
     registrations: input.registrations,
     closedTasks: input.closedTasks,
+    restorability: input.restorability,
     readStoredTeamTree: (teamRunId) => teamTrees.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),
     readStoredOrgTree: async (orgRunId) => {
       const tree = await orgTrees.read(layout.getOrgDirPath(orgRunId), orgRunId);

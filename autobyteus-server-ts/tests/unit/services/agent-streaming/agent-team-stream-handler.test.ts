@@ -73,13 +73,14 @@ const createHarness = (input: {
   };
   const readStoredTree = vi.fn(async () => tree);
   const closedTasks = openTasks();
+  const restorability = { refusal: vi.fn(async (_run: unknown): Promise<{ accepted: false; code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE"; message: string } | null> => null) };
   const connection = { send: vi.fn(), close: vi.fn() };
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    { streams: feed.streams, rows: feed.rows, registrations, closedTasks, readStoredTree },
+    { streams: feed.streams, rows: feed.rows, registrations, closedTasks, restorability, readStoredTree },
   );
-  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree, stream, closedTasks,
+  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree, stream, closedTasks, restorability,
     stop: () => { managed = false; registrations.unregister(team); },
     emit: (event: unknown) => eventListener?.(event) };
 };
@@ -461,6 +462,38 @@ describe("AgentTeamStreamHandler current root stream", () => {
       harness.closedTasks.refusal.mockResolvedValue(null);
       await harness.handler.handleMessage(sessionId!, send("4"));
       expect(harness.teamRunService.resolveManagedTeamRun).toHaveBeenCalledOnce();
+      expect(harness.executeAgentCommand).toHaveBeenCalledWith("nested-task-agent-run-001", expect.objectContaining({ kind: "post_message" }));
+    });
+  });
+
+  describe("CR-461-070 (F-50): the user's message to a stopped delegated team run whose coordinator's saved conversation cannot be read", () => {
+    const unrestorable = { accepted: false as const, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" as const,
+      message: "The delegated Team at '/software_engineering_team' cannot be restored: the saved conversation of its coordinator '/lead' cannot be read (line 3 is not JSON). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup." };
+    const send = (id: string) => JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "Are you there?", context_file_paths: [],
+      image_urls: [], agent_run_id: "nested-task-agent-run-001", message_id: `m-${id}`, dedupe_key: `d-${id}` } });
+
+    it("is refused with base's text before the run is restored, sent as TEAM_SEND_MESSAGE_REJECTED", async () => {
+      const harness = createHarness({ stopped: true });
+      harness.restorability.refusal.mockResolvedValue(unrestorable);
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      await harness.handler.handleMessage(sessionId!, send("1"));
+      const error = sent(harness.connection).at(-1);
+      expect(error).toMatchObject({ type: "ERROR", payload: { agent_run_id: "nested-task-agent-run-001", message: unrestorable.message } });
+      expect(JSON.stringify(error)).toContain("TEAM_SEND_MESSAGE_REJECTED");
+      expect(JSON.stringify(error)).toContain("TASK_EXECUTION_CONTEXT_UNAVAILABLE");
+      expect(harness.restorability.refusal).toHaveBeenCalledWith(createTeamRootExecutionIdentity("team-run-root"));
+      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+    });
+
+    it("a live run is not asked (nothing is restored)", async () => {
+      const harness = createHarness();
+      harness.restorability.refusal.mockResolvedValue(unrestorable);
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      await harness.handler.handleMessage(sessionId!, send("2"));
+      expect(harness.restorability.refusal).not.toHaveBeenCalled();
       expect(harness.executeAgentCommand).toHaveBeenCalledWith("nested-task-agent-run-001", expect.objectContaining({ kind: "post_message" }));
     });
   });

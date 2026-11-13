@@ -220,8 +220,11 @@ export class AgentTeamStreamHandler {
     // A peer row's message goes to its handle (SR-066): the team stays as it is.
     const peer = this.sources.rows.peerRunOf(agentRunId);
     if (peer) return mentions.length ? PEER_MENTIONS_REFUSAL : executePeerCommand(peer, agentRunId, { kind: "post_message", message: userMessage(payload, payload.content) });
-    // DS-15: refused before its mentions restore the run.
-    const refusal = await this.sources.closedTasks.refusal(createTeamRootExecutionIdentity(view.teamRunId));
+    // DS-15: refused before its mentions restore the run; a stopped delegated run that cannot be restored is refused with
+    // base's text (CR-461-070), sent as TEAM_SEND_MESSAGE_REJECTED.
+    const identity = createTeamRootExecutionIdentity(view.teamRunId);
+    const refusal = await this.sources.closedTasks.refusal(identity)
+      ?? (this.teamRunService.getActiveTeamRun(view.teamRunId) ? null : await this.sources.restorability.refusal(identity));
     if (refusal) return refusal;
     let content = payload.content;
     if (mentions.length) {

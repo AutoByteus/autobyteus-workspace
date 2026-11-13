@@ -5,6 +5,10 @@ import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunInputOptions } from "../input/agent-run-input-contract.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ClosedTaskRefusal } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import type { DelegatedRunRestoreRefusal } from "../../agent-collaboration/execution/task/delegated-run-restorability.js";
+
+/** Input refused where it enters: its Task is closed (DS-15), or the delegated run cannot be restored (CR-461-070). */
+export type RunInputRefusal = ClosedTaskRefusal | DelegatedRunRestoreRefusal;
 import type { StandaloneAgentRunActivationResult } from "./standalone-agent-run-lifecycle-service.js";
 
 /**
@@ -54,15 +58,15 @@ export type StandaloneRunPostResult =
   | Readonly<{ kind: "posted"; run: AgentRun; post: AgentOperationResult }>
   | Readonly<{ kind: "admission_rejected"; run: AgentRun; admission: Extract<RootCollaboratorAdmissionResult, { admitted: false }> }>
   | Readonly<{ kind: "admission_failed"; run: AgentRun; message: string }>
-  /** Its Task is closed (DS-15): nothing was restored, admitted or posted. */
-  | Readonly<{ kind: "refused"; refusal: ClosedTaskRefusal }>;
+  /** Its Task is closed (DS-15), or the delegated run cannot be restored (CR-461-070): nothing was restored, admitted or posted. */
+  | Readonly<{ kind: "refused"; refusal: RunInputRefusal }>;
 
 export type StandaloneRunCommandPort = Readonly<{
   /**
-   * The closed-Task fence (DS-15, SR-070): the refusal of input to the run, checked before anything is resolved, restored
-   * or shown; `null` when it takes input (or is not an eligible run).
+   * The refusal of input to the run, checked before anything is resolved, restored or shown: the closed-Task fence (DS-15,
+   * SR-070), then whether a delegated run can be restored (CR-461-070); `null` when it takes input (or is not eligible).
    */
-  inputRefusal(runId: string): Promise<ClosedTaskRefusal | null>;
+  inputRefusal(runId: string): Promise<RunInputRefusal | null>;
   /** In the root's gate: the fence again, host ready, `onActiveRunReady`, mention admission, then the post. */
   postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null>;
 }>;

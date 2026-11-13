@@ -1,4 +1,5 @@
-import { ClosedTaskEntryFence, ClosedTaskFence, type ClosedTaskRefusal } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import { ClosedTaskEntryFence, ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
+import { agentRunOwnDelegations, createDelegatedRunRestorability, type DelegatedRunRestorability } from "../../agent-collaboration/execution/task/delegated-run-restorability.js";
 import { RunOwnAgentsReader } from "../../run-history/store/run-own-agents-reader.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import {
@@ -8,6 +9,7 @@ import {
 import { isCollaborationEligibleStandaloneRun } from "../../agent-execution/services/standalone-agent-run-eligibility.js";
 import type { StandaloneAgentRunActivationResult } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type {
+  RunInputRefusal,
   StandaloneRootStopResult,
   StandaloneRunCommandPort,
   StandaloneRunLifecyclePort,
@@ -88,6 +90,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   /** autobyteus-278 (DS-006): who learns that a run ended by Stop, terminate or history delete/archive (not idle shutdown). */
   private readonly endListeners = new Map<string, Set<() => void>>();
   private readonly closedTasks: ClosedTaskEntryFence;
+  private readonly restorability: DelegatedRunRestorability;
 
   constructor(private readonly options: Readonly<{
     memoryDir: string;
@@ -105,6 +108,9 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     this.roots = new StandaloneRootBuilder({ ...options.rootDependencies, packageStore: this.store });
     this.closedTasks = new ClosedTaskEntryFence({ fence: new ClosedTaskFence({ tree: options.rootDependencies.delegationIndex, tasks: options.rootDependencies.taskRecords }),
       tasks: options.rootDependencies.taskRecords, files: new RunOwnAgentsReader(options.memoryDir) });
+    // A delegated agent run's restore check (CR-461-070): its host's liveness is this manager's.
+    this.restorability = createDelegatedRunRestorability({ memoryDir: options.memoryDir, tree: options.rootDependencies.delegationIndex,
+      ownDelegations: agentRunOwnDelegations(new RunOwnAgentsReader(options.memoryDir)), liveAgents: () => this.pairedAgents });
     this.hostContexts = new StandaloneHostMemberContextBuilder({
       definitions: options.definitions,
       tree: options.rootDependencies.delegationIndex,
@@ -166,11 +172,13 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /**
-   * `StandaloneRunCommandPort`: the closed-Task fence (DS-15, SR-070), before the run's root is resolved or restored, so a
-   * refused input registers nothing, changes no status and binds no stream. The root's gate head checks it again.
+   * `StandaloneRunCommandPort`: the closed-Task fence (DS-15, SR-070), then whether a delegated run can be restored
+   * (CR-461-070), before the run's root is resolved or restored, so a refused input registers nothing, changes no status
+   * and binds no stream. The root's gate head checks the fence again.
    */
-  inputRefusal(runId: string): Promise<ClosedTaskRefusal | null> {
-    return this.closedTasks.refusal(createAgentRootExecutionIdentity(runId.trim()));
+  async inputRefusal(runId: string): Promise<RunInputRefusal | null> {
+    const run = createAgentRootExecutionIdentity(runId.trim());
+    return await this.closedTasks.refusal(run) ?? await this.restorability.refusal(run);
   }
 
   /** `StandaloneRunCommandPort`: refused when its Task is closed; else the root executes the command in its gate. */

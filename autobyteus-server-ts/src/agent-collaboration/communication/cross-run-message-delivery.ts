@@ -9,6 +9,7 @@ import {
   type RootExecutionIdentity,
 } from "../execution/domain/root-execution-identity.js";
 import { ROOT_NOT_ACTIVE_MESSAGE, TaskDelegationError } from "../execution/task/task-delegation-command.js";
+import type { DelegatedRunRestorability } from "../execution/task/delegated-run-restorability.js";
 import {
   ASSIGNER_ONLY_REACTIVATION_MESSAGE,
   runReferenceOf,
@@ -44,6 +45,9 @@ export const OTHER_TASK_REFUSAL = "You can't message this agent: it works on a d
 /** Base's refusal of the assigner's message to a run whose Task was deleted (`task-assignment-eligibility.ts`, REQ-009). */
 export const DELETED_TASK_REFUSAL = "The Task was deleted, so its task agent cannot continue.";
 const refusal = (code: string, message: string): AgentOperationResult => ({ accepted: false, code, message });
+/** A refusal after this call reopened the receiver's assignment: its Task is open again, the message was not delivered. */
+const notDeliveredAfterReopen = (refused: AgentOperationResult, targetAgentRunId: string): AgentOperationResult => ({ ...refused,
+  message: `${refused.message ?? "The message was not delivered."} ${targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` });
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
 const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean => rootExecutionIdentityKey(a) === rootExecutionIdentityKey(b);
 
@@ -75,6 +79,8 @@ export class CrossRunMessageDelivery {
     senderAddress(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; receiverRun: RootExecutionIdentity; receiverAgentRunId: string }>): Promise<string | null>;
     /** The own record of the delegation of the run an agent is in (its file's `delegatedFrom`): an agent run's, or its team run's. */
     runFiles: Pick<RunOwnAgentsReader, "delegationOfAgent">;
+    /** Whether a delegated run can be restored (CR-461-070): asked before the receiver's root is resolved or restored. */
+    restorability: Pick<DelegatedRunRestorability, "refusal">;
   }>) {}
 
   async route(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
@@ -99,6 +105,9 @@ export class CrossRunMessageDelivery {
     const prepared = sender.prepareSendToRun({ senderIdentity: input.sender, receiverAgentRunId: input.targetAgentRunId, content: input.content,
       messageType: input.messageType, referenceFiles: input.referenceFiles });
     if (!prepared.ok) return prepared.refusal;
+    // Base checked a released copy before restoring it (CR-461-070): its entry agent's saved conversation must continue.
+    const unrestorable = await this.dependencies.restorability.refusal(receiverRun);
+    if (unrestorable) return reactivated ? notDeliveredAfterReopen(unrestorable, input.targetAgentRunId) : unrestorable;
     let receiver: CrossRunReceiverRoot | null;
     try { receiver = await this.dependencies.receiverRoot(receiverRun); }
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
@@ -113,7 +122,7 @@ export class CrossRunMessageDelivery {
         await sender.commitSentToRun(prepared.message);
         refused = { accepted: false, code: accepted.code, message: accepted.message };
       }
-      return reactivated ? { ...refused, message: `${refused.message ?? "The message was not delivered."} ${input.targetAgentRunId} continues with its conversation (its Task is open again) but did not receive this message; send it again.` } : refused;
+      return reactivated ? notDeliveredAfterReopen(refused, input.targetAgentRunId) : refused;
     }
     await sender.commitSentToRun(prepared.message);
     // Today's text (REQ-009, contract §2): by address it names the address; by run ID, "Message delivered." (CR-461-017).

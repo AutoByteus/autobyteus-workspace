@@ -4,6 +4,7 @@ import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { collaboratorPortOf } from "../run-history/services/run-collaborator-port.js";
 import { createRunConversationAvailability } from "../agent-collaboration/execution/task/run-conversation-availability.js";
+import { createDelegatedRunRestorability } from "../agent-collaboration/execution/task/delegated-run-restorability.js";
 import { getAgentConversationActivityInspector } from "../agent-memory/services/agent-conversation-activity-inspector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../run-history/services/team-run-execution-tree-location-service.js";
 import { ClosedTaskEntryFence, ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
@@ -175,8 +176,18 @@ export const composeCollaboration = async (input: Readonly<{
     // Every cross-run answer comes from the run's collaboration tree (SR-060).
     // Each run's own files: its parts and its own record of its delegation (SR-072 F-24, CR-461-058).
     const runFiles = new RunOwnAgentsReader(memoryDir);
+    // A run's collaborator port as a viewer sees it, live or from its stored files (CR-461-041, SR-072 F-24).
+    const portOf = (run: RootExecutionIdentity, viewer: string) => collaboratorPortOf({ memoryDir,
+      activeAgentRoot: (runId) => runs.standaloneRootManager.getActive(runId),
+      activeTeamRun: (teamRunId) => runs.teamRunService.getActiveTeamRun(teamRunId),
+      activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer);
+    const ownDelegations = new RunOwnDelegations({ files: runFiles, admission: () => getCollaboratorAdmission(), portOf });
+    const liveAgents = (kind: "agent" | "agent_team") => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents;
+    // Whether input may restore a delegated run (CR-461-070): the delegator's message and a team run's own stream.
+    const restorability = createDelegatedRunRestorability({ memoryDir, tree, ownDelegations, liveAgents });
     const crossRun = new CrossRunMessageDelivery({
       runFiles,
+      restorability,
       senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
@@ -187,11 +198,6 @@ export const composeCollaboration = async (input: Readonly<{
       },
       receiverRoot: async (run) => (await input.rootResolver.resolveOrRestore(run))?.root ?? null,
     });
-    // A run's collaborator port as a viewer sees it, live or from its stored files (CR-461-041, SR-072 F-24).
-    const portOf = (run: RootExecutionIdentity, viewer: string) => collaboratorPortOf({ memoryDir,
-      activeAgentRoot: (runId) => runs.standaloneRootManager.getActive(runId),
-      activeTeamRun: (teamRunId) => runs.teamRunService.getActiveTeamRun(teamRunId),
-      activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer);
     const delegation = new TaskDelegation({
       deliverToRun: (message) => crossRun.route(message),
       tasks: () => tasks,
@@ -206,10 +212,9 @@ export const composeCollaboration = async (input: Readonly<{
       recordCollaborating: (agentRunId, address) => runs.agentRunService.recordCollaborating(agentRunId, address),
       reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender),
       conversationOf: createRunConversationAvailability({ memoryDir, inspector: getAgentConversationActivityInspector(),
-        liveAgents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents,
-        teamMembers: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
+        liveAgents, teamMembers: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
       delegatorCatalog: new DelegatorCatalog({ tree, admission: () => getCollaboratorAdmission(), portOf }),
-      ownDelegations: new RunOwnDelegations({ files: runFiles, admission: () => getCollaboratorAdmission(), portOf }),
+      ownDelegations,
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);
@@ -218,8 +223,7 @@ export const composeCollaboration = async (input: Readonly<{
 
     // 7. The views' owners (SR-061 … SR-063): the rows' statuses followed into each run's view stream, base's row events
     // from the tree, the rows' records.
-    const followers = new LocalChildFollowers({ tree,
-      agents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents }, taskSide.viewStreams);
+    const followers = new LocalChildFollowers({ tree, agents: liveAgents }, taskSide.viewStreams);
     const projection = createChildRowProjection({ memoryDir, tree, channel: input.remoteChannel });
     // A closed row is in its view's closed set while its run still runs (its root is live).
     const feed = new ChildRowsFeed({ streams: taskSide.viewStreams, tree, isRunning: (run) => input.activeRoots.resolve(run) !== null });
@@ -243,7 +247,7 @@ export const composeCollaboration = async (input: Readonly<{
     releases.push(setProcessWorkspaceRunHistoryService(new WorkspaceRunHistoryService({ tree,
       agentRunHistoryService: agentRunHistory, teamRunHistoryService: runs.teamRunHistoryService })));
     const views = createRunViewSources({ memoryDir, streams: taskSide.viewStreams, rows: { feed, projection, followers, peers, peerRunOf }, registrations: input.activeRoots,
-      closedTasks: taskSide.closedTasks });
+      closedTasks: taskSide.closedTasks, restorability });
     return Object.freeze({
       tasks, views, runViewChildren, delegatedRunAgents: new DelegatedRunAgentsReader(tree),
       release: () => { for (const release of releases.splice(0).reverse()) release(); },

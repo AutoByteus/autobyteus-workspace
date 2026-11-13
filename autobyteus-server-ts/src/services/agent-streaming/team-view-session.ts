@@ -1,3 +1,4 @@
+import type { DelegatedRunRestorability } from "../../agent-collaboration/execution/task/delegated-run-restorability.js";
 import type { ClosedTaskEntryFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from "@autobyteus/team-stream-contracts";
 import type { RootSnapshotConnection, RunViewStreams, SequencedRootEvent } from "../../agent-collaboration/delegation/run-view-stream.js";
@@ -25,6 +26,8 @@ export type TeamViewSources = Readonly<{
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
   /** The closed-Task input fence (DS-15, SR-070): a member's input is refused before the run is restored. */
   closedTasks: Pick<ClosedTaskEntryFence, "refusal">;
+  /** Whether a stopped delegated team run can be restored (CR-461-070): asked before a message restores it. */
+  restorability: Pick<DelegatedRunRestorability, "refusal">;
   /** The managed, active team run; null while it is stopped (never restores). */
   activeTeamRun(teamRunId: string): RootTeamRun | null;
   /** The stopped run's own stored tree; null when there is no such run. */

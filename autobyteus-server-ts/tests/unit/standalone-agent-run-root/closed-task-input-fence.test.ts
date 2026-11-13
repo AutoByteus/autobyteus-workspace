@@ -6,6 +6,9 @@ import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-re
 import { readerOfAgentRunIds } from "../../helpers/run-agents-reader.js";
 import { HOST, buildManager, cleanupDirectories, metadata } from "./helpers/standalone-root-harness.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 
 /**
  * autobyteus-461 DS-15 (SR-070, G-4): the user's message to a delegated agent run whose Task is closed. It is refused with
@@ -28,11 +31,15 @@ const delegatedHost = async () => {
     delegatedFrom: { delegatingRun: createAgentRootExecutionIdentity("manager"), delegatorAgentRunId: "manager" }, execution: { agentRunId: HOST } });
   await tasks.markStarted({ agentRunId: HOST });
   const f = await buildManager(tasks, tree);
+  // Its saved conversation, as its work packet left it (CR-461-070 restores only a run whose conversation can continue).
+  const tracesPath = new RunMemoryFileStore(path.join(f.memoryDir, "agents", HOST)).getRawTracesPath();
+  await fs.mkdir(path.dirname(tracesPath), { recursive: true });
+  await fs.writeFile(tracesPath, `${JSON.stringify({ trace_type: "user", content: "Your Task: research it.", turn_id: "t1", seq: 1, ts: 1 })}\n`);
   const registrations: boolean[] = [];
   f.directory.onRegistrationChanged(createAgentRootExecutionIdentity(HOST), (registered) => registrations.push(registered));
   const onActiveRunReady = vi.fn();
   const post = () => f.manager.postUserMessage({ runId: HOST, message: new AgentInputUserMessage("Are you there?"), postOptions: {}, onActiveRunReady });
-  return { ...f, tasks, registrations, onActiveRunReady, post };
+  return { ...f, tasks, registrations, onActiveRunReady, post, tracesPath };
 };
 
 describe("DS-15: the user's message to a closed delegated agent run", () => {
@@ -65,6 +72,24 @@ describe("DS-15: the user's message to a closed delegated agent run", () => {
     await expect(f.post()).resolves.toMatchObject({ kind: "posted", post: { accepted: true } });
     expect(f.onActiveRunReady).toHaveBeenCalledOnce();
     expect(f.host.run.postUserMessage).toHaveBeenCalledOnce();
+  });
+
+  it("CR-461-070 (F-50): a stopped delegated run whose saved conversation cannot be read is refused with base's text before its root is resolved or restored", async () => {
+    const f = await delegatedHost();
+    await fs.writeFile(f.tracesPath, `${JSON.stringify({ trace_type: "user", content: "Your Task.", turn_id: "t1", seq: 1, ts: 1 })}\n{not json\n${JSON.stringify({ trace_type: "assistant", content: "On it.", turn_id: "t1", seq: 2, ts: 2 })}\n`);
+    const refusal = await f.manager.inputRefusal(HOST);
+    expect(refusal).toMatchObject({ accepted: false, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" });
+    expect(refusal!.message).toMatch(/^The delegated Agent at '\/research_assistant' cannot be restored: its saved conversation cannot be read \(.+\)\. Its files were left unchanged\. Start a new delegation for this work, or restore its saved conversation from a backup\.$/);
+    await expect(f.post()).resolves.toEqual({ kind: "refused", refusal });
+    expect(f.registrations).toEqual([]);
+    expect(f.manager.hasRoot(HOST)).toBe(false);
+    expect(f.restores).not.toHaveBeenCalled();
+    expect(f.host.run.postUserMessage).not.toHaveBeenCalled();
+  });
+
+  it("CR-461-070: a run the user started keeps its own text (it is not asked)", async () => {
+    const f = await buildManager();
+    await expect(f.manager.inputRefusal(HOST)).resolves.toBeNull();
   });
 
   it("a run whose Task was deleted takes the message", async () => {
