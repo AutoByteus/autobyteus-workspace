@@ -362,6 +362,7 @@ At base, a delegator's Team tab showed its root's log composed with the own logs
     - a refusal marker would add a new record kind to the log and to every reader.
 
     Neither is needed to match base.
+  - **The sender records it too** (the Implementation Engineer's follow-up). On this result, a refusal after the receiver's durable write, the sender's root commits the message to its own log, as on an accepted delivery (`commitSentToRun`). So a message in a receiver's log is always in its sender's log (TC-13), and one rule (SR-074) gives the same answer live and after a reload. When the sender is X's own agent, X's own log shows it on reload, as base's one log did. When neither side is in X's tree at that moment, it is shown neither live nor on reload.
   - SR-072's "accepted difference" is withdrawn. `teammate-delivery-task-closure-race` (TDR-001) expects the refusal answered and the record shown.
 - **Tests:**
   - a two-hop message, a worker to its helper, is in the Manager's Team tab: in the snapshot, live, and after a reload;
