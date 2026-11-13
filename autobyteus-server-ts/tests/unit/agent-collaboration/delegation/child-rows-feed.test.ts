@@ -105,7 +105,7 @@ describe("ChildRowsFeed", () => {
     await tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/helper", delegatedFrom: { delegatingRun: { rootSubjectKind: "agent", rootRunId: "worker" }, delegatorAgentRunId: "worker" }, execution: { agentRunId: "helper" } });
     const root = { hostKind: "root", hostRunId: "squad" };
     expect(feed.rowsOf(TEAM).open.map((placed) => [placed.row.run, placed.host])).toEqual([[{ agentRunId: "worker" }, root], [{ agentRunId: "helper" }, root]]);
-    expect(seen.map(({ event }) => [event.kind, "placed" in event && !Array.isArray(event.placed) ? event.placed.row.run : null])).toEqual([
+    expect(seen.map(({ event }) => [event.kind, event.kind === "task_execution_started" ? event.placed.row.run : null])).toEqual([
       ["task_execution_started", { agentRunId: "worker" }], ["task_execution_started", { agentRunId: "helper" }]]);
   });
 });

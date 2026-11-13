@@ -48,6 +48,8 @@ export class GlobalAgentRunMessageRouter {
     activeRootDirectory?: ActiveCollaborationRootDirectory;
     /** Messages between two runs of this node (DS-2); created by the composition root. */
     crossRun: Pick<CrossRunMessageDelivery, "route">;
+    /** A team run's coordinator's run ID, whether the team runs or not (R-12, SR-071); `null` for an ID of no team run. */
+    teamCoordinatorOf(teamRunId: string): Promise<string | null>;
   }) {}
 
   async deliver(input: GlobalAgentRunMessageDeliveryInput): Promise<AgentOperationResult> {
@@ -86,8 +88,9 @@ export class GlobalAgentRunMessageRouter {
       if (routed) return routed;
     }
 
-    // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID.
-    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId);
+    // send_message_to talks with agents only: a task agent team's ID is refused with its coordinator's ID, whether the
+    // team runs or not (R-12, SR-071).
+    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId) ?? await this.deps.teamCoordinatorOf(targetAgentRunId);
     if (coordinator) {
       const result = {
         accepted: false,

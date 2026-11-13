@@ -58,7 +58,7 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
-    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf" | "assignersOf">;
+    tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf">;
     tasks(): Pick<TaskExecutionResourcePort, "isOpen" | "reopenAssignment">;
     /** The sender's root (it is running: its agent is sending). */
     senderRoot(run: RootExecutionIdentity): CrossRunSenderRoot | null;
@@ -107,7 +107,7 @@ export class CrossRunMessageDelivery {
   }
 
   /** Step 2 (`model.py` `_admit`); `true` when this call reopened the receiver's assignment. Refusals throw. */
-  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf" | "assignersOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
+  private async admit(tree: Pick<DelegationIndex, "canMessage" | "tasksOf">, senderRun: RootExecutionIdentity, receiverRun: RootExecutionIdentity,
     senderAgentRunId: string): Promise<boolean> {
     if (tree.canMessage(senderRun, receiverRun)) return false;
     const receiverReference = runReferenceOf(receiverRun);
@@ -118,12 +118,11 @@ export class CrossRunMessageDelivery {
       const { reopened } = await this.dependencies.tasks().reopenAssignment({ execution: receiverReference, requestedBy: senderAgentRunId });
       return reopened;
     }
-    const senderReference = runReferenceOf(senderRun);
-    const senderTasks = new Set(senderReference ? tree.tasksOf(senderReference).map((entry) => entry.taskId) : []);
-    // Related by a Task: a Task both have entries in, or a Task of the receiver that the sender's run assigned.
-    const related = receiverEntries.some((entry) => senderTasks.has(entry.taskId)
-      || tree.assignersOf(entry.taskId).some((assigner) => sameRun(assigner, senderRun)));
-    if (related) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
+    // R-8 before R-7, as base answered the closed target first (SR-071): a receiver whose Tasks are all closed is refused
+    // as closed, whoever sends; only then are runs of different open Tasks refused.
+    if (receiverEntries.length && receiverEntries.every((entry) => !entry.open)) {
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
+    }
     throw new TaskDelegationError("TASK_AGENT_RESOURCE_CONFLICT", OTHER_TASK_REFUSAL);
   }
 

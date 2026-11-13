@@ -87,6 +87,13 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     expect(h.log).toEqual([]);
   });
 
+  it("S20 (SR-071, R-8 before R-7): a run whose Tasks are all closed is refused as closed even by a run of another Task, as base answered", async () => {
+    const h = await harness();
+    h.tasks.close("T1");
+    await expect(h.send(R, "research", "designer")).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: ASSIGNER_ONLY_REACTIVATION_MESSAGE });
+    expect(h.log).toEqual([]);
+  });
+
   it("R-8: a run whose Task is closed is refused with the closed text; R-6: its assigner continues it after a reopen, a sub-work run stays closed", async () => {
     const h = await harness();
     h.tasks.close("T1");

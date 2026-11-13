@@ -273,6 +273,24 @@ describe("TaskDelegation.toNewRun", () => {
       expect(h.tree.openTaskIdsOf({ teamRunId: E.rootRunId })).toEqual(["T1", "T2"]);
     });
 
+    it("SR-071: a member of a team run it assigned gets base's text (not one of your task agents); its coordinator names the team", async () => {
+      const tasks = new InMemoryTaskExecutionResources();
+      const tree = new DelegationIndex(() => tasks, readerOfAgents(async (run) => run.rootRunId === E.rootRunId
+        ? [{ agentRunId: "solution_designer_65a9", address: "/solution_designer", agentDefinitionId: null }, { agentRunId: "reviewer_cd34", address: "/reviewer", agentDefinitionId: null }] : null));
+      tree.build(); tasks.setEntriesListener(tree);
+      tasks.addTask("T1", "Build it", "abc-1"); tasks.addTask("T2", "Polish it", "abc-2");
+      await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
+        delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
+      const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun: vi.fn(),
+        channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, delegatorCatalog: { placementAt: async () => null },
+        conversationOf: async () => ({ entryAddress: "/solution_designer", activity: { kind: "present" as const } }) });
+      const give = (agentRunId: string) => delegation.toExistingRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: `/${M.rootRunId}` as never, agentRunId: M.rootRunId }),
+        senderRun: M, assign: { copy: { agentRunId } as never, taskId: "abc-2" } });
+      await expect(give("reviewer_cd34")).resolves.toEqual({ delegated: false,
+        message: "reviewer_cd34 is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address." });
+      await expect(give("solution_designer_65a9")).resolves.toMatchObject({ delegated: false, message: expect.stringContaining(`is the coordinator of task agent team ${E.rootRunId}`) });
+    });
+
     it("refusals keep today's texts: another agent than its last assigner, a sender that works on a Task, a run no Task names", async () => {
       const h = await followUp();
       await expect(h.give(M, "someone_else", { teamRunId: E.rootRunId })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("Only the agent that gave this task agent") });

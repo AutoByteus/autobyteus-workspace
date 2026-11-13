@@ -284,8 +284,8 @@ export class TaskDelegation {
   }
 
   /**
-   * An ID of the other kind names the field to use, and a team run's coordinator or member names the team's run ID
-   * (today's refusals, REQ-009); `null` when it is neither.
+   * An ID of the other kind names the field to use, and a team run's coordinator names the team's run ID (base's
+   * refusals, REQ-009); `null` otherwise, a team's member included, which gets base's "not one of your task agents" (SR-071).
    */
   private async wrongRunId(execution: TaskExecutionReference): Promise<TaskDelegationError | null> {
     const tree = this.dependencies.tree();
@@ -302,7 +302,7 @@ export class TaskDelegation {
     if (!entries.length) return null;
     return entries.some((entry) => entry.entryAgentRunId === id)
       ? refuse(`${id} is the coordinator of task agent team ${run.rootRunId}; use target_team_run_id "${run.rootRunId}".`)
-      : refuse(`${id} is a member of task agent team ${run.rootRunId}; to give that team a Task, use target_team_run_id "${run.rootRunId}".`);
+      : null;
   }
 
   /**
