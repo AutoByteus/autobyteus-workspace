@@ -93,12 +93,8 @@ export const createRootMessageAppend = (input: Readonly<{
     message: input.message,
     prepare: (): RootMessageAppendPreparation => {
       if (state !== "sealed") throw new Error(`Root message append '${input.message.messageId}' is not sealed.`);
-      const current = input.getMessages();
-      if (!input.isOpen() || current.some((row) => row.messageId === input.message.messageId)) {
-        state = "cancelled";
-        dropSlot();
-        return Object.freeze({ kind: "conflict" as const });
-      }
+      // The Task scope first (CR-461-060, 469 DEC-005): a Task that closed while this message waited for the log is
+      // answered as the closure, even when that closure has already closed the root's admission.
       if (input.receiver) {
         try {
           input.receiver.checkTaskScope();
@@ -110,6 +106,12 @@ export const createRootMessageAppend = (input: Readonly<{
           dropSlot();
           return Object.freeze({ kind: "refused" as const });
         }
+      }
+      const current = input.getMessages();
+      if (!input.isOpen() || current.some((row) => row.messageId === input.message.messageId)) {
+        state = "cancelled";
+        dropSlot();
+        return Object.freeze({ kind: "conflict" as const });
       }
       const logOwners = input.logOwnersOf(input.message);
       next = Object.freeze([...current, input.message]);

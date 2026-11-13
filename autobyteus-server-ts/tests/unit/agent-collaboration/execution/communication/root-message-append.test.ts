@@ -83,6 +83,15 @@ describe("RootMessageAppend", () => {
     expect(s.order).toEqual(["cancel"]);
   });
 
+  it("CR-461-060 (469 DEC-005): a Task that closed while the message waited for the log is answered as the closure, though the closure also closed the root's admission", () => {
+    const s = subject({ open: false });
+    s.scope.error = new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
+    expect(s.append.prepare()).toEqual({ kind: "refused" });
+    expect(s.closure()).toEqual({ kind: "task_scope", refusal: { accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: "Your Task is DONE or CANCELLED, so you can't start new work." } });
+    expect(s.order).toEqual(["cancel"]);
+    expect(s.setMessages).not.toHaveBeenCalled();
+  });
+
   it("RR-003: a genuine scope error is rethrown with nothing changed, so abandon drops the slot", () => {
     const s = subject();
     s.scope.error = new Error("storage is gone");
