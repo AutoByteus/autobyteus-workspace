@@ -5,6 +5,8 @@ import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborat
 import type { RemoteAgentLaunch, RemoteRunChannel } from "../remote/remote-run-channel.js";
 import { REMOTE_REFUSAL, REMOTE_ROOT_REFUSAL_TEXT } from "../remote/remote-refusal-codes.js";
 import type { DelegationIndex } from "../../delegation/delegation-index.js";
+import { ownTeamDelegationRefusedMessage, selfDelegationRefusedMessage } from "../../collaborators/collaborator-errors.js";
+import { CollaborationContractError } from "../../domain/collaboration-contract-error.js";
 import { DelegatedRunStartError, type DelegatedRunStarter } from "../delegation/delegated-run-starter.js";
 import { sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import { findRoutingDecisionRecorder } from "../../../model-routing/domain/routing-decision-recorder-binding.js";
@@ -61,6 +63,17 @@ type Join = Readonly<{ role: "assigned"; taskId: string } | { role: "assigned"; 
 type NewRunWork = Readonly<{ description: string; comments: readonly string[]; referenceFiles: readonly string[]; task?: DelegatedProjectTask; join: Join; delegation: DelegationWork }>;
 
 const message = (error: unknown): string => error instanceof Error ? error.message : String(error);
+
+/**
+ * CM-1 for a delegated run (CR-461-050): the address it was delegated to (its Task entry's `recipientAddress`), or one
+ * inside it, is itself, as base's hosted copy at that address was; refused before any placement. `null` otherwise.
+ */
+const ownNameRefusal = (senderRun: RootExecutionIdentity, ownName: string | undefined, address: string): CollaborationContractError | null => {
+  const target = address.trim();
+  if (!ownName || (target !== ownName && !target.startsWith(`${ownName}/`))) return null;
+  return new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED",
+    senderRun.rootSubjectKind === "agent_team" ? ownTeamDelegationRefusedMessage(target) : selfDelegationRefusedMessage(target));
+};
 const firstLineOf = (description: string): string => description.split(/\r?\n/).map((line) => line.trim()).find(Boolean) ?? "";
 const workText = (description: string, comments: readonly string[]): string =>
   comments.length ? [description, "", "Comments:", ...comments.map((comment) => `- ${comment}`)].join("\n") : description;
@@ -192,6 +205,10 @@ export class TaskDelegation {
       if (refusal) return refusal;
       throw error;
     }
+    const senderReference = runReferenceOf(input.senderRun);
+    const ownName = senderReference ? this.dependencies.tree().currentTaskOf(senderReference)?.recipientAddress : undefined;
+    const ownNameRefused = ownNameRefusal(input.senderRun, ownName, input.spawn.recipient_address);
+    if (ownNameRefused) throw ownNameRefused;
     try {
       placement = await input.resolvePlacement(work.delegation, folder);
     } catch (error) {

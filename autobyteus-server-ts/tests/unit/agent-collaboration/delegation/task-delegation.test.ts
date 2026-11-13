@@ -85,6 +85,27 @@ describe("TaskDelegation.toNewRun", () => {
     expect(none.starter.startAgent).not.toHaveBeenCalled();
   });
 
+  it("CR-461-050 (CM-1): a delegated run's own name, or an address inside it, is itself; refused before any placement", async () => {
+    const h = harness();
+    h.tasks.addTask("T1", "Build it", "abc-1");
+    const W: RootExecutionIdentity = { rootSubjectKind: "agent", rootRunId: "writer_51aa" };
+    await h.tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
+      delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "designer" });
+    await h.tasks.linkNewTaskExecution({ role: "subWork", recipientAddress: "/writer", delegatedFrom: { delegatingRun: E, delegatorAgentRunId: "designer" },
+      execution: { agentRunId: W.rootRunId } });
+    const refused = (run: RootExecutionIdentity, sender: string, address: string) =>
+      expect(h.delegate(run, sender, { recipient_address: address, description: "More." })).rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED" });
+    await refused(E, "designer", "/software_engineering_team");
+    await refused(E, "designer", "/software_engineering_team/designer");
+    await expect(h.delegate(E, "designer", { recipient_address: "/software_engineering_team", description: "More." }))
+      .rejects.toThrow("/software_engineering_team is in your own team; you can't delegate to it. Talk with it using send_message_to.");
+    await expect(h.delegate(W, W.rootRunId, { recipient_address: "/writer", description: "More." }))
+      .rejects.toThrow("/writer is your own address; you can't delegate to yourself.");
+    expect(h.folders).toEqual([]);
+    // A name that only begins the same way is another address.
+    await expect(h.delegate(E, "designer", { recipient_address: "/software_engineering_team_two", description: "More." })).resolves.toMatchObject({ delegated: true });
+  });
+
   it.each([["an agent run", undefined], ["a team run", "team"]] as const)(
     "CR-461-003 (race table row 5): %s whose Task closes while it starts is refused at its gate head, discarded, and nothing starts", async (_kind, which) => {
       const h = harness();
