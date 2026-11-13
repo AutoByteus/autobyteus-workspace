@@ -188,12 +188,24 @@ watch(
   overflow: auto;
 }
 
-.markdown-renderer-segments .markdown-body code[class*="language-"] {
+/* Every fenced code block, with or without a language, wraps long lines to its box.
+   A soft wrap adds no character, so selection copy gives the original text. */
+.markdown-renderer-segments .markdown-body pre,
+.markdown-renderer-segments .markdown-body pre > code {
   white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.markdown-renderer-segments .markdown-body code[class*="language-"] {
   font-family: 'Fira Code', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+/* Content that cannot wrap scrolls sideways inside its own box. */
+.markdown-renderer-segments .markdown-body .markdown-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .markdown-renderer-segments .markdown-body p.katex-block {
@@ -204,6 +216,11 @@ watch(
 .markdown-renderer-segments .markdown-body .katex-display {
   /* Tighten KaTeX block spacing inside lists */
   margin: 0.25em 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Tall glyphs (big delimiters, matrices, limits) reach past KaTeX's line box; this keeps them inside the clip. */
+  padding: 0.5em 0;
 }
 
 .markdown-renderer-segments .markdown-body li > p {

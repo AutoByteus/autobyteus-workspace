@@ -281,6 +281,27 @@ transport and completion ownership boundaries.
 - **Math Support**: Uses KaTeX for explicit LaTeX equations (`$...$`, `$$...$$`, `\(...\)`, `\[...\]`, and `math` fences). The renderer does not infer inline math from ordinary prose or file paths.
 - **Mermaid Diagrams**: Native support for Mermaid diagrams.
 - **Heading links**: a Contents list's `[Section](#section)` scrolls to that heading (below).
+- **Wrapped code blocks**: long lines in fenced code wrap to the width; wide tables and display equations scroll inside their own box (below).
+
+### Code Blocks, Tables And Display Math
+
+Rendered Markdown never needs a sideways scroll of the whole message or document (autobyteus-23). The rules live
+in `MarkdownRenderer.vue`'s stylesheet, so every surface that shows rendered Markdown (conversation segments, the
+Messages panel, every Markdown file preview on desktop and phone) behaves the same; a surface does not style
+`.markdown-body pre` itself.
+
+- **Fenced code, with or without a language:** `pre` and `pre > code` use `white-space: pre-wrap` and
+  `overflow-wrap: anywhere`. Long lines wrap to the block's width; a run with no break opportunity (a long URL or
+  token) breaks where needed. Every original line still starts on a new line with its own leading spaces and tabs;
+  a wrapped continuation starts at the block's left edge (no hanging indent). Highlighting is unchanged.
+- **Copying:** a soft wrap adds no character, so selecting and copying a block gives exactly its original text.
+  The Files tab's Edit view (Monaco) still shows a Markdown file's raw, unwrapped source.
+- **Tables:** `utils/markdownItScrollableTables.ts` (a markdown-it plugin on the HTML renderer in
+  `useMarkdownSegments.ts`) puts each table in `<div class="markdown-table-scroll">`. A table that fits looks as
+  before; one that is still wider than the box after its cells wrap scrolls sideways inside that box.
+- **Display math:** `.katex-display` (`$$…$$`, `\[…\]`, `math` fences) scrolls sideways inside its own box, as
+  KaTeX cannot wrap an equation. It clips vertically, with `0.5em` of vertical padding so tall glyphs (big
+  delimiters, matrices, limits) stay inside the clip.
 
 ### Heading Links
 
