@@ -566,16 +566,21 @@ A persistent item failure, such as "target already exists", keeps such a migrati
 
 - Every preserved item is reported (`PRESERVED_UNFINISHED_PREDECESSOR`, naming the predecessor and the item), and this migration completes `SUCCEEDED_WITH_WARNINGS`.
 - **A preserved copy, before and after its predecessor finishes** (SR-077, Q-1; SR-078, CR-461-068). While a predecessor's item is unfinished (for example, a `20261017_…` copy with no own file), the copy is left as it was and reported (`PRESERVED_UNFINISHED_PREDECESSOR`). The host no longer edits it (rule 2), and an operation on it gets base's answer for a run ID with no own file: the public Settings save answers `INTERNAL_ERROR` "Run ownership could not be verified" (`studio-run-model-config-service.ts:88-118`, unchanged). This is the expected outcome of a failed migration (`DESIGN.md` rule 7, the data guideline: preserve, report, never half-convert).
-  - **After the predecessor's retry writes the copy's own file,** the runtime reads it tolerantly as an ordinary run (above). Our migration is terminal (`SUCCEEDED_WITH_WARNINGS`, guideline §6: a warning success is terminal and is not re-audited), and its step 8 never ran for this copy, so the copy has no history row yet.
-  - **The row is created when it is first needed.** The history row service's single owner, `ensureRunHistoryRow(run)`, builds the row from the run's own file exactly as step 8 does, the first time a specific operation on that run needs it: its own Settings save or read, its open, or its listing by its delegator's rows or its Task page. This is a check for a specific requested operation, which the guideline keeps separate from startup. There is no startup pass and no re-run of the migration.
-  - **Rejected:**
-    - keeping our migration retried while it holds preserved items, because the guideline makes a warning success terminal;
-    - a startup pass that adds missing rows, because the guideline forbids re-auditing the corpus;
-    - withdrawing the promise, because the copy would stay unusable although its data is whole (REQ-011).
-  - **Tests:**
-    - before the retry: the save answers base's `INTERNAL_ERROR` text;
-    - after the retry has written the own file: opening the copy, or saving its Settings, creates its row once; the save succeeds, and the run is listed;
-    - a second start changes nothing.
+  - **After the predecessor finishes the item: a follow-up migration** (SR-078 as revised by ARCH-REV-049 AR-027; guideline §7, "a separate new migration"). `20261114_delegated_runs_preserved_items_v1` converts what our migration preserved, once its predecessor has finished the item:
+    - **Policy:** `requiredOnStartup`, with **no** `holdsBackCapabilities`.
+    - **Prerequisites:** our migration (`20261111_delegated_runs_own_runs_v1`) and the predecessors that can leave preserved items: `20261017_task_agent_own_run_v1`, `20261018_append_only_message_logs_v1`, `20261019_delegated_copy_own_file_complete_v1`. It is registered after all of them.
+    - **While a prerequisite is `FAILED`:** the runner reports the follow-up as waiting (`AppDataMigrationPrerequisiteError`, `app-data-migration-runner.ts:144-157`) and startup continues (`runPending`, :80-100). The node stays usable, and our main migration has still converted every Task entry with no hold (AR-005 and SR-021 stand). Only the late items wait, and nothing else needs them.
+    - **At the start where the predecessor finishes,** the follow-up runs in the same `runPending` pass. For each item our migration reported as `PRESERVED_UNFINISHED_PREDECESSOR`, it applies our per-run steps with our migration's own builders, recognized as done by structure and so idempotent:
+      - step 4: the own file's `taskAgent` → `delegatedFrom`, address and launch;
+      - step 5b: a log left in `collaboration/` moves to the run's own folder;
+      - step 8: its history row.
+
+      It then completes and is terminal. An item whose predecessor still has it unfinished stays preserved and reported, with a warning success.
+    - **After that the runtime reads only the target** (DS-10 checklist item 6). There is no runtime repair: `ensureRunHistoryRow` is withdrawn.
+    - **Tests:**
+      - with the predecessor `FAILED`, the follow-up is reported as waiting and the node is usable: Tasks, views, messages, delegation and closure all work;
+      - after the predecessor finishes, the copy is listed in that same start, top-level (its delegator deleted) or nested, and its Settings save succeeds;
+      - a later start changes nothing.
 - Every Task entry is converted in every case, so no Task is damaged by a predecessor's state.
 - The current runtime reads a preserved own file tolerantly and ignores `taskAgent`; such a run is an ordinary run with a derived address. A preserved tree is not read.
 

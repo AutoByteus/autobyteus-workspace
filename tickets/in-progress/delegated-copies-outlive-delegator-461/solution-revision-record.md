@@ -1511,4 +1511,11 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review (narrow);
   - then the Implementation Engineer.
-
+- **ARCH-REV-049 failed SR-078 (b) on AR-027, now revised.**
+  - **The problem:** `ensureRunHistoryRow` put a migration's residue repair into the runtime. Its triggers were an incomplete list, and it went against DS-10 item 6 and guideline §7.
+  - **The revision:** a follow-up migration, `20261114_delegated_runs_preserved_items_v1`:
+    - `requiredOnStartup`, with no `holdsBackCapabilities`;
+    - its prerequisites are our main migration and 20261017, 20261018 and 20261019, and it is registered after them;
+    - while a predecessor is `FAILED`, it waits, reported, and the node stays usable;
+    - in the start where the predecessor finishes, it applies our steps 4, 5b and 8 to each preserved item, idempotently, then becomes terminal.
+  - The runtime reads only the target. The Solution Designer added steps 4 and 5b to the reviewer's rows-only proposal, so that the finished item reaches the target shape and not only a row. Part (a) and CR-461-069 stand.
