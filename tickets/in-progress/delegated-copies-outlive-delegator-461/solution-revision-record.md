@@ -1426,4 +1426,4 @@ No architecture review: this restores base behavior and withdraws one test line.
 - **Next action:**
   - architecture review (narrow);
   - then the Implementation Engineer.
-
+- **ARCH-REV-048 passed SR-074.** Its note is applied: the snapshot's log read and filter are bound to the `own(X)` and `tree(X)` taken in the synchronous step, the same set as its rows.
