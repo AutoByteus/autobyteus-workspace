@@ -1,0 +1,7 @@
+# commit 262afbd6bb
+$ node scripts/typecheck.mjs
+[typecheck] production errors: 0; test-file errors: 1012 in 316 files (baseline 1012 in 316 files)
+[typecheck] PASS
+$ npx vitest run --no-watch tests/unit/services/agent-streaming tests/unit/agent-org-execution tests/unit/agent-execution/root-recovery-command.test.ts tests/architecture
+ Test Files  53 passed (53)
+      Tests  324 passed (324)

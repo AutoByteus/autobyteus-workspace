@@ -481,3 +481,18 @@ The current code and `implementation-handoff.md` remain authoritative.
   - "No status frame in the delegator's view or the list" is shown by the fact that nothing activates or registers: the child's statuses come from its own run's activation. No end-to-end two-view test covers it.
   - A peer-started run here has no local Task entry, so its fence is its node's (SR-066), as at base.
 
+### IR-016 — CR-461-038: the Org view's closed-Task fence removed
+
+- Triggering role, report path, and round: Code Reviewer CRR-019 (`code-review-report.md`, "Round 15"): Fail, one `Local Fix`, no design impact. Round 16.
+- Triggering finding IDs: CR-461-038. Large / High unchanged.
+- Prior authoritative result: IR-015 at `07a3a5890e` (docs `5eebc80691`).
+- Current authoritative result: `262afbd6bb`.
+- Related solution / architecture-review revision IDs: SR-070, ARCH-REV-044 (unchanged). Related code-review revision IDs: CRR-019.
+- Implementation delta:
+  - Removed the Org stream handler's closed-Task check, `OrgViewSources.closedTasks`, its wiring in `api/websocket/index.ts`, and the Org handler test that asserted it. That branch could never refuse: `runReferenceOf` has no reference for an Org run, so `ClosedTaskFence.refusal` answers `null`.
+  - The Team, standalone, resumer and materializer checks stay.
+  - `RunViewSources.closedTasks` stays (the Team handler uses it); its doc now names the Team.
+- Local validation and result: IMP-62 at `262afbd6bb`: server type gate PASS (1012); stream handler, Org, root-recovery and architecture tests, 53 files, 324 tests.
+- Next recipient or routing: Code Reviewer (Local Fix done; Large / High).
+- Remaining limitations or risks: C15-03 (a rendered two-view check that a refused input shows no status change) is held for API/E2E.
+
