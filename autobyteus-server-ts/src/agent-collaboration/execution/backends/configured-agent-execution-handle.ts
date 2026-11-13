@@ -64,6 +64,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
   private configurationPreparing = false;
   private agentRun: AgentRun | null = null;
   private readinessAttempt: Promise<AgentRun> | null = null;
+  /** A readiness attempt that failed and is kept (not retry-safe): settled, so no longer work in flight (CR-461-061). */
+  private settledReadiness: Promise<AgentRun> | null = null;
   private rootShutdownFenced = false;
   private unsubscribe: (() => void) | null = null;
   private platformAgentRunId: string | null;
@@ -313,7 +315,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
   }
 
   async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
-    if (this.readinessAttempt) return null;
+    if (this.readinessAttempt && this.readinessAttempt !== this.settledReadiness) return null;
     const run = this.agentRun;
     if (!run) return this.activationOperation ? null : completedLocalTermination(() => this.dispose());
     const prepared = await this.manager.tryPrepareAgentRunTerminationIfQuiescent(run);
@@ -347,7 +349,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     this.readinessAttempt = attempt;
     void attempt.then(
       () => { if (this.readinessAttempt === attempt) this.readinessAttempt = null; },
-      () => { if (retrySafe && this.readinessAttempt === attempt) this.readinessAttempt = null; },
+      () => { if (this.readinessAttempt === attempt) { if (retrySafe) this.readinessAttempt = null; else this.settledReadiness = attempt; } },
     );
     return attempt;
   }
