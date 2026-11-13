@@ -1333,4 +1333,4 @@
 - **Next action:**
   - architecture review;
   - then the Implementation Engineer.
-
+- **ARCH-REV-044 passed SR-070.** Its note is applied: the fence is checked before the root is resolved or restored (in the run's service where input enters), and again at the gate head for a loaded run. The test asserts no registration change, no status frame and no stream binding on a refusal.
