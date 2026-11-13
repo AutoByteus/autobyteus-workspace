@@ -369,12 +369,15 @@ export class RootTeamRun {
     });
   }
 
-  /** DS-004 (peer-started Team): ends quietly, in the gate, when no child work, lease or member is busy (AR-301).
-   * It never interrupts a member, and it ends as a Stop ends (the package is kept). */
+  /**
+   * DS-7 (every delegated Team, DS-004's peer-started one too): ends quietly, in the gate, when its own all-or-nothing
+   * quiescent preparation succeeds, as base's delegated task Team (`tryShutDownRootTaskTeamIfQuiet`): a member starting or
+   * running is not quiet; a member whose start failed (`error`) is, as for an agent run (CR-461-061, F-43, DTL-005). It
+   * never interrupts a member, and it ends as a Stop ends (the package is kept).
+   */
   async shutDownIfQuiet(): Promise<boolean> {
     if (this.termination || !this.isAdmitting()) return false;
     const quiet = await this.materializationGate.run(async () => {
-      if (this.hasOpenExecutionWork()) return null;
       const prepared = await this.options.rootRun.tryPrepareTerminationIfQuiescent();
       if (prepared) this.lifecycle = "terminating";
       return prepared;

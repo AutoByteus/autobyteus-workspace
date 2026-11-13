@@ -9,6 +9,10 @@ export type PairedAgentObservation = Readonly<{ close(): void }>;
 /** The node whose owner sends a command, by this node's name for it (the peer's registered name). */
 export type RemoteOwner = Readonly<{ nodeName: string }>;
 export type PairedAgentStatus = Readonly<{ agentRunId: string; status: RemoteAgentStatus }>;
+/** A paired agent's status as a presentation message: its current status when followed, or `offline` when its run ends. */
+export const pairedAgentStatusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
+  status, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+} } as AgentPresentationMessage);
 
 /**
  * autobyteus-278 (AR-401): a run a peer started, as the node that runs it serves the peer's owner. Each root kind's

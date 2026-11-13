@@ -1,7 +1,7 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import type { DelegatedChild, DelegationIndex } from "../../delegation/delegation-index.js";
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
-import type { PairedAgentAccess, PairedAgentObservation } from "../remote/paired-agent-access.js";
+import { pairedAgentStatusFrame, type PairedAgentAccess, type PairedAgentObservation } from "../remote/paired-agent-access.js";
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 
 /**
@@ -47,9 +47,6 @@ export const localChildStatuses = async (run: RootExecutionIdentity, ports: Loca
 const keyOf = (run: TaskExecutionReference): string => "agentRunId" in run ? `agent:${run.agentRunId}` : `team:${run.teamRunId}`;
 const childRunOf = (run: TaskExecutionReference): RootExecutionIdentity => "agentRunId" in run
   ? { rootSubjectKind: "agent", rootRunId: run.agentRunId } : { rootSubjectKind: "agent_team", rootRunId: run.teamRunId };
-const statusFrame = (status: string): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
-  status, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
-} } as AgentPresentationMessage);
 
 type Followed = { child: DelegatedChild; observation: PairedAgentObservation | null; closed: boolean; agentRunIds: readonly string[] };
 
@@ -130,7 +127,7 @@ export class LocalChildObservation {
       this.statuses.set(agentRunId, { agentRunId, memberAddress, status: String((message.payload as { status?: unknown }).status) });
       this.options.publish({ kind: "local_child_presentation", agentRunId, memberAddress, message });
     };
-    for (const live of access.pairedAgentStatuses(runId)) present(live.agentRunId, statusFrame(live.status));
+    for (const live of access.pairedAgentStatuses(runId)) present(live.agentRunId, pairedAgentStatusFrame(live.status));
     try {
       const observation = await access.observePairedAgents(runId, present, () => { entry.observation = null; });
       if (entry.closed) observation?.close();

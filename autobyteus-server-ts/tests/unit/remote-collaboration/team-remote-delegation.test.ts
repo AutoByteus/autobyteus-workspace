@@ -169,17 +169,21 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   const started: string[] = [];
   const inbox = new Map<string, string[]>();
   const busy = new Set<string>();
+  /** Each fake run's status, as its last AGENT_STATUS event set it. */
+  const statuses = new Map<string, string>();
   const listeners = new Map<string, (event: unknown) => void>();
   const conversations = state.conversations;
-  const emit = (runId: string, eventType: AgentRunEventType, payload: Record<string, unknown>) =>
+  const emit = (runId: string, eventType: AgentRunEventType, payload: Record<string, unknown>) => {
+    if (eventType === AgentRunEventType.AGENT_STATUS) statuses.set(runId, String(payload.status));
     listeners.get(runId)?.({ eventType, runId, payload, statusHint: null });
+  };
   const providerRun = (runId: string) => ({ runId, alive: true, isActive() { return this.alive; }, bindExecutionAdmissionFence: vi.fn(),
     subscribeToEvents: (listener: (event: unknown) => void) => {
       listeners.set(runId, listener);
       listener({ eventType: AgentRunEventType.AGENT_STATUS, runId, payload: { status: "idle" }, statusHint: "IDLE" });
       return () => { if (listeners.get(runId) === listener) listeners.delete(runId); };
     },
-    getStatusSnapshot: () => ({ status: "idle" }), getInputStateSnapshot: () => null,
+    getStatusSnapshot: () => ({ status: statuses.get(runId) ?? "idle" }), getInputStateSnapshot: () => null,
     postUserMessage: async (message: { content: string }) => { conversations.add(runId); inbox.set(runId, [...(inbox.get(runId) ?? []), message.content]); return { accepted: true }; },
     reserveUserMessage: async (message: { content: string }) => ({ reserved: true, reservation: { agentRunId: runId, cancel: vi.fn(),
       commit: () => { conversations.add(runId); inbox.set(runId, [...(inbox.get(runId) ?? []), message.content]); return { release: () => undefined }; } } }) });
@@ -453,13 +457,11 @@ describe("DS-004: a peer-started Team root's quiet idle shutdown (AR-301)", () =
     expect(root.isActive()).toBe(false);
   });
 
-  it("open child work skips the fire; a local Team run (no back-link) has no idle shutdown at all", async () => {
+  it("CR-461-061 (F-43, DTL-005): a member in error (the run's open work) does not keep the Team, as base's task Team; a local Team run (no back-link) has no idle shutdown at all", async () => {
     const { b, root } = await started();
-    const open = vi.spyOn(root, "hasOpenExecutionWork").mockReturnValue(true);
+    b.emit(LEAD.agentRunId, AgentRunEventType.AGENT_STATUS, { status: "error" });
+    expect(root.hasOpenExecutionWork()).toBe(true);
     await vi.advanceTimersByTimeAsync(grace() + 10);
-    expect(root.isActive()).toBe(true);
-    open.mockRestore();
-    await expect(root.shutDownIfQuiet()).resolves.toBe(true);
     expect(root.isActive()).toBe(false);
 
     const local = await b.teamRuns.createTeamRun({ teamDefinitionId: "studio",
