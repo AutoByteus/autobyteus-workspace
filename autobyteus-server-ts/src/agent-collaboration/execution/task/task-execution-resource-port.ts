@@ -51,6 +51,8 @@ export type NewTaskExecutionLinkInput = Readonly<{
 /** A follow-up Task for a run (DS-6): the run, (for a team) its coordinator, the Task and who gives it. */
 export type ExistingTaskExecutionAssignInput = Readonly<{
   delegatedFrom: RunDelegatedFrom; execution: TaskExecutionReference; teamCoordinatorAgentRunId?: string; taskId: string;
+  /** A run no Task names any more (every Task of it was deleted, SR-072 F-24): its own address, from its own file. */
+  recipientAddress?: string;
 }>;
 
 /**
@@ -125,10 +127,11 @@ export interface TaskExecutionResourcePort {
    * Read-only, advisory eligibility of assigning Task `taskId` to an existing copy (run before any
    * runtime step): all Task resource data readable; the Task exists, is unique and is not DONE or
    * CANCELLED; the copy's current entry is an `assigned` entry made by `requestedBy` (it may hold other open
-   * Tasks); some entry of the copy ever started; and `taskId` is not its closed current Task. Rejects with a
+   * Tasks); some entry of the copy ever started; and `taskId` is not its closed current Task. A run no Task names any
+   * more is assignable by the delegator its own file names, `ownDelegatorAgentRunId` (SR-072 F-24). Rejects with a
    * coded error.
    */
-  assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void>;
+  assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>): Promise<void>;
   /** The agent-facing references of the copy's open Tasks other than `exceptTaskId`, oldest first (for the given-Task message). */
   openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]>;
   /**

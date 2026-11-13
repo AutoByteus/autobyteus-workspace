@@ -3,9 +3,22 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import type { RunAgent, RunParts } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { ConfiguredPlacement, OrgPlacements, RunFilesReader } from "../../agent-collaboration/delegation/collaboration-tree.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { CatalogDefinitionRef } from "../../agent-collaboration/collaborators/catalog-address-map.js";
+import type { RunDelegatedFrom } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { DelegatedFrom } from "./agent-run-metadata-types.js";
 import { AgentOrgRunExecutionTreeStore } from "./agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "./team-run-execution-tree-store.js";
 import { AgentRunMetadataStore } from "./agent-run-metadata-store.js";
+
+/**
+ * A delegated run's own record of its delegation, from its own file (SR-072 F-24, contract §3, U11): its `delegatedFrom`,
+ * its own address when stored (an agent run's, written at the delegation; a team run keeps none), its definition, and its
+ * entry agent (an agent run itself; a team run's coordinator).
+ */
+export type RunOwnDelegationRecord = Readonly<{ delegatedFrom: RunDelegatedFrom; address: string | null; definition: CatalogDefinitionRef; entryAgentRunId: string }>;
+/** A local delegation with its delegator recorded; `null` for a run a peer started or an old run that never recorded it. */
+const localDelegation = (from: DelegatedFrom | undefined): RunDelegatedFrom | null => from && from.nodeId === undefined && from.delegatorAgentRunId
+  ? { delegatingRun: { rootSubjectKind: from.delegatingRun.kind, rootRunId: from.delegatingRun.runId }, delegatorAgentRunId: from.delegatorAgentRunId } : null;
 
 type MemberNode = Readonly<{ address?: string; agentRunId?: string; agentDefinitionId?: string; coordinatorAddress?: string; members?: readonly MemberNode[] }>;
 const agentsOfMembers = (members: readonly MemberNode[]): RunAgent[] => members.flatMap((member) => member.agentRunId
@@ -65,6 +78,22 @@ export class RunOwnAgentsReader implements RunFilesReader {
         return { agents: agentsOfMembers(members), coordinatorAddress: null, mountedTeams: mountedTeamsOf(members) };
       }
     }
+  }
+
+  /** The run's own record of its delegation (SR-072 F-24); `null` when its file is absent or it records no local delegator. */
+  async delegationOf(run: RootExecutionIdentity): Promise<RunOwnDelegationRecord | null> {
+    if (run.rootSubjectKind === "agent") {
+      const metadata = await this.stores.agents.readMetadata(run.rootRunId);
+      const delegatedFrom = localDelegation(metadata?.delegatedFrom);
+      return metadata && delegatedFrom ? { delegatedFrom, address: metadata.address ?? null,
+        definition: { kind: "agent", definitionId: metadata.agentDefinitionId }, entryAgentRunId: run.rootRunId } : null;
+    }
+    if (run.rootSubjectKind !== "agent_team") return null;
+    const tree = await this.stores.team.read(this.layout.getTeamDirPath({ rootTeamRunId: run.rootRunId, ancestorTeamRunIds: [] }), run.rootRunId);
+    const delegatedFrom = localDelegation(tree?.delegatedFrom);
+    const coordinator = tree?.rootTeam.members.find((member) => member.address === tree.rootTeam.coordinatorAddress);
+    return tree && delegatedFrom && coordinator && "agentRunId" in coordinator && coordinator.agentRunId ? { delegatedFrom, address: null,
+      definition: { kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }, entryAgentRunId: coordinator.agentRunId } : null;
   }
 
   async orgPlacementsOf(orgRunId: string): Promise<OrgPlacements | null> {

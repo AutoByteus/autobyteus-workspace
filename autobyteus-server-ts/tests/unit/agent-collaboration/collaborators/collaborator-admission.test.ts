@@ -191,6 +191,9 @@ describe("catalog policy and mention resolution", () => {
     await expect(admission.policy.requireAdmissible(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }))
       .resolves.toMatchObject({ kind: "agent", definition: { id: DAILY_ASSISTANT_AGENT_DEFINITION_ID } });
     await expect(admission.catalogDefinitionAt(port(), "/daily_assistant")).resolves.toMatchObject({ kind: "agent" });
+    // Its inverse (SR-072 F-24): the address a definition has in the run's catalog; none in an application-bound run.
+    await expect(admission.catalogAddressOf(port(), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).resolves.toBe("/daily_assistant");
+    await expect(admission.catalogAddressOf(port({ applicationBound: true }), { kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID })).resolves.toBeNull();
     await expect(admission.resolveMentions(port(), [{ kind: "agent", definitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID }], other))
       .resolves.toEqual({ admitted: true, launchNotes: [], collaborators: [
         { name: "Daily Assistant", kind: "agent", address: "/daily_assistant", presence: "not_in_run" },

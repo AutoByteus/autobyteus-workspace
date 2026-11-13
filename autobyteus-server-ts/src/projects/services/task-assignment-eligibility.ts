@@ -60,8 +60,9 @@ export class TaskAssignmentEligibility {
     return task;
   }
   /** The copy-side rules of an existing-copy assignment, on the copy's history across Tasks; texts name Tasks by key. */
-  assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>, task: ProjectTask): void {
-    assertTaskExecutionAssignable(this.resources.historyOf(input.execution), { requestedBy: input.requestedBy, taskId: input.taskId, taskReference: task.taskKey });
+  assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>, task: ProjectTask): void {
+    assertTaskExecutionAssignable(this.resources.historyOf(input.execution), { requestedBy: input.requestedBy, taskId: input.taskId, taskReference: task.taskKey,
+      ...(input.ownDelegatorAgentRunId !== undefined ? { ownDelegatorAgentRunId: input.ownDelegatorAgentRunId } : {}) });
   }
   /**
    * The agent-facing references (a Project Task's key, a Temp task's ID) of the copy's open Tasks other than

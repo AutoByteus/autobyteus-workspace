@@ -113,6 +113,12 @@ export class CollaboratorAdmission {
     return (await this.dependencies.policy.catalogAddressMap(port)).definitionFor(address);
   }
 
+  /** The catalog address `ref` has in this run's catalog (the inverse of `catalogDefinitionAt`); `null` when it has none. */
+  async catalogAddressOf(port: CollaboratorRootPort, ref: CatalogDefinitionRef): Promise<string | null> {
+    if (port.isApplicationBound) return null;
+    return (await this.dependencies.policy.catalogAddressMap(port)).addressFor(ref);
+  }
+
   /**
    * The source snapshot of a task copy of the catalog definition at `address` (DS-003): the
    * definition, its Team layout and handoffs, and each agent's launch resolved by the layer

@@ -113,7 +113,8 @@ export class TaskExecutionResourceService {
    * `starting` entry to the Task file. The address is the one of the copy's previous assignment.
    */
   async assignExisting(location: TaskLocation, input: ExistingTaskExecutionAssignInput): Promise<void> {
-    const recipientAddress = this.currentOf(input.execution)?.entry.recipientAddress;
+    // A run no Task names any more gives its own address (SR-072 F-24).
+    const recipientAddress = this.currentOf(input.execution)?.entry.recipientAddress ?? input.recipientAddress;
     if (!recipientAddress) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
     await this.update(location, file => linkExistingTaskExecution(file, {
       delegatedFrom: input.delegatedFrom, execution: input.execution,

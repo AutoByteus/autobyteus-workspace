@@ -1,3 +1,4 @@
+import type { RunOwnDelegation } from "../../../../src/agent-collaboration/execution/task/run-own-delegation.js";
 import type { AgentConversationActivity } from "../../../../src/agent-memory/services/agent-conversation-activity-inspector.js";
 import { NO_RUN_PARTS, readerOfAgents } from "../../../helpers/run-agents-reader.js";
 import { describe, expect, it, vi } from "vitest";
@@ -30,7 +31,7 @@ const harness = (reader: RunFilesReader = NO_RUN_PARTS, fromDelegator: LocalDele
   const recordCollaborating = vi.fn(async () => undefined);
   const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter, deliverWorkPacket, discard, recordCollaborating,
     deliverToRun: vi.fn(async () => ({ accepted: true })), channel: () => null,
-    reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender), delegatorCatalog: { placementAt: vi.fn(async () => fromDelegator) }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
+    reachingAddress: (sender, receiverRun) => tree.collaborationTreeOf(receiverRun).reachingAddressOf(sender), ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: vi.fn(async () => fromDelegator) }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
   const folders: (string | null)[] = [];
   const delegate = (senderRun: RootExecutionIdentity, sender: string, spawn: Record<string, unknown>, placement: LocalDelegationPlacement | null = agentPlacement) => delegation.toNewRun({
     sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }),
@@ -231,7 +232,7 @@ describe("TaskDelegation.toNewRun", () => {
       tree.build();
       tasks.setEntriesListener(tree);
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(),
-        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
+        channel: () => channel as never, deliverToRun: vi.fn(async () => ({ accepted: true })), recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null }, conversationOf: async () => ({ entryAddress: "/entry", activity: { kind: "present" as const } }) });
       const delegate = () => delegation.toPeerRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: "/project_task_manager" as never, agentRunId: M.rootRunId }),
         senderRun: M, spawn: { recipient_address: "/research_team", description: "Research it." } as never, placement });
       return { tasks, tree, delegate };
@@ -275,7 +276,7 @@ describe("TaskDelegation.toNewRun", () => {
 
   describe("toExistingRun (S8, DS-6: a follow-up Task by run ID)", () => {
     const followUp = async (deliverToRun = vi.fn(async () => ({ accepted: true }) as { accepted: boolean; code?: string; message?: string }),
-      activity: AgentConversationActivity = { kind: "present" }) => {
+      activity: AgentConversationActivity = { kind: "present" }, ownDelegation: RunOwnDelegation | null = null) => {
       const tasks = new InMemoryTaskExecutionResources();
       const tree = new DelegationIndex(() => tasks, NO_RUN_PARTS);
       tree.build();
@@ -286,6 +287,7 @@ describe("TaskDelegation.toNewRun", () => {
       await tasks.markStarted({ teamRunId: E.rootRunId });
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun,
         channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null,
+        ownDelegations: { of: async (execution) => ownDelegation && "teamRunId" in execution && execution.teamRunId === E.rootRunId ? ownDelegation : null },
         delegatorCatalog: { placementAt: async () => null }, conversationOf: vi.fn(async () => ({ entryAddress: "/solution_designer", activity })) });
       const give = (senderRun: RootExecutionIdentity, sender: string, copy: Record<string, string>, taskId = "abc-2") => delegation.toExistingRun({
         sender: createCollaborationMemberExecutionIdentity({ root: senderRun, memberAddress: `/${sender}` as never, agentRunId: sender }), senderRun,
@@ -314,7 +316,7 @@ describe("TaskDelegation.toNewRun", () => {
       await tasks.linkNewTaskExecution({ role: "assigned", taskId: "T1", recipientAddress: "/software_engineering_team",
         delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, execution: { teamRunId: E.rootRunId }, teamCoordinatorAgentRunId: "solution_designer_65a9" });
       const delegation = new TaskDelegation({ tasks: () => tasks, tree: () => tree, starter: {} as never, deliverWorkPacket: vi.fn(), discard: vi.fn(), deliverToRun: vi.fn(),
-        channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, delegatorCatalog: { placementAt: async () => null },
+        channel: () => null, recordCollaborating: vi.fn(async () => undefined), reachingAddress: async () => null, ownDelegations: { of: async () => null }, delegatorCatalog: { placementAt: async () => null },
         conversationOf: async () => ({ entryAddress: "/solution_designer", activity: { kind: "present" as const } }) });
       const give = (agentRunId: string) => delegation.toExistingRun({ sender: createCollaborationMemberExecutionIdentity({ root: M, memberAddress: `/${M.rootRunId}` as never, agentRunId: M.rootRunId }),
         senderRun: M, assign: { copy: { agentRunId } as never, taskId: "abc-2" } });
@@ -330,6 +332,27 @@ describe("TaskDelegation.toNewRun", () => {
       await expect(h.give(M, M.rootRunId, { agentRunId: "never_delegated" })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("is not one of your task agents") });
       expect(h.tasks.assignments).toEqual([]);
       expect(h.deliverToRun).not.toHaveBeenCalled();
+    });
+
+    it("SR-072 F-24 (U11): a run whose Tasks were all deleted is given a new Task by the delegator its own file names; the entry repeats its delegation and address", async () => {
+      const own: RunOwnDelegation = { delegatedFrom: { delegatingRun: M, delegatorAgentRunId: M.rootRunId }, recipientAddress: "/software_engineering_team",
+        entryAgentRunId: "solution_designer_65a9" };
+      const h = await followUp(undefined, undefined, own);
+      h.tasks.deleteTask("T1");
+      expect(h.tree.tasksOf({ teamRunId: E.rootRunId })).toEqual([]);
+      // Another agent is told it is not one of its task agents, as for any run that is not its own.
+      await expect(h.give(M, "someone_else", { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: false,
+        message: `${E.rootRunId} is not one of your task agents. Use a run id that delegate_task returned to you, or delegate to a new task agent with recipient_address.` });
+      await expect(h.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toEqual({ delegated: true,
+        copy: { kind: "team", teamRunId: E.rootRunId, teamCoordinatorAgentRunId: "solution_designer_65a9" } });
+      expect(h.tasks.assignments).toEqual([{ delegatedFrom: own.delegatedFrom, execution: { teamRunId: E.rootRunId }, taskId: "T2",
+        recipientAddress: "/software_engineering_team", teamCoordinatorAgentRunId: "solution_designer_65a9" }]);
+      expect(h.tasks.entry({ teamRunId: E.rootRunId })).toMatchObject({ taskId: "T2", recipientAddress: "/software_engineering_team", open: true });
+      expect(h.deliverToRun).toHaveBeenCalledWith(expect.objectContaining({ targetAgentRunId: "solution_designer_65a9", messageType: "task_assignment" }));
+      // A run whose own file names no local delegator stays refused.
+      const none = await followUp();
+      none.tasks.deleteTask("T1");
+      await expect(none.give(M, M.rootRunId, { teamRunId: E.rootRunId })).resolves.toMatchObject({ delegated: false, message: expect.stringContaining("is not one of your task agents") });
     });
 
     it("CR-461-049: a sender in another tree gets base's \"not one of your task agents\", before the Task side's assigner check", async () => {

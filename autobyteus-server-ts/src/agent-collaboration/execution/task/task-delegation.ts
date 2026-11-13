@@ -1,4 +1,5 @@
 import type { DelegatorCatalog } from "./delegator-catalog.js";
+import type { RunOwnDelegation, RunOwnDelegations } from "./run-own-delegation.js";
 import { taskExecutionConversationUnavailable, type RunConversationAvailability } from "./run-conversation-availability.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationPlacement, RemoteAgentPlacement } from "../../collaborators/catalog-delegation.js";
@@ -125,6 +126,8 @@ export class TaskDelegation {
     conversationOf(execution: TaskExecutionReference, entry: Readonly<{ agentRunId: string; address: string }>): Promise<RunConversationAvailability>;
     /** A delegated run's catalog copy at an address its own catalog does not offer: its delegator's (CR-461-041). */
     delegatorCatalog: Pick<DelegatorCatalog, "placementAt">;
+    /** A run no Task names any more: its delegation as its own file records it (SR-072 F-24). */
+    ownDelegations: Pick<RunOwnDelegations, "of">;
   }>) {}
 
   /**
@@ -326,6 +329,18 @@ export class TaskDelegation {
   }
 
   /**
+   * A run no Task names, given a new Task by run ID (SR-072 F-24): the delegation its own file records, when the sender
+   * is that delegator; base's refusals otherwise (an ID of the other kind, or "not one of your task agents").
+   */
+  private async ownDelegationFor(execution: TaskExecutionReference, senderAgentRunId: string): Promise<RunOwnDelegation> {
+    const wrong = await this.wrongRunId(execution);
+    if (wrong) throw wrong;
+    const own = await this.dependencies.ownDelegations.of(execution);
+    if (!own || own.delegatedFrom.delegatorAgentRunId !== senderAgentRunId) throw notACopyOfThisRun(execution);
+    return own;
+  }
+
+  /**
    * `delegate_task` with a run's own ID and `task_id` (DS-6, `model.py` `delegate_existing`): a follow-up Task for a run
    * the sender assigned. The saved Task first (its refusals come before the run's), then the run: one this node's Task
    * records name (a peer's run takes no saved Task); the Task side checks the sender is its last assigner and the
@@ -346,21 +361,25 @@ export class TaskDelegation {
       const entries = this.dependencies.tree().tasksOf(execution);
       if (entries.some((entry) => entry.nodeId !== undefined)) return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
       const current = [...entries].sort((a, b) => a.linkedAt.localeCompare(b.linkedAt)).at(-1);
-      if (!current) throw await this.wrongRunId(execution) ?? notACopyOfThisRun(execution);
+      // A run no Task names any more is its delegator's, by its own file (SR-072 F-24, U11), as base accepted it.
+      const own: RunOwnDelegation | null = current ? null : await this.ownDelegationFor(execution, input.sender.agentRunId);
       // A run of another tree was never among the sender's task agents (base hosted it in another root): base's text,
       // before the Task side's assigner check (CR-461-049, SR-071).
       const tree = this.dependencies.tree();
-      if (!sameRootExecutionIdentity(tree.topOf(runIdentityOf(execution)), tree.topOf(input.senderRun))) throw notACopyOfThisRun(execution);
-      entryAgentRunId = current.entryAgentRunId;
+      if (current && !sameRootExecutionIdentity(tree.topOf(runIdentityOf(execution)), tree.topOf(input.senderRun))) throw notACopyOfThisRun(execution);
+      const last = current ?? own!;
+      entryAgentRunId = last.entryAgentRunId;
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
-      await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId });
+      await tasks.assertAssignable({ execution, requestedBy: input.sender.agentRunId, taskId, ...(own ? { ownDelegatorAgentRunId: own.delegatedFrom.delegatorAgentRunId } : {}) });
       // As base: a run that cannot be restored is refused before anything changes (CR-461-043).
-      const conversation = await this.dependencies.conversationOf(execution, { agentRunId: entryAgentRunId, address: current.recipientAddress });
+      const conversation = await this.dependencies.conversationOf(execution, { agentRunId: entryAgentRunId, address: last.recipientAddress });
       if (conversation.activity.kind !== "present") {
-        throw taskExecutionConversationUnavailable({ execution, address: current.recipientAddress, entryAddress: conversation.entryAddress, activity: conversation.activity });
+        throw taskExecutionConversationUnavailable({ execution, address: last.recipientAddress, entryAddress: conversation.entryAddress, activity: conversation.activity });
       }
       const otherOpenTaskReferences = await tasks.openTaskReferencesOf(execution, taskId);
-      await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId }, execution, taskId,
+      // The new entry repeats the run's delegation: its last entry's, or its own file's with its own address (U11).
+      await tasks.assignExistingTaskExecution({ delegatedFrom: own?.delegatedFrom ?? { delegatingRun: input.senderRun, delegatorAgentRunId: input.sender.agentRunId },
+        execution, taskId, ...(own ? { recipientAddress: own.recipientAddress } : {}),
         ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: entryAgentRunId } : {}) });
       content = buildExistingCopyTaskMessage({ taskReference, projectId: saved.projectId, description: saved.description, comments: saved.comments, otherOpenTaskReferences });
     } catch (error) {

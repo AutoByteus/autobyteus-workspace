@@ -56,4 +56,27 @@ describe("RunOwnAgentsReader", () => {
         expect.objectContaining({ agentRunId: "qa", address: "/dev_team/qa" })],
       coordinatorAddress: null, mountedTeams: [{ address: "/dev_team", coordinatorAgentRunId: "dev_lead" }] });
   });
+
+  it("delegationOf (SR-072 F-24): a delegated run's own delegation, address, definition and entry agent; none for a peer-started or user-started run", async () => {
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "run-own-delegation-"));
+    roots.push(memory);
+    const layout = new AgentMemoryLayout(memory);
+    const from = { delegatingRun: { kind: "agent", runId: "manager" }, delegatorAgentRunId: "manager" } as const;
+    const metadata = (runId: string, extra: object) => ({ runId, agentDefinitionId: "image-maker", workspaceRootPath: "/w", memoryDir: path.join(memory, "agents", runId),
+      llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: true, runtimeKind: "autobyteus", platformAgentRunId: null, ...extra }) as never;
+    const agents = new AgentRunMetadataStore(memory);
+    await agents.writeMetadata("image", metadata("image", { address: "/image_maker", delegatedFrom: from }));
+    await agents.writeMetadata("peer-started", metadata("peer-started", { address: "/image_maker", delegatedFrom: { ...from, nodeId: "node-b" } }));
+    await agents.writeMetadata("own", metadata("own", {}));
+    const tree = validateTeamRunExecutionTreePayload(testExecutionTree({ rootTeamRunId: "team-d", coordinatorAddress: "/lead",
+      children: [testAgentNode("/lead", { agentRunId: "lead-d" }), testAgentNode("/writer", { agentRunId: "writer-d" })] }), "team-d");
+    await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "team-d", ancestorTeamRunIds: [] }), { ...tree, delegatedFrom: from } as never);
+    const reader = new RunOwnAgentsReader(memory);
+    const manager = { delegatingRun: { rootSubjectKind: "agent", rootRunId: "manager" }, delegatorAgentRunId: "manager" };
+    expect(await reader.delegationOf({ rootSubjectKind: "agent", rootRunId: "image" })).toEqual({ delegatedFrom: manager, address: "/image_maker",
+      definition: { kind: "agent", definitionId: "image-maker" }, entryAgentRunId: "image" });
+    expect(await reader.delegationOf({ rootSubjectKind: "agent_team", rootRunId: "team-d" })).toEqual({ delegatedFrom: manager, address: null,
+      definition: { kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }, entryAgentRunId: "lead-d" });
+    for (const runId of ["peer-started", "own", "gone"]) expect(await reader.delegationOf({ rootSubjectKind: "agent", rootRunId: runId })).toBeNull();
+  });
 });

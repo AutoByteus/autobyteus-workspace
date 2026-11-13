@@ -164,18 +164,22 @@ const copyIdField = (execution: TaskExecutionReference): string => "agentRunId" 
  * refused by `linkExistingTaskExecution`. `taskId` is compared; texts name Tasks by their agent-facing references.
  */
 export const assertTaskExecutionAssignable = (history: TaskExecutionHistory | null,
-  input: Readonly<{ requestedBy: string; taskId: string; taskReference: string }>): void => {
+  input: Readonly<{ requestedBy: string; taskId: string; taskReference: string; ownDelegatorAgentRunId?: string }>): void => {
   const requested = input.taskReference;
-  if (!history) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent has no Task; delegate Task ${requested} with recipient_address instead.`);
+  const onlyAssigner = () => new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one. "
+    + `Delegate Task ${requested} to a new task agent with recipient_address instead.`);
+  if (!history) {
+    // Every Task of the run was deleted: the delegator its own file names may give it a new Task (SR-072 F-24, U11).
+    if (input.ownDelegatorAgentRunId === undefined) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent has no Task; delegate Task ${requested} with recipient_address instead.`);
+    if (input.ownDelegatorAgentRunId !== input.requestedBy) throw onlyAssigner();
+    return;
+  }
   const { current, currentTaskId } = history;
   if (current.role !== "assigned") {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task. "
       + `Delegate Task ${requested} to a new task agent with recipient_address.`);
   }
-  if (assignerOf(current) !== input.requestedBy) {
-    throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one. "
-      + `Delegate Task ${requested} to a new task agent with recipient_address instead.`);
-  }
+  if (assignerOf(current) !== input.requestedBy) throw onlyAssigner();
   if (current.closedAt !== null && currentTaskId === input.taskId) {
     throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${requested}. To continue it, `
       + `set Task ${requested} to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).`);

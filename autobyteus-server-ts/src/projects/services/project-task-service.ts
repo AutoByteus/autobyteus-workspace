@@ -315,7 +315,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     });
   }
   /** Advisory existing-copy eligibility (the design's complete list), before any runtime step. */
-  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>): Promise<void> {
     await this.resources.load();
     this.resources.assertAllReadable();
     const { projectId } = await this.references.byId(input.taskId);
@@ -329,7 +329,8 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
       this.resources.assertAllReadable();
       const task = await this.eligibility.assertAssignableTask(projectId, input.taskId);
-      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId }, task);
+      this.eligibility.assertCopyAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
+        ...(input.recipientAddress ? { ownDelegatorAgentRunId: input.delegatedFrom.delegatorAgentRunId } : {}) }, task);
       await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
     });
   }

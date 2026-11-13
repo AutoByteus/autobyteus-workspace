@@ -177,10 +177,15 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     this.changed(entry.taskId);
     return { taskId: entry.taskId, reopened };
   }
-  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string; ownDelegatorAgentRunId?: string }>): Promise<void> {
     this.assertResourceDataReadable();
     await this.resolveAssignment(input.taskId);
     const entry = this.entry(input.execution);
+    // Every Task of the run was deleted: the delegator its own file names may give it a new Task (SR-072 F-24).
+    if (!entry && input.ownDelegatorAgentRunId !== undefined) {
+      if (input.ownDelegatorAgentRunId !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
+      return;
+    }
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy belongs to no Task.");
     if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task.");
     if (entry.delegatedFrom.delegatorAgentRunId !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
@@ -190,7 +195,18 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   }
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
     await this.beforeAssignCommit?.(input);
-    await this.assertAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId });
+    await this.assertAssignable({ execution: input.execution, requestedBy: input.delegatedFrom.delegatorAgentRunId, taskId: input.taskId,
+      ...(input.recipientAddress ? { ownDelegatorAgentRunId: input.delegatedFrom.delegatorAgentRunId } : {}) });
+    if (!this.entry(input.execution) && input.recipientAddress) {
+      // A run no Task names any more: a new entry repeating its own delegation and address (U11).
+      this.entries.set(taskExecutionReferenceKey(input.execution), { taskId: input.taskId, delegatedFrom: input.delegatedFrom, execution: input.execution,
+        role: "assigned", open: true, start: "starting", everStarted: true, recipientAddress: input.recipientAddress,
+        linkedAt: new Date(Date.UTC(2026, 0, 1, 0, 0, ++this.linkCount)).toISOString(),
+        ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}) });
+      this.changed(input.taskId);
+      this.assignments.push(input);
+      return;
+    }
     const entry = this.entry(input.execution)!;
     const otherOpenTaskIds = entry.open ? [...entry.otherOpenTaskIds ?? [], entry.taskId] : [];
     const previousTaskId = entry.taskId;

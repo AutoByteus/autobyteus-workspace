@@ -152,6 +152,20 @@ describe("existing-copy assignment on the Task side", () => {
       code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining("This task agent has no Task") });
   });
 
+  it("SR-072 F-24 (U11): a run whose Tasks were all deleted takes a new Task from the delegator its own file names; the entry repeats its delegation and address", async () => {
+    const { a, b } = await teamDidA();
+    await tasks.deleteTask({ projectId, taskId: a });
+    await expect(tasks.assertAssignable({ execution: team, requestedBy: "other", taskId: b, ownDelegatorAgentRunId: "manager" })).rejects.toMatchObject({
+      code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining("Only the agent that gave this task agent its most recent Task") });
+    await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b, ownDelegatorAgentRunId: "manager" })).resolves.toBeUndefined();
+    await tasks.assignExistingTaskExecution({ delegatedFrom: { delegatingRun: hostRoot, delegatorAgentRunId: "manager" }, execution: team, taskId: b,
+      teamCoordinatorAgentRunId: "lead", recipientAddress: "/review_team" });
+    const entries = (await rawFile(b)).agentRunResources;
+    expect(entries).toEqual([expect.objectContaining({ role: "assigned", recipientAddress: "/review_team",
+      delegatedFrom: expect.objectContaining({ delegatorAgentRunId: "manager" }), closedAt: null })]);
+    expect(currentTaskOf(tasks, team)?.taskId).toBe(b);
+  });
+
   it("refuses unknown and ambiguous Tasks, a copy whose latest assignment is already B, a never-started copy, and sub-work (AC-008/009)", async () => {
     const { a, b } = await teamDidA();
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: "nope" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });

@@ -1,4 +1,6 @@
+import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { DelegatorCatalog } from "../agent-collaboration/execution/task/delegator-catalog.js";
+import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own-delegation.js";
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { collaboratorPortOf } from "../run-history/services/run-collaborator-port.js";
 import { createRunConversationAvailability } from "../agent-collaboration/execution/task/run-conversation-availability.js";
@@ -179,6 +181,11 @@ export const composeCollaboration = async (input: Readonly<{
       },
       receiverRoot: async (run) => (await input.rootResolver.resolveOrRestore(run))?.root ?? null,
     });
+    // A run's collaborator port as a viewer sees it, live or from its stored files (CR-461-041, SR-072 F-24).
+    const portOf = (run: RootExecutionIdentity, viewer: string) => collaboratorPortOf({ memoryDir,
+      activeAgentRoot: (runId) => runs.standaloneRootManager.getActive(runId),
+      activeTeamRun: (teamRunId) => runs.teamRunService.getActiveTeamRun(teamRunId),
+      activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer);
     const delegation = new TaskDelegation({
       deliverToRun: (message) => crossRun.route(message),
       tasks: () => tasks,
@@ -195,11 +202,8 @@ export const composeCollaboration = async (input: Readonly<{
       conversationOf: createRunConversationAvailability({ memoryDir, inspector: getAgentConversationActivityInspector(),
         liveAgents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents,
         teamMembers: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
-      delegatorCatalog: new DelegatorCatalog({ tree, admission: () => getCollaboratorAdmission(),
-        portOf: (run, viewer) => collaboratorPortOf({ memoryDir,
-          activeAgentRoot: (runId) => runs.standaloneRootManager.getActive(runId),
-          activeTeamRun: (teamRunId) => runs.teamRunService.getActiveTeamRun(teamRunId),
-          activeOrgRun: (orgRunId) => runs.agentOrgRunService.getActive(orgRunId) }, run.rootSubjectKind, run.rootRunId, viewer) }),
+      delegatorCatalog: new DelegatorCatalog({ tree, admission: () => getCollaboratorAdmission(), portOf }),
+      ownDelegations: new RunOwnDelegations({ files: new RunOwnAgentsReader(memoryDir), admission: () => getCollaboratorAdmission(), portOf }),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);
