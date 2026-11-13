@@ -25,6 +25,8 @@ export interface SendMessageCommandAckPayload {
     | 'COLLABORATOR_ADD_FAILED'
     | 'COLLABORATOR_MENTION_INVALID'
     | 'COLLABORATOR_MENTION_UNAVAILABLE'
+    /** autobyteus-461 DS-15: the run's Task is closed; only its assigner continues it. */
+    | 'TASK_AGENT_RESOURCE_CLOSED'
     | 'UNKNOWN_ERROR';
   message?: string;
   /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */

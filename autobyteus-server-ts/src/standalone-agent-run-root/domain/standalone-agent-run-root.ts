@@ -1,4 +1,5 @@
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
+import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type TaskExecutionOwner, type RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { runOwnTaskOf } from "../../agent-collaboration/delegation/run-own-task.js";
@@ -86,6 +87,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
     /** The relationships between runs: its peer children, its own Task, and its collaboration tree (step 2's reach, SR-060). */
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+    /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
+    closedTasks: Pick<ClosedTaskFence, "refusal">;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     /** The run's own origin (a delegated run, from its Task entry's delegator; a run a peer started, its back-link). */
@@ -165,9 +168,16 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   ensureHostReady(): Promise<AgentRun> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.readyHost(); });
   }
-  /** A user message for the run's agent (ready first; mentions resolved, nothing added; then posted). */
+  /**
+   * A user's (or a peer owner's) message for the run's agent. At the gate head, the closed-Task fence (DS-15): a closed
+   * run is refused before it is made ready. Then ready; mentions resolved, nothing added; then posted.
+   */
   postHostUserMessage(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
-    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.postToHost(input); });
+    return this.operationGate.run(async () => {
+      this.assertAdmitting();
+      const refusal = this.options.closedTasks.refusal(this.options.root);
+      return refusal ? { kind: "refused", refusal } : this.delivery.postToHost(input);
+    });
   }
   resolveCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.resolveMentions(input); });

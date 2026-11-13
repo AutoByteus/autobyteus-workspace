@@ -1,3 +1,4 @@
+import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RunViewStreams } from "../../agent-collaboration/delegation/run-view-stream.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
@@ -71,9 +72,11 @@ export const materializeTeamRoot = async (
     delegationSource: (caller) => requireActiveRoot().delegationSource({ identity: caller }),
     ownedTaskOf: (caller) => requireActiveRoot().ownedTaskOf({ identity: caller }),
   });
+  // DS-15 (SR-070): a delegated team run whose Task is closed takes no input, as base fenced a copy's every input.
+  const closedTasks = new ClosedTaskFence({ tree: input.delegationIndex, tasks: input.taskRecords });
   const callbacks = createTeamFlatExecutionCallbacks({
-    // A member takes input while its run is active; nothing hosted is fenced here (autobyteus-461).
-    assertExecutionInputAllowed: () => { requireActiveRoot(); },
+    // A member takes input while its run is active and its Task, if a Task names it, is open; nothing is hosted.
+    assertExecutionInputAllowed: () => { requireActiveRoot(); closedTasks.assertOpen(rootIdentity); },
     teamContext: new TeamRunContext({
       physicalScope,
       teamRunId: input.config.rootTeam.teamRunId,
@@ -126,6 +129,7 @@ export const materializeTeamRoot = async (
       publisher,
       taskRecords: input.taskRecords,
       delegationIndex: input.delegationIndex,
+      closedTasks,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });

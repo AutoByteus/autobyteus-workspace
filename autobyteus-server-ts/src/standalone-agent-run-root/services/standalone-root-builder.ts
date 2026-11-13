@@ -1,3 +1,4 @@
+import { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RunTaskRecords } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { DelegationIndex } from "../../agent-collaboration/delegation/delegation-index.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -17,7 +18,7 @@ import type { RemoteRunChannel } from "../../agent-collaboration/execution/remot
 export type StandaloneRootBuilderDependencies = Readonly<{
   taskRecords: RunTaskRecords;
   /** The relationships between runs, from the Task entries (SR-047). */
-  delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+  delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf" | "tasksOf">;
   /** Each run's view stream (SR-062). */
   viewStreams: RunViewStreams;
   packageStore: StandaloneRootPackageStore;
@@ -29,7 +30,12 @@ export type StandaloneRootBuilderDependencies = Readonly<{
 
 /** Builds one standalone root (its agent's handle, its own log's persistence, its event publisher) around its stored log. */
 export class StandaloneRootBuilder {
-  constructor(private readonly dependencies: StandaloneRootBuilderDependencies) {}
+  /** The closed-Task input fence over the tree and the Task records (DS-15). */
+  private readonly closedTasks: ClosedTaskFence;
+
+  constructor(private readonly dependencies: StandaloneRootBuilderDependencies) {
+    this.closedTasks = new ClosedTaskFence({ tree: dependencies.delegationIndex, tasks: dependencies.taskRecords });
+  }
 
   build(input: Readonly<{
     host: StandaloneRootHost;
@@ -60,6 +66,7 @@ export class StandaloneRootBuilder {
       publisher: this.dependencies.viewStreams.streamOf<StandaloneRootEvent>(createAgentRootExecutionIdentity(input.host.agentRunId)),
       taskRecords: this.dependencies.taskRecords,
       delegationIndex: this.dependencies.delegationIndex,
+      closedTasks: this.closedTasks,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       delegatedFrom: input.delegatedFrom,
       remoteRunChannel: this.dependencies.remoteRunChannel,

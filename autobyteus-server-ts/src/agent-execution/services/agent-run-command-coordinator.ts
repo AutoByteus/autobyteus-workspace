@@ -63,6 +63,9 @@ export class AgentRunCommandCoordinator {
     if (begin.kind === "duplicate") return this.duplicateResult(begin.record);
 
     const record = begin.record;
+    // DS-15 (SR-070): a run whose Task is closed takes no input. Refused before anything is resolved, restored or shown.
+    const refusal = this.standaloneRuns?.inputRefusal(record.runId) ?? null;
+    if (refusal) return this.refuse(record, refusal);
     const activeRunAtStart = this.agentRunService.getAgentRun(record.runId);
     const requiresActivation = !activeRunAtStart;
     if (requiresActivation) {
@@ -74,6 +77,11 @@ export class AgentRunCommandCoordinator {
 
     try {
       const outcome = await this.post(record, input);
+      if (outcome.kind === "refused") {
+        // Closed between the check above and the root's gate: nothing was made ready or posted.
+        this.clearOverlayForCommand(record);
+        return this.refuse(record, outcome.refusal);
+      }
       if (outcome.kind === "admission_failed") {
         return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", outcome.message, { publishErrorStatus: false });
       }
@@ -145,6 +153,11 @@ export class AgentRunCommandCoordinator {
     }
     const post: AgentOperationResult = await run.postUserMessage(message, postOptions);
     return { kind: "posted", run, post };
+  }
+
+  private refuse(record: AgentRunCommandRecord, refusal: Readonly<{ code: "TASK_AGENT_RESOURCE_CLOSED"; message: string }>): Promise<AgentRunCommandCoordinatorResult> {
+    this.registry.markRejected({ runId: record.runId, messageId: record.messageId, code: refusal.code, message: refusal.message });
+    return this.recordResult(this.latestRecord(record), "rejected", false, false);
   }
 
   private applyInputLifecycle(

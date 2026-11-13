@@ -68,6 +68,12 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     this.changed(taskId);
     return this.closedAgentRuns(taskId);
   }
+  /** The Task is deleted: its entries go with it, and the tree is told (as `ProjectTaskService` deletes a Task). */
+  deleteTask(taskId: string): void {
+    this.tasks.delete(taskId);
+    for (const [key, entry] of this.entries) if (entry.taskId === taskId) this.entries.delete(key);
+    this.changed(taskId);
+  }
   /** The agent's own status change out of DONE (it reopens no entry). */
   setTaskOpen(taskId: string): void { this.tasks.get(taskId)!.done = false; }
   /** Every call to `reopenAssignment`, in order. */

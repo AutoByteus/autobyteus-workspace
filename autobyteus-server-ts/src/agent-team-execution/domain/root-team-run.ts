@@ -1,3 +1,4 @@
+import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { acceptWorkPacketIfAllowed } from "../../agent-collaboration/execution/task/task-delegation.js";
 import { mentionViewerOf } from "../../agent-collaboration/collaborators/mention-viewer.js";
@@ -98,6 +99,8 @@ export class RootTeamRun {
     taskRecords: RunTaskRecords;
     /** The relationships between runs (the Task entries): its peer children and its own Task (SR-047). */
     delegationIndex: Pick<DelegationIndex, "peerChildrenOf" | "currentTaskOf" | "collaborationTreeOf">;
+    /** The closed-Task input fence, from the tree and the Task records (DS-15, SR-070). */
+    closedTasks: Pick<ClosedTaskFence, "refusal">;
     memoryLocator?: AgentRunMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -308,6 +311,9 @@ export class RootTeamRun {
       if (!execution) {
         return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not in root '${this.teamRunId}'.` };
       }
+      // DS-15: a delegated team run whose Task is closed takes no input (a message or an approval), as base fenced a copy.
+      const refusal = command.kind === "interrupt" ? null : this.options.closedTasks.refusal(createTeamRootExecutionIdentity(this.teamRunId));
+      if (refusal) return refusal;
       if (command.kind !== "post_message") {
         if (!this.isLiveAgent(agentRunId)) {
           return { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };

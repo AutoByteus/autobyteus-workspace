@@ -1,3 +1,4 @@
+import type { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RunViewStreams } from "../agent-collaboration/delegation/run-view-stream.js";
 import type { RunViewRowSources } from "../services/agent-streaming/run-view-rows.js";
 import type { ActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -15,6 +16,8 @@ export type RunViewSources = Readonly<{
   /** The rows under a run: read with a snapshot's base, their records after it, their statuses followed (SR-061, SR-063). */
   rows: RunViewRowSources;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
+  /** The closed-Task input fence (DS-15): a member's input is refused before its run is restored. */
+  closedTasks: Pick<ClosedTaskFence, "refusal">;
   readStoredTeamTree(teamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null>;
   readStoredOrgTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null>;
 }>;
@@ -25,6 +28,7 @@ export const createRunViewSources = (input: Readonly<{
   streams: RunViewStreams;
   rows: RunViewRowSources;
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
+  closedTasks: Pick<ClosedTaskFence, "refusal">;
 }>): RunViewSources => {
   const layout = new AgentMemoryLayout(input.memoryDir);
   const teamTrees = new TeamRunExecutionTreeStore();
@@ -33,6 +37,7 @@ export const createRunViewSources = (input: Readonly<{
     streams: input.streams,
     rows: input.rows,
     registrations: input.registrations,
+    closedTasks: input.closedTasks,
     readStoredTeamTree: (teamRunId) => teamTrees.read(layout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }), teamRunId),
     readStoredOrgTree: async (orgRunId) => {
       const tree = await orgTrees.read(layout.getOrgDirPath(orgRunId), orgRunId);

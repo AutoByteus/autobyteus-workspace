@@ -33,6 +33,8 @@ export type AgentRunCommandErrorCode =
   | "COLLABORATOR_MENTION_UNAVAILABLE"
   | "COLLABORATOR_ADMISSION_FAILED"
   | "COLLABORATOR_ADD_FAILED"
+  /** DS-15: the run's Task is closed; only its assigner continues it. */
+  | "TASK_AGENT_RESOURCE_CLOSED"
   | "UNKNOWN_ERROR";
 
 export type SendMessageCommandAckPayload = {

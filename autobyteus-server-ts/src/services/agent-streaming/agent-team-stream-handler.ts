@@ -157,6 +157,9 @@ export class AgentTeamStreamHandler {
     // A peer row's command goes to its handle (SR-066), never through the team.
     const peer = this.sources.rows.peerRunOf(agentRunId);
     if (peer) return executePeerCommand(peer, agentRunId, command);
+    // DS-15 (SR-070): a delegated team run whose Task is closed takes no input; refused before it is restored or shown.
+    const refusal = command.kind === "interrupt" ? null : this.sources.closedTasks.refusal(createTeamRootExecutionIdentity(teamRunId));
+    if (refusal) return refusal;
     const live = this.teamRunService.getActiveTeamRun(teamRunId);
     if (!live && command.kind !== "post_message") {
       return { accepted: false, code: "TEAM_RUN_STOPPED", message: `Team run '${teamRunId}' is stopped. A message to one of its members starts it.` };
@@ -217,6 +220,9 @@ export class AgentTeamStreamHandler {
     // A peer row's message goes to its handle (SR-066): the team stays as it is.
     const peer = this.sources.rows.peerRunOf(agentRunId);
     if (peer) return mentions.length ? PEER_MENTIONS_REFUSAL : executePeerCommand(peer, agentRunId, { kind: "post_message", message: userMessage(payload, payload.content) });
+    // DS-15: refused before its mentions restore the run.
+    const refusal = this.sources.closedTasks.refusal(createTeamRootExecutionIdentity(view.teamRunId));
+    if (refusal) return refusal;
     let content = payload.content;
     if (mentions.length) {
       const root = this.teamRunService.getActiveTeamRun(view.teamRunId) ?? await this.teamRunService.resolveManagedTeamRun(view.teamRunId);

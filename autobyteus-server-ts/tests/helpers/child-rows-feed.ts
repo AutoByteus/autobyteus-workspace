@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+import type { ClosedTaskRefusal } from "../../src/agent-collaboration/execution/task/closed-task-fence.js";
 import type { CollaborationTaskExecutionDto } from "@autobyteus/collaboration-stream-contracts";
 import { ChildRowsFeed } from "../../src/agent-collaboration/delegation/child-rows-feed.js";
 import { testViewStreams } from "./view-streams.js";
@@ -71,7 +73,10 @@ export const testRegistrations = () => {
 export const noViewRows = () => followTestChildRows().rows;
 
 /** View sources for a stream handler under test whose run is live (no stored tree, no rows). */
+/** A closed-Task fence (DS-15) that takes every input; a test sets `refusal` to close a run's Task. */
+export const openTasks = () => ({ refusal: vi.fn((_run: RootExecutionIdentity): ClosedTaskRefusal | null => null) });
+
 export const testViewSources = () => {
   const rows = followTestChildRows();
-  return { streams: rows.streams, rows: rows.rows, registrations: testRegistrations(), readStoredTree: async () => null };
+  return { streams: rows.streams, rows: rows.rows, registrations: testRegistrations(), closedTasks: openTasks(), readStoredTree: async () => null };
 };

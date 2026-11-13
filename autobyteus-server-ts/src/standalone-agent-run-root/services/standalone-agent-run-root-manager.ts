@@ -1,3 +1,4 @@
+import { ClosedTaskFence, type ClosedTaskRefusal } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -85,6 +86,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   readonly pairedAgents: PairedAgentAccess = new StandalonePairedAgentAccess(this);
   /** autobyteus-278 (DS-006): who learns that a run ended by Stop, terminate or history delete/archive (not idle shutdown). */
   private readonly endListeners = new Map<string, Set<() => void>>();
+  private readonly closedTasks: ClosedTaskFence;
 
   constructor(private readonly options: Readonly<{
     memoryDir: string;
@@ -100,6 +102,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     this.store = options.packageStore ?? new StandaloneRootPackageStore();
     this.directory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
     this.roots = new StandaloneRootBuilder({ ...options.rootDependencies, packageStore: this.store });
+    this.closedTasks = new ClosedTaskFence({ tree: options.rootDependencies.delegationIndex, tasks: options.rootDependencies.taskRecords });
     this.hostContexts = new StandaloneHostMemberContextBuilder({
       definitions: options.definitions,
       tree: options.rootDependencies.delegationIndex,
@@ -160,8 +163,18 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
       : { run: createAgentRootExecutionIdentity(hostRunId), tree: this.options.rootDependencies.delegationIndex }, query);
   }
 
-  /** `StandaloneRunCommandPort`: the root executes the command in its gate. */
+  /**
+   * `StandaloneRunCommandPort`: the closed-Task fence (DS-15, SR-070), before the run's root is resolved or restored, so a
+   * refused input registers nothing, changes no status and binds no stream. The root's gate head checks it again.
+   */
+  inputRefusal(runId: string): ClosedTaskRefusal | null {
+    return this.closedTasks.refusal(createAgentRootExecutionIdentity(runId.trim()));
+  }
+
+  /** `StandaloneRunCommandPort`: refused when its Task is closed; else the root executes the command in its gate. */
   async postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null> {
+    const refusal = this.inputRefusal(input.runId);
+    if (refusal) return { kind: "refused", refusal };
     const root = await this.resolveRoot(input.runId);
     if (!root) return null;
     const { runId: _runId, ...command } = input;

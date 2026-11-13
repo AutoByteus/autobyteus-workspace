@@ -31,7 +31,7 @@ type Post = { agentRunId: string; via: "host" | "root"; message: AgentInputUserM
 
 /** Roots and runs as doubles: every post is recorded with its options and the in-flight count when it started. */
 /** `parents`: child root key → the run that delegated to it (its Task entry's `delegatedFrom.delegatingRun`). */
-const harness = (options: { current?: string | null; concurrency?: number; postDelayMs?: number; parents?: Record<string, RootExecutionIdentity> } = {}) => {
+const harness = (options: { current?: string | null; concurrency?: number; postDelayMs?: number; parents?: Record<string, RootExecutionIdentity>; closed?: readonly string[] } = {}) => {
   const live = new Set<string>();
   const history = new Map<string, RootHistoryState>();
   const posts: Post[] = [];
@@ -86,6 +86,7 @@ const harness = (options: { current?: string | null; concurrency?: number; postD
     } } as never,
     now: () => new Date("2026-11-01T10:00:30.000Z"),
     concurrency: options.concurrency,
+    closedTasks: { refusal: (root: RootExecutionIdentity) => options.closed?.includes(root.rootRunId) ? { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED" as const, message: "closed" } : null },
   });
   return { resumer, live, history, posts, refuse, published, order, rootResolver, roots, maxInFlight: () => maxInFlight };
 };
@@ -150,6 +151,17 @@ describe("RestartResumer: the record", () => {
 });
 
 describe("RestartResumer: restore, re-check, post a first-input-only notice", () => {
+  it("DS-15: a run whose Task is closed is not restored and gets no notice; the others are resumed", async () => {
+    await writeBusyRunRecord(recordPath, { entries: [entry(agentRoot("host-1"), "host-1", "host"), entry(agentRoot("copy-1"), "copy-1", "host"),
+      entry(teamRoot("team-1"), "worker-1", "member")] });
+    const h = harness({ closed: ["copy-1", "team-1"] });
+
+    await expect(h.resumer.resumeAfterUpdate()).resolves.toEqual({ recorded: 3, notUpdate: 0, skipped: 2, resumed: 1, failed: 0 });
+    expect(h.posts.map((post) => post.agentRunId)).toEqual(["host-1"]);
+    expect(h.rootResolver.resolveOrRestore.mock.calls.map(([root]) => (root as RootExecutionIdentity).rootRunId)).toEqual(["host-1"]);
+    expect(h.order.filter((step) => step.includes("copy-1") || step.includes("team-1") || step.includes("worker-1"))).toEqual([]);
+  });
+
   it("AC-002: restores each run through its root, then posts one notice that only its first input may be", async () => {
     await writeBusyRunRecord(recordPath, { entries: [
       entry(agentRoot("host-1"), "host-1", "host"),

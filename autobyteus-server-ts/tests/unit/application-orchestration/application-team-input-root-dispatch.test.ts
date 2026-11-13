@@ -54,7 +54,7 @@ const buildRootTeamRuntime = () => {
     createdAt: "2026-04-19T09:10:00.000Z",
   });
   const executeDirectAgentCommand = vi.fn(async () => ({ accepted: true as const }));
-  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(),
+  const root = new RootTeamRun({ delegationIndex: noDelegations(), taskRecords: openTaskRecords(), closedTasks: { refusal: () => null },
     rootRun: {
       teamRunId,
       isActive: vi.fn(() => true),

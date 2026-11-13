@@ -1,3 +1,4 @@
+import type { ClosedTaskFence } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import {
   CollaborationStreamServerMessageSchema,
   type CollaborationStreamServerMessage,
@@ -20,6 +21,8 @@ export type OrgViewSources = Readonly<{
   rows: RunViewRowSources;
   /** The run's registration (managed) and its end, by its identity. */
   registrations: Pick<ActiveCollaborationRootDirectory, "onRegistrationChanged">;
+  /** The closed-Task input fence (DS-15, SR-070): a member's input is refused before the run is restored. */
+  closedTasks: Pick<ClosedTaskFence, "refusal">;
   /** The stopped run's own stored tree; null when there is no such run. */
   readStoredTree(orgRunId: string): Promise<AgentOrgRunExecutionTreeSnapshot | null>;
 }>;

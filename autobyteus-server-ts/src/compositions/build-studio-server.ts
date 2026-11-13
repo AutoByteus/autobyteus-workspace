@@ -373,7 +373,7 @@ export const buildStudioServer = async (input: {
       runs: generalProcessRunSupervisor, rootResolver, activeRoots: getActiveCollaborationRootDirectory(), remoteChannel: findProcessRemoteRunChannel });
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
     const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
-    const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree,
+    const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver, tree: taskSide.tree, closedTasks: taskSide.closedTasks,
       orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService });
     const applicationServices = createStudioApplicationServices({
       appConfig: input.appConfig, taskSide,

@@ -4,6 +4,7 @@ import type { AgentRun } from "../domain/agent-run.js";
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunInputOptions } from "../input/agent-run-input-contract.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { ClosedTaskRefusal } from "../../agent-collaboration/execution/task/closed-task-fence.js";
 import type { StandaloneAgentRunActivationResult } from "./standalone-agent-run-lifecycle-service.js";
 
 /**
@@ -52,10 +53,17 @@ export type StandaloneRunPostInput = Readonly<{
 export type StandaloneRunPostResult =
   | Readonly<{ kind: "posted"; run: AgentRun; post: AgentOperationResult }>
   | Readonly<{ kind: "admission_rejected"; run: AgentRun; admission: Extract<RootCollaboratorAdmissionResult, { admitted: false }> }>
-  | Readonly<{ kind: "admission_failed"; run: AgentRun; message: string }>;
+  | Readonly<{ kind: "admission_failed"; run: AgentRun; message: string }>
+  /** Its Task is closed (DS-15): nothing was restored, admitted or posted. */
+  | Readonly<{ kind: "refused"; refusal: ClosedTaskRefusal }>;
 
 export type StandaloneRunCommandPort = Readonly<{
-  /** In the root's gate: host ready, `onActiveRunReady`, mention admission, then the post. */
+  /**
+   * The closed-Task fence (DS-15, SR-070): the refusal of input to the run, checked before anything is resolved, restored
+   * or shown; `null` when it takes input (or is not an eligible run).
+   */
+  inputRefusal(runId: string): ClosedTaskRefusal | null;
+  /** In the root's gate: the fence again, host ready, `onActiveRunReady`, mention admission, then the post. */
   postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null>;
 }>;
 

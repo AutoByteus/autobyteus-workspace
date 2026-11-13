@@ -10,7 +10,7 @@ import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/dom
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { assertAgentTeamAddress } from "../../../../src/agent-collaboration/domain/agent-team-address.js";
-import { delegatedChild, followTestChildRows, testRegistrations } from "../../../helpers/child-rows-feed.js";
+import { delegatedChild, followTestChildRows, testRegistrations, openTasks } from "../../../helpers/child-rows-feed.js";
 
 const scenarioDir = path.resolve(
   process.cwd(),
@@ -72,13 +72,14 @@ const createHarness = (input: {
     recordRunActivity: vi.fn(async () => undefined),
   };
   const readStoredTree = vi.fn(async () => tree);
+  const closedTasks = openTasks();
   const connection = { send: vi.fn(), close: vi.fn() };
   const handler = new AgentTeamStreamHandler(
     new AgentSessionManager(),
     teamRunService as never,
-    { streams: feed.streams, rows: feed.rows, registrations, readStoredTree },
+    { streams: feed.streams, rows: feed.rows, registrations, closedTasks, readStoredTree },
   );
-  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree, stream,
+  return { handler, connection, root, teamRunService, executeAgentCommand, closeSnapshot, feed, registrations, readStoredTree, stream, closedTasks,
     stop: () => { managed = false; registrations.unregister(team); },
     emit: (event: unknown) => eventListener?.(event) };
 };
@@ -399,5 +400,54 @@ describe("AgentTeamStreamHandler current root stream", () => {
       expect(missing.registrations.listening(createTeamRootExecutionIdentity("team-run-root"))).toBe(0);
     });
   });
-});
 
+  describe("DS-15: the user's input to a member of a delegated team run whose Task is closed", () => {
+    const closed = { accepted: false as const, code: "TASK_AGENT_RESOURCE_CLOSED" as const, message: "Your Task is DONE or CANCELLED, so you can't start new work." };
+    const send = (id: string, extra: Record<string, unknown> = {}) => JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "Are you there?", context_file_paths: [],
+      image_urls: [], agent_run_id: "nested-task-agent-run-001", message_id: `m-${id}`, dedupe_key: `d-${id}`, ...extra } });
+
+    it("a stopped run is refused before it is restored: nothing registers, no snapshot or status follows, nothing is posted", async () => {
+      const harness = createHarness({ stopped: true });
+      harness.closedTasks.refusal.mockReturnValue(closed);
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      const before = sent(harness.connection).length;
+      await harness.handler.handleMessage(sessionId!, send("1"));
+      await harness.handler.handleMessage(sessionId!, send("2", { mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
+      const after = sent(harness.connection).slice(before);
+      expect(after.map((message) => message.type)).toEqual(["ERROR", "ERROR"]);
+      for (const message of after) {
+        expect(message.payload).toMatchObject({ agent_run_id: "nested-task-agent-run-001", message: closed.message });
+        expect(JSON.stringify(message)).toContain("TASK_AGENT_RESOURCE_CLOSED");
+      }
+      expect(harness.closedTasks.refusal).toHaveBeenCalledWith(createTeamRootExecutionIdentity("team-run-root"));
+      expect(harness.teamRunService.resolveManagedTeamRun).not.toHaveBeenCalled();
+      expect(harness.root.openViewSnapshotConnection).not.toHaveBeenCalled();
+      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+      expect(harness.teamRunService.recordRunActivity).not.toHaveBeenCalled();
+    });
+
+    it("a live run refuses the message and an approval; an interrupt still reaches it", async () => {
+      const harness = createHarness();
+      harness.closedTasks.refusal.mockReturnValue(closed);
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      await harness.handler.handleMessage(sessionId!, send("3"));
+      expect(sent(harness.connection).at(-1)).toMatchObject({ type: "ERROR", payload: { message: closed.message } });
+      expect(harness.executeAgentCommand).not.toHaveBeenCalled();
+      await harness.handler.handleMessage(sessionId!, JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { agent_run_id: "nested-task-agent-run-001", command_id: "c-i" } }));
+      expect(harness.executeAgentCommand).toHaveBeenCalledWith("nested-task-agent-run-001", { kind: "interrupt" });
+    });
+
+    it("after the assigner reopens it, the user's message is posted", async () => {
+      const harness = createHarness({ stopped: true });
+      harness.closedTasks.refusal.mockReturnValue(closed);
+      const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
+      sessions.push({ handler: harness.handler, id: sessionId! });
+      harness.closedTasks.refusal.mockReturnValue(null);
+      await harness.handler.handleMessage(sessionId!, send("4"));
+      expect(harness.teamRunService.resolveManagedTeamRun).toHaveBeenCalledOnce();
+      expect(harness.executeAgentCommand).toHaveBeenCalledWith("nested-task-agent-run-001", expect.objectContaining({ kind: "post_message" }));
+    });
+  });
+});

@@ -1,3 +1,4 @@
+import type { ClosedTaskFence } from "../agent-collaboration/execution/task/closed-task-fence.js";
 import type { RootExecutionIdentity } from "../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
@@ -25,6 +26,8 @@ export const composeRestartResume = (input: Readonly<{
   rootResolver: CollaborationRootResolver;
   /** The relationships between runs (SR-047): a delegated run is resumed through its own root. */
   tree: Pick<DelegationIndex, "parentOf">;
+  /** DS-15: a run whose Task is closed is not resumed (as base fenced its input). */
+  closedTasks: Pick<ClosedTaskFence, "refusal">;
   orgHistory: Pick<AgentOrgRunHistoryCatalogService, "getCatalogRow">;
 }>): RestartResume => {
   const recordPath = busyRunRecordPath(input.appDataDir);
@@ -40,7 +43,7 @@ export const composeRestartResume = (input: Readonly<{
   return Object.freeze({
     recorder: new BusyRunRecorder({ liveRuns, roots: getActiveCollaborationRootDirectory(), recordPath, version: readReleaseIdentity }),
     resumer: new RestartResumer({
-      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: input.tree,
+      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver, tree: input.tree, closedTasks: input.closedTasks,
     }),
   });
 };
