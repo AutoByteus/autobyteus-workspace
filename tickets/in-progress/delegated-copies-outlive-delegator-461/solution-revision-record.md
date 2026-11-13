@@ -1392,4 +1392,4 @@
 - **Next action:**
   - architecture review;
   - then the Implementation Engineer.
-
+- **ARCH-REV-046 failed SR-072 on AR-026, which is now answered.** The snapshot's logs are read after the synchronous base step, behind the queue, with the queued message frames numbered after the base and deduplicated by message ID. The test covers a message committed during the read. The sequencing test's wording for `lastMessageChangeSequence` is aligned. The Solution Designer's gap: SR-072 placed the read before the base, which loses a message committed in between.

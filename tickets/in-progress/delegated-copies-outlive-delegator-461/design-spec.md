@@ -312,7 +312,7 @@ So:
 - **A checkpoint** answers `changeSequence` as X's view sequence, and `hasOpenExecutionWork` as X's own run's open work (false while its root is not loaded). A child's status change or row change is a numbered frame, so a recovery that spans one sees the sequence move and retries, as base's recovery already does for any change.
 - **What this replaces:** SR-044's hold during a snapshot, and its idempotent handling. The hold now lives in `RunViewStream`'s snapshot connection (base's queue), and a numbered stream gives the frames after the snapshot, in order, each once. So base's clients take the row events exactly as at base.
 
-**Sequencing tests** (SR-062, SR-063): a row change and a status change during an async stored capture appear once, after the snapshot, not twice; `liveSequenceId` stays the same across a stop and a restore of the run, and changes on a server restart; `lastMessageChangeSequence` moves only with the run's own message events; a stopped run's view and a live one each get consecutive frames mixing the run's own events, row events and status events; a snapshot taken between frames is followed by exactly the frames after it; a stored-to-live switch keeps the sequence; a checkpoint-bracketed recovery resumes at the checkpoint's sequence, and retries when a child's status changed during it.
+**Sequencing tests** (SR-062, SR-063): a row change and a status change during an async stored capture appear once, after the snapshot, not twice; `liveSequenceId` stays the same across a stop and a restore of the run, and changes on a server restart; `lastMessageChangeSequence` moves only with the view's message events (the composed messages, SR-072), never with row or status frames; a stopped run's view and a live one each get consecutive frames mixing the run's own events, row events and status events; a snapshot taken between frames is followed by exactly the frames after it; a stored-to-live switch keeps the sequence; a checkpoint-bracketed recovery resumes at the checkpoint's sequence, and retries when a child's status changed during it.
 
 **Rule 3: the acceptance check of the frontend contract.** For each story of `stories.py`, a characterization at `827f1e68dc` captures the snapshots, events and list reads the web receives. The branch gives the same, except where rule 2 applies: a child's conversation, output and commands, which move to the child's own stream.
 
@@ -339,14 +339,19 @@ So:
 At base, a delegator's Team tab showed its root's log composed with the own logs of every task execution in its stored tree, open or closed, at any depth. That was `composeMessageLogs` over `taskAgentLogOwners` (`task-agent-message-logs.ts:102-163`, `team-communication-store.ts:51`, `standalone-root-package-store.ts:92`, `agent-org-communication-messages-store.ts:49`): deduplicated by message ID and ordered by time. Since TC-13 each run's log holds only its own agents' messages, so the same composition is taken over the delegation index:
 - **The source:** the view of run X composes X's own log and the own log of every run in `subtreeOf(X)`, open or closed, at every depth. It uses base's `composeMessageLogs` and base's in-view filter, unchanged. A cross-run message is in both runs' logs and is kept once. A peer run's internal messages stay on its node, as at base. Its messages with this node's runs are in those runs' logs.
 - **Live:** when a root commits a line to its own log, it publishes the message once to a node-level `RunMessagesFeed`, with the sender's and the receiver's runs. For a message between runs, the receiver's commit publishes it; the sender's later commit of the same message ID does not. Each open `RunViewStream` whose run set, X plus `subtreeOf(X)`, contains either run numbers it as base's message event (`TEAM_COMMUNICATION_MESSAGE` and its collaboration and org counterparts). It moves `lastMessageChangeSequence`.
-- **The snapshot:** the logs are read before the synchronous base step (SR-063). A message published during that read is queued by the snapshot connection and delivered after the snapshot, unless its message ID is already in it. That is base's queue, with base's deduplication.
+- **The snapshot** (ARCH-REV-046 AR-026): the logs are read **after** the synchronous base step, like the run's own parts, in this order:
+  1. in one synchronous step: the view's base sequence, the rows and the statuses (SR-063);
+  2. the asynchronous read of the composed logs, behind the snapshot connection's queue;
+  3. the queued message frames, numbered after the base, delivered after the snapshot. A frame whose message ID is already in the read is dropped.
+
+  So a message committed during the read is in the snapshot or in a frame after it, never lost, and never numbered at or below the base. Rows must be read at the base, because base's Team client does not deduplicate started rows. Messages are deduplicated by message ID at base, so they may be read behind the queue.
 - **Paging:** as at base: the newest page, then older pages on request, over the composed list.
 - **Refused messages are not shown.** A message refused before any log is written is in no log; the sender sees the refusal in its tool result. At base, a message refused after its durable write (the closure race of `root-message-append.ts:43`) stayed in the log. In the current order the receiver re-checks the Task rule before it writes, so such a message is never written, and the Team tab cannot show it (contract: "If the receiver refuses, nothing is written"). This is the one accepted difference, and `teammate-delivery-task-closure-race` asserts it as such.
 - **Tests:**
   - a two-hop message, a worker to its helper, is in the Manager's Team tab: in the snapshot, live, and after a reload;
   - a message between runs is shown once;
   - a closed run's earlier messages stay;
-  - a message published during a snapshot appears once;
+  - a message committed during the snapshot's log read appears exactly once, and its frame is numbered after the base, with no reopen by the sequence check;
   - the paging over the composed list works.
 
 **What the web still changes, and why:**
