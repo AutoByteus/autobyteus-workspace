@@ -63,6 +63,8 @@ type Join = Readonly<{ role: "assigned"; taskId: string } | { role: "assigned"; 
 type NewRunWork = Readonly<{ description: string; comments: readonly string[]; referenceFiles: readonly string[]; task?: DelegatedProjectTask; join: Join; delegation: DelegationWork }>;
 
 const message = (error: unknown): string => error instanceof Error ? error.message : String(error);
+/** Base's Task record code for any failed dispatch of a new run (`root-task-dispatch.ts` at 827f1e68dc). */
+const TASK_DISPATCH_FAILED = "TASK_DISPATCH_FAILED";
 
 /**
  * CM-1 for a delegated run (CR-461-050): the address it was delegated to (its Task entry's `recipientAddress`), or one
@@ -175,7 +177,8 @@ export class TaskDelegation {
       content: placement.description, messageType: "task_work_packet", createdAt: new Date().toISOString() })
       .catch((error: unknown) => ({ accepted: false as const, code: REMOTE_REFUSAL.PEER_UNREACHABLE, message: message(error) }));
     if (!delivered.accepted) {
-      await tasks.markFailed(execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: delivered.message ?? "The work was not delivered." });
+      // As base, any failed dispatch of a new run is recorded as TASK_DISPATCH_FAILED with its message (CR-461-052, REQ-005).
+      await tasks.markFailed(execution, { code: TASK_DISPATCH_FAILED, message: delivered.message ?? "The work was not delivered." });
       return refused(delivered.message ?? "The work was not delivered.");
     }
     await tasks.markStarted(execution);
@@ -285,7 +288,7 @@ export class TaskDelegation {
     }
     if (!delivered.accepted) {
       const reason = delivered.message ?? delivered.code ?? "The work was not delivered.";
-      await tasks.markFailed(execution, { code: delivered.code ?? "TASK_DISPATCH_FAILED", message: reason });
+      await tasks.markFailed(execution, { code: TASK_DISPATCH_FAILED, message: reason });
       await this.dependencies.discard(execution).catch((error) => console.warn("DELEGATED_RUN_DISCARD_FAILED", { execution, error: message(error) }));
       return { delegated: false, message: reason };
     }

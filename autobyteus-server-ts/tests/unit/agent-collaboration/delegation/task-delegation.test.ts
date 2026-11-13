@@ -201,12 +201,14 @@ describe("TaskDelegation.toNewRun", () => {
     expect(h.deliverWorkPacket).not.toHaveBeenCalled();
   });
 
-  it("a work packet the new run does not accept marks the entry failed and ends the run", async () => {
+  it("a work packet the new run does not accept marks the entry failed (base's TASK_DISPATCH_FAILED, CR-461-052) and ends the run", async () => {
     const h = harness();
+    const markFailed = vi.spyOn(h.tasks, "markFailed");
     h.deliverWorkPacket.mockResolvedValueOnce({ accepted: false, code: "AGENT_ROOT_HOST_UNAVAILABLE", message: "The runtime is not available." });
     await expect(h.delegate(M, M.rootRunId, { recipient_address: "/image_maker", description: "Draw." }))
       .resolves.toEqual({ delegated: false, message: "The runtime is not available." });
     expect(h.tasks.entry({ agentRunId: "image_maker_33f0" })).toMatchObject({ start: "failed" });
+    expect(markFailed).toHaveBeenCalledWith({ agentRunId: "image_maker_33f0" }, { code: "TASK_DISPATCH_FAILED", message: "The runtime is not available." });
     expect(h.discard).toHaveBeenCalledWith({ agentRunId: "image_maker_33f0" });
   });
 
@@ -251,14 +253,23 @@ describe("TaskDelegation.toNewRun", () => {
       expect(await h.tree.runOfAgent("analyst_5d20")).toEqual({ rootSubjectKind: "agent_team", rootRunId: "research_team_77aa" });
     });
 
-    it("a refusal by the peer writes nothing; a work packet the peer refuses marks the entry failed", async () => {
+    it("a refusal by the peer writes nothing; a work packet the peer refuses, or that cannot reach it, marks the entry failed with base's TASK_DISPATCH_FAILED (CR-461-052)", async () => {
       const refusing = peerHarness(channelWith({ accepted: false, code: "AGENT_NOT_FOUND", message: "Nothing is at /research_team on Studio B." }));
       await expect(refusing.delegate()).resolves.toEqual({ outcome: { delegated: false, message: "Nothing is at /research_team on Studio B." }, launches: [] });
       expect(refusing.tasks.links).toEqual([]);
       const failing = peerHarness(channelWith({ accepted: true, kind: "agent", agentRunId: "remote_agent_1", launches: [] },
         { accepted: false, code: "PEER_UNREACHABLE", message: "Studio B did not answer." }));
+      const markFailed = vi.spyOn(failing.tasks, "markFailed");
       await expect(failing.delegate()).resolves.toMatchObject({ outcome: { delegated: false, message: "Studio B did not answer." } });
       expect(failing.tasks.entry({ agentRunId: "remote_agent_1" })).toMatchObject({ start: "failed", nodeId: "node-b-1f0e" });
+      expect(markFailed).toHaveBeenCalledWith({ agentRunId: "remote_agent_1" }, { code: "TASK_DISPATCH_FAILED", message: "Studio B did not answer." });
+      // The channel's delivery rejects: the node is gone.
+      const channel = channelWith({ accepted: true, kind: "agent", agentRunId: "remote_agent_2", launches: [] });
+      channel.deliverMessage.mockRejectedValueOnce(new Error('Node "Studio B" could not be reached (fetch failed).'));
+      const gone = peerHarness(channel);
+      const goneFailed = vi.spyOn(gone.tasks, "markFailed");
+      await expect(gone.delegate()).resolves.toMatchObject({ outcome: { delegated: false, message: 'Node "Studio B" could not be reached (fetch failed).' } });
+      expect(goneFailed).toHaveBeenCalledWith({ agentRunId: "remote_agent_2" }, { code: "TASK_DISPATCH_FAILED", message: 'Node "Studio B" could not be reached (fetch failed).' });
     });
   });
 
