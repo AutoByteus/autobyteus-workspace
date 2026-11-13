@@ -641,6 +641,12 @@ skill that cannot be set up is logged; the promise does not reject for it.
   never the backend's `isActive()`, which stays true on Claude and Codex until
   their cleanup has ended. Claude's `Skill` tool is allowed per CLI process
   generation from `hasSkills()`.
+- Claude: every preparation (new and restore) makes sure
+  `<workspace>/.claude/skills` exists before the session starts, because the
+  Claude CLI watches that folder only when it exists as its process starts; a
+  run that started with no skills then still lists a skill linked mid-run. The
+  folder is never removed (the materializer leaves it too). A failure to create
+  it is logged (`CLAUDE_WORKSPACE_SKILLS_FOLDER_FAILED`) and never fails the run.
 - Antigravity: links into its own run capsule (`addAgyRunCapsuleSkills`), one
   skill per linker call, and rewrites `manifest.json` atomically with the linked
   names, so a resume keeps them. The capsule is the run's own and kept for resume,

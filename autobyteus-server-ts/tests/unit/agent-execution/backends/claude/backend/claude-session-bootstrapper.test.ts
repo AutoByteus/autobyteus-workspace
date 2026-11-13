@@ -1,4 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
@@ -9,7 +12,9 @@ import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/d
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import { testPreparationGuard } from "../../../../../fixtures/run-workspace-skills-fixtures.js";
 
-const WORKING_DIRECTORY = "/tmp/claude-bootstrapper-workspace";
+// A test-owned workspace: preparation creates its `.claude/skills` folder (SR-004).
+const WORKING_DIRECTORY = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "claude-bootstrapper-workspace-")));
+afterAll(() => { fs.rmSync(WORKING_DIRECTORY, { recursive: true, force: true }); });
 
 const createMemberExecutionContext = () =>
   testMemberExecutionContext({
@@ -42,10 +47,11 @@ const createRunContext = (input: {
     runtimeContext: null,
   });
 
-const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED") => {
+const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED",
+  workingDirectory = WORKING_DIRECTORY) => {
   const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async (input: { requests?: unknown[] }) => ({ materializedSkills: [], effectiveRequests: input.requests ?? [] })) };
   const bootstrapper = new ClaudeSessionBootstrapper(
-    { resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any,
+    { resolveWorkingDirectory: vi.fn(async () => workingDirectory) } as any,
     workspaceSkillMaterializer as any,
     {
       getAgentDefinitionById: vi.fn(async () => ({
@@ -137,4 +143,41 @@ describe("ClaudeSessionBootstrapper", () => {
       expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
   });
 
+
+  it("DI-001/SR-004: a run with no skills, new or restored, finds .claude/skills in its workspace when its session starts", async () => {
+    for (const restore of [false, true]) {
+      const workspace = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "claude-skills-folder-")));
+      try {
+        const { bootstrapper } = createBootstrapper([], "CONFIGURED", workspace);
+        const context = createRunContext({ autoExecuteTools: false });
+        if (restore) {
+          await bootstrapper.bootstrapForRestore(new AgentRunContext({ runId: context.runId, config: context.config,
+            runtimeContext: { sessionId: "existing-session", hasCompletedTurn: true, activeTurnId: null } as never }), testPreparationGuard(bootstrapper));
+        } else {
+          await bootstrapper.bootstrapForCreate(context, testPreparationGuard(bootstrapper));
+        }
+        expect(fs.statSync(path.join(workspace, ".claude", "skills")).isDirectory()).toBe(true);
+        expect(fs.readdirSync(path.join(workspace, ".claude", "skills"))).toEqual([]);
+      } finally {
+        fs.rmSync(workspace, { recursive: true, force: true });
+      }
+    }
+  });
+
+  it("DI-001/SR-004: a folder that cannot be created is logged with the run and never fails the preparation", async () => {
+    const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "claude-skills-folder-blocked-")));
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      // `.claude` is a file: the folder cannot be created under it.
+      fs.writeFileSync(path.join(root, ".claude"), "not a folder");
+      const { bootstrapper } = createBootstrapper([], "CONFIGURED", root);
+      const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), testPreparationGuard(bootstrapper));
+      expect(runContext.runtimeContext.sessionConfig.workingDirectory).toBe(root);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining(
+        `CLAUDE_WORKSPACE_SKILLS_FOLDER_FAILED: run=run-claude-standalone, folder=${path.join(root, ".claude", "skills")}:`));
+    } finally {
+      warn.mockRestore();
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
 });

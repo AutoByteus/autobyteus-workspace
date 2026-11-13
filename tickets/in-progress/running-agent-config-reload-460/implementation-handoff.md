@@ -2,36 +2,34 @@
 
 ## Status
 
-**Implementation complete except one Design Impact (DI-001), routed to the Solution Designer.** Everything in design
-SR-003 is implemented and checked. The live Claude check found that the Claude CLI does not list a skill linked mid-run
-when the run **started with zero skills**: its `.claude/skills` folder did not exist when the CLI process started, and
-the CLI watches only a folder that exists then. The fix (create an empty `<workspace>/.claude/skills` at preparation)
-is a new workspace side effect the design does not cover, so it is the designer's decision. See
-[DI-001](#design-impact-di-001--claude-does-not-list-a-skill-added-to-a-run-that-started-with-zero-skills).
+**Implementation complete; ready for Code Review (IR-002).** Everything in design SR-004 is implemented and checked.
+IR-001 raised Design Impact DI-001 (the Claude CLI does not list a skill linked mid-run when the run started without a
+`.claude/skills` folder). The Solution Designer resolved it in SR-004, and the architecture review passed it in round 3
+(ARCH-REV-003): Claude preparation now ensures the folder exists. AC-011 passes live for a zero-skills start (IMP-13).
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Large / High → independent architecture review selected; `design-review-report.md` round 2 `Pass` (ARCH-REV-002). This round's result: `Design Impact` → `/software_engineering_team/solution_designer`.
+- Upstream review applicability and handoff-rule result: Large / High → independent architecture review selected; `design-review-report.md` round 3 `Pass` (ARCH-REV-003, SR-004). This round's result: implementation complete → `/software_engineering_team/code_reviewer`.
 - Requirements doc: `tickets/in-progress/running-agent-config-reload-460/requirements-doc.md` (Approved, SR-002)
 - Investigation notes: `tickets/in-progress/running-agent-config-reload-460/investigation-notes.md`
 - Solution revision record: `tickets/in-progress/running-agent-config-reload-460/solution-revision-record.md`
-- Design spec: `tickets/in-progress/running-agent-config-reload-460/design-spec.md` (SR-003, Ready)
+- Design spec: `tickets/in-progress/running-agent-config-reload-460/design-spec.md` (SR-004, Ready)
 - Supplemental task artifacts: `evidence/claude-skill-hot-reload-probe*` (designer's probe), `follow-ups.md`
 - Design review report: `tickets/in-progress/running-agent-config-reload-460/design-review-report.md`
 - Architecture review revision record: `tickets/in-progress/running-agent-config-reload-460/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial round)
+- Triggering rework report: DI-001 (IR-001) → SR-004; `design-review-report.md` round 3
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, after the design revision for DI-001)
 - Implementation revision record: `tickets/in-progress/running-agent-config-reload-460/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-002, SR-003
-- Related architecture-review revision IDs: ARCH-REV-002
+- Current implementation revision ID: `IR-002` (baseline IR-001)
+- Related solution revision IDs: SR-002, SR-003, SR-004
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003
 - Related code-review / API-E2E / delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: DI-001
 
-The design's Change / Refactor Sequence, steps 1–6:
+The design's Change / Refactor Sequence, steps 1–6 (plus the SR-004 item in step 2):
 
 1. **Codex planner extracted.** `codex/codex-workspace-skill-request-planner.ts` (`CodexWorkspaceSkillRequestPlanner.plan`) holds the `skills/list` rule (D-19) once. The bootstrapper uses it at start; `RunWorkspaceSkills` uses it mid-run.
 2. **One holder per run.**
@@ -42,6 +40,7 @@ The design's Change / Refactor Sequence, steps 1–6:
      - `hasSkills()`: whether the run holds any link (for Claude's `allowedTools`).
      - Every guard reads `closed`, never `isActive()`.
    - The factories create the holder when preparation starts (`createRunWorkspaceSkills(runId)` on the Claude and Codex bootstrappers; directly in the ACP factory) and pass it in `ProviderPreparationGuard.workspaceSkills`.
+   - SR-004: `ClaudeSessionBootstrapper` ensures `<workspace>/.claude/skills` exists on every preparation (new and restore) before the session starts. The path comes from the Claude profile's `workspaceSkillsRootSegments`; nothing removes the folder; a failure is logged with the run ID and does not fail the preparation.
    - Release paths:
      - Claude: cleanup's `skills` stage, and the factory's failed preparation.
      - Codex: `CodexThreadManager.releasePreparation`, and the factory's `releaseResources`.
@@ -69,11 +68,15 @@ The design's Change / Refactor Sequence, steps 1–6:
 - Design classification section: design-spec "Task Size And Architectural Risk".
 - Classification confirmed or changed: `Confirmed`.
 - Evidence: 39 production files changed plus 2 new (about 20 in logic); a new mid-run acquisition racing release on four runtimes; a new backend contract method; a changed restored-run rule on a persisted record; an integration-state read.
-- Selected route: `Solution Designer` (Design Impact DI-001). After it is resolved: Code Review.
+- Selected route: `Code Review`.
 - Lightweight self-review for the direct route: `Not Applicable` (Large / High).
-- New design impact or escalation trigger: **DI-001** (below). None of the design's own escalation triggers fired: every release path calls `release()` first; the materializer is unchanged; nothing is granted mid-run.
+- New design impact or escalation trigger: `None`. DI-001 (below) was resolved by SR-004. None of the design's own escalation triggers fired: every release path calls `release()` first; the materializer is unchanged; nothing is granted mid-run.
 
 ## Design Impact DI-001 — Claude does not list a skill added to a run that started with zero skills
+
+**Resolved by SR-004 (ARCH-REV-003), option (a), implemented in IR-002.** IMP-13 repeats IMP-07 on the new code: a Claude
+run that starts with zero skills gets `Launching skill: codeword-probe` from its `Skill` tool for a skill added mid-run. The
+record of the finding follows.
 
 - **Protects:** AC-011 ("Claude's own skill list shows X at its next turn"), REQ-008.
 - **Design premise that is wrong:** the design's Investigation Evidence row "Claude lists a folder linked mid-session at the next turn" (the designer's probe) and Risk AR-003. AR-003 says a zero-skills Claude run lacks only `Skill` in `allowedTools`, so auto-execute approves the call anyway. The probe's workspace already had `.claude/skills` with a link when the session started.
@@ -99,13 +102,13 @@ The design's Change / Refactor Sequence, steps 1–6:
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Added skill set up on the runtime, then one "now available" notice (busy now, idle with the next input) | `skill-update-notices.ts` (signal) → `SkillUpdateNoticeService.onDefinitionsChanged` → `RunSkillTracker.applyDefinition` → `AgentRun.applyDefinitionSkills` → backend (`RunWorkspaceSkills.addFrom` / `addAgyRunCapsuleSkills` / native no-op) → `deliverIfBusy` / `takePreface` → `computeNotice` (`added` + description + integration names) → builder | Implemented. AC-001, 002, 005, 009, 012 pass. AC-011 passes except for zero-skill-start Claude runs (DI-001). |
+| BEH-001 | Added skill set up on the runtime, then one "now available" notice (busy now, idle with the next input) | `skill-update-notices.ts` (signal) → `SkillUpdateNoticeService.onDefinitionsChanged` → `RunSkillTracker.applyDefinition` → `AgentRun.applyDefinitionSkills` → backend (`RunWorkspaceSkills.addFrom` / `addAgyRunCapsuleSkills` / native no-op) → `deliverIfBusy` / `takePreface` → `computeNotice` (`added` + description + integration names) → builder | Implemented. AC-001, 002, 005, 009, 011, 012 pass (AC-011 also for a zero-skills Claude start after SR-004, IMP-13). |
 | BEH-002 | Removed skill: one "no longer available" notice; nothing unlinked | Same pass; `applyDefinition` → removed; diff `removed` | Implemented. AC-003 passes (unit, integration, live). |
 | BEH-005 | Integration skill added: "access starts when this run is restarted"; nothing granted | `computeNotice` → `IntegrationRunAccess.integrationsStartingOnRestart` (`RunPassRegistry.grantedIntegrationIds`, `grantsForAgent`, `catalog.describe`) | Implemented. AC-006 passes (unit + integration); QR-002: the read never issues or changes a pass (tested). |
 | BEH-008 | Resumed run hears skills added and removed since its record | `RunSkillTracker.loadRun` (no seeding; `seen = stored ?? current`) → dirty names → `takePreface` | Implemented. AC-008 passes; a run without a record hears nothing. |
 | BEH-003/004/006 | Preserved | Tool list updates unchanged; content notices unchanged; `allowsCall` unchanged | Existing suites green; AC-010 passes (tools notice with this input, skill notice with the next). |
 
-- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. DI-001 is routed upstream, not patched.
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes`. DI-001 was routed upstream and implemented as decided in SR-004.
 
 ## Key Files Or Areas
 
@@ -141,7 +144,7 @@ The design's Change / Refactor Sequence, steps 1–6:
 
 ## Known Risks
 
-- **DI-001** (above).
+- SR-004's user-visible effect: an empty `.claude/skills` folder in a workspace where no Claude run with a skill had run before (accepted in the design).
 - The integration sentence is read from the pass when the notice is built (residual note in the review). A process generation soon after the save can grant access before the notice says it starts at restart.
 - After an interrupt, an Antigravity run reports inactive and gets no link until a new start; the notice still gives the path (residual note in the review). Documented in `antigravity_cli_runtime.md`.
 - A name that fails to link is retried at the next pass that adds a name for this run, not on every save (review note on AR-002).
@@ -153,7 +156,7 @@ The design's Change / Refactor Sequence, steps 1–6:
 - Reviewed root-cause classification: `No Design Issue Found`
 - Reviewed refactor decision: `Refactor Needed Now` (Codex planner extraction; one holder per run)
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `Yes` for DI-001 (a premise about the Claude CLI, not the ownership model)
+- If challenged, routed as `Design Impact`: `Yes` for DI-001 (a premise about the Claude CLI, not the ownership model); resolved by SR-004
 - Evidence: steps 1–2 ran first with the existing suites green (the move of preparation and release onto the holder), then the contract method.
 
 ## Legacy / Compatibility Removal Check
@@ -190,7 +193,7 @@ The design's Change / Refactor Sequence, steps 1–6:
 
 ## Checks Run
 
-Commit tested: the working tree on base `7b8bcf932f`, then committed as the implementation commit named in the handoff message. No code changed after the checks except where a row says so.
+Commits: IMP-01…IMP-11 ran on the IR-001 working tree (base `7b8bcf932f`), committed as `07d5d69b30`. IMP-12 and IMP-13 ran on `07d5d69b30` plus the SR-004 change, committed in the IR-002 commit named in the handoff message. Rerun by impact: SR-004 changes only `claude-session-bootstrapper.ts`, its unit test and a module doc. IMP-12 reran the Claude suites and the type gate. The other rows exercise no Claude preparation code and stay valid, except IMP-07, which IMP-13 supersedes.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -204,6 +207,8 @@ Commit tested: the working tree on base `7b8bcf932f`, then committed as the impl
 | IMP-08 | IMP-07 with `LIVE_SKILL_DEFINITION_START_WITH_ONE_SKILL=1` | final test file | as IMP-06 | same, one skill at start | AC-011 | Pass | `evidence/live/IMP-08-live-claude-one-skill-start.json` | `"toolResult": "Launching skill: codeword-probe"` |
 | IMP-09 | experiment (not kept in the repository): IMP-07 with an empty `<workspace>/.claude/skills` created before the run | final tree + temporary test edit (reverted) | as IMP-06 | same | DI-001 cause | Pass | `evidence/live/IMP-09-live-claude-zero-skills-empty-folder-at-start.json` | `"toolResult": "Launching skill: codeword-probe"`, `initialSkills: []` |
 | IMP-10 | reruns at load 15–22: `vitest run tests/unit/skill-update-notices/skill-folder-watcher.test.ts`; `vitest run tests/integration/file-explorer/file-system-watcher.integration.test.ts tests/integration/agent-package-definitions/package-auto-refresh.integration.test.ts`; the AC-012 auto-refresh case alone | final tree | macOS | watcher code (unchanged by this ticket) | — | Pass (at load 9.8: all three files together) | `evidence/IMP-10-watcher-reruns.log` | `Tests  36 passed (36)` |
+| IMP-12 | `pnpm -C autobyteus-server-ts typecheck`; `vitest run tests/unit/agent-execution/backends/claude tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts tests/unit/agent-execution/backends/mid-run-workspace-skills.test.ts tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts tests/integration/agent-execution/claude-session-manager.integration.test.ts` | `07d5d69b30` + SR-004 | macOS | Claude preparation (SR-004 folder; new, restore, blocked folder), cleanup, per-runtime adds | AC-011, REQ-008 | Pass | `evidence/IMP-12-sr004-claude-suites.log` | `Tests  281 passed \| 16 skipped (297)`; `[typecheck] PASS` |
+| IMP-13 | `RUN_LIVE_SKILL_DEFINITION_E2E=1 LIVE_SKILL_DEFINITION_RUNTIMES=claude_agent_sdk vitest run tests/e2e/runtime/live-skill-definition-changes.e2e.test.ts` (zero skills at start, with the step 2b `Skill` tool step) | `07d5d69b30` + SR-004 | real Studio server, isolated data root, Claude CLI 2.1.323, haiku | the IMP-07 path on the SR-004 code | AC-002, AC-003, AC-011 (also: link released at terminate) | Pass | `evidence/live/IMP-13-live-claude-zero-skills-sr004.json` | `"initialSkills": []`; `"toolResult": "Launching skill: codeword-probe"`; replies `SKILLED-QUOKKA-7801`, `DONE-3` |
 | IMP-11 | mutation check: in `RunWorkspaceSkills`, the add's guard disabled and `release()` not awaiting the add; the holder test run, then the change reverted | temporary | macOS | AR-001 window on the managed (GitHub source) path | AR-001 | The managed-path test fails under the mutation and passes on the real code | `evidence/IMP-11-mutation-check.log` | `× AR-001: a managed (GitHub source) skill whose holder is published after the release began is never left linked` |
 
 - Not run, and why:
@@ -227,4 +232,4 @@ Commit tested: the working tree on base `7b8bcf932f`, then committed as the impl
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-After DI-001 is resolved and code review passes: the scenarios above, the live non-Claude runtimes (U-001), and the Claude approval case without auto-execute (R-001 / AR-003).
+After code review passes: the scenarios above, the live non-Claude runtimes (U-001), and the Claude approval case without auto-execute (R-001 / AR-003).

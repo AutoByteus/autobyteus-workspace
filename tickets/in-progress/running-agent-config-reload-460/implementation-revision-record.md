@@ -6,7 +6,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Architecture Reviewer, `design-review-report.md` round 2 (Pass) | N/A | `Initial Baseline` | SR-003, ARCH-REV-002 | Implementation complete; to Code Review |
+| IR-001 | Architecture Reviewer, `design-review-report.md` round 2 (Pass) | N/A | `Initial Baseline` | SR-003, ARCH-REV-002 | Implemented; Design Impact DI-001 to the Solution Designer |
+| IR-002 | Architecture Reviewer, `design-review-report.md` round 3 (Pass) | DI-001 | `Design Impact` (resolved by SR-004) | SR-004, ARCH-REV-003 | Claude preparation ensures `.claude/skills`; AC-011 passes live; to Code Review |
 
 ## Revision Entries
 
@@ -32,6 +33,28 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   5. Skill notices: `added` change kind and "now available" block; tracker holds each run's current definition (`applyDefinition`), restored-run seeding removed (DEC-002); service subscribes to `AgentDefinitionChangeSignal` with a coalesced pass (setup, then notice); composition and both hosts pass `definitionChanges` and `integrationRunAccess`.
   6. Module docs.
 - Changed files or areas: see the handoff's Key Files Or Areas.
-- Local validation and result: see the handoff's Checks Run (IMP-01 … IMP-08).
-- Next recipient or routing: Code Reviewer (Large / High).
+- Local validation and result: see the handoff's Checks Run (IMP-01 … IMP-11).
+- Next recipient or routing: Solution Designer (Design Impact DI-001, measured in IMP-07…09).
 - Remaining limitations or risks: see the handoff's Known Risks.
+
+### IR-002 — Claude preparation ensures `<workspace>/.claude/skills` exists (DI-001 → SR-004)
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md`, round 3 (`Pass`, ARCH-REV-003), on design SR-004.
+- Triggering finding IDs: DI-001 (IR-001).
+- Classification: `Design Impact`, resolved upstream by SR-004 (option (a)); requirements unchanged (SR-002), AC-011 kept.
+- Prior authoritative result: IR-001, implemented except DI-001 (AC-011 failed for a Claude run that started with zero skills).
+- Current authoritative result: AC-011 passes live for a zero-skills Claude start (IMP-13).
+- Related solution revision IDs: SR-004. Related architecture-review revision IDs: ARCH-REV-003. Others: N/A.
+- Why this revision is recorded: the DI-001 change.
+- Approved behavior or requirement IDs affected: REQ-008, AC-011.
+- Implementation delta:
+  - `ClaudeSessionBootstrapper.bootstrapInternal` (new and restore) calls `ensureWorkspaceSkillsFolder(runId, workingDirectory)` right after the working directory is resolved, before skills are acquired and before the session starts.
+  - That function runs a recursive `mkdir` of `path.join(workingDirectory, ...CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE.workspaceSkillsRootSegments)`, so the segments are not repeated.
+  - A failure is logged as `CLAUDE_WORKSPACE_SKILLS_FOLDER_FAILED: run=<id>, folder=<path>: <error>` and does not fail the preparation (REQ-008). Nothing removes the folder. Codex, Grok and DeepSeek are unchanged (U-001).
+- Changed files or areas:
+  - `src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts`;
+  - `tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts`: a test-owned workspace instead of a fixed `/tmp` path, plus two SR-004 cases;
+  - `docs/modules/agent_execution.md`.
+- Local validation and result: IMP-12 (type gate; Claude unit, integration and per-runtime suites, 281 passed), IMP-13 (live Claude zero-skills start: `Launching skill: codeword-probe`).
+- Next recipient or routing: Code Reviewer (Large / High).
+- Remaining limitations or risks: unchanged from IR-001 apart from DI-001. The new user-visible effect is an empty `.claude/skills` in a workspace where no Claude run with a skill had run (design SR-004).
