@@ -1,0 +1,541 @@
+{
+  "startedAt": "2026-11-13T06:30:21.559Z",
+  "result": "Pass",
+  "node": "v22.23.3",
+  "servers": {
+    "beta": {
+      "port": 37071,
+      "nodeId": "srv_0YYn0zEus6Iuddapy4dskC1gDwv46BXU",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 46653,
+      "nodeId": "srv_wPztKyzzI5dGDowqrdAzeVnnQCmXDAaH",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_361d06102deb44598ebac1116e85675e",
+    "writerRun": "release_notes_writer_f66d38cff82341258059dd5728dd2891",
+    "squadRun": "docs_review_team_a56ae0f79f78406793729ac007ea32f2",
+    "reviewer": "release_notes_writer_ca09fc6edfb4474aa2228a265cc139e1",
+    "memberDelegated": "fact_checker_6cde1b6761534bdcaa149749ae19469b",
+    "remoteAgentRun": "publisher_0803f7fd4b524fc2917a4a51ff9c7c33",
+    "remoteTeamRun": "studio_team_de3ff792241848cfb5c8e8732f09a53b",
+    "plain": [
+      "fact_checker_1cf9eabf6d3f4ee9aa697ee7bf6c9f34",
+      "fact_checker_4a006f919dab4b19a6498ab18d3382a1",
+      "fact_checker_fb4e81cc467c415e8b384e0915251065"
+    ],
+    "org": "delivery_org_3692b57ed9254e12a05ee0d97cee5991",
+    "orgPlanner": "release_notes_writer_134f6d5e4e4749c49c56856fa3d7fc5e",
+    "reviewOrg": "review_org_7853852a8b2c438bac5835049ab3ad9c",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_56059673dcaa4772877da97b502929e7",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_d866c2d5efc74a00afa59c8f3c84b893",
+    "deliveryLead": "fact_checker_d7173f9764ec4b65bd57084dae08d0c8",
+    "deliveryMate": "release_notes_writer_152bb66755994b5fbf74c9eadd11a6fc",
+    "leadDelegated": "changelog_helper_f43bc29597c24b4f8bdbddbde0001a2c",
+    "approver": "approver_517f6e63be2e4c0693ec6d136acbf488",
+    "taskA": "launch-5eeba3-1",
+    "taskB": "launch-5eeba3-2"
+  },
+  "cases": {
+    "MSP-51": {
+      "result": "Pass",
+      "seconds": 18.3,
+      "summary": [
+        {
+          "name": "MSP-51-desktop-file-1280-panel",
+          "viewport": "1280x900",
+          "rootWidth": 167,
+          "failures": [],
+          "inlineCodePast": [
+            159
+          ]
+        },
+        {
+          "name": "MSP-51-desktop-file-1280-maximized",
+          "viewport": "1280x900",
+          "rootWidth": 1248,
+          "failures": [],
+          "inlineCodePast": []
+        },
+        {
+          "name": "MSP-51-desktop-file-700",
+          "viewport": "700x900",
+          "rootWidth": 418,
+          "failures": [],
+          "inlineCodePast": []
+        }
+      ],
+      "results": [
+        {
+          "name": "MSP-51-desktop-file-1280-panel",
+          "viewport": "1280x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 167,
+            "rootOverflow": 159,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 167,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 12 line(s)",
+                  "blank",
+                  "114ch indent 34px 8 line(s) gap 32px",
+                  "105ch indent 34px 8 line(s) gap 8px",
+                  "280ch indent 0px 18 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 167,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 3 line(s)",
+                  "113ch indent 34px 8 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 2 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 167,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 6 line(s)",
+                  "75ch indent 0px 6 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 167,
+                "boxWidth": 167,
+                "scrollWidth": 167
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1835,
+                "boxWidth": 167,
+                "scrollWidth": 1835
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 167,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 167,
+                "errors": 0
+              },
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 137,
+                "errors": 0
+              }
+            ],
+            "inlineCodePast": [
+              159
+            ],
+            "otherPast": [],
+            "cutBy": [],
+            "hostsOverflowing": [
+              {
+                "tag": "div",
+                "cls": "h-full overflow-auto bg-white p-4 h-full w-full flex-1 min-h",
+                "by": 143,
+                "overflowX": "auto"
+              }
+            ],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 151,
+              "sourceLength": 151
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 134,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-51-desktop-file-1280-panel-code.png",
+            "MSP-51-desktop-file-1280-panel-python.png",
+            "MSP-51-desktop-file-1280-panel-tables.png",
+            "MSP-51-desktop-file-1280-panel-math.png"
+          ]
+        },
+        {
+          "name": "MSP-51-desktop-file-1280-maximized",
+          "viewport": "1280x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 1248,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 1248,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 2 line(s)",
+                  "blank",
+                  "114ch indent 34px 1 line(s) gap 32px",
+                  "105ch indent 34px 1 line(s) gap 8px",
+                  "280ch indent 0px 2 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 1248,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 1 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 1248,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 1 line(s)",
+                  "75ch indent 0px 1 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 1248,
+                "boxWidth": 1248,
+                "scrollWidth": 1248
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1835,
+                "boxWidth": 1248,
+                "scrollWidth": 1835
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 1248,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 1248,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 1218,
+                "errors": 0
+              }
+            ],
+            "inlineCodePast": [],
+            "otherPast": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 151,
+              "sourceLength": 151
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 587,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-51-desktop-file-1280-maximized-code.png",
+            "MSP-51-desktop-file-1280-maximized-python.png",
+            "MSP-51-desktop-file-1280-maximized-tables.png",
+            "MSP-51-desktop-file-1280-maximized-math.png"
+          ]
+        },
+        {
+          "name": "MSP-51-desktop-file-700",
+          "viewport": "700x900",
+          "failures": [],
+          "measured": {
+            "rootWidth": 418,
+            "rootOverflow": 0,
+            "pres": [
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 418,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "156ch indent 0px 4 line(s)",
+                  "blank",
+                  "114ch indent 34px 3 line(s) gap 32px",
+                  "105ch indent 34px 3 line(s) gap 8px",
+                  "280ch indent 0px 7 line(s) gap 8px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "language-python",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 418,
+                "textEqualsSource": true,
+                "tokens": 9,
+                "coloredTokens": 9,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "28ch indent 0px 1 line(s)",
+                  "113ch indent 34px 3 line(s) gap 8px",
+                  "blank",
+                  "18ch indent 34px 1 line(s) gap 32px"
+                ]
+              },
+              {
+                "inInterAgentMessage": false,
+                "cls": "",
+                "ws": "pre-wrap",
+                "preWs": "pre-wrap",
+                "overflow": 0,
+                "width": 418,
+                "textEqualsSource": true,
+                "tokens": 0,
+                "coloredTokens": 0,
+                "actionLinkInside": false,
+                "actionLinkBeside": false,
+                "lines": [
+                  "75ch indent 0px 2 line(s)",
+                  "75ch indent 0px 3 line(s) gap 8px"
+                ]
+              }
+            ],
+            "tables": [
+              {
+                "overflowX": "auto",
+                "scrolls": false,
+                "tableWidth": 418,
+                "boxWidth": 418,
+                "scrollWidth": 418
+              },
+              {
+                "overflowX": "auto",
+                "scrolls": true,
+                "tableWidth": 1835,
+                "boxWidth": 418,
+                "scrollWidth": 1835
+              }
+            ],
+            "katex": [
+              {
+                "scrolls": true,
+                "clippedY": 0,
+                "boxWidth": 418,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 418,
+                "errors": 0
+              },
+              {
+                "scrolls": false,
+                "clippedY": 0,
+                "boxWidth": 388,
+                "errors": 0
+              }
+            ],
+            "inlineCodePast": [],
+            "otherPast": [],
+            "cutBy": [],
+            "hostsOverflowing": [],
+            "pageOverflow": 0,
+            "windowScrollX": 0,
+            "mermaidSvgs": 2
+          },
+          "copied": [
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 659,
+              "sourceLength": 659
+            },
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 162,
+              "sourceLength": 162
+            },
+            {
+              "via": "Ctrl+C + clipboard",
+              "equal": true,
+              "length": 151,
+              "sourceLength": 151
+            }
+          ],
+          "scroll": {
+            "scrolledByUser": 334,
+            "lastCellReachable": true,
+            "windowScrollX": 0
+          },
+          "screenshots": [
+            "MSP-51-desktop-file-700-code.png",
+            "MSP-51-desktop-file-700-python.png",
+            "MSP-51-desktop-file-700-tables.png",
+            "MSP-51-desktop-file-700-math.png"
+          ]
+        }
+      ]
+    }
+  },
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "codeWrap": {
+    "replyRun": "fact_checker_7c5ed7afa74c4a309529448e0ff6ce5f",
+    "host": "project_task_manager_c1fcebae138e4010ace2618791bac781",
+    "talkRun": "release_notes_writer_d8fb83fbad604d49b19f430fb8530aeb",
+    "file": "/tmp/mobile-shell-probe-Ai9mic/alpha/workspace/code-wrap-23/code-wrap-23.md"
+  },
+  "summary": {
+    "cases": {
+      "MSP-51": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-13T06:31:46.682Z"
+}
