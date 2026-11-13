@@ -770,3 +770,36 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Validation: IMP-76 on the merged state. Server: type gate PASS, unit 8045 passed, integration 492 passed with 3 failed (only the file watcher's timing; alone it passes 14/14 twice, and once 13/14 at load 37 on a different test). Web: 5757 passed; the type gate passes after the baseline fix.
 - Remaining risks: SDV-01's readiness wait also matches the Manager's own conversation (round 21). The ticket's earlier evidence names the phone cases MSP-50 … MSP-52.
 - Next recipient or routing: Code Reviewer, review of CR-461-065 and the merge: **Pass (CRR-029**, `code-review-report.md` round 22). The reviewer routes to API/E2E. Its non-blocking note: on the unknown-ID refusal path, `teamRunOfMember` reads every stored team run's file. If that cost ever matters, the run's delegation could be recorded in memory when its Task is deleted. No action taken.
+
+### IR-023 — CRR-030's reopened Local Fixes: CR-461-061 (F-43) on the real path, CR-461-059 (F-47) restricted; SR-077
+
+- Triggering role, report path, and round: Code Reviewer CRR-030 (`code-review-report.md`, the failure-origin review of API/E2E round 7 on `a529abcbdd`), released by the Solution Designer. Two reopened Local Fixes, CR-461-061 and CR-461-059. CR-461-066, the Requirement Gap, was answered by SR-077 with no product change. Round 23.
+- Triggering finding IDs: CR-461-061 (F-43), CR-461-059 (F-47); SR-077 (CR-461-066: K-15, Q-1). Large / High unchanged.
+- Prior authoritative result: IR-022 at `a529abcbdd` (CRR-029 Pass).
+- Current authoritative result: `a18c16f5d8` (F-47 `0e1bb399e2`; CR-461-061 `a18c16f5d8`).
+- Related solution revision IDs: SR-077. Related code-review revision IDs: CRR-030.
+- Implementation delta:
+  - **CR-461-059 (F-47, `0e1bb399e2`).** Round 21 over-reached. Base gave the `{ error: { code: "TASK_DELEGATION_ERROR" } }` shape only on the `recipient_address` path. Its run-ID path (`assignToExistingCopy`) refused any coded error as `{ delegated: false, message }` (`refusalCode`). `toExistingRun` now uses that rule (`asRunIdRefusal`), and the new-run path keeps `asRefusal`. An uncoded failure is thrown on both paths, as at base.
+  - **CR-461-061 (F-43, `a18c16f5d8`), found on the real path.** I started from DTL-005 failing (IMP-77). Temporary logging, reverted, showed the Org's squad answering "open work" at the grace's fire; every other team was quiet.
+    - **Cause 1.** `RootTeamRun.shutDownIfQuiet` checked `hasOpenExecutionWork()`, which counts a member in `error` (base's rule as well). A member whose start failed therefore held its Team forever.
+      - At base, only a peer-started Team (DS-004) had that check. A delegated task Team (`tryShutDownRootTaskTeamIfQuiet`) ended on its all-or-nothing quiescent preparation alone, which DTL-005 expects. DS-7 gives every delegated Team one rule.
+      - With no hosted children left, the check only added the failed member, so it is removed. A member starting or running still makes the preparation refuse. Round 21's `a7c04bf9ab` (a settled failed start is not in flight) stays: the preparation needs it.
+    - **Cause 2.** After the copy shut down and was restored, the Org's fresh view still showed the writer `error`. The views' child-status cache (`LocalChildObservation`) keeps each agent's last event, and the writer has no runtime to report `offline` when its Team ends. Base's fresh view read the hosted copy's live statuses.
+      - `TeamPairedAgentAccess`, the owner that follows a Team across its roots, now reports each member `offline` when the followed Team ends quietly (lifecycle `ending: "idle_shutdown"`). A remote delegator's view gets the same.
+      - The status frame moved to the paired-agent contract (`pairedAgentStatusFrame`), shared with `LocalChildObservation`.
+    - DTL-005 now passes in every root.
+- Tests (each new one fails without its fix):
+  - F-47: by `target_team_run_id` and by `target_agent_run_id`, an unknown key is `{ delegated: false, message }`; an uncoded failure is thrown. The recipient path's test is unchanged.
+  - CR-461-061: a peer-started or delegated Team with a member in `error` (the run's open work counts it) idles out. The harness's fake runs now keep the status their last event set.
+  - The Team access reports `offline` for each member on a quiet shutdown.
+- Validation:
+  - IMP-77: DTL-005 through the real path, before and after each fix.
+  - IMP-78 at `a18c16f5d8`:
+    - server type gate PASS; unit 8048 passed;
+    - integration 491 passed, 4 failed. All four are the file watcher; alone it passes 14/14 twice;
+    - DTL-005 passes again.
+  - The web is unchanged this round (IMP-76).
+- Remaining risks:
+  - A peer-started Team with a member in `error` now also idles out. Before, the extra check kept it running; base's delegated task Team behaved this way. DS-7 gives every delegated Team one rule.
+  - SDV-01's readiness wait also matches the Manager's own conversation (round 21).
+- Next recipient: Code Reviewer, a full review of the whole change.
