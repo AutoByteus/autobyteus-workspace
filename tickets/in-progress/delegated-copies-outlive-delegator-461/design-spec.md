@@ -342,7 +342,7 @@ At base, a delegator's Team tab showed its root's log composed with the own logs
 - **The snapshot** (ARCH-REV-046 AR-026): the logs are read **after** the synchronous base step, like the run's own parts, in this order:
   1. in one synchronous step: the view's base sequence, the rows and the statuses (SR-063);
   2. the asynchronous read of the composed logs, behind the snapshot connection's queue;
-  3. the queued message frames, numbered after the base, delivered after the snapshot. A frame whose message ID is already in the read is dropped.
+  3. the queued message frames, numbered after the base, **all delivered** after the snapshot (ARCH-REV-047). `RunViewStream` numbers each frame once for every connection, so none is dropped, because a drop would leave a gap. The client ignores a message ID it already holds while it advances the sequence, as at base (`collaborationParticipantMessages.ts:44-45, 101`; `teamExecutionViewState.ts:432-440`).
 
   So a message committed during the read is in the snapshot or in a frame after it, never lost, and never numbered at or below the base. Rows must be read at the base, because base's Team client does not deduplicate started rows. Messages are deduplicated by message ID at base, so they may be read behind the queue.
 - **Paging:** as at base: the newest page, then older pages on request, over the composed list.

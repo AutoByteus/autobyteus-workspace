@@ -1393,3 +1393,4 @@
   - architecture review;
   - then the Implementation Engineer.
 - **ARCH-REV-046 failed SR-072 on AR-026, which is now answered.** The snapshot's logs are read after the synchronous base step, behind the queue, with the queued message frames numbered after the base and deduplicated by message ID. The test covers a message committed during the read. The sequencing test's wording for `lastMessageChangeSequence` is aligned. The Solution Designer's gap: SR-072 placed the read before the base, which loses a message committed in between.
+- **ARCH-REV-047 passed the AR-026 answer.** Its wording fix is applied: queued message frames are all delivered, and the client ignores a repeated message ID, as at base. None is dropped from the queue, because a dropped frame would leave a sequence gap.
