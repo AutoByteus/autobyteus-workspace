@@ -173,7 +173,10 @@ export const composeCollaboration = async (input: Readonly<{
 
     // 6. Delegation and messages between runs, through each run's own root (DS-1, DS-2; contract §2.3, §2.4).
     // Every cross-run answer comes from the run's collaboration tree (SR-060).
+    // Each run's own files: its parts and its own record of its delegation (SR-072 F-24, CR-461-058).
+    const runFiles = new RunOwnAgentsReader(memoryDir);
     const crossRun = new CrossRunMessageDelivery({
+      runFiles,
       senderAddress: (message) => tree.collaborationTreeOf(message.receiverRun).reachingAddressOf(message.sender),
       tree: () => tree,
       tasks: () => tasks,
@@ -206,7 +209,7 @@ export const composeCollaboration = async (input: Readonly<{
         liveAgents: (kind) => kind === "agent" ? runs.standaloneRootManager.pairedAgents : runs.teamRunService.pairedAgents,
         teamMembers: createStoredTeamRunExecutionTreeLocationService(memoryDir) }),
       delegatorCatalog: new DelegatorCatalog({ tree, admission: () => getCollaboratorAdmission(), portOf }),
-      ownDelegations: new RunOwnDelegations({ files: new RunOwnAgentsReader(memoryDir), admission: () => getCollaboratorAdmission(), portOf }),
+      ownDelegations: new RunOwnDelegations({ files: runFiles, admission: () => getCollaboratorAdmission(), portOf }),
       discard: async (run) => {
         if ("agentRunId" in run) await runs.agentRunService.cancelPreparedAgentRun(run.agentRunId);
         else await runs.teamRunService.terminateTeamRun(run.teamRunId);

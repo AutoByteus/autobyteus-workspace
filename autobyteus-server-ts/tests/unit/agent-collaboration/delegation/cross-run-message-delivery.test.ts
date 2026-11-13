@@ -48,13 +48,16 @@ const harness = async () => {
     },
   });
   const beforeReceive = { hook: async () => undefined as void };
-  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null,
+  // Each run's own file: the research run's delegation, as its file records it (it outlives its Task's deletion).
+  const runFiles = { delegationOf: vi.fn(async (r: RootExecutionIdentity) => r.rootRunId === "research"
+    ? { delegatedFrom: from(M, "manager"), address: "/research", definition: { kind: "agent" as const, definitionId: "research" }, entryAgentRunId: "research" } : null) };
+  const delivery = new CrossRunMessageDelivery({ tree: () => tree, tasks: () => tasks, senderRoot: (r) => senderRoot(r) as never, senderAddress: async () => null, runFiles,
     receiverRoot: async (r) => { await beforeReceive.hook(); return receiverRoot(r); } });
   const send = (from: RootExecutionIdentity, sender: string, target: string) => delivery.route({ sender: agent(from, sender), senderDisplayName: sender,
     targetAgentRunId: target, content: "hello", messageType: "agent_message", referenceFiles: [] });
   const sendAs = (from: RootExecutionIdentity, sender: string, target: string, shownAs: string) => delivery.route({ sender: agent(from, sender),
     senderDisplayName: sender, targetAgentRunId: target, shownAs, content: "hello", messageType: "agent_message", referenceFiles: [] });
-  return { tasks, tree, log, send, sendAs, beforeReceive };
+  return { tasks, tree, log, send, sendAs, beforeReceive, runFiles };
 };
 
 describe("CrossRunMessageDelivery (DS-2)", () => {
@@ -84,6 +87,16 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
   it("R-7: runs of different Tasks are refused with today's text; nothing is written", async () => {
     const h = await harness();
     await expect(h.send(P, "pd", "research")).resolves.toEqual({ accepted: false, code: "TASK_AGENT_RESOURCE_CONFLICT", message: OTHER_TASK_REFUSAL });
+    expect(h.log).toEqual([]);
+  });
+
+  it("CR-461-058 (R-9, SR-071: base's text): the delegator's message to a run whose Task was deleted gets TASK_NOT_FOUND; anyone else's is not this route's", async () => {
+    const h = await harness();
+    h.tasks.close("T2"); h.tasks.deleteTask("T2");
+    expect(h.tree.tasksOf({ agentRunId: "research" })).toEqual([]);
+    await expect(h.send(M, "manager", "research")).resolves.toEqual({ accepted: false, code: "TASK_NOT_FOUND", message: "The Task was deleted, so its task agent cannot continue." });
+    await expect(h.send(E, "designer", "research")).resolves.toBeNull();
+    await expect(h.send(M, "manager", "nobody")).resolves.toBeNull();
     expect(h.log).toEqual([]);
   });
 
@@ -156,7 +169,7 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
 
   it("a receiver that refuses (its root's own refusal) writes nothing on the sender's side", async () => {
     const h = await harness();
-    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null,
+    const refusing = new CrossRunMessageDelivery({ tree: () => h.tree, tasks: () => h.tasks, senderAddress: async () => null, runFiles: { delegationOf: async () => null },
       senderRoot: () => ({ prepareSendToRun: (input) => ({ ok: true, message: { messageId: "m", senderAgentRunId: input.senderIdentity.agentRunId, receiverAgentRunId: input.receiverAgentRunId,
         content: "x", messageType: "agent_message", referenceFiles: [], createdAt: "t" } }), commitSentToRun: vi.fn() }),
       receiverRoot: async () => ({ acceptFromRun: async () => ({ accepted: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "AgentRun is not accepting input." }) }) });

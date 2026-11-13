@@ -1,3 +1,4 @@
+import type { RunOwnAgentsReader } from "../../run-history/store/run-own-agents-reader.js";
 import { MESSAGE_DELIVERED_TEXT, type AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { DelegationIndex } from "../delegation/delegation-index.js";
 import type { CollaborationCommunicationMessage } from "../execution/communication/collaboration-communication-message.js";
@@ -40,6 +41,8 @@ export type CrossRunMessageInput = Readonly<{
 
 /** The refusal of a message between two runs of different Tasks (contract §2.2), as today. */
 export const OTHER_TASK_REFUSAL = "You can't message this agent: it works on a different Task.";
+/** Base's refusal of the assigner's message to a run whose Task was deleted (`task-assignment-eligibility.ts`, REQ-009). */
+export const DELETED_TASK_REFUSAL = "The Task was deleted, so its task agent cannot continue.";
 const refusal = (code: string, message: string): AgentOperationResult => ({ accepted: false, code, message });
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
 const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean => rootExecutionIdentityKey(a) === rootExecutionIdentityKey(b);
@@ -54,7 +57,9 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
  * 3. the sender's root prepares the message (no state change), the receiver's root accepts it in its gate (it re-checks
  *    "open" from the Task side, writes its own log, wakes and delivers), then the sender's root writes its own log with
  *    the same message ID. A refusal writes nothing (CM-9, AR-013).
- * A target no Task relates to the sender's run (not in the tree, or the sender's own run) is not this route's: `null`.
+ * A target no Task relates to the sender's run (not in the tree, or the sender's own run) is not this route's: `null`;
+ * except a delegated agent run whose Task was deleted, messaged by the delegator its own file names: base's
+ * `TASK_NOT_FOUND` (CR-461-058, SR-071: base's texts).
  */
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
@@ -66,13 +71,16 @@ export class CrossRunMessageDelivery {
     receiverRoot(run: RootExecutionIdentity): Promise<CrossRunReceiverRoot | null>;
     /** The sender's own address when, from the receiver, it reaches the sender (contract §2.4); null otherwise. */
     senderAddress(input: Readonly<{ sender: CollaborationMemberExecutionIdentity; receiverRun: RootExecutionIdentity; receiverAgentRunId: string }>): Promise<string | null>;
+    /** A run's own record of its delegation (its file's `delegatedFrom`). */
+    runFiles: Pick<RunOwnAgentsReader, "delegationOf">;
   }>) {}
 
   async route(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
     const tree = this.dependencies.tree();
     const receiverRun = await tree.runOfAgent(input.targetAgentRunId);
     const senderRun = input.sender.root;
-    if (!receiverRun || sameRun(receiverRun, senderRun)) return null;
+    if (!receiverRun) return this.deletedTaskRefusal(input);
+    if (sameRun(receiverRun, senderRun)) return null;
     // A run on a peer node is reached through the sender root's peer endpoints (CM-11).
     const receiverReference = runReferenceOf(receiverRun);
     if (receiverReference && tree.tasksOf(receiverReference).some((entry) => entry.nodeId !== undefined)) return null;
@@ -104,6 +112,12 @@ export class CrossRunMessageDelivery {
     // Today's text (REQ-009, contract §2): by address it names the address; by run ID, "Message delivered." (CR-461-017).
     const delivered = accepted.message ?? (input.shownAs ? `Delivered message to ${input.shownAs}.` : MESSAGE_DELIVERED_TEXT);
     return { ...accepted, agentRunId: input.targetAgentRunId, message: reactivated ? `${delivered} ${input.targetAgentRunId} continues with its conversation.` : delivered };
+  }
+
+  /** A delegated agent run no Task names, messaged by its own delegator: its Task was deleted (base's refusal). */
+  private async deletedTaskRefusal(input: CrossRunMessageInput): Promise<AgentOperationResult | null> {
+    const own = await this.dependencies.runFiles.delegationOf({ rootSubjectKind: "agent", rootRunId: input.targetAgentRunId.trim() });
+    return own?.delegatedFrom.delegatorAgentRunId === input.sender.agentRunId ? refusal("TASK_NOT_FOUND", DELETED_TASK_REFUSAL) : null;
   }
 
   /** Step 2 (`model.py` `_admit`); `true` when this call reopened the receiver's assignment. Refusals throw. */
