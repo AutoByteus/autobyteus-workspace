@@ -1335,3 +1335,28 @@
   - then the Implementation Engineer.
 - **ARCH-REV-044 passed SR-070.** Its note is applied: the fence is checked before the root is resolved or restored (in the run's service where input enters), and again at the gate head for a loaded run. The test asserts no registration change, no status frame and no stream binding on a refusal.
 - **SR-070 text corrected** (the Implementation Engineer's IMP-58 characterization): at base the user's input to a closed copy got the input-fence text, "Your Task is DONE or CANCELLED, so you can't start new work." (`TASK_AGENT_RESOURCE_CLOSED`). `ASSIGNER_ONLY_REACTIVATION_MESSAGE` was only for an agent's message to a closed run. DS-15 now names base's input-fence text. The Solution Designer had cited the wrong one of the two base texts.
+
+### SR-071 — Refusals in base's order, codes and texts (answers CRR-021's Requirement Gaps CR-461-045, -046)
+
+- **Triggering:** API/E2E round 4 (F-18, F-19), classified by the code reviewer as Requirement Gaps: the contract left the order of R-7 and R-8 open, and did not settle R-9's texts against REQ-009's "the same results and texts".
+- **Evidence at `827f1e68dc`:**
+  - base answered a closed target before the Task scope (`root-task-execution-lifecycle.ts:306-313`);
+  - it answered a team run's ID with `TARGET_IS_TEAM_RUN` and the coordinator's run ID (`global-agent-run-message-router.ts`, `findTeamCoordinator`);
+  - it answered `delegate_task` to a team member's ID with "… is not one of your task agents …" (`API-E01-r4-findings-F16-F20.txt`).
+- **The Solution Designer's gap:** the contract and the model checked R-7 before R-8, and the model's S20 showed that wrong order as its R-7 example. There was no case for a team run's ID.
+- **Decision** (base behavior, under REQ-009 and the non-goal, so no user decision is needed):
+  - the order is R-6, then R-8, then R-7;
+  - R-12: a team run's ID gets the coordinator's run ID, whether the team runs or not;
+  - `delegate_task` refusals keep base's texts.
+- **Done:**
+  - contract §2.2 (the order), R-7, R-8 and R-12;
+  - model: `_admit` order, team run ID; story S20 retitled (now R-8), new U9 (R-7) and U10 (R-12);
+  - walkthrough regenerated, 45 states;
+  - the design's refusal paragraph under DS-2.
+- **Checks:**
+  - `walkthrough.py --check`: three "match" lines;
+  - `validate_contract_examples.py`: 0 findings.
+- **Next action:**
+  - architecture review (narrow);
+  - the Implementation Engineer.
+

@@ -84,6 +84,7 @@ Two runs may message each other, in either direction, when at least one of these
 Unchanged:
 - **Inside one run:** teammates, or the agents of an org, reach each other as today. The Task is not asked.
 - **The Task rule:** runs of different Tasks are refused. A run whose Task is closed is refused, except that its assigner continues it after a reopen.
+- **The order of the refusals** (SR-071, as base answered): the assigner's continuation first (R-6). Then a receiver whose Tasks are all closed is refused as closed (R-8), whoever sends. Only then are runs of different open Tasks refused (R-7). A team run's ID is answered with its coordinator's run ID before any of these (R-12).
 - **Peers:** a run on a peer talks with the agent that delegated to it (CM-11).
 - A run with several open Tasks may talk with the runs of any of them (DEC-012).
 
@@ -481,7 +482,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | S17 | M delegates work to a team on a peer node (a Task with no Project, T7) | DL-9, DL-10, DL-8 |
 | S18 | The peer team reports to M | R-10 |
 | S19 | M closes T7: the peer run is fenced; its next report is refused | T-1, R-8, R-10 |
-| S20 | Refused: runs of different Tasks | R-7 |
+| S20 | Refused: a run whose Task is closed, messaged by a run of another Task | R-8, R-7 |
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
@@ -503,6 +504,8 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | U6 | Refused: delegating to a teammate | DL-11 |
 | U7 | Refused: delegating to the team's own definition | DL-11 |
 | U8 | A description-only delegation from a run that works on no Task | DL-8 |
+| U9 | Refused: runs of different open Tasks | R-7 |
+| U10 | Refused: a team run's ID, answered with its coordinator's | R-12 |
 
 ### 5.3 You start an org (O)
 
@@ -557,9 +560,10 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | R-5 | A run → its Task's assigner | (b) | S3, U4 |
 | R-6 | The assigner → a run of its reopened Task | (b), the assigner continues it | S11 |
 | R-7 | Runs of different Tasks | Refused: "it works on a different Task" | S20 |
-| R-8 | Anyone → a run whose Task is closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`), except R-6 | S10 |
+| R-8 | Anyone → a run whose Tasks are all closed | Refused (`TASK_AGENT_RESOURCE_CLOSED`, "Only the agent that assigned…"), except R-6; answered before R-7 | S10, S20 |
 | R-9 | A run no Task relates to the other (legacy, or a deleted Task) | Refused (TC-9) | S16, 5.4.4 |
 | R-10 | A peer's run ↔ its delegator | By run ID across nodes (CM-11) | S18 |
+| R-12 | Anyone → a team run's ID | Refused (`TARGET_IS_TEAM_RUN`), naming its coordinator's run ID, whether the team runs or not (base's text) | U10 |
 | R-11 | Anyone → an agent of a deleted run | Refused (`TARGET_AGENT_RUN_NOT_ACTIVE`): no run has that run ID | S27 |
 
 **Checked** (`task-centered-messaging-2026-11-11.txt`, every stored message between two runs, 1,604):

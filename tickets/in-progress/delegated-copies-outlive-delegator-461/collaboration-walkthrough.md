@@ -30,7 +30,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | S17 | M delegates work to a team on a peer node (a Task with no Project, T7) | DL-9, DL-10, DL-8 |
 | S18 | The peer team reports to M | R-10 |
 | S19 | M closes T7: the peer run is fenced; its next report is refused | T-1, R-8, R-10 |
-| S20 | Refused: runs of different Tasks | R-7 |
+| S20 | Refused: a run whose Task is closed, messaged by a run of another Task | R-8, R-7 |
 | S21 | Refused: M messages itself | IN-7 |
 | S22 | Refused: addressing a delegated run | C-1, C-3 |
 | S23 | Refused: a run that works on a Task uses `task_id` | DL-11 |
@@ -2567,15 +2567,15 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 ---
 
-#### S20 — Refused: runs of different Tasks [R-7]
+#### S20 — Refused: a run whose Task is closed, messaged by a run of another Task [R-8, R-7]
 
 **Call:** M: `delegate_task(recipient_address: "/research_agent", task_id: "demo-2")`. Then, by `research_agent_9b10`: `send_message_to(target_agent_run_id: "solution_designer_65a9", content: "…")`
 
 **Result to the caller:** `{"delegated": true, "target_kind": "agent", "target_agent_run_id": "research_agent_9b10"}`
 
-**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CONFLICT", "message": "You can't message this agent: it works on a different Task." }`
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CLOSED", "message": "This task agent's Task is closed. Only the agent that assigned the Task can continue it: set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id)." }`
 
-**How:** The delegation is as S1, for an agent run. The message is refused: R works on T2, E's only remaining Task is T6, and neither run assigned the other's Task.
+**How:** The delegation is as S1, for an agent run. The message is refused as closed: E's only remaining Task, T6, is closed (S14). A receiver whose Tasks are all closed is answered with R-8 before R-7, whoever sends, as base answered it. R-7, runs of different open Tasks, is U9.
 
 **On disk after this step:**
 
@@ -2925,6 +2925,8 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | U6 | Refused: delegating to a teammate | DL-11 |
 | U7 | Refused: delegating to the team's own definition | DL-11 |
 | U8 | A description-only delegation from a run that works on no Task | DL-8 |
+| U9 | Refused: runs of different open Tasks | R-7 |
+| U10 | Refused: a team run's ID, answered with its coordinator's | R-12 |
 
 ---
 
@@ -3605,6 +3607,42 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Against today:** The same.
 
 **Checked on the user's data:** 16 description-only entries.
+
+---
+
+#### U9 — Refused: runs of different open Tasks [R-7]
+
+**Call:** `send_message_to(target_agent_run_id: "image_maker_44a1", content: "…")`, by `research_agent_8f80`
+
+**Result:** refused, `{ "accepted": false, "code": "TASK_AGENT_RESOURCE_CONFLICT", "message": "You can't message this agent: it works on a different Task." }`
+
+**How:** The research agent works on its Task with no Project (U8), and the image agent on T3 (U3). Both Tasks are open, U assigned both, and neither run assigned the other's Task. Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** The same.
+
+**Checked on the user's data:** —
+
+---
+
+#### U10 — Refused: a team run's ID, answered with its coordinator's [R-12]
+
+**Call:** `send_message_to(target_agent_run_id: "software_engineering_team_73d7", content: "Mockups ready …")`, by `image_maker_44a1`
+
+**Result:** refused, `{ "accepted": false, "code": "TARGET_IS_TEAM_RUN", "message": "software_engineering_team_73d7 is a task agent team's run id, and send_message_to talks with agents. To talk with the team, use its coordinator's run id: solution_designer_7a33." }`
+
+**How:** `send_message_to` talks with agents. A team run's ID is answered with its coordinator's run ID, whether the team runs or not, so the sender can resend. This is base's code and text (REQ-009). Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** The same; today it was answered only while the team's host root was loaded.
+
+**Checked on the user's data:** —
 
 ### 5.3 You start an org (O)
 

@@ -19,6 +19,9 @@ DELEGATED_WORK = lambda action, names: (f"This run can't be {action} while a run
 NOT_RUNNING = lambda r: (f"No running agent has the run id '{r}', so the message was not sent. Use an exact run id you were given: "
                          "a sender run id (from a message or your new task), or a run id delegate_task returned to you.")
 
+TEAM_RUN_ID = lambda r, c: (f"{r} is a task agent team's run id, and send_message_to talks with agents. "
+                            f"To talk with the team, use its coordinator's run id: {c}.")
+
 SAVED_TASK_TO_PEER = "A saved Task (task_id) can't be given to an agent on another node yet, so nothing was started. Delegate with a description instead."
 
 class Refused(Exception):
@@ -332,6 +335,9 @@ class World:
                 status = self.tasks(node)[t][1]["status"] if t in self.tasks(node) else None
                 if status in ("TODO", "IN_PROGRESS"): e["closedAt"] = None; return
             break
+        # R-8 before R-7 (base: the closed target is answered before the Task scope): a receiver whose entries are all
+        # closed is refused as closed, whoever sends, except the assigner's continuation above
+        if self.entries_of(node, b) and not self.open_tasks(node, b): raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
         shared = {t for t, e in self.entries_of(node, a)} & {t for t, e in self.entries_of(node, b)}
         assigned_by = any((a[1], a[2]) in self.assigners(node, t) for t, e in self.entries_of(node, b))
         if shared or assigned_by: raise Refused("TASK_AGENT_RESOURCE_CLOSED", CLOSED)
@@ -341,7 +347,12 @@ class World:
         self._admit(sender, receiver)
         self._deliver(sender, receiver, content, message_type, message_id, at, address); return step
     def send_by_run_id(self, sender, receiver, content, message_id, at, message_type="agent_message"):
-        if receiver not in self.runs: raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))  # e.g. a deleted run (R-11)
+        if receiver not in self.runs:
+            # a team run's ID is answered with its coordinator's, whether the team runs or not (R-12; base's text)
+            node = self.run_of(sender)[0]
+            if self.run_file(node, "agent_team", receiver) in self.disk:
+                raise Refused("TARGET_IS_TEAM_RUN", TEAM_RUN_ID(receiver, self.entry_agent((node, "agent_team", receiver))))
+            raise Refused("TARGET_AGENT_RUN_NOT_ACTIVE", NOT_RUNNING(receiver))  # e.g. a deleted run (R-11)
         self._admit(sender, receiver)
         self._deliver(sender, receiver, content, message_type, message_id, at, None)
     def handoff_rules(self, agent_id):
