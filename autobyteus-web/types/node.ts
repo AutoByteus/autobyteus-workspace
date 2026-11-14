@@ -43,6 +43,8 @@ export interface NodeEndpoints {
   agentCollaborationWs: string;
   /** The node's Project and Task change feed. */
   projectsWs: string;
+  /** autobyteus-461 SR-083: each run's statuses by run ID, and its rows' change notice. */
+  runStatusWs: string;
   /** The node's agent, team, org and package catalog change feed. */
   agentPackageDefinitionsWs: string;
   updateNotificationsWs: string;
