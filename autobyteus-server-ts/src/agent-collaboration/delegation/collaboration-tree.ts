@@ -121,17 +121,17 @@ export class CollaborationTree {
   }
 
   /**
-   * `send_message_to(address)` beyond the run's own steps (its root resolved steps 1 and 3): step 2's receiver; then,
-   * for a team run, the correction of an address under the name the team was delegated to (refused with the address
-   * to use, SR-036). `null` when step 2 does not apply or reaches no agent there.
+   * `send_message_to(address)` beyond the run's own steps (its root resolved steps 1 and 3), for a run that works on a
+   * Task: first, for a team run, the correction of an address that is the name the team was delegated to, or that name
+   * and one of its own members (refused with the address to use, SR-036). It comes before step 2 (SR-081): such an
+   * address means the team's own teammate, never the assigning run's namesake agent, which stays reachable by run ID.
+   * Then step 2's receiver. `null` when step 2 does not apply or reaches no agent there.
    */
   async resolve(address: string): Promise<string | null> {
     const reached = await this.stepTwo();
     if (!reached) return null;
-    const found = reached.get(address)?.agentRunId;
-    if (found) return found;
     if (this.run.rootSubjectKind === "agent_team") await this.correct(address);
-    return null;
+    return reached.get(address)?.agentRunId ?? null;
   }
 
   /**

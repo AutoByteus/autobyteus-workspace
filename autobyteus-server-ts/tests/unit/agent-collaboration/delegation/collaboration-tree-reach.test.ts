@@ -7,7 +7,8 @@ import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution
  * autobyteus-461 contract §2.3 (`model.py` `resolve`), the address cases B-1 … B-5, C-1 … C-4, A-5, A-6, and §2.5
  * (`reaching_address`), from the run's collaboration tree (SR-060). The sender's root resolves steps 1 and 3; this is
  * what follows its miss: step 2 (the standing
- * agents of the runs that assigned the sender run's Tasks) and, after it, the old-address correction (SR-036, ARCH-REV-011).
+ * agents of the runs that assigned the sender run's Tasks) and, before it, the old-address correction (SR-036; SR-081 reversed
+ * ARCH-REV-011's order: contract state O9).
  * M assigned T1 to the engineering team E (delegated as /software_engineering_team); E's designer handed sub-work of T1
  * to the product team P; the org assigned T4 to the study group S; a member of the user's team U assigned T3 to H;
  * the org also assigned T5 to a team X it delegated at /dev_team, which is an address of the org's own.
@@ -71,10 +72,28 @@ describe("CrossRunAddressResolution (contract §2.3 step 2, the correction, §2.
     ["B-4: a run delegated by an org reaches the org's agent", S, "/tutor", "tutor", "/ceo_agent", "ceo"],
     ["B-4: … and the org's mounted team's member", S, "/tutor", "tutor", "/dev_team/dev_lead", "dev_lead"],
     ["B-5: … and its handoff target outside the team, kept as written", S, "/tutor", "tutor", "/Teacher", "teacher"],
-    ["ARCH-REV-011: an assigner's agent at the team's delegation address is reached, not corrected", X, "/x_lead", "x_lead", "/dev_team", "dev_lead"],
+    ["SR-081: the org's own mounted team member under the copy's old name, not one of the copy's own members, is reached", X, "/x_lead", "x_lead", "/dev_team/dev_lead", "dev_lead"],
   ])("%s (step 2)", async (_case, root, address, agentRunId, target, expected) => {
     const h = await harness();
     await expect(h.resolution.resolve(sender(root, address, agentRunId), target)).resolves.toBe(expected);
+  });
+
+  it("O9 (SR-081, CR-461-081): the copy's old name, and a member of its own under it, are corrected before step 2, never delivered to the assigner's namesake agents", async () => {
+    const h = await harness();
+    // The org stands at /dev_team (its mounted team's coordinator) and /dev_team/x_lead (its mounted team's own lead).
+    STANDING.org!.agents.set("/dev_team/x_lead", "org_x_lead");
+    try {
+      await expect(h.resolution.resolve(sender(X, "/x_lead", "x_lead"), "/dev_team")).rejects.toMatchObject({
+        code: "COLLABORATION_TARGET_NOT_FOUND",
+        message: "/dev_team is no longer an address: your team is addressed from its own root. Your team as a whole has no address; its coordinator is /x_lead.",
+      });
+      await expect(h.resolution.resolve(sender(X, "/x_lead", "x_lead"), "/dev_team/x_lead")).rejects.toMatchObject({
+        code: "COLLABORATION_TARGET_NOT_FOUND",
+        message: "/dev_team/x_lead is no longer an address: your team is addressed from its own root. Use /x_lead.",
+      });
+      // A run delegated under another name is not corrected: the study group's tutor reaches the org's agent there.
+      await expect(h.resolution.resolve(sender(S, "/tutor", "tutor"), "/dev_team/x_lead")).resolves.toBe("org_x_lead");
+    } finally { STANDING.org!.agents.delete("/dev_team/x_lead"); }
   });
 
   it("step 2 takes the run's open Tasks; when none is open, all its Tasks", async () => {
