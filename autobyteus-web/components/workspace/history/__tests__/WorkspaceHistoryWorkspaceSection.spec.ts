@@ -485,7 +485,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(teamARow().attributes('aria-current')).toBeUndefined();
   });
 
-  it('toggles a task-Team subtree and selects only its concrete task Agent child', async () => {
+  it('a task-Team row expands its subtree and opens its coordinator, as in every view (SR-083, FU-031); its member row opens itself', async () => {
     const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
     const studyGroup = testTaskTeamLayout('/study_group', [testAgentNode('/study_group/reviewer', { agentRunId: 'reviewer-run' })]);
     const liveContext = buildTestTeamContext({
@@ -506,7 +506,11 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(taskRows[0].attributes('data-transient-kind')).toBe('task_team');
     await taskRows[0].trigger('click');
     await wrapper.vm.$nextTick();
-    expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
+    // The server's open target: the delegated Team's coordinator (F-56 was base's: it only expanded).
+    expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
+      teamRunId: 'team-run-1', memberAddress: '/study_group', agentRunId: 'task-team-run-1:reviewer-run',
+    }, 'workspace:/ws/a');
+    actions.onSelectTeamMember.mockClear();
     taskRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(taskRows).toHaveLength(2);
     expect(taskRows[1].attributes('data-transient-kind')).toBe('task_team_child');

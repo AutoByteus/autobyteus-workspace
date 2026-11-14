@@ -11,6 +11,7 @@ import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts'
 import { createRemoteAgentContext } from '~/services/remoteRuns/remoteAgentContext'
 import { mergeByStartTime } from '~/services/remoteRuns/remoteChildren'
 import { agentRowKey, teamRowKey } from './teamExecutionTreeSelectors'
+import { fromSnakeOpenTarget, memberOpenTarget } from '~/utils/runOpenTarget'
 import type { TeamAgentExecutionLocation, TeamExecutionNavigationRow } from './teamExecutionViewModels'
 
 /**
@@ -89,16 +90,18 @@ const remoteRunRows = (
     })
   }
   if (execution.kind === 'agent') {
-    return [agentRow(execution.agent_run_id, execution.address, 1, rootKey, { delegatedBy: delegatedBy(execution.delegator_agent_run_id) })]
+    return [agentRow(execution.agent_run_id, execution.address, 1, rootKey, { delegatedBy: delegatedBy(execution.delegator_agent_run_id),
+      openTarget: fromSnakeOpenTarget(execution.open_target) ?? null })]
   }
   const key = teamRowKey(execution.team_run_id)
   const label = memberDisplayName(execution.address)
   return [Object.freeze({
     key, kind: 'task_team' as const, address: parseAgentTeamAddress(execution.address), displayName: label, accessibleName: label,
-    depth: 1, parentKey: rootKey, agentRunId: null, teamRunId: execution.team_run_id,
+    depth: 1, parentKey: rootKey, agentRunId: null, teamRunId: execution.team_run_id, openTarget: fromSnakeOpenTarget(execution.open_target) ?? null,
     delegatedBy: delegatedBy(execution.delegator_agent_run_id), currentStatus: null, focusable: false,
     expandable: execution.members.length > 0, coordinator: false,
   }), ...execution.members.map((member) => agentRow(member.agent_run_id, member.address, 2, key, {
     kind: 'task_team_agent', coordinator: member.address === execution.coordinator_address,
+    openTarget: memberOpenTarget(execution.team_run_id, member.agent_run_id, execution.node_id),
   }))]
 }

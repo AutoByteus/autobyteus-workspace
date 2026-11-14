@@ -188,6 +188,8 @@ const executionForDelegation = (
         ? { kind: 'agent', agent_definition_id: slot.agentDefinitionId, launch_configuration: withWorkspaceFallback(launch(slot), workspaceRootPath),
           launch_source: { origin: 'configured', fallbacks: [] } }
         : { kind: 'agent', agent_definition_id: name, launch_configuration: withWorkspaceFallback(launch(testAgentNode(delegation.recipientAddress)), workspaceRootPath) },
+      // Where it opens, as the server sends it (SR-083).
+      open_target: { run_kind: 'agent', run_id: delegation.target.agentRunId, agent_run_id: delegation.target.agentRunId },
     };
   }
   const { team, teamRunId } = delegation.target;
@@ -202,6 +204,9 @@ const executionForDelegation = (
       agent_run_id: `${teamRunId}:${child.agentRunId}`, platform_agent_run_id: null,
     })),
     task_executions: [], delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
+    // Where it opens, as the server sends it (SR-083): its coordinator.
+    open_target: { run_kind: 'agent_team', run_id: teamRunId,
+      agent_run_id: `${teamRunId}:${team.children.find((child) => child.address === team.coordinatorAddress)?.agentRunId ?? ''}` },
     source: {
       kind: 'agent_team', team_definition_id: team.teamDefinitionId, coordinator_address: team.coordinatorAddress,
       members: team.children.map((child) => ({ address: child.address, agent_definition_id: child.agentDefinitionId,

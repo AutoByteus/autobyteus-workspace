@@ -1,3 +1,4 @@
+import type { RowOpenTarget } from '~/stores/runHistoryTypes'
 import type {
   TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
@@ -31,6 +32,8 @@ export interface TeamExecutionNavigationRow {
   readonly focusable: boolean;
   readonly expandable: boolean;
   readonly coordinator: boolean;
+  /** Where a delegated row opens, as the server sent it (SR-083); absent on the run's own rows. */
+  readonly openTarget?: RowOpenTarget | null;
 }
 
 export interface TeamAgentContextEntry {

@@ -8,6 +8,8 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
+import { fromSnakeOpenTarget, memberOpenTarget } from '~/utils/runOpenTarget';
+import type { RowOpenTarget } from '~/stores/runHistoryTypes';
 import { agentRunKey, teamRunKey, type TaskExecutionTreeWalk } from '~/utils/collaboration/taskExecutionClosure';
 import type {
   TeamAgentExecutionLocation,
@@ -117,6 +119,7 @@ export const projectNavigationRows = (inputTree: {
     parentKey: string | null;
     delegatedBy?: string | null;
     coordinatorAddress?: AgentTeamAddress | null;
+    openTarget?: RowOpenTarget | null;
   }): void => {
     const label = nameOf(inputAgent.address);
     rows.push(Object.freeze({
@@ -125,13 +128,14 @@ export const projectNavigationRows = (inputTree: {
       depth: inputAgent.depth, parentKey: inputAgent.parentKey, agentRunId: inputAgent.agentRunId,
       teamRunId: null, delegatedBy: inputAgent.delegatedBy ?? null, currentStatus: status(inputAgent.agentRunId),
       focusable: true, expandable: false, coordinator: inputAgent.coordinatorAddress === inputAgent.address,
+      ...(inputAgent.openTarget !== undefined ? { openTarget: inputAgent.openTarget } : {}),
     }));
   };
   const addTask = (task: TaskExecutionDto, depth: number, parentKey: string): void => {
     if (task.kind === 'task_agent') {
       addAgent({
         kind: 'task_agent', address: task.address, agentRunId: task.agent_run_id,
-        depth, parentKey, delegatedBy: delegatorName(task.delegator_agent_run_id),
+        depth, parentKey, delegatedBy: delegatorName(task.delegator_agent_run_id), openTarget: fromSnakeOpenTarget(task.open_target) ?? null,
       });
       return;
     }
@@ -146,7 +150,7 @@ export const projectNavigationRows = (inputTree: {
     for (const member of team.members) {
       addAgent({
         kind: 'task_team_agent', address: member.address, agentRunId: member.agent_run_id,
-        depth, parentKey, coordinatorAddress,
+        depth, parentKey, coordinatorAddress, openTarget: memberOpenTarget(team.team_run_id, member.agent_run_id),
       });
       team.task_executions.filter((task) => task.address === member.address)
         .forEach((task) => addTask(task, depth + 1, agentRowKey(member.agent_run_id)));
@@ -169,6 +173,7 @@ export const projectNavigationRows = (inputTree: {
       delegatedBy: delegatorName(team.delegator_agent_run_id),
       currentStatus: null, focusable: false,
       expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
+      openTarget: fromSnakeOpenTarget(team.open_target) ?? null,
     }));
     addTaskMembers(team, depth + 1, key, coordinatorAddress);
   };

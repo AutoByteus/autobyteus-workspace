@@ -130,6 +130,7 @@
 </template>
 
 <script setup lang="ts">
+import { teamRowFocusOf } from '~/composables/useRunOpening'
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
@@ -228,9 +229,10 @@ const open = () => {
   if (!expanded.value) props.state.toggleAgentOrgRun?.(entry.runId)
   return props.actions.onOpenAgentOrgRun?.(entry.orgRun)
 }
+// A row opens the agent the server named for it (SR-083): a delegated Team its coordinator, as in every view (FU-031).
 const selectTeamRow = (row: RunHistoryTeamExecutionRow) => {
-  if (props.entry.kind !== 'team' || !row.agentRunId) return
-  return props.actions.onSelectTeamMember({ teamRunId: props.entry.runId, memberAddress: row.memberAddress, agentRunId: row.agentRunId })
+  const focus = props.entry.kind === 'team' ? teamRowFocusOf(props.entry.runId, row) : null
+  if (focus) return props.actions.onSelectTeamMember(focus)
 }
 const stop = () => {
   const entry = props.entry

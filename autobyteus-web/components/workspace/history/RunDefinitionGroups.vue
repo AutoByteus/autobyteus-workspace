@@ -312,6 +312,7 @@
 </template>
 
 <script setup lang="ts">
+import { teamRowFocusOf } from '~/composables/useRunOpening';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
@@ -410,11 +411,8 @@ const selectTeamDisplayRow = (
   team: TeamTreeNode,
   row: RunHistoryTeamExecutionRow,
 ): Promise<void> | void => {
-  if (!row.agentRunId) return;
-  return props.actions.onSelectTeamMember({
-    teamRunId: team.teamRunId,
-    memberAddress: row.memberAddress,
-    agentRunId: row.agentRunId,
-  }, props.node.workspaceId);
+  // A row opens the agent the server named for it (SR-083): a delegated Team its coordinator, as in every view (FU-031).
+  const focus = teamRowFocusOf(team.teamRunId, row);
+  if (focus) return props.actions.onSelectTeamMember(focus, props.node.workspaceId);
 };
 </script>

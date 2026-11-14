@@ -110,6 +110,7 @@ export const buildRunHistoryTeamExecutionRows = (
       depth,
       hasChildren,
       remote: remoteRun ? Object.freeze({ runId: remoteRun.runId, nodeName: remoteRun.nodeName }) : null,
+      openTarget: execution.openTarget ?? null,
     };
     return [transient];
   });
