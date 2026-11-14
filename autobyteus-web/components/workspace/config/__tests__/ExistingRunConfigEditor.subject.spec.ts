@@ -39,7 +39,7 @@ vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () 
   contextFor: () => ({ selection: mocks.orgSelection.value, index: { selectedAgent: () => ({ agentRunId: 'coordinator-of-selected-team' }) } }),
 }) }))
 vi.mock('~/stores/delegatedLaunchDraftStore', () => ({ useDelegatedLaunchDraftStore: () => ({
-  edits: {}, changes: [], originals: {}, optionsByKey: {}, dirty: false, saving: false, feedback: null, stopFeedback: null, changesAllowed: true,
+  edits: {}, changes: [], originals: {}, optionsByKey: {}, saved: {}, dirty: false, saving: false, feedback: null, stopFeedback: null, changesAllowed: true,
   bind: vi.fn(), setTargets: vi.fn(), isStopping: () => false,
 }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {

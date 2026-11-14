@@ -41,6 +41,11 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     edits: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     originals: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     optionsByKey: {} as Record<DelegatedTargetKey, ExistingRunModelOptionsState>,
+    /**
+     * What each row saved in this Settings session now has, from its run's own save answer (CR-461-077): its row shows
+     * it, while the row's record (the delegator's view, live or stopped) still holds the launch it was read with.
+     */
+    saved: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     optionsStatus: 'idle' as 'idle' | 'loading' | 'ready' | 'unavailable',
     optionsRequestId: 0,
     saving: false,
@@ -68,7 +73,7 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
   actions: {
     /**
      * Settings opened another run (or closed): this edit and the options start over. Saved choices
-     * are the server's: rows read them from the run (its live view, or Settings' reload after Save).
+     * are the server's: rows read them from the run (its view's row records, and after a Save its own save answer, `saved`).
      */
     bind(root: DelegatedRoot | null): void {
       const binding = useWindowNodeContextStore().bindingRevision
@@ -79,6 +84,7 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
       this.root = root ? { ...root } : null
       this.targets = new Map()
       this.discard()
+      this.saved = {}
       this.optionsByKey = {}
       this.optionsStatus = 'idle'
       this.optionsRequestId += 1
@@ -151,6 +157,8 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
         }
         const result = await saveDelegatedRuns({ changes: this.changes, targets: this.targets, nameOf: rows.nameOf })
         if (!current()) return false
+        // Each saved row shows what its run now has (also when a later run refused: the runs before it keep their save).
+        this.saved = { ...this.saved, ...result.saved }
         if (!result.success) {
           this.feedback = { kind: 'error', message: result.message }
           this.fieldErrors = [...result.fieldErrors]

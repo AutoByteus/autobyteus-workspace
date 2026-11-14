@@ -131,7 +131,7 @@ describe('RunMemberRow launch note (AC-011)', () => {
 
 describe('Settings: stop and change a copy (SR-007)', () => {
   const runningRows = (live: readonly string[]) => teamDelegatedLaunchNodes(tree, { schemaFor: () => null, sameWorkspace: () => true }, {
-    editable: true, isAgentLive: (id) => live.includes(id), isStopping: () => false, draftOf: () => null,
+    editable: true, isAgentLive: (id) => live.includes(id), isStopping: () => false, draftOf: () => null, savedOf: () => null,
   })
   const running = (subject: Subject) => settings(subject, { isActive: true, canEdit: false, state: 'read_only', subjectActive: Boolean(subject.subject.delegated?.running) })
 

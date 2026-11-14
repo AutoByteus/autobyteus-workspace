@@ -145,16 +145,20 @@ describe('delegatedLaunchDraftStore', () => {
     const store = useDelegatedLaunchDraftStore()
     bound(store)
     await flush()
-    client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [] })
+    const answered = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null }
+    client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [], saved: { 'agent:copy': answered } })
     store.edit('agent:copy', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'opus', llmConfig: null }, { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null })
     await expect(store.save(rows, async () => true)).resolves.toBe(true)
     expect(client.saveDelegatedRuns).toHaveBeenCalledWith({ targets, nameOf: rows.nameOf,
       changes: [{ key: 'agent:copy', selection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null } }] })
     expect(store.dirty).toBe(false)
     expect(store.feedback).toEqual({ kind: 'success', message: 'Saved.' })
-    // CR-002: no client copy of the saved choice; rows read it from the run's view or Settings' reload.
+    // CR-002: no client copy of the edit. CR-461-077: the store keeps what each run's own save answered (its canonical
+    // read), which its row shows until Settings are bound to another run.
     expect(store.$state).not.toHaveProperty('savedByRoot')
-    expect(store).not.toHaveProperty('saved')
+    expect(store.saved).toEqual({ 'agent:copy': answered })
+    store.bind(null)
+    expect(store.saved).toEqual({})
   })
 
   it('a row whose run is running refuses the Save before any write, naming it (SR-064)', async () => {

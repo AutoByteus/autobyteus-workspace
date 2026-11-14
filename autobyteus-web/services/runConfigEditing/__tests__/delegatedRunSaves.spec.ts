@@ -8,6 +8,7 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.que
 vi.mock('../existingRunModelConfigMutationClient', () => ({ updateStoppedAgentSelection: io.agentSave, updateStoppedTeamSelections: io.teamSave }))
 
 import { loadDelegatedRunOptions, saveDelegatedRuns, terminateDelegatedRun } from '../delegatedLaunchSelectionClient'
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 
 /**
  * autobyteus-461 SR-064 … SR-066: a delegator's Settings reach each delegated run as itself: its options by its own query,
@@ -47,7 +48,30 @@ describe('delegated runs reached as themselves', () => {
     const names: Record<string, string> = { 'agent:writer': 'writer', 'agent:lead': 'lead' }
     await expect(saveDelegatedRuns({ targets, nameOf: (key) => names[key] ?? key,
       changes: [{ key: 'agent:writer', selection: selection('opus') }, { key: 'agent:lead', selection: selection('haiku') }] }))
-      .resolves.toEqual({ success: false, message: 'lead was not saved: The run is running. Saved: writer.', fieldErrors: [{ path: 'selectionPatches[0]', message: 'x' }] })
+      .resolves.toEqual({ success: false, message: 'lead was not saved: The run is running. Saved: writer.', fieldErrors: [{ path: 'selectionPatches[0]', message: 'x' }],
+        saved: {} })
+  })
+
+  it('CR-461-077: each saved run\'s own answer says what its rows now have: an agent\'s canonical selection, a Team\'s tree for the Team and its members', async () => {
+    const tree = buildTestTeamContext({ teamRunId: 'eng', rootChildren: [
+      testAgentNode('/lead' as never, { agentRunId: 'lead', runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet' }),
+      testAgentNode('/dev' as never, { agentRunId: 'dev', runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'haiku' }),
+    ] }).view.getExecutionTree()
+    io.agentSave.mockResolvedValue({ ...ok, canonicalSelection: selection('opus') })
+    io.teamSave.mockResolvedValue({ ...ok, canonicalExecutionTree: tree })
+    const result = await saveDelegatedRuns({ targets, nameOf: (key) => key,
+      changes: [{ key: 'agent:writer', selection: selection('opus') }, { key: 'team:eng', selection: selection('sonnet') }] })
+    expect(result.saved).toEqual({
+      'agent:writer': selection('opus'),
+      'team:eng': selection('sonnet'),
+      'agent:lead': selection('sonnet'),
+      'agent:dev': selection('haiku'),
+    })
+    // A run that refused gives nothing; the runs saved before it keep theirs.
+    io.teamSave.mockResolvedValue({ success: false, message: 'The run is running.', fieldErrors: [] })
+    const partial = await saveDelegatedRuns({ targets, nameOf: (key) => key,
+      changes: [{ key: 'agent:writer', selection: selection('opus') }, { key: 'team:eng', selection: selection('sonnet') }] })
+    expect(partial.saved).toEqual({ 'agent:writer': selection('opus') })
   })
 
   it('reads each run\'s own options: an agent\'s query, one Team query for the Team and its members; an unreadable run is left out', async () => {

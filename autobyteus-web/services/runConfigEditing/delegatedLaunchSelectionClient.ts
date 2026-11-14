@@ -5,6 +5,9 @@ import { AgentRunModelOptions, TeamRunModelOptions } from '~/graphql/queries/run
 import { optionsStateOfAnswer } from './existingRunModelOptionsState'
 import { updateStoppedAgentSelection, updateStoppedTeamSelections } from './existingRunModelConfigMutationClient'
 import type { ExistingTeamModelConfigPatch } from './existingTeamModelConfigDraft'
+import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
+import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors'
+import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { DelegatedSaveTarget } from '~/utils/runSettings/delegatedLaunchRows'
 import type {
   ExistingRunModelConfigFieldError,
@@ -35,6 +38,11 @@ export type DelegatedSaveResult = Readonly<{
   success: boolean
   message: string
   fieldErrors: readonly ExistingRunModelConfigFieldError[]
+  /**
+   * What each saved row's run now has, from that run's own save answer (CR-461-077): its row shows it at once, as a
+   * read of the run would, while the row's record (the delegator's view) still holds the launch it was read with.
+   */
+  saved: Readonly<Record<DelegatedTargetKey, ExistingAgentRunSelection>>
 }>
 
 type MutationResult = Readonly<{ success: boolean; message: string }>
@@ -131,25 +139,58 @@ const savesOf = (changes: readonly Change[], targets: ReadonlyMap<DelegatedTarge
  * The delegated rows' changes, each saved by its own run's stopped-run save, in row order (SR-064). A run that refuses
  * stops the Save there: the result names it, and the runs already saved (each keeps its save; its file is its truth).
  */
+/** A launch in the team DTO's casing, as a selection. */
+const teamSelection = (launch: Readonly<{ runtime_kind: string; llm_model_identifier: string; llm_config?: Record<string, unknown> | null }> | null | undefined): ExistingAgentRunSelection | null =>
+  launch ? { runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: launch.llm_config ?? null } : null
+
+/**
+ * What a Team run's save answer says each of its rows now has: the Team row its own launch, each member row its
+ * member's (a member that follows the Team took the Team's choice).
+ */
+const savedOfTeam = (teamRunId: string, answer: unknown, targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): Record<DelegatedTargetKey, ExistingAgentRunSelection> => {
+  const parsed = teamRunExecutionTreeDtoSchema.safeParse(answer)
+  if (!parsed.success) return {}
+  const saved: Record<DelegatedTargetKey, ExistingAgentRunSelection> = {}
+  for (const [key, target] of targets) {
+    if (target.kind === 'agent' || target.teamRunId !== teamRunId) continue
+    const selection = target.kind === 'team' ? teamSelection(parsed.data.root_team.default_launch_configuration)
+      : teamSelection(findConfiguredAgentByAddress(parsed.data, parseAgentTeamAddress(target.memberAddress))?.launch_configuration)
+    if (selection) saved[key] = selection
+  }
+  return saved
+}
+
+/**
+ * The delegated rows' changes, each saved by its own run's stopped-run save, in row order (SR-064). A run that refuses
+ * stops the Save there: the result names it, and the runs already saved (each keeps its save; its file is its truth).
+ * Each saved run's answer says what it now has (`saved`, CR-461-077).
+ */
 export const saveDelegatedRuns = async (input: Readonly<{
   changes: readonly Change[]
   targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>
   nameOf(key: DelegatedTargetKey): string
 }>): Promise<DelegatedSaveResult> => {
   const saved: string[] = []
+  const now: Record<DelegatedTargetKey, ExistingAgentRunSelection> = {}
   const savedNote = () => saved.length ? ` Saved: ${saved.join(', ')}.` : ''
   for (const save of savesOf(input.changes, input.targets)) {
     const names = save.keys.map(input.nameOf).join(', ')
     let result: Readonly<{ success: boolean; message: string; fieldErrors: readonly ExistingRunModelConfigFieldError[] }>
     try {
-      result = save.kind === 'agent'
-        ? await updateStoppedAgentSelection({ agentRunId: save.agentRunId, ...save.selection })
-        : await updateStoppedTeamSelections({ teamRunId: save.teamRunId, selectionPatches: save.patches })
+      if (save.kind === 'agent') {
+        const answer = await updateStoppedAgentSelection({ agentRunId: save.agentRunId, ...save.selection })
+        if (answer.success && answer.canonicalSelection) for (const key of save.keys) now[key] = answer.canonicalSelection
+        result = answer
+      } else {
+        const answer = await updateStoppedTeamSelections({ teamRunId: save.teamRunId, selectionPatches: save.patches })
+        if (answer.success) Object.assign(now, savedOfTeam(save.teamRunId, answer.canonicalExecutionTree, input.targets))
+        result = answer
+      }
     } catch (error) {
-      return { success: false, message: `${names} was not saved: ${error instanceof Error ? error.message : String(error)}.${savedNote()}`, fieldErrors: [] }
+      return { success: false, message: `${names} was not saved: ${error instanceof Error ? error.message : String(error)}.${savedNote()}`, fieldErrors: [], saved: now }
     }
-    if (!result.success) return { success: false, message: `${names} was not saved: ${result.message}${savedNote()}`, fieldErrors: [...result.fieldErrors] }
+    if (!result.success) return { success: false, message: `${names} was not saved: ${result.message}${savedNote()}`, fieldErrors: [...result.fieldErrors], saved: now }
     saved.push(names)
   }
-  return { success: true, message: 'Saved. The new models are used when each run resumes.', fieldErrors: [] }
+  return { success: true, message: 'Saved. The new models are used when each run resumes.', fieldErrors: [], saved: now }
 }

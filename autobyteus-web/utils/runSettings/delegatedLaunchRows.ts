@@ -68,8 +68,16 @@ export type DelegatedRowControl = Readonly<{
   isStopping(reference: StopReference): boolean
   /** This edit's choice for a target, if any. */
   draftOf(target: TargetKey): Selection | null
+  /** What a target's run has since a Save in this Settings session (its own save answer, CR-461-077), if any. */
+  savedOf(target: TargetKey): SavedSelection | null
 }>
-const NO_CONTROL: DelegatedRowControl = { editable: false, isAgentLive: () => false, isStopping: () => false, draftOf: () => null }
+/** A saved choice always names its runtime. */
+type SavedSelection = Selection & Readonly<{ runtimeKind: string }>
+const NO_CONTROL: DelegatedRowControl = { editable: false, isAgentLive: () => false, isStopping: () => false, draftOf: () => null, savedOf: () => null }
+/** The launch a row's run has: its record's, with what a Save in this session gave it (the run's own answer). */
+const withSaved = (recorded: Launch, saved: SavedSelection | null): Launch => saved
+  ? { autoExecuteTools: recorded?.autoExecuteTools ?? false, ...recorded, runtimeKind: saved.runtimeKind, llmModelIdentifier: saved.llmModelIdentifier, llmConfig: saved.llmConfig }
+  : recorded
 const LOCKED: RunSettingFlags = { workspace: true, model: true, thinking: true, approval: true }
 const MODEL_EDITABLE: RunSettingFlags = { workspace: true, model: false, thinking: false, approval: true }
 
@@ -133,7 +141,8 @@ type RowInput = Readonly<{
  * `nameOf` is the root's naming rule, so a row is named as the sidebar and the conversation name the copy.
  */
 const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, nameOf: (address: string) => string) => {
-  const rowFacts = (input: RowInput, isTeam: boolean) => {
+  const rowFacts = (recordedInput: RowInput, isTeam: boolean) => {
+    const input: RowInput = { ...recordedInput, started: withSaved(recordedInput.started, control.savedOf(recordedInput.target)) }
     // A Team row's card is the Team's choice; an agent follows the Team's choice only when it follows the Team.
     const followsTeam = isTeam || Boolean(input.followsTeam)
     const draftTeam = isTeam ? control.draftOf(input.target) : input.teamTarget ? control.draftOf(input.teamTarget) : null

@@ -47,7 +47,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
 })
 
 const control = (overrides: Partial<DelegatedRowControl> = {}): DelegatedRowControl => ({
-  editable: true, isAgentLive: () => false, isStopping: () => false, draftOf: () => null, ...overrides,
+  editable: true, isAgentLive: () => false, isStopping: () => false, draftOf: () => null, savedOf: () => null, ...overrides,
 })
 const rows = (input: Partial<DelegatedRowControl> = {}) => delegatedRowsByKey(teamDelegatedLaunchNodes(tree(), deps, control(input)))
 
@@ -62,6 +62,15 @@ describe('copy rows and this edit\'s choices (SR-007)', () => {
     expect(map.get('/se/ie@ie-run')?.values).toMatchObject({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1' })
     // A Team member has no stop of its own: the Team copy stops as one unit.
     expect(map.get('/se/lead@lead-run')?.delegated?.stop).toBeNull()
+  })
+
+  it('CR-461-077: a row saved in this Settings session shows what its run now has (its own save answer), and edits start from it', () => {
+    const saved = { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'haiku-saved', llmConfig: null }
+    const map = rows({ savedOf: (target) => target === 'agent:writer-run' ? saved : null })
+    expect(map.get('/writer@writer-run')?.delegated?.original).toMatchObject({ llmModelIdentifier: 'haiku-saved' })
+    expect(JSON.stringify(map.get('/writer@writer-run'))).toContain('haiku-saved')
+    // Another row keeps its record's launch.
+    expect(JSON.stringify(map.get('/se/ie@ie-run'))).not.toContain('haiku-saved')
   })
 
   it('hide the origin once a choice applies and keep it otherwise', () => {
