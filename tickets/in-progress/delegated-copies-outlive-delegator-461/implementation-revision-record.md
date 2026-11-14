@@ -943,3 +943,18 @@ The current code and `implementation-handoff.md` remain authoritative.
   - the web is unchanged since IMP-80.
 - Remaining risks: the classification rests on the two searches and on reading the flagged migrations, as the test records. A new migration must be classified to pass the test.
 - Next recipient: Code Reviewer.
+
+### IR-028 — The migration ledger is required (CR-461-075)
+
+- Triggering role, report path, and round: Code Reviewer CRR-037 (`code-review-report.md` round 27): Fail, one `Local Fix`, CR-461-075. CR-461-074 resolved. Round 28.
+- Triggering finding IDs: CR-461-075; C27-02 (a suggestion). Large / High unchanged.
+- Prior authoritative result: IR-027 at `9c8679c1fb`.
+- Current authoritative result: `1eb945e5f7`.
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-037.
+- Implementation delta (`1eb945e5f7`):
+  - The ledger is now required on the main migration (its `options.ledger`), `PreservedItemsFollowUp` and `createDelegatedRunsPreservedItemsMigrations`, as the released predecessors take it. The defaults are gone, and nothing is decided by its absence: before, a missing ledger took the reader, 20261020, as terminal (Principles 13 and 16).
+  - `catalogs` is now an explicit argument as well (`null` where none).
+  - Tests pass a ledger: a stub answering `SUCCEEDED` where the reader is not the subject; the real runner's records where it is.
+- C27-02 (ten scans on the first start after the upgrade) is not acted on: the reviewer suggested measuring first, and it is not measured here. Each follow-up's pass is the main migration's scan with a subset of its steps, and most find nothing to convert.
+- Validation (IMP-83 at `1eb945e5f7`): type gate PASS; 754 migration family, architecture and startup tests pass; unit 8082 passed.
+- Next recipient: Code Reviewer, a targeted delta.
