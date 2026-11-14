@@ -4,6 +4,7 @@ import { RunOwnDelegations } from "../agent-collaboration/execution/task/run-own
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { collaboratorPortOf } from "../run-history/services/run-collaborator-port.js";
 import { createRunConversationAvailability } from "../agent-collaboration/execution/task/run-conversation-availability.js";
+import { runIdentityOf } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { createDelegatedRunRestorability } from "../agent-collaboration/execution/task/delegated-run-restorability.js";
 import { getAgentConversationActivityInspector } from "../agent-memory/services/agent-conversation-activity-inspector.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../run-history/services/team-run-execution-tree-location-service.js";
@@ -153,6 +154,8 @@ export const composeCollaboration = async (input: Readonly<{
       adHocTasks: new AdHocTaskStore(taskSide.adHocTasksLayout),
       requestRelease: (run) => runControl.stopForTaskClosure(run),
       workerStatus: (run) => runControl.ownStatus(run),
+      // Where a worker's row is listed: the top of its tree (SR-080).
+      topRun: (run) => tree.topOf(runIdentityOf(run)),
       searchCleanup: processProjectTaskSearchCleanup,
       changes: taskChangeMarks,
     });

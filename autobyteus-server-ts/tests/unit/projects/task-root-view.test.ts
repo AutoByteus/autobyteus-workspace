@@ -44,20 +44,30 @@ describe("Task roots: recorded address, reader/writer, and views", () => {
     ] }, "t");
     const resolve = vi.fn(() => "running" as const);
     const root = latestAssignedEntry(file)!;
-    expect(buildTaskRootView(root, resolve)).toEqual({ kind: "agent", recipientAddress: "/second", ingressAgentRunId: "second", teamRunId: null,
-      delegatingRun: { kind: "agent_team", runId: "team-root" }, start: "failed", startError: { code: "NO_MODEL", message: "No model is set." },
+    expect(buildTaskRootView(root, resolve, null)).toEqual({ kind: "agent", recipientAddress: "/second", ingressAgentRunId: "second", teamRunId: null,
+      delegatingRun: { kind: "agent_team", runId: "team-root" }, topRun: null, start: "failed", startError: { code: "NO_MODEL", message: "No model is set." },
       closed: false, status: "offline" });
     expect(resolve).not.toHaveBeenCalled();
-    expect(buildTaskRootView({ ...root, start: "started", startError: undefined, closedAt: "x" }, resolve).status).toBe("offline");
-    expect(buildTaskRootView({ ...root, start: "started", startError: undefined }, resolve).status).toBe("running");
+    expect(buildTaskRootView({ ...root, start: "started", startError: undefined, closedAt: "x" }, resolve, null).status).toBe("offline");
+    expect(buildTaskRootView({ ...root, start: "started", startError: undefined }, resolve, null).status).toBe("running");
     expect(resolve).toHaveBeenCalledWith({ agentRunId: "second" });
     // Starting: Initializing while its active host has no live run yet; its own status once live;
     // Offline when the host is not active (a start left behind by a stopped root).
     const starting = { ...root, start: "starting" as const, startError: undefined };
-    expect(buildTaskRootView(starting, () => "offline").status).toBe("initializing");
-    expect(buildTaskRootView(starting, () => "idle").status).toBe("idle");
-    expect(buildTaskRootView(starting, () => null).status).toBe("offline");
-    expect(buildTaskRootView({ ...root, start: "started", startError: undefined }, () => null).status).toBe("offline");
+    expect(buildTaskRootView(starting, () => "offline", null).status).toBe("initializing");
+    expect(buildTaskRootView(starting, () => "idle", null).status).toBe("idle");
+    expect(buildTaskRootView(starting, () => null, null).status).toBe("offline");
+    expect(buildTaskRootView({ ...root, start: "started", startError: undefined }, () => null, null).status).toBe("offline");
+  });
+
+  it("SR-080: the root names the run whose view lists its row, the top of its tree, from the resolver; none without one", () => {
+    const file = parseTaskExecutionResourceFile({ taskId: "t", agentRunResources: [stored()] }, "t");
+    const root = latestAssignedEntry(file)!;
+    const topOf = vi.fn(() => createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager" }));
+    expect(buildTaskRootView(root, () => "idle", topOf)).toMatchObject({ delegatingRun: { kind: "agent_team", runId: "team-root" },
+      topRun: { kind: "agent", runId: "manager" } });
+    expect(topOf).toHaveBeenCalledWith({ agentRunId: "worker" });
+    expect(buildTaskRootView(root, () => "idle", null).topRun).toBeNull();
   });
 
   describe("on disk", () => {

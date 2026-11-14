@@ -62,6 +62,8 @@ export class TaskRoot {
   @Field(() => String) ingressAgentRunId!: string;
   @Field(() => String, { nullable: true }) teamRunId!: string | null;
   @Field(() => TaskRootDelegatingRun) delegatingRun!: TaskRootDelegatingRun;
+  /** The run whose view lists its row, the top of its tree (SR-080); null when not known. */
+  @Field(() => TaskRootDelegatingRun, { nullable: true }) topRun!: TaskRootDelegatingRun | null;
   @Field(() => String) start!: string;
   @Field(() => TaskRootStartError, { nullable: true }) startError!: TaskRootStartError | null;
   @Field(() => Boolean) closed!: boolean;

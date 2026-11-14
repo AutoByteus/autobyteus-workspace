@@ -110,8 +110,14 @@ export interface TaskRootView {
   /** The agent run, or the team's coordinator: the run that opens it. */
   ingressAgentRunId: string;
   teamRunId: string | null;
-  /** The run that delegated it (one hop): the Task page opens this run's view with the worker's row selected. */
+  /** The run that delegated it (one hop), for display. */
   delegatingRun: { kind: "agent" | "agent_team" | "agent_org"; runId: string };
+  /**
+   * The run at the top of its tree, whose view lists its row (SR-080, DS-11): the Task page opens this run's view with the
+   * worker's row selected, as base opened its host. Derived from the delegation tree, never stored; null when the tree
+   * is not known (the card is then not openable).
+   */
+  topRun: { kind: "agent" | "agent_team" | "agent_org"; runId: string } | null;
   start: "starting" | "started" | "failed";
   startError: { code: string; message: string } | null;
   closed: boolean;

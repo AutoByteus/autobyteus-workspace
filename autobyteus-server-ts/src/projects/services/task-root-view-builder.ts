@@ -1,4 +1,5 @@
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskRootStatus, TaskRootView } from "../domain/models.js";
 import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain/task-execution-resources.js";
 
@@ -7,6 +8,8 @@ import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain
  * not active. It never wakes anything.
  */
 export type TaskWorkerStatusResolver = (execution: TaskExecutionReference) => TaskRootStatus | null;
+/** The run at the top of a run's tree (`DelegationIndex.topOf`, composition-bound, SR-080): where its row is listed. */
+export type TaskTopRunResolver = (execution: TaskExecutionReference) => RootExecutionIdentity;
 
 /** The Task's root: its latest `assigned` entry (file order is link order); null when never assigned. */
 export const latestAssignedEntry = (file: TaskExecutionResourceFile | null): TaskExecutionResource | null => {
@@ -29,14 +32,16 @@ export const rootWorkerStatus = (entry: TaskExecutionResource, resolve: TaskWork
   return entry.start === "starting" && status === "offline" ? "initializing" : status;
 };
 
-export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver): TaskRootView => {
+export const buildTaskRootView = (entry: TaskExecutionResource, resolve: TaskWorkerStatusResolver, topOf: TaskTopRunResolver | null): TaskRootView => {
   const team = "teamRunId" in entry.execution;
+  const top = topOf ? topOf(entry.execution) : null;
   return {
     kind: team ? "team" : "agent",
     recipientAddress: entry.recipientAddress ?? null,
     ingressAgentRunId: "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!,
     teamRunId: "teamRunId" in entry.execution ? entry.execution.teamRunId : null,
     delegatingRun: { kind: entry.delegatedFrom.delegatingRun.rootSubjectKind, runId: entry.delegatedFrom.delegatingRun.rootRunId },
+    topRun: top && { kind: top.rootSubjectKind, runId: top.rootRunId },
     start: entry.start,
     startError: entry.startError ? { code: entry.startError.code, message: entry.startError.message } : null,
     closed: entry.closedAt !== null,
