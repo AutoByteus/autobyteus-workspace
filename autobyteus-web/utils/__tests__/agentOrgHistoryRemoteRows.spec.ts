@@ -13,6 +13,8 @@ const remoteTeam = {
   coordinator_address: '/marketing_team/lead',
   members: [{ address: '/marketing_team/writer', agent_run_id: 'writer-run' }, { address: '/marketing_team/lead', agent_run_id: 'lead-run' }],
   delegator_agent_run_id: 'agent-director', started_at: '2999-01-01T00:00:00.000Z',
+  // Where it opens, as the server sends it (SR-083): its coordinator, not its first member.
+  open_target: { run_kind: 'agent_team' as const, run_id: 'marketing-run', agent_run_id: 'lead-run', node_id: 'srv_docker' },
 }
 
 describe('Org history rows with remote runs', () => {

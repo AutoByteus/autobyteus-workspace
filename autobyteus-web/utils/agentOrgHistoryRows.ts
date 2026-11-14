@@ -124,10 +124,11 @@ const statusSource = (
       address: addresses.get(delegatorAgentRunId) ?? null,
     }),
     coordinatorFor: (team) => {
-      // A Team copy names its coordinator in its own source.
-      const matches = team.members.filter((member) => member.address === team.source.coordinatorAddress)
-      if (matches.length !== 1) throw new Error(`Missing exact task coordinator '${team.teamRunId}'.`)
-      return matches[0]!
+      // Where the row opens is the server's (SR-083): its coordinator, one of its members; a row error otherwise.
+      const target = team.openTarget?.agentRunId
+      const coordinator = target ? team.members.find((member) => member.agentRunId === target) : undefined
+      if (!coordinator) throw new Error(`Missing exact task coordinator '${team.teamRunId}'.`)
+      return coordinator
     },
     statusForAgentRunId: (agentRunId) => live
       ? context?.getAgentContext(agentRunId)?.state.currentStatus
@@ -198,13 +199,13 @@ const flattenTask = (
     }]
   : flattenTaskTeam(task, depth, source)
 
-/** A remote row; a Team row opens the coordinator its link names. */
+/** A remote row; it opens where the server says (SR-083), a Team row its coordinator. */
 const remoteRow = (executions: readonly RemoteTaskExecutionDto[]) => ({ row, teamStatus }: RemoteTaskRow): AgentOrgHistoryRemoteRow => {
   const team = executions.find((execution) => execution.kind === 'agent_team' && execution.team_run_id === row.teamRunIdForNode)
-  const coordinator = team?.kind === 'agent_team'
-    ? team.members.find((member) => member.address === team.coordinator_address) ?? team.members[0]! : null
+  const target = row.openTarget?.agentRunId ?? ''
+  const opened = team?.kind === 'agent_team' ? team.members.find((member) => member.agent_run_id === target) : undefined
   return Object.freeze({ key: row.rowKey, kind: 'remote', depth: row.depth, transient: row, teamStatus,
-    openAgentRunId: row.agentRunId ?? coordinator?.agent_run_id ?? '', openAddress: coordinator?.address ?? row.memberAddress })
+    openAgentRunId: target, openAddress: opened?.address ?? row.memberAddress })
 }
 
 /**

@@ -37,6 +37,7 @@ const nestedTree = (): OrgTree => {
           address: '/reviewers', teamRunId: 'reviewers-task',
           members: [{ address: '/reviewers/chair', agentRunId: 'agent-chair-task', platformAgentRunId: null }],
           taskExecutions: [], delegatorAgentRunId: 'agent-task-lead', startedAt: '2026-09-01T00:00:03.000Z',
+          openTarget: { runKind: 'agent_team', runId: 'reviewers-task', agentRunId: 'agent-chair-task' },
           source: { kind: 'agent_team', teamDefinitionId: 'reviewers-definition', coordinatorAddress: '/reviewers/chair', handoffs: [],
             defaultLaunchConfiguration: launch, defaultLaunchSource: { origin: 'configured', fallbacks: [] },
             members: [{ address: '/reviewers/chair', agentDefinitionId: 'definition-agent-chair-configured', launchConfiguration: launch, followsTeam: true }] },
@@ -88,6 +89,7 @@ describe('projectAgentOrgHistoryRows delegated Team disclosure', () => {
     const first = tree.rootOrg.taskExecutions.find((task) => 'teamRunId' in task)!
     tree.rootOrg.taskExecutions.push({
       ...structuredClone(first), teamRunId: 'team-task-2', startedAt: '2026-09-01T00:00:04.000Z',
+      openTarget: { runKind: 'agent_team', runId: 'team-task-2', agentRunId: 'agent-task-lead-2' },
       members: [
         { address: '/team/lead', agentRunId: 'agent-task-lead-2', platformAgentRunId: null },
         { address: '/team/worker', agentRunId: 'agent-task-worker-2', platformAgentRunId: null },

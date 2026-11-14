@@ -89,6 +89,8 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
           ],
           handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configuredOrigin,
         },
+        // Where it opens, as the server sends it (SR-083): its coordinator (after `source`, the schema's order).
+        openTarget: { runKind: 'agent_team', runId: 'team-task', agentRunId: 'agent-task-lead' },
       }],
     },
   },
