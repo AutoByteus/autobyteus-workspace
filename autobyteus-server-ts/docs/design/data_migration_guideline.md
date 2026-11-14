@@ -69,7 +69,9 @@ answer them.
 6. **Current-only boundary:** where does legacy interpretation end? Confirm that
    the migration uses frozen copies of its source shapes (section 4). Verify
    schema ordering, source retirement and same-ID versus new-migration
-   applicability.
+   applicability. Place the migration at the end of the registry, and classify
+   every earlier migration that can run after it (section 4, "Registry order
+   and late predecessors").
 7. **Cost:** which files, bytes, passes and syncs are required? Does another
    consumer repeat a proof that is already established? Confirm that startup and
    new work do not audit every historical trace.
@@ -260,6 +262,50 @@ A rollback means reverting the merge and releasing the older code again (see
   writes touches only data saved after the upgrade. Do not keep fields, dual
   writes or old-format writers for older builds. After a rollback, the older
   build may ignore files written in the newer shape.
+
+### Registry order and late predecessors
+
+These rules are hard rules. A design or review that breaks one fails.
+
+- **The registry is append-only.**
+  - Released entries never move. Their order is dependency order, not date
+    order, and an installation upgrading from an old release runs them in that
+    order.
+  - A new migration goes at the end of the registry, and its ID's date is later
+    than the last released entry's.
+  - A new migration never runs ahead of a released one. Data that has not yet
+    run the released migration would otherwise meet the new one in a shape no
+    released build left it in.
+  - `tests/unit/app-data-migrations/app-data-migration-registry-order.test.ts`
+    checks the released prefix and that new entries are appended. Its released
+    set is updated at each release.
+- **An earlier migration can run after yours.**
+  - The runner continues past a failure. A migration that is `FAILED` and
+    retried, or `NOT_RUN` while it waits behind a failed prerequisite, runs on
+    a later start, after newer migrations have finished for good.
+  - A new migration that converts shapes earlier migrations write or read
+    therefore classifies **every** earlier migration as one of:
+    - a **writer**: it writes a shape yours converts, including address and
+      path shapes;
+    - a **reader**: it selects items by a shape yours changes;
+    - a **rebuilder**: it rebuilds from the current files;
+    - **none**.
+  - Each writer and each reader gets a **follow-up migration**. The follow-up:
+    - has that predecessor and yours as its prerequisites;
+    - is `requiredOnStartup`, with no `holdsBackCapabilities`;
+    - is idempotent by structure;
+    - converts what the predecessor produces when it finishes late.
+
+    For a reader, your migration also leaves the items the reader may still
+    select untouched while the reader is not terminal. The follow-up converts
+    them afterwards.
+  - Check each classification against the code, not against names: a migration
+    that looks like a rebuilder may drop rows it does not recognize.
+  - A registry test fails on an unclassified earlier migration. One
+    parameterized definition serves every follow-up. Reference implementation:
+    autobyteus-461 (`delegated-runs-own-runs-v1`, SR-078 and SR-079).
+  - Until the runner orders and re-runs migrations by itself, this is each new
+    migration's job.
 
 ## 5. Operating Assumptions and Reachability
 
@@ -524,4 +570,6 @@ mistakes, not approved designs.
 | Same ticket, D1/D2 and DR-007/009; correction in `tickets/done/startup-performance` | Whole-file `.original` copies, repeated hashing and multi-pass transforms, per-file manifests, and a post-migration scan of all history at startup made one-time upgrade work into a large permanent startup cost. The correction: convert each source once, replace atomically, recognize the current shape, and check a reference only when it is used. |
 | `tickets/done/canonical-identity-startup-recovery` (SR-011–013) | The user rejected hash/phase records, restoration and per-syscall recovery, and later also rejected fatal-only handling. Simplify without reintroducing lockout. |
 | `tickets/done/token-usage-one-row-per-agent-run` (SR-004–006) | Speculative recovery and runtime legacy-overlap machinery were replaced by current-only admission and a transactional conversion. |
+| autobyteus-461 CR-461-048 (`tickets/…/delegated-copies-outlive-delegator-461`) | **Data loss.** A new migration was inserted beside a related one, ahead of four released migrations. On data that had not run `20261020_remove_skill_improvement_data` yet, the new migration converted a delegated copy, and the released one then took the converted copy for a helper run and deleted it. Append new migrations at the end, and keep the order test (section 4, "Registry order and late predecessors"). |
+| autobyteus-461 CR-461-074 (same ticket) | **Half-converted data.** A migration assumed its predecessors had finished. `20260901_agent_org_flat_team_families_v1`, waiting behind a failed prerequisite, ran after it on a later start and wrote a list the new migration had removed everywhere else. Classify every earlier migration, and give writers and readers follow-ups. |
 | `tickets/done/org-history-startup-latency` | Warm tests missed a cold-start duplicate readiness rebuild. Reusing the established in-process result fixed it without weakening admission. |
