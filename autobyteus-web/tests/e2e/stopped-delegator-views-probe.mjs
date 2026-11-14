@@ -19,8 +19,9 @@
 //          team's own member (the Manager) restores the team: the view continues live after one snapshot, with no
 //          out-of-sync notice, and the composer does not stay pending (SR-048).
 //   SDV-03 Org view: the same for an org run; the stopped org starts on its first input (the user's message to its agent).
-//   SDV-05 C15-03 (DS-15): with the worker selected on a second page when its Task closes, the user's message to it is refused
-//          with base's text; it is not restored, its row stays gone from the delegator's view, and the delegator's row keeps its status.
+//   SDV-05 C15-03 (DS-15, CRR-039): page B opens the worker from its delegator's row while its Task is open; the Task closes;
+//          the user's message from that still-open view is refused with base's text; it is not restored, its row stays gone from
+//          the delegator's view (page A), and the delegator's row keeps its status.
 // In each case the stopped root's own row in the run list is sampled while its view is open and for 15 s after the child
 // command (past the history poll): it must show stopped (code review O-1, CRR-008).
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes them in
@@ -511,22 +512,24 @@ const caseClosedRunInput = async () => {
     await openRoot(b.page, s.root, s.names);
     const rowA = a.page.locator(childRow('agent', s.worker));
     await rowA.waitFor({ state: 'visible', timeout: 30000 });
+    // C15-03 (CRR-039): page B opens the delegated run from its delegator's row while its Task is open, and keeps that view
+    // open across the closure (a closed run's line on its Task's card is not openable, as at base: AR-002, REQ-009).
+    const workerRowB = b.page.locator(childRow('agent', s.worker)).first();
+    await workerRowB.waitFor({ state: 'visible', timeout: 30000 });
+    await workerRowB.click();
+    await until("page B shows the worker's own conversation", async () => {
+      const text = await centerText(b.page); return text.includes('Write the notes') && !text.includes('update_task'); }, 30000);
+    out.workerOpenBeforeClosure = true;
+    await shot(b.page, 'sdv-05-worker-open');
     const input = await managerInput(s.root);
     try {
       input.send(callTool('update_task', { task_id: s.taskId, status: 'DONE' }));
       await until('the worker row leaves page A after DONE', async () => (await rowA.count()) === 0, 60000);
     } finally { input.close(); }
-    // DS-15: a closed run is reached from its Task's page: page B opens the worker from the Task's card (Projects panel).
-    await b.page.locator('[data-test="right-side-tab-list"]').locator('button, [role="tab"]', { hasText: /Projects/ }).first().click();
-    await sleep(1000);
-    const workerLine = b.page.locator('[data-testid^="project-task-root-"]', { hasText: new RegExp(s.names.worker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') }).first();
-    await workerLine.waitFor({ state: 'visible', timeout: 30000 });
-    out.closedLine = { testid: await workerLine.getAttribute('data-testid'), openable: await workerLine.getAttribute('data-openable') };
-    await shot(b.page, 'sdv-05-closed-line');
-    assert(out.closedLine.openable === 'true', "the closed run's line on its Task's card is not openable: the web offers no way to message it", out);
-    await workerLine.click();
-    await until("page B shows the closed worker's own conversation", async () => {
-      const text = await centerText(b.page); return text.includes('Write the notes') && !text.includes('update_task'); }, 30000);
+    await sleep(2000);
+    out.pageBAfterClosure = (await centerText(b.page)).slice(0, 300);
+    assert(out.pageBAfterClosure.includes('Write the notes') && !out.pageBAfterClosure.includes('update_task'),
+      "page B's open view of the worker did not stay on the worker after its Task closed", out);
     const rootDotBefore = await rootRowDot(a.page, s.root);
     await send(b.page, 'Are you still there? Marker CLOSED-INPUT.');
     const refusal = "Your Task is DONE or CANCELLED, so you can't start new work.";

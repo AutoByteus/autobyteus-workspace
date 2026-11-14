@@ -1,0 +1,45 @@
+{
+  "startedAt": "2026-11-14T04:36:30.504Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "SDV-05": {
+      "result": "Fail",
+      "description": "C15-03: the user's message to a closed delegated run is refused with base's text; it is not restored, its row stays gone from the delegator's view and the delegator's row keeps its status",
+      "message": "page B's open view of the worker did not stay on the worker after its Task closed",
+      "details": {
+        "root": "manager_sdvclosed_1d47_a56d88160e5c4cea9db639fdd4a065f2",
+        "worker": "worker_sdvclosed_1d47_61137472a31c4301a1c575712966d26a",
+        "workerOpenBeforeClosure": true,
+        "pageBAfterClosure": "MS\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume\u2026\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/worker_sdvclosed_1d47\",\"task_id\":\"project_task_b89804e9-d7d3-4068-9de4-54ad64239243\"}}\nMS\nManager SdvClosed 1d47\n\nCALLED:{\u201ccontent\u201d:[{\u201ctype\u201d:\u201ctext\u201d,\u201ctext\u201d:\u201c{\"delegated\":true,\"t"
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 83314,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 82665,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "SDV-05",
+      "message": "page B's open view of the worker did not stay on the worker after its Task closed"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:49623",
+    "frontendUrl": "http://127.0.0.1:49624",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-8VdaME"
+  },
+  "browserVersion": "157.0.8103.51",
+  "result": "Fail",
+  "finishedAt": "2026-11-14T04:37:23.958Z"
+}
