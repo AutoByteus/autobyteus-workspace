@@ -587,7 +587,7 @@ A persistent item failure, such as "target already exists", keeps such a migrati
     - it is `FAILED` and retried;
     - it is `NOT_RUN` while it waits behind a failed prerequisite. For example, `20260901_agent_org_flat_team_families_v1` waits for `token-usage-run-records-v1` (registry line 99).
 
-    Its late output must not be left half-converted (rule 7). The predecessors that matter are classified once, by what they do to the shapes ours converts (the `taskExecutions` / `remoteTaskExecutions` lists, `taskAgent`, `hostRoot` / `assignedBy`, `collaboration_tree.json`, logs in `collaboration/`, delegated runs' history rows). The evidence is a search of each migration folder for those shapes.
+    Its late output must not be left half-converted (rule 7). The predecessors that matter are classified once, by what they do to the shapes ours converts (the `taskExecutions` / `remoteTaskExecutions` lists, `taskAgent`, `hostRoot` / `assignedBy`, `collaboration_tree.json`, logs in `collaboration/`, delegated runs' history rows). The evidence is a search of each migration folder for those shapes, **and for the address and path shapes ours changes**: member addresses rebased to `/` (step 4), logs moved to the run's own folder (step 5b), and run folders (ARCH-REV-052 note 1). The classification test cites both searches.
 
     | Predecessor | What it does to our shapes | What converts its late output |
     | --- | --- | --- |
@@ -596,7 +596,10 @@ A persistent item failure, such as "target already exists", keeps such a migrati
     | `20261015_collaborators_to_delegated_runs_v1` | writes `taskExecutions` links and sourceless copies into trees | a follow-up: steps 4, 6 and 8 for what it wrote |
     | `20261020_remove_skill_improvement_data` | **reads**: it selects the improver's runs by definition and records, and deletes them. A run our migration has converted would be selected differently (F-25) | ours **preserves** the improver's delegated runs while it is not terminal. Its follow-up converts those that remain after it finishes (steps 4, 5b, 8) |
     | `run-history-index-v2`, `team-run-history-index-v2` | rebuild the history index from the runs' current files | nothing: their late output is built from the current target files. A test confirms that a late index rebuild keeps every delegated run's row |
-    | every other migration registered before ours | none of our shapes | nothing |
+    | `TeamAgentMemoryLayoutAppDataMigration` (path shapes: member folders) | lays out a team's member folders. Our migration moves no team member folder (step 5b moves agent logs only), so its late output is the layout the runtime reads for every team | **to verify:** expected none. The test confirms that a late run for a delegated team leaves its members' folders where the runtime finds them |
+    | `TeamCommunicationProjectionAddressMigration` (message address shapes) | converts stored messages to exact sender and receiver addresses. Our migration does not rewrite message records (TC-13 moves logs only), so its late output is the shape every message written before ours already has, which the runtime reads anyway | **to verify:** expected none. The test reads a late-converted delegated team's log in the Team tab |
+    | `TeamContextFileExecutionLocatorsV1AppDataMigration` (attachment owners: a member address and its directory) | writes each attachment's owner, including the member's **address**. Step 4 rebases a delegated team's members to `/` (`/software_engineering_team/x` → `/x`), but rebases no stored locator, whether it was written before ours or late | **to verify, on time and late:** if the runtime resolves an attachment's owner by its address, step 4 also rebases a delegated team's stored locators with the same prefix rule, and this migration gets a follow-up that does the same for its late output. If it resolves by run ID and directory, nothing is needed. The test: an existing delegated team member's attachment resolves after our migration, on time and after a late locator run |
+    | every other migration registered before ours | none of our shapes, including the address and path shapes | nothing |
 
     - **One mechanism.** Every follow-up is an instance of one definition, `PreservedItemsFollowUp(predecessor, steps)`. Its prerequisites are its predecessor and our main migration; it is `requiredOnStartup` with no `holdsBackCapabilities`, idempotent by structure, and terminal after it runs. It waits while its predecessor is `FAILED` **or** `NOT_RUN`.
     - **Our main migration preserves only for readers.** For writers, ours already leaves an older shape it doesn't recognize untouched, and the writer's follow-up converts what the writer later produces.
@@ -609,12 +612,7 @@ A persistent item failure, such as "target already exists", keeps such a migrati
 - Every Task entry is converted in every case, so no Task is damaged by a predecessor's state.
 - The current runtime reads a preserved own file tolerantly and ignores `taskAgent`; such a run is an ordinary run with a derived address. A preserved tree is not read.
 
-**When a predecessor later finishes an item** (it is retried at every start), it writes its released shape:
-- `20261017_…` writes an own file with `taskAgent` and a link into the kept tree. The child's Task entry is already in the target shape; the own file's `taskAgent` is ignored; the tree is not read.
-- `20261019_…` completes an own file, still with `taskAgent`, which is ignored.
-- `20261015_…` converts collaborators inside a kept tree, which is not read.
-
-This migration is terminal by then and does not run again. The residue is inert, as with any preserved item.
+**When a predecessor later finishes an item:** superseded by SR-078 (c) and SR-079. Its follow-up converts what the predecessor wrote, in the same start, so no residue stays half-converted. Only a kept tree that no runtime reads, and that no follow-up's steps cover, stays as written, and it is reported.
 
 **Order.** All Task records first (steps 1 … 3: they need each run's `taskAgent`), then the run files (step 4), then the trees (steps 5, 6), the busy-run record (7) and the history rows (8). A run whose Task record cannot be read keeps its `taskAgent` and is reported; the others go on.
 

@@ -1546,4 +1546,6 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review;
   - then the Implementation Engineer, who confirms each classification against the code as the classification test is written.
-
+- **ARCH-REV-052 passed SR-079.** Its notes are applied:
+  1. **The address and path shapes are classified too.** `TeamAgentMemoryLayout` and `TeamCommunicationProjectionAddress` are expected to need nothing, to be verified by test. `TeamContextFileExecutionLocatorsV1` writes attachment owners with a member address that step 4 does not rebase. This may be a gap **on time as well as late**. If the runtime resolves owners by address, step 4 also rebases stored locators and that migration gets a follow-up. The Implementation Engineer verifies it, with a test that an existing delegated team member's attachment resolves. The classification test cites both searches.
+  2. **The stale paragraph** "When a predecessor later finishes an item … inert" is replaced by a pointer to SR-078 (c) and SR-079.
