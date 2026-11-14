@@ -25,7 +25,7 @@ export interface TaskRootPresentation {
   state: TaskRootState
   /** Closed by DONE: muted name, no chevron. */
   muted: boolean
-  /** Opens its conversation: started, not closed, and its hosting run is listed in the left panel (REQ-009). */
+  /** Opens its conversation: started, not closed, and the run whose view lists its row is in the left panel (SR-080). */
   openable: boolean
   /** The start error of a root that could not start. */
   error: string | null
@@ -34,21 +34,25 @@ export interface TaskRootPresentation {
 /**
  * The one root-line rule (AR-002): `failed` → Couldn't start; closed → Offline (muted); otherwise
  * the worker's own status (Initializing while starting). Openable only when started, not closed,
- * and the hosting run is in the left panel; otherwise no chevron and not focusable.
+ * and the run whose view lists its row (its tree's top, SR-080) is in the left panel; otherwise no chevron and not focusable.
  */
-export const presentTaskRoot = (root: TaskRootView, hostListed: boolean): TaskRootPresentation => ({
+export const presentTaskRoot = (root: TaskRootView, topListed: boolean): TaskRootPresentation => ({
   name: root.recipientAddress ? memberDisplayName(root.recipientAddress) : null,
   state: root.start === 'failed' ? 'failed' : root.closed ? 'offline' : root.status,
   muted: root.closed,
-  openable: root.start === 'started' && !root.closed && hostListed,
+  openable: root.start === 'started' && !root.closed && topListed,
   error: root.start === 'failed' ? root.startError?.message ?? null : null,
 })
 
-/** Whether the run that delegated a root is listed in the left panel's run history. */
-export const isTaskRootDelegatingRunListed = (history: Readonly<{
+/**
+ * Whether the run whose view lists a root's row, the top of its tree (SR-080), is listed in the left panel's run history:
+ * then its row can be opened as clicking it does. A root with no known top is not.
+ */
+export const isTaskRootTopRunListed = (history: Readonly<{
   workspaceGroups: readonly RunHistoryWorkspaceGroup[]
   agentOrgHistory: readonly AgentOrgRunHistoryItem[]
-}>, host: TaskRootView['delegatingRun']): boolean => {
+}>, host: TaskRootView['topRun']): boolean => {
+  if (!host) return false
   if (host.kind === 'agent_org') return history.agentOrgHistory.some((run) => run.rootRunId === host.runId)
   return history.workspaceGroups.some((group) => host.kind === 'agent'
     ? group.agentDefinitions.some((definition) => definition.runs.some((run) => run.runId === host.runId))

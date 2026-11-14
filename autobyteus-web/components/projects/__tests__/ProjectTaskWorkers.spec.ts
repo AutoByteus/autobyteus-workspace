@@ -14,7 +14,7 @@ import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
   kind: 'agent', recipientAddress: '/release_writer', ingressAgentRunId: 'worker', teamRunId: null,
-  delegatingRun: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
+  delegatingRun: { kind: 'agent', runId: 'manager-root' }, topRun: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 const listHost = () => { history.workspaceGroups = [{ agentDefinitions: [{ runs: [{ runId: 'manager-root' }] }], teamDefinitions: [] }] }
 

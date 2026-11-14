@@ -283,6 +283,29 @@ export class AgentRunCollaborationContext {
       || (this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId)))
   }
 
+  /**
+   * The task Teams a worker's row sits under in this view, outermost first (SR-080: the Task page reveals the row as its
+   * own tree would, then selects it); null when the worker is not in this view. A Team worker's own Team is not included.
+   */
+  taskTeamPathOf(worker: Readonly<{ agentRunId: string } | { teamRunId: string }>): string[] | null {
+    type TaskExecution = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
+    const find = (tasks: readonly TaskExecution[], path: readonly string[]): string[] | null => {
+      for (const task of tasks) {
+        if ('agentRunId' in task) {
+          if ('agentRunId' in worker && task.agentRunId === worker.agentRunId) return [...path]
+          continue
+        }
+        if ('teamRunId' in worker && task.teamRunId === worker.teamRunId) return [...path]
+        const inside = [...path, task.teamRunId]
+        if ('agentRunId' in worker && task.members.some((member) => member.agentRunId === worker.agentRunId)) return inside
+        const nested = find(task.taskExecutions, inside)
+        if (nested) return nested
+      }
+      return null
+    }
+    return find(this.rootExecutionNodes(), [])
+  }
+
   /** The task rows under the run row: task Agents and task Teams with their members, without closed ones. */
   listTaskRows(isTeamExpanded: (teamRunId: string) => boolean): AgentRunTaskTreeRow[] {
     const hidden = this.closedSubtrees()

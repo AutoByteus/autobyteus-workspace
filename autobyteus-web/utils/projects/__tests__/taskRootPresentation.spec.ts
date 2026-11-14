@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { TASK_ROOT_KIND_LABEL_KEYS, TASK_ROOT_STATE_LABEL_KEYS, isTaskRootDelegatingRunListed, presentTaskRoot } from '../taskRootPresentation'
+import { TASK_ROOT_KIND_LABEL_KEYS, TASK_ROOT_STATE_LABEL_KEYS, isTaskRootTopRunListed, presentTaskRoot } from '../taskRootPresentation'
 import en from '~/localization/messages/en/projects'
 import zhCN from '~/localization/messages/zh-CN/projects'
 import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
   kind: 'agent', recipientAddress: '/product_team/release_writer', ingressAgentRunId: 'worker', teamRunId: null,
-  delegatingRun: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
+  delegatingRun: { kind: 'agent', runId: 'manager-root' }, topRun: { kind: 'agent', runId: 'manager-root' }, start: 'started', startError: null, closed: false, status: 'running', ...overrides,
 })
 
 describe('presentTaskRoot (AR-002 openable rule, DEC-006 statuses)', () => {
@@ -36,7 +36,7 @@ describe('presentTaskRoot (AR-002 openable rule, DEC-006 statuses)', () => {
   })
 })
 
-describe('isTaskRootDelegatingRunListed', () => {
+describe('isTaskRootTopRunListed', () => {
   const history = {
     workspaceGroups: [{
       agentDefinitions: [{ runs: [{ runId: 'manager-root' }] }],
@@ -48,8 +48,12 @@ describe('isTaskRootDelegatingRunListed', () => {
     ['agent', 'manager-root', true], ['agent', 'team-root', false],
     ['agent_team', 'team-root', true], ['agent_team', 'manager-root', false],
     ['agent_org', 'org-root', true], ['agent_org', 'deleted-org', false],
-  ] as const)('%s host %s → %s', (kind, runId, listed) => {
-    expect(isTaskRootDelegatingRunListed(history, { kind, runId })).toBe(listed)
+  ] as const)('%s top run %s → %s', (kind, runId, listed) => {
+    expect(isTaskRootTopRunListed(history, { kind, runId })).toBe(listed)
+  })
+
+  it('SR-080: a root whose top run is not known is not openable', () => {
+    expect(isTaskRootTopRunListed(history, null)).toBe(false)
   })
 })
 

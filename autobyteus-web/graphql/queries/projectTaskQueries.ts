@@ -7,6 +7,7 @@ export const TaskRootFields = gql`
     ingressAgentRunId
     teamRunId
     delegatingRun { kind runId }
+    topRun { kind runId }
     start
     startError { code message }
     closed
