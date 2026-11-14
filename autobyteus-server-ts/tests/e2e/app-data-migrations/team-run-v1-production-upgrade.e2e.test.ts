@@ -859,9 +859,9 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
       ],
     },
   });
-  expect(JSON.stringify(tree), "no stored list of delegated runs (461 contract §6)").not.toContain("taskExecutions");
   const memoryRoot = path.dirname(path.dirname(supported.orgDir));
   const own = JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", supported.taskAgentRunId!, "run_metadata.json"), "utf8"));
+  expect(JSON.stringify(tree), `no stored list of delegated runs (461 contract §6); the task agent's own file: ${JSON.stringify(own).slice(0, 900)}`).not.toContain("taskExecutions");
   // A copy of the configured place `/research/reviewer`: 20261019_delegated_copy_own_file_complete_v1 records the
   // place's launch as the copy's own, with the `configured` origin, and drops the released `origin` (REQ-001, M4).
   expect(own).toMatchObject({
@@ -1525,11 +1525,15 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       }),
     ]));
     // The unconverted root is not served, and new current work is still admitted.
-    expect((await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId)).restoreAgentTeamRun).toMatchObject({
+    const notCataloged = (await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId)).restoreAgentTeamRun;
+    expect(notCataloged).toMatchObject({
       success: false,
       teamRunId: null,
       message: expect.stringContaining("TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED"),
     });
+    // autobyteus-461 CR-461-073: the view's connect answers the admission's own code and base's text; no schema field is named.
+    expect(notCataloged.message).toContain(`TeamRun '${scenario.rootTeamRunId}' is not an admitted current package.`);
+    expect(notCataloged.message).not.toMatch(/missing required field|rootTeam\.members|TEAM_STREAM_UNAVAILABLE/);
     await terminateAgentRun(first.serverUrl, await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "warning-current-agent"));
 
     await first.stop();
@@ -1600,6 +1604,8 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       teamRunId: null,
       message: expect.stringContaining("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED"),
     });
+    // autobyteus-461 CR-461-073: the admission's own code at the view's connect; no schema field is named.
+    expect(blockedRestore.restoreAgentTeamRun.message).not.toMatch(/missing required field|rootTeam\.members|TEAM_STREAM_UNAVAILABLE/);
 
     const currentRunId = await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "degraded-current-agent");
     const currentPrisma = new PrismaClient({ datasources: { db: { url: target.database.databaseUrl } } });

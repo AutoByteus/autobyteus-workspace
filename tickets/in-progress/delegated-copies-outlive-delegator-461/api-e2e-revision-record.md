@@ -14,6 +14,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-006 | Code Reviewer, `code-review-report.md` CRR-026, round 6 | SR-072 … SR-074, IR-019, IR-020, CRR-024 … CRR-026 | Fail / 75% | Fail / 78% |
 | API-REV-007 | Code Reviewer, `code-review-report.md` CRR-029, round 7 (merged state) | SR-075, SR-076, IR-021, IR-022, CRR-027 … CRR-029 | Fail / 78% | Fail / 84% |
 | API-REV-008 | Code Reviewer, `code-review-report.md` CRR-032, round 8 | SR-077, IR-023, IR-024 (code `fdf5ad8380`), CRR-030 … CRR-032 | Fail / 84% | Fail / 86% |
+| API-REV-009 | Code Reviewer, `code-review-report.md` CRR-035, round 9 | SR-078, IR-025, IR-026 (code `f92881dd13`), CRR-033 … CRR-035 | Fail / 86% | Fail / 89% |
 
 ## Revision Entries
 
@@ -408,4 +409,36 @@ None
   - Implementation Engineer: F-49 (b), F-50, F-52;
   - Solution Designer: F-49 (a), F-51;
   - each confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.
+
+### API-REV-009: round 9; F-49 … F-52 resolved; O-8b answered; reruns pass; F-53
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-035 at `f92881dd13`), API/E2E round 9
+- Triggering finding or case IDs: F-50 (USR-4 and every entry point, CR-461-070, CR-461-072); F-52 (UC-1, CR-461-071); team-run-v1 ×2 (CR-461-069, CR-461-073); TAU-2 (CR-461-068, SR-078); O-8b (held in CRR-033); the waiting list's reruns
+- Related revision IDs: SR-078, IR-025, IR-026, CRR-033 … CRR-035
+- Why this revision was recorded: recheck of round 8's findings on the fixes, O-8b, and the reruns on the fixed code
+- Coverage decisions or durable test paths changed:
+  - added `projects/background-step-stop-own-view` (O-8b);
+  - `projects/unclean-shutdown-delegated-team-restore`: USR-4 hard; USR-6 (agent stream), USR-7 (the delegator's tool), USR-8 (the assigner's reactivation after DONE → IN_PROGRESS);
+  - `run-history/standalone-unreadable-tree-containment`: the running server's delegator view without the bad row, with a warning;
+  - `app-data-migrations/task-agent-own-run-startup`: TAU-2 over three starts (SR-078), the follow-ups in `LATER`;
+  - `app-data-migrations/team-run-v1-production-upgrade`: base's text, no schema field; the own file recorded beside the stored-list check.
+- Cases added, changed, removed, or rechecked: R9-A … R9-E, the reruns (phone, desktop, peer suite, API-L01); see the progress log
+- Commands, environment, fixture, or broader-validation delta: server and phone bundle rebuilt by this round; ENV-1 … ENV-5
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-49 | Local Fix / Unclear | Resolved (SR-078) | TAU-2 (three starts) |
+| F-50 | Local Fix | Resolved | USR-4, USR-6, USR-7, USR-8 |
+| F-51 | Unclear | Resolved (CR-461-073) | team-run-v1's two connects |
+| F-52 | Local Fix | Resolved | UC-1, UC-2 |
+| O-8b | observation (held) | Answered: parity with a user-started run | BSV |
+
+- Canonical artifacts and sections updated: the coverage investigation (meta, deferred, ambiguities); the execution report; the progress log; `evidence/api-e2e/*r9*`.
+- Prior result and confidence: Fail / 86%
+- Current result and confidence: Fail / 89%
+- New or remaining failure IDs: F-53 (`Unclear`: the design's predecessor set)
+- Recommended owner: Solution Designer (F-53), confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation.

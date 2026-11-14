@@ -38,8 +38,12 @@ const ID = TASK_AGENT_OWN_RUN_V1_MIGRATION_ID;
 /** Registered after own-run: an install that never ran own-run never ran these either. */
 // The migrations registered after this one: they run again on the released data, as an upgrade runs them (autobyteus-461's,
 // registered last since CR-461-048, included).
-const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID];
+const LATER = [APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID, DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID,
+  // SR-078 c: one follow-up per predecessor, registered after 461's.
+  "20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1", "20261114_preserved_items_after_append_only_logs_v1"];
 const AGY_CLI = path.resolve("tests/fixtures/agy-failure-cli.mjs");
+/** SR-078 c: the follow-ups of the predecessors TAU-2's blocked move leaves unfinished (20261017, and 20261019 that waits on it). */
+const WAITING_FOLLOW_UPS = ["20261114_preserved_items_after_task_agent_own_run_v1", "20261114_preserved_items_after_own_file_complete_v1"];
 const MODEL = "gemini-3.8-flash-low";
 const ALT = "tau-alt-model";
 /** TAU-2 blocks a rename with POSIX mode bits; root ignores them and Windows has none (as project-task-boundaries.e2e). */
@@ -276,7 +280,7 @@ describe("task agent own run: the built server upgrades a faithful released inst
     await second.stop();
   }, 300_000);
 
-  it.skipIf(!modeBitsBlock)("TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet (SR-077); the next start completes and the edit is saved (needs POSIX mode bits that bind: not root, not Windows)", async () => {
+  it.skipIf(!modeBitsBlock)("TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is not editable yet and its follow-up waits (SR-077, SR-078); the next start converts it and the edit is saved; a later start changes nothing (needs POSIX mode bits that bind: not root, not Windows)", async () => {
     const { root, memory } = await faithfulRoot();
     const before = await snapshot(memory);
     // The hub's task agents cannot be renamed out of its folder on this start (a step that fails).
@@ -298,16 +302,20 @@ describe("task agent own run: the built server upgrades a faithful released inst
     expect(await fs.stat(path.join(memory, NEW_FOLDERS["c5-analyst"]!, "raw_traces_active.jsonl"))).toBeTruthy();
     expect((await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" })).agentRunCollaboration).toBeTruthy();
     // The user keeps working: a migrated task agent's model is changed through its own stopped-run save (rule 2, SR-064).
-    const ownSave = async (server: typeof first, agentRunId: string) => (await server.gql(`mutation($input:UpdateStoppedAgentRunSelectionInput!){updateStoppedAgentRunSelection(input:$input){success outcome message fieldErrors{path message}}}`,
-      { input: { agentRunId, runtimeKind: "antigravity_cli", llmModelIdentifier: ALT, llmConfig: null } })).updateStoppedAgentRunSelection;
+    const ownSave = async (server: typeof first, agentRunId: string, model = ALT) => (await server.gql(`mutation($input:UpdateStoppedAgentRunSelectionInput!){updateStoppedAgentRunSelection(input:$input){success outcome message fieldErrors{path message}}}`,
+      { input: { agentRunId, runtimeKind: "antigravity_cli", llmModelIdentifier: model, llmConfig: null } })).updateStoppedAgentRunSelection;
     const changed = await ownSave(first, "nd-copy");
     expect(changed, JSON.stringify(changed)).toMatchObject({ success: true });
     // SR-077 (Q-1): the copy the failed step could not move is preserved, not a run of its own yet: NOT_FOUND until the retry.
-    // The refusal is hard; SR-077's named outcome is soft so the retry half below still runs (the mutation's answer at base for
-    // a run without its own metadata is INTERNAL_ERROR, R8 finding).
+    // SR-078 a: the copy the failed step could not move is not a run of its own yet; its save answers base's INTERNAL_ERROR.
     const preserved = await ownSave(first, "c1-reviewer");
-    expect(preserved, JSON.stringify(preserved)).toMatchObject({ success: false });
-    expect.soft(preserved, `SR-077 names NOT_FOUND: ${JSON.stringify(preserved)}`).toMatchObject({ outcome: "NOT_FOUND" });
+    expect(preserved, JSON.stringify(preserved)).toMatchObject({ success: false, outcome: "INTERNAL_ERROR",
+      message: "Run ownership could not be verified; saved settings were not changed." });
+    // SR-078 c (CR-461-068): the follow-ups of the unfinished predecessors wait: no completed record while 20261017 is FAILED.
+    for (const id of WAITING_FOLLOW_UPS) {
+      const waiting = await first.migration(id);
+      expect(waiting?.status ?? null, `${id} waits on the first start: ${JSON.stringify(waiting)}`).not.toMatch(/^SUCCEEDED/);
+    }
     await first.stop();
     await fs.chmod(blocked, 0o755);
 
@@ -315,10 +323,18 @@ describe("task agent own run: the built server upgrades a faithful released inst
     const second = await studio(root);
     const retried = await second.migration();
     expect(retried.status, `${JSON.stringify(retried)}\n${retried.logPath ? await fs.readFile(retried.logPath, "utf8") : ""}`).toMatch(/^SUCCEEDED/);
-    // SR-077: after the retry moved it, the preserved copy is a run of its own: its own save works.
-    const savedNow = await ownSave(second, "c1-reviewer");
+    // SR-078 c: the predecessor's follow-up converted the preserved copy in this start; it is a run of its own: read by its own
+    // path, listed in its hub's tree (an open Task), and its own save works.
+    for (const id of WAITING_FOLLOW_UPS) expect((await second.migration(id))?.status, `${id} done after the retry`).toMatch(/^SUCCEEDED/);
+    const ownRead = (await second.gql(`query($id:String!){getRunProjection(runId:$id){runId}}`, { id: "c1-reviewer" })).getRunProjection;
+    expect(ownRead?.runId, "the converted copy is read by its own path").toBe("c1-reviewer");
+    // (Its released model maps to ALT here, so the edit chooses MODEL: a change, not UNCHANGED.)
+    const savedNow = await ownSave(second, "c1-reviewer", MODEL);
     const ours461 = await second.migration(DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID);
     expect(savedNow, `${JSON.stringify(savedNow)}; 461 migration: ${JSON.stringify(ours461)}`).toMatchObject({ success: true, outcome: "UPDATED" });
+    const c1Own = JSON.parse(await fs.readFile(path.join(memory, NEW_FOLDERS["c1-reviewer"]!, "run_metadata.json"), "utf8"));
+    expect(c1Own, "converted: an ordinary run file").not.toHaveProperty("taskAgent");
+    expect(c1Own.delegatedFrom?.delegatingRun, "converted: it names its delegating run").toBeTruthy();
     const after = await snapshot(memory);
     for (const [id, old, now] of MOVED) expect(taskAgentFiles(after, now), `${id} at ${now}`).toMatchObject(ownMemory(before, old));
     expect(await hubTaskAgents(second.gql)).toEqual(expect.arrayContaining(["c1-reviewer", "c2-team-a", "c2-team-b"]));
@@ -327,7 +343,15 @@ describe("task agent own run: the built server upgrades a faithful released inst
     // The own-file completion waited for the move on the first start and completes on this one.
     expect((await second.migration(DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID)).status).toMatch(/^SUCCEEDED/);
     await expectOwnFilesComplete(memory);
+    const settled = await snapshot(memory);
     await second.stop();
+
+    // A later start changes nothing: the files are byte-identical and every follow-up stays done.
+    const third = await studio(root);
+    for (const id of WAITING_FOLLOW_UPS) expect((await third.migration(id))?.status, `${id} stays done`).toMatch(/^SUCCEEDED/);
+    expect(await snapshot(memory), "a later start changes nothing").toEqual(settled);
+    expect((await ownSave(third, "c1-reviewer", MODEL)).success, "the save still works after another start").toBe(true);
+    await third.stop();
   }, 300_000);
 
   it("TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are listed as runs of their own (461 REQ-007)", async () => {

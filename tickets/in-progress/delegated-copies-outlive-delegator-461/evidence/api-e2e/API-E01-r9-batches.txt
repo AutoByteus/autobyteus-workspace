@@ -1,0 +1,78 @@
+# API-E01 round 9 (API-REV-009): per-batch results, code f92881dd13
+# Command (each batch): cd autobyteus-server-ts && env -i PATH HOME=<new temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run <files> --no-watch --no-file-parallelism --reporter=verbose
+
+## R9-A
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ × tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline 225ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed 229ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team,
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-6 CR-461-070 (F-50): the user's message on a delegated Agent run's own st
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-7 CR-461-070 (F-50): the delegator's send_message_to to that Team is refu
+ × tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-8 CR-461-072: the assigner's message to that Team after its Task is close
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another m
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-1 the other runs work, the bad run reports that its da
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts > An unreadable delegated run's own file is contained to that run (rule 7; real HTTP/GraphQL, runs made by real Agent roots) > UC-2 a new server process starts with the unreadable run 
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 1 passed (4)
+      Tests  3 failed | 14 passed (17)
+exit 1
+
+## R9-B
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline 229ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed 228ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team,
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-6 CR-461-070 (F-50): the user's message on a delegated Agent run's own st
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-7 CR-461-070 (F-50): the delegator's send_message_to to that Team is refu
+ × tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-8 CR-461-072: the assigner's message to that Team after its Task is close
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another m
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page 
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-2 a run that cannot be moved leaves the app working; a copy preserved by the unfinished step is
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts > task agent own run: the built server upgrades a faithful released install at startup > TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every fil
+ × tests/e2e/projects/background-step-stop-own-view.e2e.test.ts > A run's own view of its background step after a stop mid-step: delegated copy (Task DONE) against a user-started run (O-8b) > BSV the copy's own view after Task DONE is told no less than a user-
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 1 passed (3)
+      Tests  2 failed | 10 passed (12)
+exit 1
+
+## R9-C
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline 228ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed 228ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team,
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-6 CR-461-070 (F-50): the user's message on a delegated Agent run's own st
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-7 CR-461-070 (F-50): the delegator's send_message_to to that Team is refu
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-8 CR-461-072: the assigner's reactivating message to that Team (its DONE 
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another m
+ ✓ tests/e2e/projects/background-step-stop-own-view.e2e.test.ts > A run's own view of its background step after a stop mid-step: delegated copy (Task DONE) against a user-started run (O-8b) > BSV the copy's own view after Task DONE is told no less than a user-
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+exit 0
+
+## R9-D
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+exit 1
+
+## R9-E
+ ↓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > migrates the exact supported cohort, serves history and new work, and remains imm
+ × tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > isolates mixed root and token warnings and fails closed on an unreadable history 
+ ↓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server healthy after failed consolidation, admits a new current run, an
+ ↓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving bo
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+exit 1
+

@@ -1,0 +1,19 @@
+# F-53 (team-run-v1-production-upgrade 'keeps the server healthy ... imports disjoint legacy rows on restart retry'), R9-A and R9-D
+# Expected (contract §6 E9; design lines 550-556: the predecessors whose later retries 461 handles): no stored local delegated-run list in any tree after the migrations
+# Observed: the released team-run consolidation fails on the first start and succeeds on a restart after 461's migration ran; the org tree it writes keeps rootOrg.members[...].taskExecutions with a local link (and a member launch with the obsolete skillAccessMode). The task agent's own file is converted.
+
+FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state through actual startup > keeps the server h
+
+## the task agent's own file (converted)
+own file: {"runId":"team-v1-supported-root-task-reviewer-run","agentDefinitionId":"autobyteus-memory-compactor","workspaceRootPath":"/tmp/autobyteus-team-v1-nested-workspace","memoryDir":"~/autobyteus_org/autobyteus-worktrees/delegated-copies-outlive-delegator-461/autobyteus-server-ts/tests/.tmp/token-consolidation-retry-startup-70956-1794618839212-767e97359522b/memory/agents/team-v1-supported-root-task-reviewer-run","llmModelIdentifier":"gpt-5.6-luna","llmConfig":null,"autoExecuteTools":true,"runtimeKind":"autobyteus","platformAgentRunId":null,"startedAt":"2026-08-16T12:03:00.000Z","address":"/research/reviewer","launchSource":{"origin":"configured","fallbacks":[]},"delegatedFrom":{"delegatingRun":{"kind":"agent_org","runId":"team-v1-supported-root"}}}: expected '{"schemaVersion":1,"subjectKind":"age…' not to contain 'taskExecutions'
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to the current AgentOrg end state
+
+## the org tree's stored list (not converted)
+run","platformAgentRunId":null,"launchConfiguration":{"runtimeKind":"autobyteus","llmModelIdentifier":"gpt-5.6-luna","llmConfig":null,"autoExecuteTools":true,"skillAccessMode":"NONE","workspaceRootPath":"/tmp/autobyteus-team-v1-nested-workspace"}}],"taskExecutions":[{"address":"/research/reviewer","agentRunId":"team-v1-supported-root-task-reviewer-run","startedAt":"2026-08-16T12:03:00.000Z"}]}],"taskExecutions":[]}}"
+
+ ❯ assertAgentOrgPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2
+ls":true,"skillAccessMode":"NONE","workspaceRootPath":"/tmp/autobyteus-team-v1-nested-workspace"}}],"taskExecutions":[{"address":"/research/reviewer","agentRunId":"team-v1-supported-root-task-reviewer-run","startedAt":"2026-08-16T12:03:00.000Z"}]}],"taskExecutions":[]}}"
+
+ ❯ assertAgentOrgPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:864:155
+    862|   const memoryRoot = path.dirname(path.dirname(supported.orgDir));
+    863|   const own = JSON.parse(fs.readFileSync(path.

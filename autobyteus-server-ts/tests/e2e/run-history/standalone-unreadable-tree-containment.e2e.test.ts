@@ -12,8 +12,8 @@ import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-cre
 // GraphQL, on data made by real Agent roots (scripted AGY actor; no inference). Three standalone runs each delegate a run and
 // are stopped; then one delegated run's own file (`agents/<run>/run_metadata.json`) is truncated: a run file that cannot be read.
 // - UC-1 (running server): the other runs work: each delegator's view opens with its delegated run, the delegated runs are read
-//   by their own path (rule 2), the Token Meter summary of every delegator works, the bad run's own delegator included; the bad
-//   run reports that its data cannot be read; a warning names it; no file changes.
+//   by their own path (rule 2), the Token Meter summary of every delegator works; the bad run's own delegator opens without the
+//   bad run's row (CR-461-071, F-52); a warning names it; no file changes.
 // - UC-2: a new server process starts with the unreadable file present (461's startup index reads every run's own file) and the
 //   same holds.
 // Replaces the round-1 suite of the same name: its premise, a standalone run's `collaboration_tree.json`, and its trigger, the
@@ -135,6 +135,8 @@ suite("An unreadable delegated run's own file is contained to that run (rule 7; 
       expect(view.error, `${label}: ${run === bad ? "the bad run's own delegator" : "another delegator"} ${run.host} opens: ${view.error}`).toBeNull();
       expect((view.data as Rec).agentRunCollaboration, `${label}: ${run.host} opens`).toBeTruthy();
       if (run !== bad) expect(JSON.stringify(view.data), `${label}: ${run.host} shows its delegated run`).toContain(run.child);
+      // CR-461-071 (F-52): the bad run's delegator opens without the unreadable run's row.
+      else expect(JSON.stringify(view.data), `${label}: the unreadable run's row is left out`).not.toContain(bad.child);
       const summary = await tokenSummary(run.host);
       expect(summary.error, `${label}: Token Meter summary of ${run.host}: ${summary.error}`).toBeNull();
     }
@@ -145,8 +147,9 @@ suite("An unreadable delegated run's own file is contained to that run (rule 7; 
     const lines = log ? log.linesFrom(logStart) : warnings;
     const naming = lines.filter((line) => line.includes(bad.child));
     record.warnings = naming.slice(0, 5).map((line) => line.slice(0, 400));
-    // A start reads every run's own file (461's index), so it meets the bad file: a logged warning names the run (rule 7).
-    if (log) expect(naming.length, `${label}: a warning names the unreadable run; got ${JSON.stringify(lines.filter((l) => /warn|error/i.test(l)).slice(-20)).slice(0, 1500)}`).toBeGreaterThan(0);
+    // Rule 7: the run left out is named in a logged warning, on the running server (its delegator's view read it, CR-461-071)
+    // and at a start (461's index reads every run's own file).
+    expect(naming.length, `${label}: a warning names the unreadable run; got ${JSON.stringify(lines.filter((l) => /warn|error/i.test(l)).slice(-20)).slice(0, 1500)}`).toBeGreaterThan(0);
     expect(lines.filter((line) => runs.slice(1).some((run) => line.includes(run.child)) && /warn|error|cannot be read|unreadable/i.test(line)),
       `${label}: no warning about the readable runs`).toEqual([]);
     expect(await fingerprint(memory), `${label}: no run file changed`).toEqual(before);
