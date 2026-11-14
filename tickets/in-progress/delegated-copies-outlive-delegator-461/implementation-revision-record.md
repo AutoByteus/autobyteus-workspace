@@ -958,3 +958,4 @@ The current code and `implementation-handoff.md` remain authoritative.
 - C27-02 (ten scans on the first start after the upgrade) is not acted on: the reviewer suggested measuring first, and it is not measured here. Each follow-up's pass is the main migration's scan with a subset of its steps, and most find nothing to convert.
 - Validation (IMP-83 at `1eb945e5f7`): type gate PASS; 754 migration family, architecture and startup tests pass; unit 8082 passed.
 - Next recipient: Code Reviewer, a targeted delta.
+- Result: Code Review **Pass (CRR-038**, `code-review-report.md` round 28, head `15c41ad242`): CR-461-075 resolved. The reviewer routes to API/E2E.
