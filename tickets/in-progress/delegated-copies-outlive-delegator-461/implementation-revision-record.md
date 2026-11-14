@@ -992,3 +992,48 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining risks: PMU-019's probe selector (above); the server's integration suite is not rerun (the server change is the Task view's field and its resolver).
 - Next recipient: Code Reviewer, a targeted delta on the card's open path.
 - Result: Code Review **Pass (CRR-040**, `code-review-report.md` round 29, head `a4641a0985`): CR-461-076 resolved. The reviewer routes to API/E2E.
+
+### IR-030 — A saved delegated row shows what its run now has (CR-461-077, F-57); the Task card from the Workspace page (F-59)
+
+- Triggering role, report path, and round: Code Reviewer CRR-041 (the failure-origin review of API-REV-011, `code-review-report.md`): one web `Local Fix`, CR-461-077 (F-57), and F-59 held as a lead for the implementer to reproduce. Round 30.
+- Triggering finding IDs: CR-461-077; F-59. Large / High unchanged.
+- Prior authoritative result: IR-029 at `a4641a0985` (CRR-040 Pass).
+- Current authoritative result: `a047a56127` (`fbe817ff6c`, `a047a56127`).
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-041.
+- **CR-461-077's cause.** After the copies' own saves, the editor reconciles only the delegator's own settings. Its delegated rows come from the delegator's row records:
+  - the live view's row records, which a Save doesn't change; the collaboration store's `read` is skipped for a live view (`services.has(host)`);
+  - or the stopped delegator's `delegatedSnapshot`, read when Settings opened.
+  - So nothing showed what the saved runs now have until Settings were reopened.
+- Implementation delta:
+  - **`fbe817ff6c` (web, CR-461-077):** each saved run's own save answer is what its row shows.
+    - `saveDelegatedRuns` returns `saved`, per row key:
+      - for an agent run, its `canonicalSelection`;
+      - for a team run, each saved member's selection in its `canonicalExecutionTree` (`savedOfTeam`, by the member's address).
+      - A partial save returns the runs saved before the refusal.
+    - `delegatedLaunchDraftStore.saved` collects them. `bind` clears it when Settings open another run.
+    - The row builders lay a row's saved selection over its record (`DelegatedRowControl.savedOf`, `withSaved`). This is one overlay for Agent and Org rows (`collaborationDelegatedLaunchNodes`) and Team rows (`teamDelegatedLaunchNodes`), live or stopped.
+    - What is kept is the run's own read, as its save returns it, not the user's edit. CR-002's rule "no client copy of the edit" holds; its store test now states this.
+  - **`a047a56127` (web, F-59, reproduced):** a Task card opened from the Workspace page now selects its worker's row.
+    - Opening the Agent top run selects it. `pages/workspace.vue` then moves to the run's chat, and the Workspace page's leave guard (`useWorkspaceRouteSelection`) ends every selection intent, the card's own too.
+    - So `openInAgentRun` returned before selecting the row.
+    - Now, once at the chat, the reveal goes on under a new intent while the opened run is still the selected one. A run the user selects meanwhile wins.
+- Tests (each fails without its fix):
+  - `ExistingRunConfigEditor.savedCopyRow.spec.ts`: a stopped Agent delegator's copy row shows the saved model after Save, while its record still holds the old one.
+  - `delegatedRunSaves.spec.ts`: `saved` from agent and team answers, and from a partial save.
+  - `delegatedCopyChoices.spec.ts`: a Team's saved row shows the saved model and its original.
+  - `delegatedLaunchDraftStore.spec.ts`: `saved` set by Save and cleared on another binding.
+  - `useTaskRootNavigationTopRun.spec.ts`:
+    - the selection mock now issues real intent tokens, and opening an Agent run ends them, as the Workspace page's leave does;
+    - F-59, and "a run selected meanwhile wins".
+    - The old code fails 4 of its tests under this model.
+- Validation:
+  - IMP-87, the probes:
+    - SDV-06: Fail before, 6 of 6 opened after;
+    - PMU 25/25;
+    - RSM-04 and RSM-06 Pass; RSM-04's `savedSummary` is now the saved model;
+    - AFS-001's F-57 step passes; the case then fails at a stale storage check (below).
+  - IMP-86: web `codegen:check`, type gate and full suite.
+- Remaining risks:
+  - AFS-001's "Save stored exactly A" reads `userLaunchSelection` from the delegator's tree record (base's storage). Under SR-064 the save is on the copy's own run, so that check is stale. It goes on API/E2E's rewrite list.
+  - DCP-001 was not run.
+- Next recipient: Code Reviewer, a targeted delta.

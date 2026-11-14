@@ -1,0 +1,42 @@
+# Round 30 probes (web dev server + built backend at the round's server state; each probe owns its data root, ports and Chrome;
+# scripted AGY CLI / test-owned LM Studio stand-in; no provider). Load averages 11-19.
+
+## F-59 reproduction: SDV-06 on fbe817ff6c (before the F-59 fix)
+$ pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir /tmp/sdv06-a --cases SDV-06
+Stopped delegator views probe: Fail.
+SDV-06 "Timed out: agent delegator, agent worker: its own conversation in the center"
+Screenshot: the worker's row is listed under the Manager in the left tree; the center shows the Manager.
+
+## F-59 trace (temporary console.error lines in useTaskRootNavigation and agentSelectionStore, and the probe's failure details
+## carrying the page's console errors; all reverted)
+F59 start http://127.0.0.1:63583/workspace
+F59 invalidate http://127.0.0.1:63583/workspace  at invalidateSelectionIntent <- useWorkspaceRouteSelection.ts (onBeforeRouteLeave)
+F59 opened committed false
+=> opening the Agent top selects it; pages/workspace.vue's selection watcher replaces the route with /chat?id=<top>; the Workspace
+   page's leave guard ends every selection intent, the card's own too; openInAgentRun returned before selecting the row.
+
+## After the fix: SDV-06 on a047a56127
+$ pnpm -C autobyteus-web test:e2e:stopped-delegator-views --output-dir /tmp/sdv06-d --cases SDV-06
+Stopped delegator views probe: Pass.
+SDV-06 Pass: agent {agent worker: opened, team worker: opened}; team {...opened, ...opened}; org {...opened, ...opened}
+Screenshot sdv-06-agent-agent-worker.png: the worker's row selected under the Manager; the worker's own conversation in the center.
+
+## Regression: the project-manager probe on a047a56127
+$ node tests/e2e/project-manager-ux-probe.mjs --output-dir /tmp/pmu-ir030
+Project manager UX probe: Pass.  25 of 25 cases Pass (PMU-003, PMU-018, PMU-019 among them)
+
+## F-57 (CR-461-077) in the real app, on a047a56127
+$ pnpm -C autobyteus-web test:e2e:runtime-switch-members --cases RSM-04,RSM-06 --output-dir /tmp/rsm-ir030
+RSM-04 Pass
+RSM-06 Pass
+RSM-04 beforeSummary:   "Model rsw-native:lmstudio@127.0.0.1:50250 AutoByteus ..."
+RSM-04 savedSummary:    "Model Gemini test Antigravity CLI ..."   (was "" in API-B03-r11)
+RSM-04 reopenedSummary: "Model Gemini test Antigravity CLI ..."
+
+$ node tests/e2e/delegated-launch-defaults-probe.mjs --cases AFS-001 --output-dir /tmp/afs-ir030
+AFS-001 Fail "Save stored exactly A" {a: null, b: null}
+- The F-57 step passes: aSaved.model "ModelAlt test modelAntigravity CLI", saveText "Saved. Changes apply when this run resumes."
+  ("A's card shows the saved model (D-IMP-3)").
+- The next step reads `userLaunchSelection` from the hub's (the delegator's) agent tree record: base's storage. Under SR-064 the
+  save is the copy's own run's save, so the delegator's record holds none. A stale probe check (agent-settings-focused-cases.mjs:157-159),
+  for API/E2E's rewrite list.
