@@ -34,6 +34,30 @@ describe('Team run model-config mutator', () => {
     expect(original.rootTeam.members[0].launchConfiguration.llmConfig).toEqual({ effort: 'medium' });
   });
 
+  it('CR-461-089: a Team-level save changes its default only; a member with no source of its own keeps the Team\'s earlier one as its own', () => {
+    const original = tree();
+    original.rootTeam.defaultLaunchSource = { origin: 'configured', fallbacks: [] };
+    original.rootTeam.members.push({ ...original.rootTeam.members[0], address: '/own', agentRunId: 'own-run',
+      launchSource: { origin: 'agent_default', fallbacks: [] } });
+    const targets = resolveTeamRunSelectionTargets(original, [{
+      scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'team-next', llmConfig: null,
+    }]);
+    const updated = applyTeamRunSelectionPatches(original, targets) as any;
+    expect(updated.rootTeam.defaultLaunchConfiguration.llmModelIdentifier).toBe('team-next');
+    expect(updated.rootTeam.defaultLaunchSource).toEqual({ origin: 'settings', fallbacks: [] });
+    // Each member's launch is unchanged, and so is where it came from.
+    expect(updated.rootTeam.members.map((member: any) => [member.address, member.launchConfiguration.llmModelIdentifier, member.launchSource])).toEqual([
+      ['/agent', 'gpt', { origin: 'configured', fallbacks: [] }],
+      ['/own', 'gpt', { origin: 'agent_default', fallbacks: [] }],
+    ]);
+    // A save that leaves the default as it was changes no source.
+    const same = applyTeamRunSelectionPatches(original, resolveTeamRunSelectionTargets(original, [{
+      scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: 'gpt', llmConfig: { effort: 'medium' },
+    }])) as any;
+    expect(same.rootTeam.defaultLaunchSource).toEqual({ origin: 'configured', fallbacks: [] });
+    expect(same.rootTeam.members[0].launchSource).toBeUndefined();
+  });
+
   it('rejects duplicate, missing, and kind-mismatched configured targets', () => {
     const original = tree();
     expect(() => resolveTeamRunSelectionTargets(original, [

@@ -90,12 +90,18 @@ export const applyTeamRunSelectionPatches = (
   const rootPatch = patchByAddress.get("/");
   const { defaultLaunchSource, ...root } = tree.rootTeam;
   const defaultLaunch = rootPatch ? replaceLaunchConfig(root.defaultLaunchConfiguration, rootPatch) : root.defaultLaunchConfiguration;
+  const defaultChanged = !isDeepStrictEqual(defaultLaunch, root.defaultLaunchConfiguration);
+  // The Team's choice is its default only (CR-461-089): a member with no source of its own showed the Team's, so it keeps
+  // that one as its own when the Team's changes; its launch and where it came from are unchanged.
+  const members = defaultChanged && defaultLaunchSource
+    ? root.members.map((member) => member.launchSource ? member : { ...member, launchSource: defaultLaunchSource })
+    : root.members;
   const rootTeam: RootConfiguredTeamExecutionNode = {
     ...root,
     // An edit of the Team's own launch becomes its own, recorded as one (design V-11).
-    ...(isDeepStrictEqual(defaultLaunch, root.defaultLaunchConfiguration) ? (defaultLaunchSource ? { defaultLaunchSource } : {}) : { defaultLaunchSource: SETTINGS_LAUNCH_SOURCE }),
+    ...(defaultChanged ? { defaultLaunchSource: SETTINGS_LAUNCH_SOURCE } : (defaultLaunchSource ? { defaultLaunchSource } : {})),
     defaultLaunchConfiguration: defaultLaunch,
-    members: patchMembers(root.members, patchByAddress, newSwitchId),
+    members: patchMembers(members, patchByAddress, newSwitchId),
   };
   return { ...tree, rootTeam };
 };
