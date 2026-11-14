@@ -6,9 +6,10 @@ import type { RemoteRunChannel, RemoteRunObserver } from "../../../../src/agent-
 import { createAgentRootExecutionIdentity, rootExecutionIdentityKey, type RootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 /**
- * autobyteus-461 SR-066 (REQ-013; ARCH-REV-040 note 1), SR-083: the open views' peer rows' summaries, asked without any
- * root, shared by every open view that shows them (a row shows in its delegator's view and in each ancestor's). A peer
- * run's status is its own, read by its run ID through its handle (`RunStatusService`), never a view frame.
+ * autobyteus-461 SR-066 (REQ-013; ARCH-REV-040 note 1), SR-083, CR-461-091: the open views' peer rows' live output and
+ * summaries, observed without any root, shared by every open view that shows them (a row shows in its delegator's view
+ * and in each ancestor's); base's AR-402 / AR-403 rules (autobyteus-278). A peer run's status is its own, read by its run
+ * ID through its handle (`RunStatusService`), never a view frame.
  */
 const DOCKER = "srv_docker_000000000000000000000000000";
 const OFFICE = "srv_office_000000000000000000000000000";
@@ -17,6 +18,7 @@ const delegator = createAgentRootExecutionIdentity("manager-run");
 const status = (value: "running" | "idle"): AgentPresentationMessage => ({ type: "AGENT_STATUS", payload: {
   status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } } as AgentPresentationMessage);
+const chunk = (delta: string): AgentPresentationMessage => ({ type: "SEGMENT_CONTENT", payload: { segment_id: "s1", turn_id: "t1", segment_type: "text", delta } } as AgentPresentationMessage);
 
 const child = (run: Record<string, string>, nodeId: string, recipientAddress: string, members?: { address: string; agentRunId: string }[]) => ({
   run, taskId: "t1", delegatorAgentRunId: "manager-run", entryAgentRunId: members?.[0]?.agentRunId ?? Object.values(run)[0]!, started: true,
@@ -68,13 +70,32 @@ const harness = () => {
 };
 
 describe("PeerChildObservation", () => {
-  it("SR-083: a peer run's frames are not the view's: no peer run is observed for a view (its status is read by its run ID)", async () => {
+  it("CR-461-091: one output observation per peer run, shared by the delegator's view and its ancestor's; the last view to close closes it", () => {
     const f = harness();
-    const close = f.observation.follow(delegator);
-    await f.flush();
-    expect(f.channel.observeRun).not.toHaveBeenCalled();
-    expect(f.eventsOf(delegator).every((event) => event.kind === "remote_task_execution_summary")).toBe(true);
-    close();
+    const closeDelegator = f.observation.follow(delegator);
+    const closeTop = f.observation.follow(top);
+    const closeAgain = f.observation.follow(delegator);
+    expect(f.channel.observeRun.mock.calls.map(([nodeId, root]) => [nodeId, root])).toEqual([
+      [DOCKER, { kind: "agent", runId: "researcher-run" }],
+      [DOCKER, { kind: "agent_team", runId: "marketing-run" }],
+      [OFFICE, { kind: "agent", runId: "analyst-run" }],
+    ]);
+    closeDelegator(); closeAgain();
+    expect(f.closed).toEqual([]);
+    closeTop();
+    expect(f.closed).toEqual(["researcher-run", "marketing-run", "analyst-run"]);
+  });
+
+  it("AR-402 (CR-461-091): an output frame reaches every view showing the run, at its address under its delegator; another agent is dropped; a status frame is not the view's (SR-083)", () => {
+    const f = harness();
+    f.observation.follow(delegator);
+    f.observation.follow(top);
+    f.observers.get("marketing-run")!.onFrame("writer-run", chunk("Drafting the brief."));
+    f.observers.get("marketing-run")!.onFrame("b-local-copy-run", chunk("Not one of its own agents."));
+    f.observers.get("marketing-run")!.onFrame("writer-run", status("running"));
+    const expected = [{ kind: "remote_agent_presentation", nodeId: DOCKER, agentRunId: "writer-run", memberAddress: "/marketing_team/writer", message: chunk("Drafting the brief.") }];
+    expect(f.eventsOf(delegator).filter((event) => event.kind === "remote_agent_presentation")).toEqual(expected);
+    expect(f.eventsOf(top).filter((event) => event.kind === "remote_agent_presentation")).toEqual(expected);
   });
 
   it("summaries: one request per node; an unanswered node is unreachable; a later view gets the cached ones, then fresh ones", async () => {
@@ -96,12 +117,17 @@ describe("PeerChildObservation", () => {
     expect(f.eventsOf(top).filter((event) => event.kind === "remote_task_execution_summary")).toHaveLength(3);
   });
 
-  it("Retry (CR-461-085): the view's peer runs' ended status observations again, and fresh summaries from their nodes", async () => {
+  it("Retry (CR-461-085, CR-461-091): the view's peer runs' ended observations again (output and status), and fresh summaries from their nodes", async () => {
     const f = harness();
     f.observation.follow(delegator);
     await f.flush();
     const before = f.channel.runSummaries.mock.calls.length;
+    // An output observation that ended stays ended (DEC-807 Phase 1) and asks for no summary itself (the status side does).
+    f.observers.get("researcher-run")!.onEnd();
+    await f.flush();
+    expect(f.channel.runSummaries.mock.calls.length).toBe(before);
     await f.observation.refresh(delegator);
+    expect(f.channel.observeRun.mock.calls.map(([, root]) => root.runId)).toEqual(["researcher-run", "marketing-run", "analyst-run", "researcher-run"]);
     expect(f.retried).toEqual([["researcher-run", "marketing-run", "analyst-run"]]);
     expect(f.channel.runSummaries.mock.calls.length).toBe(before + 2);
   });
@@ -119,15 +145,17 @@ describe("PeerChildObservation", () => {
     expect(f.channel.runSummaries.mock.calls.length).toBe(before + 1);
   });
 
-  it("a peer row that comes gets its summary while its view is open; one that goes leaves the view", async () => {
+  it("a peer row that comes is observed and gets its summary while its view is open; one that goes leaves the view, and is closed when no view shows it", async () => {
     const f = harness();
     f.observation.follow(delegator);
     await f.flush();
     f.changeRows(delegator, [researcher]);
     await f.flush();
+    expect(f.closed).toEqual(["marketing-run", "analyst-run"]);
     const before = f.channel.runSummaries.mock.calls.length;
     f.changeRows(delegator, [researcher, analyst]);
     await f.flush();
     expect(f.channel.runSummaries.mock.calls.slice(before)).toEqual([[OFFICE, [{ kind: "agent", runId: "analyst-run" }]]]);
+    expect(f.channel.observeRun.mock.calls.map(([, root]) => root.runId)).toEqual(["researcher-run", "marketing-run", "analyst-run", "analyst-run"]);
   });
 });

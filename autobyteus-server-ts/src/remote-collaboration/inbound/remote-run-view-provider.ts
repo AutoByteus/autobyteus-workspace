@@ -1,6 +1,6 @@
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import { pairedAgentStatusFrame, type PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import type {
   RemoteAgentLaunch,
   RemoteAgentProjection,
@@ -108,10 +108,14 @@ export class RemoteRunViewProvider {
     if (!run) return notFound();
     const refused = await this.check(run, from, null);
     if (refused) return refused;
-    const observation = await this.roots.pairedAgents(run.kind)
+    const agents = this.roots.pairedAgents(run.kind);
+    const observation = await agents
       .observePairedAgents(run.runId, (agentRunId, message) => sink.send({ agentRunId, message }), () => sink.close())
       .catch(() => null);
     if (!observation) return notFound();
+    // CR-461-090: the stream carries changes only, so it opens with each running agent's current status, read after the
+    // listener is attached (no change falls between them). A run that is not running has none: its peer reads offline.
+    for (const live of agents.pairedAgentStatuses(run.runId)) sink.send({ agentRunId: live.agentRunId, message: pairedAgentStatusFrame(live.status) });
     return Object.freeze({ accepted: true as const, observation });
   }
 

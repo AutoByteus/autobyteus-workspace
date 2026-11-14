@@ -143,11 +143,17 @@ const buildNode = async (input: Readonly<{
       const socket: PeerWebSocket = {
         onopen: null, onmessage: null, onclose: null, onerror: null,
         send: (data) => {
-          void gateway.openRunObservation(JSON.parse(data), peerCallerOf(headers), { send: deliver, close: () => { observation?.close(); socket.onclose?.(); } }).then((response) => {
+          // As the route does (N-401): the opening `{nodeId}` is the first frame; a frame before the answer waits for it.
+          let held: unknown[] | null = [];
+          const sink = { send: (frame: unknown) => { if (held) held.push(frame); else deliver(frame); }, close: () => { observation?.close(); socket.onclose?.(); } };
+          void gateway.openRunObservation(JSON.parse(data), peerCallerOf(headers), sink).then((response) => {
             const answer = response.answer;
             if (!answer.accepted || !("observation" in answer)) { deliver(answer); socket.onclose?.(); return; }
             observation = answer.observation;
             deliver({ nodeId: answer.nodeId });
+            const waiting = held ?? [];
+            held = null;
+            waiting.forEach(deliver);
           });
         },
         close: () => { observation?.close(); },
@@ -429,10 +435,16 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     const statusConnection = runStatus.connect((message) => statuses.push(message));
     await statusConnection.subscribe([{ kind: "agent", runId: "publisher_r1" }]);
     await settle();
+    // CR-461-090: the run was already idle before A observed it: B's stream opens with its current status, so A reads it.
+    expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "idle" } });
     b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.AGENT_STATUS, runId: "publisher_r1", payload: { status: "running" }, statusHint: "ACTIVE" });
     await settle();
     expect(statuses.at(-1)).toMatchObject({ type: "RUN_STATUS_CHANGED", payload: { runId: "publisher_r1", agentRunId: "publisher_r1", status: "running" } });
-    expect(events.every((event) => event.kind === "remote_task_execution_summary")).toBe(true);
+    // CR-461-091: its output reaches A's open view at its address (AR-402); its status frames are not the view's (SR-083).
+    b.runOf("publisher_r1").emit({ eventType: AgentRunEventType.SEGMENT_CONTENT, runId: "publisher_r1", payload: { id: "segment-1", turn_id: "turn-1", segment_type: "text", delta: "Publishing now." }, statusHint: null });
+    await settle();
+    expect(events.filter((event) => event.kind === "remote_agent_presentation")).toEqual([expect.objectContaining({ nodeId: B_ID, agentRunId: "publisher_r1",
+      memberAddress: "/publisher", message: expect.objectContaining({ type: "SEGMENT_CONTENT", payload: expect.objectContaining({ delta: "Publishing now." }) }) })]);
 
     // The owner's message reaches B's run as user input under the heading naming the owner's node (DS-004, DS-004a).
     const peer = peerRunOf("publisher_r1")!;

@@ -89,6 +89,22 @@ describe("RemoteRunViewProvider behind the gateway", () => {
     expect((await f.gateway.ownerCommand({ ...envelope(), targetRoot: TEAM, agentRunId: "lead-run", command: { kind: "approve" } }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM, agentRunId: "lead-run", command: { kind: "approve" } }))).status).toBe(400);
   });
 
+  it("CR-461-090: an observation opens with each running agent's current status, read after its listener is attached; a stopped run sends none", async () => {
+    const f = harness();
+    const order: string[] = [];
+    vi.mocked(f.access.observePairedAgents).mockImplementationOnce(async () => { order.push("observe"); return f.observation; });
+    vi.mocked(f.access.pairedAgentStatuses).mockImplementationOnce(() => { order.push("read"); return [{ agentRunId: "lead-run", status: "idle" }]; });
+    const sink = { send: vi.fn(), close: vi.fn() };
+    await f.gateway.openRunObservation({ ...envelope(), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM }), sink);
+    expect(order).toEqual(["observe", "read"]);
+    expect(sink.send.mock.calls).toEqual([[{ agentRunId: "lead-run", message: { type: "AGENT_STATUS", payload: expect.objectContaining({ status: "idle" }) } }]]);
+    // Not running: nothing to send; the peer reads it offline until it runs.
+    vi.mocked(f.access.pairedAgentStatuses).mockImplementationOnce(() => []);
+    const quiet = { send: vi.fn(), close: vi.fn() };
+    await f.gateway.openRunObservation({ ...envelope(), targetRoot: TEAM }, peerCallerOfBody({ ...envelope(), targetRoot: TEAM }), quiet);
+    expect(quiet.send).not.toHaveBeenCalled();
+  });
+
   it("an observation of a run another node started is refused before anything is observed", async () => {
     const f = harness();
     const sink = { send: vi.fn(), close: vi.fn() };

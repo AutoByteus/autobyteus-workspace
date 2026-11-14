@@ -18,9 +18,20 @@ export type RemoteRunSummaryEvent = Readonly<{
 
 /**
  * The events of a view's peer rows (autobyteus-278; SR-066: published by `PeerChildObservation` into each view's stream):
- * their summaries (title, reachability, launches). A peer run's status is its own, read by its run ID (SR-083).
+ * their summaries (title, reachability, launches), and their live output (DS-8, AC-802: a peer run has no stream of its
+ * own on this node). Only the views' DTO projectors read them, and `remote_agent_presentation` becomes the stream's
+ * `agent_presentation` there and nowhere else (N-402). A peer run's status is its own, read by its run ID (SR-083).
  */
-export type RemoteRunRootEvent = Readonly<{ kind: "remote_task_execution_summary"; summary: RemoteRunSummaryEvent }>;
+export type RemoteRunRootEvent =
+  | Readonly<{ kind: "remote_task_execution_summary"; summary: RemoteRunSummaryEvent }>
+  | Readonly<{
+      kind: "remote_agent_presentation";
+      nodeId: string;
+      agentRunId: string;
+      /** The agent's address under this root, from the stored link (AR-402). */
+      memberAddress: string;
+      message: AgentPresentationMessage;
+    }>;
 
 /** The names of peer nodes, from this node's own peer registry (no request to a peer); a node it does not name is its ID. */
 export const peerNodeNames = async (nodeIds: Iterable<string>, channel: RemoteRunChannel | null): Promise<ReadonlyMap<string, string>> => {

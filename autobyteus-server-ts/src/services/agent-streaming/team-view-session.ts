@@ -177,8 +177,10 @@ export class TeamViewSession {
   /** One event in base's shapes; a row event with its records read (`null` when none could be read). */
   private project(sequenced: SequencedRootEvent<TeamViewEvent>, rowEvent: ProjectedRowEvent | null): TeamStreamServerMessage | null {
     const event = sequenced.event;
-    // The peer rows' summaries (SR-066); every row's status is its own run's (SR-083).
-    if ("kind" in event && event.kind === "remote_task_execution_summary") return projectTeamRemoteEvent(event, sequenced.changeSequence);
+    // The peer rows' summaries and live output (SR-066, DS-8); every row's status is its own run's (SR-083).
+    if ("kind" in event && (event.kind === "remote_task_execution_summary" || event.kind === "remote_agent_presentation")) {
+      return projectTeamRemoteEvent(event, sequenced.changeSequence);
+    }
     if (isChildRowRootEvent(event as { kind?: unknown })) return rowEvent ? projectTeamRowEvent(rowEvent, sequenced.changeSequence) : null;
     return projectSequencedTeamRunEvent(sequenced as SequencedRootEvent<TeamRunEvent>);
   }
