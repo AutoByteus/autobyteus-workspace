@@ -164,10 +164,11 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     // autobyteus-461: a delegated run becomes a run of its own; with no hold (AR-005). Registered after every released
     // migration (CR-461-048): data that has not run one yet runs it first, so 20261020 removes the improver's helper
     // runs before this makes delegated copies runs of their own.
-    new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
-    // autobyteus-461 SR-078: one follow-up per predecessor, each after it and our migration, converts the items that
-    // predecessor finishes later (with our migration's builders); a predecessor stuck FAILED holds back only its own.
-    ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs),
+    new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, { ledger }),
+    // autobyteus-461 SR-078, SR-079: one follow-up per writer or reader predecessor, each after it and our migration,
+    // converts what that predecessor produces after ours ran (with our migration's builders); a predecessor FAILED or
+    // NOT_RUN holds back only its own.
+    ...createDelegatedRunsPreservedItemsMigrations(appDataDir, memoryDir, liveDefinitionNames, liveRunHistoryCatalogs, ledger),
   ];
 };
 

@@ -6,6 +6,7 @@ import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
   AppDataMigrationItemDetail,
+  AppDataMigrationRecordRepositoryLike,
 } from "../../domain/app-data-migration-types.js";
 import type { DefinitionNameLookup } from "../../domain/definition-name-lookup.js";
 import type { RunHistoryCatalogInvalidation } from "../../domain/run-history-catalog-invalidation.js";
@@ -14,6 +15,13 @@ import { convertTaskRecord } from "./task-record-conversion.js";
 import { convertAgentRunFile, convertTeamRunFile, type RunFileConversion } from "./run-file-conversion.js";
 
 export const DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID = "20261111_delegated_runs_own_runs_v1";
+/**
+ * The one reader among our predecessors (SR-079): it selects the improver's helper runs by definition, skipping a run
+ * with `taskAgent`. An improver copy we had converted would be selected and deleted (F-25), so it waits until this is
+ * terminal; its follow-up converts the copies that remain.
+ */
+export const REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID = "20261020_remove_skill_improvement_data";
+const IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
 const TASK_RECORD_FILE = "agent_run_resources.json";
 const BUSY_RUN_RECORD = path.join("restart-resume", "busy-runs.json");
 const AGENT_HISTORY_INDEX = "run_history_index.json";
@@ -69,6 +77,9 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
   readonly requiredOnStartup = true;
   readonly executionPolicy = "STARTUP_ONLY" as const;
   private readonly steps: ReadonlySet<DelegatedRunsStep>;
+  private readonly ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord"> | null;
+  /** The reader is not terminal yet: the improver's delegated copies wait (SR-079). */
+  private readerPending = false;
 
   private readonly layout: AgentMemoryLayout;
   private readonly details: AppDataMigrationItemDetail[] = [];
@@ -79,8 +90,14 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
     private readonly memoryDir: string,
     private readonly names: DefinitionNameLookup,
     private readonly catalogs: RunHistoryCatalogInvalidation | null = null,
-    plan: DelegatedRunsPlan = MAIN_PLAN,
+    options: Readonly<{
+      plan?: DelegatedRunsPlan;
+      /** The migration ledger, read for the reader's status (SR-079); without one the reader is taken as terminal. */
+      ledger?: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
+    }> = {},
   ) {
+    const plan = options.plan ?? MAIN_PLAN;
+    this.ledger = options.ledger ?? null;
     this.layout = new AgentMemoryLayout(memoryDir);
     this.id = plan.id;
     this.displayName = plan.displayName;
@@ -92,6 +109,8 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
   async execute(): Promise<AppDataMigrationExecutionResult> {
     this.details.length = 0;
     this.scanned = 0;
+    const reader = this.ledger ? (await this.ledger.getRecord(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID))?.status : "SUCCEEDED";
+    this.readerPending = reader !== "SUCCEEDED" && reader !== "SUCCEEDED_WITH_WARNINGS";
     const scan = await new ReleasedDelegationScan(this.layout).scan();
     const step = (name: DelegatedRunsStep, run: (scan: ReleasedDelegationScan) => Promise<void>) => this.steps.has(name) ? run.call(this, scan) : Promise.resolve();
     await step("taskRecords", this.convertTaskRecords);
@@ -131,6 +150,12 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
     for (const [runId, file] of scan.agentRunFiles) {
       if (file.kind !== "present") continue;
       const filePath = scan.agentFilePath(runId);
+      if (this.waitsForReader(file.raw)) {
+        this.scanned += 1;
+        this.add(`agent_run:${runId}`, filePath, "PRESERVED_UNFINISHED_PREDECESSOR",
+          `${REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID}: the improver's delegated copy waits until it has run (its follow-up converts it)`);
+        continue;
+      }
       const conversion = convertAgentRunFile(runId, file.raw, scan);
       if (conversion.kind === "current") continue;
       this.scanned += 1;
@@ -181,7 +206,8 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
    */
   private async moveAgentRunLogs(scan: ReleasedDelegationScan): Promise<void> {
     const appendOnly = /^communication_messages_(active|\d+)\.jsonl$/;
-    for (const [runId] of scan.agentRunFiles) {
+    for (const [runId, file] of scan.agentRunFiles) {
+      if (file.kind === "present" && this.waitsForReader(file.raw)) continue;
       const runDir = path.dirname(scan.agentFilePath(runId));
       const collaborationDir = path.join(runDir, "collaboration");
       const names = await fs.readdir(collaborationDir).catch(() => null);
@@ -285,6 +311,11 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
     if (!added.length) return;
     this.scanned += 1;
     await this.write(itemId, indexPath, [...rows, ...added] as unknown as RawRecord);
+  }
+
+  /** An improver copy still in its released shape, while the reader that selects by that shape is not terminal. */
+  private waitsForReader(raw: RawRecord): boolean {
+    return this.readerPending && isRecord(raw.taskAgent) && raw.agentDefinitionId === IMPROVER_AGENT_DEFINITION_ID;
   }
 
   private async agentName(definitionId: string): Promise<string> {

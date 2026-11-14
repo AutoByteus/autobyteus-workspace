@@ -1,55 +1,80 @@
+import type { AppDataMigrationRecordRepositoryLike } from "../../domain/app-data-migration-types.js";
 import type { DefinitionNameLookup } from "../../domain/definition-name-lookup.js";
 import type { RunHistoryCatalogInvalidation } from "../../domain/run-history-catalog-invalidation.js";
 import {
   DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID,
   DelegatedRunsOwnRunsV1AppDataMigration,
-  type DelegatedRunsPlan,
+  REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID,
+  type DelegatedRunsStep,
 } from "./delegated-runs-own-runs-v1-app-data-migration.js";
 
-/**
- * The follow-ups of `20261111_delegated_runs_own_runs_v1` (autobyteus-461 SR-078 as revised by ARCH-REV-049 AR-027 and
- * ARCH-REV-050; design DS-10, "After the predecessor finishes the item"; guideline §7, "a separate new migration").
- *
- * Our migration leaves a predecessor's unfinished item as it is and reports it (`PRESERVED_UNFINISHED_PREDECESSOR`). When
- * that predecessor later finishes the item (it is retried at every start), the item is in the predecessor's released
- * shape, which the runtime does not read. One follow-up per predecessor applies our steps that its items need, with our
- * migration's own builders, recognized as done by structure (so idempotent): an item already converted is current, an item
- * its predecessor still has unfinished stays preserved and reported (a warning success). Then it is terminal.
- *
- * The runner checks prerequisites per migration (`assertPrerequisites`): each follow-up has only our migration and its own
- * predecessor, so a predecessor that stays `FAILED` for an unrelated item holds back only its own follow-up, which waits,
- * reported, while startup continues (`requiredOnStartup`, no `holdsBackCapabilities`). Registered after our migration.
- */
-// The predecessors, by their IDs (a migration folder imports no other; the sealed area's rule).
-const TASK_AGENT_OWN_RUN_V1_MIGRATION_ID = "20261017_task_agent_own_run_v1";
-const APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID = "20261018_append_only_message_logs_v1";
-const DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID = "20261019_delegated_copy_own_file_complete_v1";
+/** How a migration registered before ours acts on the shapes ours converts (SR-079, DS-10's classification table). */
+export type PredecessorClass = "writer" | "reader";
 
-export const DELEGATED_RUNS_PRESERVED_ITEMS_PLANS: readonly DelegatedRunsPlan[] = [
-  {
-    id: "20261114_preserved_items_after_task_agent_own_run_v1",
-    displayName: "Delegated runs: items finished by the task-agent own-run migration",
-    description: "Converts the delegated copies 20261017 had not finished when delegated runs became runs of their own: own file, message log, history row.",
-    prerequisiteMigrationIds: [DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID, TASK_AGENT_OWN_RUN_V1_MIGRATION_ID],
-    // 4: its own file; 5b: an append-only log it already has; 8: its history row.
-    steps: ["runFiles", "agentRunLogs", "historyRows"],
-  },
-  {
-    id: "20261114_preserved_items_after_own_file_complete_v1",
-    displayName: "Delegated runs: items finished by the own-file completion migration",
-    description: "Converts the own files 20261019 had not completed when delegated runs became runs of their own: own file, history row.",
-    prerequisiteMigrationIds: [DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID, DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID],
-    steps: ["runFiles", "historyRows"],
-  },
-  {
-    id: "20261114_preserved_items_after_append_only_logs_v1",
-    displayName: "Delegated runs: logs finished by the append-only message log migration",
-    description: "Moves the message logs 20261018 had not converted when delegated runs became runs of their own into each run's own folder.",
-    prerequisiteMigrationIds: [DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID, APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID],
-    steps: ["agentRunLogs"],
-  },
+/** One follow-up: its predecessor, how that predecessor acts on our shapes, and the steps its late output needs. */
+export type PreservedItemsFollowUpSpec = Readonly<{
+  id: string;
+  predecessor: string;
+  predecessorClass: PredecessorClass;
+  /** What the predecessor writes or reads, in plain words (for the follow-up's description). */
+  late: string;
+  steps: readonly DelegatedRunsStep[];
+}>;
+
+/**
+ * Every predecessor whose late output our migration must still convert (autobyteus-461 SR-078, SR-079; design DS-10,
+ * "Every late predecessor, not only the FAILED ones"). A predecessor can run after ours when it is `FAILED` and retried,
+ * or `NOT_RUN` behind a failed prerequisite. The writers write our source shapes (`taskExecutions` lists, a `taskAgent`
+ * section, the delegated runs' history rows); the reader selects by them. The other predecessors are classified rebuilder
+ * or none in the registry classification test, which requires every predecessor to have a class.
+ */
+export const PRESERVED_ITEMS_FOLLOW_UPS: readonly PreservedItemsFollowUpSpec[] = [
+  { id: "20261114_preserved_items_after_task_agent_own_run_v1", predecessor: "20261017_task_agent_own_run_v1", predecessorClass: "writer",
+    late: "a delegated copy's own file and its append-only log", steps: ["runFiles", "agentRunLogs", "historyRows"] },
+  { id: "20261114_preserved_items_after_own_file_complete_v1", predecessor: "20261019_delegated_copy_own_file_complete_v1", predecessorClass: "writer",
+    late: "a completed own file", steps: ["runFiles", "historyRows"] },
+  { id: "20261114_preserved_items_after_append_only_logs_v1", predecessor: "20261018_append_only_message_logs_v1", predecessorClass: "writer",
+    late: "an agent run's append-only log in its collaboration folder", steps: ["agentRunLogs"] },
+  { id: "20261114_preserved_items_after_team_run_execution_tree_v1", predecessor: "20260814_team_run_execution_tree_v1", predecessorClass: "writer",
+    late: "team trees with taskExecutions lists and a task team's taskAgent section", steps: ["runFiles", "lists", "historyRows"] },
+  { id: "20261114_preserved_items_after_team_run_execution_tree_v2", predecessor: "20260824_team_run_execution_tree_v2", predecessorClass: "writer",
+    late: "team trees with taskExecutions lists and a task team's taskAgent section", steps: ["runFiles", "lists", "historyRows"] },
+  { id: "20261114_preserved_items_after_org_flat_team_families_v1", predecessor: "20260901_agent_org_flat_team_families_v1", predecessorClass: "writer",
+    late: "org trees with taskExecutions lists", steps: ["runFiles", "lists", "historyRows"] },
+  { id: "20261114_preserved_items_after_collaborators_to_delegated_runs_v1", predecessor: "20261015_collaborators_to_delegated_runs_v1", predecessorClass: "writer",
+    late: "taskExecutions links and sourceless copies in trees", steps: ["runFiles", "lists", "historyRows"] },
+  // The team index is rebuilt only from team_run_metadata.json and drops every other row as stale: a delegated team
+  // run's row goes (user-started teams' rows too: base's behavior, FU-029).
+  { id: "20261114_preserved_items_after_team_run_history_index_v2", predecessor: "20260521_team_run_history_index_v2", predecessorClass: "writer",
+    late: "a team history index without the delegated team runs' rows", steps: ["historyRows"] },
+  { id: "20261114_preserved_items_after_remove_skill_improvement_data", predecessor: REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID, predecessorClass: "reader",
+    late: "the improver's delegated copies it left (ours preserves them until it has run)", steps: ["runFiles", "agentRunLogs", "historyRows"] },
 ];
 
+/**
+ * `PreservedItemsFollowUp(predecessor, steps)`: the one definition of every follow-up. It applies our steps, with our
+ * migration's own builders, to what its predecessor wrote (or left) after ours ran; each step recognizes finished work by
+ * its structure, so it is idempotent, and an item still unfinished stays preserved and reported. Its prerequisites are
+ * its predecessor and our migration, so it waits, reported, while its predecessor is `FAILED` or `NOT_RUN`, and a
+ * predecessor stuck there holds back only its own follow-up. `requiredOnStartup` with no `holdsBackCapabilities`;
+ * registered after our migration; terminal once it has run.
+ */
+export class PreservedItemsFollowUp extends DelegatedRunsOwnRunsV1AppDataMigration {
+  constructor(appDataDir: string, memoryDir: string, names: DefinitionNameLookup, catalogs: RunHistoryCatalogInvalidation | null,
+    ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord"> | null, readonly spec: PreservedItemsFollowUpSpec) {
+    super(appDataDir, memoryDir, names, catalogs, {
+      ...(ledger ? { ledger } : {}),
+      plan: {
+        id: spec.id,
+        displayName: `Delegated runs: what ${spec.predecessor} wrote after them`,
+        description: `Converts ${spec.late}, which ${spec.predecessor} produced after delegated runs became runs of their own.`,
+        prerequisiteMigrationIds: [DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID, spec.predecessor],
+        steps: spec.steps,
+      },
+    });
+  }
+}
+
 export const createDelegatedRunsPreservedItemsMigrations = (appDataDir: string, memoryDir: string, names: DefinitionNameLookup,
-  catalogs: RunHistoryCatalogInvalidation | null = null): DelegatedRunsOwnRunsV1AppDataMigration[] =>
-  DELEGATED_RUNS_PRESERVED_ITEMS_PLANS.map((plan) => new DelegatedRunsOwnRunsV1AppDataMigration(appDataDir, memoryDir, names, catalogs, plan));
+  catalogs: RunHistoryCatalogInvalidation | null = null, ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord"> | null = null): PreservedItemsFollowUp[] =>
+  PRESERVED_ITEMS_FOLLOW_UPS.map((spec) => new PreservedItemsFollowUp(appDataDir, memoryDir, names, catalogs, ledger, spec));

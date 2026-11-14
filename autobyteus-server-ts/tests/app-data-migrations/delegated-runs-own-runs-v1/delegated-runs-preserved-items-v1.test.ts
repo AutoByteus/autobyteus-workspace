@@ -8,7 +8,7 @@ import {
 } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
 import {
   createDelegatedRunsPreservedItemsMigrations,
-  DELEGATED_RUNS_PRESERVED_ITEMS_PLANS,
+  PRESERVED_ITEMS_FOLLOW_UPS,
 } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-preserved-items-v1.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
@@ -66,7 +66,7 @@ describe("the follow-ups of 20261111_delegated_runs_own_runs_v1 (SR-078)", () =>
     const ids = registry.listDefinitions().map((definition) => definition.id);
     const expected: Record<string, string> = { [AFTER_17]: "20261017_task_agent_own_run_v1", [AFTER_19]: "20261019_delegated_copy_own_file_complete_v1",
       [AFTER_18]: "20261018_append_only_message_logs_v1" };
-    expect(DELEGATED_RUNS_PRESERVED_ITEMS_PLANS.map((plan) => plan.id)).toEqual([AFTER_17, AFTER_19, AFTER_18]);
+    expect(PRESERVED_ITEMS_FOLLOW_UPS.map((spec) => spec.id).slice(0, 3)).toEqual([AFTER_17, AFTER_19, AFTER_18]);
     for (const [id, predecessor] of Object.entries(expected)) {
       const definition = registry.getDefinition(id)!;
       expect(ids.indexOf(id)).toBeGreaterThan(ids.indexOf(DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID));
@@ -137,7 +137,8 @@ describe("the follow-ups of 20261111_delegated_runs_own_runs_v1 (SR-078)", () =>
       predecessor("20261017_task_agent_own_run_v1", "17", () => finishedBy17(w)),
       predecessor("20261018_append_only_message_logs_v1", "18"),
       predecessor("20261019_delegated_copy_own_file_complete_v1", "19"),
-      main(w), ...createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names),
+      main(w), ...createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names)
+        .filter((followUp) => [AFTER_17, AFTER_18, AFTER_19].includes(followUp.id)),
     ]), new InMemoryRecords(), { logsDir: path.join(w.appData, "logs") });
     // Start 1: 20261017 and 20261018 are FAILED; our migration runs (no hold); their follow-ups wait, reported.
     const first = new Map((await runner.runPending()).map((status) => [status.migrationId, status]));
