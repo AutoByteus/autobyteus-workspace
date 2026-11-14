@@ -594,7 +594,11 @@ export const createTaskLocatorCases = (h) => {
     // A Task deleted; a Project deleted (its Task's worker answers null): the summaries disappear.
     await gql('mutation($input:DeleteProjectTaskInput!){deleteProjectTask(input:$input)}', { input: { projectId: projectL, taskId: live.deleted } });
     await until('summary removed after Task delete', async () => (await summaryIn(agentRow(page, helper)).count()) === 0, 15000);
-    assert((await agentRow(page, helper).count()) === 1, 'the copy row stays, one line', {});
+    // autobyteus-461 (design: deleting a Task stops its open runs, and they are ordinary runs; DS-11 / TC-9: a run with no Task
+    // entry is a top-level row): the copy leaves its delegator's tree and is listed as a run of its own.
+    await until('the copy leaves its delegator\'s tree after its Task is deleted', async () => (await agentRow(page, helper).count()) === 0, 15000);
+    const listedRuns = JSON.stringify((await gql('{listWorkspaceRunHistory{agentDefinitions{runs{runId}}}}')).listWorkspaceRunHistory);
+    assert(listedRuns.includes(helper), 'the copy is listed as a run of its own', {});
     await gql('mutation($id:String!){deleteProject(projectId:$id)}', { id: projectD });
     await until('summary removed after Project delete', async () => (await summaryIn(teamRow(page, root.rootId, s.names.squad)).count()) === 0, 15000);
     await shot(page, 'pmu-024-deleted-summaries-removed');

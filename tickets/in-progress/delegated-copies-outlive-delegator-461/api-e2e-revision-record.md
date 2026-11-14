@@ -16,6 +16,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-008 | Code Reviewer, `code-review-report.md` CRR-032, round 8 | SR-077, IR-023, IR-024 (code `fdf5ad8380`), CRR-030 … CRR-032 | Fail / 84% | Fail / 86% |
 | API-REV-009 | Code Reviewer, `code-review-report.md` CRR-035, round 9 | SR-078, IR-025, IR-026 (code `f92881dd13`), CRR-033 … CRR-035 | Fail / 86% | Fail / 89% |
 | API-REV-010 | Code Reviewer, `code-review-report.md` CRR-038, round 10 | SR-079, IR-027, IR-028 (code `15c41ad242`), CRR-036 … CRR-038 | Fail / 89% | Fail / 88% |
+| API-REV-011 | Code Reviewer, `code-review-report.md` CRR-040, round 11 | SR-080, CR-461-076 (code `a4641a0985`), CRR-039, CRR-040 | Fail / 88% | Fail / 87% |
 
 ## Revision Entries
 
@@ -466,3 +467,27 @@ None
 - New or remaining failure IDs: F-54 (`Local Fix`, web), F-55 (`Unclear`), O-10a (`Unclear`)
 - Recommended owner: Implementation Engineer (F-54); Solution Designer (F-55, O-10a); confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the "Next Round" list in the investigation; the batch-1 triage list in the report.
+
+### API-REV-011: round 11; F-54 resolved; API-B03 across 13 probes; API-P03; F-56, F-57, F-59 (candidate)
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-040 at `a4641a0985`), API/E2E round 11
+- Triggering finding or case IDs: CR-461-076 (F-54), SR-080; API-B03 batch-1 open items and batch 2; the rest under the agreed rule
+- Related revision IDs: SR-080, CRR-039, CRR-040; FU-030 (the user's wording decision)
+- Why this revision was recorded: the recheck of F-54 and the web probes' rule-2 rewrite
+- Coverage decisions or durable test paths changed: see the report's "Durable Coverage Changed" (SDV-06, SDV-07; PMU-004/009/019/024; PLN-06/09; the closure probe; the two seeded probes)
+- Cases added, changed, removed, or rechecked: four runner scripts (`/tmp/api461/r11-web-*.sh`); see the progress log
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-54 | Local Fix (web) | Resolved | PMU-003, PMU-018, PMU-019, PLN-05; PMU 25/25 |
+| F-55 | test construction (CRR-039) | Closed: SDV-05 checks base's return | SDV-05 |
+| O-10a | rejected (CRR-039) | — | — |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `follow-ups.md` FU-030 "Collected differences" (DLP-003, DLP-005, SIR-001); `evidence/api-e2e/*r11*`.
+- Prior result and confidence: Fail / 88%
+- Current result and confidence: Fail / 87%
+- New or remaining failure IDs: F-56, F-57 (`Local Fix`, web); F-59 (candidate)
+- Recommended owner: Implementation Engineer, confirmed by failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the report's "Stale, rewrite waiting", "Unclassified" and Next Round notes.

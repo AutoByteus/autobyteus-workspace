@@ -19,6 +19,9 @@
 //          team's own member (the Manager) restores the team: the view continues live after one snapshot, with no
 //          out-of-sync notice, and the composer does not stay pending (SR-048).
 //   SDV-03 Org view: the same for an org run; the stopped org starts on its first input (the user's message to its agent).
+//   SDV-06 CR-461-076 / SR-080: a worker opens from its Task's card (Projects panel) for an Agent, Team and Org delegator ×
+//          an Agent worker and a Team worker (its coordinator).
+//   SDV-07 CR-461-076: a running delegated Team opens from its row in an Agent and a Team delegator's view.
 //   SDV-05 C15-03 (DS-15, CRR-039): page B opens the worker from its delegator's row while its Task is open; the Task closes;
 //          as at base (`returnToHostWhenUnlisted`), page B's view returns to the delegator, so the web offers no view of the closed
 //          run to send from (C15-03 is not applicable in the rendered layer; proven at the server: the DS-15 suite, DRO-3). The
@@ -54,7 +57,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/stoppe
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['SDV-01', 'SDV-02', 'SDV-03', 'SDV-04', 'SDV-05'];
+const ALL_CASES = ['SDV-01', 'SDV-02', 'SDV-03', 'SDV-04', 'SDV-05', 'SDV-06', 'SDV-07'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -148,6 +151,10 @@ const definitions = async (label) => {
   ids.team = (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
     { input: { name: names.team, description: names.team, instructions: 'Deliver.', coordinatorMemberName: 'manager',
       nodes: [{ memberName: 'manager', ref: ids.manager, refScope: 'SHARED' }] } })).createAgentTeamDefinition.id;
+  names.squad = `Squad ${s}`;
+  ids.squad = (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}',
+    { input: { name: names.squad, description: names.squad, instructions: 'Review.', coordinatorMemberName: 'lead',
+      nodes: [{ memberName: 'lead', ref: ids.worker, refScope: 'SHARED' }, { memberName: 'mate', ref: ids.helper, refScope: 'SHARED' }] } })).createAgentTeamDefinition.id;
   ids.org = (await gql('mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}',
     { input: { name: names.org, description: names.org, instructions: 'Deliver.', handoffs: [], members: [
       { memberName: 'manager', ref: ids.manager, refType: 'AGENT', refScope: 'SHARED' }] } })).createAgentOrgDefinition.id;
@@ -556,11 +563,107 @@ const caseClosedRunInput = async () => {
   } finally { await a.context.close(); await b.context.close(); }
 };
 
+/** A Project's Task root as the server reports it (start, ingress run, team run). */
+const taskRootOf = async (projectId, taskId) => ((await gql('query($id:String!){projectTasks(projectId:$id){taskId root{kind start ingressAgentRunId teamRunId}}}', { id: projectId }))
+  .projectTasks.find((t) => t.taskId === taskId) ?? {}).root ?? null;
+const createTask = async (projectId, title, description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
+  { input: { projectId, title, description } })).createProjectTask.taskId;
+
+/**
+ * CR-461-076 / SR-080 (CRR-040): a worker opens from its Task's card (the Projects panel) for every delegator kind (Agent, Team,
+ * Org) and worker kind (an Agent, a Team: its coordinator): the center shows that worker's own conversation. (A Task's root is
+ * always one hop from its assigner: a task agent cannot assign a Task, contract §2.1 — its own delegation is sub-work of its Task,
+ * not a root; a nested task-Team member is PMU-019.)
+ */
+const caseTaskCardMatrix = async () => {
+  const out = {};
+  for (const kind of ['agent', 'team', 'org']) {
+    const { ids, names } = await definitions(`Mx${kind}`);
+    const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: `Matrix ${kind} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
+    const tAgent = await createTask(projectId, 'Agent work.', 'Agent work.');
+    const tTeam = await createTask(projectId, 'Team work.', 'Team work.');
+    const root = await createRoot(kind, ids);
+    const input = await managerInput(root);
+    try {
+      for (const [taskId, recipient] of [[tAgent, names.worker], [tTeam, names.squad]]) {
+        input.send(callTool('delegate_task', { recipient_address: `/${segment(recipient)}`, task_id: taskId }));
+        await until(`${kind}: ${taskId} started`, async () => (await taskRootOf(projectId, taskId))?.start === 'started', 90000);
+      }
+    } finally { input.close(); }
+    const { page, errors, context } = await newPage();
+    const record = {};
+    try {
+      await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
+      await page.locator('[data-test="right-side-tab-list"] [data-tab-name="projects"]').click();
+      const panel = page.locator('[data-test="right-side-projects-panel"]');
+      await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+      for (const [label, taskId, text] of [['agent worker', tAgent, 'Agent work.'], ['team worker', tTeam, 'Team work.']]) {
+        const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`).first();
+        await line.waitFor({ state: 'visible', timeout: 60000 });
+        await line.click();
+        await until(`${kind} delegator, ${label}: its own conversation in the center`, async () => {
+          const center = await centerText(page); return center.includes(text) && /You have a new task from/.test(center); }, 30000);
+        record[label] = 'opened';
+        await shot(page, `sdv-06-${kind}-${label.replace(/ /g, '-')}`);
+      }
+      assert(errors.length === 0, 'browser errors', errors);
+      out[kind] = record;
+    } catch (error) {
+      await shot(page, `sdv-06-${kind}-failed`).catch(() => undefined);
+      error.details = { ...(error.details ?? {}), kind, record, out };
+      throw error;
+    } finally { await context.close(); }
+  }
+  return out;
+};
+
+/** CR-461-076 (CRR-040): a running delegated Team opens from its row in the delegator's view (Agent and Team delegators). */
+const caseRunningTeamRow = async () => {
+  const out = {};
+  for (const kind of ['agent', 'team']) {
+    const { ids, names } = await definitions(`Row${kind}`);
+    const projectId = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}', { input: { name: `Row ${kind} ${randomUUID().slice(0, 6)}` } })).createProject.projectId;
+    const taskId = await createTask(projectId, 'Team row work.', 'Team row work.');
+    const root = await createRoot(kind, ids);
+    const input = await managerInput(root);
+    input.send(callTool('delegate_task', { recipient_address: `/${segment(names.squad)}`, task_id: taskId }));
+    await until(`${kind}: the team started`, async () => (await taskRootOf(projectId, taskId))?.start === 'started', 90000);
+    input.close();
+    const { page, errors, context } = await newPage();
+    try {
+      await openRoot(page, root, names);
+      const teamRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-node-kind="agent_team"][data-member-address="/${segment(names.squad)}"]`).first();
+      await teamRow.waitFor({ state: 'visible', timeout: 60000 });
+      await teamRow.click();
+      const opened = await until(`${kind}: the running delegated Team's coordinator conversation`, async () => {
+        const center = await centerText(page); return center.includes('Team row work.') && /You have a new task from/.test(center); }, 30000).then(() => true, () => false);
+      if (!opened) {
+        // Recorded for the classification: does the coordinator's own row (below the Team row) open it?
+        await shot(page, `sdv-07-${kind}-team-row-not-opened`);
+        const lead = page.locator('[data-test="workspace-team-transient-execution-row"][data-member-address="/lead"]').first();
+        const leadOpens = await lead.click().then(() => until('lead row opens the coordinator', async () => (await centerText(page)).includes('Team row work.'), 20000)).then(() => true, () => false);
+        out[`${kind}LeadRowOpens`] = leadOpens;
+        throw Object.assign(new Error(`${kind}: the running delegated Team's row did not open its coordinator (its own coordinator row opens it: ${leadOpens})`), { details: { out } });
+      }
+      await shot(page, `sdv-07-${kind}-team-row-opened`);
+      assert(errors.length === 0, 'browser errors', errors);
+      out[kind] = 'opened';
+    } catch (error) {
+      await shot(page, `sdv-07-${kind}-failed`).catch(() => undefined);
+      error.details = { ...(error.details ?? {}), kind, out };
+      throw error;
+    } finally { await context.close(); }
+  }
+  return out;
+};
+
 const CASES = {
   'SDV-01': ['Agent-run view: Stop with the view open reconnects (C3-06); the worker answers live; the Manager stays stopped; its message starts it', caseAgentRun],
   'SDV-02': ['Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)', () => caseStoppedRoot('team')],
   'SDV-03': ['Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input', () => caseStoppedRoot('org')],
   'SDV-04': ["Agent-run view: the worker's row leaves at DONE and is listed again, live, after the Manager reopens and continues it (CR-461-042)", caseReopenedRow],
+  'SDV-06': ["CR-461-076 / SR-080: a worker opens from its Task's card for every delegator kind × worker kind", caseTaskCardMatrix],
+  'SDV-07': ["CR-461-076: a running delegated Team opens from its row in the delegator's view (Agent, Team)", caseRunningTeamRow],
   'SDV-05': ["C15-03: with the closed run's view open when its Task closes, the view returns to the delegator as at base (no rendered path to message a closed run); its row stays gone and the delegator's row keeps its status", caseClosedRunInput],
 };
 

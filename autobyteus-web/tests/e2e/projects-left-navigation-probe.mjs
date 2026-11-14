@@ -711,7 +711,9 @@ const closureAndReopen = async () => {
     await agentCalls(A, 'update_task', { task_id: s.tasks.P1, status: 'DONE' });
     await until('Team rows left Projects mode', async () => (await teamRow.count()) === 0, 60000);
     assert((await runRowIn(pSection, A).count()) === 1, 'the host run left with its Task');
-    await until('closed in the stored root', async () => (await closedOf(A)).includes(squad.teamRunId), 30000);
+    // autobyteus-469/461: a delegator's view holds no closed copy (its closed list is empty); the closure is the Task's root's.
+    await until('the Task root is closed', async () => ((await gql('query($id:String!){projectTasks(projectId:$id){taskId root{closed teamRunId}}}', { id: s.projects.P.projectId }))
+      .projectTasks.find((t) => t.taskId === s.tasks.P1)?.root?.closed) === true, 30000);
     // autobyteus-461 rule 2: a delegated team's member is read through its own team.
     const memberConversation = (await gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}',
       { t: squad.teamRunId, a: squad.members[0].agentRunId })).getTeamMemberRunProjection?.conversation;
@@ -930,6 +932,9 @@ const archiveAndDelete = async () => {
       stopDiag.projectsStopButtonsAfterReload = await pSection.locator(T('terminate-agent-run')).count();
     }
     await until('no running run under P', async () => (await pSection.locator(T('terminate-agent-run')).count()) === 0, 30000);
+    // autobyteus-461 REQ-001 / REQ-007: A's delegated Team outlives A's Stop, and archiving A is refused while it works; the
+    // user stops it by its own Stop first.
+    if (s.runs.squad?.teamRunId) await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: s.runs.squad.teamRunId });
     const group2 = await openAgentGroup(pSection, s.ids.manager);
     await group2.hover();
     await pSection.locator(T(`workspace-agent-group-archive-${s.ids.manager}`)).first().click();

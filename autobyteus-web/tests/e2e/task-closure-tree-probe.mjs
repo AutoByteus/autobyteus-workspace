@@ -257,7 +257,11 @@ const sockets = [];
 const managerInput = async (root) => {
   const route = root.kind === 'agent' ? `agent/${root.rootId}` : root.kind === 'team' ? `agent-team/${root.rootId}` : `agent-org/${root.rootId}`;
   const socket = new WebSocket(`${stack.backendUrl.replace(/^http/, 'ws')}/ws/${route}`); sockets.push(socket);
+  const frames = [];
+  socket.on('message', (raw) => { try { frames.push(JSON.parse(String(raw))); } catch { /* not JSON */ } });
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  // A Team or Org view takes input once its snapshot is sent (a client's composer is shown after it): wait for it.
+  if (root.kind !== 'agent') await until(`${root.kind} view snapshot before input`, () => frames.some((f) => /SNAPSHOT$/.test(String(f.type))), 30000);
   const send = (content) => socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: root.kind === 'org'
     ? { root_subject_kind: 'agent_org', root_run_id: root.rootId, target_agent_run_id: root.managerRunId, command_id: randomUUID(),
       message_id: randomUUID(), dedupe_key: randomUUID(), content, context_file_paths: [], image_urls: [] }

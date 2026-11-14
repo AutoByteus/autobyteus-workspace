@@ -49,5 +49,8 @@
   - what 461 still requires: the outcome, and a message that is clear and says what to do. Text that tells an agent its next step is behavior;
   - base texts already restored in 461 stay.
 - **Collected differences:** API/E2E and code review add each wording-only difference they find below.
+  - **API/E2E round 11 (API-REV-011), `delegated-launch-defaults-probe` DLP-005:** a delegation to an agent whose default model was retired is refused (`delegated: false`, nothing created; outcome right). Base: "{Agent} cannot be delegated to: The model '{model}' is not available on Antigravity CLI." Now: "{Agent} cannot be delegated to: '{model}' is not offered by Antigravity CLI now. Refresh the model list and choose again."
+  - **API/E2E round 11, DLP-003:** the delegation result's `launch_notes` are present and say what was used and why, but their wording differs from base's expected notes (e.g. "its team default … could not be used ('…' is not offered by Antigravity CLI now. Refresh the model list and choose again); its members without their own default run on … (inherited from the run)").
+  - **API/E2E round 11, `skill-improvement-removal-cases` SIR-001:** one user-started standalone run messaging another by run ID is refused (contract §2.2, R-9: no Task relates them; outcome right). The text, "You can't message this agent: it works on a different Task.", is misleading here: neither run works on a Task (`TASK_AGENT_RESOURCE_CONFLICT`).
 - **Goal of this follow-up:** review the collected refusals together, and make each one clear and consistent, with one style for code, format and next step.
 

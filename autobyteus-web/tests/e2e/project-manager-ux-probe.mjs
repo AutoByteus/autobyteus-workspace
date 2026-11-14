@@ -184,7 +184,7 @@ const firstLine = (description) => description.split('\n').map((line) => line.tr
 const createTask = async (projectId, description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
   { input: { projectId, title: firstLine(description), description } })).createProjectTask.taskId;
 const projectTasks = async (projectId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId taskKey title status root{kind recipientAddress ingressAgentRunId teamRunId start closed status hostRoot: delegatingRun{kind runId}}}}', { id: projectId })).projectTasks;
-const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress start closed status}}}')).tasksWithoutProject;
+const tempTasks = async () => (await gql('query{tasksWithoutProject{taskId description status referenceFiles root{kind recipientAddress ingressAgentRunId start closed status}}}')).tasksWithoutProject;
 const createRoot = async (kind, ids) => {
   if (kind === 'agent') {
     const r = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: ids.manager, ...config() } })).createAgentRun;
@@ -421,23 +421,31 @@ const teamAndOtherHosts = async () => {
   } finally { /* the runner captures a failing page, then closes it */ }
 };
 
-/** AR-002: a root whose hosting run was deleted from history shows its status but cannot be opened. */
+/** AR-002, revised by autobyteus-461 (REQ-007, TC-3, SR-080): a delegated run whose delegating run was deleted is a run of its own, listed and openable. */
 const deletedHost = async () => {
   const s = await setupAgentRoot();
   const { page, errors, context } = await newPage();
   try {
     assert((await rootOf(s.projectId, s.taskB))?.start === 'started', 'needs PMU-003 (task Team root)');
     assert((await terminate(s.root)).success, 'terminate the Agent run');
+    // autobyteus-461 REQ-001: the task Team outlives its delegator's Stop; it is stopped by its own Stop (and REQ-007 refuses
+    // deleting the host while it works).
+    const taskTeam = await rootOf(s.projectId, s.taskB);
+    const teamStopped = (await gql('mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success message}}', { id: taskTeam.teamRunId })).terminateAgentTeamRun;
+    assert(teamStopped.success, 'stop the task Team by its own Stop', teamStopped);
     await goto(page, `/projects/${s.projectId}`);
     const listed = await until('terminated host still listed: openable, Offline', async () => { const r = await rootState(page, s.taskB); return r?.state === 'offline' && r.openable === 'true' ? r : null; }, 30000);
     const deleted = (await gql('mutation($id:String!){deleteStoredRun(runId:$id){success message}}', { id: s.root.rootId })).deleteStoredRun;
     assert(deleted.success, 'delete the Agent run', deleted);
     await goto(page, `/projects/${s.projectId}`);
-    const gone = await until('deleted host: not openable', async () => { const r = await rootState(page, s.taskB); return r?.openable === 'false' ? r : null; }, 30000);
-    assert(gone.tag === 'DIV', 'not focusable', gone);
-    await shot(page, 'pmu-004-deleted-host-not-openable');
+    // autobyteus-461 REQ-007 / TC-3 and SR-080: once its delegating run is deleted, the task Team is a run of its own, listed,
+    // so its line stays openable (base's AR-002 hid a hosted copy whose host was deleted) and opens the Team's own view.
+    const own = await until('deleted host: the task Team is a run of its own, openable', async () => { const r = await rootState(page, s.taskB); return r?.openable === 'true' ? r : null; }, 30000);
+    await rootLine(page, s.taskB).click();
+    await until('the task Team opens in its own view', async () => inWorkspace(page) && /You have a new task from/.test(await centerText(page)), 30000);
+    await shot(page, 'pmu-004-deleted-host-team-of-its-own');
     assertNoBrowserErrors(errors);
-    return { listed, gone, errors };
+    return { listed, own, errors };
   } finally { /* the runner captures a failing page, then closes it */ }
 };
 
@@ -739,6 +747,12 @@ const tempReactivationAndChatDeletion = async () => {
     await runRow.locator('[data-test="terminate-agent-run"]').click();
     await until('run inactive', async () => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: root.rootId })) !== undefined
       && (await runRow.locator('[data-test="terminate-agent-run"]').count()) === 0, 30000);
+    // autobyteus-461 REQ-001 / REQ-007: the chat's delegated copies outlive its Stop, and deleting it is refused while one
+    // works; they are stopped by their own Stop first (K-14: the delete then removes the Temp tasks it assigned).
+    for (const t of [temp, second]) {
+      const copyId = (await tempTasks()).find((x) => x.taskId === t.taskId)?.root?.ingressAgentRunId;
+      if (copyId) await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: copyId });
+    }
     await runRow.hover();
     await runRow.locator('button[title="Delete run permanently"]').click();
     await page.locator('[role="dialog"] button').last().click();
@@ -1610,8 +1624,9 @@ const collapsedStripOtherEntries = async () => {
     const squad = await until('team: task Team started', async () => { const r = await rootOf(projectId, teamTask); return r?.start === 'started' && r.teamRunId ? r : null; }, 60000);
     await openTeamRunFromPanel(page, names, teamRoot);
     await tabList.first().waitFor({ timeout: 60000 });
-    // Task-Team member rows carry the host Team run and the member's address under the task Team.
-    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="${squad.recipientAddress}/editor"][data-agent-run-id]`).first();
+    // Task-Team member rows carry the host Team run and the member's address in its own team (autobyteus-461 TC-12: a delegated
+    // team is rooted at `/`, so the member is `/editor`, not `<task Team address>/editor`).
+    const editorRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-team-run-id="${teamRoot.rootId}"][data-member-address="/editor"][data-agent-run-id]`).first();
     await until('nested task Team member row', async () => {
       if (await editorRow.count()) return true;
       const closed = page.locator('[data-test="workspace-team-transient-disclosure"][aria-expanded="false"]');

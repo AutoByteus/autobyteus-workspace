@@ -262,7 +262,8 @@ const seed = async () => {
   await recorded('team configured member', teamManager, 'team-manager-notes.md');
   toTeamMember(teamManager.agentRunId, delegateWriter('team-task-agent-notes.md'));
   const teamTask = await newTaskAgent('team task agent', teamTreeOf, []);
-  await recorded('team task agent', { kind: 'teamMember', teamRunId: teamRun.teamRunId, memberAddress: teamTask.address, agentRunId: teamTask.agentRunId }, 'team-task-agent-notes.md');
+  // autobyteus-461 rule 2: a delegated agent run's files are read by its own run (it is not a member of its delegator).
+  await recorded('team task agent', { kind: 'run', runId: teamTask.agentRunId }, 'team-task-agent-notes.md');
 
   // Org run: direct agent and member-team lead files; an org-root and a member-team task agent file.
   const orgRun = (await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: { agentOrgDefinitionId: ids.org,
@@ -288,10 +289,10 @@ const seed = async () => {
   await recorded('org member-team member', orgLead, 'org-squad-lead-notes.md');
   toOrgMember(orgManager.agentRunId, delegateWriter('org-task-agent-notes.md'));
   const orgTask = await newTaskAgent('org-root task agent', orgTreeOf, []);
-  await recorded('org-root task agent', { kind: 'agentOrgMember', orgRunId: orgRun.agentOrgRunId, memberAddress: orgTask.address, agentRunId: orgTask.agentRunId }, 'org-task-agent-notes.md');
+  await recorded('org-root task agent', { kind: 'run', runId: orgTask.agentRunId }, 'org-task-agent-notes.md');
   toOrgMember(orgLead.agentRunId, delegateWriter('org-squad-task-agent-notes.md'));
   const squadTask = await newTaskAgent('member-team task agent', orgTreeOf, [orgTask]);
-  await recorded('org member-team task agent', { kind: 'agentOrgMember', orgRunId: orgRun.agentOrgRunId, memberAddress: squadTask.address, agentRunId: squadTask.agentRunId }, 'org-squad-task-agent-notes.md');
+  await recorded('org member-team task agent', { kind: 'run', runId: squadTask.agentRunId }, 'org-squad-task-agent-notes.md');
 
   // Stop every root (the journeys open saved runs).
   const stopped = async (mutation, id) => { const r = Object.values(await gql(mutation, { id }))[0]; assert(r.success, r.message); };
