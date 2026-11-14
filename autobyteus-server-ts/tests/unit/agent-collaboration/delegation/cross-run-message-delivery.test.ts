@@ -157,13 +157,34 @@ describe("CrossRunMessageDelivery (DS-2)", () => {
     const continued = await h.send(M, "manager", "designer");
     expect(continued).toMatchObject({ accepted: true, message: expect.stringContaining("designer continues with its conversation.") });
     expect(h.tasks.isOpen({ teamRunId: "eng" })).toBe(true);
-    // Both attempts asked the Task side, which re-validates every condition: the first was refused (DONE), the second reopened.
-    expect(h.tasks.reopenRequests).toEqual([{ execution: { teamRunId: "eng" }, requestedBy: "manager" }, { execution: { teamRunId: "eng" }, requestedBy: "manager" }]);
+    // Both attempts asked the Task side: the first was refused by its eligibility (DONE) before any reopen was asked
+    // (CR-461-072: eligibility, then whether the run can continue, then the commit); the second reopened.
+    expect(h.tasks.reopenRequests).toEqual([{ execution: { teamRunId: "eng" }, requestedBy: "manager" }]);
     // A sub-work run is not reopened by a message.
     await expect(h.send(M, "manager", "pd")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
     // Only its assigner continues it: another agent of the same run is refused.
     h.tasks.close("T1"); h.tasks.setTaskOpen("T1");
     await expect(h.send(P, "pm", "designer")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+  });
+
+  it("CR-461-072: the assigner's message to its closed run whose saved conversation cannot be read is base's refusal before the reopen: the Task stays closed, nothing reopens", async () => {
+    const h = await harness();
+    h.tasks.close("T1"); h.tasks.setTaskOpen("T1");
+    const unrestorable = { accepted: false as const, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" as const,
+      message: "The delegated Team at '/eng' cannot be restored: the saved conversation of its coordinator '/designer' cannot be read (line 2 is not JSON). Its files were left unchanged. Start a new delegation for this work, or restore its saved conversation from a backup." };
+    h.restorability.refusal.mockResolvedValue(unrestorable);
+    // Base's text, without the "open again" note.
+    await expect(h.send(M, "manager", "designer")).resolves.toEqual(unrestorable);
+    expect(h.restorability.refusal).toHaveBeenCalledWith(E);
+    expect(h.tasks.reopenRequests).toEqual([]);
+    expect(h.tasks.isOpen({ teamRunId: "eng" })).toBe(false);
+    expect(h.tree.openTaskIdsOf({ teamRunId: "eng" })).toEqual([]);
+    expect(h.log).toEqual([]);
+    // Its eligibility comes first: a DONE Task is refused as closed, and the run is not asked.
+    h.restorability.refusal.mockClear();
+    h.tasks.close("T1");
+    await expect(h.send(M, "manager", "designer")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(h.restorability.refusal).not.toHaveBeenCalled();
   });
 
   it("R-9: a run no Task relates to (a legacy run) is not this route's; R-10: a run on a peer goes through the peer endpoints", async () => {

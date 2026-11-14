@@ -70,7 +70,7 @@ const sameRun = (a: RootExecutionIdentity, b: RootExecutionIdentity): boolean =>
 export class CrossRunMessageDelivery {
   constructor(private readonly dependencies: Readonly<{
     tree(): Pick<DelegationIndex, "runOfAgent" | "canMessage" | "tasksOf">;
-    tasks(): Pick<TaskExecutionResourcePort, "isOpen" | "reopenAssignment">;
+    tasks(): Pick<TaskExecutionResourcePort, "isOpen" | "assertReopenable" | "reopenAssignment">;
     /** The sender's root (it is running: its agent is sending). */
     senderRoot(run: RootExecutionIdentity): CrossRunSenderRoot | null;
     /** The receiver's root, restored when it is stopped (DEC-001: a message wakes a stopped run). */
@@ -106,8 +106,9 @@ export class CrossRunMessageDelivery {
       messageType: input.messageType, referenceFiles: input.referenceFiles });
     if (!prepared.ok) return prepared.refusal;
     // Base checked a released copy before restoring it (CR-461-070): its entry agent's saved conversation must continue.
-    const unrestorable = await this.dependencies.restorability.refusal(receiverRun);
-    if (unrestorable) return reactivated ? notDeliveredAfterReopen(unrestorable, input.targetAgentRunId) : unrestorable;
+    // A run this call reopened was checked before the reopen (`admit`, CR-461-072).
+    const unrestorable = reactivated ? null : await this.dependencies.restorability.refusal(receiverRun);
+    if (unrestorable) return unrestorable;
     let receiver: CrossRunReceiverRoot | null;
     try { receiver = await this.dependencies.receiverRoot(receiverRun); }
     catch (error) { return refusal("TARGET_RUN_NOT_AVAILABLE", `The run of ${input.targetAgentRunId} could not be resumed: ${errorMessage(error)}`); }
@@ -145,7 +146,13 @@ export class CrossRunMessageDelivery {
     // The assigner's continuation: the receiver's last entry only.
     const last = receiverEntries.at(-1);
     if (last && receiverReference && last.role === "assigned" && !last.open && last.delegatedFrom.delegatorAgentRunId === senderAgentRunId) {
-      const { reopened } = await this.dependencies.tasks().reopenAssignment({ execution: receiverReference, requestedBy: senderAgentRunId });
+      const reopen = { execution: receiverReference, requestedBy: senderAgentRunId };
+      // As base's reopen step (`assertRestorableChain`, CR-461-072): its eligibility, then whether the run can continue,
+      // before the commit. A refusal changes nothing.
+      await this.dependencies.tasks().assertReopenable(reopen);
+      const unrestorable = await this.dependencies.restorability.refusal(receiverRun);
+      if (unrestorable) throw new TaskDelegationError(unrestorable.code, unrestorable.message);
+      const { reopened } = await this.dependencies.tasks().reopenAssignment(reopen);
       return reopened;
     }
     // R-8 before R-7, as base answered the closed target first (SR-071): a receiver whose Tasks are all closed is refused
