@@ -3810,6 +3810,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 | O6 | The copy follows its handoff to the org's CEO agent | B-5 |
 | O7 | The copy reaches another org agent | B-4 |
 | O8 | The dev lead delegates Task T5 | DL-4 |
+| O9 | The copy's lead uses its team's old name: corrected, never the org's own member | A-5, A-6 |
 
 ---
 
@@ -4241,7 +4242,7 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 
 **Result to the caller:** `{"accepted": true, "code": "DELIVERED", "message": "Delivered message to /Teacher.", "target_agent_run_id": "Teacher_5c6d"}`
 
-**How:** Step 2, the org's standing agents. `"/dev_team/dev_lead"` would reach the org's own dev lead the same way.
+**How:** Step 2, the org's standing agents. (`"/dev_team/dev_lead"` does not reach the org's own dev lead: it is under the copy's own delegated name, so it is corrected first, O9.)
 
 **The receiver sees:** `You received a message from the agent with sender run id "dev_lead_9a01".`
 
@@ -4402,4 +4403,22 @@ Each state gives the call exactly as the agent writes it, the result, how the ca
 **Against today:** The same.
 
 **Checked on the user's data:** 2 entries; both can be computed.
+
+---
+
+#### O9 — The copy's lead uses its team's old name: corrected, never the org's own member [A-5, A-6]
+
+**Call:** `send_message_to(recipient_address: "/dev_team/qa", content: "Please test …")`, by `dev_lead_9a01` (a member of the copy, O5)
+
+**Result:** refused, `{ "accepted": false, "code": "COLLABORATION_TARGET_NOT_FOUND", "message": "/dev_team/qa is no longer an address: your team is addressed from its own root. Use /qa." }`
+
+**How:** `/dev_team` is the name the copy was delegated to (its `recipientAddress`), so an address under it means the copy's own teammate. It is corrected **before** step 2, so it never reaches the org's own mounted `/dev_team/qa`, a different run's agent (SR-081, CR-461-081). The org's own `qa` stays reachable by its run ID. Nothing is written.
+
+**On disk after this step:** nothing changes.
+
+**In memory:** unchanged.
+
+**Against today:** Today the copy is mounted at `/dev_team` beside the org's own team, and the prefixed name is its own member's address.
+
+**Checked on the user's data:** —
 

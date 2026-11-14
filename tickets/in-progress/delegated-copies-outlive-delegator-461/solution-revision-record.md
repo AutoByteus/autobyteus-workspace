@@ -1576,3 +1576,23 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Also:** checklist item 6 points to the rules, and §10 gains two lessons, CR-461-048 (data loss) and CR-461-074 (half-converted data).
 - **FU-027's scope** (whether the runner derives order and re-runs migrations) is left unchanged, as the user has not decided it.
 
+### SR-081 — The old-name correction comes before address step 2 (answers CR-461-081)
+
+- **Triggering:** CRR-043 (F-63, live LE-O1). In an Org, a delegated copy of the mounted `/squad` messaged `/squad/mate`. It reached the Org's **own** mounted mate, and the copy's mate never started. The code followed contract §2.3: the correction came after step 2 (ARCH-REV-011).
+- **Decision:** the correction comes **before** step 2. An address under the run's own delegated name (its `recipientAddress`, or that name itself) means its own teammate, so it is corrected ("Use /mate"), never delivered to the assigning run's namesake agent. That agent stays reachable by its run ID.
+- **Why:**
+  - an agent of the copy writing its team's old name means its own team;
+  - reaching another run's same-named agent is a silent delivery to the wrong agent;
+  - ARCH-REV-011's concern, that the correction might hide an assigner's agent, applies only to an assigner agent named under the copy's own delegated name, which is exactly the misrouting case.
+- **The Solution Designer's gap:** contract §2.3 took ARCH-REV-011's order without a case for a copy of a mounted team whose name equals the assigner's own team.
+- **Model:**
+  - `resolve` checks the correction before step 2;
+  - new state O9: a copy's lead writes `/dev_team/qa` and gets "Use /qa";
+  - O7's text is corrected;
+  - contract §2.3 is updated.
+- **Checks:** `--check` gives three "match" lines, and the validator 0 findings.
+- **Requirements:** within the user's TC-12 / SR-035 decisions (a team at its own root; an old prefixed address is corrected). The user is informed.
+- **Next action:**
+  - architecture review (it reverses ARCH-REV-011's order);
+  - then the Implementation Engineer. LE-O1 expects the correction.
+

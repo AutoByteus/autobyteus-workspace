@@ -291,11 +291,16 @@ def org():
      dict(id="O7", title="The copy reaches another org agent", cases="B-4",
           call='`send_message_to(recipient_address: "/Teacher", content: "Need a review …")`, by `dev_lead_9a01`',
           op=lambda: w.send_by_address("dev_lead_9a01", "/Teacher", "Need a review …", "collabmsg_O5", "2026-11-01T13:10:00.000Z"),
-          found="Step 2, the org's standing agents. `\"/dev_team/dev_lead\"` would reach the org's own dev lead the same way.", today="The same.", checked="2 sends replayed, all to the same receiver."),
+          found="Step 2, the org's standing agents. (`\"/dev_team/dev_lead\"` does not reach the org's own dev lead: it is under the copy's own delegated name, so it is corrected first, O9.)", today="The same.", checked="2 sends replayed, all to the same receiver."),
      dict(id="O8", title="The dev lead delegates Task T5", cases="DL-4",
           call='`delegate_task(recipient_address: "/release_agent", task_id: "demo-5")`, by `dev_lead_4c3d`',
           op=lambda: w.delegate("dev_lead_4c3d", "/release_agent", "2026-11-01T14:00:00.000Z", ("agent", "release_agent_66c3", None), task_key="demo-5"),
           found="A mounted team is part of the org run, so the delegating run is the org run.", today="The same.", checked="2 entries; both can be computed."),
+     dict(id="O9", title="The copy's lead uses its team's old name: corrected, never the org's own member", cases="A-5, A-6",
+          call='`send_message_to(recipient_address: "/dev_team/qa", content: "Please test …")`, by `dev_lead_9a01` (a member of the copy, O5)',
+          op=lambda: w.send_by_address("dev_lead_9a01", "/dev_team/qa", "Please test …", "x", "2026-11-01T14:10:00.000Z"),
+          found="`/dev_team` is the name the copy was delegated to (its `recipientAddress`), so an address under it means the copy's own teammate. It is corrected **before** step 2, so it never reaches the org's own mounted `/dev_team/qa`, a different run's agent (SR-081, CR-461-081). The org's own `qa` stays reachable by its run ID. Nothing is written.",
+          today="Today the copy is mounted at `/dev_team` beside the org's own team, and the prefixed name is its own member's address.", checked="—"),
     ]
     return w, steps
 

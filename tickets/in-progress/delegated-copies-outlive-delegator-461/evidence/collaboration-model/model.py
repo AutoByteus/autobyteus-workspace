@@ -202,14 +202,8 @@ class World:
                 if address in team: return team[address], 1
                 raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
         if self.entries_of(node, run):
-            # step 2 belongs to a run that works on a Task (its entries), not to every delegated run: a run whose Task
-            # was deleted is a run of its own and uses step 3 (§5.4.4)
-            for t in sorted(self.open_tasks(node, run)) or sorted({t for t, e in self.entries_of(node, run)}):
-                for ak in sorted(self.assigners(node, t)):
-                    if self.run_file(node, ak[0], ak[1]) not in self.disk: continue  # a deleted assigner reaches nothing (T-8)
-                    st = self.standing((node, ak[0], ak[1]))
-                    if address in st: return st[address], 2
-            if kind == "agent_team":  # after step 2 (ARCH-REV-011): it can never shadow an assigner's agent
+            if kind == "agent_team":  # BEFORE step 2 (SR-081, CR-461-081): an address under the run's own delegated name means its own
+                # teammate, never the assigner's namesake agent; the assigner's agent stays reachable by run ID
                 # an address under the name the team was delegated to (its recipientAddress, the prefix its members used
                 # before SR-025) is corrected, not resolved: the refusal names the address to use (contract §2.3)
                 for pre in sorted({e["recipientAddress"] for t, e in self.entries_of(node, run)}):
@@ -219,6 +213,13 @@ class World:
                     if address.startswith(pre + "/") and address[len(pre):] in team:
                         raise Refused("COLLABORATION_TARGET_NOT_FOUND", f"{address} is no longer an address: your team is addressed from its own root. "
                                       f"Use {address[len(pre):]}.")
+            # step 2 belongs to a run that works on a Task (its entries), not to every delegated run: a run whose Task
+            # was deleted is a run of its own and uses step 3 (§5.4.4)
+            for t in sorted(self.open_tasks(node, run)) or sorted({t for t, e in self.entries_of(node, run)}):
+                for ak in sorted(self.assigners(node, t)):
+                    if self.run_file(node, ak[0], ak[1]) not in self.disk: continue  # a deleted assigner reaches nothing (T-8)
+                    st = self.standing((node, ak[0], ak[1]))
+                    if address in st: return st[address], 2
             raise Refused("COLLABORATION_TARGET_NOT_FOUND", NOT_FOUND(address))
         st = self.standing(run)
         if address in st and st[address] != sender: return st[address], 3

@@ -100,7 +100,7 @@ The first match wins.
    - A Task an org agent assigned: the org's agents and mounted teams.
 3. **Its own run's standing agents.** This step applies to runs the user started.
 
-Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. One exception: a delegated team's member that writes an address under the name its team was delegated to (its `recipientAddress`, the prefix members used before TC-12) gets a correction naming the address to use (S24). The correction is checked after step 2, so it never hides an agent of the assigning run (ARCH-REV-011). Every delegated run is reached by its run ID.
+Anything else returns `COLLABORATION_TARGET_NOT_FOUND`, with today's guidance. One exception: a delegated team's member that writes an address under the name its team was delegated to (its `recipientAddress`, the prefix members used before TC-12) gets a correction naming the address to use (S24). The correction is checked **before** step 2 (SR-081, CR-461-081; it reverses ARCH-REV-011's order). An address under the run's own delegated name means its own teammate, so it is corrected and never delivered to the assigning run's namesake agent (O9). That agent stays reachable by its run ID. Every delegated run is reached by its run ID.
 
 ### 2.4 Which Task a delegation belongs to
 
@@ -522,6 +522,7 @@ Every state below is in [`collaboration-walkthrough.md`](collaboration-walkthrou
 | O6 | The copy follows its handoff to the org's CEO agent | B-5 |
 | O7 | The copy reaches another org agent | B-4 |
 | O8 | The dev lead delegates Task T5 | DL-4 |
+| O9 | The copy's lead uses its team's old name: corrected, never the org's own member | A-5, A-6 |
 
 <!-- end of generated part -->
 
