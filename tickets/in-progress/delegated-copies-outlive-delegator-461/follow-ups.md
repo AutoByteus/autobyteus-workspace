@@ -39,3 +39,15 @@
 - **Scope:** base's behavior, for team runs the user started. autobyteus-461 restores only the delegated team runs' rows, by a step-8 follow-up.
 - **Goal:** a same-ID repair (guideline §7, "correcting a released migration") so that a pending run of it also reads the current tree's rows.
 
+## FU-030 — Refusal wording: clear and actionable, not identical to base (the user's decision, 2026-11-14)
+
+- **Decided by the user, relayed by the code reviewer:** a refusal only needs to be intuitive and straightforward. Matching base's exact text, code, error format or order is not required. The user's example was an agent messaging a run whose Task is closed: any clear refusal is fine.
+- **For autobyteus-461 (the user: "we don't do it here, we do it in follow-up"):**
+  - 461's requirements are not changed;
+  - a refusal whose **outcome** is right (refused, nothing changes, the right status and data) but whose text, code, error format or order differs from base is **not a failure** in 461's review or API/E2E;
+  - such a difference is recorded here instead;
+  - what 461 still requires: the outcome, and a message that is clear and says what to do. Text that tells an agent its next step is behavior;
+  - base texts already restored in 461 stay.
+- **Collected differences:** API/E2E and code review add each wording-only difference they find below.
+- **Goal of this follow-up:** review the collected refusals together, and make each one clear and consistent, with one style for code, format and next step.
+
