@@ -15,6 +15,9 @@ export const TeamRunModelOptions = gql`query TeamRunModelOptions($teamRunId: Str
   }
 }`
 
+/** autobyteus-461 CR-461-086: a run's launch as its own file has it now (its row's `source`); null when not on this node. */
+export const RunLaunch = gql`query RunLaunch($kind: String!, $runId: String!) { runLaunch(kind: $kind, runId: $runId) }`
+
 export const AgentOrgRunConfig = gql`query AgentOrgRunConfig($orgRunId: String!) {
   getAgentOrgRunConfig(orgRunId: $orgRunId) {
     orgRunId executionTree isActive editability { editable reason }

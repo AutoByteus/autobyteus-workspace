@@ -1,6 +1,6 @@
 import type { DelegatedRunIdentity } from "./child-run-identity.js";
 import { openTargetOf } from "../../agent-collaboration/delegation/collaboration-tree.js";
-import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
+import { agentOrgLaunchConfigurationDtoSchema, type CollaborationLaunchConfigurationSourceDto, type AgentOrgExecutionTreeDto, type AgentRunCollaborationTreeDto, type CollaborationTaskExecutionDto, type TaskAgentExecutionSourceDto, type TaskTeamExecutionSourceDto } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
@@ -52,6 +52,24 @@ export const projectAgentCollaborationTree = (input: Readonly<{
   taskExecutions: [...input.taskExecutions],
 });
 
+/** An agent run's launch, from its own `run_metadata.json`: what it runs with and where that came from (a Settings save changes them, SR-039). */
+export const projectAgentRunSource = (metadata: AgentRunMetadata): TaskAgentExecutionSourceDto => ({
+  kind: "agent", agentDefinitionId: metadata.agentDefinitionId,
+  launchConfiguration: projectLaunch({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
+    llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath }),
+  ...projectOptionalSource(metadata, "launchSource"),
+});
+
+/** A team run's launch, from its own file: its default and each member's, with where each came from. */
+export const projectTeamRunSource = (tree: TeamRunExecutionTreeFile): TaskTeamExecutionSourceDto => {
+  const team = tree.rootTeam;
+  return { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: team.coordinatorAddress,
+    members: team.members.map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
+      launchConfiguration: projectLaunch(member.launchConfiguration), ...projectOptionalSource(member, "launchSource") })),
+    handoffs: tree.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(team.defaultLaunchConfiguration),
+    ...projectOptionalSource(team, "defaultLaunchSource") };
+};
+
 /**
  * A child row for an agent run this run delegated to (DS-8): its identity (SR-056: from the tree's per-run data) and its
  * launch details, read fresh from its own `run_metadata.json` (a Settings save changes them, SR-039).
@@ -59,10 +77,7 @@ export const projectAgentCollaborationTree = (input: Readonly<{
 export const projectDelegatedAgentRun = (identity: Extract<DelegatedRunIdentity, { kind: "agent" }>, metadata: AgentRunMetadata): CollaborationTaskExecutionDto => ({
   address: identity.address, startedAt: identity.startedAt, ...(identity.delegatorAgentRunId ? { delegatorAgentRunId: identity.delegatorAgentRunId } : {}),
   agentRunId: identity.agentRunId, platformAgentRunId: metadata.platformAgentRunId ?? null,
-  source: { kind: "agent", agentDefinitionId: metadata.agentDefinitionId,
-    launchConfiguration: projectLaunch({ runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier,
-      llmConfig: metadata.llmConfig, autoExecuteTools: metadata.autoExecuteTools, workspaceRootPath: metadata.workspaceRootPath }),
-    ...projectOptionalSource(metadata, "launchSource") },
+  source: projectAgentRunSource(metadata),
   openTarget: openTargetOf({ agentRunId: identity.agentRunId }),
 });
 
@@ -75,11 +90,7 @@ export const projectDelegatedTeamRun = (identity: Extract<DelegatedRunIdentity, 
     teamRunId: identity.teamRunId,
     members: identity.members.map((member) => ({ address: member.address, agentRunId: member.agentRunId, platformAgentRunId: platformRunOf.get(member.agentRunId) ?? null })),
     taskExecutions: [],
-    source: { kind: "agent_team", teamDefinitionId: team.teamDefinitionId, coordinatorAddress: team.coordinatorAddress,
-      members: team.members.map((member) => ({ address: member.address, agentDefinitionId: member.agentDefinitionId,
-        launchConfiguration: projectLaunch(member.launchConfiguration), ...projectOptionalSource(member, "launchSource") })),
-      handoffs: tree.handoffs.map(projectHandoff), defaultLaunchConfiguration: projectLaunch(team.defaultLaunchConfiguration),
-      ...projectOptionalSource(team, "defaultLaunchSource") },
+    source: projectTeamRunSource(tree),
     // Its coordinator, by its own address in its own run (TC-12), among the members it lists.
     openTarget: openTargetOf({ teamRunId: identity.teamRunId }, { coordinatorAddress: team.coordinatorAddress, members: identity.members }),
   };

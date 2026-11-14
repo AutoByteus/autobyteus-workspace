@@ -10,7 +10,7 @@ import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore
  * before. A delegated row's stop icon stops that run as itself (SR-066).
  */
 const mocks = vi.hoisted(() => ({
-  client: { loadDelegatedRunOptions: vi.fn(), saveDelegatedRuns: vi.fn(), terminateDelegatedRun: vi.fn() },
+  client: { loadDelegatedRunOptions: vi.fn(), loadDelegatedRunLaunches: vi.fn(async () => ({})), saveDelegatedRuns: vi.fn(), terminateDelegatedRun: vi.fn() },
   store: null as null | Record<string, any>,
 }))
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async (original) => ({ ...await original<object>(), ...mocks.client }))
@@ -54,6 +54,7 @@ const flush = () => new Promise((resolve) => setTimeout(resolve, 0))
 beforeEach(() => {
   setActivePinia(createPinia())
   Object.values(mocks.client).forEach((mock) => mock.mockReset())
+  mocks.client.loadDelegatedRunLaunches.mockResolvedValue({})
   mocks.client.loadDelegatedRunOptions.mockResolvedValue({ complete: true, options: { 'agent:copy': { status: 'ready', options: {
     currentModelIdentifier: 'opus', currentModel: null, unavailableReason: null,
     replacements: [{ llmModelIdentifier: 'sonnet', providerName: 'p', displayName: 'sonnet', canonicalName: 'sonnet', description: null, configSchema: null, recommended: false }],
@@ -69,7 +70,7 @@ describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () 
     // The row's options, as its own run's query answers them (SR-065).
     delegated.optionsByKey = (await mocks.client.loadDelegatedRunOptions()).options
     delegated.edit('agent:copy', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'opus', llmConfig: null }, { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null })
-    mocks.client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [] })
+    mocks.client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [], saved: {} })
     await flush()
     expect(view.props('dirty')).toBe(true)
     expect(view.props('canSave')).toBe(true)
@@ -88,7 +89,7 @@ describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () 
     await flush()
     const delegated = useDelegatedLaunchDraftStore()
     delegated.edit('agent:copy', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'opus', llmConfig: null }, { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-opus', llmConfig: null })
-    mocks.client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [] })
+    mocks.client.saveDelegatedRuns.mockResolvedValue({ success: true, message: 'Saved.', fieldErrors: [], saved: {} })
     await flush()
     expect(view.props('canSave')).toBe(true)
     expect(view.props('runtimeChangePending')).toBe(true)

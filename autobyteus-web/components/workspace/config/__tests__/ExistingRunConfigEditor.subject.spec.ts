@@ -42,7 +42,7 @@ vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () 
     get executionTree() { return (mocks.store as { draft?: { executionTree?: unknown } } | null)?.draft?.executionTree } }),
 }) }))
 vi.mock('~/stores/delegatedLaunchDraftStore', () => ({ useDelegatedLaunchDraftStore: () => ({
-  edits: {}, changes: [], originals: {}, optionsByKey: {}, saved: {}, dirty: false, saving: false, feedback: null, stopFeedback: null, changesAllowed: true,
+  edits: {}, changes: [], originals: {}, optionsByKey: {}, stored: {}, dirty: false, saving: false, feedback: null, stopFeedback: null, changesAllowed: true,
   bind: vi.fn(), setTargets: vi.fn(), isStopping: () => false,
 }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {

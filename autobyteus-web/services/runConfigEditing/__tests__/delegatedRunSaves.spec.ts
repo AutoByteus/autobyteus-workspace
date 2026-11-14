@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AgentRunModelOptions, TeamRunModelOptions } from '~/graphql/queries/runModelOptionsQueries'
+import { AgentRunModelOptions, RunLaunch, TeamRunModelOptions } from '~/graphql/queries/runModelOptionsQueries'
 import { TerminateAgentRun } from '~/graphql/mutations/agentMutations'
 import { TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations'
 
@@ -7,7 +7,7 @@ const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), agentSave: vi.fn
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query, mutate: io.mutate }) }))
 vi.mock('../existingRunModelConfigMutationClient', () => ({ updateStoppedAgentSelection: io.agentSave, updateStoppedTeamSelections: io.teamSave }))
 
-import { loadDelegatedRunOptions, saveDelegatedRuns, terminateDelegatedRun } from '../delegatedLaunchSelectionClient'
+import { loadDelegatedRunLaunches, loadDelegatedRunOptions, saveDelegatedRuns, terminateDelegatedRun } from '../delegatedLaunchSelectionClient'
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 
 /**
@@ -84,6 +84,29 @@ describe('delegated runs reached as themselves', () => {
     expect(io.query.mock.calls.filter(([request]) => request.query === TeamRunModelOptions)).toHaveLength(1)
     io.query.mockRejectedValue(new Error('offline'))
     await expect(loadDelegatedRunOptions(targets)).resolves.toEqual({ options: {}, complete: false })
+  })
+
+  it('CR-461-086: reads each run\'s launch from the run itself: an agent\'s own, a Team\'s default and each member\'s (its own source, else the Team\'s); an unreadable run is left out', async () => {
+    const launch = (llmModelIdentifier: string, llmConfig: Record<string, unknown> | null = null) => ({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier, llmConfig, autoExecuteTools: false, workspaceRootPath: '/w' })
+    const settings = { origin: 'settings', fallbacks: [] }, configured = { origin: 'configured', fallbacks: [] }
+    io.query.mockImplementation(async ({ query, variables }: any) => {
+      expect(query).toBe(RunLaunch)
+      if (variables.kind === 'agent') return { data: { runLaunch: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch('opus', { reasoning_effort: 'xhigh' }), launchSource: settings } } }
+      return { data: { runLaunch: { kind: 'agent_team', teamDefinitionId: 'eng', coordinatorAddress: '/lead', handoffs: [], defaultLaunchConfiguration: launch('sonnet'), defaultLaunchSource: configured,
+        members: [{ address: '/lead', agentDefinitionId: 'lead', launchConfiguration: launch('sonnet') },
+          { address: '/dev', agentDefinitionId: 'dev', launchConfiguration: launch('haiku', { reasoning_effort: 'high' }), launchSource: settings }] } } }
+    })
+    const read = await loadDelegatedRunLaunches(targets)
+    expect(io.query.mock.calls.map(([request]) => request.variables)).toEqual([{ kind: 'agent', runId: 'writer' }, { kind: 'agent_team', runId: 'eng' }])
+    expect(read).toEqual({
+      'agent:writer': { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: { reasoning_effort: 'xhigh' }, autoExecuteTools: false }, source: settings, ownSource: true },
+      'team:eng': { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', llmConfig: null, autoExecuteTools: false }, source: configured, ownSource: true },
+      'agent:lead': { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', llmConfig: null, autoExecuteTools: false }, source: configured, ownSource: false },
+      'agent:dev': { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'haiku', llmConfig: { reasoning_effort: 'high' }, autoExecuteTools: false }, source: settings, ownSource: true },
+    })
+    io.query.mockReset()
+    io.query.mockImplementation(async ({ variables }: any) => variables.kind === 'agent' ? Promise.reject(new Error('offline')) : { data: { runLaunch: null } })
+    await expect(loadDelegatedRunLaunches(targets)).resolves.toEqual({})
   })
 
   it('stops a run by its own terminate, on this node or a peer\'s (the server sends a peer\'s to its node)', async () => {

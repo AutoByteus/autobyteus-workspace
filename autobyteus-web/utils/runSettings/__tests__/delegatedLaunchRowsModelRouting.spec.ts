@@ -53,7 +53,7 @@ describe('run Settings rows with Model Routing (autobyteus-32)', () => {
 
   it('a user\'s model choice hides the origin and the router\'s reason (SR-007)', () => {
     const control = { editable: true, isAgentLive: () => false, isStopping: () => false,
-      draftOf: (target: string) => (target === 'agent:ie-run' ? { llmModelIdentifier: 'gpt-mini', llmConfig: null } : null), savedOf: () => null }
+      draftOf: (target: string) => (target === 'agent:ie-run' ? { llmModelIdentifier: 'gpt-mini', llmConfig: null } : null), storedOf: () => null }
     const [team] = teamDelegatedLaunchNodes(tree(), deps, control)
     const ie = team!.children.find((child) => child.key === '/se/ie@ie-run')!
     expect(ie.sourceKey).toBeUndefined()

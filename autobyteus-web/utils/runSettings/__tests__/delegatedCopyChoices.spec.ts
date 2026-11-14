@@ -47,7 +47,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
 })
 
 const control = (overrides: Partial<DelegatedRowControl> = {}): DelegatedRowControl => ({
-  editable: true, isAgentLive: () => false, isStopping: () => false, draftOf: () => null, savedOf: () => null, ...overrides,
+  editable: true, isAgentLive: () => false, isStopping: () => false, draftOf: () => null, storedOf: () => null, ...overrides,
 })
 const rows = (input: Partial<DelegatedRowControl> = {}) => delegatedRowsByKey(teamDelegatedLaunchNodes(tree(), deps, control(input)))
 
@@ -65,12 +65,35 @@ describe('copy rows and this edit\'s choices (SR-007)', () => {
   })
 
   it('CR-461-077: a row saved in this Settings session shows what its run now has (its own save answer), and edits start from it', () => {
-    const saved = { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'haiku-saved', llmConfig: null }
-    const map = rows({ savedOf: (target) => target === 'agent:writer-run' ? saved : null })
+    const saved = { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'haiku-saved', llmConfig: null }, ownSource: true }
+    const map = rows({ storedOf: (target) => target === 'agent:writer-run' ? saved : null })
     expect(map.get('/writer@writer-run')?.delegated?.original).toMatchObject({ llmModelIdentifier: 'haiku-saved' })
     expect(JSON.stringify(map.get('/writer@writer-run'))).toContain('haiku-saved')
     // Another row keeps its record's launch.
     expect(JSON.stringify(map.get('/se/ie@ie-run'))).not.toContain('haiku-saved')
+  })
+
+  it('CR-461-086: each row shows its run\'s launch and origin as its own file has them now (read from the run), not its record\'s', () => {
+    const stored = {
+      // An agent run saved from Settings: its own thinking and the `settings` origin (no origin text, V-11).
+      'agent:writer-run': { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: { reasoning_effort: 'xhigh' } }, source: { origin: 'settings' as const, fallbacks: [] }, ownSource: true },
+      // A team member saved from Settings: its own launch; the Team keeps its default.
+      'agent:ie-run': { launch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sol-6.1', llmConfig: { reasoning_effort: 'xhigh' } }, source: { origin: 'settings' as const, fallbacks: [] }, ownSource: true },
+      // A member whose run has no source of its own: its Team's, as the run has it.
+      'agent:lead-run': { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: null }, source: { origin: 'configured' as const, fallbacks: [] }, ownSource: false },
+    } as const
+    const map = rows({ storedOf: (target) => (stored as Record<string, unknown>)[target] as never ?? null })
+    expect(map.get('/writer@writer-run')?.values.llmConfig).toEqual({ reasoning_effort: 'xhigh' })
+    expect(map.get('/writer@writer-run')?.sourceKey).toBe('settings')
+    expect(map.get('/se/ie@ie-run')?.values.llmConfig).toEqual({ reasoning_effort: 'xhigh' })
+    expect(map.get('/se/ie@ie-run')?.sourceKey).toBe('settings')
+    expect(map.get('/se/lead@lead-run')?.sourceKey).toBe('configured')
+    // A run not read yet keeps its record's launch and origin.
+    expect(map.get('/se@se-copy')?.values.llmModelIdentifier).toBe('opus')
+    // Only the save answer known so far: its launch, and its record's origin until the run is read.
+    const answered = rows({ storedOf: (target) => target === 'agent:writer-run' ? { launch: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'haiku', llmConfig: null }, ownSource: true } : null })
+    expect(answered.get('/writer@writer-run')?.values.llmModelIdentifier).toBe('haiku')
+    expect(answered.get('/writer@writer-run')?.sourceKey).toBe('agent_default')
   })
 
   it('hide the origin once a choice applies and keep it otherwise', () => {

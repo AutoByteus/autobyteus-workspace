@@ -28,6 +28,8 @@ vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async orig
   // Each row's options from its own run's query; each run's change by its own save (autobyteus-461 SR-064, SR-065).
   loadDelegatedRunOptions: async (targets: ReadonlyMap<string, unknown>) => ({ options: Object.fromEntries([...targets.keys()].map((key) => [key, options()])), complete: true }),
   saveDelegatedRuns: mocks.mutate,
+  // Each run's launch read from the run itself (CR-461-086): none answered here, so the rows keep their records'.
+  loadDelegatedRunLaunches: async () => ({}),
 }))
 // The run's own setting is saved by its own save, before the delegated runs' (autobyteus-461 SR-064).
 vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
@@ -86,7 +88,7 @@ beforeEach(() => {
         apply(member.launchConfiguration)
       }
     }
-    return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [] }
+    return { success: true, outcome: 'UPDATED', message: 'Saved.', fieldErrors: [], saved: {} }
   })
 })
 
@@ -179,7 +181,7 @@ it('Cancel writes nothing and rejected Save keeps the recoverable edit without S
   expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
   expect(mocks.mutate).not.toHaveBeenCalled()
   await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
-  mocks.mutate.mockResolvedValueOnce({ success: false, message: 'Copy running', fieldErrors: [] })
+  mocks.mutate.mockResolvedValueOnce({ success: false, message: 'Copy running', fieldErrors: [], saved: {} })
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Copy running')

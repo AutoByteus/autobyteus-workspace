@@ -17,6 +17,8 @@ import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 import { RunModelConfigEditabilityObject } from "./run-model-config.js";
 import { withTeamRows } from "./listed-team-rows.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
+import { readRunLaunch } from "../../../services/agent-streaming/delegated-children-dtos.js";
 
 @ObjectType()
 class RunHistoryItemObject {
@@ -313,6 +315,19 @@ export class RunHistoryResolver {
     @Arg("runId", () => String) runId: string,
   ): Promise<RunResumeConfigPayload> {
     return this.runModelConfigService.getAgentRunResumeConfig(runId);
+  }
+
+  /**
+   * autobyteus-461 CR-461-086: a run's launch as its own file has it now (what it runs with, and where that came from), as
+   * its row's `source`; null when the run is not on this node. A delegator's Settings reads each delegated run with it.
+   */
+  @Query(() => GraphQLJSON, { nullable: true })
+  async runLaunch(
+    @Arg("kind", () => String) kind: string,
+    @Arg("runId", () => String) runId: string,
+  ): Promise<unknown> {
+    if (kind !== "agent" && kind !== "agent_team") throw new Error(`A run's launch is read for an agent or a team run, not '${kind}'.`);
+    return readRunLaunch({ kind, runId }, appConfigProvider.config.getMemoryDir());
   }
 
   @Mutation(() => DeleteStoredRunMutationResult)

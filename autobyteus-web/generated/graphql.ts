@@ -2988,6 +2988,7 @@ export type Query = {
   qwenSetupStatus: QwenSetupStatus;
   remoteCollaborationCapability: RemoteCollaborationCapabilityGql;
   runFolderWorkJournal?: Maybe<WorkJournalView>;
+  runLaunch?: Maybe<Scalars['JSON']['output']>;
   runtimeAvailability: RuntimeAvailabilityObject;
   runtimeAvailabilityKinds: Array<Scalars['String']['output']>;
   runtimeCurrentModelDescriptors: Array<RuntimeCurrentModelDescriptorObject>;
@@ -3394,6 +3395,12 @@ export type QueryProviderModelCatalogSnapshotsArgs = {
 export type QueryRunFolderWorkJournalArgs = {
   runKey: Scalars['String']['input'];
   workJournal?: InputMaybe<WorkJournalWindowInput>;
+};
+
+
+export type QueryRunLaunchArgs = {
+  kind: Scalars['String']['input'];
+  runId: Scalars['String']['input'];
 };
 
 
@@ -5992,6 +5999,14 @@ export type TeamRunModelOptionsQueryVariables = Exact<{
 
 
 export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, modelListReadable: boolean, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+
+export type RunLaunchQueryVariables = Exact<{
+  kind: Scalars['String']['input'];
+  runId: Scalars['String']['input'];
+}>;
+
+
+export type RunLaunchQuery = { __typename?: 'Query', runLaunch?: any | null };
 
 export type AgentOrgRunConfigQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
@@ -14137,6 +14152,35 @@ export function useTeamRunModelOptionsLazyQuery(variables?: TeamRunModelOptionsQ
   return VueApolloComposable.useLazyQuery<TeamRunModelOptionsQuery, TeamRunModelOptionsQueryVariables>(TeamRunModelOptionsDocument, variables, options);
 }
 export type TeamRunModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<TeamRunModelOptionsQuery, TeamRunModelOptionsQueryVariables>;
+export const RunLaunchDocument = gql`
+    query RunLaunch($kind: String!, $runId: String!) {
+  runLaunch(kind: $kind, runId: $runId)
+}
+    `;
+
+/**
+ * __useRunLaunchQuery__
+ *
+ * To run a query within a Vue component, call `useRunLaunchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRunLaunchQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useRunLaunchQuery({
+ *   kind: // value for 'kind'
+ *   runId: // value for 'runId'
+ * });
+ */
+export function useRunLaunchQuery(variables: RunLaunchQueryVariables | VueCompositionApi.Ref<RunLaunchQueryVariables> | ReactiveFunction<RunLaunchQueryVariables>, options: VueApolloComposable.UseQueryOptions<RunLaunchQuery, RunLaunchQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<RunLaunchQuery, RunLaunchQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<RunLaunchQuery, RunLaunchQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<RunLaunchQuery, RunLaunchQueryVariables>(RunLaunchDocument, variables, options);
+}
+export function useRunLaunchLazyQuery(variables?: RunLaunchQueryVariables | VueCompositionApi.Ref<RunLaunchQueryVariables> | ReactiveFunction<RunLaunchQueryVariables>, options: VueApolloComposable.UseQueryOptions<RunLaunchQuery, RunLaunchQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<RunLaunchQuery, RunLaunchQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<RunLaunchQuery, RunLaunchQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<RunLaunchQuery, RunLaunchQueryVariables>(RunLaunchDocument, variables, options);
+}
+export type RunLaunchQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<RunLaunchQuery, RunLaunchQueryVariables>;
 export const AgentOrgRunConfigDocument = gql`
     query AgentOrgRunConfig($orgRunId: String!) {
   getAgentOrgRunConfig(orgRunId: $orgRunId) {

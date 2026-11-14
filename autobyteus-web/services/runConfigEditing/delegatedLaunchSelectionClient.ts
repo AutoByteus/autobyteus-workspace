@@ -1,7 +1,8 @@
 import { getApolloClient } from '~/utils/apolloClient'
 import { TerminateAgentRun } from '~/graphql/mutations/agentMutations'
 import { TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations'
-import { AgentRunModelOptions, TeamRunModelOptions } from '~/graphql/queries/runModelOptionsQueries'
+import { AgentRunModelOptions, RunLaunch, TeamRunModelOptions } from '~/graphql/queries/runModelOptionsQueries'
+import { collaborationMemberLaunchSource, type CollaborationLaunchConfigurationSourceDto, type TaskAgentExecutionSourceDto, type TaskTeamExecutionSourceDto } from '@autobyteus/collaboration-stream-contracts'
 import { optionsStateOfAnswer } from './existingRunModelOptionsState'
 import { updateStoppedAgentSelection, updateStoppedTeamSelections } from './existingRunModelConfigMutationClient'
 import type { ExistingTeamModelConfigPatch } from './existingTeamModelConfigDraft'
@@ -57,6 +58,63 @@ const required = <T>(response: { data?: Record<string, T> | null; errors?: reado
 export const terminateDelegatedRun = async (reference: DelegatedReference): Promise<MutationResult> => 'agentRunId' in reference
   ? required(await getApolloClient().mutate<Record<string, MutationResult>>({ mutation: TerminateAgentRun, variables: { agentRunId: reference.agentRunId } }), 'terminateAgentRun')
   : required(await getApolloClient().mutate<Record<string, MutationResult>>({ mutation: TerminateAgentTeamRun, variables: { teamRunId: reference.teamRunId } }), 'terminateAgentTeamRun')
+
+/**
+ * A delegated run's launch as its own file has it now (autobyteus-461 CR-461-086, SR-064/065): what it runs with and where
+ * that came from, read from the run itself, so its row shows it after a save and after a reopen, not the launch the
+ * delegator's view read earlier. `source` is `undefined` while only the run's own save answer is known.
+ */
+export type StoredRunLaunch = Readonly<{
+  launch: ExistingAgentRunSelection & Readonly<{ autoExecuteTools?: boolean }>
+  source?: CollaborationLaunchConfigurationSourceDto | null
+  /** The source is the row's own (a member's own; else its Team's applies). */
+  ownSource: boolean
+}>
+
+type LaunchConfiguration = TaskAgentExecutionSourceDto['launchConfiguration']
+const storedOf = (launch: LaunchConfiguration, source: CollaborationLaunchConfigurationSourceDto | null, ownSource: boolean): StoredRunLaunch => ({
+  launch: { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig ? { ...launch.llmConfig } : null,
+    autoExecuteTools: launch.autoExecuteTools },
+  source, ownSource,
+})
+const readRunLaunch = async (kind: 'agent' | 'agent_team', runId: string): Promise<unknown> => {
+  const { data, errors } = await getApolloClient().query<{ runLaunch?: unknown }>({ query: RunLaunch, variables: { kind, runId }, fetchPolicy: 'network-only' })
+  if (errors?.length) throw new Error(errors.map((error) => error.message).join(', '))
+  return data?.runLaunch ?? null
+}
+const isLaunch = (value: unknown): value is LaunchConfiguration => Boolean(value && typeof value === 'object'
+  && typeof (value as LaunchConfiguration).runtimeKind === 'string' && typeof (value as LaunchConfiguration).llmModelIdentifier === 'string')
+
+/**
+ * Each delegated row's run's launch, read from the run itself (`runLaunch`, CR-461-086): an agent's own; a Team row its
+ * Team's default, a member row its member's at its address in the Team run. A run that cannot be read is left out, so
+ * its row keeps the launch its view read.
+ */
+export const loadDelegatedRunLaunches = async (targets: ReadonlyMap<DelegatedTargetKey, DelegatedSaveTarget>): Promise<Record<DelegatedTargetKey, StoredRunLaunch>> => {
+  const launches: Record<DelegatedTargetKey, StoredRunLaunch> = {}
+  const teams = new Map<string, Array<[DelegatedTargetKey, string | null]>>()
+  const agents: Array<[DelegatedTargetKey, string]> = []
+  for (const [key, target] of targets) {
+    if (target.kind === 'agent') agents.push([key, target.agentRunId])
+    else teams.set(target.teamRunId, [...teams.get(target.teamRunId) ?? [], [key, target.kind === 'team' ? null : target.memberAddress]])
+  }
+  await Promise.all([
+    ...agents.map(async ([key, agentRunId]) => {
+      const source = await readRunLaunch('agent', agentRunId).catch(() => null) as TaskAgentExecutionSourceDto | null
+      if (source?.kind === 'agent' && isLaunch(source.launchConfiguration)) launches[key] = storedOf(source.launchConfiguration, source.launchSource ?? null, true)
+    }),
+    ...[...teams].map(async ([teamRunId, scopes]) => {
+      const team = await readRunLaunch('agent_team', teamRunId).catch(() => null) as TaskTeamExecutionSourceDto | null
+      if (team?.kind !== 'agent_team' || !isLaunch(team.defaultLaunchConfiguration) || !Array.isArray(team.members)) return
+      for (const [key, address] of scopes) {
+        if (address === null) { launches[key] = storedOf(team.defaultLaunchConfiguration, team.defaultLaunchSource ?? null, true); continue }
+        const member = team.members.find((candidate) => candidate.address === address)
+        if (member && isLaunch(member.launchConfiguration)) launches[key] = storedOf(member.launchConfiguration, collaborationMemberLaunchSource(team, member), Boolean(member.launchSource))
+      }
+    }),
+  ])
+  return launches
+}
 
 const isAnswer = (row: Partial<ExistingRunModelOptionsAnswer> | null | undefined): row is ExistingRunModelOptionsAnswer =>
   Boolean(row && typeof row.currentModelIdentifier === 'string' && typeof row.modelListReadable === 'boolean' && Array.isArray(row.replacements))
