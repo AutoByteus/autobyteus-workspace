@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
+import { ensureRunHistoryWorkspaceByRootPath } from '~/stores/runHistoryLoadActions'
 import { ensureAuthoritativeTeamMemberProjection } from '~/services/runHydration/teamMemberProjectionHydrationService'
 import type { DelegatedRunSubject } from '~/services/delegatedRuns/delegatedRunSubjects'
 import type { AgentContext } from '~/types/agent/AgentContext'
@@ -76,7 +77,10 @@ export const useDelegatedRunsStore = defineStore('delegatedRuns', () => {
       const open = subject.kind === 'agent'
         ? openAgentRun({ runId: subject.agentRunId, fallbackAgentName: null, resolveWorkspaceMetadataByRootPath, selectRun: false })
           .then(() => connect(subject))
-        : openTeamRun({ teamRunId: subject.teamRunId, agentRunId: subject.agentRunId, resolveWorkspaceMetadataByRootPath, selectRun: false })
+        // An active Team's members run in its workspaces: they are activated as the Team's own open does (CR-461-076:
+        // without it the open of a running delegated Team failed and its row's conversation stayed empty).
+        : openTeamRun({ teamRunId: subject.teamRunId, agentRunId: subject.agentRunId, resolveWorkspaceMetadataByRootPath,
+          ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath, selectRun: false })
           .then(() => undefined)
       attempt = open
     }

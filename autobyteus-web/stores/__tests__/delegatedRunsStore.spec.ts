@@ -6,6 +6,7 @@ const io = vi.hoisted(() => ({
   teams: new Map<string, any>(),
   openAgentRun: vi.fn(),
   openTeamRun: vi.fn(),
+  ensureWorkspace: vi.fn(async () => 'workspace-1'),
   ensureMember: vi.fn(async () => undefined),
   agentRuns: {
     connectToAgentStream: vi.fn(), sendUserInputAndSubscribe: vi.fn(async () => undefined), interruptGeneration: vi.fn(),
@@ -23,6 +24,7 @@ vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ 
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => ({ getTeamContextById: (id: string) => io.teams.get(id) }) }))
 vi.mock('~/stores/agentRunStore', () => ({ useAgentRunStore: () => io.agentRuns }))
 vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => io.teamRuns }))
+vi.mock('~/stores/runHistoryLoadActions', () => ({ ensureRunHistoryWorkspaceByRootPath: io.ensureWorkspace }))
 vi.mock('~/stores/workspace', () => ({ useWorkspaceStore: () => ({ resolveWorkspaceMetadataByRootPath: vi.fn(async () => null) }) }))
 
 import { useDelegatedRunsStore } from '../delegatedRunsStore'
@@ -76,7 +78,9 @@ describe('delegatedRunsStore', () => {
   it('a delegated Team\'s member: the Team run opens focused on it (its stream with it), and its commands go to that Team run', async () => {
     const store = useDelegatedRunsStore()
     store.ensureOpen(member); await flush()
-    expect(io.openTeamRun).toHaveBeenCalledWith(expect.objectContaining({ teamRunId: 'child-team', agentRunId: 'reviewer-run', selectRun: false }))
+    // CR-461-076 (PMU-003): a running Team needs its workspaces activated, as the Team's own open does.
+    expect(io.openTeamRun).toHaveBeenCalledWith(expect.objectContaining({ teamRunId: 'child-team', agentRunId: 'reviewer-run', selectRun: false,
+      ensureWorkspaceByRootPath: io.ensureWorkspace }))
     const binding = store.bindingOf(member)!
     expect(binding).toMatchObject({ workspaceRootPath: '/team-ws', browse: { kind: 'teamMember', teamRunId: 'child-team', memberAddress: '/reviewer', agentRunId: 'reviewer-run' } })
     await binding.interaction.send('hello', [])
