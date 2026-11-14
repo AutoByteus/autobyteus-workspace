@@ -1650,4 +1650,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review (narrow);
   - then the Implementation Engineer, when the user lets him continue.
-
+- **CR-461-083 (F-65), decided:** the refusal reaches the user (`TEAM_SEND_MESSAGE_REJECTED`, with the draft kept), but its reason was dropped by CR-461-069's no-detail rule. Decision: option (a), refined. The message names the damaged file and line in plain words, plus the next step. Parser and schema internals stay in the log. This refines CR-461-069's rule 7: a file name and line is a reason, not a schema error, and base's AC-006 asks for the reason. The probe's late `page.on('websocket')` and its parse-text condition are API/E2E's to fix.
