@@ -239,6 +239,7 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 - **Delivery:**
   - **an open view:** on X's view stream, as `RUN_TREE_SNAPSHOT` in the snapshot connection (SR-063, rows only), then `RUN_TREE_CHANGED { added, removed, updated }` frames, numbered by `RunViewStream`. `ChildRowsFeed` feeds the changes.
   - **a listed run that is not open:** the GraphQL query `runTree(run)`, built by the same builder. It is read when the user expands the run, and on list load for a listed agent run with `hasCollaboration`, as today.
+  - **Live changes for a listed run that is not open** (ARCH-REV-054 AR-028; base's poll re-read on a child-set change, `agentRunCollaborationStore.ts:208-245`): `/ws/run-status` also carries `RUN_TREE_CHANGED { runId }` for a subscribed run ID whose tree changed. `ChildRowsFeed` reports each change for the run and every ancestor. The client subscribes to the IDs of its listed runs, and re-reads `runTree(run)` for an expanded run on that signal. A collapsed run reads its tree when it is next expanded. An open view gets the change on its own stream.
 - **Replaced on the server:** the per-kind child-row DTOs, through `RunTreeView`. These are `run-view-children.ts`, `stored-view-children.ts`, `delegated-children-dtos.ts`, the child-row parts of `run-view-rows.ts`, `collaboration-execution-tree-dto-projection.ts` and `remote-task-execution-dto-projection.ts`, and the `task_executions` rows in the three views' snapshots. The three view projectors keep their own parts and the conversation.
 
 **2. Statuses by run ID (FU-026).**
@@ -246,6 +247,8 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - **a local run:** its own root's status events while it is registered (`ActiveCollaborationRootDirectory`), and `offline` when it is not;
   - **a peer run:** its handle's `observe`, shared per peer run (from `PeerChildObservation`, which leaves the views);
   - **a team's or org's members:** each member's own status, from its own run's root.
+- **Exact subscription** (ARCH-REV-054 note 1): `SUBSCRIBE` reads each id's current answer and registers its listener in one synchronous step, from the service's in-memory answer. No change falls between the snapshot and the first change.
+- **Lifetime** (note 2): an answer, and a peer run's `observe`, is held only while at least one connection subscribes to that id, by count. The peer's `observe` is released with the last subscriber.
 - **Transport:** one multiplexed WebSocket per client, `/ws/run-status`. The client sends `SUBSCRIBE { ids }` / `UNSUBSCRIBE { ids }`. The server answers `RUN_STATUS_SNAPSHOT { statuses }` for the new ids, then `RUN_STATUS_CHANGED { id, status }`. Views, the list, the Task card and Settings all subscribe to the ids they show. Base's per-run streams keep their own `AGENT_STATUS`, which comes from the same source.
 - **Removed:**
   - `LocalChildFollowers`, `LocalChildObservation` and their cache;
@@ -264,6 +267,8 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - its save stays each run's own save (SR-064).
 - **Opening a stopped team** requests the focused member's data only, once (CR-461-082), because member data is loaded only for the selected target.
 
+**Rule 3 for trees and statuses** (ARCH-REV-054 note 3): the characterization at `827f1e68dc` no longer covers run trees and statuses, because their format changes. Their acceptance is item 5's tests and AC-017.
+
 **4. Review checks** (the code reviewer's principles):
 - every fact a client shows about a run is read from that run, or from `RunTreeView` built from the runs;
 - no client keeps a copy of another run's state;
@@ -277,7 +282,9 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
   - a team row's target is its coordinator;
   - a team without its coordinator gives a row error;
   - `RunStatusService` gives each local run's own status and `offline` when it is not loaded, and a peer run's status from its handle;
-  - one connection serves many ids.
+  - one connection serves many ids;
+  - a subscription is exact, and a peer observation is released with its last subscriber;
+  - **a listed, expanded, not-open run gets a new delegated row, and loses a closed one, without a reload** (AR-028).
 - **Web:**
   - each client renders the rows and opens through `openRunTarget`;
   - the same row behaves the same in every view (FU-031);

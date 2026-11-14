@@ -1618,4 +1618,10 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **Next action:**
   - architecture review;
   - then the Implementation Engineer, in the stated order.
-
+- **ARCH-REV-054 failed SR-082 on AR-028, now answered.**
+  - **The problem:** a listed, expanded run that is not open lost its live tree changes, because base's poll had re-read on a child-set change.
+  - **The mechanism:** `/ws/run-status` also carries `RUN_TREE_CHANGED { runId }` for a subscribed id whose tree changed, fed by `ChildRowsFeed` for the run and every ancestor. The client re-reads `runTree(run)` for an expanded run. There is a test for it.
+  - **Notes applied:**
+    - an exact `SUBSCRIBE` (read and register in one synchronous step);
+    - counted lifetime, with a peer's `observe` released with its last subscriber;
+    - rule 3: item 5's tests and AC-017 are the acceptance for trees and statuses.
