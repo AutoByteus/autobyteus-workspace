@@ -1596,3 +1596,26 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - architecture review (it reverses ARCH-REV-011's order);
   - then the Implementation Engineer. LE-O1 expects the correction.
 
+### SR-082 — The run-tree view and statuses by run ID (the user's decision to fix the architecture in this ticket)
+
+- **Triggering:** the code reviewer relayed the user's decision (2026-11-14): fix the architecture now instead of patching. FU-024, FU-026, FU-031 and FU-034 move into 461. About ten findings shared one cause: a delegated run's facts derived from its delegator.
+  - the status relay: CR-461-039, -061, -067, -071;
+  - the web reading or opening a child through its delegator: F-54, F-57, F-59, F-61, F-62, F-64;
+  - and FU-024 / FU-031.
+- **The user's direction to the Solution Designer:** "follow what the code reviewer told you … after you finish the design updates then tell me". So the Solution Designer took its recommendations on the three open points:
+  1. replace base's shapes for run trees only;
+  2. statuses by run ID through one channel, with trees carrying structure only;
+  3. rerun everything that shows or opens runs and statuses, and regression runs for the rest.
+- **Requirements:** REQ-014 and AC-017 added.
+- **Design:** the new section "The run-tree view and statuses by run ID", which supersedes rule 1 for trees and statuses.
+  - `RunTreeView`: one builder, rows with kind, name, address, depth, open target, status ids and launch; on the view stream and by `runTree(run)`;
+  - `RunStatusService` with `/ws/run-status`;
+  - one web open path, `openRunTarget`;
+  - removals: the relay and its caches, the four client builders, the per-kind child DTOs, the status poll.
+- **Absorbed:** CR-461-079, -080, -082 and -084 (peer `launches[]` on the row). Also the Implementation Engineer's F-62 finding (`isAgentLive`).
+- **Still released:** CR-461-078; CR-461-083 if its fix is outside the view; SR-081.
+- **The Solution Designer's gap:** SR-061's rule 1 kept base's tree shapes. That preserved the hosting-era derivations in the client and in the status relay. Rule 1 was right for avoiding frontend churn, and wrong for trees once each run is its own.
+- **Next action:**
+  - architecture review;
+  - then the Implementation Engineer, in the stated order.
+
