@@ -21,7 +21,8 @@
 //   SDV-03 Org view: the same for an org run; the stopped org starts on its first input (the user's message to its agent).
 //   SDV-06 CR-461-076 / SR-080: a worker opens from its Task's card (Projects panel) for an Agent, Team and Org delegator ×
 //          an Agent worker and a Team worker (its coordinator).
-//   SDV-07 CR-461-076: a running delegated Team opens from its row in an Agent and a Team delegator's view.
+//   SDV-07 CR-461-076: a running delegated Team opens from its row in an Agent delegator's view, and from its coordinator's row
+//          in a Team delegator's view (base's Team-tree rule, CRR-041 / FU-031).
 //   SDV-05 C15-03 (DS-15, CRR-039): page B opens the worker from its delegator's row while its Task is open; the Task closes;
 //          as at base (`returnToHostWhenUnlisted`), page B's view returns to the delegator, so the web offers no view of the closed
 //          run to send from (C15-03 is not applicable in the rendered layer; proven at the server: the DS-15 suite, DRO-3). The
@@ -634,17 +635,14 @@ const caseRunningTeamRow = async () => {
       await openRoot(page, root, names);
       const teamRow = page.locator(`[data-test="workspace-team-transient-execution-row"][data-node-kind="agent_team"][data-member-address="/${segment(names.squad)}"]`).first();
       await teamRow.waitFor({ state: 'visible', timeout: 60000 });
-      await teamRow.click();
-      const opened = await until(`${kind}: the running delegated Team's coordinator conversation`, async () => {
-        const center = await centerText(page); return center.includes('Team row work.') && /You have a new task from/.test(center); }, 30000).then(() => true, () => false);
-      if (!opened) {
-        // Recorded for the classification: does the coordinator's own row (below the Team row) open it?
-        await shot(page, `sdv-07-${kind}-team-row-not-opened`);
-        const lead = page.locator('[data-test="workspace-team-transient-execution-row"][data-member-address="/lead"]').first();
-        const leadOpens = await lead.click().then(() => until('lead row opens the coordinator', async () => (await centerText(page)).includes('Team row work.'), 20000)).then(() => true, () => false);
-        out[`${kind}LeadRowOpens`] = leadOpens;
-        throw Object.assign(new Error(`${kind}: the running delegated Team's row did not open its coordinator (its own coordinator row opens it: ${leadOpens})`), { details: { out } });
-      }
+      // An Agent delegator's tree opens the delegated Team from its row. A Team run's tree opens it from its coordinator's row,
+      // as at base (its Team row has no agent run; both Team-tree select handlers return for it: CRR-041, FU-031).
+      if (kind === 'team') {
+        if ((await teamRow.getAttribute('aria-expanded')) !== 'true') await teamRow.click();
+        await page.locator('[data-test="workspace-team-transient-execution-row"][data-member-address="/lead"]').first().click();
+      } else await teamRow.click();
+      await until(`${kind}: the running delegated Team's coordinator conversation`, async () => {
+        const center = await centerText(page); return center.includes('Team row work.') && /You have a new task from/.test(center); }, 30000);
       await shot(page, `sdv-07-${kind}-team-row-opened`);
       assert(errors.length === 0, 'browser errors', errors);
       out[kind] = 'opened';

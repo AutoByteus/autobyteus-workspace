@@ -49,7 +49,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CR-461-076 recheck | AC-007; rule 2; SR-080 | Real browser | `node tests/e2e/project-manager-ux-probe.mjs --output-dir <dir>`, `projects-left-navigation-probe.mjs` | ENV-2 | Pass | `API-B03-r11-probes.txt` | PMU 25/25; PMU-003, PMU-018, PMU-019, PLN-05 `Pass` | PMU-019's selector corrected to `/editor` (TC-12) |
 | Delegator kind × worker kind from the Task card (SDV-06, new) | SR-080 | Real browser, docked Projects panel | `stopped-delegator-views-probe.mjs --cases SDV-06` | ENV-2 | **Fail** (F-59, candidate) | `API-B03-r11-F59-agent-worker-from-panel-not-opened.png` | the worker's own conversation in the center | With the Agent delegator open, clicking the agent worker's line on its Task card leaves the center on the Manager. A worker two hops down is not a Task root (contract §2.1: a task agent cannot assign a Task; its delegation is sub-work), so it is not a case; a nested task-Team member is PMU-019 (Pass) |
-| A running delegated Team opened from its row (SDV-07, new) | rule 2; CR-461-076 (the store fix) | Real browser | `--cases SDV-07` | ENV-2 | **Fail** (F-56) | `API-B03-r11-F56-team-delegator-team-row-not-opened.png` | the coordinator's conversation in the center | Agent delegator: the Team row opens the coordinator. Team delegator: the Team row does not, while the coordinator's own row below it does (two runs) |
+| A running delegated Team opened from its row (SDV-07, new) | rule 2; CR-461-076 (the store fix) | Real browser | `--cases SDV-07` | ENV-2 | Pass (after CRR-041) | `API-B03-r11-F56-team-delegator-team-row-not-opened.png` (the first form) | `{agent: opened, team: opened}` | Agent delegator: the Team row opens the coordinator. Team delegator: opened from its coordinator's row, as at base (CRR-041: a Team tree's Team row has no agent run; FU-031 records one row behavior for every view) |
 | API-B03 batch 1 | AC-005, AC-012; rule 2 | Real browser | as above | ENV-2 | Partly | `API-B03-r11-probes.txt` | PMU 25/25; PLN 9/11; BR 15/16 | Stale cases rewritten: PMU-004 (REQ-001 / REQ-007 / TC-3), PMU-009 (REQ-007), PMU-024 (DS-11 / TC-9), PLN-06 (the closure read from the Task's root), BR-001 (no agent tree file), and the closure probe's view input after its snapshot. PLN-09 and BR-011: see the triage list |
 | API-B03 batch 2 | rule 2; DS-12; SR-064 | Real browser | `runtime-switch-members`, `delegated-launch-defaults`, `existing-run-model-config`, `owner-scoped-file-reads` (seeded), `delegated-copies-large-hub` (seeded), phone MSP-44 … 46, MSP-50 … 52 | ENV-2, ENV-3 | **Fail** (F-57; stale rewrites waiting) | `API-B03-r11-probes.txt`, `API-B03-r11-F57-RSM-04-after-reopen.png` | RSM 5/7; DLD 9/29; MSP-44 … 46 `Pass` | See Findings and the triage lists |
 | API-P03 | REQ-002 peer rows, rule 1 | Two nodes, real browser | `remote-runs-in-tree-probe.mjs`, `remote-run-title-probe.mjs` | ENV-4 | Pass | `API-B03-r11-probes.txt` | `remote-runs-in-tree probe: Pass`; `remote-run-title probe: Pass` | The peer row in the standalone, Team and Org families (node chip, title, status), the opened peer run, Stop, and the peer offline then back |
@@ -61,7 +61,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 | ID | Case | Expected (authority) | Observed (`a4641a0985`) | Preliminary Classification |
 | --- | --- | --- | --- | --- |
-| F-56 | SDV-07 | Rule 2: selecting a delegated row opens that run by its own path, as in the Agent delegator's view (CR-461-076's store fix applies to the row as well) | In a **Team** delegator's view, clicking the running delegated Team's row expands it but leaves the center on the Manager; the coordinator's own row below it opens the coordinator. In an Agent delegator's view, the same Team row opens the coordinator. Confirmed in two runs | `Local Fix` (web) |
+| F-56 (rejected, CRR-041) | SDV-07 | — | Base's behavior: a Team run's tree opens a delegated Team from its coordinator's row (FU-031). SDV-07 rebuilt: Pass | — |
 | F-57 | `runtime-switch-members` RSM-04, RSM-06; `delegated-launch-defaults` AFS-001 (likely DCP-001) | SR-064: a delegated copy's launch, saved from its delegator's Settings, is saved through the copy's own save, and the editor's reload shows it | After Save, the copy's card shows nothing (RSM-04, `savedSummary: ""`) or the old model (RSM-06), until Settings are reopened; the reopened card shows the saved value (RSM-04 `reopenedSummary`: Antigravity CLI). AFS-001: "A's card shows the saved model" fails the same way. The save itself persists (the copy then runs on it) | `Local Fix` (web) |
 | F-59 (candidate) | SDV-06 | SR-080: a Task card's worker line opens the worker as clicking its row does | With the Agent delegator selected in the workspace, clicking the agent worker's line on its Task card (docked Projects panel) leaves the center on the Manager after 30 s. PMU-018 (a Team worker from the panel) passes | `Local Fix` (web), to confirm in the fix round |
 
@@ -85,7 +85,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 **Wording only (FU-030):** DLP-003, DLP-005, SIR-001 (added to `follow-ups.md`).
 
 **Unclassified:**
-- SIR-002: `helper_run_5555` (the server-helper run that 20261020 deletes; SID-2 passes on the server) is still present after a successful removal in this live upgrade around real runs.
+- SIR-002 (classified after CRR-041; not 461): `helper_run_5555`'s `run_metadata.json` after the upgrade start has `launchPurpose: "server_helper"` and no `taskAgent`, `delegatedFrom` or `address`, so it is a non-delegated helper run. 20261020 (unchanged from `3d738de6e6`) deletes the helper runs the feature's records and improver sessions name, and "never a run only because it was launched as a server helper" (REQ-008). The probe's session files (also unchanged since `d21842c77b`) name no helper, while SID-2's fixture names it as the session's `current`. So keeping it is 20261020's own rule; the base probe's expectation does not match its own data.
 - BR-011: after a real backend restart; its failing step varied across three runs.
 
 ## Acceptance-Criteria Proof
@@ -174,13 +174,13 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 
 ## Preliminary Classification (On `Fail`)
 
-- `Local Fix` (web): F-56, F-57; F-59 (candidate).
+- `Local Fix` (web): F-57 (CR-461-077); F-59 held (CRR-041). F-56 rejected as base's behavior (FU-031).
 
 ## Latest Authoritative Result
 
 - Result: `Fail`
 - Criteria not proven: AC-007 in a Team delegator's view and from a docked Task card (F-56, F-59 candidate); DS-12's saved-card refresh (F-57).
-- Preliminary classification and recommended owner: Implementation Engineer (F-56, F-57, F-59), confirmed by failure-origin review.
+- Preliminary classification and recommended owner: Implementation Engineer (F-57 as CR-461-077; F-59 held), per CRR-041.
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
 - Notes for the next round:
   - First: recheck F-56 (SDV-07), F-57 (RSM-04/06, AFS-001), F-59 (SDV-06).
