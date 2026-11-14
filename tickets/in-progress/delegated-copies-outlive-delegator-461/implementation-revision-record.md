@@ -906,3 +906,40 @@ The current code and `implementation-handoff.md` remain authoritative.
   - the web is unchanged since IMP-80.
 - Next recipient: Code Reviewer.
 - Result: Code Review **Pass (CRR-035**, `code-review-report.md` round 26, head `f92881dd13`): CR-461-072 and -073 resolved. The reviewer routes to API/E2E.
+
+### IR-027 — Every late predecessor classified; one PreservedItemsFollowUp (SR-079, CR-461-074)
+
+- Triggering role, report path, and round: Code Reviewer CRR-036 (CR-461-074, F-53), answered by the Solution Designer as SR-079 and passed by ARCH-REV-052 with a note on address and path shapes. Round 27.
+- Triggering finding IDs: CR-461-074. Large / High unchanged.
+- Prior authoritative result: IR-026 at `f92881dd13` (CRR-035 Pass).
+- Current authoritative result: `f20353ecc3`.
+- Related solution / architecture-review revision IDs: SR-079; ARCH-REV-052. Related code-review revision IDs: CRR-036.
+- **Classification, checked against the code before the test (reported to the designer, adopted):**
+  - **One class differed from the design's first table.** `20260521_team_run_history_index_v2` builds rows only from `team_run_metadata.json`. `team-run-execution-tree-v1` renames that file away. The rebuild drops every other row as stale, so a late run removes the delegated team runs' rows. It is a writer, with a step-8 follow-up. Its loss of user-started teams' rows is base's (FU-029).
+  - **The agent index v2 is a true rebuilder:** it makes a row from every `run_metadata.json`.
+  - **The three address and path migrations are none** (ARCH-REV-052 note 1):
+    - team-agent-memory-layout touches only v1-shaped roots;
+    - the context-file locators are written and resolved by run ID and directory (`team-context-file-locator-transition.ts:71`, `context-file-owner-resolver.ts:71-97`), so step 4 needs no locator rebase;
+    - team-communication-projection-address writes JSON message logs, 20261018's input.
+  - The project migrations never write Task run resources: none.
+- **Implementation delta (`f20353ecc3`):**
+  - **`PreservedItemsFollowUp(predecessor, steps)`** is the one definition of every follow-up, built from a table, `PRESERVED_ITEMS_FOLLOW_UPS`.
+    - Its prerequisites are its predecessor and our migration, so it waits while that predecessor is `FAILED` or `NOT_RUN`. It is `requiredOnStartup`, with no hold, idempotent and terminal.
+    - The three of SR-078 are instances of it.
+  - **New writer follow-ups:**
+    - team-run-execution-tree v1 and v2, the org flat families and 20261015: steps 4, 6 and 8;
+    - the team history index v2: step 8.
+  - **The reader, 20261020.** The main migration takes a `ledger` (as other migrations do). While 20261020 is not terminal, every plan preserves the improver's delegated copies, in steps 4 and 5b: 20261020 would select a converted copy as a helper run and delete it (F-25). Its follow-up converts those that remain (steps 4, 5b and 8).
+  - The main migration's constructor takes an options object (`plan`, `ledger`).
+- Tests (`delegated-runs-late-predecessors.test.ts`):
+  - the classification: every earlier migration has exactly one class, and the evidence for "rebuilder" and "none" cites both searches;
+  - F-53 through the real runner: token usage FAILED; flat families NOT_RUN, then late; no stored list remains after its follow-up;
+  - 20261020 FAILED, then finishing: the improver's copy is kept, then converted and listed. This test fails without the reader rule;
+  - late index rebuilds: the agent index keeps the delegated runs' rows; the team index drops the delegated team runs' rows, and its follow-up restores them.
+  - SR-078's tests and the three registry-order lists are updated.
+- Validation (IMP-82 at `f20353ecc3`):
+  - server type gate PASS; unit 8082 passed; 754 migration, architecture and startup tests pass;
+  - integration 491 passed, 4 failed, all in the file watcher. Alone it failed 13/14 twice, on a different test each time. Nothing it uses changed since IMP-79's 14/14 (FU-021);
+  - the web is unchanged since IMP-80.
+- Remaining risks: the classification rests on the two searches and on reading the flagged migrations, as the test records. A new migration must be classified to pass the test.
+- Next recipient: Code Reviewer.
