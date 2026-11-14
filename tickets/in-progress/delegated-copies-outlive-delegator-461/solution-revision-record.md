@@ -1549,3 +1549,8 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **ARCH-REV-052 passed SR-079.** Its notes are applied:
   1. **The address and path shapes are classified too.** `TeamAgentMemoryLayout` and `TeamCommunicationProjectionAddress` are expected to need nothing, to be verified by test. `TeamContextFileExecutionLocatorsV1` writes attachment owners with a member address that step 4 does not rebase. This may be a gap **on time as well as late**. If the runtime resolves owners by address, step 4 also rebases stored locators and that migration gets a follow-up. The Implementation Engineer verifies it, with a test that an existing delegated team member's attachment resolves. The classification test cites both searches.
   2. **The stale paragraph** "When a predecessor later finishes an item … inert" is replaced by a pointer to SR-078 (c) and SR-079.
+- **The Implementation Engineer's classification check:**
+  - `20260521_team_run_history_index_v2` is a writer, not a rebuilder. It keeps only teams with a `team_run_metadata.json`, which no current team has, and removes the delegated team rows step 8 added. **Decision:** it gets a step-8 follow-up for the delegated team runs.
+  - Its removal of user-started team rows is base's behavior: FU-029, outside this ticket.
+  - The three address and path migrations are verified as none: memory layout acts only on v1 roots; the locators skip converted files; the projection addresses feed 20261018, whose follow-up covers them.
+  - The rest are confirmed.
