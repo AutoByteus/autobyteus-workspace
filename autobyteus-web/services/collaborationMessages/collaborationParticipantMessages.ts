@@ -162,5 +162,13 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     return list ? Object.freeze({ state: list.state, error: list.error }) : IDLE
   }
 
-  return { load, append, advance, reloadRoot, releaseRoot, messagesOf, pastParticipantsOf, statusOf }
+  /**
+   * The root's view was sent again unchanged (its base and rows; autobyteus-461 CR-461-082): its lists hold every message
+   * through that base, and follow its live sequence from there. Nothing loads.
+   */
+  const adoptRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild): void => {
+    if (rebuild.liveSequenceId !== null) positions.set(rootKeyOf(rootKind, rootRunId), { liveSequenceId: rebuild.liveSequenceId, through: rebuild.baseChangeSequence })
+  }
+
+  return { load, append, advance, reloadRoot, adoptRoot, releaseRoot, messagesOf, pastParticipantsOf, statusOf }
 })

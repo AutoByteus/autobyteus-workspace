@@ -374,6 +374,8 @@ export class TeamStreamingService {
       } else if (effect.kind === 'reload_collaboration_messages') {
         useCollaborationParticipantMessagesStore().reloadRoot('agent_team', context.view.getRootTeamRunId(), effect.rebuild,
           (agentRunId) => context.view.getMemberAddress(agentRunId) !== null);
+      } else if (effect.kind === 'adopt_collaboration_messages') {
+        useCollaborationParticipantMessagesStore().adoptRoot('agent_team', context.view.getRootTeamRunId(), effect.rebuild);
       } else if (effect.kind === 'invalidate_team_member_projection') {
         effect.agentRunIds.forEach((agentRunId) => {
           invalidateTeamMemberProjection(context, agentRunId);

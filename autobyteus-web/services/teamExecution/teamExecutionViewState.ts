@@ -41,6 +41,7 @@ import type {
   TeamExecutionNavigationRow,
 } from './teamExecutionViewModels';
 import { rebuildOfView } from '~/services/collaborationMessages/collaborationParticipantMessages';
+import { sameJsonValue } from '~/utils/sameJsonValue';
 
 type MutationResult = Readonly<{ disposition: 'applied' | 'unchanged' }>
   | Readonly<{ disposition: 'rejected'; code: string; message: string }>;
@@ -325,6 +326,13 @@ export const createTeamExecutionViewState = (
         if (!nextLocations.has(entry.agent_run_id) || inputIds.has(entry.agent_run_id)) throw new Error('Invalid input-state target.');
         inputIds.add(entry.agent_run_id);
       }
+      // The view the open read, unchanged (CR-461-082, F-64): its rows, and its base, or (read stored, base 0) a Team still
+      // stopped, whose own members are offline: a message to it would have started it.
+      const ownIds = new Set(payload.execution_tree.root_team.members.map((member) => member.agent_run_id))
+      const sameBase = payload.base_change_sequence === publication.value.changeSequence || (publication.value.changeSequence === 0 && !rootActive.value
+        && payload.agent_statuses.every((status) => !ownIds.has(status.agent_run_id) || status.status === 'offline'))
+      const unchanged = sameBase && sameJsonValue([payload.execution_tree, payload.closed_task_executions.map(fromTeamTaskExecutionReference)],
+        [publication.value.tree, publication.value.closed])
       publication.value = {
         tree: structuredClone(payload.execution_tree), locations: nextLocations, remote: structuredClone(payload.remote_task_executions),
         closed: payload.closed_task_executions.map(fromTeamTaskExecutionReference),
@@ -343,7 +351,9 @@ export const createTeamExecutionViewState = (
       leaveClosedFocus();
       return Object.freeze({
         disposition: 'applied',
-        effects: Object.freeze([
+        // Unchanged: the loaded members and the Team tab's lists hold; they follow this live sequence from here.
+        effects: Object.freeze(unchanged ? [{ kind: 'adopt_collaboration_messages' as const, rebuild: rebuildOfView(payload) },
+          { kind: 'reconcile_team_navigation' as const }] : [
           { kind: 'invalidate_team_member_projections' as const },
           // A rebuilt view: the Team tab's lists load again when a message could have been missed (autobyteus-358).
           { kind: 'reload_collaboration_messages' as const, rebuild: rebuildOfView(payload) },

@@ -359,6 +359,23 @@ describe('TeamExecutionViewState', () => {
     });
   });
 
+  it('CR-461-082 (F-64): a stopped Team\'s stream sends the view its open read: the loaded member and lists hold; a member running again rebuilds', () => {
+    const status = (agent_run_id: string, member_address: string, value: AgentStatus) =>
+      ({ agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })
+    const snapshotWith = (teacher: AgentStatus) => ({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const, payload: {
+      root_team_run_id: 'root-team-1', base_change_sequence: 205, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [],
+      execution_tree: tree(), agent_input_states: [], remote_task_executions: [], agent_statuses: [
+        status('teacher-run', '/Teacher', teacher), status('root-student-run', '/Student', AgentStatus.Offline),
+        status('coordinator-run', '/StudentStudyGroup/Coordinator', AgentStatus.Offline), status('student-run', '/StudentStudyGroup/Student', AgentStatus.Offline),
+      ] } })
+    // Read stored at open (no base), the Team stopped, its own members offline: nothing could have changed.
+    expect(createStateFixture({ rootActive: false }).state.applySnapshot(snapshotWith(AgentStatus.Offline)).effects.map((effect) => effect.kind))
+      .toEqual(['adopt_collaboration_messages', 'reconcile_team_navigation'])
+    // One of its own members runs: the Team started since the read; the view rebuilds as before.
+    expect(createStateFixture({ rootActive: false }).state.applySnapshot(snapshotWith(AgentStatus.Idle)).effects.map((effect) => effect.kind))
+      .toEqual(['invalidate_team_member_projections', 'reload_collaboration_messages', 'reconcile_team_navigation', 'reconcile_focused_team_member_projection'])
+  });
+
   it('rejects a containing-Team placement change before committing snapshot state', () => {
     const state = createState();
     const beforeTree = state.getExecutionTree();

@@ -1,0 +1,16 @@
+# CR-461-082 (F-64) pinned and fixed with LRL-001 (server rebuilt at 4d3b13cbed); temporary stack traces in teamRunContextHydrationService.ts, teamMemberProjectionHydrationService.ts, teamExecutionViewState.ts and the probe's page console (all reverted)
+## before
+LRL-001 Fail: openOps
+{'GetTeamMemberRunProjection:lrl_lead_810b_a448bdb50bee475d91d7367f254f2411': 2, 'GetTeamMemberFileChanges:lrl_lead_810b_a448bdb50bee475d91d7367f254f2411': 2, 'CollaborationParticipantMessages:lrl_lead_810b_a448bdb50bee475d91d7367f254f2411': 2}
+## the two loads (/tmp/lrl001c)
+- F64-trace at hydrateCurrentTeamRunContext (services/runHydration/teamRunContextHydrationService.ts:189:48) | at async openTeamRun (services/runOpen/teamRunOpenCoordinator.ts:27:16) | at async openTeamMemberRunFromHistory (stores/runHistorySelectionActions.ts:39:12) | at async Proxy.openTeamMemberRun (stores/runHistoryStore.ts:427:22) | at async openTeam (composables/useWorkspaceHistorySelectionAct
+- F64-trace ensure at reconcileFocusedTeamMemberProjectionForStore (stores/runHistoryTeamMemberInspectionActions.ts:82:11) | at Proxy.reconcileFocusedTeamMemberProjection (stores/runHistoryStore.ts:424:13) | at Proxy.wrappedAction (node_modules/.cache/vite/client/deps/pinia.js?v=54d28ad6:1067:18) | at store.<computed> (node_modules/.cache/vite/client/deps/pinia.js?v=54d28ad6:745:44) | at TeamStreami
+- F64-trace loader at fetchMemberRunState (services/runHydration/memberRunStateHydration.ts:5:11) | at MemberLoader.load (services/runHydration/memberLoader.ts:68:25) | at MemberLoader.ensure (services/runHydration/memberLoader.ts:50:23) | at ensureAuthoritativeTeamMemberProjection (services/runHydration/teamMemberProjectionHydrationService.ts:59:40) | at reconcileFocusedTeamMemberProjectionForStore
+## the first snapshot vs the open's read (/tmp/lrl001e)
+- F64-trace snapshot base 205 view 0 treeEq true closedEq true A {"created_at":"2026-11-14T13:45:42.350Z","archived_at":null,"application_binding":null,"handoffs"
+## reading
+- The open's full hydration loads the focused member once; the stopped Team's view stream then sends its first snapshot (SR-045/046),
+  whose effects began a new member-loader generation, reloaded the Team tab's lists and reconciled the focused member: a second load of each.
+- The snapshot holds the same rows; the open read the view stored (base 0) and the Team is still stopped with its own members offline.
+## after
+LRL-001 Pass AC-003, QR-005 (Team): opening a stopped six-member Team run loads only the focused member; another member loads when opened; the Team tab asks once for the focused participant

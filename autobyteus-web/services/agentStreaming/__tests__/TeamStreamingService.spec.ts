@@ -120,7 +120,8 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(service.isReady).toBe(false);
     emit(callbacks, 'CONNECTED', { session_id: 'team-session-1', root_team_run_id: rootTeamRunId });
     expect(service.isReady).toBe(false);
-    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team));
+    // A rebuilt view (a newer base): the focused member is reconciled (an unchanged one keeps it, CR-461-082).
+    emit(callbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', snapshotPayload(team, team.view.getChangeSequence() + 1));
     expect(service.isReady).toBe(true);
     expect(runHistoryStoreMock.refreshRunNavigationTopology)
       .toHaveBeenCalledWith('team-stream-structure');

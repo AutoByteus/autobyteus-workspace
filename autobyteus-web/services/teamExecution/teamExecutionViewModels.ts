@@ -62,7 +62,9 @@ export type TeamExecutionEffect =
   /** A live message for the Team tab's lists (autobyteus-358). */
   | Readonly<{ kind: 'append_collaboration_message'; message: CollaborationParticipantMessageDto }>
   /** The view was rebuilt from a snapshot: the Team tab's lists load again when a message could have been missed. */
-  | Readonly<{ kind: 'reload_collaboration_messages'; rebuild: RootContextRebuild }>;
+  | Readonly<{ kind: 'reload_collaboration_messages'; rebuild: RootContextRebuild }>
+  /** A snapshot of the view the lists were loaded with: they hold, and follow its live sequence from its base. */
+  | Readonly<{ kind: 'adopt_collaboration_messages'; rebuild: RootContextRebuild }>;
 
 export type TeamExecutionApplyResult =
   | Readonly<{ disposition: 'applied' | 'unchanged'; effects: readonly TeamExecutionEffect[] }>
