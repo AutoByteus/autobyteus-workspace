@@ -27,26 +27,6 @@ export const GetAgentRunCollaboration = gql`
   }
 `
 
-/**
- * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states only, never the
- * collaboration view; a run without an active root answers inactive with no states.
- */
-export const GetAgentRunCollaborationStatuses = gql`
-  query GetAgentRunCollaborationStatuses($runIds: [String!]!) {
-    agentRunCollaborationStatuses(runIds: $runIds) {
-      runId
-      isActive
-      closedTaskExecutionsDigest
-      statuses {
-        agentRunId
-        memberAddress
-        status
-        recoverableBlock
-      }
-    }
-  }
-`
-
 export const GetAgentRunCollaborationMemberProjection = gql`
   query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
     agentRunCollaborationMemberProjection(hostRunId: $hostRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) {

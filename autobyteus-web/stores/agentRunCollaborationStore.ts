@@ -1,7 +1,8 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { defineStore } from 'pinia'
-import { closedTaskExecutionsDigest } from '@autobyteus/collaboration-stream-contracts'
 import { shallowReactive, shallowRef, watch } from 'vue'
+import { useRunStatusStore } from '~/stores/runStatusStore'
+import { AgentStatus } from '~/types/agent/AgentStatus'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { ContextFilePath } from '~/types/conversation'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
@@ -11,9 +12,7 @@ import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/servic
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
 import {
   readAgentRunCollaboration,
-  readAgentRunCollaborationStatuses,
   buildAgentRunCollaborationContext,
-  type AgentRunCollaborationStatusesAnswer,
 } from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
@@ -188,68 +187,25 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /** Loads the stored (or live) view without restoring anything; a failure is kept as the hub's error. */
   const inspect = async (hostRunId: string): Promise<void> => { await read(hostRunId) }
 
-  /** The status read on the history poll that is still running; a tick that finds one skips its own. */
-  let statusRefresh: Promise<void> | null = null
-  /** Per stopped host, the node's closed-set digest its view was last re-read for: one re-read per digest value. */
-  const stoppedHostRereads = new Map<string, string>()
-
-  /** The answer names exactly the context's local children (ID and address), each once. */
-  const sameLocalChildren = (context: AgentRunCollaborationContext, answer: AgentRunCollaborationStatusesAnswer): boolean => {
-    const named = new Set(answer.statuses.map((status) => status.agentRunId))
-    return named.size === answer.statuses.length && named.size === context.index.agents.size
-      && answer.statuses.every((status) => context.index.agents.get(status.agentRunId)?.address === status.memberAddress)
-  }
-
   /**
-   * The history poll's refresh of task rows under listed runs that are not open (autobyteus-426 REQ-009, D-09): one
-   * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
-   * listed (`listedAgentRunIds`, active or stopped) or whose context is still live. Each answer, in order: dropped
-   * unless its hub is as it was at selection; when both are inactive, a view re-read only when the node's closed-set
-   * digest differs from the view's and was not re-read for before (a Task closed or reopened while the host is
-   * stopped, autobyteus-435); a view re-read when the active state or the local children changed, or when the
-   * digest differs (autobyteus-446); else the states are applied.
+   * Each published view's delegated runs' statuses, read by run ID from each run (autobyteus-461 SR-083, FU-026), and its
+   * rows' notice: a view that is not open (no stream) reads its view again when its rows changed (`RUN_TREE_CHANGED`);
+   * a newer read supersedes an older one in flight, so only the newest answer is applied.
    */
-  const refreshListedStatuses = (listedAgentRunIds: readonly string[]): Promise<void> => {
-    if (statusRefresh) return statusRefresh
-    const listed = new Set(listedAgentRunIds)
-    const revision = binding.bindingRevision
-    const selected = Object.entries(contexts.value).filter(([hostRunId, context]) => !services.has(hostRunId)
-      && !inspections.has(hostRunId) && !terminations.has(hostRunId) && (listed.has(hostRunId) || context.isActive))
-    if (!selected.length) return Promise.resolve()
-    const refresh = (async () => {
-      let answers: AgentRunCollaborationStatusesAnswer[]
-      try {
-        answers = await readAgentRunCollaborationStatuses(selected.map(([hostRunId]) => hostRunId))
-      } catch (cause) {
-        console.warn('[agentRunCollaboration] Could not read the listed runs\' child states.', cause)
-        return
+  const runStatus = useRunStatusStore()
+  watch(() => Object.entries(contexts.value).flatMap(([hostRunId, context]) => [{ kind: 'agent' as const, runId: hostRunId }, ...context.localRunRefs()]),
+    (refs, _previous, onCleanup) => { onCleanup(runStatus.hold(refs)) }, { immediate: true, deep: true })
+  watch(() => Object.values(contexts.value).flatMap((context) => [...context.index.agents.keys()].map((agentRunId) => [context, agentRunId, runStatus.statusOf(agentRunId)] as const)),
+    (entries) => { for (const [context, agentRunId, status] of entries) if (status) context.applyRunStatus(agentRunId, status as AgentStatus) }, { immediate: true })
+  watch(() => Object.keys(contexts.value).map((hostRunId) => [hostRunId, runStatus.treeRevisionOf({ kind: 'agent', runId: hostRunId })] as const),
+    (next, previous) => {
+      const before = new Map(previous ?? [])
+      for (const [hostRunId, revision] of next) {
+        if (revision === (before.get(hostRunId) ?? revision) || services.has(hostRunId)) continue
+        inspections.delete(hostRunId)
+        void read(hostRunId)
       }
-      const answerOf = new Map(answers.map((answer) => [answer.runId, answer]))
-      for (const [hostRunId, context] of selected) {
-        const answer = answerOf.get(hostRunId)
-        const current = contexts.value[hostRunId] === context && binding.bindingRevision === revision
-          && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
-        if (!answer || !current) continue
-        if (!answer.isActive && !context.isActive) {
-          const digest = answer.closedTaskExecutionsDigest
-          if (digest && digest !== closedTaskExecutionsDigest(context.view.closed_task_executions)
-            && stoppedHostRereads.get(hostRunId) !== digest) {
-            stoppedHostRereads.set(hostRunId, digest)
-            void inspect(hostRunId)
-          }
-          continue
-        }
-        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)
-          || answer.closedTaskExecutionsDigest !== closedTaskExecutionsDigest(context.view.closed_task_executions)) {
-          void inspect(hostRunId)
-          continue
-        }
-        context.applyStatuses(answer.statuses)
-      }
-    })().finally(() => { if (statusRefresh === refresh) statusRefresh = null })
-    statusRefresh = refresh
-    return refresh
-  }
+    })
 
   /**
    * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
@@ -461,7 +417,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     delete selection[hostRunId]
     delete expandedTeams[hostRunId]
     delete errors[hostRunId]
-    stoppedHostRereads.delete(hostRunId)
   }
 
   /** Releases every host's view and stream: the window's node changed, or the phone's session ended (autobyteus-435). */
@@ -472,7 +427,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   watch(() => binding.bindingRevision, releaseAll, { flush: 'sync' })
 
   return {
-    contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, releaseAll, beginHostTermination,
+    contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, releaseAll, beginHostTermination,
     selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, isSelectedChildOpening, submit,
   }
 })

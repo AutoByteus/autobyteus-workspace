@@ -6,6 +6,8 @@ import { agentRootView, created } from '~/services/agentCollaboration/__tests__/
 import { clearStoredParticipantMessages, participantMessagesQueryStub, storeParticipantMessages } from '~/test-support/participantMessagesStub'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), participantRequests: vi.fn() }))
+// Each run's own statuses (`/ws/run-status`, SR-083) are not this spec's: its sockets are the view's stream.
+vi.mock('~/stores/runStatusStore', () => ({ useRunStatusStore: () => ({ hold: () => () => undefined, statusOf: () => null, treeRevisionOf: () => 0 }) }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query }) }))
 vi.mock('~/services/collaborationMessages/participantMessagesQuery', () => ({
   fetchParticipantMessages: (key: Parameters<typeof participantMessagesQueryStub.fetchParticipantMessages>[0]) => {

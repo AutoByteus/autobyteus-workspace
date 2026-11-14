@@ -132,6 +132,18 @@ export class AgentRunCollaborationContext {
     }
   }
 
+  /** The runs on this node this run's rows show (its delegated agent and team runs), for their own statuses (SR-083). */
+  localRunRefs(): Array<Readonly<{ kind: 'agent' | 'agent_team'; runId: string }>> {
+    return [...[...this.index.agents.values()].filter((agent) => agent.kind === 'task_agent').map((agent) => ({ kind: 'agent' as const, runId: agent.agentRunId })),
+      ...[...this.index.teams.keys()].map((teamRunId) => ({ kind: 'agent_team' as const, runId: teamRunId }))]
+  }
+
+  /** A delegated agent's own status, read by its run ID (SR-083), shown on its row; an agent this run does not list is ignored. */
+  applyRunStatus(agentRunId: string, status: AgentStatus): void {
+    const context = this.index.agents.has(agentRunId) ? this.contexts.get(agentRunId) : undefined
+    if (context && context.state.currentStatus !== status) context.state.currentStatus = status
+  }
+
   get isActive(): boolean { return this.view.is_active }
   get changeSequence(): number { return this.nextChangeSequence - 1 }
   get hasChildren(): boolean { return this.index.agents.size > 0 }

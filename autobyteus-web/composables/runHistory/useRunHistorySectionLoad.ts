@@ -3,7 +3,6 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 
 export const RUN_HISTORY_REFRESH_INTERVAL_MS = 5000;
 
@@ -21,7 +20,6 @@ export const useRunHistorySectionLoad = (options: {
   const agentDefinitionStore = useAgentDefinitionStore();
   const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
   const agentOrgDefinitionStore = useAgentOrgDefinitionStore();
-  const collaborationStore = useAgentRunCollaborationStore();
 
   /**
    * Sets the window and reads the history, the folder catalog and the definitions; settles when they are read (the
@@ -43,12 +41,11 @@ export const useRunHistorySectionLoad = (options: {
   const initialLoad = new Promise<void>((resolve) => { resolveInitialLoad = resolve; });
 
   /**
-   * One poll tick: the quiet history read, then the children's states of listed runs that are not open
-   * (autobyteus-426 REQ-009); the first load and a window change read the views themselves.
+   * One poll tick: the quiet history read. The children's states of listed runs come from each run itself
+   * (`/ws/run-status`, autobyteus-461 SR-083), and their rows' changes re-read their views.
    */
   const pollTick = async (): Promise<void> => {
     await runHistoryStore.refreshTreeQuietly();
-    await collaborationStore.refreshListedStatuses(runHistoryStore.listedAgentRunIds);
   };
 
   let timer: ReturnType<typeof setInterval> | null = null;

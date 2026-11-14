@@ -5,6 +5,8 @@ import { buildMultiTeamContext, memberId, multiTeamView, teamId } from '~/servic
 import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 
 const hydration = vi.hoisted(() => ({ read: vi.fn(), build: vi.fn(), hydrateChild: vi.fn(async () => 'hydrated') }))
+// Each run's own statuses (`/ws/run-status`, SR-083) are not this spec's: its sockets are the view's stream.
+vi.mock('~/stores/runStatusStore', () => ({ useRunStatusStore: () => ({ hold: () => () => undefined, statusOf: () => null, treeRevisionOf: () => 0 }) }))
 vi.mock('~/stores/delegatedRunsStore', async () => ({ useDelegatedRunsStore: (await import('~/test-support/delegatedRunsFake')).fakeDelegatedRunsStore }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: hydration.read, buildAgentRunCollaborationContext: hydration.build,
