@@ -833,3 +833,49 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Remaining risks: re-observing a stopped agent row loads its root again (never its agent), as a view that opens on a stopped row already does. History counts a run active only while its agent runs, and a history delete ends a lingering root.
 - Next recipient: Code Reviewer, a targeted delta on the follower and its accesses.
 - Result: Code Review **Pass (CRR-032**, `code-review-report.md` round 24): CR-461-067 and C23-03 resolved. The reviewer routes to API/E2E.
+
+### IR-025 — CRR-033's Local Fixes (CR-461-070, CR-461-071); SR-078 (CR-461-068, CR-461-069)
+
+- Triggering role, report path, and round: Code Reviewer CRR-033 (`code-review-report.md`, the failure-origin review of API-REV-008 on `fdf5ad8380`), released by the Solution Designer. Two Local Fixes, CR-461-070 and CR-461-071. Two Design Impacts, CR-461-068 and CR-461-069, answered by SR-078 as revised after ARCH-REV-049 and ARCH-REV-050 (Pass): one follow-up migration per predecessor. Round 25.
+- Triggering finding IDs: CR-461-068 … CR-461-071. Large / High unchanged.
+- Prior authoritative result: IR-024 at `fdf5ad8380` (CRR-032 Pass).
+- Current authoritative result: `e0af2eed44` (the follow-ups' boundary fix after `4d8ff85d28`).
+- Related solution / architecture-review revision IDs: SR-078; ARCH-REV-049, ARCH-REV-050. Related code-review revision IDs: CRR-033.
+- Implementation delta:
+  - **CR-461-071 (F-52, `c7ea90a895`).** `RunViewChildren.read` serves the agent run's collaboration read, the Org inspection and the Team history.
+    - Before: it read the rows fresh (an unreadable row left out) but built the statuses from `DelegationIndex.agentsOf`, the parts read earlier. A run whose own file became unreadable while the server ran was still named by a status, and the contract rejected the whole view.
+    - Now it uses the views' one builder, `readViewSnapshot`: a status for every agent of the rows read, from each run's own root, else `offline`. The streams already did.
+  - **CR-461-070 (F-50, `2a029f2af8`).** `DelegatedRunRestorability` (new) asks base's builder, `taskExecutionConversationUnavailable`, before input restores a delegated run. It finds the run's entry from its last Task entry, else its own file. A live entry agent passes without a read; a run the user started is not asked. It is asked:
+    - at the agent stream's entry: the root manager's `inputRefusal`, after the closed-Task fence; the ack carries `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and base's text; the code is added to both sides' ack code types;
+    - for a stopped team run's message on its own stream: sent as `TEAM_SEND_MESSAGE_REJECTED`;
+    - for the delegator's `send_message_to`: `CrossRunMessageDelivery`, before the receiver's root is restored.
+    - The manager builds its own instance for agent runs, with its own liveness. Step 6 builds one for the team stream and the delivery.
+  - **CR-461-069 (SR-078 a, `d374ced87b`).** Each run service has `restoreRefusal`, one helper (`rootRestoreRefusal`): the token-usage restore check, then the package catalog, with base's codes and texts.
+    - The stopped team and Org views ask it before they read the stored file. Refused, the connect answers `TEAM_NOT_FOUND` or `AGENT_ORG_NOT_FOUND`.
+    - The first message (`restoreForInput`) answers the admission's own code and text.
+    - A stored file that passes admission but cannot be parsed, at connect or at restore, is answered `TEAM_RUN_NOT_RESTORABLE` or `AGENT_ORG_RUN_NOT_RESTORABLE`, "… cannot be restored: its saved state cannot be read. Its files were left unchanged." The detail goes to the log only.
+    - A stopped team's failed restore was answered `RUN_NOT_FOUND` before, and an Org's with the raw error.
+  - **CR-461-068 (SR-078 b and c).**
+    - **(b)** Before the predecessor finishes, a preserved copy's Settings save answers base's `INTERNAL_ERROR` "Run ownership could not be verified". This is unchanged behavior (`studio-run-model-config-service.ts`), and API/E2E's TAU-2 states it.
+    - **(c), `4d8ff85d28`.** The main migration is now a plan of steps; its own plan is every step. Three follow-ups apply our steps with our builders:
+      - `20261114_preserved_items_after_task_agent_own_run_v1` (after 20261017): steps 4, 5b and 8;
+      - `20261114_preserved_items_after_own_file_complete_v1` (after 20261019): steps 4 and 8;
+      - `20261114_preserved_items_after_append_only_logs_v1` (after 20261018): step 5b.
+    - Each is `requiredOnStartup`, with no hold, and registered after our migration. Its only prerequisites are our migration and its own predecessor. Each is idempotent by structure and terminal after its run.
+    - `ensureRunHistoryRow` was not built (withdrawn).
+- Tests (each new one fails without its fix where a fix applies):
+  - CR-461-071: the read with a row truncated after its parts were read leaves the row and its agents out, warns, and the real contract projection accepts it.
+  - CR-461-070: the owner (team and agent runs, the own-file fallback, a run the user started, a peer, an Org, a live entry agent); the agent stream's entry with a damaged saved conversation (refused before anything registers); the ack's code; the team stream (refused before restore; a live run not asked); the delegator's message.
+  - CR-461-069: both handlers' connect (refused gives not-found and nothing read; a parse failure gives not-restorable with no schema text) and the first message's code; both services' admission and `restoreForInput`, including a restore failing after admission and a concurrent restore.
+  - SR-078 c: the registration and prerequisites; each follow-up converting its predecessor's finished item (own file, history row, log), with a later start changing nothing; and through the real runner, with 20261018 `FAILED`, a copy whose 20261017 item finished is converted and listed while 20261018's follow-up waits.
+  - The follow-ups first imported their predecessors' ID constants from those migrations' folders, and the sealed area's boundary test refused that. They name the IDs locally (`e0af2eed44`), as the other migrations do.
+- Validation (IMP-80):
+  - server type gate PASS;
+  - unit 8075 passed, 1 failed (the boundary test, fixed; then 116 architecture and migration tests pass);
+  - integration 491 passed, 4 failed (the file watcher's timing: alone it failed under another workload's load and passed 14/14 twice on a quiet machine);
+  - web type gate PASS and 5757 passed.
+- Remaining risks:
+  - CR-461-068 (b) has no new test here: the save's answer before the predecessor finishes is unchanged base behavior, and API/E2E's TAU-2 states it.
+  - The new codes `TEAM_RUN_NOT_RESTORABLE` and `AGENT_ORG_RUN_NOT_RESTORABLE` are this ticket's.
+  - `delegate_task` by run ID (CR-461-043) still asks the conversation check through its own path. It uses the same builder.
+- Next recipient: Code Reviewer.
