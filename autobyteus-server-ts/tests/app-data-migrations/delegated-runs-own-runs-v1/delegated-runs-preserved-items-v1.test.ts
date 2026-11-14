@@ -39,8 +39,10 @@ const world = async (): Promise<World> => {
   return { appData, memory: path.join(appData, "memory") };
 };
 const names = { agentDefinitionName: vi.fn(async () => null), teamDefinitionName: vi.fn(async () => null) };
-const main = (w: World) => new DelegatedRunsOwnRunsV1AppDataMigration(w.appData, w.memory, names);
-const followUp = (w: World, id: string) => createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names).find((migration) => migration.id === id)!;
+/** The ledger with every predecessor terminal (the reader 20261020 is not this test's subject). */
+const terminalLedger = { getRecord: async () => ({ status: "SUCCEEDED" }) } as unknown as Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
+const main = (w: World) => new DelegatedRunsOwnRunsV1AppDataMigration(w.appData, w.memory, names, null, { ledger: terminalLedger });
+const followUp = (w: World, id: string) => createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names, null, terminalLedger).find((migration) => migration.id === id)!;
 const snapshot = async (root: string): Promise<Record<string, string>> => {
   const out: Record<string, string> = {};
   const walk = async (dir: string): Promise<void> => {
@@ -137,7 +139,7 @@ describe("the follow-ups of 20261111_delegated_runs_own_runs_v1 (SR-078)", () =>
       predecessor("20261017_task_agent_own_run_v1", "17", () => finishedBy17(w)),
       predecessor("20261018_append_only_message_logs_v1", "18"),
       predecessor("20261019_delegated_copy_own_file_complete_v1", "19"),
-      main(w), ...createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names)
+      main(w), ...createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names, null, terminalLedger)
         .filter((followUp) => [AFTER_17, AFTER_18, AFTER_19].includes(followUp.id)),
     ]), new InMemoryRecords(), { logsDir: path.join(w.appData, "logs") });
     // Start 1: 20261017 and 20261018 are FAILED; our migration runs (no hold); their follow-ups wait, reported.

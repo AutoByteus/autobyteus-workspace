@@ -7,6 +7,7 @@ import {
   DelegatedRunsOwnRunsV1AppDataMigration,
 } from "../../../src/app-data-migrations/migrations/delegated-runs-own-runs-v1/delegated-runs-own-runs-v1-app-data-migration.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
+import type { AppDataMigrationRecordRepositoryLike } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/task-execution-resource-schema.js";
@@ -31,10 +32,12 @@ const world = async (): Promise<World> => {
 };
 const names = { agentDefinitionName: vi.fn(async (id: string) => id === "image-maker" ? "Image Maker" : null),
   teamDefinitionName: vi.fn(async (id: string) => id === "software-engineering-team" ? "Software Engineering Team" : null) };
+/** The ledger with every predecessor terminal (the reader 20261020 is not this test's subject). */
+const terminalLedger = { getRecord: async () => ({ status: "SUCCEEDED" }) } as unknown as Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
 const catalogs = () => ({ agentRunHistoryChanged: vi.fn(), collaborationRunHistoryChanged: vi.fn() });
 const migrate = (w: World, invalidation = catalogs()) => {
   vi.spyOn(console, "warn").mockImplementation(() => undefined);
-  return new DelegatedRunsOwnRunsV1AppDataMigration(w.appData, w.memory, names, invalidation).execute();
+  return new DelegatedRunsOwnRunsV1AppDataMigration(w.appData, w.memory, names, invalidation, { ledger: terminalLedger }).execute();
 };
 const from = (kind: string, runId: string, delegatorAgentRunId?: string) =>
   ({ delegatingRun: { kind, runId }, ...(delegatorAgentRunId ? { delegatorAgentRunId } : {}) });

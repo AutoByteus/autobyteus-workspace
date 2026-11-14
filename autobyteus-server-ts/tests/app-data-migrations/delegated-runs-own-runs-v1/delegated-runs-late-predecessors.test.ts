@@ -70,6 +70,8 @@ const world = async (): Promise<World> => {
   vi.spyOn(console, "warn").mockImplementation(() => undefined);
   return { appData, memory: path.join(appData, "memory") };
 };
+/** The ledger with every predecessor terminal (the reader 20261020 is not this test's subject). */
+const terminalLedger = { getRecord: async () => ({ status: "SUCCEEDED" }) } as unknown as Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
 const names = { agentDefinitionName: vi.fn(async () => null), teamDefinitionName: vi.fn(async () => null) };
 const catalogs = { agentRunHistoryChanged: vi.fn(), collaborationRunHistoryChanged: vi.fn() };
 const followUpsAfter = (w: World, ledger: AppDataMigrationRecordRepositoryLike, ...predecessors: string[]) =>
@@ -170,7 +172,7 @@ describe("every late predecessor of 20261111_delegated_runs_own_runs_v1 (SR-079)
   it("a late index rebuild: the agent index keeps every delegated run's row; the team index drops the delegated team runs' rows and its follow-up restores them", async () => {
     const w = await world();
     await writeReleasedWorld(w);
-    await new DelegatedRunsOwnRunsV1AppDataMigration(w.appData, w.memory, names).execute();
+    await new DelegatedRunsOwnRunsV1AppDataMigration(w.appData, w.memory, names, null, { ledger: terminalLedger }).execute();
     const delegated = async (dir: string, file: string) => {
       const ids: string[] = [];
       for (const id of await fs.readdir(path.join(w.memory, dir))) {
@@ -190,7 +192,7 @@ describe("every late predecessor of 20261111_delegated_runs_own_runs_v1 (SR-079)
     for (const id of delegatedAgents) expect(await agentRows()).toContain(id);
     await new TeamRunHistoryIndexV2AppDataMigration(w.memory, names, catalogs).execute();
     for (const id of delegatedTeams) expect(await teamRows()).not.toContain(id);
-    const followUp = createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names).find((migration) => migration.spec.predecessor === "20260521_team_run_history_index_v2")!;
+    const followUp = createDelegatedRunsPreservedItemsMigrations(w.appData, w.memory, names, null, terminalLedger).find((migration) => migration.spec.predecessor === "20260521_team_run_history_index_v2")!;
     await followUp.execute();
     for (const id of delegatedTeams) expect(await teamRows()).toContain(id);
   });

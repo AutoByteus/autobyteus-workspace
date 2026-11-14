@@ -61,9 +61,9 @@ export const PRESERVED_ITEMS_FOLLOW_UPS: readonly PreservedItemsFollowUpSpec[] =
  */
 export class PreservedItemsFollowUp extends DelegatedRunsOwnRunsV1AppDataMigration {
   constructor(appDataDir: string, memoryDir: string, names: DefinitionNameLookup, catalogs: RunHistoryCatalogInvalidation | null,
-    ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord"> | null, readonly spec: PreservedItemsFollowUpSpec) {
+    ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">, readonly spec: PreservedItemsFollowUpSpec) {
     super(appDataDir, memoryDir, names, catalogs, {
-      ...(ledger ? { ledger } : {}),
+      ledger,
       plan: {
         id: spec.id,
         displayName: `Delegated runs: what ${spec.predecessor} wrote after them`,
@@ -76,5 +76,5 @@ export class PreservedItemsFollowUp extends DelegatedRunsOwnRunsV1AppDataMigrati
 }
 
 export const createDelegatedRunsPreservedItemsMigrations = (appDataDir: string, memoryDir: string, names: DefinitionNameLookup,
-  catalogs: RunHistoryCatalogInvalidation | null = null, ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord"> | null = null): PreservedItemsFollowUp[] =>
+  catalogs: RunHistoryCatalogInvalidation | null, ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">): PreservedItemsFollowUp[] =>
   PRESERVED_ITEMS_FOLLOW_UPS.map((spec) => new PreservedItemsFollowUp(appDataDir, memoryDir, names, catalogs, ledger, spec));

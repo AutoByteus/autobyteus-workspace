@@ -77,7 +77,7 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
   readonly requiredOnStartup = true;
   readonly executionPolicy = "STARTUP_ONLY" as const;
   private readonly steps: ReadonlySet<DelegatedRunsStep>;
-  private readonly ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord"> | null;
+  private readonly ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
   /** The reader is not terminal yet: the improver's delegated copies wait (SR-079). */
   private readerPending = false;
 
@@ -89,15 +89,16 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
     private readonly appDataDir: string,
     private readonly memoryDir: string,
     private readonly names: DefinitionNameLookup,
-    private readonly catalogs: RunHistoryCatalogInvalidation | null = null,
+    private readonly catalogs: RunHistoryCatalogInvalidation | null,
     options: Readonly<{
+      /** The migration ledger, read for the reader's status (SR-079, CR-461-075: required; nothing is decided by its absence). */
+      ledger: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
+      /** The steps to apply, under which ID; our migration's own plan unless a follow-up's. */
       plan?: DelegatedRunsPlan;
-      /** The migration ledger, read for the reader's status (SR-079); without one the reader is taken as terminal. */
-      ledger?: Pick<AppDataMigrationRecordRepositoryLike, "getRecord">;
-    }> = {},
+    }>,
   ) {
     const plan = options.plan ?? MAIN_PLAN;
-    this.ledger = options.ledger ?? null;
+    this.ledger = options.ledger;
     this.layout = new AgentMemoryLayout(memoryDir);
     this.id = plan.id;
     this.displayName = plan.displayName;
@@ -109,7 +110,7 @@ export class DelegatedRunsOwnRunsV1AppDataMigration implements AppDataMigrationD
   async execute(): Promise<AppDataMigrationExecutionResult> {
     this.details.length = 0;
     this.scanned = 0;
-    const reader = this.ledger ? (await this.ledger.getRecord(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID))?.status : "SUCCEEDED";
+    const reader = (await this.ledger.getRecord(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID))?.status;
     this.readerPending = reader !== "SUCCEEDED" && reader !== "SUCCEEDED_WITH_WARNINGS";
     const scan = await new ReleasedDelegationScan(this.layout).scan();
     const step = (name: DelegatedRunsStep, run: (scan: ReleasedDelegationScan) => Promise<void>) => this.steps.has(name) ? run.call(this, scan) : Promise.resolve();
