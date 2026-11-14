@@ -233,7 +233,15 @@ A follow-up Task by run ID: `TaskDelegation.toExistingRun` → Task side `assign
 A full server-built tree (SR-082's `RunTreeView`, a new API, and rewriting the four client builders) was judged not worth its cost in this ticket. Its value is consistency between views, and it costs the largest web rewrite and test re-run late in the ticket. Most of that value comes cheaper. So the current endpoints and their shapes stay (rule 1), and:
 - **The server puts an `openTarget` on every row it already builds,** in every view snapshot, row event and history read: the run's own identity and the agent to focus. A team row's target is its **coordinator**, explicitly, in every view (FU-031). There is no `members[0]` fallback (FU-024): a team whose coordinator is not a member gives a row error, logged, with no target. One server helper (`openTargetOf(row)`, beside the row builder in `collaboration-tree.ts`) computes it for every row kind.
 - **A peer row carries its launch** from its peer summary (F-66, CR-461-084).
-- **A team member's launch origin** is its own `launchSource` only. An edited member shows no origin, never its team's (V-11, CR-461-078 / DCP-005). The fallback in `teamMemberLaunchSource` / `collaborationMemberLaunchSource` goes.
+- **An edit is recorded as an edit** (V-11, CR-461-078 / DCP-001, DCP-005; refined by the Implementation Engineer's finding).
+  - **Why the fallback can't simply go:** a member with no source of its own legitimately has its team's origin: a follower, or a member of a configured placement, whose team source is `configured`. And an absent source renders as "Not recorded", which is origin text.
+  - **So a changing Settings save writes an explicit source,** `{ origin: "settings", fallbacks: [] }`, for an agent run, a team member and a team default: the three places CR-461-078 touched. `"settings"` is a new value in `LAUNCH_CONFIGURATION_ORIGINS` and in the two contract source schemas. It is added for new writes only, and stored data needs no migration.
+  - **The web renders `"settings"` with no origin text,** the edit being the run's own launch.
+  - **A member's own `"settings"` source wins over the team fallback.** The fallback (`teamMemberLaunchSource`, `collaborationMemberLaunchSource`) stays for every other case, followers and configured placements included.
+  - **Tests:**
+    - an edited agent run and an edited member show no origin;
+    - a follower and a configured placement's member keep their team's origin;
+    - an unedited member with no source still shows "Not recorded".
 - **The four client builders stay, but only display.** They read `openTarget` and never decide a row's target or a run's facts from its delegator. The full server tree stays as **FU-034**.
 - **Live changes for a listed run that is not open** (AR-028): `/ws/run-status` carries `RUN_TREE_CHANGED { runId }` for a subscribed run whose rows changed, fed by `ChildRowsFeed` for the run and every ancestor. The client re-reads that run's existing view read for an expanded run, applying only the newest answer. This replaces the list poll's re-read.
 
