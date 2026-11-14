@@ -15,6 +15,19 @@ const withoutChildChoices = (task: OrgTaskExecution, selection: Selection): OrgT
     taskExecutions: task.taskExecutions.map(child => withoutChildChoices(child, selection)) }
 
 /**
+ * The Org's own configuration with the rows its view shows (autobyteus-461 rule 2, CR-461-088): a run it delegated to is a
+ * run of its own, so the Org's configuration read and its Save answer carry none of them (`taskExecutions` is empty);
+ * its view's rows stay, and change with the view's own reads (a row event, `RUN_TREE_CHANGED`), never with a
+ * configuration read. A mounted Team's rows likewise, by its address.
+ */
+export const withViewRows = (view: AgentOrgExecutionTree, config: AgentOrgExecutionTree): AgentOrgExecutionTree => {
+  const viewTeams = new Map(view.rootOrg.members.flatMap(member => 'teamRunId' in member ? [[member.address, member] as const] : []))
+  return { ...config, rootOrg: { ...config.rootOrg, taskExecutions: view.rootOrg.taskExecutions,
+    members: config.rootOrg.members.map(member => 'teamRunId' in member
+      ? { ...member, taskExecutions: viewTeams.get(member.address)?.taskExecutions ?? [] } : member) } }
+}
+
+/**
  * Only the selection (agent runtime, model, settings), mounted Team/configured-child workspace fields and copies' model
  * choices are mutable. A configured Agent whose agent runtime changed has switched or undone a pending switch
  * (autobyteus-348): the server decides its session (a switch drops it, an undo restores the original), so any session is

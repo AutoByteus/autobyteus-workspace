@@ -2,7 +2,7 @@ import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentI
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
-import { assertAgentOrgRunConfigChange } from './agentOrgRunConfigAdoption'
+import { assertAgentOrgRunConfigChange, withViewRows } from './agentOrgRunConfigAdoption'
 import { existingRunModelConfigsEqual } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { reactive, shallowReactive } from 'vue'
 import type {
@@ -192,10 +192,12 @@ export class AgentOrgExecutionContext {
     this.select(previous.selection)
   }
 
-  applyRunConfig(executionTree: AgentOrgExecutionViewDto['execution_tree'], isActive: boolean,
+  applyRunConfig(config: AgentOrgExecutionViewDto['execution_tree'], isActive: boolean,
     metadataByRootPath: ReadonlyMap<string, WorkspaceMetadata | null> = new Map()): boolean {
     if (this.phase !== 'historical' || this.isActive || isActive
-      || executionTree.rootOrg.orgRunId !== this.orgRunId) return false
+      || config.rootOrg.orgRunId !== this.orgRunId) return false
+    // The Org's own configuration, with the rows its view shows (CR-461-088: the read carries no delegated runs).
+    const executionTree = withViewRows(this.view.execution_tree, config)
     assertAgentOrgRunConfigChange(this.view.execution_tree, executionTree)
     const view = { ...this.view, execution_tree: cloneExistingRunJsonValue(executionTree) }
     const index = new AgentOrgExecutionViewIndex(view)
