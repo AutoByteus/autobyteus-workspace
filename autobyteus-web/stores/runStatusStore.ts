@@ -19,6 +19,8 @@ export const useRunStatusStore = defineStore('runStatus', {
     statuses: {} as Record<string, RunAgentStatus>,
     /** Per held run (`kind:runId`), how many times its rows changed. */
     treeRevision: {} as Record<string, number>,
+    /** Per run (`kind:runId`), the agents its answers name. */
+    runAgents: {} as Record<string, readonly string[]>,
   }),
   getters: {
     /** An agent's own status; `null` while its run's answer has not come. */
@@ -26,6 +28,9 @@ export const useRunStatusStore = defineStore('runStatus', {
     /** Whether the agent runs: any status but offline (not known yet counts as not running). */
     isLive: (state) => (agentRunId: string): boolean => (state.statuses[agentRunId] ?? 'offline') !== 'offline',
     treeRevisionOf: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): number => state.treeRevision[runKeyOf(ref)] ?? 0,
+    /** A run runs when any of its own agents does (a Team counts as one unit), by its own answers. */
+    isRunLive: (state) => (ref: Pick<RunStatusRunRef, 'kind' | 'runId'>): boolean =>
+      (state.runAgents[runKeyOf(ref)] ?? []).some((agentRunId) => (state.statuses[agentRunId] ?? 'offline') !== 'offline'),
   },
   actions: {
     /** Follows these runs until the returned release is called. */
@@ -35,10 +40,17 @@ export const useRunStatusStore = defineStore('runStatus', {
     apply(message: RunStatusServerMessage): void {
       if (message.type === 'RUN_STATUS_SNAPSHOT') {
         const next = { ...this.statuses }
-        for (const run of message.payload.runs) for (const agent of run.agents) next[agent.agentRunId] = agent.status
+        const agents = { ...this.runAgents }
+        for (const run of message.payload.runs) {
+          for (const agent of run.agents) next[agent.agentRunId] = agent.status
+          agents[runKeyOf(run)] = run.agents.map((agent) => agent.agentRunId)
+        }
         this.statuses = next
+        this.runAgents = agents
       } else if (message.type === 'RUN_STATUS_CHANGED') {
         this.statuses = { ...this.statuses, [message.payload.agentRunId]: message.payload.status }
+        const key = runKeyOf(message.payload), named = this.runAgents[key] ?? []
+        if (!named.includes(message.payload.agentRunId)) this.runAgents = { ...this.runAgents, [key]: [...named, message.payload.agentRunId] }
       } else {
         const key = runKeyOf(message.payload)
         this.treeRevision = { ...this.treeRevision, [key]: (this.treeRevision[key] ?? 0) + 1 }

@@ -15,6 +15,7 @@ import type {
   CollaborationMessagesContextView,
 } from '~/types/workspace/collaborationMessagesContextView'
 import type { RowOpenTarget, RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
+import { collaborationViewRuns, type ViewRuns } from '~/services/runStatus/viewRunRefs'
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
@@ -132,15 +133,12 @@ export class AgentRunCollaborationContext {
     }
   }
 
-  /** The runs on this node this run's rows show (its delegated agent and team runs), for their own statuses (SR-083). */
-  localRunRefs(): Array<Readonly<{ kind: 'agent' | 'agent_team'; runId: string }>> {
-    return [...[...this.index.agents.values()].filter((agent) => agent.kind === 'task_agent').map((agent) => ({ kind: 'agent' as const, runId: agent.agentRunId })),
-      ...[...this.index.teams.keys()].map((teamRunId) => ({ kind: 'agent_team' as const, runId: teamRunId }))]
-  }
+  /** The runs this run's rows show (delegated and peer runs, at every depth) and their agents, for their own statuses (SR-083). */
+  viewRuns(): ViewRuns { return collaborationViewRuns(this.view.execution_tree.taskExecutions, this.view.remote_task_executions) }
 
-  /** A delegated agent's own status, read by its run ID (SR-083), shown on its row; an agent this run does not list is ignored. */
+  /** A delegated or peer agent's own status, read by its run ID (SR-083), shown on its row; the host's is its own stream's. */
   applyRunStatus(agentRunId: string, status: AgentStatus): void {
-    const context = this.index.agents.has(agentRunId) ? this.contexts.get(agentRunId) : undefined
+    const context = agentRunId === this.hostRunId ? undefined : this.contexts.get(agentRunId)
     if (context && context.state.currentStatus !== status) context.state.currentStatus = status
   }
 

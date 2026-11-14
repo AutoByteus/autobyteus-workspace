@@ -193,9 +193,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * a newer read supersedes an older one in flight, so only the newest answer is applied.
    */
   const runStatus = useRunStatusStore()
-  watch(() => Object.entries(contexts.value).flatMap(([hostRunId, context]) => [{ kind: 'agent' as const, runId: hostRunId }, ...context.localRunRefs()]),
+  watch(() => Object.entries(contexts.value).flatMap(([hostRunId, context]) => [{ kind: 'agent' as const, runId: hostRunId }, ...context.viewRuns().refs]),
     (refs, _previous, onCleanup) => { onCleanup(runStatus.hold(refs)) }, { immediate: true, deep: true })
-  watch(() => Object.values(contexts.value).flatMap((context) => [...context.index.agents.keys()].map((agentRunId) => [context, agentRunId, runStatus.statusOf(agentRunId)] as const)),
+  watch(() => Object.values(contexts.value).flatMap((context) => context.viewRuns().agentRunIds.map((agentRunId) => [context, agentRunId, runStatus.statusOf(agentRunId)] as const)),
     (entries) => { for (const [context, agentRunId, status] of entries) if (status) context.applyRunStatus(agentRunId, status as AgentStatus) }, { immediate: true })
   watch(() => Object.keys(contexts.value).map((hostRunId) => [hostRunId, runStatus.treeRevisionOf({ kind: 'agent', runId: hostRunId })] as const),
     (next, previous) => {
