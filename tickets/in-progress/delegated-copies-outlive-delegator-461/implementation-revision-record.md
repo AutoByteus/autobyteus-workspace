@@ -991,3 +991,4 @@ The current code and `implementation-handoff.md` remain authoritative.
   - IMP-85: `codegen:check` is current; web type gate PASS and 5763 passed; server type gate PASS and unit 8080 passed, with 3 failed in two folder watcher files (alone 27/27 twice).
 - Remaining risks: PMU-019's probe selector (above); the server's integration suite is not rerun (the server change is the Task view's field and its resolver).
 - Next recipient: Code Reviewer, a targeted delta on the card's open path.
+- Result: Code Review **Pass (CRR-040**, `code-review-report.md` round 29, head `a4641a0985`): CR-461-076 resolved. The reviewer routes to API/E2E.
