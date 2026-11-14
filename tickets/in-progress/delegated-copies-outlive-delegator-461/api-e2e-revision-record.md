@@ -17,6 +17,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-009 | Code Reviewer, `code-review-report.md` CRR-035, round 9 | SR-078, IR-025, IR-026 (code `f92881dd13`), CRR-033 … CRR-035 | Fail / 86% | Fail / 89% |
 | API-REV-010 | Code Reviewer, `code-review-report.md` CRR-038, round 10 | SR-079, IR-027, IR-028 (code `15c41ad242`), CRR-036 … CRR-038 | Fail / 89% | Fail / 88% |
 | API-REV-011 | Code Reviewer, `code-review-report.md` CRR-040, round 11 | SR-080, CR-461-076 (code `a4641a0985`), CRR-039, CRR-040 | Fail / 88% | Fail / 87% |
+| API-REV-012 | Code Reviewer, `code-review-report.md` CRR-042, round 12 | CR-461-077 (code `5b455a9ec7`), CRR-041, CRR-042 | Fail / 87% | Fail / 87% |
 
 ## Revision Entries
 
@@ -491,3 +492,28 @@ None
 - New or remaining failure IDs: F-56, F-57 (`Local Fix`, web); F-59 (candidate)
 - Recommended owner: Implementation Engineer, confirmed by failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the report's "Stale, rewrite waiting", "Unclassified" and Next Round notes.
+
+### API-REV-012: round 12; F-57 and F-59 resolved; every remaining suite run; F-60 … F-66
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-042 at `5b455a9ec7`), API/E2E round 12
+- Triggering finding or case IDs: CR-461-077 (F-57: RSM-04, RSM-06, DCP-001, AFS-001); F-59 (SDV-06 from the Workspace and Projects pages); the rest in one round: API-P04, API-F01, the SSR cases, the live `agent-initiated-collaborators`, the remaining stale rewrites, BR-011
+- Related revision IDs: CRR-041, CRR-042; FU-030
+- Why this revision was recorded: the reviewer asked for every remaining probe and suite in this round so the fixes come back together
+- Coverage decisions or durable test paths changed: the report's "Durable Coverage Changed" (DLD, AFS, SSR, DCR, LRL, osfr, PLN, SDV); DLP-006 retired (DS-10 item 6)
+- Cases added, changed, removed, or rechecked: runner scripts `/tmp/api461/r12-web-1.sh`, `r12-web-2.sh`, `r12-batch3.sh`, `r12-web-4.sh`, `r12-f01.sh`; API-P04 capture `/tmp/api461/p04/`
+- Commands, environment, fixture, or broader-validation delta: the base worktree got its own install (its `node_modules` had been symlinks to the branch's, so the first base runs were discarded); ENV-5 (fresh clone), ENV-6 (DeepSeek through the test vault)
+
+#### Prior Failure Resolution
+
+| Prior ID | Classification | Now | Proven By |
+| --- | --- | --- | --- |
+| F-57 | Local Fix (web) | Resolved | RSM 7/7 |
+| F-59 | Local Fix (web) | Resolved | SDV-06, both surfaces |
+| F-56 | rejected (CRR-041) | — | — |
+
+- Canonical artifacts and sections updated: the execution report; the progress log; `follow-ups.md` FU-030 (DLP-004, DCP-004); `evidence/api-e2e/*r12*`.
+- Prior result and confidence: Fail / 87%
+- Current result and confidence: Fail / 87%
+- New or remaining failure IDs: F-60, F-61, F-62, F-64, F-65, F-66 (`Local Fix`); F-63 (`Unclear`, security-relevant); PLN-09 (`Unclear`)
+- Recommended owner: per the failure-origin review.
+- Remaining risks, blocked evidence, or untested scope: the live suite's rewrite (LE-A1 … LE-T1) and the large-hub redesign wait for the fix; BR-011 unclassified; signing and other platforms (runner only); the background-task live suites Not Tested (safety).

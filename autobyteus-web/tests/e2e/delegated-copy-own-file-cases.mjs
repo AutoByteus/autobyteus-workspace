@@ -95,8 +95,9 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const j = file.json
     const missing = LAUNCH_KEYS.filter((k) => !(k in j))
     assert(missing.length === 0 && j.runtimeKind === AGY && j.llmModelIdentifier === model && typeof j.autoExecuteTools === 'boolean', `${label}: own file holds the full started launch`, { missing, file })
-    assert(j.taskAgent?.address === address && j.taskAgent?.launchSource?.origin === 'configured', `${label}: own file records the configured launch source`, file)
-    assert(!('origin' in j.taskAgent), `${label}: own file has no taskAgent.origin`, file)
+    // autobyteus-461 E6: `address` and `launchSource` are the run's own fields, with `delegatedFrom`; no `taskAgent`.
+    assert(j.address === address && j.launchSource?.origin === 'configured', `${label}: own file records the configured launch source`, file)
+    assert(!('taskAgent' in j) && j.delegatedFrom?.delegatingRun, `${label}: own file names its delegating run, no taskAgent`, file)
   }
   /** The runtime session a Team copy's member recorded (its own tree, by member run ID). */
   const leadSession = (teamRunId, agentRunId) => waitFor('Team copy member session recorded', async () => {
@@ -322,15 +323,16 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assertAgentOwnFile(r.cwOwnFile, { address: '/writer', model: ALT }, 'CW')
     r.cpOwnFile = await ownFile(r.cp, 'team_run_execution_tree.json')
     const cpTree = r.cpOwnFile.json
-    r.cpLead = r.cpLead ?? objectsIn(cpTree).find((x) => x.address === '/pair/lead' && pick(x, 'agentRunId'))?.agentRunId
+    // autobyteus-461 TC-12 / E6t: a delegated team's own file is rooted at `/` (members `/lead`, `/engineer`), no `followsTeam`.
+    r.cpLead = r.cpLead ?? objectsIn(cpTree).find((x) => x.address === '/lead' && pick(x, 'agentRunId'))?.agentRunId
     r.cpLeadLaunches = await waitLaunches('CP lead started', r.cpLead, 1)
     assert(r.cpLeadLaunches[0][0] === ALT, 'CP lead should start on the Team slot (ALT)', r.cpLeadLaunches)
     r.cpLeadSession = await leadSession(r.cp, r.cpLead)
-    const cpMembers = objectsIn(cpTree).filter((x) => typeof x.address === 'string' && x.address.startsWith('/pair/') && 'followsTeam' in x)
-    r.cpMemberFacts = cpMembers.map((m) => ({ address: m.address, model: modelOf(m.launchConfiguration), followsTeam: m.followsTeam, keys: Object.keys(m.launchConfiguration ?? {}).sort() }))
-    assert(cpMembers.length === 2 && cpMembers.every((m) => m.launchConfiguration && typeof m.followsTeam === 'boolean'), 'CP own tree: every member has its launch and followsTeam', { cpMemberFacts: r.cpMemberFacts, cpTree })
-    assert(cpTree.taskAgent && !('origin' in cpTree.taskAgent) && cpTree.taskAgent.launchSource?.origin === 'configured', 'CP own tree: configured launch source, no taskAgent.origin', cpTree.taskAgent)
-    r.cpOwnTreeExcerpt = { path: r.cpOwnFile.path, taskAgent: cpTree.taskAgent, members: r.cpMemberFacts, handoffs: objectsIn(cpTree).find((x) => Array.isArray(x.handoffs))?.handoffs ?? null }
+    const cpMembers = objectsIn(cpTree).filter((x) => typeof x.address === 'string' && x.address !== '/' && x.launchConfiguration && pick(x, 'agentRunId'))
+    r.cpMemberFacts = cpMembers.map((m) => ({ address: m.address, model: modelOf(m.launchConfiguration), keys: Object.keys(m.launchConfiguration ?? {}).sort() }))
+    assert(cpMembers.length === 2 && cpMembers.every((m) => m.launchConfiguration && !('followsTeam' in m)), 'CP own tree: every member has its own launch (no followsTeam)', { cpMemberFacts: r.cpMemberFacts, cpTree })
+    assert(!('taskAgent' in cpTree) && cpTree.delegatedFrom?.delegatingRun && cpTree.rootTeam?.address === '/', 'CP own tree: rooted at /, names its delegating run, no taskAgent', { delegatedFrom: cpTree.delegatedFrom, root: cpTree.rootTeam?.address })
+    r.cpOwnTreeExcerpt = { path: r.cpOwnFile.path, delegatedFrom: cpTree.delegatedFrom, members: r.cpMemberFacts, handoffs: objectsIn(cpTree).find((x) => Array.isArray(x.handoffs))?.handoffs ?? null }
 
     // AC-004: Settings rows.
     await settingsView(page)
@@ -453,23 +455,24 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     await selectOrgManager(page)
     const factsOf = async (teamRunId) => Object.fromEntries(objectsIn((await ownFile(teamRunId, 'team_run_execution_tree.json')).json)
-      .filter((x) => typeof x.address === 'string' && 'followsTeam' in x)
+      .filter((x) => typeof x.address === 'string' && x.address !== '/' && x.launchConfiguration && pick(x, 'agentRunId'))
       .map((m) => [m.address, { runtime: m.launchConfiguration.runtimeKind, model: modelOf(m.launchConfiguration), auto: m.launchConfiguration.autoExecuteTools,
-        workspace: m.launchConfiguration.workspaceRootPath, followsTeam: m.followsTeam }]))
+        workspace: m.launchConfiguration.workspaceRootPath, followsTeam: 'followsTeam' in m }]))
     // (a) with auto-approve: the Grok Team copy.
     r.gcpCall = await callFromComposer(page, 'manager → delegate /gpair', 'delegate_task', { recipient_address: '/gpair', description: 'Grok pair copy work GCP-MARKER-DCR3.' })
     r.gcp = delegatedId(r.gcpCall)
     assert(r.gcpCall.includes('"delegated":true') && r.gcp, 'copy of /gpair not delegated', r.gcpCall)
     r.gcpFacts = await factsOf(r.gcp)
-    assert(r.gcpFacts['/gpair/lead']?.followsTeam === true && r.gcpFacts['/gpair/lead'].auto === r.slots.gpairLead.auto && r.gcpFacts['/gpair/lead'].model === r.slots.gpair.model
-      && r.gcpFacts['/gpair/helper']?.followsTeam === false, 'Grok copy: the lead with its own auto-approve follows the Team (its approval kept); the AGY helper does not', r.gcpFacts)
+    // autobyteus-461 F-39 / TC-12: members are addressed from the team's own root and carry their resolved launch; no follow flag.
+    assert(r.gcpFacts['/lead']?.followsTeam === false && r.gcpFacts['/lead'].auto === r.slots.gpairLead.auto && r.gcpFacts['/lead'].model === r.slots.gpair.model
+      && r.gcpFacts['/helper']?.followsTeam === false, 'Grok copy: the lead starts on the Team model with its own auto-approve; the AGY helper on its own', r.gcpFacts)
     // (a) the Team-level choice reaching such a member: the AGY Team copy.
     r.cpCall = await callFromComposer(page, 'manager → delegate /pair', 'delegate_task', { recipient_address: '/pair', description: 'Pair copy work CP-MARKER-DCR3.' })
     r.cp = delegatedId(r.cpCall); r.cpLead = coordinatorRunIdOf(r.cpCall)
     assert(r.cpCall.includes('"delegated":true') && r.cp && r.cpLead, 'copy of /pair not delegated', r.cpCall)
     r.cpFacts = await factsOf(r.cp)
-    assert(r.cpFacts['/pair/lead']?.followsTeam === true && r.cpFacts['/pair/engineer']?.followsTeam === false,
-      'AGY copy: the lead (Team model) follows the Team; the Grok engineer (own default) does not', r.cpFacts)
+    assert(r.cpFacts['/lead']?.model === ALT && r.cpFacts['/engineer'] && /grok/i.test(r.cpFacts['/engineer'].runtime ?? ''),
+      'AGY copy: the lead starts on the Team model; the Grok engineer on its own default', r.cpFacts)
     r.leadFirst = await waitLaunches('CP lead started', r.cpLead, 1)
     assert(r.leadFirst[0][0] === ALT, 'CP lead should start on the Team model', r.leadFirst)
     r.leadSession = await leadSession(r.cp, r.cpLead)
@@ -486,10 +489,11 @@ export function registerDelegatedCopyOwnFileCases(h) {
     await saveSettings(page); await saved(page)
     r.cpRowAfter = await cardSummary(row())
     // A row on a user choice carries no source attribute; read the lead's own row by its key.
-    r.leadRowAfter = await summaryOf(groupRow(page, rowKey('/pair/lead', r.cpLead)))
-    r.engineerRowAfter = await summaryOf(groupRow(page, rowKey('/pair/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/pair/engineer' && x.agentRunId)?.agentRunId)))
-    assert(r.cpRowAfter.includes(MODEL_LABEL) && r.leadRowAfter.includes(MODEL_LABEL) && /grok/i.test(r.engineerRowAfter),
-      'Settings: the Team choice reaches the following lead; the engineer keeps its own Grok launch', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter })
+    r.leadRowAfter = await summaryOf(groupRow(page, rowKey('/lead', r.cpLead)))
+    r.engineerRowAfter = await summaryOf(groupRow(page, rowKey('/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/engineer' && x.agentRunId)?.agentRunId)))
+    // autobyteus-461 F-39 (SR-075): a team-level choice changes the team's default; each member keeps its own saved launch.
+    assert(r.cpRowAfter.includes(MODEL_LABEL) && !r.leadRowAfter.includes(MODEL_LABEL) && /grok/i.test(r.engineerRowAfter),
+      'Settings: the Team choice changes the team default; the lead and the engineer keep their own launches', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter })
     await shot(page, 'DCR-003-copy-team-model-saved-1280', 1280)
     await backToConversation(page)
     await selectOrgManager(page)
@@ -498,7 +502,7 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assert(r.resumeCall.includes('"accepted":true'), 'message to the CP lead not accepted', r.resumeCall)
     await waitLaunches('CP lead resumed', r.cpLead, from + 1)
     r.leadResumed = (await launches(r.cpLead)).slice(from)
-    assert(r.leadResumed.every(([model, conversation]) => model === MODEL && conversation === r.leadSession), 'the following lead of a configured-place Team copy takes the Team-level choice and resumes its own conversation', { resumed: r.leadResumed, own: r.leadSession })
+    assert(r.leadResumed.every(([model, conversation]) => model === ALT && conversation === r.leadSession), 'the lead keeps its own launch after the Team-level choice (F-39) and resumes its own conversation', { resumed: r.leadResumed, own: r.leadSession })
     return r
   })
 }

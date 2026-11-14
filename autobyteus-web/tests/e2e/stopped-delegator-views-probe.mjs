@@ -594,18 +594,27 @@ const caseTaskCardMatrix = async () => {
     const { page, errors, context } = await newPage();
     const record = {};
     try {
-      await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
-      await page.locator('[data-test="right-side-tab-list"] [data-tab-name="projects"]').click();
-      const panel = page.locator('[data-test="right-side-projects-panel"]');
-      await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
-      for (const [label, taskId, text] of [['agent worker', tAgent, 'Agent work.'], ['team worker', tTeam, 'Team work.']]) {
-        const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`).first();
-        await line.waitFor({ state: 'visible', timeout: 60000 });
-        await line.click();
-        await until(`${kind} delegator, ${label}: its own conversation in the center`, async () => {
-          const center = await centerText(page); return center.includes(text) && /You have a new task from/.test(center); }, 30000);
-        record[label] = 'opened';
-        await shot(page, `sdv-06-${kind}-${label.replace(/ /g, '-')}`);
+      // CRR-042 (F-59): from the Workspace page's docked Projects panel and from the Projects page's board.
+      for (const surface of ['workspace', 'projects']) {
+        for (const [label, taskId, text] of [['agent worker', tAgent, 'Agent work.'], ['team worker', tTeam, 'Team work.']]) {
+          let line;
+          if (surface === 'workspace') {
+            await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
+            await page.locator('[data-test="right-side-tab-list"] [data-tab-name="projects"]').click();
+            const panel = page.locator('[data-test="right-side-projects-panel"]');
+            await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+            line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`).first();
+          } else {
+            await page.goto(`${stack.frontendUrl}/projects/${projectId}`, { waitUntil: 'networkidle', timeout: 120000 });
+            line = page.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`).first();
+          }
+          await line.waitFor({ state: 'visible', timeout: 60000 });
+          await line.click();
+          await until(`${kind} delegator, ${surface}, ${label}: its own conversation in the center`, async () => {
+            const center = await centerText(page).catch(() => ''); return center.includes(text) && /You have a new task from/.test(center); }, 30000);
+          record[`${surface}: ${label}`] = 'opened';
+          await shot(page, `sdv-06-${kind}-${surface}-${label.replace(/ /g, '-')}`);
+        }
       }
       assert(errors.length === 0, 'browser errors', errors);
       out[kind] = record;

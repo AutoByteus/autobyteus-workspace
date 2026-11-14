@@ -396,20 +396,28 @@ export function registerLargeRunsLoadLessCases(h) {
       await shot(desk, 'LRL-004-team-tab-unavailable')
 
       // Resume: a message to the stopped run is refused with the reason, and the run stays stopped.
+      // autobyteus-461 rule 2: a stopped Team is restored by the member message on its view stream (base: the
+      // RestoreAgentTeamRun mutation), so the refusal is read from that stream's frames (and any GraphQL answer).
       const restores = [], consoleErrors = []
       desk.on('response', async (res) => { try { const b = res.request().postDataJSON(); if (b?.operationName === 'RestoreAgentTeamRun') restores.push(await res.text()) } catch { /* not JSON */ } })
+      desk.on('websocket', (ws) => ws.on('framereceived', (f) => { const text = typeof f.payload === 'string' ? f.payload : f.payload.toString('utf8'); if (/not valid JSON|restor|ERROR|error/i.test(text)) restores.push(text) }))
       desk.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()) })
       const resumeText = `Resume please ${t}.`
       await typeAndSend(desk, resumeText)
-      await waitFor('the restore response', async () => restores.length > 0, 60000, 250)
+      const reasonCount = async () => (await desk.locator('body').innerText()).split(r.expectedReason).length - 1
+      const reasonBefore = await reasonCount()
+      // The refusal: in the restore's answer (a stream frame or GraphQL) or shown again in the window; recorded either way.
+      r.refusalSeen = await waitFor('the restore refusal', async () => restores.some((x) => x.includes(r.expectedReason)) || (await reasonCount()) > reasonBefore, 60000, 250)
+        .then(() => true, () => false)
       await delay(1500)
+      r.userMessageShown = (await desk.locator('main').innerText()).includes(resumeText)
       r.restoreResponses = restores.map((x) => x.slice(0, 600))
       r.resumeConsoleErrors = consoleErrors.filter((x) => /sending|restor|JSON/i.test(x)).map((x) => x.slice(0, 300))
       r.activeAfterResume = await teamActive(r.teamRunId)
       r.composerStillHolds = (await desk.locator('main textarea:visible').last().inputValue()) === resumeText
       r.reasonVisibleAfterResume = (await desk.locator('body').innerText()).split(r.teamTabText.slice(-40)).length - 1
       assert(r.activeAfterResume === false, 'the run stays stopped', r.activeAfterResume)
-      assert(r.restoreResponses.some((x) => x.includes(r.expectedReason)), 'the server refuses the resume with the reason', { restoreResponses: r.restoreResponses, expected: r.expectedReason })
+      assert(r.refusalSeen, 'the resume is refused with the reason (AC-006)', { restoreResponses: r.restoreResponses, expected: r.expectedReason, composerStillHolds: r.composerStillHolds, userMessageShown: r.userMessageShown })
       await shot(desk, 'LRL-004-resume-refused')
     } finally { await desk.close() }
 
@@ -501,8 +509,10 @@ export function registerLargeRunsLoadLessCases(h) {
       await quiet(watch, 3000)
       r.resumeParticipantOps = countBy(watch.since(resumeMark, [PARTICIPANT_OP]))
       r.afterResume = await assertTabEqualsStored(run, 'after the resume', stored3, [`Running ${t} M1`, `Running ${t} M2`, `Resumed ${t} M3`])
-      assert(r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] === 1 && Object.keys(r.resumeParticipantOps).length === 1,
-        'the resume (a new live sequence) reloads the list once', r.resumeParticipantOps)
+      // autobyteus-461 SR-064: the open view stream follows the run through its restore, so the resume may keep the live
+      // sequence (no reload) or start a new one (one reload); either way the list equals the stored log (checked above).
+      assert((r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] ?? 0) <= 1 && Object.keys(r.resumeParticipantOps).every((k) => k === `${PARTICIPANT_OP}:${r.focused}`),
+        'the resume reloads at most the focused member\'s list, once', r.resumeParticipantOps)
       await shot(run, 'LRL-005-after-resume')
     } finally { watch.stop(); await run.close() }
     await stopTeamRun(r.teamRunId).catch(() => {})

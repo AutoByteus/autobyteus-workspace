@@ -333,7 +333,8 @@ const contentRoute = (subject, filePath) => {
     case 'run': return `/runs/${e(subject.runId)}/file-change-content?${p}`;
     case 'teamMember': return `/team-runs/${e(subject.teamRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?${p}`;
     case 'agentOrgMember': return `/agent-org-runs/${e(subject.orgRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?memberAddress=${e(subject.memberAddress)}&${p}`;
-    case 'standaloneMember': return `/agent-collaborations/${e(subject.hostRunId)}/agent-runs/${e(subject.agentRunId)}/file-change-content?memberAddress=${e(subject.memberAddress)}&${p}`;
+    // autobyteus-461 rule 2: a delegated copy's file content is served by its own run's route.
+    case 'standaloneMember': return `/runs/${e(subject.agentRunId)}/file-change-content?${p}`;
   }
   throw new Error(subject.kind);
 };
@@ -360,10 +361,13 @@ const apiTimings = async () => {
     result[`${file.label} content`] = await timed(() => restRaw(contentRoute(file.subject, file.path)), (r) => assert(r.status === 200 && r.text === file.text, `${file.label} content`, { status: r.status, text: r.text.slice(0, 200) }));
   }
   const copy = setup.files.find((f) => f.subject.kind === 'standaloneMember');
-  result['run-id list of a member (QR-002)'] = await timed(() => gqlRaw('query($r:String!){getRunFileChanges(runId:$r){id}}', { r: copy.subject.agentRunId }),
-    (r) => assert(r.ok && r.body.data.getRunFileChanges.length === 0, 'run-id list of a member is empty', r.body));
-  result['run-id content of a member (QR-002)'] = await timed(() => restRaw(contentRoute({ kind: 'run', runId: copy.subject.agentRunId }, copy.path)),
-    (r) => assert(r.status === 404, 'run-id content of a member is 404', r));
+  // autobyteus-461 rule 2: a delegated copy is its own run, so its run-id list holds its own files (base: a hub member's
+  // run-id list was empty, its files were the hub's).
+  result['run-id list of a delegated run (rule 2)'] = await timed(() => gqlRaw('query($r:String!){getRunFileChanges(runId:$r){id}}', { r: copy.subject.agentRunId }),
+    (r) => assert(r.ok && r.body.data.getRunFileChanges.some((e) => e.id.endsWith(`:${copy.path}`)), 'run-id list of a delegated run has its own file', r.body));
+  // autobyteus-461 rule 2: the copy's content is read by its own run route (base: 404, the hub owned it).
+  result['run-id content of a delegated run (rule 2)'] = await timed(() => restRaw(contentRoute({ kind: 'run', runId: copy.subject.agentRunId }, copy.path)),
+    (r) => assert(r.status === 200 && r.text === copy.text, 'run-id content of a delegated run is its own file', { status: r.status, text: r.text.slice(0, 200) }));
   // Control: a read that still scans every saved team, org and hub tree (team-member context-file owner lookup, FU-A).
   result['control: scanning context-file read (FU-A)'] = await timed(() => restRaw(`/team-runs/${encodeURIComponent(setup.hubRunId)}/agent-runs/unknown_agent_run/context-files/missing.txt`),
     (r) => assert(r.status === 404, 'scanning control answers 404', r));
@@ -613,7 +617,7 @@ const journeys = [
     opened.push(await openArtifact(leadFile));
     for (const label of ['org-root task agent', 'org member-team task agent']) {
       const file = fileOf(label);
-      await page.locator(`[data-test="agent-org-task-agent-row-${file.subject.agentRunId}"]`).click();
+      await page.locator(`[data-test="agent-org-task-agent-row-${file.subject.runId ?? file.subject.agentRunId}"]`).click();
       opened.push(await openArtifact(file));
     }
     await shot('B-003-org-task-agent-file');

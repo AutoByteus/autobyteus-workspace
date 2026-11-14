@@ -939,8 +939,20 @@ const archiveAndDelete = async () => {
     await group2.hover();
     await pSection.locator(T(`workspace-agent-group-archive-${s.ids.manager}`)).first().click();
     const dialogText = (await page.locator('[role="dialog"], [role="alertdialog"]').last().innerText().catch(() => '')).replace(/\s+/g, ' ');
+    // Diagnostics (AC-008): what each archive call answers, and what the window shows after it.
+    const archiveAnswers = [];
+    const onArchive = async (res) => { try { const q = res.request().postDataJSON()?.query ?? ''; if (/archive/i.test(q)) archiveAnswers.push({ query: /(mutation|query)\s*(\w*)/.exec(q)?.[0] ?? '', variables: res.request().postDataJSON()?.variables ?? null, body: (await res.text()).slice(0, 1500) }); } catch { /* not JSON */ } };
+    page.on('response', onArchive);
+    evidence.cases['PLN-09-archive-answers'] = archiveAnswers;
     await page.locator('button', { hasText: /^Archive all$/ }).last().click();
-    await until('P group archive done', async () => (await listedRunIds(pSection)).length === 0, 30000);
+    await sleep(4000);
+    page.off('response', onArchive);
+    evidence.cases['PLN-09-after-archive-text'] = (await page.locator('body').innerText()).replace(/\s+/g, ' ').slice(0, 3000);
+    await until('P group archive done', async () => (await listedRunIds(pSection)).length === 0, 30000).catch(async (error) => {
+      // Record what is left and what the page says (REQ-007's refusal names the working runs).
+      const body = (await page.locator('body').innerText().catch(() => '')).split('\n').filter((l) => /delegat|working|can't|cannot|refus/i.test(l)).slice(0, 8);
+      throw Object.assign(error, { details: { left: await listedRunIds(pSection), dialogText, notices: body } });
+    });
     const ws = await workspaceRunIds();
     assert(ws.includes(outsider), 'Archive all in P archived a run not under P');
     assert(!ws.includes(s.runs.A), 'Archive all left a P run in Workspaces');

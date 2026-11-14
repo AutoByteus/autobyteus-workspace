@@ -11,13 +11,24 @@ export function registerSavedRefreshCases(h) {
   const { defineCase, assert, waitFor, delay, sel, startManagerChat, callFromComposer, address,
     agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
     openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
-    modelLocked, conversationText, focusedCard, subjectCard, groupRow, cardSummary } = h
+    modelLocked, conversationText, focusedCard, subjectCard, groupRow, cardSummary, gql, teamTree } = h
+  // autobyteus-461 rule 2 / SR-064: a delegated run's Save is its own stopped-run save, so what was saved is read from that
+  // run itself (base kept the edit as `userLaunchSelection` / `userTeamLaunchSelection` in the delegator's tree).
+  const ownAgent = async (runId) => (await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{llmModelIdentifier llmConfig runtimeKind}}}', { id: runId }))
+    .getAgentRunResumeConfig?.metadataConfig ?? null
+  const ownTeam = async (teamRunId) => {
+    const tree = await teamTree(teamRunId)
+    const launch = (config) => config ? { model: pick(config, 'llmModelIdentifier') ?? null, llmConfig: pick(config, 'llmConfig') ?? null } : null
+    const root = objectsIn(tree).find((x) => x.defaultLaunchConfiguration || x.default_launch_configuration)
+    return { team: launch(root?.defaultLaunchConfiguration ?? root?.default_launch_configuration),
+      members: Object.fromEntries(objectsIn(tree).filter((m) => typeof m.address === 'string' && m.address !== '/' && pick(m, 'agentRunId') && pick(m, 'launchConfiguration'))
+        .map((m) => [m.address.slice(1), launch(pick(m, 'launchConfiguration'))])) }
+  }
   // autobyteus-366: a copy's settings show when it is focused in the left tree (its card); a Team copy's own settings and its
   // members' rows are its group view.
   const summary = async row => await row.locator(sel('run-member-summary')).count()
     ? row.locator(sel('run-member-summary')).first().innerText().then(s => s.replace(/\s+/g, ' ').trim())
     : cardSummary(row)
-  const storedAgent = async (root, id) => objectsIn(await agentTree(root)).find(r => pick(r, 'agentRunId') === id && (pick(r, 'startedAt') || pick(r, 'addedViaAgentRunId')))
   const saved = p => waitFor('canonical Save settled', async () => /^\s*Saved\./.test(await saveBarText(p)), 60000)
   async function start(p, marker) {
     const runId = await startManagerChat(p, MODEL, `Hello. Marker ${marker}.`)
@@ -39,6 +50,13 @@ export function registerSavedRefreshCases(h) {
     await openSettings(p) // Required stop parent -> gear entry, no forced store state.
     assert(await p.locator(sel('existing-run-settings')).getAttribute('data-state') === 'stopped', 'Parent must be stopped before editing')
   }
+  /** autobyteus-461 REQ-001: a copy outlives its delegator's Stop; it is stopped as itself (its Settings header stop icon). */
+  async function stopCopy(p, id, { team = false } = {}) {
+    const card = await focusedCard(p, id, { group: team })
+    const stop = p.locator(sel('run-member-stop'))
+    if (await stop.isVisible().catch(() => false)) await stop.click()
+    await waitFor(`copy ${id} stopped`, async () => !(await stop.isVisible().catch(() => false)) && !(await modelLocked(card)), 90000, 1000)
+  }
   async function assertVisible(p, row, label) {
     // A focused agent's card is always open (no disclosure).
     const state = { summary: await summary(row), editor: await row.locator(sel('chat-model-trigger')).first().innerText(),
@@ -59,14 +77,14 @@ export function registerSavedRefreshCases(h) {
     const request = req => {
       if (!req.url().endsWith('/graphql') || req.method() !== 'POST') return
       const body = req.postDataJSON()
-      if (!/UpdateDelegatedLaunchSelections|AgentRunCollaboration|GetAgentRunResumeConfig/.test(body.query ?? '')) return
+      if (!/UpdateStoppedAgentRunSelection|UpdateStoppedTeamRunSelections|AgentRunCollaboration|GetAgentRunResumeConfig|GetTeamRunResumeConfig/.test(body.query ?? '')) return
       const entry = { query: body.query, variables: body.variables, at: new Date().toISOString() }; records.push(entry)
       pending.push(req.response().then(async r => { entry.status = r?.status(); entry.response = r ? await r.json().catch(() => null) : null }).catch(e => { entry.error = e.message }))
     }
     p.on('request', request)
     return { records, stop: async () => { p.off('request', request); await Promise.all(pending); return records } }
   }
-  const mutationCount = records => records.filter(r => /mutation UpdateDelegatedLaunchSelections/.test(r.query)).length
+  const mutationCount = records => records.filter(r => /mutation UpdateStopped(AgentRunSelection|TeamRunSelections)/.test(r.query)).length
 
   defineCase('SSR-001', 'AC-001/004/005/006 stopped parent -> gear -> Agent copy + a second Agent copy Save, repeat, cancel and reopen', async p => {
     const r = {}, trace = wire(p)
@@ -75,36 +93,35 @@ export function registerSavedRefreshCases(h) {
       r.copyId = await copy(p, 'writer'); r.neighborId = await copy(p, 'writer')
       // collaboration-model-contract: there are no collaborators; a third Agent copy (of Plain) is changed the same way.
       r.collaboratorId = await copy(p, 'plain')
-      const copyKey = `${address('writer')}@${r.copyId}`, collabKey = `${address('plain')}@${r.collaboratorId}`
       await stopParent(p)
-      const beforeTree = await agentTree(r.runId)
+      // autobyteus-461 REQ-001: the parent's Stop leaves its copies working; each is stopped as itself before its Save.
+      for (const id of [r.copyId, r.neighborId, r.collaboratorId]) await stopCopy(p, id)
+      r.neighborBefore = await ownAgent(r.neighborId)
       const ids = [r.runId, r.copyId, r.neighborId, r.collaboratorId]
       const launches = () => Promise.all(ids.map(agyLaunchDetailsOf))
       r.launchesBefore = await launches()
       const row = await focusedCard(p, r.copyId)
       r.firstSave = await saveSameView(p, row, MODEL, MODEL_LABEL)
-      r.firstCanonical = await storedAgent(r.runId, r.copyId)
-      assert(pick(r.firstCanonical, 'userLaunchSelection')?.llmModelIdentifier === MODEL, 'Saved API value differs from mounted editor', r.firstCanonical)
+      r.firstCanonical = await ownAgent(r.copyId)
+      assert(r.firstCanonical?.llmModelIdentifier === MODEL, 'Saved API value differs from mounted editor', r.firstCanonical)
       await shot(p, 'SSR-001-first-same-view')
       r.secondSave = await saveSameView(p, row, ALT, ALT_LABEL)
-      assert(pick(await storedAgent(r.runId, r.copyId), 'userLaunchSelection')?.llmModelIdentifier === ALT, 'Second Save not canonical')
+      assert((await ownAgent(r.copyId))?.llmModelIdentifier === ALT, 'Second Save not canonical')
       const count = mutationCount(trace.records)
       await chooseCopyModel(p, row, MODEL)
       await p.locator(sel('existing-run-cancel')).click()
       r.cancelled = await assertVisible(p, row, ALT_LABEL)
       assert(mutationCount(trace.records) === count, 'Cancel caused a write')
       r.collaboratorSave = await saveSameView(p, await focusedCard(p, r.collaboratorId), ALT, ALT_LABEL)
-      assert(pick(await storedAgent(r.runId, r.collaboratorId), 'userLaunchSelection')?.llmModelIdentifier === ALT, 'Collaborator Save not canonical')
+      assert((await ownAgent(r.collaboratorId))?.llmModelIdentifier === ALT, 'Collaborator Save not canonical')
       await shot(p, 'SSR-001-collaborator-saved')
-      const afterTree = await agentTree(r.runId)
-      const neighbor = tree => objectsIn(tree).find(x => pick(x, 'agentRunId') === r.neighborId && pick(x, 'startedAt'))
-      assert(JSON.stringify(neighbor(afterTree)) === JSON.stringify(neighbor(beforeTree)), 'Neighbor instance mutated')
+      r.neighborAfter = await ownAgent(r.neighborId)
+      assert(JSON.stringify(r.neighborAfter) === JSON.stringify(r.neighborBefore), 'Neighbor instance mutated', { before: r.neighborBefore, after: r.neighborAfter })
       r.launchesAfter = await launches()
       assert(JSON.stringify(r.launchesAfter) === JSON.stringify(r.launchesBefore), 'Save/cancel caused runtime start/resume')
       await backToConversation(p)
       r.reopened = await assertVisible(p, await focusedCard(p, r.copyId), ALT_LABEL)
       assert(JSON.stringify(await launches()) === JSON.stringify(r.launchesBefore), 'Reopen resumed stopped root')
-      r.treeAfter = afterTree
       return r
     } catch (error) { error.details = r; throw error } finally { r.wire = await trace.stop() }
   })
@@ -119,25 +136,32 @@ export function registerSavedRefreshCases(h) {
       await callFromComposer(p, 'delegate Pair B', 'delegate_task', { recipient_address: address('pair'), description: 'Pair B settings.' })
       r.neighbor = await waitFor('Pair B', async () => teamCopies(await agentTree(r.runId), 'pair').find(x => pick(x, 'teamRunId') !== r.copyId))
       await stopParent(p)
-      r.neighbor = teamCopies(await agentTree(r.runId), 'pair').find(x => pick(x, 'teamRunId') !== r.copyId)
-      const teamKey = `${address('pair')}@${r.copyId}`, memberKey = n => `${address('pair')}/${n}@${r.members[n]}`
+      r.neighborId = pick(r.neighbor, 'teamRunId')
+      await stopCopy(p, r.members.lead, { team: true }); await stopCopy(p, membersOf(r.neighbor).lead, { team: true })
+      r.neighborBefore = await ownTeam(r.neighborId)
+      r.ownBefore = await ownTeam(r.copyId)
+      // autobyteus-461 TC-12: a delegated team is rooted at `/`; its member rows carry their own addresses.
+      const memberKey = n => `/${n}@${r.members[n]}`
       // An explicit member choice made before changing the Team must not be overwritten by inheritance (the member's own card).
       r.memberSave = await saveSameView(p, await focusedCard(p, r.members.unoffered), MODEL, MODEL_LABEL)
       // The Team copy's group view: its card and its members' rows.
       const teamCard = await focusedCard(p, r.members.unoffered, { group: true })
       const engineerBefore = await summary(groupRow(p, memberKey('engineer')))
+      // autobyteus-461 F-39 (SR-075): a team-level Save changes the team's own default only; each member keeps its own launch.
+      const leadBefore = await summary(groupRow(p, memberKey('lead')))
       r.teamSave = await saveSameView(p, teamCard, MODEL, MODEL_LABEL)
-      r.following = await summary(groupRow(p, memberKey('lead')))
-      assert(r.following.includes(MODEL_LABEL), 'Team follower did not refresh', r)
+      r.leadAfterTeamSave = await summary(groupRow(p, memberKey('lead')))
+      assert(r.leadAfterTeamSave === leadBefore, 'a team-level Save changed a member\'s own launch (F-39)', { before: leadBefore, after: r.leadAfterTeamSave })
       assert(await summary(groupRow(p, memberKey('engineer'))) === engineerBefore, 'Own-default member changed')
       r.teamSecond = await saveSameView(p, teamCard, ALT, ALT_LABEL)
-      assert((await summary(groupRow(p, memberKey('lead')))).includes(ALT_LABEL), 'Follower second save stale')
+      assert(await summary(groupRow(p, memberKey('lead'))) === leadBefore, 'a second team-level Save changed a member\'s own launch (F-39)')
       r.ownMember = await assertVisible(p, await focusedCard(p, r.members.unoffered), MODEL_LABEL)
-      r.canonical = teamCopies(await agentTree(r.runId), 'pair')
-      const current = r.canonical.find(x => pick(x, 'teamRunId') === r.copyId)
-      assert(pick(current, 'userTeamLaunchSelection')?.llmModelIdentifier === ALT, 'Team canonical differs')
-      assert(pick(current.members.find(x => pick(x, 'agentRunId') === r.members.unoffered), 'userLaunchSelection')?.llmModelIdentifier === MODEL, 'Own member canonical differs')
-      assert(JSON.stringify(r.canonical.find(x => pick(x, 'teamRunId') !== r.copyId)) === JSON.stringify(r.neighbor), 'Neighbor Team changed')
+      r.ownAfter = await ownTeam(r.copyId)
+      assert(r.ownAfter.team?.model === ALT, 'Team canonical differs', r.ownAfter)
+      assert(r.ownAfter.members.unoffered?.model === MODEL, 'Own member canonical differs', r.ownAfter)
+      assert(['lead', 'engineer'].every((n) => JSON.stringify(r.ownAfter.members[n]) === JSON.stringify(r.ownBefore.members[n])), 'members kept their own launches', { before: r.ownBefore, after: r.ownAfter })
+      r.neighborAfter = await ownTeam(r.neighborId)
+      assert(JSON.stringify(r.neighborAfter) === JSON.stringify(r.neighborBefore), 'Neighbor Team changed', { before: r.neighborBefore, after: r.neighborAfter })
       await shot(p, 'SSR-002-team-followers-own-choice')
       return r
     } catch (error) { error.details = r; throw error } finally { r.wire = await trace.stop() }
@@ -149,40 +173,51 @@ export function registerSavedRefreshCases(h) {
     try {
       r.runId = await start(p, 'SSR-003'); r.copyId = await copy(p, 'writer')
       await stopParent(p)
+      await stopCopy(p, r.copyId)
       const row = await focusedCard(p, r.copyId)
       r.launchesBefore = await agyLaunchDetailsOf(r.copyId)
+      r.storedBefore = await ownAgent(r.copyId)
       let failWrite = true, failRead = false
       handler = async route => {
         const body = route.request().postDataJSON(), q = body?.query ?? ''
-        if (/mutation UpdateDelegatedLaunchSelections/.test(q)) {
+        if (/mutation UpdateStoppedAgentRunSelection/.test(q)) {
           if (failWrite) { failWrite = false; return route.abort('failed') }
           const response = await route.fetch()
           const result = await response.json()
-          assert(result.data?.updateDelegatedLaunchSelections?.success, 'Expected real committed write before failed read', result)
+          assert(result.data?.updateStoppedAgentRunSelection?.success, 'Expected real committed write before failed read', result)
           r.committed = result; failRead = true
           return route.fulfill({ response })
         }
-        if (failRead && /query GetAgentRunCollaboration\(/.test(q)) return route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ errors: [{ message: 'owned readback transport outage' }] }) })
+        // After the committed write every read fails (whichever the editor uses to reload: rule 2 changed them).
+        if (failRead && /^\s*query\b/.test(q)) { (r.failedReads ??= []).push(/query\s+(\w+)/.exec(q)?.[1] ?? 'anonymous'); return route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ errors: [{ message: 'owned readback transport outage' }] }) }) }
         return route.continue()
       }
       await p.route('**/graphql', handler)
       await chooseCopyModel(p, row, MODEL); await saveSettings(p)
       await waitFor('write failure retained dirty controls', async () => await p.locator(sel('existing-run-note')).isVisible() && /Unsaved/.test(await saveBarText(p)))
       r.writeFailure = await p.locator(sel('existing-run-note')).innerText()
-      assert(!pick(await storedAgent(r.runId, r.copyId), 'userLaunchSelection'), 'Failed write recorded a choice')
+      assert(JSON.stringify(await ownAgent(r.copyId)) === JSON.stringify(r.storedBefore), 'Failed write recorded a choice')
       assert(!(await modelLocked(row)), 'Write failure should permit correcting/retrying edit')
       await shot(p, 'SSR-003-write-failed-recoverable')
       await saveSettings(p)
-      await waitFor('saved but refresh failed', async () => await p.locator(sel('existing-run-settings')).getAttribute('data-state') === 'refresh-required')
-      r.readFailure = await p.locator(sel('existing-run-note')).innerText()
-      assert(/saved/i.test(r.readFailure) && /refresh/i.test(r.readFailure) && !/^\s*Saved\./.test(await saveBarText(p)), 'Read failure falsely presented success', r)
-      assert(await modelLocked(row), 'Committed unrefreshed rows must be locked')
-      assert(pick(await storedAgent(r.runId, r.copyId), 'userLaunchSelection')?.llmModelIdentifier === MODEL, 'Write was not actually committed')
+      // autobyteus-461 SR-064 / CR-461-077: a saved row shows its run's own save answer at once, so after a committed write
+      // "Saved." with the saved model is the truth even when reads fail; otherwise the editor must ask for a Refresh.
+      // Never: "Saved." beside a model that was not saved.
+      r.readFailureState = await waitFor('the committed Save settled with reads failing', async () => {
+        const state = await p.locator(sel('existing-run-settings')).getAttribute('data-state')
+        const bar = await saveBarText(p)
+        if (state === 'refresh-required' || /^\s*Saved\./.test(bar)) return { state, bar, note: await p.locator(sel('existing-run-note')).innerText().catch(() => null), summary: await summary(row) }
+        return null
+      }, 60000, 500)
+      assert((r.readFailureState.state === 'refresh-required' && /refresh/i.test(r.readFailureState.note ?? ''))
+        || (/^\s*Saved\./.test(r.readFailureState.bar) && r.readFailureState.summary.includes(MODEL_LABEL)), 'Read failure falsely presented success', r)
+      assert((await ownAgent(r.copyId))?.llmModelIdentifier === MODEL, 'Write was not actually committed')
       await shot(p, 'SSR-003-saved-refresh-needed')
       const count = mutationCount(trace.records)
       await p.unroute('**/graphql', handler); handler = null
-      await p.locator(sel('existing-run-refresh')).click()
-      await waitFor('Refresh unlocked canonical editor', async () => await p.locator(sel('existing-run-settings')).getAttribute('data-state') === 'stopped' && !(await modelLocked(row)))
+      if (r.readFailureState.state === 'refresh-required') await p.locator(sel('existing-run-refresh')).click()
+      else { await backToConversation(p); await openSettings(p); await focusedCard(p, r.copyId) }
+      await waitFor('canonical editor after the reads recover', async () => await p.locator(sel('existing-run-settings')).getAttribute('data-state') !== 'refresh-required' && !(await modelLocked(row)))
       r.reconciled = await assertVisible(p, row, MODEL_LABEL)
       assert(mutationCount(trace.records) === count, 'Refresh resaved instead of reading')
       assert(JSON.stringify(await agyLaunchDetailsOf(r.copyId)) === JSON.stringify(r.launchesBefore), 'Save/Refresh resumed copy')
@@ -199,6 +234,7 @@ export function registerSavedRefreshCases(h) {
       const team = await waitFor('Pair team', async () => teamCopies(await agentTree(r.runId), 'pair')[0])
       r.teamId = pick(team, 'teamRunId'); r.members = membersOf(team)
       await stopParent(p)
+      await stopCopy(p, r.members.lead, { team: true })
       const row = await focusedCard(p, r.members.engineer), view = await p.locator(sel('existing-run-settings')).elementHandle(), url = p.url()
       r.saves = []
       for (const effort of ['low', 'xhigh']) {
@@ -211,9 +247,8 @@ export function registerSavedRefreshCases(h) {
         await p.keyboard.press('Escape')
         await saveSettings(p); await saved(p)
         assert(p.url() === url && await view.evaluate(e => e.isConnected), 'Settings remounted or navigated for settings-only Save')
-        const canonical = teamCopies(await agentTree(r.runId), 'pair').find(x => pick(x, 'teamRunId') === r.teamId)
-        const member = canonical.members.find(x => pick(x, 'agentRunId') === r.members.engineer)
-        const selection = pick(member, 'userLaunchSelection')
+        const member = (await ownTeam(r.teamId)).members.engineer
+        const selection = member ? { llmModelIdentifier: member.model, llmConfig: member.llmConfig } : null
         assert(selection?.llmModelIdentifier === 'grok-4.7' && selection?.llmConfig?.reasoning_effort === effort, 'Same-model settings not accepted by backend', member)
         const displayed = await row.locator(sel('chat-thinking-trigger')).innerText()
         assert(effort === 'low' ? /Low/i.test(displayed) : /Extra High|Xhigh/i.test(displayed), 'Thinking control stale after Save', displayed)

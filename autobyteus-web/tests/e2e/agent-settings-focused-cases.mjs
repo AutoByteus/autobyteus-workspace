@@ -24,6 +24,9 @@ export function registerAgentSettingsFocusedCases(h) {
     conversationText, openSettings, backToConversation, openSidebarAgent, openTeamRun, expandWorkspaces, saveSettings, saveBarText,
     agentTree, teamTree, teamRunIds, objectsIn, pick, agyLaunchesOf, offerAgyModels,
     AGY, GROK, GROK_MODEL, MODEL, ALT, RETIRING, MODEL_LABEL, ALT_LABEL, RETIRING_LABEL, env } = h
+  /** autobyteus-461 SR-064: a delegated copy's saved launch is its own run's (base kept `userLaunchSelection` in the delegator's tree). */
+  const ownLaunch = async (runId) => (await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{llmModelIdentifier runtimeKind}}}', { id: runId }))
+    .getAgentRunResumeConfig?.metadataConfig ?? null
 
   const tag = () => randomUUID().slice(0, 4)
   /** A case keeps what it recorded (`keep(r)`) when it fails: the probe stores error.details. */
@@ -127,7 +130,7 @@ export function registerAgentSettingsFocusedCases(h) {
     r.afterGroup = await waitSubject(page, 'copy B again', 'Beta')
     assertOneCard(r.afterGroup, 'a focus change returns from the group view')
 
-    // Stop the hub; every copy is editable. Hub: card and hint, nothing else.
+    // Stop the hub. Hub: card and hint, nothing else.
     await runRow(page, r.hubRunId).click(); await settle(page, 1500)
     r.stayedOpen = (await facts(page)).open
     assert(r.stayedOpen, 'focusing the hub inside the same run keeps Settings open', r.stayedOpen)
@@ -137,6 +140,14 @@ export function registerAgentSettingsFocusedCases(h) {
     r.hubStopped = await facts(page)
     assert(r.hubStopped.rootCard && r.hubStopped.hint && r.hubStopped.list === 0 && r.hubStopped.memberRows === 0, 'stopped hub: its card and the hint', r.hubStopped)
     await shot(page, 'AFS-001-stopped-hub')
+    // autobyteus-461 REQ-001: the hub's Stop leaves its working copies running (base stopped them with it). B keeps
+    // running, locked with its own stop icon, until it is stopped itself; then every copy is editable.
+    await openSidebarAgent(page, r.b)
+    r.bAfterHubStop = await waitSubject(page, 'B after the hub stop', 'Beta')
+    assert(r.bAfterHubStop.state === 'active' && r.bAfterHubStop.modelLocked && r.bAfterHubStop.copyStop,
+      'B keeps running after the hub\'s Stop: active, locked, its own stop icon (REQ-001)', r.bAfterHubStop)
+    await page.locator(sel('run-member-stop')).click()
+    await waitFor('B stopped', async () => { const f = await facts(page); return f.state !== 'active' && !f.modelLocked }, 90000, 500)
 
     // Edit A; focus B: the bar names A, B is unchanged; come back; Save stores only A, and A's card shows it (D-IMP-3).
     await openSidebarAgent(page, r.a); await waitSubject(page, 'A', 'Alpha')
@@ -153,10 +164,12 @@ export function registerAgentSettingsFocusedCases(h) {
     await saveSettings(page); await waitSaved(page)
     r.aSaved = await facts(page)
     assert(r.aSaved.model?.includes(ALT_LABEL), 'A\'s card shows the saved model (D-IMP-3)', r.aSaved)
-    const treeAfterSave = await agentTree(r.hubRunId)
-    r.aStored = pick(stored(treeAfterSave, r.a), 'userLaunchSelection') ?? null
-    r.bStored = pick(stored(treeAfterSave, r.b), 'userLaunchSelection') ?? null
-    assert(r.aStored?.llmModelIdentifier === ALT && !r.bStored, 'Save stored exactly A', { a: r.aStored, b: r.bStored })
+    // autobyteus-461 SR-064: a copy's Settings save is its own run's save; read each copy's own run (base kept the edit as
+    // `userLaunchSelection` in the delegator's tree record).
+    const ownModel = async (runId) => (await ownLaunch(runId))?.llmModelIdentifier ?? null
+    r.aStored = await ownModel(r.a)
+    r.bStored = await ownModel(r.b)
+    assert(r.aStored === ALT && r.bStored !== ALT, 'Save stored exactly A', { a: r.aStored, b: r.bStored })
     await shot(page, 'AFS-001-saved-card')
 
     // Cancel discards: B edited, then cancelled.
@@ -166,12 +179,12 @@ export function registerAgentSettingsFocusedCases(h) {
     await page.locator(sel('existing-run-cancel')).click(); await settle(page, 800)
     r.bCancelled = await facts(page)
     assert(r.bCancelled.model?.includes(MODEL_LABEL) && !r.bCancelled.saveText?.includes('Unsaved'), 'Cancel discards B\'s edit', r.bCancelled)
-    assert(!pick(stored(await agentTree(r.hubRunId), r.b), 'userLaunchSelection'), 'nothing stored for B', null)
+    assert((await ownModel(r.b)) !== ALT, 'nothing stored for B', await ownLaunch(r.b))
 
     // B's runtime changes to Grok, saved.
     await chooseModel(page, subjectCard(page), GROK, GROK_MODEL)
     await saveSettings(page); await waitSaved(page)
-    r.bRuntimeStored = pick(stored(await agentTree(r.hubRunId), r.b), 'userLaunchSelection') ?? null
+    r.bRuntimeStored = await ownLaunch(r.b)
     assert(r.bRuntimeStored?.runtimeKind === GROK && r.bRuntimeStored?.llmModelIdentifier === GROK_MODEL, 'B\'s runtime is stored', r.bRuntimeStored)
 
     // D-IMP-1: the selected run's row keeps Settings; the back arrow leaves; another run opens at its chat.
@@ -355,8 +368,7 @@ export function registerAgentSettingsFocusedCases(h) {
         await cold.locator(sel('existing-run-refresh')).click().catch(() => {}); await settle(cold, 2500)
       })
       r.copySaved = await facts(cold)
-      r.copyStored = pick(objectsIn((await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){org}}', { id: r.orgRunId })).getAgentOrgRootHistory.org)
-        .find((x) => pick(x, 'agentRunId') === r.copy && pick(x, 'startedAt')), 'userLaunchSelection') ?? null
+      r.copyStored = await ownLaunch(r.copy)
       assert(r.copyStored?.llmModelIdentifier === ALT, 'the Org copy\'s choice is stored', r.copyStored)
       await shot(cold, 'AFS-002-stopped-org-copy-saved')
 
