@@ -1625,3 +1625,6 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
     - an exact `SUBSCRIBE` (read and register in one synchronous step);
     - counted lifetime, with a peer's `observe` released with its last subscriber;
     - rule 3: item 5's tests and AC-017 are the acceptance for trees and statuses.
+- **ARCH-REV-055 passed the AR-028 answer.** Its notes are applied:
+  - the four stale status passages (the peer cache, SR-063's status read, the SR-044 row, the Team tab's step 1) are marked superseded for statuses by SR-082;
+  - on repeated `RUN_TREE_CHANGED`, the client applies only the newest `runTree` answer.
