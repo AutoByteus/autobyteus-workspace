@@ -1,8 +1,5 @@
 import type { DefinitionNameLookup } from "../../domain/definition-name-lookup.js";
 import type { RunHistoryCatalogInvalidation } from "../../domain/run-history-catalog-invalidation.js";
-import { APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID } from "../append-only-message-logs-v1/append-only-message-logs-v1-app-data-migration.js";
-import { DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID } from "../delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.js";
-import { TASK_AGENT_OWN_RUN_V1_MIGRATION_ID } from "../task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.js";
 import {
   DELEGATED_RUNS_OWN_RUNS_V1_MIGRATION_ID,
   DelegatedRunsOwnRunsV1AppDataMigration,
@@ -23,6 +20,11 @@ import {
  * predecessor, so a predecessor that stays `FAILED` for an unrelated item holds back only its own follow-up, which waits,
  * reported, while startup continues (`requiredOnStartup`, no `holdsBackCapabilities`). Registered after our migration.
  */
+// The predecessors, by their IDs (a migration folder imports no other; the sealed area's rule).
+const TASK_AGENT_OWN_RUN_V1_MIGRATION_ID = "20261017_task_agent_own_run_v1";
+const APPEND_ONLY_MESSAGE_LOGS_V1_MIGRATION_ID = "20261018_append_only_message_logs_v1";
+const DELEGATED_COPY_OWN_FILE_COMPLETE_V1_MIGRATION_ID = "20261019_delegated_copy_own_file_complete_v1";
+
 export const DELEGATED_RUNS_PRESERVED_ITEMS_PLANS: readonly DelegatedRunsPlan[] = [
   {
     id: "20261114_preserved_items_after_task_agent_own_run_v1",
