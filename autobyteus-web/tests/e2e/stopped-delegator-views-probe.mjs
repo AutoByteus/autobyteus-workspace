@@ -20,8 +20,9 @@
 //          out-of-sync notice, and the composer does not stay pending (SR-048).
 //   SDV-03 Org view: the same for an org run; the stopped org starts on its first input (the user's message to its agent).
 //   SDV-05 C15-03 (DS-15, CRR-039): page B opens the worker from its delegator's row while its Task is open; the Task closes;
-//          the user's message from that still-open view is refused with base's text; it is not restored, its row stays gone from
-//          the delegator's view (page A), and the delegator's row keeps its status.
+//          as at base (`returnToHostWhenUnlisted`), page B's view returns to the delegator, so the web offers no view of the closed
+//          run to send from (C15-03 is not applicable in the rendered layer; proven at the server: the DS-15 suite, DRO-3). The
+//          closed run's row stays gone from the delegator's view (page A) and the delegator's row keeps its status.
 // In each case the stopped root's own row in the run list is sampled while its view is open and for 15 s after the child
 // command (past the history poll): it must show stopped (code review O-1, CRR-008).
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes them in
@@ -526,16 +527,15 @@ const caseClosedRunInput = async () => {
       input.send(callTool('update_task', { task_id: s.taskId, status: 'DONE' }));
       await until('the worker row leaves page A after DONE', async () => (await rowA.count()) === 0, 60000);
     } finally { input.close(); }
-    await sleep(2000);
-    out.pageBAfterClosure = (await centerText(b.page)).slice(0, 300);
-    assert(out.pageBAfterClosure.includes('Write the notes') && !out.pageBAfterClosure.includes('update_task'),
-      "page B's open view of the worker did not stay on the worker after its Task closed", out);
+    // CRR-039: base's `returnToHostWhenUnlisted` (agentRunCollaborationStore, af690af334; the same at 827f1e68dc and 3d738de6e6)
+    // returns the view to the run's own agent when a selected child leaves the listing (its Task is DONE). So the web has no
+    // still-open view of a closed delegated run to send from: C15-03 is not applicable in the rendered layer and stays proven at
+    // the server (the DS-15 suite, DRO-3). The case checks base's return and the rest of the two views; it sends nothing.
+    await until("page B's view returns to the delegator (base's returnToHostWhenUnlisted)", async () => {
+      const text = await centerText(b.page); return text.includes('update_task'); }, 30000);
+    out.pageBReturnedToDelegator = true;
+    await shot(b.page, 'sdv-05-returned-to-delegator');
     const rootDotBefore = await rootRowDot(a.page, s.root);
-    await send(b.page, 'Are you still there? Marker CLOSED-INPUT.');
-    const refusal = "Your Task is DONE or CANCELLED, so you can't start new work.";
-    await until('page B shows the refusal', async () => (await b.page.locator('body').innerText()).includes(refusal), 30000);
-    out.refusalShown = true;
-    await shot(b.page, 'sdv-05-refused');
     const samples = [];
     for (let i = 0; i < 10; i++) {
       samples.push({ workerRowInA: await rowA.count(), rootDot: await rootRowDot(a.page, s.root),
@@ -543,9 +543,9 @@ const caseClosedRunInput = async () => {
       await sleep(1000);
     }
     out.samples = samples;
-    assert(samples.every((x) => x.workerRowInA === 0), 'the closed run\'s row returned to the delegator\'s view', out);
+    assert(samples.every((x) => x.workerRowInA === 0), "the closed run's row returned to the delegator's view", out);
     assert(samples.every((x) => !x.workerActive), 'the closed run was restored', out);
-    assert(samples.every((x) => x.rootDot === rootDotBefore), 'the delegator\'s row in the list changed status', { ...out, rootDotBefore });
+    assert(samples.every((x) => x.rootDot === rootDotBefore), "the delegator's row in the list changed status", { ...out, rootDotBefore });
     await shot(a.page, 'sdv-05-delegator-view');
     assert(a.errors.length === 0 && b.errors.length === 0, 'browser errors', [...a.errors, ...b.errors]);
     return out;
@@ -561,7 +561,7 @@ const CASES = {
   'SDV-02': ['Team view: stored mode while stopped; the worker answers live; the team stays stopped; a message to its own member restores it live (SR-048)', () => caseStoppedRoot('team')],
   'SDV-03': ['Org view: stored mode while stopped; the worker answers live; the org stays stopped; it starts on its first input', () => caseStoppedRoot('org')],
   'SDV-04': ["Agent-run view: the worker's row leaves at DONE and is listed again, live, after the Manager reopens and continues it (CR-461-042)", caseReopenedRow],
-  'SDV-05': ["C15-03: the user's message to a closed delegated run is refused with base's text; it is not restored, its row stays gone from the delegator's view and the delegator's row keeps its status", caseClosedRunInput],
+  'SDV-05': ["C15-03: with the closed run's view open when its Task closes, the view returns to the delegator as at base (no rendered path to message a closed run); its row stays gone and the delegator's row keeps its status", caseClosedRunInput],
 };
 
 let result = 'Pass';

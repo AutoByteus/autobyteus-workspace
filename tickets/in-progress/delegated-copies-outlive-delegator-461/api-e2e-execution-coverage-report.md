@@ -64,7 +64,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | API-E01 in full | AC-001 … AC-013 | Every server E2E file (264) | part 1: every file outside `runtime/`; part 2: `runtime/`; `--no-file-parallelism` | ENV-1 | Pass (after the stale fixes) | `API-E01-r10-batches.txt` | part 1 `694 passed / 7 failed` → all pass after the fixes and the lone reruns; part 2 `169 passed`, 63 files skipped (live gates) | Stale: E-007 and ad-hoc delegation. Environment: terminal, file watcher, provider secrets (pass alone) |
 | DS-15 restart resume | DS-15 (SR-070) | Built server on API-E03's released world | `delegated-runs-own-runs-startup.e2e.test.ts` (new DRO-3) | ENV-1 | Pass | `API-E01-r10-batches.txt` (DRO) | DRO-1/2/3 `✓` | A busy delegated team whose Task entry is closed is not resumed; with its entry open it is (DRO-1) |
 | API-B03 batch 1 | AC-005, AC-012; rule 2 | Real browser, built server, Nuxt | `node tests/e2e/<probe>-probe.mjs --output-dir <dir>` | ENV-2 | **Fail** (F-54; others under triage) | `API-B03-r10-probes-batch1.txt`, `API-B03-r10-F54-*.png` | task-closure-tree 9/16, projects-left-navigation 6/11, project-manager-ux 16/25 | See Findings and the triage list |
-| C15-03 rendered (SDV-05, new) | DS-15 | Real browser, two pages | `stopped-delegator-views-probe.mjs --cases SDV-05` | ENV-2 | Unclear (F-55) | `API-B03-r10-F55-closed-line-not-openable.png` | `closedLine: {testid: project-task-root-offline, openable: false}` | The web offers no way to open a closed delegated run, so the two-view check cannot be made |
+| C15-03 rendered (SDV-05, new) | DS-15 | Real browser, two pages | `stopped-delegator-views-probe.mjs --cases SDV-05` | ENV-2 | Not Applicable (rendered layer); SDV-05 Pass | `API-B03-r10-SDV05-base-return.json`, `API-B03-r10-SDV05-*.png` | the view returns to the delegator; the closed run's row stays gone; the delegator's row keeps its status; the run is not restored | CRR-039: a closed run's line on its Task's card is not openable (base: `presentTaskRoot`, AR-002, REQ-009), and a selected child that leaves the listing returns the view to the run's own agent (base: `returnToHostWhenUnlisted`, `af690af334`, the same at `827f1e68dc` and `3d738de6e6`). The web has no view of a closed run to send from; C15-03 stays proven at the server (the DS-15 suite, DRO-3) |
 | API-B03 batch 2, API-P03, API-P04, API-F01, live `agent-initiated-collaborators`, SSR cases | as planned | — | — | — | Next Round | — | — | After the fix |
 
 ### Findings
@@ -74,7 +74,7 @@ This report records what ran and the result. The plan is in `api-e2e-coverage-in
 | ID | Case | Expected (authority) | Observed (`15c41ad242`) | Preliminary Classification |
 | --- | --- | --- | --- | --- |
 | F-54 | `project-manager-ux` PMU-003, PMU-018 (`API-B03-r10-F54-PMU-003-team-opened-empty.png`, `API-B03-r10-F54-PMU-018-no-active-team-runs.png`) | Rule 2 and DS-11: a delegated run is opened by its own path from its Task's card, as at base for an agent worker. A delegated Team with an open Task is not a top-level row, so the open must not depend on one | Opening a delegated **Team** run from its Task's card does not show it. PMU-003: the coordinator's row is selected in the run list, but the center pane says "Select an agent or start a new one." PMU-018 (collapsed strip): the center opens a team profile saying "No Active Team Runs — This team profile has no running runs", while the card shows the Team Idle. Agent workers open (PMU-018's agent part, SDV-04). Likely the same: PLN-05 "member conversation open", PMU-019 (not yet confirmed) | `Local Fix` (web) |
-| F-55 | SDV-05 (C15-03 rendered) (`API-B03-r10-F55-closed-line-not-openable.png`) | Design line 633 (DS-15): "A closed run can be reached now, from its Task's page", and the user's message to it is refused with base's text | The closed worker's line on its DONE Task's card is `project-task-root-offline` with `data-openable="false"`. The web offers no way to open, and so to message, a closed delegated run. The server-side fence is proven (DS-15 suite, round 6; DRO-3) | `Unclear` (the design's premise against the web's closed-line rule) |
+| F-55 (closed: test construction, CRR-039) | SDV-05 | — | Base's rules: the closed line is not openable, and the open view returns to the delegator. SDV-05 rebuilt to check base's behavior: Pass | — |
 
 Observations:
 - **O-10a:** a root its admission refuses is not offered by the web's run list (`listWorkspaceRunHistory` lists no team for the token-blocked root, and the not-cataloged scenario's list fails closed by design). The connect's answer is base's code and text, but no rendered surface carries it. Base's listing of such roots is not established here.
@@ -193,7 +193,7 @@ Observations:
 ## Preliminary Classification (On `Fail`)
 
 - `Local Fix` (web): F-54.
-- `Unclear`: F-55, O-10a.
+- O-10a rejected (CRR-039: the team history catalog lists only admitted packages, as at base). F-55 closed as test construction (CRR-039).
 
 ## Latest Authoritative Result
 
@@ -201,7 +201,6 @@ Observations:
 - Criteria not proven: AC-007's Task-card path (F-54). Every server criterion is proven, and API-E01 in full passes.
 - Preliminary classification and recommended owner:
   - Implementation Engineer: F-54;
-  - Solution Designer: F-55, O-10a;
   - each confirmed by failure-origin review.
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
 - Notes for the next round:

@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-11-14T04:38:43.850Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "SDV-05": {
+      "result": "Pass",
+      "description": "C15-03: with the closed run's view open when its Task closes, the view returns to the delegator as at base (no rendered path to message a closed run); its row stays gone and the delegator's row keeps its status",
+      "details": {
+        "root": "manager_sdvclosed_5ea9_657af57e3c24455990de0da26929b6ce",
+        "worker": "worker_sdvclosed_5ea9_afd894bfbfd04dc9be189f878319a5a7",
+        "workerOpenBeforeClosure": true,
+        "pageBReturnedToDelegator": true,
+        "samples": [
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          },
+          {
+            "workerRowInA": 0,
+            "rootDot": "inline-block h-2 w-2 flex-shrink-0 rounded-full bg-green-500 mr-2",
+            "workerActive": false
+          }
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 89785,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 89753,
+      "status": "terminated",
+      "exit": 1
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:49875",
+    "frontendUrl": "http://127.0.0.1:49876",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/stopped-delegator-views-GnwHbL"
+  },
+  "browserVersion": "157.0.8103.51",
+  "result": "Pass",
+  "finishedAt": "2026-11-14T04:39:50.071Z"
+}
