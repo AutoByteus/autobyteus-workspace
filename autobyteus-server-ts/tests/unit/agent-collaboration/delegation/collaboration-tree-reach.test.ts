@@ -81,7 +81,8 @@ describe("CrossRunAddressResolution (contract §2.3 step 2, the correction, §2.
   it("O9 (SR-081, CR-461-081): the copy's old name, and a member of its own under it, are corrected before step 2, never delivered to the assigner's namesake agents", async () => {
     const h = await harness();
     // The org stands at /dev_team (its mounted team's coordinator) and /dev_team/x_lead (its mounted team's own lead).
-    STANDING.org!.agents.set("/dev_team/x_lead", "org_x_lead");
+    const orgAgents = STANDING.org!.agents as Map<string, string>;
+    orgAgents.set("/dev_team/x_lead", "org_x_lead");
     try {
       await expect(h.resolution.resolve(sender(X, "/x_lead", "x_lead"), "/dev_team")).rejects.toMatchObject({
         code: "COLLABORATION_TARGET_NOT_FOUND",
@@ -93,7 +94,7 @@ describe("CrossRunAddressResolution (contract §2.3 step 2, the correction, §2.
       });
       // A run delegated under another name is not corrected: the study group's tutor reaches the org's agent there.
       await expect(h.resolution.resolve(sender(S, "/tutor", "tutor"), "/dev_team/x_lead")).resolves.toBe("org_x_lead");
-    } finally { STANDING.org!.agents.delete("/dev_team/x_lead"); }
+    } finally { orgAgents.delete("/dev_team/x_lead"); }
   });
 
   it("step 2 takes the run's open Tasks; when none is open, all its Tasks", async () => {
