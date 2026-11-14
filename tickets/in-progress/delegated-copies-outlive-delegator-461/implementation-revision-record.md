@@ -1058,3 +1058,30 @@ The current code and `implementation-handoff.md` remain authoritative.
   - The design's single `openRunTarget` is `rowOpenAgentRunId` / `teamRowFocusOf` in `composables/useRunOpening.ts` plus `selectTaskRow` reading the target: each view keeps its own selection mechanics (the Agent view selects a child, the Team and Org views focus a member), all from the server's target.
   - `openTarget` is optional in the three row schemas (the server sets it on every row; test fixtures and older producers need not).
 - Validation: see IMP-86 … IMP-90 in the handoff's Checks Run.
+- Result: Code Review **Fail (CRR-044**, `code-review-report.md` round 31): one Local Fix, CR-461-085 (the peer status path). Everything else held, the deviations included.
+
+### IR-032 — A peer run's status after its link ends; one source for statuses (CR-461-085)
+
+- Triggering role, report path, and round: Code Reviewer CRR-044, `code-review-report.md` round 31. Round 32.
+- Triggering finding IDs: CR-461-085. Large / High unchanged.
+- Prior authoritative result: IR-031 at `74076b0ef4` (CRR-044 Fail).
+- Related solution / architecture-review revision IDs: N/A. Related code-review revision IDs: CRR-044.
+- Implementation delta, `b5163d71d1`:
+  - **Server:**
+    - `RunStatusEntry.startPeer` keeps its observation re-openable. An end nobody asked for sets the run's agents offline and calls `peerEnded`, so the views showing it get one summary (`PeerChildObservation.ended`, AR-403).
+    - `RunStatusService.retryPeers` observes an ended peer run again. `PeerChildObservation.refresh` (Retry) calls it with the view's peer runs, then fetches fresh summaries (DEC-807 Phase 1). A live observation is never opened twice, and a frame of an ended link changes nothing.
+    - The composition wires the two to each other.
+  - **Web:** `applyRemoteSummaryStatuses` becomes `applyRemoteSummary`: a summary sets title, reachability and launches only. A peer agent's status has one writer, `/ws/run-status`.
+  - **Small items:**
+    - `ChildRowsFeed.rowsChanged` is required;
+    - `resetRunStatusFeedForTests` is removed;
+    - `run-view-stream.ts`'s two comments name `PeerChildObservation`.
+- Not taken: C31-05 (`openTarget` required-nullable in the schemas), a suggestion for when the fixtures are next touched.
+- Tests:
+  - `run-status-service.test.ts`: a peer run's link ends (offline, `peerEnded`), then Retry, and its live status follows again; no second observation while live. This fails on the prior code, which has no `retryPeers`.
+  - `peer-child-observation.test.ts`: Retry re-observes the view's peer runs and fetches their summaries; an unasked end fetches one summary for the views showing it.
+  - Web: a summary does not change a status (`agentRunCollaborationRemoteChildren.spec.ts`, `teamExecutionRemoteRuns.spec.ts`).
+- Validation, IMP-92:
+  - server: type gate PASS, `Tests  7245 passed`;
+  - web: type gate PASS, `Test Files  771 passed`, `Tests  5760 passed | 2 skipped`.
+- Next recipient: Code Reviewer, a targeted delta on the peer status path.
