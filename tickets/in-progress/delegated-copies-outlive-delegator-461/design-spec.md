@@ -683,11 +683,13 @@ This migration is terminal by then and does not run again. The residue is inert,
 ### A root its migration could not convert (SR-078, CR-461-069; rule 7)
 
 At base, the user's restore mutation (`restoreAgentTeamRun`) answered a team or org root its migration could not convert with the reason, `TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED` or `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED`, and base's view connect answered `TEAM_NOT_FOUND`. With restore now the first message (SR-046) and the mutation removed, base's two answers keep their places:
-- **The view connect** asks the run service's restore admission, base's checks (cataloged, token-usage migration), **before** it reads the stored file. When admission refuses, the connect answers as base's view did: `TEAM_NOT_FOUND`, or the org's counterpart. It does not answer with the stored file's parse error.
-- **The first message,** which restores the run, answers the admission's own reason codes and texts on its acknowledgement, as base's restore did.
+- **The view connect** asks the run service's restore admission, base's checks (cataloged, token-usage migration), **before** it reads the stored file. When admission refuses, the connect answers with **the admission's own code and text**: `TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED` or `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED` with base's restore texts, or the org's counterparts. Then it closes the stream, as base's failed connect did (SR-078 as revised for CR-461-073).
+  - **Why the connect:** at base the user saw the reason on send, because base's web hydrated a stopped team without a stream and called the restore mutation when sending (`agentTeamRunStore.ts:305-308`). Now a stopped run's view *is* its stream (SR-045, SR-046), and a refused connect leaves no session to send from. So the connect is the one place the reason can reach the user.
+  - **Not affected:** the web does not special-case `TEAM_NOT_FOUND` (no reader in `autobyteus-web`). It shows a failed connect's code and text as it shows any.
+- **The first message** of a run that passed admission (a race, or a later restore) answers the admission's reason on its acknowledgement, as base's restore did.
 - **No raw schema error reaches the user.** A stored file that passes admission but cannot be parsed is answered as a run that cannot be restored, with a reason, and the detail goes to the log only (rule 7).
 - **The same holds for an org root.**
-- **Tests:** team-run-v1 ×2: the view connect answers `TEAM_NOT_FOUND`, the first message answers the reason code, and no message names a schema field.
+- **Tests:** team-run-v1 ×2. The view connect answers the admission's reason code and text, then the stream closes. No message names a schema field.
 
 ### DS-14 A run a peer started on this node
 
