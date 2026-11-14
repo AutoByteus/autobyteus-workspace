@@ -1568,3 +1568,11 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - a peer run is unchanged.
 - **Why this needs no further review:** it is an addition to a view, not to stored data, and it restores base's behavior (rule 1). It is approved as part of the Local Fix, and code review sees it.
 
+### The data migration guideline gains the ordering rules (the user's request, through the code reviewer)
+
+- **Added:** `docs/design/data_migration_guideline.md` §4, "Registry order and late predecessors", as hard rules.
+  - The registry is append-only: released entries never move, and a new migration goes at the end with a later date, enforced by the order test.
+  - Every earlier migration that can run late (`FAILED`, or `NOT_RUN` behind a failed prerequisite) is classified as writer, reader, rebuilder or none, checked against the code. Writers and readers get follow-ups, and a test enforces the classification.
+- **Also:** checklist item 6 points to the rules, and §10 gains two lessons, CR-461-048 (data loss) and CR-461-074 (half-converted data).
+- **FU-027's scope** (whether the runner derives order and re-runs migrations) is left unchanged, as the user has not decided it.
+
