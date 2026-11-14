@@ -930,7 +930,8 @@ const runCases = async () => {
     const squadKey = `${ptmKey}/team:${stack.squadRun}`;
     await ensureUnfolded(page, squadKey);
     const kinds = [
-      { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { hostRunId: stack.ptm, memberAddress: '/release_notes_writer', agentRunId: stack.writerRun } },
+      // autobyteus-461 rule 2: a delegated agent run is its own run; its conversation is read by its own run ID.
+      { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { runId: stack.writerRun } },
       { kind: 'task-team member', key: async () => childRow(await rowsOf(page), squadKey, 'reviewer', 2)?.key, name: 'reviewer', parent: 'docs review team',
         ids: { hostRunId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
       { kind: 'Team run (its coordinator)', key: () => `team:${stack.delivery}`, name: 'lead', parent: 'Delivery Team', ids: { teamRunId: stack.delivery, agentRunId: stack.deliveryLead, runId: stack.deliveryLead } },
@@ -996,7 +997,7 @@ const runCases = async () => {
       await openRow(secure.page, `${ptmKey}/agent:${stack.writerRun}`);
       const marker = `PHONE-CONTROL-${randomUUID().slice(0, 6)}`;
       await composerSend(secure.page, `From the phone. Marker ${marker}`);
-      await waitFor('the control message on the node', async () => (control.reached = await storedHas(alpha, { hostRunId: stack.ptm, memberAddress: '/release_notes_writer', agentRunId: stack.writerRun }, marker)), 30_000).catch(() => undefined);
+      await waitFor('the control message on the node', async () => (control.reached = await storedHas(alpha, { runId: stack.writerRun }, marker)), 30_000).catch(() => undefined);
       control.shownOnPhone = ((await runScreen(secure.page)).conversation ?? '').includes(marker);
       await secure.context.close();
     }
