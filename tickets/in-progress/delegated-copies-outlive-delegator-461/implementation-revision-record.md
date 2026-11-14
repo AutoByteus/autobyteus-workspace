@@ -1037,3 +1037,4 @@ The current code and `implementation-handoff.md` remain authoritative.
   - AFS-001's "Save stored exactly A" reads `userLaunchSelection` from the delegator's tree record (base's storage). Under SR-064 the save is on the copy's own run, so that check is stale. It goes on API/E2E's rewrite list.
   - DCP-001 was not run.
 - Next recipient: Code Reviewer, a targeted delta.
+- Result: Code Review **Pass (CRR-042**, `code-review-report.md` round 30, head `5b455a9ec7`): CR-461-077 and F-59 resolved. The reviewer routes to API/E2E.
