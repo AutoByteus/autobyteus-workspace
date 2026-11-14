@@ -959,3 +959,35 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Validation (IMP-83 at `1eb945e5f7`): type gate PASS; 754 migration family, architecture and startup tests pass; unit 8082 passed.
 - Next recipient: Code Reviewer, a targeted delta.
 - Result: Code Review **Pass (CRR-038**, `code-review-report.md` round 28, head `15c41ad242`): CR-461-075 resolved. The reviewer routes to API/E2E.
+
+### IR-029 — The Task card opens its worker where its row lives (CR-461-076, F-54; SR-080)
+
+- Triggering role, report path, and round: Code Reviewer CRR-039 (the failure-origin review of API-REV-010): one web `Local Fix`, CR-461-076 (F-54). It needed a field the web can't derive, approved by the Solution Designer as SR-080 within the Local Fix. Round 29.
+- Triggering finding IDs: CR-461-076; SR-080. Large / High unchanged.
+- Prior authoritative result: IR-028 at `15c41ad242` (CRR-038 Pass).
+- Current authoritative result: `0b6da706b9` (`f15a328251`, `2818701556`, `0b6da706b9`).
+- Related solution / architecture-review revision IDs: SR-080 (no architecture review). Related code-review revision IDs: CRR-039.
+- **PMU-003's exact break, pinned through the project-manager probe and the browser console (IMP-84).** The rule-2 open of a delegated Team (`delegatedRunsStore.ensureOpen` → `openTeamRun`) passed no workspace ensurer. A running Team's open therefore threw "Active Team '…' requires workspace activation" (`teamRunContextHydrationService.ts:275`). Its binding never came, the agent view's target stayed null while "opening" (CR-461-057), and the center stayed empty. This hit any running delegated Team row, the card's or a click's.
+- Implementation delta:
+  - **`f15a328251` (web):** the rule-2 Team open activates the Team's workspaces as the Team's own open does (`ensureRunHistoryWorkspaceByRootPath`).
+  - **`2818701556` (server, SR-080):** `TaskRootView.topRun` names the run at the top of the worker's tree.
+    - It is derived, never stored, by a resolver beside the status resolver: `DelegationIndex.topOf`, composition-bound.
+    - It is carried on the GraphQL type and the change message. `delegatingRun` stays, for display.
+    - Without the resolver, `topRun` is null and no card opens. This fails closed, following the service's optional-collaborator convention.
+  - **`0b6da706b9` (web):** the card opens `topRun` and selects the worker's row there with that view's own selection:
+    - an Agent view expands the task Teams above the row (`taskTeamPathOf`) and selects it with `selectTaskRow`;
+    - a Team view opens on the worker's coordinator, as its row does (`inspectTeamMember` / `openTeamMemberRun`);
+    - an Org view goes through its inspect action;
+    - a worker that is its own top opens as its own run.
+    - `openable` = started, not closed, and `topRun` listed (`isTaskRootTopRunListed`). The GraphQL types are regenerated.
+- Tests (each fails without its fix):
+  - the store spec checks that the Team open passes the ensurer;
+  - the server's root view names `topRun`, from the resolver, and none without one;
+  - the card specs: a worker two hops down (its Team expands and its row is selected), PMU-003's Team worker under an Agent top, a Team top and an Org top, a worker that is its own top, and no top.
+  - The probe: PMU-003 and PMU-018 now pass.
+- **PMU-019** fails before the card, at finding the nested member's row. The probe looks for `data-member-address="${recipientAddress}/editor"`, base's hosted address. Under TC-12 and P8, a delegated team's member rows carry their own run's address, `/editor`; the row is there. This is the probe's selector, not the product.
+- Validation:
+  - IMP-84, the probe: PMU-003 and PMU-018 pass;
+  - IMP-85: `codegen:check` is current; web type gate PASS and 5763 passed; server type gate PASS and unit 8080 passed, with 3 failed in two folder watcher files (alone 27/27 twice).
+- Remaining risks: PMU-019's probe selector (above); the server's integration suite is not rerun (the server change is the Task view's field and its resolver).
+- Next recipient: Code Reviewer, a targeted delta on the card's open path.
