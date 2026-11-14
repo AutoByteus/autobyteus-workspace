@@ -1555,3 +1555,4 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
   - The three address and path migrations are verified as none: memory layout acts only on v1 roots; the locators skip converted files; the projection addresses feed 20261018, whose follow-up covers them.
   - The rest are confirmed.
 - **The locators, confirmed none:** `TeamContextFileExecutionLocatorsV1` writes final locators by run ID (`team-context-file-locator-transition.ts:71`), and the runtime resolves them by `{teamRunId, agentRunId}` (`context-file-owner-resolver.ts:71-97`). No address is stored, so step 4's rebase doesn't affect a delegated team member's attachments.
+- **CRR-039 F-55 wording:** DS-15 no longer says a closed run is reached from its Task's page, which lists it muted and not openable, as at base. It is reached when its own view was already open as its Task closed.
