@@ -1628,3 +1628,26 @@ No architecture review: these follow REQ-006, an approved exception, rule 2 and 
 - **ARCH-REV-055 passed the AR-028 answer.** Its notes are applied:
   - the four stale status passages (the peer cache, SR-063's status read, the SR-044 row, the Team tab's step 1) are marked superseded for statuses by SR-082;
   - on repeated `RUN_TREE_CHANGED`, the client applies only the newest `runTree` answer.
+
+### SR-083 — SR-082 narrowed: statuses by run ID now; the full server tree stays FU-034
+
+- **Triggering:** the user asked whether returning a server-built tree is worth it compared with keeping the current endpoints (`ListWorkspaceRunHistory` and the view reads). He said: "If you think the benefits is worth it then do it; if not, no."
+- **The Solution Designer's judgment:**
+  - **statuses by run ID** (FU-026) is worth it now: it removes the server-side relay class (CR-461-039, -061, -067, -071, F-62);
+  - **the full server tree** (FU-034) is not worth it in this ticket. Its value, consistency between views, comes mostly from cheaper steps, and its cost is the largest web rewrite and browser re-run late in the ticket.
+- **Decision:**
+  - keep the current endpoints and shapes;
+  - the server adds `openTarget` to every row it already builds: a team's target is its coordinator, with no `members[0]` (FU-024, FU-031);
+  - a peer row carries its launch;
+  - an edited member shows no origin;
+  - one web open path, `openRunTarget`;
+  - Settings' rows from the view and its liveness from the run's own status;
+  - the focused-member load;
+  - `RUN_TREE_CHANGED` on `/ws/run-status` re-reads the existing view read for an expanded listed run;
+  - `RunTreeView` and `runTree(run)` are withdrawn;
+  - FU-034 stays a follow-up.
+- **Requirements:** REQ-014 is reworded. AC-017 stands, with "every view shows the same rows" now meeting the bar through the existing builders that only display.
+- **Next action:**
+  - architecture review (narrow);
+  - then the Implementation Engineer, when the user lets him continue.
+

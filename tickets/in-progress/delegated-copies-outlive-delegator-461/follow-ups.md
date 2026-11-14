@@ -132,4 +132,5 @@ Withdrawn (not to send): FU-001, FU-003, FU-004, FU-005, FU-008, FU-009, FU-012,
 ## Moved into autobyteus-461 (2026-11-14)
 
 - **FU-024, FU-026, FU-031 and FU-034** are moved into this ticket by the user's decision (fix the architecture now, not by patches), as one refactoring: the run-tree view model and statuses by run ID. Their table rows and sections above stay as the record of what was found. They are not to be sent as separate Tasks when the ticket leaves the team.
+- **Update (SR-083, 2026-11-14):** FU-026 (statuses by run ID), FU-031 (one row behavior) and FU-024 (no `members[0]`) are done in 461 through the server-decided `openTarget` and `/ws/run-status`. **FU-034 (the full server-built tree that replaces the client builders) stays a follow-up.** The user asked whether its benefit was worth its cost here, and the Solution Designer judged it not worth it in this ticket.
 
